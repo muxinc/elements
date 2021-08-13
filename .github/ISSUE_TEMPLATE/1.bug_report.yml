@@ -1,0 +1,86 @@
+name: 🐛 Bug Report
+description: Create a bug report for Mux Elements
+labels: "template: bug"
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a bug report! Please fill out this form as completely as possible.
+  - type: markdown
+    attributes:
+      value: If you leave out sections there is a high likelihood it will be immediately closed as not actionable.
+  - type: markdown
+    attributes:
+      value: "Please first verify if your issue exists in the latest version Mux Element(s) release: `npm install @mux/[element_name]` or `yarn @mux/[element_name]`."
+  - type: checkboxes
+    attributes:
+      label: Which Mux Elements/Packages has a bug?
+      description: Select any/all elements that have an issue
+      options:
+        - label: mux-video
+        - label: mux-audio
+        - label: common
+      validations:
+          required: true
+  - type: input
+    attributes:
+      label: What version of the Mux Element(s)?
+      description: "For example: 10.0.1 (if multiple elements, list all versions as e.g. 'mux-video@10.0.1 mux-video@9.0.0')" 
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: What browser(s) are you using?
+      description: "For example: Chrome, Safari"
+      options:
+        - label: Chrome
+        - label: Safari
+        - label: Firefox
+        - label: Edge ("Edgeium")
+        - label: Chrome Android
+        - label: Safari on iOS
+        - label: "Other (NOTE: Currently, Mux Elements are only officially supported in new versions of the browsers listed above)"
+      validations:
+          required: true
+  - type: input
+    attributes:
+      label: If other, please list the names of any other browsers you are using
+      description: "For example: Samsung Internet, Opera"
+  - type: input
+    attributes:
+      label: What operating system(s) are you using?
+      description: "For example: macOS, Windows, iOS, Android"
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: How are you using Mux Elements?
+      description: "For example: npm package, <script> tag"
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior, please provide a clear code snippets that always reproduces the issue or a GitHub repository. Screenshots can be provided in the issue body below.
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: Before posting the issue go through the steps you've written down to make sure the steps provided are detailed and clear.
+  - type: markdown
+    attributes:
+      value: Contributors should be able to follow the steps provided in order to reproduce the bug.
+  - type: markdown
+    attributes:
+      value: These steps are used to add integration tests to ensure the same issue does not happen again. Thanks in advance!
