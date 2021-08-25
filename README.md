@@ -22,5 +22,5 @@ Elements are written as [Web Components](https://developer.mozilla.org/en-US/doc
 
 | Name                   | Description                              |
 | -----------------------| ---------------------------------------- |
-| [mux-video](mux-video) | A Mux-flavored HTML5 video element.      |
-| [mux-audio](mux-audio) | A Mux-flavored HTML5 audio element.      |
+| [mux-video](packages/mux-video) | A Mux-flavored HTML5 video element.      |
+| [mux-audio](packages/mux-audio) | A Mux-flavored HTML5 audio element.      |
