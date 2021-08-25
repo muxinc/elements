@@ -59,7 +59,7 @@ Now you are free to use this web component in your HTML, just as you would with 
   <p></p>
 
   <mux-video
-    playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?foo=bar&biz=baz"
+    playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
     env-key="mux-data-env-key"
     metadata-video-title="Big Buck Bunny"
     metadata-viewer-user-id="user-id-1234"
