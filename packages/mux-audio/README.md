@@ -37,9 +37,34 @@ require("@mux-elements/mux-audio");
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-audio@0.1/dist/index.js"></script>
+<script
+  type="module"
+  src="https://unpkg.com/@mux-elements/mux-audio@0.1"
+></script>
 ```
 
 ## Usage
 
 `<mux-audio>` has all the same features, benefits and options as `<mux-video>`. View the documentation for [`<mux-video>`](../mux-video) for details.
+
+### Advanced: Use with React+TypeScript
+
+Even though we don't (yet!) have our own `React` version of `<mux-audio>`, you can still use it in your `React` app. However, if you're also using TypeScript, make sure you add the following TypeScript definitions, since custom elements (like as `<mux-audio>`) will not be recognized as [Intrinsic Elements](https://www.typescriptlang.org/docs/handbook/jsx.html#intrinsic-elements):
+
+```typescript
+interface MuxAudioHTMLAttributes<T> extends React.AudioHTMLAttributes<T> {
+  debug?: boolean;
+  autoplay?: boolean;
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "mux-audio": React.DetailedHTMLProps<
+        MuxAudioHTMLAttributes<HTMLAudioElement>,
+        HTMLAudioElement
+      >;
+    }
+  }
+}
+```
