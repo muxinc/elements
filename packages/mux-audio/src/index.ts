@@ -104,7 +104,7 @@ const inferMimeTypeFromURL = (url: string) => {
 
 const getType = (mediaEl: MuxAudioElement) => {
   const type = mediaEl.getAttribute(Attributes.TYPE);
-  if (type) return MimeTypeShorthandMap[type] ?? type;
+  if (type) return MimeTypeShorthandMap[type.toUpperCase()] ?? type;
   const src = mediaEl.getAttribute("src");
   if (!src) return "";
   return inferMimeTypeFromURL(src);
