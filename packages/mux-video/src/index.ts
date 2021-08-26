@@ -36,9 +36,9 @@ const toPlaybackIdParts = (
   playbackIdWithOptionalParams: string
 ): [string, string?] => {
   const qIndex = playbackIdWithOptionalParams.indexOf("?");
+  if (qIndex < 0) return [playbackIdWithOptionalParams];
   const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
   const queryPart = playbackIdWithOptionalParams.slice(qIndex);
-  if (!queryPart) return [idPart];
   return [idPart, queryPart];
 };
 
