@@ -15,6 +15,7 @@ type AttributeNames = {
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
   PLAYBACK_ID: "playback-id";
   PREFER_MSE: "prefer-mse";
+  TYPE: "type";
 };
 
 const Attributes: AttributeNames = {
@@ -26,6 +27,7 @@ const Attributes: AttributeNames = {
   METADATA_VIDEO_ID: "metadata-video-id",
   METADATA_VIDEO_TITLE: "metadata-video-title",
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
+  TYPE: "type",
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -75,6 +77,36 @@ const getHighPriorityMetadata = (
     ...viewerIdObj,
     ...videoIdObj,
   };
+};
+
+const ExtensionMimeTypeMap: { [k: string]: string } = {
+  M3U8: "application/vnd.apple.mpegurl",
+};
+
+const MimeTypeShorthandMap: { [k: string]: string } = {
+  HLS: ExtensionMimeTypeMap.M3U8,
+};
+
+const inferMimeTypeFromURL = (url: string) => {
+  let pathname = "";
+  try {
+    pathname = new URL(url).pathname;
+  } catch (e) {
+    console.error("invalid url");
+  }
+
+  const extDelimIdx = pathname.lastIndexOf(".");
+  if (extDelimIdx < 0) return "";
+  const ext = pathname.slice(extDelimIdx + 1);
+  return ExtensionMimeTypeMap[ext.toUpperCase()] ?? "";
+};
+
+const getType = (mediaEl: MuxVideoElement) => {
+  const type = mediaEl.getAttribute(Attributes.TYPE);
+  if (type) return MimeTypeShorthandMap[type] ?? type;
+  const src = mediaEl.getAttribute("src");
+  if (!src) return "";
+  return inferMimeTypeFromURL(src);
 };
 
 class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
@@ -176,16 +208,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     const env_key = this.getAttribute(Attributes.ENV_KEY);
     const debug = this.debug;
     const preferMSE = this.preferMSE;
-    const canUseNative = this.nativeEl.canPlayType(
-      "application/vnd.apple.mpegurl"
-    );
+    const type = getType(this);
+    const hlsType = type === ExtensionMimeTypeMap.M3U8;
+
+    const canUseNative = !type || this.nativeEl.canPlayType(type);
     const hlsSupported = Hls.isSupported();
 
-    // We should use native playback if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
-    const shouldUseNative = canUseNative && !(preferMSE && hlsSupported);
+    // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
+    const shouldUseNative =
+      !hlsType || (canUseNative && !(preferMSE && hlsSupported));
 
-    // 1. create hls if we should be using it "under the hood"
-    if (!shouldUseNative && hlsSupported) {
+    // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
+    if (hlsType && !shouldUseNative && hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
@@ -233,7 +267,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     }
 
     // 3. Finish any additional setup to load/play the media
-    if (shouldUseNative) {
+    if (canUseNative && shouldUseNative) {
       this.nativeEl.src = this.src;
     } else if (this.__hls) {
       const hls = this.__hls;
@@ -383,6 +417,6 @@ if (!globalThis.customElements.get("mux-video")) {
   globalThis.MuxVideoElement = MuxVideoElement;
 }
 
-export { Hls };
+export { Hls, ExtensionMimeTypeMap as MimeTypes };
 
 export default MuxVideoElement;

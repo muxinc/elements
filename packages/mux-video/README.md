@@ -156,6 +156,52 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 </mux-video>
 ```
 
+### Advanced: type
+
+By default `<mux-video>` will try to figure out the type of media you're trying to play (for example, an HLS/m3u8 media source, an mp4, etc.) based the extension of the file from the `src` attribute's url. This allows `<mux-video>` to determine whether it can/should use an in-code player or native playback. By way of example, the code below has an identifiable "mp4" extension, so `<mux-video>` will rely on native plyaback via the underlying `<video/>` tag.
+
+```html
+<mux-video
+  src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  env-key="mux-data-env-key"
+  metadata-video-title="Big Buck Bunny"
+  metadata-viewer-user-id="user-id-1234"
+  prefer-mse
+  controls
+>
+</mux-video>
+```
+
+Sometimes, however, your `src` URL may not have an identifiable extension. In these cases, we recommend relying on the `type` attribute, similar to the `<source/>` tag's [type attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/source#attr-type). Below is an example of explicitly declaring the MIME type for an HLS/m3u8 media source:
+
+```html
+<mux-video
+  src="https://stream.notmux.com/path/to/an/hls/source/playlist"
+  type="application/vnd.apple.mpegurl"
+  env-key="mux-data-env-key"
+  metadata-video-title="Big Buck Bunny"
+  metadata-viewer-user-id="user-id-1234"
+  prefer-mse
+  controls
+>
+</mux-video>
+```
+
+Or, for convenience, we also support the shorthand `type="hls`:
+
+```html
+<mux-video
+  src="https://stream.notmux.com/path/to/an/hls/source/playlist"
+  type="hls"
+  env-key="mux-data-env-key"
+  metadata-video-title="Big Buck Bunny"
+  metadata-viewer-user-id="user-id-1234"
+  prefer-mse
+  controls
+>
+</mux-video>
+```
+
 ### Advanced: Signed URLs and other playback query params
 
 Mux supports a number of query parameters on HLS playback URLs. Most commonly is the `token=` param [used for signed URLs](https://docs.mux.com/guides/video/secure-video-playback).
