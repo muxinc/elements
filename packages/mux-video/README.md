@@ -37,7 +37,10 @@ require("@mux-elements/mux-video");
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-video@0.1/dist/index.js"></script>
+<script
+  type="module"
+  src="https://unpkg.com/@mux-elements/mux-video@0.1"
+></script>
 ```
 
 ## Features and benefits
@@ -161,6 +164,28 @@ In order to use `token=` -- or any other query params, pass them through with th
 
 ```
 playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?token=jwt-signed-token"
+```
+
+### Advanced: Use with React+TypeScript
+
+Even though we don't (yet!) have our own `React` version of `<mux-video>`, you can still use it in your `React` app. However, if you're also using TypeScript, make sure you add the following TypeScript definitions, since custom elements (like as `<mux-video>`) will not be recognized as [Intrinsic Elements](https://www.typescriptlang.org/docs/handbook/jsx.html#intrinsic-elements):
+
+```typescript
+interface MuxVideoHTMLAttributes<T> extends React.VideoHTMLAttributes<T> {
+  debug?: boolean;
+  autoplay?: boolean;
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "mux-video": React.DetailedHTMLProps<
+        MuxVideoHTMLAttributes<HTMLVideoElement>,
+        HTMLVideoElement
+      >;
+    }
+  }
+}
 ```
 
 # FAQ
