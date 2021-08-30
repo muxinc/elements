@@ -13,8 +13,8 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "dev": "snowpack dev --config snowpack.dev.config.js",
-    "build:snowpack": "snowpack build --config snowpack.prod.config.js",
+    "dev": "snowpack dev --config snowpack.dev.config.cjs",
+    "build:snowpack": "snowpack build --config snowpack.prod.config.cjs",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all build:snowpack build:types"
   },
