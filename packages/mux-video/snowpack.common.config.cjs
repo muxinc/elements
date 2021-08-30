@@ -1,17 +1,14 @@
+const { version: PLAYER_VERSION } = require("./package.json");
+
+// process.env.SNOWPACK_PUBLIC_PLAYER_VERSION = PLAYER_VERSION;
+
 // Snowpack Configuration File
 // See all supported options: https://www.snowpack.dev/reference/configuration
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
-  extends: './snowpack.common.config.js',
   mount: {
-    'src': { url: '/' },
-  },
-  optimize: {
-    entrypoints: ['index.js'],
-    bundle: true,
-    minify: true,
-    target: 'es2019',
+    /* ... */
   },
   plugins: [
     /* ... */
@@ -23,6 +20,9 @@ module.exports = {
     /* ... */
   },
   buildOptions: {
-    out: './dist'
+    /* ... */
+    env: {
+      PLAYER_VERSION,
+    },
   },
 };

@@ -3,7 +3,7 @@
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
-  extends: "./snowpack.common.config.js",
+  extends: "./snowpack.common.config.cjs",
   mount: {
     src: { url: "/dist" },
     examples: { url: "/examples", static: true, resolve: false },
