@@ -192,7 +192,7 @@ declare global {
 
 ### If I'm using Mux, do I have to use this library?
 
-No, you're not. The way Mux delivers HLS video is compliant with the HLS spec. Any video player that supports HLS will work with Mux Video.
+No, you do not. The way Mux delivers HLS video is compliant with the HLS spec. Any video player that supports HLS will work with Mux Video.
 
 ### If I'm not use Mux Video, can I still use this library?
 
