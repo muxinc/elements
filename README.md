@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://https://mux.com/">
+  <a href="https://mux.com/">
     <img src="https://avatars.githubusercontent.com/u/16199997?s=200&v=4" alt="Mux Logo">
     <h1 align="center">&lt;mux-elements/&gt;</h1>
   </a>
