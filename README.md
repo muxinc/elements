@@ -20,7 +20,15 @@
 
 Elements are written as [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) and work with HTML in any web framework.
 
-| Name                   | Description                              |
-| -----------------------| ---------------------------------------- |
-| [mux-video](packages/mux-video) | A Mux-flavored HTML5 video element.      |
-| [mux-audio](packages/mux-audio) | A Mux-flavored HTML5 audio element.      |
+| Name                            | Description                         |
+| ------------------------------- | ----------------------------------- |
+| [mux-video](packages/mux-video) | A Mux-flavored HTML5 video element. |
+| [mux-audio](packages/mux-audio) | A Mux-flavored HTML5 audio element. |
+
+# Contribution
+
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) before making a pull request.
+
+Thank you to all the people who already contributed to `<mux-elements/>`!
+
+![Contributors](https://contrib.rocks/image?repo=muxinc/elements)
