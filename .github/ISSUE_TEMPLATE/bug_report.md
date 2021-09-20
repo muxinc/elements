@@ -1,20 +1,23 @@
 ---
 name: "🐛 Bug Report"
 about: Report a reproducible bug or regression.
-title: 'Bug: '
-labels: 'bug, Status: Unconfirmed'
-
+title: "Bug: "
+labels: "bug, Status: Unconfirmed"
 ---
+
 <!--
-  Thanks for taking the time to file a bug report! Please fill this template out as completely as possible. 
+  Thanks for taking the time to file a bug report! Please fill this template out as completely as possible.
 -->
 
 ### Checklist
-- [] Verified whether your issue exists in the latest version Mux Element(s) release: `npm install @mux/[element_name]` or `yarn @mux/[element_name]`.
+
+- [] Verified whether your issue exists in the latest version Mux Element(s) release: `npm install @mux-elements/[element_name]` or `yarn @mux-elements/[element_name]`.
   - (NOTE: If the issue is not occurring in the latest version, we may not resolve it.)
+- [] Confirmed that this issue hasn't [already been filed](https://github.com/muxinc/elements/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
 
 ### Which Mux Elements/Packages has a bug?
-<!-- 
+
+<!--
   Uncomment all that apply. Also, make sure you add the appropriate Label after creating the issue!
 
 - mux-video
@@ -23,23 +26,26 @@ labels: 'bug, Status: Unconfirmed'
 -->
 
 ### Which browser(s) are you using?
-<!-- 
+
+<!--
   Uncomment all that apply
   (NOTE: Currently, Mux Elements are only officially supported in new versions of the browsers listed above)
-  
+
 - Chrome
 - Safari
 - Firefox
 - Edge ("Edgeium")
 - Chrome Android
 - Safari on iOS
-- Other (list browser name(s), e.g. "Samsung Internet", "Opera"):  
+- Other (list browser name(s), e.g. "Samsung Internet", "Opera"):
 -->
 
 ### Which operating system(s) are you using?
+
 (For example: macOS, Windows, iOS, Android)
 
 ### How are you using Mux Elements?
+
 (For example: npm package, `<script>` tag)
 
 ### Describe the bug
@@ -49,7 +55,6 @@ labels: 'bug, Status: Unconfirmed'
   screenshots if needed. Please test using the latest version of the relevant
   Mux Elements packages to make sure your issue has not already been fixed.
 -->
-
 
 ## Steps To Reproduce
 
@@ -72,6 +77,5 @@ Link to code example:
 -->
 
 ## The current behavior
-
 
 ## The expected behavior
