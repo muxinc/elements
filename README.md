@@ -8,14 +8,6 @@
   </p>
 </p>
 
-<!--
-<p align="center">
-    <a href="https://npmcharts.com/compare/mux-embed?minimal=true"><img src="https://img.shields.io/npm/dm/mux-embed.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/mux-embed"><img src="https://img.shields.io/npm/v/mux-embed.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/mux-embed"><img src="https://img.shields.io/npm/l/mux-embed.svg?sanitize=true" alt="License"></a>
-</p>
--->
-
 # Elements
 
 Elements are written as [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) and work with HTML in any web framework.
