@@ -19,7 +19,7 @@
     "build": "npm-run-all build:snowpack build:types"
   },
   "dependencies": {
-    "hls.js": "^1.0.9",
+    "hls.js": "1.0.11",
     "mux-embed": "^4.1.1"
   }
 }
