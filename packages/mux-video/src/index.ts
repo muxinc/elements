@@ -13,9 +13,11 @@ type AttributeNames = {
   METADATA_VIDEO_ID: "metadata-video-id";
   METADATA_VIDEO_TITLE: "metadata-video-title";
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
+  BEACON_DOMAIN: "beacon-domain";
   PLAYBACK_ID: "playback-id";
   PREFER_MSE: "prefer-mse";
   TYPE: "type";
+  STREAM_TYPE: "stream-type";
 };
 
 const Attributes: AttributeNames = {
@@ -27,7 +29,9 @@ const Attributes: AttributeNames = {
   METADATA_VIDEO_ID: "metadata-video-id",
   METADATA_VIDEO_TITLE: "metadata-video-title",
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
+  BEACON_DOMAIN: "beacon-domain",
   TYPE: "type",
+  STREAM_TYPE: "stream-type",
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -109,6 +113,29 @@ const getType = (mediaEl: MuxVideoElement) => {
   return inferMimeTypeFromURL(src);
 };
 
+type StreamTypes = {
+  VOD: "vod";
+  LIVE: "live";
+  LL_LIVE: "ll-live";
+};
+
+const StreamTypes: StreamTypes = {
+  VOD: "vod",
+  LIVE: "live",
+  LL_LIVE: "ll-live",
+};
+
+type ValueOf<T> = T[keyof T];
+
+const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
+  if (streamType === StreamTypes.LL_LIVE) {
+    return {
+      maxFragLookUpTolerance: 0.001,
+    };
+  }
+  return {};
+};
+
 class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   static get observedAttributes() {
     return [
@@ -169,6 +196,40 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     }
   }
 
+  get beaconDomain(): string | undefined {
+    return this.getAttribute(Attributes.BEACON_DOMAIN) ?? undefined;
+  }
+
+  set beaconDomain(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.beaconDomain) return;
+
+    if (val) {
+      this.setAttribute(Attributes.BEACON_DOMAIN, val);
+    } else {
+      this.removeAttribute(Attributes.BEACON_DOMAIN);
+    }
+  }
+
+  get streamType(): ValueOf<StreamTypes> | undefined {
+    // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
+    return (
+      (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ??
+      undefined
+    );
+  }
+
+  set streamType(val: ValueOf<StreamTypes> | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.streamType) return;
+
+    if (val) {
+      this.setAttribute(Attributes.STREAM_TYPE, val);
+    } else {
+      this.removeAttribute(Attributes.STREAM_TYPE);
+    }
+  }
+
   /** @TODO Followup: naming convention: all lower (common per HTMLElement props) vs. camel (common per JS convention) (CJP) */
   get preferMSE(): boolean {
     return this.getAttribute(Attributes.PREFER_MSE) != null;
@@ -220,10 +281,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
     // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
     if (hlsType && !shouldUseNative && hlsSupported) {
+      const streamTypeConfig = getStreamTypeConfig(this.streamType);
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
         debug,
+        ...streamTypeConfig,
       });
 
       this.__hls = hls;
@@ -234,6 +297,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       const player_init_time = this.__muxPlayerInitTime;
       const metadataObj = this.__metadata;
       const hlsjs = this.__hls; // an instance of hls.js or undefined
+      const beaconDomain = this.beaconDomain;
       const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
       const highPriorityMetadata = getHighPriorityMetadata(this);
       /**
@@ -248,6 +312,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
       mux.monitor(this.nativeEl, {
         debug,
+        beaconDomain,
         hlsjs,
         Hls: hlsjs ? Hls : undefined,
         data: {
