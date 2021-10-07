@@ -3733,15 +3733,10 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mux-embed@4.2.1-beta.1:
-  version "4.2.1-beta.1"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.2.1-beta.1.tgz#8823494351f73c8088d817316f5ef4cf1e35e6df"
-  integrity sha512-GU3c2FFPswih2jS+hBc0qwfm9CKHr63AVarKmRg7lCEJVMgVqUKnYrA2tsaYvA0YR0c2OG54lWzd2M++DLcswA==
-
-mux-embed@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.1.1.tgz#d61c297c6043c59793ec1837b778b294d60a66cd"
-  integrity sha512-AUjuWWRrKJ8byyd4vrZvLrA8yQGV3eoZ70u9n0HvA8AdY67xt+YBEAQbh5TYHEKfXLf1WpZlB9UScjgegUkrbQ==
+mux-embed@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.2.1.tgz#d7d82e9a82c5812161181fa0b713e7cc1bf1a106"
+  integrity sha512-Rr7CyapigWSGtKax7sK7s8tSirwpLAC1pgKIsJOmHd3gzgsZVbVC4JgyYBtEnIwULymOdDPoPfwLuNsMv+/SaQ==
 
 nanoid@^3.1.23:
   version "3.1.25"

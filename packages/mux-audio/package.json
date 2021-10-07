@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "hls.js": "^1.0.9",
-    "mux-embed": "^4.1.1"
+    "mux-embed": "^4.2.1"
   }
 }
