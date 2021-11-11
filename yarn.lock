@@ -2782,11 +2782,6 @@ hls.js@1.0.11:
   resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.0.11.tgz#8bc4adf7a80aaaa0378e5e3ad417bb9bb9bea3eb"
   integrity sha512-KY6WUwtp7v+L4ec5hX6waNB3N0HOGkWfp3r7XcAZtUc6MT6TzbTsH5wYjQTQVQXQ6HVrDGqF2U5ovc+/R4E3lQ==
 
-hls.js@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.0.9.tgz#a3b92a0a2a4cdb3076c09639a8e06463b3a189f5"
-  integrity sha512-uUfvc53QawXMH8fRd2IGPEtWlujsiX/Xj8oW/tx+T8yY1kHRpI8o1brsLRGJMivAyNBtdB/3ZV4fTdZ+DAiCEQ==
-
 hosted-git-info@^2.1.4:
   version "2.8.9"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
@@ -3840,11 +3835,6 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
-
-mux-embed@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.2.1.tgz#d7d82e9a82c5812161181fa0b713e7cc1bf1a106"
-  integrity sha512-Rr7CyapigWSGtKax7sK7s8tSirwpLAC1pgKIsJOmHd3gzgsZVbVC4JgyYBtEnIwULymOdDPoPfwLuNsMv+/SaQ==
 
 mux-embed@^4.2.3:
   version "4.2.3"
