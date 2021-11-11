@@ -2,6 +2,7 @@ import CustomVideoElement from "./CustomVideoElement.js";
 import mux, { Options, HighPriorityMetadata } from "mux-embed";
 
 import Hls from "hls.js";
+import { getPlayerVersion } from "./env.js";
 
 type Metadata = Partial<Options["data"]>;
 
@@ -53,19 +54,6 @@ const toMuxVideoURL = (playbackId: string | null) => {
 };
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
-
-const getPlaybackIdAsVideoIdMetadata = (
-  mediaEl: MuxVideoElement
-): Partial<Pick<HighPriorityMetadata, "video_id">> => {
-  const playbackIdWithOptionalParams = mediaEl.getAttribute(
-    Attributes.PLAYBACK_ID
-  );
-  if (!playbackIdWithOptionalParams) return {};
-  const [playbackId] = toPlaybackIdParts(playbackIdWithOptionalParams);
-  if (!playbackId) return {};
-
-  return { video_id: playbackId };
-};
 
 const getHighPriorityMetadata = (
   mediaEl: MuxVideoElement
@@ -250,10 +238,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   set metadata(val: Readonly<Metadata> | undefined) {
     this.__metadata = val ?? {};
     if (!!this.mux) {
-      /** @TODO Link to docs for a more detailed discussion (CJP) */
-      console.info(
-        "Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src."
-      );
       this.mux.emit("hb", this.__metadata);
     }
   }
@@ -298,7 +282,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       const metadataObj = this.__metadata;
       const hlsjs = this.__hls; // an instance of hls.js or undefined
       const beaconDomain = this.beaconDomain;
-      const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
       const highPriorityMetadata = getHighPriorityMetadata(this);
       /**
        * @TODO Use documented version if/when resolved (commented out below) (CJP)
@@ -306,9 +289,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
        * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
        */
       // @ts-ignore
-      const player_version = import.meta.env
-        .SNOWPACK_PUBLIC_PLAYER_VERSION as string;
-      // const player_version = __SNOWPACK_ENV__.PLAYER_VERSION;
+      const player_version = getPlayerVersion();
 
       mux.monitor(this.nativeEl, {
         debug,
@@ -321,8 +302,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
           player_name: "mux-video", // default player name for "mux-video"
           player_version,
           player_init_time,
-          // Default to playback-id as video_id (if available)
-          ...playbackIdMetadata,
           // Use any metadata passed in programmatically (which may override the defaults above)
           ...metadataObj,
           // Use any high priority metadata passed in via attributes (which may override any of the above)

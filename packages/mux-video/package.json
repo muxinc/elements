@@ -14,12 +14,16 @@
   "license": "MIT",
   "scripts": {
     "dev": "snowpack dev --config snowpack.dev.config.cjs",
-    "build:snowpack": "snowpack build --config snowpack.prod.config.cjs",
+    "build:esm": "snowpack build --config snowpack.prod.config.cjs",
+    "build:cjs": "esbuild src/index.ts --bundle --minify --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build": "npm-run-all build:snowpack build:types"
+    "build": "npm-run-all build:esm build:types build:cjs"
   },
   "dependencies": {
     "hls.js": "1.0.11",
     "mux-embed": "^4.2.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.13.13"
   }
 }
