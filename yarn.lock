@@ -3846,6 +3846,11 @@ mux-embed@^4.2.1:
   resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.2.1.tgz#d7d82e9a82c5812161181fa0b713e7cc1bf1a106"
   integrity sha512-Rr7CyapigWSGtKax7sK7s8tSirwpLAC1pgKIsJOmHd3gzgsZVbVC4JgyYBtEnIwULymOdDPoPfwLuNsMv+/SaQ==
 
+mux-embed@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.2.3.tgz#b7574d3f53e124bfa4c8eb51ef1f6edc5416ce8c"
+  integrity sha512-GZMKjm8nbzwYAtzqrNkLK9oimuNsxN3fJOB81BVUArlEdC7aQGZOL1eG/9q6iPrDwFjDjD++muHIuLXaujoCgA==
+
 nanoid@^3.1.23:
   version "3.1.25"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.25.tgz#09ca32747c0e543f0e1814b7d3793477f9c8e152"
