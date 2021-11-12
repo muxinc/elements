@@ -3,6 +3,7 @@ import CustomAudioElement from "./CustomAudioElement";
 import mux, { Options, HighPriorityMetadata } from "mux-embed";
 
 import Hls from "hls.js";
+import { getPlayerVersion } from "./env";
 
 type Metadata = Partial<Options["data"]>;
 
@@ -242,10 +243,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
        * @see https://github.com/snowpackjs/snowpack/issues/3621
        * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
        */
-      // @ts-ignore
-      const player_version = import.meta.env
-        .SNOWPACK_PUBLIC_PLAYER_VERSION as string;
-      // const player_version = __SNOWPACK_ENV__.PLAYER_VERSION;
+      const player_version = getPlayerVersion();
 
       mux.monitor(this.nativeEl, {
         debug,

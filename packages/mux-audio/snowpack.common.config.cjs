@@ -21,8 +21,8 @@ module.exports = {
   },
   buildOptions: {
     /* ... */
-    env: {
-      PLAYER_VERSION,
-    },
+  },
+  env: {
+    PLAYER_VERSION,
   },
 };
