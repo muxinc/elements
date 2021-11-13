@@ -88,7 +88,7 @@ Attributes:
 
 - `metadata-video-title`: This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
-- `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database. If not provided then the `playback-id` will be used for this value.
+- `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
 - `stream-type`: Enum value: one of `"on-demand"`, `"live"` (HLS live stream), `"ll-live"` (low latency live). Not strictly required, but preffered so that `<mux-video />` can make optimizations based on the type of stream.
 
 This is the bare bones of metadata that you should provide to the `<mux-video>` element.
