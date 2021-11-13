@@ -102,13 +102,13 @@ const getType = (mediaEl: MuxVideoElement) => {
 };
 
 type StreamTypes = {
-  VOD: "vod";
+  VOD: "on-demand";
   LIVE: "live";
   LL_LIVE: "ll-live";
 };
 
 const StreamTypes: StreamTypes = {
-  VOD: "vod",
+  VOD: "on-demand",
   LIVE: "live",
   LL_LIVE: "ll-live",
 };
