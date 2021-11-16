@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-video",
-  "version": "0.1.6-beta.0",
+  "version": "0.1.6-beta.1",
   "type": "commonjs",
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "dist/index.js",
@@ -14,10 +14,11 @@
   "license": "MIT",
   "scripts": {
     "dev": "snowpack dev --config snowpack.dev.config.cjs",
-    "build:esm": "esbuild src/index.ts --target=es2020 --bundle --minify --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:iife": "esbuild src/index.ts --target=es2020 --bundle --minify --sourcemap --format=iife --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm": "esbuild src/index.ts --target=es2020 --bundle --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:iife": "esbuild src/index.ts --target=es2020 --bundle --sourcemap --format=iife --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.ts --target=es2020 --bundle --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build": "npm-run-all build:esm build:iife build:types"
+    "build": "npm-run-all build:esm build:iife build:cjs build:types"
   },
   "dependencies": {
     "hls.js": "1.0.11",
