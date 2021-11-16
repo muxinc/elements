@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-audio",
-  "version": "0.1.6-beta.3",
+  "version": "0.1.4",
   "description": "A custom mux audio element for the browser that Just Works™",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
