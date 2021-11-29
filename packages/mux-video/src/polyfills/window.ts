@@ -1,6 +1,8 @@
 if (!globalThis.customElements) {
   globalThis.customElements = {
-    get() {},
+    get(_name: string) {
+      return undefined;
+    },
     define(
       _name: string,
       _constructor: CustomElementConstructor,
@@ -8,7 +10,7 @@ if (!globalThis.customElements) {
     ) {},
     upgrade(_root: Node) {},
     whenDefined(_name: string) {
-      return Promise.resolve();
+      return Promise.resolve(globalThis.HTMLElement);
     },
   };
 }
