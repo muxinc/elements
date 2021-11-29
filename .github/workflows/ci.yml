@@ -15,3 +15,4 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: cd packages/mux-video && yarn install && yarn build
       - run: cd packages/mux-audio && yarn install && yarn build
+      - run: cd packages/mux-video-react && yarn install && yarn build
