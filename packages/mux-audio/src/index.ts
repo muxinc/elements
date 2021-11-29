@@ -1,6 +1,7 @@
 import "./polyfills/window";
 import CustomAudioElement from "./CustomAudioElement";
-import mux, { Options, HighPriorityMetadata } from "mux-embed";
+import * as mux from "mux-embed";
+import { Options, HighPriorityMetadata } from "mux-embed";
 
 import Hls from "hls.js";
 import { getPlayerVersion } from "./env";
@@ -140,10 +141,10 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
     // Use the attribute value as the source of truth.
     // No need to store it in two places.
     // This avoids needing a to read the attribute initially and update the src.
-    return this.getAttribute("src");
+    return this.getAttribute("src") as string;
   }
 
-  set src(val) {
+  set src(val: string) {
     // If being set by attributeChangedCallback,
     // dont' cause an infinite loop
     if (val === this.src) return;
@@ -338,7 +339,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
-        this.src = toMuxVideoURL(newValue);
+        this.src = toMuxVideoURL(newValue) as string;
         break;
       case Attributes.DEBUG:
         const debug = this.debug;
