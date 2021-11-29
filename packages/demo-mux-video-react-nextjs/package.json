@@ -1,0 +1,21 @@
+{
+  "name": "demo-mux-video-react-nextjs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@mux-elements/mux-video-react": "*",
+    "next": "^12.0.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11"
+  }
+}

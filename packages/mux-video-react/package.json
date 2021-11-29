@@ -1,0 +1,52 @@
+{
+  "name": "@mux-elements/mux-video-react",
+  "version": "0.1.0",
+  "type": "commonjs",
+  "description": "A custom mux video element for React that Just Works™",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muxinc/elements",
+    "directory": "packages/mux-video"
+  },
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "snowpack dev --config snowpack.dev.config.cjs",
+    "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --format=cjs --outdir=dist --external:react --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build": "npm-run-all build:cjs build:types"
+  },
+  "peerDependencies": {
+    "@types/react": "^16.8.6 || ^17.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "peerDependenciesMeta": {
+    "@types/prop-types": {
+      "optional": true
+    },
+    "@types/react": {
+      "optional": true
+    },
+    "@types/react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "hls.js": "1.0.11",
+    "mux-embed": "^4.2.3"
+  },
+  "devDependencies": {
+    "@types/prop-types": "^15.7.4",
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "@web/dev-server-esbuild": "^0.2.16",
+    "esbuild": "^0.13.13",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
