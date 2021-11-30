@@ -42,7 +42,6 @@ const MimeTypeShorthandMap: MimeTypeShorthandMap = {
 type MuxMediaPropTypes = {
   envKey: Options["data"]["env_key"];
   debug: Options["debug"] & Hls["config"]["debug"];
-  metadataUrl: string;
   metadata: Options["data"];
   beaconDomain: Options["beaconDomain"];
   playbackId: string;
@@ -274,7 +273,6 @@ const MuxVideo = React.forwardRef<
   const {
     envKey,
     debug,
-    metadataUrl,
     beaconDomain,
     playbackId,
     preferMse,
@@ -331,7 +329,6 @@ const allTypes = [
 MuxVideo.propTypes = {
   envKey: PropTypes.string,
   debug: PropTypes.bool,
-  metadataUrl: PropTypes.string,
   // Improve this by adding a full shape() definition for all metadata props
   // metadata: PropTypes.shape({}),
   metadata: PropTypes.any,
