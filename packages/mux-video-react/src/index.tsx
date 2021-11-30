@@ -1,4 +1,4 @@
-import mux, { Options, HighPriorityMetadata } from "mux-embed";
+import mux, { Options } from "mux-embed";
 
 import Hls from "hls.js";
 import { getPlayerVersion } from "./env";
@@ -43,9 +43,6 @@ type MuxMediaPropTypes = {
   envKey: Options["data"]["env_key"];
   debug: Options["debug"] & Hls["config"]["debug"];
   metadataUrl: string;
-  metadataVideoId: Options["data"]["video_id"];
-  metadataVideoTitle: Options["data"]["video_title"];
-  metadataViewerUserId: Options["data"]["viewer_user_id"];
   metadata: Options["data"];
   beaconDomain: Options["beaconDomain"];
   playbackId: string;
@@ -86,22 +83,6 @@ const toMuxVideoURL = (playbackId?: string) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ""] = toPlaybackIdParts(playbackId);
   return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
-};
-
-const getHighPriorityMetadata = (
-  props: Partial<MuxVideoProps>
-): Partial<HighPriorityMetadata> => {
-  const video_title = props.metadataVideoTitle;
-  const viewer_id = props.metadataViewerUserId;
-  const video_id = props.metadataVideoId;
-  const videoTitleObj = video_title ? { video_title } : {};
-  const viewerIdObj = viewer_id ? { viewer_id } : {};
-  const videoIdObj = video_id ? { video_id } : {};
-  return {
-    ...videoTitleObj,
-    ...viewerIdObj,
-    ...videoIdObj,
-  };
 };
 
 const inferMimeTypeFromURL = (url: string) => {
@@ -200,7 +181,6 @@ const setupMux = (
   if (env_key && mediaEl) {
     const player_init_time = props.playerInitTime;
     const { beaconDomain, metadata, debug } = props;
-    const highPriorityMetadata = getHighPriorityMetadata(props);
     /**
      * @TODO Use documented version if/when resolved (commented out below) (CJP)
      * @see https://github.com/snowpackjs/snowpack/issues/3621
@@ -222,8 +202,6 @@ const setupMux = (
         player_init_time,
         // Use any metadata passed in programmatically (which may override the defaults above)
         ...metadata,
-        // Use any high priority metadata passed in via attributes (which may override any of the above)
-        ...highPriorityMetadata,
       },
     });
   }
@@ -297,9 +275,6 @@ const MuxVideo = React.forwardRef<
     envKey,
     debug,
     metadataUrl,
-    metadataVideoId,
-    metadataVideoTitle,
-    metadataViewerUserId,
     beaconDomain,
     playbackId,
     preferMse,
@@ -357,9 +332,6 @@ MuxVideo.propTypes = {
   envKey: PropTypes.string,
   debug: PropTypes.bool,
   metadataUrl: PropTypes.string,
-  metadataVideoId: PropTypes.string,
-  metadataVideoTitle: PropTypes.string,
-  metadataViewerUserId: PropTypes.string,
   // Improve this by adding a full shape() definition for all metadata props
   // metadata: PropTypes.shape({}),
   metadata: PropTypes.any,
