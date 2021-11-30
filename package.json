@@ -22,7 +22,8 @@
     "typescript": "^4.3.5"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "scripts": {
     "prepare": "husky install"

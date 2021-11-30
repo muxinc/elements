@@ -13,7 +13,8 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "dev": "snowpack dev --config snowpack.dev.config.cjs",
+    "dev:cjs": "yarn build:cjs --watch",
+    "dev": "npm-run-all dev:cjs build:types",
     "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --format=cjs --outdir=dist --external:react --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all build:cjs build:types"
