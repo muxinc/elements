@@ -4,18 +4,19 @@
     <h1 align="center">&lt;mux-elements/&gt;</h1>
   </a>
   <p align="center">
-    Custom elements (Web Components) for working with media in the browser that Just Work™
+    Custom elements for working with media in the browser that Just Work™
   </p>
 </p>
 
 # Elements
 
-Elements are written as [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) and work with HTML in any web framework.
+Elements are written to make it easy to work in a variety of web frameworks. If we don't (yet) have a framework-specific "flavor" of an element, we always provide a pure [Web Component](https://developer.mozilla.org/en-US/docs/Web/Web_Components) version that work with HTML and can be used by most modern web frameworks and web application environments.
 
-| Name                            | Description                         |
-| ------------------------------- | ----------------------------------- |
-| [mux-video](packages/mux-video) | A Mux-flavored HTML5 video element. |
-| [mux-audio](packages/mux-audio) | A Mux-flavored HTML5 audio element. |
+| Name                                        | Description                          | Framework     |
+| ------------------------------------------- | ------------------------------------ | ------------- |
+| [mux-video](packages/mux-video)             | A Mux-flavored HTML5 video element   | Web Component |
+| [mux-audio](packages/mux-audio)             | A Mux-flavored HTML5 audio element   | Web Component |
+| [mux-video-react](packages/mux-video-react) | A Mux-flavored React video component | React         |
 
 # Contribution
 
