@@ -1,0 +1,32 @@
+{
+  "name": "@mux-elements/playback-core",
+  "version": "0.1.6",
+  "type": "commonjs",
+  "description": "Core library for media playback in the browser shared by mux elements",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muxinc/elements",
+    "directory": "packages/playback-core"
+  },
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "dev:cjs": "yarn build:cjs --watch",
+    "dev": "npm-run-all build:types build:copy-dts dev:cjs",
+    "build:cjs": "esbuild src/index.ts --target=es2019 --minify --bundle --sourcemap --format=cjs --outdir=dist --external:mux-embed --external:hls.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build:copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" ./dist/types",
+    "build": "npm-run-all build:cjs build:types build:copy-dts"
+  },
+  "dependencies": {
+    "hls.js": "1.0.11",
+    "mux-embed": "^4.2.3"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "esbuild": "^0.13.13",
+    "typescript": "^4.5.2"
+  }
+}
