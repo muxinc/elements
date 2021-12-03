@@ -1,13 +1,21 @@
 import CustomVideoElement from "./CustomVideoElement";
 import * as mux from "mux-embed";
-import { Options, HighPriorityMetadata } from "mux-embed";
+import { Options } from "mux-embed";
 
 import Hls from "hls.js";
-import { getPlayerVersion } from "./env.js";
+import {
+  initialize,
+  MuxVideoProps,
+  StreamTypes,
+  ValueOf,
+  ExtensionMimeTypeMap,
+  toMuxVideoURL,
+  teardown,
+} from "./core";
 
 type Metadata = Partial<Options["data"]>;
 
-/** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
+// /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
   ENV_KEY: "env-key";
   DEBUG: "debug";
@@ -38,94 +46,7 @@ const Attributes: AttributeNames = {
 
 const AttributeNameValues = Object.values(Attributes);
 
-const toPlaybackIdParts = (
-  playbackIdWithOptionalParams: string
-): [string, string?] => {
-  const qIndex = playbackIdWithOptionalParams.indexOf("?");
-  if (qIndex < 0) return [playbackIdWithOptionalParams];
-  const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
-  const queryPart = playbackIdWithOptionalParams.slice(qIndex);
-  return [idPart, queryPart];
-};
-
-const toMuxVideoURL = (playbackId: string | null) => {
-  if (!playbackId) return null;
-  const [idPart, queryPart = ""] = toPlaybackIdParts(playbackId);
-  return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
-};
-
-type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
-
-const getHighPriorityMetadata = (
-  mediaEl: MuxVideoElement
-): Partial<HighPriorityMetadata> => {
-  const video_title = mediaEl.getAttribute(Attributes.METADATA_VIDEO_TITLE);
-  const viewer_id = mediaEl.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
-  const video_id = mediaEl.getAttribute(Attributes.METADATA_VIDEO_ID);
-  const videoTitleObj = video_title ? { video_title } : {};
-  const viewerIdObj = viewer_id ? { viewer_id } : {};
-  const videoIdObj = video_id ? { video_id } : {};
-  return {
-    ...videoTitleObj,
-    ...viewerIdObj,
-    ...videoIdObj,
-  };
-};
-
-const ExtensionMimeTypeMap: { [k: string]: string } = {
-  M3U8: "application/vnd.apple.mpegurl",
-};
-
-const MimeTypeShorthandMap: { [k: string]: string } = {
-  HLS: ExtensionMimeTypeMap.M3U8,
-};
-
-const inferMimeTypeFromURL = (url: string) => {
-  let pathname = "";
-  try {
-    pathname = new URL(url).pathname;
-  } catch (e) {
-    console.error("invalid url");
-  }
-
-  const extDelimIdx = pathname.lastIndexOf(".");
-  if (extDelimIdx < 0) return "";
-  const ext = pathname.slice(extDelimIdx + 1);
-  return ExtensionMimeTypeMap[ext.toUpperCase()] ?? "";
-};
-
-const getType = (mediaEl: MuxVideoElement) => {
-  const type = mediaEl.getAttribute(Attributes.TYPE);
-  if (type) return MimeTypeShorthandMap[type.toUpperCase()] ?? type;
-  const src = mediaEl.getAttribute("src");
-  if (!src) return "";
-  return inferMimeTypeFromURL(src);
-};
-
-type StreamTypes = {
-  VOD: "on-demand";
-  LIVE: "live";
-  LL_LIVE: "ll-live";
-};
-
-const StreamTypes: StreamTypes = {
-  VOD: "on-demand",
-  LIVE: "live",
-  LL_LIVE: "ll-live",
-};
-
-type ValueOf<T> = T[keyof T];
-
-const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
-  if (streamType === StreamTypes.LL_LIVE) {
-    return {
-      maxFragLookUpTolerance: 0.001,
-    };
-  }
-  return {};
-};
-
-class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
+class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> {
   static get observedAttributes() {
     return [
       ...AttributeNameValues,
@@ -245,122 +166,17 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
   /** @TODO Refactor as an independent function (CJP) */
   load() {
-    /** @TODO Add custom errors + error codes */
-    if (!this.src) {
-      console.error("DONT DO THIS");
-      return;
-    }
-
-    const env_key = this.getAttribute(Attributes.ENV_KEY);
-    const debug = this.debug;
-    const preferMSE = this.preferMSE;
-    const type = getType(this);
-    const hlsType = type === ExtensionMimeTypeMap.M3U8;
-
-    const canUseNative = !type || this.nativeEl.canPlayType(type);
-    const hlsSupported = Hls.isSupported();
-
-    // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
-    const shouldUseNative =
-      !hlsType || (canUseNative && !(preferMSE && hlsSupported));
-
-    // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
-    if (hlsType && !shouldUseNative && hlsSupported) {
-      const streamTypeConfig = getStreamTypeConfig(this.streamType);
-      const hls = new Hls({
-        // Kind of like preload metadata, but causes spinner.
-        // autoStartLoad: false,
-        debug,
-        ...streamTypeConfig,
-      });
-
-      this.__hls = hls;
-    }
-
-    // 2. Start monitoring for mux data before we do anything else
-    if (env_key) {
-      const player_init_time = this.__muxPlayerInitTime;
-      const metadataObj = this.__metadata;
-      const hlsjs = this.__hls; // an instance of hls.js or undefined
-      const beaconDomain = this.beaconDomain;
-      const highPriorityMetadata = getHighPriorityMetadata(this);
-      /**
-       * @TODO Use documented version if/when resolved (commented out below) (CJP)
-       * @see https://github.com/snowpackjs/snowpack/issues/3621
-       * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
-       */
-      // @ts-ignore
-      const player_version = getPlayerVersion();
-
-      mux.monitor(this.nativeEl, {
-        debug,
-        beaconDomain,
-        hlsjs,
-        Hls: hlsjs ? Hls : undefined,
-        data: {
-          env_key, // required
-          // Metadata fields
-          player_name: "mux-video", // default player name for "mux-video"
-          player_version,
-          player_init_time,
-          // Use any metadata passed in programmatically (which may override the defaults above)
-          ...metadataObj,
-          // Use any high priority metadata passed in via attributes (which may override any of the above)
-          ...highPriorityMetadata,
-        },
-      });
-    }
-
-    // 3. Finish any additional setup to load/play the media
-    if (canUseNative && shouldUseNative) {
-      this.nativeEl.src = this.src;
-    } else if (this.__hls) {
-      const hls = this.__hls;
-
-      hls.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              // try to recover network error
-              console.error("fatal network error encountered, try to recover");
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              console.error("fatal media error encountered, try to recover");
-              hls.recoverMediaError();
-              break;
-            default:
-              // cannot recover
-              console.error(
-                "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
-              );
-              hls.destroy();
-              break;
-          }
-        }
-      });
-
-      hls.loadSource(this.src);
-      hls.attachMedia(this.nativeEl);
-    } else {
-      console.error(
-        "It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
-      );
-      return;
-    }
+    const nextHlsInstance = initialize(
+      this as Partial<MuxVideoProps>,
+      this.nativeEl,
+      this.__hls
+    );
+    this.__hls = nextHlsInstance;
   }
 
   unload() {
-    // NOTE: I believe we cannot reliably "recycle" hls player instances, but should confirm at least for optimization reasons.
-    if (this.__hls) {
-      this.__hls.detachMedia();
-      this.__hls.destroy();
-      this.__hls = undefined;
-    }
-    if (this.nativeEl.mux) {
-      this.nativeEl.mux.destroy();
-      delete this.nativeEl.mux;
-    }
+    teardown(this.nativeEl, this.__hls);
+    this.__hls = undefined;
   }
 
   // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
@@ -395,7 +211,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
-        this.src = toMuxVideoURL(newValue) as string;
+        this.src = toMuxVideoURL(newValue ?? undefined) as string;
         break;
       case Attributes.DEBUG:
         const debug = this.debug;
