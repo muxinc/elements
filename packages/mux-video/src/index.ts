@@ -11,11 +11,11 @@ import {
   ExtensionMimeTypeMap,
   toMuxVideoURL,
   teardown,
-} from "./core";
+} from "@mux-elements/playback-core";
 
 type Metadata = Partial<Options["data"]>;
 
-// /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
+/** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
   ENV_KEY: "env-key";
   DEBUG: "debug";
@@ -46,7 +46,10 @@ const Attributes: AttributeNames = {
 
 const AttributeNameValues = Object.values(Attributes);
 
-class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> {
+class MuxVideoElement
+  extends CustomVideoElement<HTMLVideoElement>
+  implements Partial<MuxVideoProps>
+{
   static get observedAttributes() {
     return [
       ...AttributeNameValues,
