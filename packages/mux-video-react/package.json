@@ -14,10 +14,11 @@
   "license": "MIT",
   "scripts": {
     "dev:cjs": "yarn build:cjs --watch",
-    "dev": "npm-run-all dev:cjs build:types",
+    "dev": "npm-run-all build:types build:copy-dts dev:cjs",
     "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --format=cjs --outdir=dist --external:react --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build": "npm-run-all build:cjs build:types"
+    "build:copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" ./dist/types",
+    "build": "npm-run-all build:cjs build:types build:copy-dts"
   },
   "peerDependencies": {
     "@types/react": "^16.8.6 || ^17.0.0",
@@ -33,6 +34,7 @@
     }
   },
   "dependencies": {
+    "@mux-elements/playback-core": "*",
     "hls.js": "1.0.11",
     "mux-embed": "^4.2.3",
     "prop-types": "^15.7.2"
@@ -42,6 +44,7 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@web/dev-server-esbuild": "^0.2.16",
+    "copyfiles": "^2.4.1",
     "esbuild": "^0.13.13",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"

@@ -8,7 +8,7 @@ import {
   MuxVideoProps,
   StreamTypes,
   toMuxVideoURL,
-} from "./core";
+} from "@mux-elements/playback-core";
 
 export type Props = React.DetailedHTMLProps<
   React.VideoHTMLAttributes<HTMLVideoElement>,
