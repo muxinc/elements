@@ -1,7 +1,7 @@
 /** @TODO Add type defs to mux-embed directly */
 declare module "mux-embed" {
   import Hls from "hls.js";
-  /** @TODO Add better type def for options */
+
   export type RequiredMetadata = {
     env_key: string;
   };
