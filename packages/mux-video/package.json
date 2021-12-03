@@ -22,11 +22,13 @@
     "build": "npm-run-all build:esm build:iife build:cjs build:types build:copy-dts"
   },
   "dependencies": {
+    "@mux-elements/playback-core": "*",
     "hls.js": "1.0.11",
     "mux-embed": "^4.2.3"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
-    "esbuild": "^0.13.13"
+    "esbuild": "^0.13.13",
+    "typescript": "^4.5.2"
   }
 }

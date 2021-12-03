@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Async play() for autoplay &lt;mux-video/&gt; example</title>
+    <style>
+      mux-video {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <mux-video
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      metadata-video-id="video-id-12345"
+      metadata-video-title="Star Wars: Episode 3"
+      metadata-viewer-user-id="user-id-6789"
+      env-key="mux-data-env-key"
+      stream-type="vod"
+      controls
+      muted
+    >
+    </mux-video>
+    <script type="module">
+      setTimeout(() => {
+        import("../dist/index.js");
+      }, 5000);
+      customElements.whenDefined("mux-video").then(() => {
+        document.querySelector("mux-video").play();
+      });
+    </script>
+  </body>
+</html>
