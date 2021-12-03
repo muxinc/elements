@@ -26,6 +26,7 @@
     "examples/*"
   ],
   "scripts": {
+    "build": "lerna run build",
     "prepare": "husky install"
   }
 }
