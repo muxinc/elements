@@ -21,6 +21,7 @@
     "build": "npm-run-all build:esm build:iife build:cjs build:types build:copy-dts"
   },
   "dependencies": {
+    "@mux-elements/playback-core": "*",
     "hls.js": "1.0.11",
     "mux-embed": "^4.2.3"
   },
