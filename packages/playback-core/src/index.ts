@@ -108,7 +108,9 @@ export const inferMimeTypeFromURL = (url: string) => {
     : "";
 };
 
-export const getType = (props: Partial<MuxVideoProps>) => {
+export const getType = (
+  props: Partial<Pick<MuxVideoProps, "type" | "src">>
+) => {
   const type = props.type;
 
   if (type) {
@@ -135,7 +137,10 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
-export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
+export const teardown = (
+  mediaEl?: Pick<HTMLMediaElement, "mux"> | null,
+  hls?: Pick<Hls, "detachMedia" | "destroy">
+) => {
   if (hls) {
     hls.detachMedia();
     hls.destroy();
@@ -147,10 +152,12 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
 };
 
 export const setupHls = (
-  props: Partial<MuxVideoProps>,
-  mediaEl?: HTMLMediaElement | null
+  props: Partial<
+    Pick<MuxVideoProps, "debug" | "preferMse" | "streamType" | "type" | "src">
+  >,
+  mediaEl?: Pick<HTMLMediaElement, "canPlayType"> | null
 ) => {
-  const { debug, preferMse } = props;
+  const { debug, preferMse, streamType } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
 
@@ -163,7 +170,7 @@ export const setupHls = (
 
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
   if (hlsType && !shouldUseNative && hlsSupported) {
-    const streamTypeConfig = getStreamTypeConfig(props.streamType);
+    const streamTypeConfig = getStreamTypeConfig(streamType);
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
@@ -177,14 +184,23 @@ export const setupHls = (
 };
 
 export const setupMux = (
-  props: Partial<MuxVideoProps>,
+  props: Partial<
+    Pick<
+      MuxVideoProps,
+      "envKey" | "playerInitTime" | "beaconDomain" | "metadata" | "debug"
+    >
+  >,
   mediaEl?: HTMLMediaElement | null,
   hlsjs?: Hls
 ) => {
-  const env_key = props.envKey;
+  const { envKey: env_key } = props;
   if (env_key && mediaEl) {
-    const player_init_time = props.playerInitTime;
-    const { beaconDomain, metadata, debug } = props;
+    const {
+      playerInitTime: player_init_time,
+      beaconDomain,
+      metadata,
+      debug,
+    } = props;
     /**
      * @TODO Use documented version if/when resolved (commented out below) (CJP)
      * @see https://github.com/snowpackjs/snowpack/issues/3621
@@ -212,9 +228,17 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<MuxVideoProps>,
+  props: Partial<Pick<MuxVideoProps, "preferMse" | "src" | "type">>,
   mediaEl?: HTMLMediaElement | null,
-  hls?: Hls
+  hls?: Pick<
+    Hls,
+    | "on"
+    | "startLoad"
+    | "recoverMediaError"
+    | "destroy"
+    | "loadSource"
+    | "attachMedia"
+  >
 ) => {
   if (!mediaEl) {
     console.warn("attempting to load media before mediaEl exists");
