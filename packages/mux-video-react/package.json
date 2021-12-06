@@ -14,11 +14,11 @@
   "license": "MIT",
   "scripts": {
     "dev:cjs": "yarn build:cjs --watch",
-    "dev": "npm-run-all build:types build:copy-dts dev:cjs",
+    "dev:types": "yarn build:types -w",
+    "dev": "npm-run-all --parallel dev:types dev:cjs",
     "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --format=cjs --outdir=dist --external:react --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build:copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" ./dist/types",
-    "build": "npm-run-all build:cjs build:types build:copy-dts"
+    "build": "npm-run-all --parallel build:types build:cjs"
   },
   "peerDependencies": {
     "@types/react": "^16.8.6 || ^17.0.0",
@@ -44,8 +44,8 @@
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "@web/dev-server-esbuild": "^0.2.16",
-    "copyfiles": "^2.4.1",
     "esbuild": "^0.13.13",
+    "npm-run-all": "^4.1.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   }
