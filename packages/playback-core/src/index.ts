@@ -69,9 +69,9 @@ declare global {
   }
 }
 
-export type HTMLVideoElementProps = { src?: string | undefined };
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
 
-export type MuxVideoProps = HTMLVideoElementProps & MuxMediaPropTypes;
+export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 
 export const toPlaybackIdParts = (
   playbackIdWithOptionalParams: string
@@ -109,7 +109,7 @@ export const inferMimeTypeFromURL = (url: string) => {
 };
 
 export const getType = (
-  props: Partial<Pick<MuxVideoProps, "type" | "src">>
+  props: Partial<Pick<MuxMediaProps, "type" | "src">>
 ) => {
   const type = props.type;
 
@@ -153,7 +153,7 @@ export const teardown = (
 
 export const setupHls = (
   props: Partial<
-    Pick<MuxVideoProps, "debug" | "preferMse" | "streamType" | "type" | "src">
+    Pick<MuxMediaProps, "debug" | "preferMse" | "streamType" | "type" | "src">
   >,
   mediaEl?: Pick<HTMLMediaElement, "canPlayType"> | null
 ) => {
@@ -186,7 +186,7 @@ export const setupHls = (
 export const setupMux = (
   props: Partial<
     Pick<
-      MuxVideoProps,
+      MuxMediaProps,
       "envKey" | "playerInitTime" | "beaconDomain" | "metadata" | "debug"
     >
   >,
@@ -228,7 +228,7 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxVideoProps, "preferMse" | "src" | "type">>,
+  props: Partial<Pick<MuxMediaProps, "preferMse" | "src" | "type">>,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
@@ -296,7 +296,7 @@ export const loadMedia = (
 };
 
 export const initialize = (
-  props: Partial<MuxVideoProps>,
+  props: Partial<MuxMediaProps>,
   mediaEl?: HTMLMediaElement | null,
   hls?: Hls
 ) => {
