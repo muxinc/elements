@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import {
   allMediaTypes,
   initialize,
-  MuxVideoProps,
+  MuxMediaProps,
   StreamTypes,
   toMuxVideoURL,
 } from "@mux-elements/playback-core";
@@ -14,7 +14,7 @@ export type Props = React.DetailedHTMLProps<
   React.VideoHTMLAttributes<HTMLVideoElement>,
   HTMLVideoElement
 > &
-  MuxVideoProps;
+  MuxMediaProps;
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
   (props, ref) => {
@@ -33,7 +33,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
 
     const [playerInitTime] = useState(Date.now());
 
-    const [src, setSrc] = useState<MuxVideoProps["src"]>(
+    const [src, setSrc] = useState<MuxMediaProps["src"]>(
       toMuxVideoURL(playbackId) ?? outerSrc
     );
 

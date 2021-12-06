@@ -5,7 +5,7 @@ import { Options } from "mux-embed";
 import Hls from "hls.js";
 import {
   initialize,
-  MuxVideoProps,
+  MuxMediaProps,
   StreamTypes,
   ValueOf,
   ExtensionMimeTypeMap,
@@ -48,7 +48,7 @@ const AttributeNameValues = Object.values(Attributes);
 
 class MuxVideoElement
   extends CustomVideoElement<HTMLVideoElement>
-  implements Partial<MuxVideoProps>
+  implements Partial<MuxMediaProps>
 {
   static get observedAttributes() {
     return [
@@ -167,10 +167,9 @@ class MuxVideoElement
     }
   }
 
-  /** @TODO Refactor as an independent function (CJP) */
   load() {
     const nextHlsInstance = initialize(
-      this as Partial<MuxVideoProps>,
+      this as Partial<MuxMediaProps>,
       this.nativeEl,
       this.__hls
     );
