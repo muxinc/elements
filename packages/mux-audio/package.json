@@ -12,13 +12,14 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "dev": "snowpack dev --config snowpack.dev.config.cjs",
+    "dev:iife": "yarn build:iife --watch",
+    "dev:types": "yarn build:types -w",
+    "dev": "npm-run-all --parallel dev:types dev:iife",
     "build:esm": "esbuild src/index.ts --target=es2019 --bundle --minify --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --minify --sourcemap --format=iife --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --minify --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build:copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" ./dist/types",
-    "build": "npm-run-all build:esm build:iife build:cjs build:types build:copy-dts"
+    "build": "npm-run-all --parallel build:types build:esm build:iife build:cjs"
   },
   "dependencies": {
     "@mux-elements/playback-core": "*",
@@ -26,7 +27,8 @@
     "mux-embed": "^4.2.3"
   },
   "devDependencies": {
-    "copyfiles": "^2.4.1",
-    "esbuild": "^0.13.13"
+    "esbuild": "^0.13.13",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.5.2"
   }
 }

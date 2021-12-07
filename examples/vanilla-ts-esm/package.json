@@ -1,0 +1,21 @@
+{
+  "name": "vanilla-ts-esm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "yarn build --servedir=public",
+    "build": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.2",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@mux-elements/mux-audio": "*",
+    "@mux-elements/mux-video": "*"
+  }
+}
