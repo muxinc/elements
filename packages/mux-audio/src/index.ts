@@ -12,6 +12,7 @@ import {
   toMuxVideoURL,
   teardown,
 } from "@mux-elements/playback-core";
+import { getPlayerVersion } from "./env";
 
 type Metadata = Partial<Options["data"]>;
 
@@ -46,6 +47,9 @@ const Attributes: AttributeNames = {
 
 const AttributeNameValues = Object.values(Attributes);
 
+const playerSoftwareVersion = getPlayerVersion();
+const playerSoftwareName = "mux-audio";
+
 class MuxAudioElement
   extends CustomAudioElement<HTMLAudioElement>
   implements Partial<MuxMediaProps>
@@ -64,6 +68,14 @@ class MuxAudioElement
   constructor() {
     super();
     this.__muxPlayerInitTime = Date.now();
+  }
+
+  get playerSoftwareName() {
+    return playerSoftwareName;
+  }
+
+  get playerSoftwareVersion() {
+    return playerSoftwareVersion;
   }
 
   get hls() {

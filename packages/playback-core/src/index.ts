@@ -72,6 +72,10 @@ declare global {
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
+export type MuxMediaPropsInternal = MuxMediaProps & {
+  playerSoftwareName: Options["data"]["player_software_name"];
+  playerSoftwareVersion: Options["data"]["player_software_version"];
+};
 
 export const toPlaybackIdParts = (
   playbackIdWithOptionalParams: string
@@ -186,8 +190,14 @@ export const setupHls = (
 export const setupMux = (
   props: Partial<
     Pick<
-      MuxMediaProps,
-      "envKey" | "playerInitTime" | "beaconDomain" | "metadata" | "debug"
+      MuxMediaPropsInternal,
+      | "envKey"
+      | "playerInitTime"
+      | "beaconDomain"
+      | "metadata"
+      | "debug"
+      | "playerSoftwareName"
+      | "playerSoftwareVersion"
     >
   >,
   mediaEl?: HTMLMediaElement | null,
@@ -197,17 +207,12 @@ export const setupMux = (
   if (env_key && mediaEl) {
     const {
       playerInitTime: player_init_time,
+      playerSoftwareName: player_software_name,
+      playerSoftwareVersion: player_software_version,
       beaconDomain,
       metadata,
       debug,
     } = props;
-    /**
-     * @TODO Use documented version if/when resolved (commented out below) (CJP)
-     * @see https://github.com/snowpackjs/snowpack/issues/3621
-     * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
-     */
-    // @ts-ignore
-    const player_version = getPlayerVersion();
 
     mux.monitor(mediaEl, {
       debug,
@@ -217,8 +222,8 @@ export const setupMux = (
       data: {
         env_key, // required
         // Metadata fields
-        player_name: "mux-video", // default player name for "mux-video"
-        player_version,
+        player_software_name,
+        player_software_version,
         player_init_time,
         // Use any metadata passed in programmatically (which may override the defaults above)
         ...metadata,
@@ -296,7 +301,7 @@ export const loadMedia = (
 };
 
 export const initialize = (
-  props: Partial<MuxMediaProps>,
+  props: Partial<MuxMediaPropsInternal>,
   mediaEl?: HTMLMediaElement | null,
   hls?: Hls
 ) => {
