@@ -1,7 +1,6 @@
 import mux, { Options } from "mux-embed";
 
 import Hls from "hls.js";
-import { getPlayerVersion } from "./env";
 import { isKeyOf } from "./util";
 export type ValueOf<T> = T[keyof T];
 
