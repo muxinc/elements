@@ -9,12 +9,16 @@ import {
   StreamTypes,
   toMuxVideoURL,
 } from "@mux-elements/playback-core";
+import { getPlayerVersion } from "./env";
 
 export type Props = React.DetailedHTMLProps<
   React.VideoHTMLAttributes<HTMLVideoElement>,
   HTMLVideoElement
 > &
   MuxMediaProps;
+
+const playerSoftwareVersion = getPlayerVersion();
+const playerSoftwareName = "mux-video-react";
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
   (props, ref) => {
@@ -48,7 +52,13 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     }, [outerSrc, playbackId]);
 
     useEffect(() => {
-      const propsWithState = { ...props, src, playerInitTime };
+      const propsWithState = {
+        ...props,
+        src,
+        playerInitTime,
+        playerSoftwareName,
+        playerSoftwareVersion,
+      };
       const nextHlsRef = initialize(
         propsWithState,
         mediaElRef.current,
