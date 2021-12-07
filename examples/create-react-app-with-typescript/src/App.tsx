@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages";
 import MuxVideoPage from "./pages/MuxVideo";
+import MuxAudioPage from "./pages/MuxAudio";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="MuxVideo" element={<MuxVideoPage />} />
+          <Route path="MuxAudio" element={<MuxAudioPage />} />
         </Routes>
       </Router>
     </div>

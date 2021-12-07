@@ -12,6 +12,13 @@ function HomePage() {
             </Link>
           </h3>
         </li>
+        <li>
+          <h3>
+            <Link href="/MuxAudio">
+              <a>Mux Audio Demo</a>
+            </Link>
+          </h3>
+        </li>
       </ul>
     </div>
   );
