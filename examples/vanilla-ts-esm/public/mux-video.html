@@ -3,7 +3,14 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Basic &lt;mux-video/&gt; example</title>
+    <script type="module" src="../dist/mux-video.js"></script>
     <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
       mux-video {
         width: 100%;
         max-width: 800px;
@@ -25,10 +32,6 @@
       muted
     >
     </mux-video>
-    <script type="module">
-      setTimeout(() => {
-        import("../dist/index.js");
-      }, 5000);
-    </script>
+    <a href="/">Browse Elements</a>
   </body>
 </html>
