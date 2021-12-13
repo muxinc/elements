@@ -1,6 +1,6 @@
 import mux, { Options } from "mux-embed";
 
-import Hls from "hls.js";
+import Hls, { HlsConfig } from "hls.js";
 import { isKeyOf } from "./util";
 export type ValueOf<T> = T[keyof T];
 
@@ -60,6 +60,7 @@ export type MuxMediaPropTypes = {
     | `${Lowercase<keyof MimeTypeShorthandMap>}`
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
+  startPosition: HlsConfig["startPosition"];
 };
 
 declare global {
@@ -156,11 +157,14 @@ export const teardown = (
 
 export const setupHls = (
   props: Partial<
-    Pick<MuxMediaProps, "debug" | "preferMse" | "streamType" | "type" | "src">
+    Pick<
+      MuxMediaProps,
+      "debug" | "preferMse" | "streamType" | "type" | "src" | "startPosition"
+    >
   >,
   mediaEl?: Pick<HTMLMediaElement, "canPlayType"> | null
 ) => {
-  const { debug, preferMse, streamType } = props;
+  const { debug, preferMse, streamType, startPosition = -1 } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
 
@@ -178,6 +182,7 @@ export const setupHls = (
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
       debug,
+      startPosition,
       ...streamTypeConfig,
     });
 

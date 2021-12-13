@@ -30,6 +30,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
       preferMse,
       type,
       streamType,
+      startPosition,
       src: outerSrc,
       children,
       ...restProps
@@ -87,6 +88,7 @@ MuxVideo.propTypes = {
   preferMse: PropTypes.bool,
   type: PropTypes.oneOf(allMediaTypes),
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
+  startPosition: PropTypes.number,
 };
 
 export default MuxVideo;
