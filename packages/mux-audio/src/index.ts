@@ -29,7 +29,7 @@ type AttributeNames = {
   PREFER_MSE: "prefer-mse";
   TYPE: "type";
   STREAM_TYPE: "stream-type";
-  START_POSITION: "start-position";
+  START_TIME: "start-time";
 };
 
 const Attributes: AttributeNames = {
@@ -44,7 +44,7 @@ const Attributes: AttributeNames = {
   BEACON_DOMAIN: "beacon-domain",
   TYPE: "type",
   STREAM_TYPE: "stream-type",
-  START_POSITION: "start-position",
+  START_TIME: "start-time",
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -123,21 +123,21 @@ class MuxAudioElement
     }
   }
 
-  get startPosition(): number | undefined {
-    const val = this.getAttribute(Attributes.START_POSITION);
+  get startTime(): number | undefined {
+    const val = this.getAttribute(Attributes.START_TIME);
     if (val == null) return undefined;
     const num = +val;
     return !Number.isNaN(num) ? num : undefined;
   }
 
-  set startPosition(val: number | undefined) {
+  set startTime(val: number | undefined) {
     // dont' cause an infinite loop
-    if (val === this.startPosition) return;
+    if (val === this.startTime) return;
 
     if (val == null) {
-      this.removeAttribute(Attributes.START_POSITION);
+      this.removeAttribute(Attributes.START_TIME);
     } else {
-      this.setAttribute(Attributes.START_POSITION, `${val}`);
+      this.setAttribute(Attributes.START_TIME, `${val}`);
     }
   }
 

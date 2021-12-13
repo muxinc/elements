@@ -60,7 +60,7 @@ export type MuxMediaPropTypes = {
     | `${Lowercase<keyof MimeTypeShorthandMap>}`
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
-  startPosition: HlsConfig["startPosition"];
+  startTime: HlsConfig["startPosition"];
 };
 
 declare global {
@@ -159,12 +159,12 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaProps,
-      "debug" | "preferMse" | "streamType" | "type" | "src" | "startPosition"
+      "debug" | "preferMse" | "streamType" | "type" | "src" | "startTime"
     >
   >,
   mediaEl?: Pick<HTMLMediaElement, "canPlayType"> | null
 ) => {
-  const { debug, preferMse, streamType, startPosition = -1 } = props;
+  const { debug, preferMse, streamType, startTime: startPosition = -1 } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
 
@@ -237,7 +237,9 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, "preferMse" | "src" | "type">>,
+  props: Partial<
+    Pick<MuxMediaProps, "preferMse" | "src" | "type" | "startTime">
+  >,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
@@ -267,7 +269,21 @@ export const loadMedia = (
   const { src } = props;
   if (mediaEl && canUseNative && shouldUseNative) {
     if (typeof src === "string") {
+      const { startTime } = props;
       mediaEl.setAttribute("src", src);
+      if (startTime) {
+        const setStartTimeOnLoad = ({
+          target,
+        }: HTMLMediaElementEventMap["loadedmetadata"]) => {
+          (target as HTMLMediaElement).currentTime = startTime;
+          (target as HTMLMediaElement).removeEventListener(
+            "loadedmetadata",
+            setStartTimeOnLoad
+          );
+        };
+
+        mediaEl.addEventListener("loadedmetadata", setStartTimeOnLoad);
+      }
     } else {
       mediaEl.removeAttribute("src");
     }
