@@ -29,6 +29,7 @@ type AttributeNames = {
   PREFER_MSE: "prefer-mse";
   TYPE: "type";
   STREAM_TYPE: "stream-type";
+  START_POSITION: "start-position";
 };
 
 const Attributes: AttributeNames = {
@@ -43,6 +44,7 @@ const Attributes: AttributeNames = {
   BEACON_DOMAIN: "beacon-domain",
   TYPE: "type",
   STREAM_TYPE: "stream-type",
+  START_POSITION: "start-position",
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -118,6 +120,24 @@ class MuxVideoElement
       this.setAttribute(Attributes.DEBUG, "");
     } else {
       this.removeAttribute(Attributes.DEBUG);
+    }
+  }
+
+  get startPosition(): number | undefined {
+    const val = this.getAttribute(Attributes.START_POSITION);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set startPosition(val: number | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.startPosition) return;
+
+    if (val == null) {
+      this.removeAttribute(Attributes.START_POSITION);
+    } else {
+      this.setAttribute(Attributes.START_POSITION, `${val}`);
     }
   }
 
