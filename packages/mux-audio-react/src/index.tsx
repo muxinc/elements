@@ -30,7 +30,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
       preferMse,
       type,
       streamType,
-      startPosition,
+      startTime,
       src: outerSrc,
       children,
       ...restProps
@@ -88,7 +88,7 @@ MuxAudio.propTypes = {
   preferMse: PropTypes.bool,
   type: PropTypes.oneOf(allMediaTypes),
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
-  startPosition: PropTypes.number,
+  startTime: PropTypes.number,
 };
 
 export default MuxAudio;
