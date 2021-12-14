@@ -35,8 +35,6 @@
   },
   "dependencies": {
     "@mux-elements/playback-core": "*",
-    "hls.js": "1.0.11",
-    "mux-embed": "^4.2.3",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

@@ -4,6 +4,10 @@ import Hls, { HlsConfig } from "hls.js";
 import { isKeyOf } from "./util";
 export type ValueOf<T> = T[keyof T];
 
+export type Metadata = Partial<Options["data"]>;
+export { mux };
+export { Hls };
+
 export type StreamTypes = {
   VOD: "on-demand";
   LIVE: "live";

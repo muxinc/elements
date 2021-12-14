@@ -1,8 +1,5 @@
 import CustomAudioElement from "./CustomAudioElement";
-import * as mux from "mux-embed";
-import { Options } from "mux-embed";
 
-import Hls from "hls.js";
 import {
   initialize,
   MuxMediaProps,
@@ -11,10 +8,11 @@ import {
   ExtensionMimeTypeMap,
   toMuxVideoURL,
   teardown,
+  Hls,
+  Metadata,
+  mux,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
-
-type Metadata = Partial<Options["data"]>;
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
