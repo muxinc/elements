@@ -1,4 +1,3 @@
-import Hls from "hls.js";
 import useCombinedRefs from "./use-combined-refs";
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
@@ -8,6 +7,7 @@ import {
   MuxMediaProps,
   StreamTypes,
   toMuxVideoURL,
+  Hls,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
