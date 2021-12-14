@@ -9,7 +9,7 @@ import {
   toMuxVideoURL,
   teardown,
   Metadata,
-  Hls,
+  PlaybackEngine,
   mux,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
@@ -61,7 +61,8 @@ class MuxVideoElement
     ];
   }
 
-  protected __hls?: Hls;
+  // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
+  protected __hls?: PlaybackEngine;
   protected __muxPlayerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
 
@@ -310,6 +311,10 @@ if (!globalThis.customElements.get("mux-video")) {
   globalThis.MuxVideoElement = MuxVideoElement;
 }
 
-export { Hls, ExtensionMimeTypeMap as MimeTypes };
+export {
+  PlaybackEngine,
+  PlaybackEngine as Hls,
+  ExtensionMimeTypeMap as MimeTypes,
+};
 
 export default MuxVideoElement;
