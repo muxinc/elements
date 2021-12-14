@@ -8,7 +8,7 @@ import {
   ExtensionMimeTypeMap,
   toMuxVideoURL,
   teardown,
-  Hls,
+  PlaybackEngine,
   Metadata,
   mux,
 } from "@mux-elements/playback-core";
@@ -61,7 +61,8 @@ class MuxAudioElement
     ];
   }
 
-  protected __hls?: Hls;
+  // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
+  protected __hls?: PlaybackEngine;
   protected __muxPlayerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
 
@@ -293,6 +294,10 @@ if (!globalThis.customElements.get("mux-audio")) {
   globalThis.MuxAudioElement = MuxAudioElement;
 }
 
-export { Hls, ExtensionMimeTypeMap as MimeTypes };
+export {
+  PlaybackEngine,
+  PlaybackEngine as Hls,
+  ExtensionMimeTypeMap as MimeTypes,
+};
 
 export default MuxAudioElement;

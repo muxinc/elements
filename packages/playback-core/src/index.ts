@@ -5,6 +5,7 @@ import { isKeyOf } from "./util";
 export type ValueOf<T> = T[keyof T];
 
 export type Metadata = Partial<Options["data"]>;
+export type PlaybackEngine = Hls;
 export { mux };
 export { Hls };
 
