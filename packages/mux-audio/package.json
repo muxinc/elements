@@ -22,7 +22,7 @@
     "build": "npm-run-all --parallel build:types build:esm build:iife build:cjs"
   },
   "dependencies": {
-    "@mux-elements/playback-core": "*"
+    "@mux-elements/playback-core": "^0.1.0"
   },
   "devDependencies": {
     "esbuild": "^0.13.13",
