@@ -15,7 +15,7 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@mux-elements/mux-audio": "*",
-    "@mux-elements/mux-video": "*"
+    "@mux-elements/mux-audio": "^0.2.0",
+    "@mux-elements/mux-video": "^0.2.0"
   }
 }
