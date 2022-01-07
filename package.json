@@ -22,7 +22,7 @@
     "examples/*"
   ],
   "scripts": {
-    "dev": "lerna run dev --parallel",
+    "dev": "lerna run dev --parallel --ignore demo-*",
     "build": "lerna run build",
     "prepare": "husky install"
   }
