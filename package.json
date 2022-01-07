@@ -24,6 +24,6 @@
   "scripts": {
     "dev": "lerna run dev --parallel --ignore demo-*",
     "build": "lerna run build",
-    "prepare": "husky install"
+    "prepare": "husky install && yarn build --ignore demo-*"
   }
 }
