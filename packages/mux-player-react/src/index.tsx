@@ -101,13 +101,6 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
   debug,
   ChromeRenderer = DefaultChromeRenderer,
 }) => {
-  let isAndroid = false;
-
-  useEffect(() => {
-    const userAgentStr = window?.navigator?.userAgent ?? "";
-    isAndroid = userAgentStr.toLowerCase().indexOf("android") !== -1;
-  }, []);
-
   let supportsAirPlay = false;
   useEffect(() => {
     supportsAirPlay = !!window.WebKitPlaybackTargetAvailabilityEvent;
@@ -138,19 +131,6 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
     );
   }, []);
 
-  /*
-   *
-   * For Android specifically with ll-live, it has a BadTime with native,
-   * so we're going to force mse for that situation
-   *
-   */
-  const defaultPreferMSE = useMemo(() => {
-    if (isAndroid && streamType === "ll-live") {
-      return true;
-    }
-    return undefined;
-  }, [isAndroid, streamType]);
-
   return (
     <MediaController>
       <MuxVideo
@@ -164,7 +144,7 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
         metadata={metadata}
         debug={debug}
         startTime={startTime}
-        preferMse={preferMse ?? defaultPreferMSE}
+        preferMse={preferMse}
         autoPlay={autoPlay}
         poster={poster ?? getPosterURLFromPlaybackId(playbackId)}
         crossOrigin=""
