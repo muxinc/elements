@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import MuxVideo from "@mux-elements/mux-video-react";
 import type { Props as MuxVideoProps } from "@mux-elements/mux-video-react";
 import {
@@ -15,8 +15,19 @@ import {
   MediaPlaybackRateButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "./media-chrome.js";
+} from "./media-chrome";
 import { useRef } from "react";
+import AirPlayButton from "./media-chrome/components/air-play-button";
+
+declare global {
+  interface Window {
+    WebKitPlaybackTargetAvailabilityEvent?: Event;
+  }
+
+  interface HTMLVideoElement {
+    webkitShowPlaybackTargetPicker?: Function;
+  }
+}
 
 const getPosterURLFromPlaybackId = (playbackId: MuxVideoProps["playbackId"]) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
@@ -25,22 +36,26 @@ const getStoryboardURLFromPlaybackId = (
   playbackId: MuxVideoProps["playbackId"]
 ) => `https://image.mux.com/${playbackId}/storyboard.vtt`;
 
-type ChromeProps = {};
+type ChromeProps = {
+  onAirPlaySelected?: React.MouseEventHandler;
+  hasAirPlay?: boolean;
+};
 
 export const VodChromeSmall = () => {};
 
 export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
+  const { onAirPlaySelected, hasAirPlay = false } = props;
   return (
     <>
-      <div slot="centered-chrome">
+      {/* <div slot="centered-chrome">
         <MediaSeekBackwardButton></MediaSeekBackwardButton>
         <MediaPlayButton></MediaPlayButton>
         <MediaSeekForwardButton></MediaSeekForwardButton>
-      </div>
-      <MediaControlBar>
+      </div> */}
+      {/* <MediaControlBar>
         <MediaTimeRange></MediaTimeRange>
         <MediaTimeDisplay show-duration remaining></MediaTimeDisplay>
-      </MediaControlBar>
+      </MediaControlBar> */}
       <MediaControlBar>
         <MediaPlayButton></MediaPlayButton>
         <MediaSeekForwardButton></MediaSeekForwardButton>
@@ -54,6 +69,7 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
+        {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
       </MediaControlBar>
     </>
   );
@@ -63,12 +79,12 @@ export const LiveChromeSmall = () => {};
 export const LiveChromeLarge = () => {};
 
 export const DefaultChromeRenderer: React.FC<ChromeProps> = (props) => {
-  return <VodChromeLarge />;
+  return <VodChromeLarge {...props} />;
 };
 
 type ReactInstanceBasic = React.ReactElement | null;
 export type MuxPlayerProps = Partial<MuxVideoProps> & {
-  ChromeRenderer: (props: ChromeProps) => ReactInstanceBasic;
+  ChromeRenderer?: (props: ChromeProps) => ReactInstanceBasic;
 };
 
 export const MuxPlayer: React.FC<MuxPlayerProps> = ({
@@ -85,12 +101,41 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
   debug,
   ChromeRenderer = DefaultChromeRenderer,
 }) => {
-  const muxVideoRef = useRef(null);
   let isAndroid = false;
 
   useEffect(() => {
-    isAndroid =
-      window?.navigator?.userAgent.toLowerCase().indexOf("android") !== -1;
+    const userAgentStr = window?.navigator?.userAgent ?? "";
+    isAndroid = userAgentStr.toLowerCase().indexOf("android") !== -1;
+  }, []);
+
+  let supportsAirPlay = false;
+  useEffect(() => {
+    supportsAirPlay = !!window.WebKitPlaybackTargetAvailabilityEvent;
+  }, []);
+  const [hasAirPlay, setHasAirPlay] = useState(false);
+  const onPlaybackTargetChanged = (
+    event: Event & { availability?: boolean }
+  ) => {
+    setHasAirPlay(!!event.availability);
+  };
+
+  const muxVideoRef = useRef<HTMLVideoElement>();
+  const muxVideoRefCb = useCallback((node?: HTMLVideoElement) => {
+    if (muxVideoRef?.current) {
+      // Remove Event Handlers from prev
+      if (supportsAirPlay) {
+        muxVideoRef.current.removeEventListener(
+          "webkitplaybacktargetavailabilitychanged",
+          onPlaybackTargetChanged
+        );
+      }
+    }
+    muxVideoRef.current = node;
+    if (!muxVideoRef?.current) return;
+    muxVideoRef.current.addEventListener(
+      "webkitplaybacktargetavailabilitychanged",
+      onPlaybackTargetChanged
+    );
   }, []);
 
   /*
@@ -110,7 +155,7 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
     <MediaController>
       <MuxVideo
         key={playbackId}
-        ref={muxVideoRef}
+        ref={muxVideoRefCb}
         slot="media"
         // src={src}
         playbackId={playbackId}
@@ -133,7 +178,12 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
           src={getStoryboardURLFromPlaybackId(playbackId)}
         />
       </MuxVideo>
-      <ChromeRenderer />
+      <ChromeRenderer
+        hasAirPlay={hasAirPlay}
+        onAirPlaySelected={() => {
+          muxVideoRef.current?.webkitShowPlaybackTargetPicker?.();
+        }}
+      />
     </MediaController>
   );
 };
