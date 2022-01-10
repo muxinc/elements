@@ -2,7 +2,7 @@ import Link from "next/link";
 import MuxPlayer from "@mux-elements/mux-player-react";
 import { StreamTypes } from "@mux-elements/mux-player-react";
 
-function MuxVideoPage() {
+function MuxPlayerPage() {
   return (
     <div
       style={{
@@ -12,7 +12,7 @@ function MuxVideoPage() {
         width: "100vw",
       }}
     >
-      <h1>MuxVideo Demo</h1>
+      <h1>MuxPlayer Demo</h1>
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
         <MuxPlayer
           playbackId="ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY"
@@ -32,4 +32,4 @@ function MuxVideoPage() {
   );
 }
 
-export default MuxVideoPage;
+export default MuxPlayerPage;
