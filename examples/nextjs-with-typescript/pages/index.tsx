@@ -19,6 +19,13 @@ function HomePage() {
             </Link>
           </h3>
         </li>
+        <li>
+          <h3>
+            <Link href="/MuxPlayer">
+              <a>Mux Player Demo</a>
+            </Link>
+          </h3>
+        </li>
       </ul>
     </div>
   );
