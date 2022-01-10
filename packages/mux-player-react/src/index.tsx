@@ -18,6 +18,9 @@ import {
 } from "./media-chrome";
 import { useRef } from "react";
 import AirPlayButton from "./media-chrome/components/air-play-button";
+import { StreamTypes } from "@mux-elements/playback-core";
+
+export { StreamTypes };
 
 declare global {
   interface Window {
@@ -39,6 +42,7 @@ const getStoryboardURLFromPlaybackId = (
 type ChromeProps = {
   onAirPlaySelected?: React.MouseEventHandler;
   hasAirPlay?: boolean;
+  streamType?: MuxVideoProps["streamType"];
 };
 
 export const VodChromeSmall = () => {};
@@ -62,9 +66,36 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
         <MediaSeekBackwardButton></MediaSeekBackwardButton>
         <MediaMuteButton></MediaMuteButton>
         <MediaVolumeRange></MediaVolumeRange>
-        <div></div>
         <MediaTimeRange></MediaTimeRange>
         <MediaTimeDisplay show-duration remaining></MediaTimeDisplay>
+        <MediaCaptionsButton></MediaCaptionsButton>
+        <MediaPipButton></MediaPipButton>
+        <MediaFullscreenButton></MediaFullscreenButton>
+        {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+      </MediaControlBar>
+    </>
+  );
+};
+
+export const LiveChromeSmall = () => {};
+export const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
+  const { onAirPlaySelected, hasAirPlay = false } = props;
+  return (
+    <>
+      {/* <div slot="centered-chrome">
+        <MediaSeekBackwardButton></MediaSeekBackwardButton>
+        <MediaPlayButton></MediaPlayButton>
+        <MediaSeekForwardButton></MediaSeekForwardButton>
+      </div> */}
+      {/* <MediaControlBar>
+        <MediaTimeRange></MediaTimeRange>
+        <MediaTimeDisplay show-duration remaining></MediaTimeDisplay>
+      </MediaControlBar> */}
+      <MediaControlBar>
+        <MediaPlayButton></MediaPlayButton>
+        <MediaMuteButton></MediaMuteButton>
+        <MediaVolumeRange></MediaVolumeRange>
+        <div style={{ flexGrow: 1 }}></div>
         <MediaCaptionsButton></MediaCaptionsButton>
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
         <MediaPipButton></MediaPipButton>
@@ -75,10 +106,11 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
   );
 };
 
-export const LiveChromeSmall = () => {};
-export const LiveChromeLarge = () => {};
-
 export const DefaultChromeRenderer: React.FC<ChromeProps> = (props) => {
+  const { streamType } = props;
+  if (streamType === StreamTypes.LIVE || streamType === StreamTypes.LL_LIVE) {
+    return <LiveChromeLarge {...props} />;
+  }
   return <VodChromeLarge {...props} />;
 };
 
@@ -145,7 +177,11 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
         debug={debug}
         startTime={startTime}
         preferMse={preferMse}
-        autoPlay={autoPlay}
+        autoPlay={
+          autoPlay ||
+          streamType === StreamTypes.LIVE ||
+          streamType === StreamTypes.LL_LIVE
+        }
         poster={poster ?? getPosterURLFromPlaybackId(playbackId)}
         crossOrigin=""
         playsInline
@@ -163,6 +199,7 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
         onAirPlaySelected={() => {
           muxVideoRef.current?.webkitShowPlaybackTargetPicker?.();
         }}
+        streamType={streamType}
       />
     </MediaController>
   );
