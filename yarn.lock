@@ -9477,6 +9477,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
+"media-chrome@cjpillsbury/media-chrome.git# v0.4.0-mcdc.2":
+  version "0.4.0"
+  resolved "https://codeload.github.com/cjpillsbury/media-chrome/tar.gz/a2e009ec683b75fe9645c23c92fbb5daaa58f78c"
+
 media-typer@0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/media-typer/-/media-typer-0.3.0.tgz#8710d7af0aa626f8fffa1ce00168545263255748"
