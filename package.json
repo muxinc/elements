@@ -26,5 +26,8 @@
     "build": "lerna run build",
     "prepare": "husky install && yarn build --ignore demo-*",
     "release": "lerna publish"
+  },
+  "bin": {
+    "open-process": "scripts/open-process.js"
   }
 }
