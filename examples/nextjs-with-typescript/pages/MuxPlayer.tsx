@@ -1,5 +1,6 @@
 import Link from "next/link";
 import MuxPlayer from "@mux-elements/mux-player-react";
+import { StreamTypes } from "@mux-elements/mux-player-react";
 
 function MuxVideoPage() {
   return (
@@ -15,8 +16,10 @@ function MuxVideoPage() {
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
         <MuxPlayer
           playbackId="ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY"
-          debug
+          // debug
           muted
+          // autoPlay
+          // streamType={StreamTypes.LIVE}
           startTime={12}
         />
       </div>
