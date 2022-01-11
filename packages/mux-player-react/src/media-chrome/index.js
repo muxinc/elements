@@ -27,13 +27,13 @@ const MediaContainerTemp = ({ children, ...props }) => {
 export { MediaContainerTemp };
 
 /** @type { MCC } */
-const MediaController = ({ children, ...props }) => {
+const MediaController = React.forwardRef(({ children, ...props }, ref) => {
   return React.createElement(
     "media-controller",
-    toNativeProps(props),
+    toNativeProps({ ...props, ref }),
     children
   );
-};
+});
 
 export { MediaController };
 
