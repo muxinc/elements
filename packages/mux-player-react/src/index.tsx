@@ -67,7 +67,11 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
         <MediaMuteButton></MediaMuteButton>
         <MediaVolumeRange></MediaVolumeRange>
         <MediaTimeRange></MediaTimeRange>
-        <MediaTimeDisplay show-duration remaining></MediaTimeDisplay>
+        <MediaTimeDisplay
+          show-duration
+          remaining
+          style={{ color: "inherit" }}
+        ></MediaTimeDisplay>
         <MediaCaptionsButton></MediaCaptionsButton>
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
@@ -117,22 +121,60 @@ export const DefaultChromeRenderer: React.FC<ChromeProps> = (props) => {
 type ReactInstanceBasic = React.ReactElement | null;
 export type MuxPlayerProps = Partial<MuxVideoProps> & {
   ChromeRenderer?: (props: ChromeProps) => ReactInstanceBasic;
+  primaryColor?: React.CSSProperties["color"];
+  secondaryColor?: React.CSSProperties["color"];
+  tertiaryColor?: React.CSSProperties["color"];
 };
 
-export const MuxPlayer: React.FC<MuxPlayerProps> = ({
-  playbackId = "",
-  streamType,
-  envKey,
-  metadata,
-  startTime,
-  preferMse,
-  //   src,
-  poster,
-  muted,
-  autoPlay,
-  debug,
-  ChromeRenderer = DefaultChromeRenderer,
-}) => {
+const getChromeStylesFromProps = (props: MuxPlayerProps) => {
+  const { primaryColor, secondaryColor, tertiaryColor } = props;
+
+  const primaryColorStyles = primaryColor
+    ? {
+        "--media-icon-color": primaryColor,
+        "--media-range-thumb-background": primaryColor,
+        "--media-range-bar-color": primaryColor,
+        color: primaryColor,
+      }
+    : {};
+
+  const secondaryColorStyles = secondaryColor
+    ? {
+        "--media-background-color": secondaryColor,
+        "--media-control-background": secondaryColor,
+      }
+    : {};
+
+  const tertiaryColorStyles = tertiaryColor
+    ? {
+        "--media-range-track-background": tertiaryColor,
+        "background-color": tertiaryColor,
+      }
+    : {};
+
+  return {
+    color: "#ffffff",
+    ...primaryColorStyles,
+    ...secondaryColorStyles,
+    ...tertiaryColorStyles,
+  };
+};
+
+export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
+  const {
+    playbackId = "",
+    streamType,
+    envKey,
+    metadata,
+    startTime,
+    preferMse,
+    //   src,
+    poster,
+    muted,
+    autoPlay,
+    debug,
+    ChromeRenderer = DefaultChromeRenderer,
+  } = props;
   let supportsAirPlay = false;
   useEffect(() => {
     supportsAirPlay = !!window.WebKitPlaybackTargetAvailabilityEvent;
@@ -164,7 +206,7 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = ({
   }, []);
 
   return (
-    <MediaController>
+    <MediaController style={getChromeStylesFromProps(props)}>
       <MuxVideo
         key={playbackId}
         ref={muxVideoRefCb}
