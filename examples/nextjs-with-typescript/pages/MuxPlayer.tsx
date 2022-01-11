@@ -20,6 +20,9 @@ function MuxPlayerPage() {
           muted
           // autoPlay
           // streamType={StreamTypes.LIVE}
+          // primaryColor="#ec407a"
+          // secondaryColor="#64b5f6"
+          // tertiaryColor="#b4004e"
           startTime={12}
         />
       </div>
