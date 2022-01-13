@@ -62,7 +62,7 @@ const useEffectInEvent = (
 
 export const useRect = <T extends Element>(): [
   DOMRect | undefined,
-  React.MutableRefObject<T | null> | ((node?: T) => void)
+  (node?: T) => void
 ] => {
   const ref = useRef<T>();
   const [rect, setRect] = useState<DOMRect>();
@@ -101,12 +101,13 @@ const Spacer = () => {
 type ChromeProps = {
   onAirPlaySelected?: React.MouseEventHandler;
   hasAirPlay?: boolean;
+  hasCaptions?: boolean;
   streamType?: MuxVideoProps["streamType"];
   playerSize?: string;
 };
 
 export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false } = props;
+  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
   return (
     <>
       <div
@@ -138,7 +139,7 @@ export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
         <MediaMuteButton></MediaMuteButton>
         <MediaVolumeRange></MediaVolumeRange>
         <Spacer />
-        <MediaCaptionsButton></MediaCaptionsButton>
+        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
         {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
@@ -148,7 +149,7 @@ export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
 };
 
 export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false } = props;
+  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
   return (
     <>
       {/* <div slot="centered-chrome">
@@ -172,7 +173,7 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
           remaining
           style={{ color: "inherit" }}
         ></MediaTimeDisplay>
-        <MediaCaptionsButton></MediaCaptionsButton>
+        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
         {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
@@ -182,7 +183,7 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
 };
 
 export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false } = props;
+  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
   return (
     <>
       <div
@@ -204,7 +205,7 @@ export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         <MediaMuteButton></MediaMuteButton>
         <MediaVolumeRange></MediaVolumeRange>
         <Spacer />
-        <MediaCaptionsButton></MediaCaptionsButton>
+        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
         {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
@@ -213,7 +214,7 @@ export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   );
 };
 export const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false } = props;
+  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
   return (
     <>
       <MediaControlBar>
@@ -221,7 +222,7 @@ export const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
         <MediaMuteButton></MediaMuteButton>
         <MediaVolumeRange></MediaVolumeRange>
         <Spacer />
-        <MediaCaptionsButton></MediaCaptionsButton>
+        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
@@ -303,6 +304,7 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     autoPlay,
     debug,
     ChromeRenderer = DefaultChromeRenderer,
+    children,
   } = props;
 
   let supportsAirPlay = false;
@@ -316,6 +318,15 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     setHasAirPlay(!!event.availability);
   };
 
+  const [hasCaptions, setHasCaptions] = useState(false);
+  const onTrackCountChange = ({ target }: TrackEvent) => {
+    const { length: ccSubTracksLength } = Array.from(
+      target as TextTrackList
+    ).filter(({ kind }) => kind === "subtitles" || kind === "captions");
+
+    setHasCaptions(!!ccSubTracksLength);
+  };
+
   const muxVideoRef = useRef<HTMLVideoElement>();
   const muxVideoRefCb = useCallback((node?: HTMLVideoElement) => {
     if (muxVideoRef?.current) {
@@ -325,18 +336,44 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
           "webkitplaybacktargetavailabilitychanged",
           onPlaybackTargetChanged
         );
+
+        muxVideoRef.current.textTracks.removeEventListener(
+          "addtrack",
+          onTrackCountChange
+        );
+        muxVideoRef.current.textTracks.removeEventListener(
+          "removetrack",
+          onTrackCountChange
+        );
       }
     }
+
     muxVideoRef.current = node;
     if (!muxVideoRef?.current) return;
+
+    const { length: ccSubTracksLength } = Array.from(
+      muxVideoRef.current.textTracks
+    ).filter(({ kind }) => kind === "subtitles" || kind === "captions");
+
+    setHasCaptions(!!ccSubTracksLength);
+
     muxVideoRef.current.addEventListener(
       "webkitplaybacktargetavailabilitychanged",
       onPlaybackTargetChanged
     );
+
+    muxVideoRef.current.textTracks.addEventListener(
+      "addtrack",
+      onTrackCountChange
+    );
+    muxVideoRef.current.textTracks.addEventListener(
+      "removetrack",
+      onTrackCountChange
+    );
   }, []);
 
   const [playerSize, setPlayerSize] = useState(MediaChromeSizes.LG);
-  const [mediaControllerRect, mediaControllerRef] = useRect();
+  const [mediaControllerRect, mediaControllerRefCb] = useRect();
   useEffect(() => {
     if (!mediaControllerRect) return;
 
@@ -350,8 +387,9 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
 
   return (
     <MediaController
-      ref={mediaControllerRef}
+      ref={mediaControllerRefCb}
       style={getChromeStylesFromProps(props)}
+      autohide={1}
     >
       <MuxVideo
         key={playbackId}
@@ -381,8 +419,10 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
           kind="metadata"
           src={getStoryboardURLFromPlaybackId(playbackId)}
         />
+        {children}
       </MuxVideo>
       <ChromeRenderer
+        hasCaptions={hasCaptions}
         hasAirPlay={hasAirPlay}
         onAirPlaySelected={() => {
           muxVideoRef.current?.webkitShowPlaybackTargetPicker?.();
