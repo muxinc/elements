@@ -24,7 +24,14 @@ function MuxPlayerPage() {
           // secondaryColor="#64b5f6"
           // tertiaryColor="#b4004e"
           startTime={12}
-        />
+        >
+          <track
+            label="English"
+            kind="captions"
+            srcLang="en"
+            src="/vtt/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/en-cc-mashup.vtt"
+          ></track>
+        </MuxPlayer>
       </div>
       <h3 className="title">
         <Link href="/">
