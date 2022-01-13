@@ -248,6 +248,7 @@ export const DefaultChromeRenderer: React.FC<ChromeProps> = (props) => {
 
 type ReactInstanceBasic = React.ReactElement | null;
 export type MuxPlayerProps = Partial<MuxVideoProps> & {
+  defaultShowCaptions?: boolean;
   ChromeRenderer?: (props: ChromeProps) => ReactInstanceBasic;
   primaryColor?: React.CSSProperties["color"];
   secondaryColor?: React.CSSProperties["color"];
@@ -303,9 +304,11 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     muted,
     autoPlay,
     debug,
+    defaultShowCaptions = true,
     ChromeRenderer = DefaultChromeRenderer,
     children,
   } = props;
+  const muxVideoRef = useRef<HTMLVideoElement>();
 
   let supportsAirPlay = false;
   useEffect(() => {
@@ -320,14 +323,29 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
 
   const [hasCaptions, setHasCaptions] = useState(false);
   const onTrackCountChange = ({ target }: TrackEvent) => {
-    const { length: ccSubTracksLength } = Array.from(
-      target as TextTrackList
-    ).filter(({ kind }) => kind === "subtitles" || kind === "captions");
+    const textTracks = target as TextTrackList;
+    const ccSubTracks = Array.from(textTracks).filter(
+      ({ kind }) => kind === "subtitles" || kind === "captions"
+    );
 
-    setHasCaptions(!!ccSubTracksLength);
+    // NOTE: This is a hack solution to "default" CC selection. Solution *should*
+    // be better default state support in media-chrome (CJP).
+    if (defaultShowCaptions && ccSubTracks.length && muxVideoRef.current) {
+      const [ccSubTrack] = ccSubTracks;
+      const eventType =
+        ccSubTrack.kind === "captions"
+          ? "mediashowcaptionsrequest"
+          : "mediashowsubtitlesrequest";
+      const showCCSubEvent = new CustomEvent(eventType, {
+        composed: true,
+        bubbles: true,
+        detail: ccSubTrack,
+      });
+      muxVideoRef.current.dispatchEvent(showCCSubEvent);
+    }
+    setHasCaptions(!!ccSubTracks.length);
   };
 
-  const muxVideoRef = useRef<HTMLVideoElement>();
   const muxVideoRefCb = useCallback((node?: HTMLVideoElement) => {
     if (muxVideoRef?.current) {
       // Remove Event Handlers from prev
@@ -351,11 +369,27 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     muxVideoRef.current = node;
     if (!muxVideoRef?.current) return;
 
-    const { length: ccSubTracksLength } = Array.from(
-      muxVideoRef.current.textTracks
-    ).filter(({ kind }) => kind === "subtitles" || kind === "captions");
+    const { textTracks } = muxVideoRef.current;
+    const ccSubTracks = Array.from(textTracks).filter(
+      ({ kind }) => kind === "subtitles" || kind === "captions"
+    );
 
-    setHasCaptions(!!ccSubTracksLength);
+    // NOTE: This is a hack solution to "default" CC selection. Solution *should*
+    // be better default state support in media-chrome (CJP).
+    if (defaultShowCaptions && ccSubTracks.length) {
+      const [ccSubTrack] = ccSubTracks;
+      const eventType =
+        ccSubTrack.kind === "captions"
+          ? "mediashowcaptionsrequest"
+          : "mediashowsubtitlesrequest";
+      const showCCSubEvent = new CustomEvent(eventType, {
+        composed: true,
+        bubbles: true,
+        detail: ccSubTrack,
+      });
+      muxVideoRef.current.dispatchEvent(showCCSubEvent);
+    }
+    setHasCaptions(!!ccSubTracks.length);
 
     muxVideoRef.current.addEventListener(
       "webkitplaybacktargetavailabilitychanged",
