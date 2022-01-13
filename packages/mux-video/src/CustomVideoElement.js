@@ -41,7 +41,7 @@ class CustomVideoElement extends HTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector("video"));
@@ -59,8 +59,6 @@ class CustomVideoElement extends HTMLElement {
     if (nativeEl.defaultMuted) {
       nativeEl.muted = true;
     }
-
-    this.shadowRoot.appendChild(nativeEl);
 
     this.querySelectorAll(":scope > track").forEach((track) => {
       this.nativeEl.appendChild(track.cloneNode());
