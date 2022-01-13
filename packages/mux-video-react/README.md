@@ -30,13 +30,13 @@ npm i @mux-elements/mux-video-react
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import "@mux-elements/mux-video-react";
+import MuxVideo from "@mux-elements/mux-video-react";
 ```
 
 or
 
 ```js
-require("@mux-elements/mux-video-react");
+const MuxVideo = require("@mux-elements/mux-video-react");
 ```
 
 ## Features and benefits
