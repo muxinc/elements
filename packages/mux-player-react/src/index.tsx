@@ -22,6 +22,7 @@ import Loading from "./media-chrome/components/loading";
 import AirPlayButton from "./media-chrome/components/air-play-button";
 import { StreamTypes } from "@mux-elements/playback-core";
 import { useTimeoutWhen } from "./useTimeoutWhen";
+import { useBoundingclientrect } from "./useBoundingclientrect";
 
 export { StreamTypes };
 
@@ -51,37 +52,6 @@ declare module "csstype" {
     // [index: string]: any;
   }
 }
-
-const useEffectInEvent = (
-  event: "resize" | "scroll",
-  set: () => void = () => {},
-  useCapture: boolean = false
-) => {
-  useEffect(() => {
-    set();
-    window.addEventListener(event, set, useCapture);
-    return () => window.removeEventListener(event, set, useCapture);
-  }, []);
-};
-
-export const useRect = <T extends Element>(): [
-  DOMRect | undefined,
-  (node?: T) => void
-] => {
-  const ref = useRef<T>();
-  const [rect, setRect] = useState<DOMRect>();
-
-  const set = () => setRect(ref.current?.getBoundingClientRect());
-
-  useEffectInEvent("resize", set);
-  useEffectInEvent("scroll", set, true);
-  const refCb = useCallback((node?: T) => {
-    ref.current = node;
-    set();
-  }, []);
-
-  return [rect, refCb];
-};
 
 const getPosterURLFromPlaybackId = (playbackId: MuxVideoProps["playbackId"]) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
@@ -558,7 +528,9 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
   }, []);
 
   const [playerSize, setPlayerSize] = useState(MediaChromeSizes.LG);
-  const [mediaControllerRect, mediaControllerRefCb] = useRect();
+
+  const mediaControllerRef = useRef(null);
+  const mediaControllerRect = useBoundingclientrect(mediaControllerRef);
   useEffect(() => {
     if (!mediaControllerRect) return;
 
@@ -570,16 +542,9 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     setPlayerSize(nextPlayerSize);
   }, [mediaControllerRect]);
 
-  console.log(
-    "isLoading",
-    isLoading,
-    "readyState",
-    muxVideoRef.current?.readyState
-  );
-
   return (
     <MediaController
-      ref={mediaControllerRefCb}
+      ref={mediaControllerRef}
       style={getChromeStylesFromProps(props)}
       autohide={1}
     >
