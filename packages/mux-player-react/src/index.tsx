@@ -18,8 +18,10 @@ import {
   MediaFullscreenButton,
 } from "./media-chrome";
 import { useRef } from "react";
+import Loading from "./media-chrome/components/loading";
 import AirPlayButton from "./media-chrome/components/air-play-button";
 import { StreamTypes } from "@mux-elements/playback-core";
+import { useTimeoutWhen } from "./useTimeoutWhen";
 
 export { StreamTypes };
 
@@ -43,6 +45,8 @@ declare module "csstype" {
     "--media-background-color"?: CSS.Properties["backgroundColor"];
     "--media-control-background"?: CSS.Properties["backgroundColor"];
     "--media-button-icon-width"?: CSS.Properties["width"];
+    "-webkit-transform"?: CSS.Properties["transform"];
+    "-ms-transform"?: CSS.Properties["transform"];
     // ...or allow any other property
     // [index: string]: any;
   }
@@ -101,13 +105,34 @@ const Spacer = () => {
 type ChromeProps = {
   onAirPlaySelected?: React.MouseEventHandler;
   hasAirPlay?: boolean;
+  isLoading?: boolean;
+  paused?: boolean;
   hasCaptions?: boolean;
   streamType?: MuxVideoProps["streamType"];
   playerSize?: string;
 };
 
 export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
+  const {
+    onAirPlaySelected,
+    hasAirPlay = false,
+    hasCaptions = false,
+    isLoading = false,
+    paused,
+  } = props;
+  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  useTimeoutWhen(
+    () => {
+      setShowLoading(isLoading && !paused);
+    },
+    500,
+    isLoading && !paused
+  );
+  useEffect(() => {
+    const nextShowLoading = isLoading && !paused;
+    if (nextShowLoading) return;
+    setShowLoading(nextShowLoading);
+  }, [isLoading, paused]);
   return (
     <>
       <div
@@ -123,13 +148,21 @@ export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
           justifyContent: "center",
         }}
       >
-        <MediaSeekBackwardButton
-          style={{ padding: 0, width: "20%" }}
-        ></MediaSeekBackwardButton>
-        <MediaPlayButton style={{ padding: 0, width: "20%" }}></MediaPlayButton>
-        <MediaSeekForwardButton
-          style={{ padding: 0, width: "20%" }}
-        ></MediaSeekForwardButton>
+        {showLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <MediaSeekBackwardButton
+              style={{ padding: 0, width: "20%" }}
+            ></MediaSeekBackwardButton>
+            <MediaPlayButton
+              style={{ padding: 0, width: "20%" }}
+            ></MediaPlayButton>
+            <MediaSeekForwardButton
+              style={{ padding: 0, width: "20%" }}
+            ></MediaSeekForwardButton>
+          </>
+        )}
       </div>
       <MediaControlBar>
         <MediaTimeRange></MediaTimeRange>
@@ -149,18 +182,43 @@ export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
 };
 
 export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
+  const {
+    onAirPlaySelected,
+    hasAirPlay = false,
+    hasCaptions = false,
+    isLoading = false,
+    paused,
+  } = props;
+  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  useTimeoutWhen(
+    () => {
+      setShowLoading(isLoading && !paused);
+    },
+    500,
+    isLoading && !paused
+  );
+  useEffect(() => {
+    const nextShowLoading = isLoading && !paused;
+    if (nextShowLoading) return;
+    setShowLoading(nextShowLoading);
+  }, [isLoading, paused]);
   return (
     <>
-      {/* <div slot="centered-chrome">
-        <MediaSeekBackwardButton></MediaSeekBackwardButton>
-        <MediaPlayButton></MediaPlayButton>
-        <MediaSeekForwardButton></MediaSeekForwardButton>
-      </div> */}
-      {/* <MediaControlBar>
-        <MediaTimeRange></MediaTimeRange>
-        <MediaTimeDisplay show-duration remaining></MediaTimeDisplay>
-      </MediaControlBar> */}
+      <div
+        slot="centered-chrome"
+        style={{
+          "--media-background-color": "none",
+          "--media-control-background": "none",
+          "--media-button-icon-width": "100%",
+          width: "100%",
+          display: "flex",
+          flexFlow: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {showLoading ? <Loading /> : <></>}
+      </div>
       <MediaControlBar>
         <MediaPlayButton></MediaPlayButton>
         <MediaSeekForwardButton></MediaSeekForwardButton>
@@ -183,7 +241,26 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
 };
 
 export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
+  const {
+    onAirPlaySelected,
+    hasAirPlay = false,
+    hasCaptions = false,
+    isLoading = false,
+    paused,
+  } = props;
+  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  useTimeoutWhen(
+    () => {
+      setShowLoading(isLoading && !paused);
+    },
+    500,
+    isLoading && !paused
+  );
+  useEffect(() => {
+    const nextShowLoading = isLoading && !paused;
+    if (nextShowLoading) return;
+    setShowLoading(nextShowLoading);
+  }, [isLoading, paused]);
   return (
     <>
       <div
@@ -199,7 +276,15 @@ export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
           justifyContent: "center",
         }}
       >
-        <MediaPlayButton style={{ padding: 0, width: "20%" }}></MediaPlayButton>
+        {showLoading ? (
+          <Loading />
+        ) : (
+          <>
+            <MediaPlayButton
+              style={{ padding: 0, width: "20%" }}
+            ></MediaPlayButton>
+          </>
+        )}
       </div>
       <MediaControlBar>
         <MediaMuteButton></MediaMuteButton>
@@ -214,9 +299,43 @@ export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   );
 };
 export const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
-  const { onAirPlaySelected, hasAirPlay = false, hasCaptions = false } = props;
+  const {
+    onAirPlaySelected,
+    hasAirPlay = false,
+    hasCaptions = false,
+    isLoading = false,
+    paused,
+  } = props;
+  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  useTimeoutWhen(
+    () => {
+      setShowLoading(isLoading && !paused);
+    },
+    500,
+    isLoading && !paused
+  );
+  useEffect(() => {
+    const nextShowLoading = isLoading && !paused;
+    if (nextShowLoading) return;
+    setShowLoading(nextShowLoading);
+  }, [isLoading, paused]);
   return (
     <>
+      <div
+        slot="centered-chrome"
+        style={{
+          "--media-background-color": "none",
+          "--media-control-background": "none",
+          "--media-button-icon-width": "100%",
+          width: "100%",
+          display: "flex",
+          flexFlow: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {showLoading ? <Loading /> : <></>}
+      </div>
       <MediaControlBar>
         <MediaPlayButton></MediaPlayButton>
         <MediaMuteButton></MediaMuteButton>
@@ -310,6 +429,17 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
   } = props;
   const muxVideoRef = useRef<HTMLVideoElement>();
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  /*
+   * This is a pretty naiive check -- may have to make this more sophisticated
+   */
+  const onLoadingStateChange = useCallback(({ target }: Event) => {
+    const mediaEl = target as HTMLMediaElement;
+    const nextIsLoading = mediaEl.readyState < 3;
+    setIsLoading(nextIsLoading);
+  }, []);
+
   let supportsAirPlay = false;
   useEffect(() => {
     supportsAirPlay = !!window.WebKitPlaybackTargetAvailabilityEvent;
@@ -348,6 +478,18 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
 
   const muxVideoRefCb = useCallback((node?: HTMLVideoElement) => {
     if (muxVideoRef?.current) {
+      muxVideoRef.current.removeEventListener(
+        "timeupdate",
+        onLoadingStateChange
+      );
+      muxVideoRef.current.removeEventListener("canplay", onLoadingStateChange);
+      muxVideoRef.current.removeEventListener(
+        "loadedmetadata",
+        onLoadingStateChange
+      );
+      muxVideoRef.current.removeEventListener("waiting", onLoadingStateChange);
+      muxVideoRef.current.removeEventListener("stalled", onLoadingStateChange);
+
       // Remove Event Handlers from prev
       if (supportsAirPlay) {
         muxVideoRef.current.removeEventListener(
@@ -391,6 +533,15 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     }
     setHasCaptions(!!ccSubTracks.length);
 
+    muxVideoRef.current.addEventListener("timeupdate", onLoadingStateChange);
+    muxVideoRef.current.addEventListener("canplay", onLoadingStateChange);
+    muxVideoRef.current.addEventListener(
+      "loadedmetadata",
+      onLoadingStateChange
+    );
+    muxVideoRef.current.addEventListener("waiting", onLoadingStateChange);
+    muxVideoRef.current.addEventListener("stalled", onLoadingStateChange);
+
     muxVideoRef.current.addEventListener(
       "webkitplaybacktargetavailabilitychanged",
       onPlaybackTargetChanged
@@ -418,6 +569,13 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
 
     setPlayerSize(nextPlayerSize);
   }, [mediaControllerRect]);
+
+  console.log(
+    "isLoading",
+    isLoading,
+    "readyState",
+    muxVideoRef.current?.readyState
+  );
 
   return (
     <MediaController
@@ -457,6 +615,8 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
       </MuxVideo>
       <ChromeRenderer
         hasCaptions={hasCaptions}
+        isLoading={isLoading}
+        paused={!!muxVideoRef.current?.paused}
         hasAirPlay={hasAirPlay}
         onAirPlaySelected={() => {
           muxVideoRef.current?.webkitShowPlaybackTargetPicker?.();
