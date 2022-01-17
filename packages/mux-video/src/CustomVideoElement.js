@@ -60,8 +60,6 @@ class CustomVideoElement extends HTMLElement {
       nativeEl.muted = true;
     }
 
-    this.shadowRoot.appendChild(nativeEl);
-
     this.querySelectorAll(":scope > track").forEach((track) => {
       this.nativeEl.appendChild(track.cloneNode());
     });
@@ -72,9 +70,10 @@ class CustomVideoElement extends HTMLElement {
         if (mutation.type === "childList") {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
-            this.nativeEl.removeChild(
-              this.nativeEl.querySelector(`track[src="${node.src}"]`)
+            const track = this.nativeEl.querySelector(
+              `track[src="${node.src}"]`
             );
+            if (track) this.nativeEl.removeChild(track);
           });
 
           mutation.addedNodes.forEach((node) => {
