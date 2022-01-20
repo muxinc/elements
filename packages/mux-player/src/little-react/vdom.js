@@ -3,13 +3,18 @@
 // https://gist.github.com/marvinhagemeister/8950b1032d67918d21950b3985259d78
 // Added refs, style maps
 
+import { options } from "./hooks";
+
 const h = (type, props, ...children) => {
-  return {
+  let vnode = {
     _type: type,
     _props: props, // An object for components and DOM nodes, a string for text nodes.
     _children: children.filter((_) => _ !== false),
     key: props && props.key,
+    ref: props && props.ref,
+    data: typeof type == "function" ? {} : null,
   };
+  return vnode;
 };
 
 const Fragment = (props) => {
@@ -37,15 +42,20 @@ const diff = (newVNode, dom, oldVNode, currentChildIndex) => {
     newVNode._state = oldVNode._state || {};
     // Add children to props
     const props = { children: newVNode._children, ...newVNode._props };
+
+    if (options._render) options._render(newVNode);
+
+    newVNode.rerender = (nextState) => {
+      // Update state with new value
+      Object.assign(newVNode._state, nextState);
+      return diff(newVNode, dom, newVNode);
+    };
+
     const renderResult = newVNode._type(
       props,
       newVNode._state,
       // Updater function that is passed as 3rd argument to components
-      (nextState) => {
-        // Update state with new value
-        Object.assign(newVNode._state, nextState);
-        return diff(newVNode, dom, newVNode);
-      }
+      newVNode.rerender
     );
 
     newVNode._patched = diff(
@@ -54,6 +64,8 @@ const diff = (newVNode, dom, oldVNode, currentChildIndex) => {
       (oldVNode && oldVNode._patched) || {},
       currentChildIndex
     );
+
+    if (options.diffed) options.diffed(newVNode);
 
     return (dom._vnode = newVNode);
   }
@@ -73,7 +85,10 @@ const diff = (newVNode, dom, oldVNode, currentChildIndex) => {
       // If newVNode.type is truthy (=not an empty string) we have a DOM node
       if (newVNode._type) {
         const { key, ref, ...newProps } = newVNode._props;
-        if (ref) ref.current = newDom;
+        if (ref) {
+          if (ref.call) ref(newDom);
+          else ref.current = newDom;
+        }
 
         for (let name in newProps) {
           const value = newProps[name];
@@ -146,6 +161,7 @@ const diffChildren = (parentDom, newChildren, oldVNode) => {
 
   // remove old children if there are any
   oldChildren.map((oldChild) => {
+    if (options.unmount) options.unmount(oldChild);
     const node = (oldChild._patched && oldChild._patched.dom) || oldChild.dom;
     if (node) {
       node.remove();

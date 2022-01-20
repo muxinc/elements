@@ -2,7 +2,7 @@
   "name": "@mux-elements/mux-player",
   "version": "0.1.0",
   "type": "module",
-  "description": "An open source Mux player for React that Just Works™",
+  "description": "An open source Mux player web component that Just Works™",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "repository": {
@@ -17,19 +17,21 @@
     "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
-    "build:esm": "esbuild src/index.jsx --target=es2019 --bundle --minify --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\" --jsx-factory=h --jsx-fragment=Fragment",
-    "build:iife": "esbuild src/index.jsx --target=es2019 --bundle --minify --sourcemap --format=iife --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\" --jsx-factory=h --jsx-fragment=Fragment",
-    "build:cjs": "esbuild src/index.jsx --target=es2019 --bundle --minify --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\" --jsx-factory=h --jsx-fragment=Fragment",
+    "build:esm": "esbuild src/index.tsx --target=es2019 --bundle --minify --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:iife": "esbuild src/index.tsx --target=es2019 --bundle --minify --sourcemap --format=iife --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.tsx --target=es2019 --bundle --minify --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types build:esm build:iife build:cjs",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@mux-elements/mux-video": "*",
-    "media-chrome": "^0.4.0"
+    "media-chrome": "^0.4.0",
+    "react": "link:./src/little-react"
   },
   "devDependencies": {
     "esbuild": "^0.13.13",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.5.2"
   }
 }
