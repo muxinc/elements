@@ -6,6 +6,8 @@ import { useState, useEffect, useCallback } from "react";
 import { useDidMount } from "./useDidMount";
 import { useMutationObserver } from "./useMutationObserver";
 
+let cache: any = {};
+
 /**
  * @param element HTML element whose boundingclientrect is needed
  * @returns ClientRect
@@ -13,7 +15,8 @@ import { useMutationObserver } from "./useMutationObserver";
 function getBoundingClientRect(
   element: HTMLElement
 ): ClientRect | DOMRect | null {
-  return element.getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
+  return cache[JSON.stringify(rect)] || (cache[JSON.stringify(rect)] = rect);
 }
 
 /**

@@ -532,21 +532,17 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
   const [playerSize, setPlayerSize] = useState(MediaChromeSizes.LG);
 
   const mediaControllerRef = useRef(null);
-  console.warn(999, mediaControllerRef);
-  // there's something wrong here with useBoundingclientrect
-  // this component is run too much!!
+  const mediaControllerRect = useBoundingclientrect(mediaControllerRef);
+  useEffect(() => {
+    if (!mediaControllerRect) return;
 
-  // const mediaControllerRect = useBoundingclientrect(mediaControllerRef);
-  // useEffect(() => {
-  //   if (!mediaControllerRect) return;
+    const nextPlayerSize =
+      mediaControllerRect.width < SMALL_BREAKPOINT
+        ? MediaChromeSizes.SM
+        : MediaChromeSizes.LG;
 
-  //   const nextPlayerSize =
-  //     mediaControllerRect.width < SMALL_BREAKPOINT
-  //       ? MediaChromeSizes.SM
-  //       : MediaChromeSizes.LG;
-
-  //   setPlayerSize(nextPlayerSize);
-  // }, [mediaControllerRect]);
+    setPlayerSize(nextPlayerSize);
+  }, [mediaControllerRect]);
 
   return (
     <MediaController
