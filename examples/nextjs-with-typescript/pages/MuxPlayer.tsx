@@ -1,8 +1,11 @@
 import Link from "next/link";
 import MuxPlayer from "@mux-elements/mux-player-react";
 import { StreamTypes } from "@mux-elements/mux-player-react";
+import { useRef } from "react";
 
 function MuxPlayerPage() {
+  const mediaElRef = useRef<HTMLVideoElement>(null);
+
   return (
     <div
       style={{
@@ -15,6 +18,7 @@ function MuxPlayerPage() {
       <h1>MuxPlayer Demo</h1>
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
         <MuxPlayer
+          ref={mediaElRef}
           playbackId="ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY"
           // debug
           muted
@@ -23,7 +27,7 @@ function MuxPlayerPage() {
           // primaryColor="#ec407a"
           // secondaryColor="#64b5f6"
           // tertiaryColor="#b4004e"
-          startTime={12}
+          // startTime={12}
         >
           <track
             label="English"

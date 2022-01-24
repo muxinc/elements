@@ -23,6 +23,7 @@ import AirPlayButton from "./media-chrome/components/air-play-button";
 import { StreamTypes } from "@mux-elements/playback-core";
 import { useTimeoutWhen } from "./useTimeoutWhen";
 import { useBoundingclientrect } from "./useBoundingclientrect";
+import { useCombinedRefs } from "./useCombinedRefs";
 
 export { StreamTypes };
 
@@ -45,6 +46,7 @@ declare module "csstype" {
   interface Properties {
     "--media-background-color"?: CSS.Properties["backgroundColor"];
     "--media-control-background"?: CSS.Properties["backgroundColor"];
+    "--media-control-hover-background"?: CSS.Properties["backgroundColor"];
     "--media-button-icon-width"?: CSS.Properties["width"];
     "-webkit-transform"?: CSS.Properties["transform"];
     "-ms-transform"?: CSS.Properties["transform"];
@@ -72,12 +74,35 @@ const Spacer = () => {
   );
 };
 
+let testMediaEl: HTMLMediaElement | undefined;
+const getTestMediaEl = (nodeName = "video") => {
+  if (testMediaEl) return testMediaEl;
+  if (typeof window !== "undefined") {
+    testMediaEl = document.createElement(nodeName as "video" | "audio");
+  }
+  return testMediaEl;
+};
+
+const hasVolumeSupportAsync = async (
+  mediaEl: HTMLMediaElement | undefined = getTestMediaEl()
+) => {
+  if (!mediaEl) return false;
+  const prevVolume = mediaEl.volume;
+  mediaEl.volume = prevVolume / 2 + 0.1;
+  return new Promise<boolean>((resolve, reject) => {
+    setTimeout(() => {
+      resolve(mediaEl.volume !== prevVolume);
+    }, 0);
+  });
+};
+
 type ChromeProps = {
   onAirPlaySelected?: React.MouseEventHandler;
-  hasAirPlay?: boolean;
-  isLoading?: boolean;
+  supportsAirplay?: boolean;
+  supportsVolume?: boolean;
+  loading?: boolean;
   paused?: boolean;
-  hasCaptions?: boolean;
+  captionsAvailable?: boolean;
   streamType?: MuxVideoProps["streamType"];
   playerSize?: string;
 };
@@ -85,30 +110,32 @@ type ChromeProps = {
 export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
     onAirPlaySelected,
-    hasAirPlay = false,
-    hasCaptions = false,
-    isLoading = false,
+    supportsAirplay = false,
+    supportsVolume = false,
+    captionsAvailable = false,
+    loading = false,
     paused,
   } = props;
-  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  const [showLoading, setShowLoading] = useState(loading && !paused);
   useTimeoutWhen(
     () => {
-      setShowLoading(isLoading && !paused);
+      setShowLoading(loading && !paused);
     },
     500,
-    isLoading && !paused
+    loading && !paused
   );
   useEffect(() => {
-    const nextShowLoading = isLoading && !paused;
+    const nextShowLoading = loading && !paused;
     if (nextShowLoading) return;
     setShowLoading(nextShowLoading);
-  }, [isLoading, paused]);
+  }, [loading, paused]);
   return (
     <>
       <div
         slot="centered-chrome"
         style={{
           "--media-background-color": "none",
+          "--media-control-hover-background": "none",
           "--media-control-background": "none",
           "--media-button-icon-width": "100%",
           width: "100%",
@@ -136,16 +163,16 @@ export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
       </div>
       <MediaControlBar>
         <MediaTimeRange></MediaTimeRange>
-        <MediaTimeDisplay show-duration remaining></MediaTimeDisplay>
+        <MediaTimeDisplay show-duration></MediaTimeDisplay>
       </MediaControlBar>
       <MediaControlBar>
         <MediaMuteButton></MediaMuteButton>
-        <MediaVolumeRange></MediaVolumeRange>
+        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <Spacer />
-        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+        {supportsAirplay && <AirPlayButton onClick={onAirPlaySelected} />}
       </MediaControlBar>
     </>
   );
@@ -154,30 +181,32 @@ export const VodChromeSmall: React.FC<ChromeProps> = (props) => {
 export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
   const {
     onAirPlaySelected,
-    hasAirPlay = false,
-    hasCaptions = false,
-    isLoading = false,
+    supportsAirplay = false,
+    supportsVolume = false,
+    captionsAvailable = false,
+    loading = false,
     paused,
   } = props;
-  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  const [showLoading, setShowLoading] = useState(loading && !paused);
   useTimeoutWhen(
     () => {
-      setShowLoading(isLoading && !paused);
+      setShowLoading(loading && !paused);
     },
     500,
-    isLoading && !paused
+    loading && !paused
   );
   useEffect(() => {
-    const nextShowLoading = isLoading && !paused;
+    const nextShowLoading = loading && !paused;
     if (nextShowLoading) return;
     setShowLoading(nextShowLoading);
-  }, [isLoading, paused]);
+  }, [loading, paused]);
   return (
     <>
       <div
         slot="centered-chrome"
         style={{
           "--media-background-color": "none",
+          "--media-control-hover-background": "none",
           "--media-control-background": "none",
           "--media-button-icon-width": "100%",
           width: "100%",
@@ -194,17 +223,16 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
         <MediaSeekForwardButton></MediaSeekForwardButton>
         <MediaSeekBackwardButton></MediaSeekBackwardButton>
         <MediaMuteButton></MediaMuteButton>
-        <MediaVolumeRange></MediaVolumeRange>
+        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <MediaTimeRange></MediaTimeRange>
         <MediaTimeDisplay
           show-duration
-          remaining
           style={{ color: "inherit" }}
         ></MediaTimeDisplay>
-        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+        {supportsAirplay && <AirPlayButton onClick={onAirPlaySelected} />}
       </MediaControlBar>
     </>
   );
@@ -213,30 +241,32 @@ export const VodChromeLarge: React.FC<ChromeProps> = (props) => {
 export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
     onAirPlaySelected,
-    hasAirPlay = false,
-    hasCaptions = false,
-    isLoading = false,
+    supportsAirplay = false,
+    supportsVolume = false,
+    captionsAvailable = false,
+    loading = false,
     paused,
   } = props;
-  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  const [showLoading, setShowLoading] = useState(loading && !paused);
   useTimeoutWhen(
     () => {
-      setShowLoading(isLoading && !paused);
+      setShowLoading(loading && !paused);
     },
     500,
-    isLoading && !paused
+    loading && !paused
   );
   useEffect(() => {
-    const nextShowLoading = isLoading && !paused;
+    const nextShowLoading = loading && !paused;
     if (nextShowLoading) return;
     setShowLoading(nextShowLoading);
-  }, [isLoading, paused]);
+  }, [loading, paused]);
   return (
     <>
       <div
         slot="centered-chrome"
         style={{
           "--media-background-color": "none",
+          "--media-control-hover-background": "none",
           "--media-control-background": "none",
           "--media-button-icon-width": "100%",
           width: "100%",
@@ -258,12 +288,12 @@ export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
       </div>
       <MediaControlBar>
         <MediaMuteButton></MediaMuteButton>
-        <MediaVolumeRange></MediaVolumeRange>
+        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <Spacer />
-        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+        {supportsAirplay && <AirPlayButton onClick={onAirPlaySelected} />}
       </MediaControlBar>
     </>
   );
@@ -271,30 +301,32 @@ export const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
 export const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
   const {
     onAirPlaySelected,
-    hasAirPlay = false,
-    hasCaptions = false,
-    isLoading = false,
+    supportsAirplay = false,
+    supportsVolume = false,
+    captionsAvailable = false,
+    loading = false,
     paused,
   } = props;
-  const [showLoading, setShowLoading] = useState(isLoading && !paused);
+  const [showLoading, setShowLoading] = useState(loading && !paused);
   useTimeoutWhen(
     () => {
-      setShowLoading(isLoading && !paused);
+      setShowLoading(loading && !paused);
     },
     500,
-    isLoading && !paused
+    loading && !paused
   );
   useEffect(() => {
-    const nextShowLoading = isLoading && !paused;
+    const nextShowLoading = loading && !paused;
     if (nextShowLoading) return;
     setShowLoading(nextShowLoading);
-  }, [isLoading, paused]);
+  }, [loading, paused]);
   return (
     <>
       <div
         slot="centered-chrome"
         style={{
           "--media-background-color": "none",
+          "--media-control-hover-background": "none",
           "--media-control-background": "none",
           "--media-button-icon-width": "100%",
           width: "100%",
@@ -309,13 +341,13 @@ export const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
       <MediaControlBar>
         <MediaPlayButton></MediaPlayButton>
         <MediaMuteButton></MediaMuteButton>
-        <MediaVolumeRange></MediaVolumeRange>
+        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <Spacer />
-        {hasCaptions && <MediaCaptionsButton></MediaCaptionsButton>}
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {hasAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+        {supportsAirplay && <AirPlayButton onClick={onAirPlaySelected} />}
       </MediaControlBar>
     </>
   );
@@ -337,6 +369,8 @@ export const DefaultChromeRenderer: React.FC<ChromeProps> = (props) => {
 
 type ReactInstanceBasic = React.ReactElement | null;
 export type MuxPlayerProps = Partial<MuxVideoProps> & {
+  onPlayerReady?: () => void; // params?
+  onError?: (e: ErrorEvent) => void;
   defaultShowCaptions?: boolean;
   ChromeRenderer?: (props: ChromeProps) => ReactInstanceBasic;
   primaryColor?: React.CSSProperties["color"];
@@ -359,6 +393,7 @@ const getChromeStylesFromProps = (props: MuxPlayerProps) => {
   const secondaryColorStyles = secondaryColor
     ? {
         "--media-background-color": secondaryColor,
+        "--media-control-hover-background": secondaryColor,
         "--media-control-background": secondaryColor,
       }
     : {};
@@ -380,7 +415,10 @@ const getChromeStylesFromProps = (props: MuxPlayerProps) => {
 
 const SMALL_BREAKPOINT = 700;
 
-export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
+export const MuxPlayer = React.forwardRef<
+  HTMLVideoElement | undefined,
+  Omit<MuxPlayerProps, "ref">
+>((props, ref) => {
   const {
     playbackId = "",
     streamType,
@@ -396,10 +434,22 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
     defaultShowCaptions = true,
     ChromeRenderer = DefaultChromeRenderer,
     children,
+    key,
+    onPlayerReady,
+    // onError,
+    ...restProps
   } = props;
   const muxVideoRef = useRef<HTMLVideoElement>();
+  const mediaElRef = useCombinedRefs(muxVideoRef, ref);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [supportsVolume, setSupportsVolume] = useState(false);
+  useEffect(() => {
+    (async () => {
+      setSupportsVolume(await hasVolumeSupportAsync());
+    })();
+  }, []);
+
+  const [loading, setLoading] = useState(true);
 
   /*
    * This is a pretty naiive check -- may have to make this more sophisticated
@@ -407,21 +457,21 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
   const onLoadingStateChange = useCallback(({ target }: Event) => {
     const mediaEl = target as HTMLMediaElement;
     const nextIsLoading = mediaEl.readyState < 3;
-    setIsLoading(nextIsLoading);
+    setLoading(nextIsLoading);
   }, []);
 
   let supportsAirPlay = false;
   useEffect(() => {
     supportsAirPlay = !!window.WebKitPlaybackTargetAvailabilityEvent;
   }, []);
-  const [hasAirPlay, setHasAirPlay] = useState(false);
+  const [supportsAirplay, setSupportsAirplay] = useState(false);
   const onPlaybackTargetChanged = (
     event: Event & { availability?: boolean }
   ) => {
-    setHasAirPlay(!!event.availability);
+    setSupportsAirplay(!!event.availability);
   };
 
-  const [hasCaptions, setHasCaptions] = useState(false);
+  const [captionsAvailable, setCaptionsAvailable] = useState(false);
   const onTrackCountChange = ({ target }: TrackEvent) => {
     const textTracks = target as TextTrackList;
     const ccSubTracks = Array.from(textTracks).filter(
@@ -443,45 +493,45 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
       });
       muxVideoRef.current.dispatchEvent(showCCSubEvent);
     }
-    setHasCaptions(!!ccSubTracks.length);
+    setCaptionsAvailable(!!ccSubTracks.length);
   };
 
   const muxVideoRefCb = useCallback((node?: HTMLVideoElement) => {
-    if (muxVideoRef?.current) {
-      muxVideoRef.current.removeEventListener(
+    if (mediaElRef?.current) {
+      mediaElRef.current.removeEventListener(
         "timeupdate",
         onLoadingStateChange
       );
-      muxVideoRef.current.removeEventListener("canplay", onLoadingStateChange);
-      muxVideoRef.current.removeEventListener(
+      mediaElRef.current.removeEventListener("canplay", onLoadingStateChange);
+      mediaElRef.current.removeEventListener(
         "loadedmetadata",
         onLoadingStateChange
       );
-      muxVideoRef.current.removeEventListener("waiting", onLoadingStateChange);
-      muxVideoRef.current.removeEventListener("stalled", onLoadingStateChange);
+      mediaElRef.current.removeEventListener("waiting", onLoadingStateChange);
+      mediaElRef.current.removeEventListener("stalled", onLoadingStateChange);
 
       // Remove Event Handlers from prev
       if (supportsAirPlay) {
-        muxVideoRef.current.removeEventListener(
+        mediaElRef.current.removeEventListener(
           "webkitplaybacktargetavailabilitychanged",
           onPlaybackTargetChanged
         );
-
-        muxVideoRef.current.textTracks.removeEventListener(
-          "addtrack",
-          onTrackCountChange
-        );
-        muxVideoRef.current.textTracks.removeEventListener(
-          "removetrack",
-          onTrackCountChange
-        );
       }
+
+      mediaElRef.current.textTracks.removeEventListener(
+        "addtrack",
+        onTrackCountChange
+      );
+      mediaElRef.current.textTracks.removeEventListener(
+        "removetrack",
+        onTrackCountChange
+      );
     }
 
-    muxVideoRef.current = node;
-    if (!muxVideoRef?.current) return;
+    mediaElRef.current = node;
+    if (!mediaElRef?.current) return;
 
-    const { textTracks } = muxVideoRef.current;
+    const { textTracks } = mediaElRef.current;
     const ccSubTracks = Array.from(textTracks).filter(
       ({ kind }) => kind === "subtitles" || kind === "captions"
     );
@@ -499,29 +549,26 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
         bubbles: true,
         detail: ccSubTrack,
       });
-      muxVideoRef.current.dispatchEvent(showCCSubEvent);
+      mediaElRef.current.dispatchEvent(showCCSubEvent);
     }
-    setHasCaptions(!!ccSubTracks.length);
+    setCaptionsAvailable(!!ccSubTracks.length);
 
-    muxVideoRef.current.addEventListener("timeupdate", onLoadingStateChange);
-    muxVideoRef.current.addEventListener("canplay", onLoadingStateChange);
-    muxVideoRef.current.addEventListener(
-      "loadedmetadata",
-      onLoadingStateChange
-    );
-    muxVideoRef.current.addEventListener("waiting", onLoadingStateChange);
-    muxVideoRef.current.addEventListener("stalled", onLoadingStateChange);
+    mediaElRef.current.addEventListener("timeupdate", onLoadingStateChange);
+    mediaElRef.current.addEventListener("canplay", onLoadingStateChange);
+    mediaElRef.current.addEventListener("loadedmetadata", onLoadingStateChange);
+    mediaElRef.current.addEventListener("waiting", onLoadingStateChange);
+    mediaElRef.current.addEventListener("stalled", onLoadingStateChange);
 
-    muxVideoRef.current.addEventListener(
+    mediaElRef.current.addEventListener(
       "webkitplaybacktargetavailabilitychanged",
       onPlaybackTargetChanged
     );
 
-    muxVideoRef.current.textTracks.addEventListener(
+    mediaElRef.current.textTracks.addEventListener(
       "addtrack",
       onTrackCountChange
     );
-    muxVideoRef.current.textTracks.addEventListener(
+    mediaElRef.current.textTracks.addEventListener(
       "removetrack",
       onTrackCountChange
     );
@@ -541,6 +588,19 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
 
     setPlayerSize(nextPlayerSize);
   }, [mediaControllerRect]);
+
+  // Add appropriate conditions for "playerReady" here
+  // * media loaded (?)
+  // * captions availability known
+  // * volume support known
+  // * airplay support known
+  // * bounding rect/size known (?)
+  // * (stretch) aspect ratio resizing done
+  useEffect(() => {
+    if (!onPlayerReady) return;
+    // params?
+    onPlayerReady();
+  }, [onPlayerReady]);
 
   return (
     <MediaController
@@ -569,6 +629,7 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
         crossOrigin=""
         playsInline
         muted={muted}
+        {...restProps}
       >
         <track
           label="thumbnails"
@@ -579,10 +640,11 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
         {children}
       </MuxVideo>
       <ChromeRenderer
-        hasCaptions={hasCaptions}
-        isLoading={isLoading}
+        captionsAvailable={captionsAvailable}
+        supportsVolume={supportsVolume}
+        loading={loading}
         paused={!!muxVideoRef.current?.paused}
-        hasAirPlay={hasAirPlay}
+        supportsAirplay={supportsAirplay}
         onAirPlaySelected={() => {
           muxVideoRef.current?.webkitShowPlaybackTargetPicker?.();
         }}
@@ -591,6 +653,6 @@ export const MuxPlayer: React.FC<MuxPlayerProps> = (props) => {
       />
     </MediaController>
   );
-};
+});
 
 export default MuxPlayer;
