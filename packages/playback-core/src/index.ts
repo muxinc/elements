@@ -66,6 +66,7 @@ export type MuxMediaPropTypes = {
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig["startPosition"];
+  onError: (e: ErrorEvent) => void;
 };
 
 declare global {
