@@ -1,10 +1,13 @@
 import Link from "next/link";
 import MuxPlayer from "@mux-elements/mux-player-react";
 import { StreamTypes } from "@mux-elements/mux-player-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 function MuxPlayerPage() {
   const mediaElRef = useRef<HTMLVideoElement>(null);
+  const [playbackId, setPlaybackId] = useState(
+    "ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY"
+  );
 
   return (
     <div
@@ -19,7 +22,8 @@ function MuxPlayerPage() {
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
         <MuxPlayer
           ref={mediaElRef}
-          playbackId="ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY"
+          playbackId={playbackId}
+          onPlayerReady={() => console.log("ready!")}
           // debug
           muted
           // autoPlay
