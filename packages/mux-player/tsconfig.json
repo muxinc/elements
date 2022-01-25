@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "incremental": true,
+    "target": "ES2019",
+    "module": "es6",
+    "declaration": true,
+    "sourceMap": true,
+    "composite": true,
+    "allowJs": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "moduleResolution": "Node",
+    "baseUrl": "./packages",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["node_modules/@types", "../../types"]
+  },
+  "include": ["src/**/*", "../../types"]
+}

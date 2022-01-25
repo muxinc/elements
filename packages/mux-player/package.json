@@ -1,0 +1,57 @@
+{
+  "name": "@mux-elements/mux-player",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "An open source Mux player web component that Just Works™",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muxinc/elements",
+    "directory": "packages/mux-player"
+  },
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "dev:iife": "open-process | yarn build:iife --watch",
+    "dev:esm": "open-process | yarn build:esm --watch",
+    "dev:types": "yarn build:types -w",
+    "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
+    "build:esm": "esbuild src/index.js --target=es2019 --bundle --minify --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:iife": "esbuild src/index.js --target=es2019 --bundle --minify --sourcemap --format=iife --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.js --target=es2019 --bundle --minify --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build": "npm-run-all --parallel build:types build:esm build:iife build:cjs",
+    "prepublishOnly": "yarn build"
+  },
+  "dependencies": {
+    "@mux-elements/mux-video": "^0.2.0",
+    "media-chrome": "^0.4.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.13.13",
+    "eslint": "^7.11.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.5.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2021,
+      "sourceType": "module"
+    },
+    "globals": {
+      "globalThis": false
+    },
+    "rules": {
+      "no-shadow": "error"
+    }
+  }
+}
