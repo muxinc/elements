@@ -24,6 +24,7 @@
     "shared/*"
   ],
   "scripts": {
+    "format": "prettier --write .",
     "lint": "lerna run lint --scope @mux-elements/*",
     "test": "lerna run test --scope @mux-elements/*",
     "dev": "lerna run dev --parallel --scope @mux-elements/*",
