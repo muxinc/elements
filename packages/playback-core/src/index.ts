@@ -175,10 +175,16 @@ export const setupHls = (
 
   const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
   const hlsSupported = Hls.isSupported();
+  // NOTE: Native HLS playback on Android for LL-HLS has been flaky, so we're prefering
+  // MSE for those conditions for now. (CJP)
+  const userAgentStr = window?.navigator?.userAgent ?? "";
+  const isAndroid = userAgentStr.toLowerCase().indexOf("android") !== -1;
+  const defaultPreferMse = isAndroid && streamType === StreamTypes.LL_LIVE;
 
   // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
   const shouldUseNative =
-    !hlsType || (canUseNative && !(preferMse && hlsSupported));
+    !hlsType ||
+    (canUseNative && !((preferMse || defaultPreferMse) && hlsSupported));
 
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
   if (hlsType && !shouldUseNative && hlsSupported) {
@@ -243,7 +249,10 @@ export const setupMux = (
 
 export const loadMedia = (
   props: Partial<
-    Pick<MuxMediaProps, "preferMse" | "src" | "type" | "startTime">
+    Pick<
+      MuxMediaProps,
+      "preferMse" | "src" | "type" | "startTime" | "streamType"
+    >
   >,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
@@ -260,16 +269,22 @@ export const loadMedia = (
     console.warn("attempting to load media before mediaEl exists");
     return;
   }
-  const { preferMse } = props;
+  const { preferMse, streamType } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
 
   const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
   const hlsSupported = Hls.isSupported();
+  const userAgentStr = window?.navigator?.userAgent ?? "";
+  // NOTE: Native HLS playback on Android for LL-HLS has been flaky, so we're prefering
+  // MSE for those conditions for now. (CJP)
+  const isAndroid = userAgentStr.toLowerCase().indexOf("android") !== -1;
+  const defaultPreferMse = isAndroid && streamType === StreamTypes.LL_LIVE;
 
   // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
   const shouldUseNative =
-    !hlsType || (canUseNative && !(preferMse && hlsSupported));
+    !hlsType ||
+    (canUseNative && !((preferMse || defaultPreferMse) && hlsSupported));
 
   const { src } = props;
   if (mediaEl && canUseNative && shouldUseNative) {
@@ -318,6 +333,21 @@ export const loadMedia = (
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
+    mediaEl.addEventListener("canplay", () => {
+      mediaEl.querySelectorAll("track").forEach((track) => {
+        if (track.getAttribute("label") === "thumbnails") {
+          const thumbnailsSrc = track.getAttribute("src");
+          if (!thumbnailsSrc) return;
+          track.removeAttribute("src");
+          // NOTE: This is super hacky. Need to hunt down if there's a
+          // better event to ensure this happens late enough to not
+          // be stomped on by hls.js (CJP)
+          setTimeout(() => {
+            track.setAttribute("src", thumbnailsSrc);
+          }, 500);
+        }
+      });
+    });
   } else {
     console.error(
       "It looks like the video you're trying to play will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
