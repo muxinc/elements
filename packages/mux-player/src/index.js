@@ -295,43 +295,34 @@ function getCcSubTracks(el) {
     : [];
 }
 
-class MuxPlayerElement extends VideoApiElement {
-  static get observedAttributes() {
-    return [
-      ...(VideoApiElement.observedAttributes ?? []),
-      ...MuxVideoAttributeNameValues,
-    ];
-  }
-
-  constructor() {
-    super();
-
-    let muxPlayer = MuxPlayer(getProps(this));
+class MuxPlayerInternal {
+  constructor(el) {
+    let muxPlayer = MuxPlayer(getProps(el));
     let { chromeRenderer } = muxPlayer.fragments;
     let { captionsButton, center } = chromeRenderer.fragments;
 
-    this.attachShadow({ mode: "open" });
-    this.shadowRoot.append(...muxPlayer.childNodes);
+    el.attachShadow({ mode: "open" });
+    el.shadowRoot.append(...muxPlayer.childNodes);
 
-    this.querySelectorAll(":scope > track").forEach((track) => {
-      this.video?.append(track.cloneNode());
+    el.querySelectorAll(":scope > track").forEach((track) => {
+      el.video?.append(track.cloneNode());
     });
 
     // Initialize all the attribute properties
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
+    Array.prototype.forEach.call(el.attributes, (attrNode) => {
+      el.attributeChangedCallback(attrNode.name, null, attrNode.value);
     });
 
     // Temporarily here to load less segments on page load, remove later!!!!
-    if (this.video?.hls) {
-      this.video.hls.config.maxMaxBufferLength = 2;
+    if (el.video?.hls) {
+      el.video.hls.config.maxMaxBufferLength = 2;
     }
 
-    let playerSize = getPlayerSize(this);
+    let playerSize = getPlayerSize(el);
     window.addEventListener("resize", () => {
-      if (playerSize != getPlayerSize(this)) {
-        playerSize = getPlayerSize(this);
-        chromeRenderer.render(getProps(this));
+      if (playerSize != getPlayerSize(el)) {
+        playerSize = getPlayerSize(el);
+        chromeRenderer.render(getProps(el));
         // Get the references to the new child fragments.
         ({ captionsButton, center } = chromeRenderer.fragments);
       }
@@ -339,31 +330,31 @@ class MuxPlayerElement extends VideoApiElement {
 
     let timeout;
     const onLoadingStateChange = () => {
-      if (!timeout && showLoading(this)) {
+      if (!timeout && showLoading(el)) {
         timeout = setTimeout(
-          () => center.render({ showLoading: showLoading(this) }),
+          () => center.render({ showLoading: showLoading(el) }),
           500
         );
-      } else if (timeout && !showLoading(this)) {
+      } else if (timeout && !showLoading(el)) {
         clearTimeout(timeout);
         timeout = null;
         center.render({ showLoading: false });
       }
     };
 
-    this.video?.addEventListener("timeupdate", onLoadingStateChange);
-    this.video?.addEventListener("canplay", onLoadingStateChange);
-    this.video?.addEventListener("loadedmetadata", onLoadingStateChange);
-    this.video?.addEventListener("waiting", onLoadingStateChange);
-    this.video?.addEventListener("stalled", onLoadingStateChange);
+    el.video?.addEventListener("timeupdate", onLoadingStateChange);
+    el.video?.addEventListener("canplay", onLoadingStateChange);
+    el.video?.addEventListener("loadedmetadata", onLoadingStateChange);
+    el.video?.addEventListener("waiting", onLoadingStateChange);
+    el.video?.addEventListener("stalled", onLoadingStateChange);
 
     const onTrackCountChange = () => {
-      const ccSubTracks = getCcSubTracks(this);
+      const ccSubTracks = getCcSubTracks(el);
       captionsButton.render({ hasCaptions: !!ccSubTracks.length });
 
       // NOTE: This is a hack solution to "default" CC selection. Solution *should*
       // be better default state support in media-chrome (CJP).
-      if (this.defaultShowCaptions && ccSubTracks.length && this.video) {
+      if (el.defaultShowCaptions && ccSubTracks.length && el.video) {
         const [ccSubTrack] = ccSubTracks;
         const eventType =
           ccSubTrack.kind === "captions"
@@ -374,12 +365,53 @@ class MuxPlayerElement extends VideoApiElement {
           bubbles: true,
           detail: ccSubTrack,
         });
-        this.video?.dispatchEvent(showCCSubEvent);
+        el.video?.dispatchEvent(showCCSubEvent);
       }
     };
 
-    this.video?.textTracks.addEventListener("addtrack", onTrackCountChange);
-    this.video?.textTracks.addEventListener("removetrack", onTrackCountChange);
+    el.video?.textTracks.addEventListener("addtrack", onTrackCountChange);
+    el.video?.textTracks.addEventListener("removetrack", onTrackCountChange);
+  }
+
+  connectedCallback() {
+    console.log(99);
+  }
+
+  disconnectedCallback() {
+    console.log(11);
+  }
+}
+
+// Until real private properties are supported create private internals.
+const internals = new WeakMap();
+
+class MuxPlayerElement extends VideoApiElement {
+  static get observedAttributes() {
+    return [
+      ...(VideoApiElement.observedAttributes ?? []),
+      ...MuxVideoAttributeNameValues,
+    ];
+  }
+
+  constructor() {
+    super();
+    internals.set(this, new MuxPlayerInternal(this));
+  }
+
+  connectedCallback() {
+    internals.get(this).connectedCallback();
+  }
+
+  disconnectedCallback() {
+    internals.get(this).disconnectedCallback();
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (MuxVideoAttributeNameValues.includes(attrName)) {
+      this.video?.setAttribute(attrName, newValue);
+    } else {
+      console.log("ATTRIBUTE", attrName, oldValue, newValue);
+    }
   }
 
   get defaultShowCaptions() {
@@ -525,16 +557,6 @@ class MuxPlayerElement extends VideoApiElement {
   set metadata(val) {
     if (this.video) this.video.metadata = val;
   }
-
-  attributeChangedCallback(attrName, oldValue, newValue) {
-    if (MuxVideoAttributeNameValues.includes(attrName)) {
-      this.video?.setAttribute(attrName, newValue);
-    } else {
-      console.log("ATTRIBUTE", attrName, oldValue, newValue);
-    }
-  }
-
-  connectedCallback() {}
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
