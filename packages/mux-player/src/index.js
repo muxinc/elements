@@ -3,8 +3,12 @@ import "@mux-elements/mux-video";
 import { StreamTypes } from "@mux-elements/playback-core";
 import VideoApiElement from "./video-api-element.js";
 import { html, renderable, stylePropsToString } from "./utils.js";
+import { getPlayerVersion } from "./env.js";
 
-const VideoAttributes = {
+const playerSoftwareVersion = getPlayerVersion();
+const playerSoftwareName = "mux-player";
+
+const MuxVideoAttributes = {
   ENV_KEY: "env-key",
   DEBUG: "debug",
   PLAYBACK_ID: "playback-id",
@@ -17,10 +21,13 @@ const VideoAttributes = {
   TYPE: "type",
   STREAM_TYPE: "stream-type",
   START_TIME: "start-time",
+};
+
+const PlayerAttributes = {
   DEFAULT_SHOW_CAPTIONS: "default-show-captions",
 };
 
-const VideoAttributeNameValues = Object.values(VideoAttributes);
+const MuxVideoAttributeNameValues = Object.values(MuxVideoAttributes);
 
 const getPosterURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
@@ -290,7 +297,10 @@ function getCcSubTracks(el) {
 
 class MuxPlayerElement extends VideoApiElement {
   static get observedAttributes() {
-    return [...VideoAttributeNameValues];
+    return [
+      ...(VideoApiElement.observedAttributes ?? []),
+      ...MuxVideoAttributeNameValues,
+    ];
   }
 
   constructor() {
@@ -302,6 +312,15 @@ class MuxPlayerElement extends VideoApiElement {
 
     this.attachShadow({ mode: "open" });
     this.shadowRoot.append(...muxPlayer.childNodes);
+
+    this.querySelectorAll(":scope > track").forEach((track) => {
+      this.video?.append(track.cloneNode());
+    });
+
+    // Initialize all the attribute properties
+    Array.prototype.forEach.call(this.attributes, (attrNode) => {
+      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
+    });
 
     // Temporarily here to load less segments on page load, remove later!!!!
     if (this.video?.hls) {
@@ -364,31 +383,155 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get defaultShowCaptions() {
-    return this.getAttribute(VideoAttributes.DEFAULT_SHOW_CAPTIONS) || true;
+    return this.getAttribute(PlayerAttributes.DEFAULT_SHOW_CAPTIONS) || true;
   }
 
-  get envKey() {
-    return getVideoAttribute(this, VideoAttributes.ENV_KEY);
+  get playerSoftwareName() {
+    return playerSoftwareName;
   }
 
-  get debug() {
-    return getVideoAttribute(this, VideoAttributes.DEBUG) != null;
+  get playerSoftwareVersion() {
+    return playerSoftwareVersion;
   }
 
+  get hls() {
+    return this.video?.hls;
+  }
+
+  get mux() {
+    return this.video?.mux;
+  }
+
+  get src() {
+    return getVideoAttribute(this, "src");
+  }
+
+  set src(val) {
+    if (val == null) {
+      this.removeAttribute("src");
+    } else {
+      this.setAttribute("src", val);
+    }
+  }
+
+  /**
+   * Get Mux asset playback id.
+   * @return {string}
+   */
   get playbackId() {
-    return getVideoAttribute(this, VideoAttributes.PLAYBACK_ID);
+    return getVideoAttribute(this, MuxVideoAttributes.PLAYBACK_ID);
   }
 
+  /**
+   * Mux Data env key
+   * @return {string}
+   */
+  get envKey() {
+    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY);
+  }
+
+  /**
+   * Get video engine debug flag.
+   * @return {boolean}
+   */
+  get debug() {
+    return getVideoAttribute(this, MuxVideoAttributes.DEBUG) != null;
+  }
+
+  /**
+   * Set video engine debug flag.
+   * @param  {boolean} val
+   */
+  set debug(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.DEBUG, "");
+    } else {
+      this.removeAttribute(MuxVideoAttributes.DEBUG);
+    }
+  }
+
+  /**
+   * Get stream type.
+   * @return {('on-demand'|'live'|'ll-live')}
+   */
   get streamType() {
-    return getVideoAttribute(this, VideoAttributes.STREAM_TYPE) ?? undefined;
+    return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE) ?? undefined;
   }
 
+  /**
+   * Set stream type.
+   * @param  {('on-demand'|'live'|'ll-live')} val
+   */
+  set streamType(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.STREAM_TYPE, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.STREAM_TYPE);
+    }
+  }
+
+  /**
+   * Get the start time.
+   * @return {number}
+   */
   get startTime() {
-    return Number(getVideoAttribute(this, VideoAttributes.START_TIME));
+    return Number(getVideoAttribute(this, MuxVideoAttributes.START_TIME));
+  }
+
+  /**
+   * Set the start time.
+   * @param  {number} val
+   */
+  set startTime(val) {
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.START_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
+    }
+  }
+
+  /**
+   * Get the preference flag for using media source.
+   * @return {boolean}
+   */
+  get preferMSE() {
+    return getVideoAttribute(this, MuxVideoAttributes.PREFER_MSE) != null;
+  }
+
+  /**
+   * Set the preference flag for using media source.
+   * @param  {boolean} val
+   */
+  set preferMSE(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.PREFER_MSE, "");
+    } else {
+      this.removeAttribute(MuxVideoAttributes.PREFER_MSE);
+    }
+  }
+
+  /**
+   * Get the metadata object for Mux Data.
+   * @return {Object}
+   */
+  get metadata() {
+    return this.video?.metadata;
+  }
+
+  /**
+   * Set the metadata object for Mux Data.
+   * @param  {Object} val
+   */
+  set metadata(val) {
+    if (this.video) this.video.metadata = val;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    // console.log('ATTRIBUTE', attrName, oldValue, newValue);
+    if (MuxVideoAttributeNameValues.includes(attrName)) {
+      this.video?.setAttribute(attrName, newValue);
+    } else {
+      console.log("ATTRIBUTE", attrName, oldValue, newValue);
+    }
   }
 
   connectedCallback() {}

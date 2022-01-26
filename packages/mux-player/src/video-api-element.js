@@ -2,11 +2,6 @@ class VideoApiElement extends HTMLElement {
   constructor() {
     super();
 
-    // Initialize all the attribute properties
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
-
     this.querySelectorAll(":scope > track").forEach((track) => {
       this.video?.append(track.cloneNode());
     });
