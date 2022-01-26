@@ -1,6 +1,7 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
 import { StreamTypes } from "@mux-elements/playback-core";
+import VideoApiElement from "./video-api-element.js";
 import { html, renderable, stylePropsToString } from "./utils.js";
 
 const VideoAttributes = {
@@ -287,7 +288,7 @@ function getCcSubTracks(el) {
     : [];
 }
 
-class MuxPlayerElement extends HTMLElement {
+class MuxPlayerElement extends VideoApiElement {
   static get observedAttributes() {
     return [...VideoAttributeNameValues];
   }
@@ -306,11 +307,6 @@ class MuxPlayerElement extends HTMLElement {
     if (this.video?.hls) {
       this.video.hls.config.maxMaxBufferLength = 2;
     }
-
-    // Initialize all the attribute properties
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, undefined, attrNode.value);
-    });
 
     let playerSize = getPlayerSize(this);
     window.addEventListener("resize", () => {
@@ -365,34 +361,6 @@ class MuxPlayerElement extends HTMLElement {
 
     this.video?.textTracks.addEventListener("addtrack", onTrackCountChange);
     this.video?.textTracks.addEventListener("removetrack", onTrackCountChange);
-
-    this.querySelectorAll(":scope > track").forEach((track) => {
-      this.video?.append(track.cloneNode());
-    });
-
-    // Watch for child adds/removes and update the native element if necessary
-    const mutationCallback = (mutationsList) => {
-      for (let mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          // Child being removed
-          mutation.removedNodes.forEach((node) => {
-            const track = this.video?.querySelector(`track[src="${node.src}"]`);
-            if (track) this.video?.removeChild(track);
-          });
-
-          mutation.addedNodes.forEach((node) => {
-            this.video?.append(node.cloneNode());
-          });
-        }
-      }
-    };
-
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, subtree: true });
-  }
-
-  get video() {
-    return this.shadowRoot?.querySelector("mux-video");
   }
 
   get defaultShowCaptions() {
