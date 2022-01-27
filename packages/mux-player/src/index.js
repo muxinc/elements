@@ -1,30 +1,30 @@
-import "media-chrome";
-import "@mux-elements/mux-video";
-import { StreamTypes } from "@mux-elements/playback-core";
-import VideoApiElement from "./video-api-element.js";
-import { html, renderable, stylePropsToString } from "./utils.js";
-import { getPlayerVersion } from "./env.js";
+import 'media-chrome';
+import '@mux-elements/mux-video';
+import { StreamTypes } from '@mux-elements/playback-core';
+import VideoApiElement from './video-api-element.js';
+import { html, renderable, stylePropsToString } from './utils.js';
+import { getPlayerVersion } from './env.js';
 
 const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = "mux-player";
+const playerSoftwareName = 'mux-player';
 
 const MuxVideoAttributes = {
-  ENV_KEY: "env-key",
-  DEBUG: "debug",
-  PLAYBACK_ID: "playback-id",
-  METADATA_URL: "metadata-url",
-  PREFER_MSE: "prefer-mse",
-  METADATA_VIDEO_ID: "metadata-video-id",
-  METADATA_VIDEO_TITLE: "metadata-video-title",
-  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
-  BEACON_DOMAIN: "beacon-domain",
-  TYPE: "type",
-  STREAM_TYPE: "stream-type",
-  START_TIME: "start-time",
+  ENV_KEY: 'env-key',
+  DEBUG: 'debug',
+  PLAYBACK_ID: 'playback-id',
+  METADATA_URL: 'metadata-url',
+  PREFER_MSE: 'prefer-mse',
+  METADATA_VIDEO_ID: 'metadata-video-id',
+  METADATA_VIDEO_TITLE: 'metadata-video-title',
+  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
+  BEACON_DOMAIN: 'beacon-domain',
+  TYPE: 'type',
+  STREAM_TYPE: 'stream-type',
+  START_TIME: 'start-time',
 };
 
 const PlayerAttributes = {
-  DEFAULT_SHOW_CAPTIONS: "default-show-captions",
+  DEFAULT_SHOW_CAPTIONS: 'default-show-captions',
 };
 
 const MuxVideoAttributeNameValues = Object.values(MuxVideoAttributes);
@@ -40,29 +40,29 @@ const getChromeStylesFromProps = (props) => {
 
   const primaryColorStyles = primaryColor
     ? {
-        "--media-icon-color": primaryColor,
-        "--media-range-thumb-background": primaryColor,
-        "--media-range-bar-color": primaryColor,
+        '--media-icon-color': primaryColor,
+        '--media-range-thumb-background': primaryColor,
+        '--media-range-bar-color': primaryColor,
         color: primaryColor,
       }
     : {};
 
   const secondaryColorStyles = secondaryColor
     ? {
-        "--media-background-color": secondaryColor,
-        "--media-control-background": secondaryColor,
+        '--media-background-color': secondaryColor,
+        '--media-control-background': secondaryColor,
       }
     : {};
 
   const tertiaryColorStyles = tertiaryColor
     ? {
-        "--media-range-track-background": tertiaryColor,
+        '--media-range-track-background': tertiaryColor,
       }
     : {};
 
   return stylePropsToString({
-    maxWidth: "100%",
-    color: "#ffffff",
+    maxWidth: '100%',
+    color: '#ffffff',
     ...primaryColorStyles,
     ...secondaryColorStyles,
     ...tertiaryColorStyles,
@@ -81,14 +81,14 @@ const MuxPlayer = (props) => html`
       poster="${props.poster ?? getPosterURLFromPlaybackId(props.playbackId)}"
       crossorigin
       playsinline
-      ${props.debug ? "debug" : ""}
-      ${props.muted ? "muted" : ""}
-      ${props.preferMse ? "prefer-mse" : ""}
+      ${props.debug ? 'debug' : ''}
+      ${props.muted ? 'muted' : ''}
+      ${props.preferMse ? 'prefer-mse' : ''}
       ${props.autoplay ||
       props.streamType === StreamTypes.LIVE ||
       props.streamType === StreamTypes.LL_LIVE
-        ? "autoplay"
-        : ""}
+        ? 'autoplay'
+        : ''}
     >
       <track
         label="thumbnails"
@@ -97,7 +97,7 @@ const MuxPlayer = (props) => html`
         src=${getStoryboardURLFromPlaybackId(props.playbackId)}
       />
     </mux-video>
-    ${renderable("chromeRenderer", ChromeRenderer, props)}
+    ${renderable('chromeRenderer', ChromeRenderer, props)}
   </media-controller>
 `;
 
@@ -129,7 +129,7 @@ const VodChromeSmall = (props) => html`
     style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
-      "center",
+      'center',
       ({ showLoading }) =>
         showLoading
           ? Loading()
@@ -154,7 +154,7 @@ const VodChromeSmall = (props) => html`
     <media-volume-range></media-volume-range>
     ${Spacer()}
     ${renderable(
-      "captionsButton",
+      'captionsButton',
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -170,7 +170,7 @@ const VodChromeLarge = (props) => html`
     style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
-      "center",
+      'center',
       ({ showLoading }) => showLoading && Loading(),
       props
     )}
@@ -185,7 +185,7 @@ const VodChromeLarge = (props) => html`
     <media-time-display show-duration remaining></media-time-display>
     <media-playback-rate-button></media-playback-rate-button>
     ${renderable(
-      "captionsButton",
+      'captionsButton',
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -201,7 +201,7 @@ const LiveChromeSmall = (props) => html`
     style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
-      "center",
+      'center',
       ({ showLoading }) =>
         showLoading
           ? Loading()
@@ -216,7 +216,7 @@ const LiveChromeSmall = (props) => html`
     <media-volume-range></media-volume-range>
     ${Spacer()}
     ${renderable(
-      "captionsButton",
+      'captionsButton',
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -232,7 +232,7 @@ const LiveChromeLarge = (props) => html`
     style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
-      "center",
+      'center',
       ({ showLoading }) => showLoading && Loading(),
       props
     )}
@@ -244,7 +244,7 @@ const LiveChromeLarge = (props) => html`
     ${Spacer()}
     <media-time-display></media-time-display>
     ${renderable(
-      "captionsButton",
+      'captionsButton',
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -256,8 +256,8 @@ const LiveChromeLarge = (props) => html`
 
 const SMALL_BREAKPOINT = 700;
 const MediaChromeSizes = {
-  LG: "large",
-  SM: "small",
+  LG: 'large',
+  SM: 'small',
 };
 
 function getPlayerSize(el) {
@@ -290,21 +290,29 @@ function getVideoAttribute(el, name) {
 function getCcSubTracks(el) {
   return el.video
     ? Array.from(el.video.textTracks).filter(
-        ({ kind }) => kind === "subtitles" || kind === "captions"
+        ({ kind }) => kind === 'subtitles' || kind === 'captions'
       )
     : [];
 }
 
 class MuxPlayerInternal {
+  /**
+   * Create a MuxPlayerInternal instance.
+   * Properties used in this class are not exposed in the public API.
+   * @param  {MuxPlayerElement} el
+   */
   constructor(el) {
-    let muxPlayer = MuxPlayer(getProps(el));
-    let { chromeRenderer } = muxPlayer.fragments;
-    let { captionsButton, center } = chromeRenderer.fragments;
+    this.el = el;
 
-    el.attachShadow({ mode: "open" });
+    let muxPlayer = MuxPlayer(getProps(el));
+    this._chromeRenderer = muxPlayer.fragments.chromeRenderer;
+    this._captionsButton = this._chromeRenderer.fragments.captionsButton;
+    this._center = this._chromeRenderer.fragments.center;
+
+    el.attachShadow({ mode: 'open' });
     el.shadowRoot.append(...muxPlayer.childNodes);
 
-    el.querySelectorAll(":scope > track").forEach((track) => {
+    el.querySelectorAll(':scope > track').forEach((track) => {
       el.video?.append(track.cloneNode());
     });
 
@@ -318,48 +326,38 @@ class MuxPlayerInternal {
       el.video.hls.config.maxMaxBufferLength = 2;
     }
 
-    let playerSize = getPlayerSize(el);
-    window.addEventListener("resize", () => {
-      if (playerSize != getPlayerSize(el)) {
-        playerSize = getPlayerSize(el);
-        chromeRenderer.render(getProps(el));
-        // Get the references to the new child fragments.
-        ({ captionsButton, center } = chromeRenderer.fragments);
-      }
-    });
-
     let timeout;
     const onLoadingStateChange = () => {
       if (!timeout && showLoading(el)) {
         timeout = setTimeout(
-          () => center.render({ showLoading: showLoading(el) }),
+          () => this._center.render({ showLoading: showLoading(el) }),
           500
         );
       } else if (timeout && !showLoading(el)) {
         clearTimeout(timeout);
         timeout = null;
-        center.render({ showLoading: false });
+        this._center.render({ showLoading: false });
       }
     };
 
-    el.video?.addEventListener("timeupdate", onLoadingStateChange);
-    el.video?.addEventListener("canplay", onLoadingStateChange);
-    el.video?.addEventListener("loadedmetadata", onLoadingStateChange);
-    el.video?.addEventListener("waiting", onLoadingStateChange);
-    el.video?.addEventListener("stalled", onLoadingStateChange);
+    el.video?.addEventListener('timeupdate', onLoadingStateChange);
+    el.video?.addEventListener('canplay', onLoadingStateChange);
+    el.video?.addEventListener('loadedmetadata', onLoadingStateChange);
+    el.video?.addEventListener('waiting', onLoadingStateChange);
+    el.video?.addEventListener('stalled', onLoadingStateChange);
 
     const onTrackCountChange = () => {
       const ccSubTracks = getCcSubTracks(el);
-      captionsButton.render({ hasCaptions: !!ccSubTracks.length });
+      this._captionsButton.render({ hasCaptions: !!ccSubTracks.length });
 
       // NOTE: This is a hack solution to "default" CC selection. Solution *should*
       // be better default state support in media-chrome (CJP).
       if (el.defaultShowCaptions && ccSubTracks.length && el.video) {
         const [ccSubTrack] = ccSubTracks;
         const eventType =
-          ccSubTrack.kind === "captions"
-            ? "mediashowcaptionsrequest"
-            : "mediashowsubtitlesrequest";
+          ccSubTrack.kind === 'captions'
+            ? 'mediashowcaptionsrequest'
+            : 'mediashowsubtitlesrequest';
         const showCCSubEvent = new CustomEvent(eventType, {
           composed: true,
           bubbles: true,
@@ -369,16 +367,38 @@ class MuxPlayerInternal {
       }
     };
 
-    el.video?.textTracks.addEventListener("addtrack", onTrackCountChange);
-    el.video?.textTracks.addEventListener("removetrack", onTrackCountChange);
+    el.video?.textTracks.addEventListener('addtrack', onTrackCountChange);
+    el.video?.textTracks.addEventListener('removetrack', onTrackCountChange);
   }
 
   connectedCallback() {
     console.log(99);
+    this._renderChrome();
+    this._initResizing();
   }
 
   disconnectedCallback() {
     console.log(11);
+    this._deinitResizing();
+  }
+
+  _renderChrome() {
+    if (this._playerSize != getPlayerSize(this.el)) {
+      this._playerSize = getPlayerSize(this.el);
+      this._chromeRenderer.render(getProps(this.el));
+      // Get the references to the new child fragments.
+      this._captionsButton = this._chromeRenderer.fragments.captionsButton;
+      this._center = this._chromeRenderer.fragments.center;
+    }
+  }
+
+  _initResizing() {
+    this._resizeObserver = new ResizeObserver(() => this._renderChrome());
+    this._resizeObserver.observe(this.el);
+  }
+
+  _deinitResizing() {
+    this._resizeObserver.disconnect();
   }
 }
 
@@ -410,7 +430,7 @@ class MuxPlayerElement extends VideoApiElement {
     if (MuxVideoAttributeNameValues.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
     } else {
-      console.log("ATTRIBUTE", attrName, oldValue, newValue);
+      console.log('ATTRIBUTE', attrName, oldValue, newValue);
     }
   }
 
@@ -435,14 +455,14 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get src() {
-    return getVideoAttribute(this, "src");
+    return getVideoAttribute(this, 'src');
   }
 
   set src(val) {
     if (val == null) {
-      this.removeAttribute("src");
+      this.removeAttribute('src');
     } else {
-      this.setAttribute("src", val);
+      this.setAttribute('src', val);
     }
   }
 
@@ -476,7 +496,7 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set debug(val) {
     if (val) {
-      this.setAttribute(MuxVideoAttributes.DEBUG, "");
+      this.setAttribute(MuxVideoAttributes.DEBUG, '');
     } else {
       this.removeAttribute(MuxVideoAttributes.DEBUG);
     }
@@ -536,7 +556,7 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set preferMSE(val) {
     if (val) {
-      this.setAttribute(MuxVideoAttributes.PREFER_MSE, "");
+      this.setAttribute(MuxVideoAttributes.PREFER_MSE, '');
     } else {
       this.removeAttribute(MuxVideoAttributes.PREFER_MSE);
     }
@@ -560,8 +580,8 @@ class MuxPlayerElement extends VideoApiElement {
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
-if (!globalThis.customElements.get("mux-player")) {
-  globalThis.customElements.define("mux-player", MuxPlayerElement);
+if (!globalThis.customElements.get('mux-player')) {
+  globalThis.customElements.define('mux-player', MuxPlayerElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxPlayerElement = MuxPlayerElement;
 }
