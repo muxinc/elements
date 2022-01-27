@@ -321,9 +321,34 @@ class MuxPlayerInternal {
       el.attributeChangedCallback(attrNode.name, null, attrNode.value);
     });
 
-    // Temporarily here to load less segments on page load, remove later!!!!
+    // The attributeChangedCallback should handle forwarding the video attributes.
+    // Neither Chrome or Firefox support setting the muted attribute
+    // after using document.createElement.
+    // One way to get around this would be to build the native tag as a string.
+    // But just fixing it manually for now.
+    el.video.muted = el.video.defaultMuted;
+
     if (el.video?.hls) {
+      const Hls = el.video.hls.constructor;
+
+      // Temporarily here to load less segments on page load, remove later!!!!
       el.video.hls.config.maxMaxBufferLength = 2;
+
+      if (el.autoplay) {
+        el.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          var playPromise = el.video.play();
+          if (playPromise) {
+            playPromise.catch((error) => {
+              console.log(`${error.name} ${error.message}`);
+              if (error.name === 'NotAllowedError') {
+                console.log('Attempting to play with video muted');
+                el.video.muted = true;
+                return el.video.play();
+              }
+            });
+          }
+        });
+      }
     }
 
     let timeout;
