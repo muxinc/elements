@@ -139,7 +139,7 @@ const Loading = () => html`<div>Loading...</div>`;
 const VodChromeSmall = (props) => html`
   <div
     slot="centered-chrome"
-    style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
+    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       'center',
@@ -180,11 +180,16 @@ const VodChromeSmall = (props) => html`
 const VodChromeLarge = (props) => html`
   <div
     slot="centered-chrome"
-    style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
+    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       'center',
-      ({ showLoading }) => showLoading && Loading(),
+      ({ showLoading }) =>
+        showLoading
+          ? Loading()
+          : html` <media-play-button
+              style="padding: 0; width: 20%"
+            ></media-play-button>`,
       props
     )}
   </div>
@@ -211,7 +216,7 @@ const VodChromeLarge = (props) => html`
 const LiveChromeSmall = (props) => html`
   <div
     slot="centered-chrome"
-    style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
+    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       'center',
@@ -242,11 +247,16 @@ const LiveChromeSmall = (props) => html`
 const LiveChromeLarge = (props) => html`
   <div
     slot="centered-chrome"
-    style="--media-background-color: none; --media-control-background: none; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
+    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       'center',
-      ({ showLoading }) => showLoading && Loading(),
+      ({ showLoading }) =>
+        showLoading
+          ? Loading()
+          : html` <media-play-button
+              style="padding: 0; width: 20%"
+            ></media-play-button>`,
       props
     )}
   </div>
