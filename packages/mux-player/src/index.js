@@ -27,7 +27,7 @@ const PlayerAttributes = {
   DEFAULT_SHOW_CAPTIONS: 'default-show-captions',
 };
 
-const MuxVideoAttributeNameValues = Object.values(MuxVideoAttributes);
+const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
 
 const getPosterURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
@@ -340,11 +340,8 @@ class MuxPlayerInternal {
       }
     };
 
-    el.video?.addEventListener('timeupdate', onLoadingStateChange);
-    el.video?.addEventListener('canplay', onLoadingStateChange);
-    el.video?.addEventListener('loadedmetadata', onLoadingStateChange);
     el.video?.addEventListener('waiting', onLoadingStateChange);
-    el.video?.addEventListener('stalled', onLoadingStateChange);
+    el.video?.addEventListener('playing', onLoadingStateChange);
 
     const onTrackCountChange = () => {
       const ccSubTracks = getCcSubTracks(el);
@@ -409,7 +406,7 @@ class MuxPlayerElement extends VideoApiElement {
   static get observedAttributes() {
     return [
       ...(VideoApiElement.observedAttributes ?? []),
-      ...MuxVideoAttributeNameValues,
+      ...MuxVideoAttributeNames,
     ];
   }
 
@@ -427,7 +424,9 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (MuxVideoAttributeNameValues.includes(attrName)) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (MuxVideoAttributeNames.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
     } else {
       console.log('ATTRIBUTE', attrName, oldValue, newValue);
@@ -452,18 +451,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   get mux() {
     return this.video?.mux;
-  }
-
-  get src() {
-    return getVideoAttribute(this, 'src');
-  }
-
-  set src(val) {
-    if (val == null) {
-      this.removeAttribute('src');
-    } else {
-      this.setAttribute('src', val);
-    }
   }
 
   /**
