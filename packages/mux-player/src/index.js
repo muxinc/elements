@@ -75,8 +75,16 @@ const MuxPlayer = (props) => html`
       slot="media"
       playback-id="${props.playbackId}"
       env-key="${props.envKey}"
+      ${props.metadata?.video_id
+        ? `metadata-video-id="${props.metadata.video_id}"`
+        : ''}
+      ${props.metadata?.video_title
+        ? `metadata-video-title="${props.metadata.video_title}"`
+        : ''}
+      ${props.metadata?.viewer_user_id
+        ? `metadata-viewer-user-id="${props.metadata.viewer_user_id}"`
+        : ''}
       stream-type="${props.streamType}"
-      metadata="${props.metadata}"
       start-time="${props.startTime}"
       poster="${props.poster ?? getPosterURLFromPlaybackId(props.playbackId)}"
       crossorigin
@@ -317,11 +325,12 @@ class MuxPlayerInternal {
     });
 
     // Initialize all the attribute properties
+    // The attributeChangedCallback should handle forwarding the video attributes
+    // from the mux-player to the mux-video element.
     Array.prototype.forEach.call(el.attributes, (attrNode) => {
       el.attributeChangedCallback(attrNode.name, null, attrNode.value);
     });
 
-    // The attributeChangedCallback should handle forwarding the video attributes.
     // Neither Chrome or Firefox support setting the muted attribute
     // after using document.createElement.
     // One way to get around this would be to build the native tag as a string.
@@ -575,8 +584,12 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
+   * @typedef {import('@mux-elements/playback-core').Metadata} Metadata
+   */
+
+  /**
    * Get the metadata object for Mux Data.
-   * @return {Object}
+   * @return {Metadata}
    */
   get metadata() {
     return this.video?.metadata;
@@ -584,7 +597,7 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set the metadata object for Mux Data.
-   * @param  {Object} val
+   * @param  {Metadata} val
    */
   set metadata(val) {
     if (this.video) this.video.metadata = val;
