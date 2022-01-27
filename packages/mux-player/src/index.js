@@ -1,12 +1,17 @@
 import 'media-chrome';
 import '@mux-elements/mux-video';
-import { StreamTypes } from '@mux-elements/playback-core';
 import VideoApiElement from './video-api-element.js';
 import { html, renderable, stylePropsToString } from './utils.js';
 import { getPlayerVersion } from './env.js';
 
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-player';
+
+export const StreamTypes = {
+  VOD: 'on-demand',
+  LIVE: 'live',
+  LL_LIVE: 'll-live',
+};
 
 const MuxVideoAttributes = {
   ENV_KEY: 'env-key',
