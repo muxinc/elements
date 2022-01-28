@@ -1,3 +1,24 @@
+/** @type {(props: any) => string} */
+export function stylePropsToString(props) {
+  let style = "";
+  Object.entries(props).forEach(([key, value]) => {
+    style += `${kebabCase(key)}: ${value};`;
+  });
+  return style;
+}
+
+/** @type {(name: string) => string} */
+export function kebabCase(name) {
+  return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+}
+
+let idCounter = 0;
+/** @type {(name: string) => string} */
+export function uniqueId(prefix) {
+  var id = ++idCounter;
+  return `${prefix}${id}`;
+}
+
 /**
  * A tagged template literal to easily create DOM from a template string.
  *
@@ -159,25 +180,4 @@ class Renderable {
     this.template = template;
     this.props = props;
   }
-}
-
-/** @type {(props: any) => string} */
-export function stylePropsToString(props) {
-  let style = "";
-  Object.entries(props).forEach(([key, value]) => {
-    style += `${kebabCase(key)}: ${value};`;
-  });
-  return style;
-}
-
-/** @type {(name: string) => string} */
-export function kebabCase(name) {
-  return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
-}
-
-let idCounter = 0;
-/** @type {(name: string) => string} */
-export function uniqueId(prefix) {
-  var id = ++idCounter;
-  return `${prefix}${id}`;
 }

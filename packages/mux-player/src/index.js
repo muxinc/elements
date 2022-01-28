@@ -1,15 +1,19 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
 import VideoApiElement from "./video-api-element.js";
-import { html, renderable, stylePropsToString } from "./utils.js";
+import {
+  getChromeStylesFromProps,
+  getPosterURLFromPlaybackId,
+  getStoryboardURLFromPlaybackId,
+  getVideoAttribute,
+  getCcSubTracks,
+} from "./helpers.js";
+import { html, renderable } from "./utils.js";
 import { getPlayerVersion } from "./env.js";
 
 /** @typedef { import("./utils").PersistentFragment } PersistentFragment */
 /** @typedef { import("./utils").RenderableFragment } RenderableFragment */
 /** @typedef { import('@mux-elements/playback-core').Metadata } Metadata */
-
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = "mux-player";
 
 export const StreamTypes = {
   VOD: "on-demand",
@@ -17,72 +21,8 @@ export const StreamTypes = {
   LL_LIVE: "ll-live",
 };
 
-const MuxVideoAttributes = {
-  ENV_KEY: "env-key",
-  DEBUG: "debug",
-  PLAYBACK_ID: "playback-id",
-  METADATA_URL: "metadata-url",
-  PREFER_MSE: "prefer-mse",
-  METADATA_VIDEO_ID: "metadata-video-id",
-  METADATA_VIDEO_TITLE: "metadata-video-title",
-  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
-  BEACON_DOMAIN: "beacon-domain",
-  TYPE: "type",
-  STREAM_TYPE: "stream-type",
-  START_TIME: "start-time",
-};
-
-const PlayerAttributes = {
-  DEFAULT_SHOW_CAPTIONS: "default-show-captions",
-};
-
-const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
-
-/** @type {(playbackId: string | undefined) => string} */
-const getPosterURLFromPlaybackId = (playbackId) =>
-  `https://image.mux.com/${playbackId}/thumbnail.jpg`;
-
-/** @type {(playbackId: string | undefined) => string} */
-const getStoryboardURLFromPlaybackId = (playbackId) =>
-  `https://image.mux.com/${playbackId}/storyboard.vtt`;
-
-/** @type {(props: any) => any} */
-const getChromeStylesFromProps = (props) => {
-  const { primaryColor, secondaryColor, tertiaryColor } = props;
-
-  const primaryColorStyles = primaryColor
-    ? {
-        "--media-icon-color": primaryColor,
-        "--media-range-thumb-background": primaryColor,
-        "--media-range-bar-color": primaryColor,
-        color: primaryColor,
-      }
-    : {};
-
-  const secondaryColorStyles = secondaryColor
-    ? {
-        "--media-background-color": secondaryColor,
-        "--media-control-background": secondaryColor,
-      }
-    : {};
-
-  const tertiaryColorStyles = tertiaryColor
-    ? {
-        "--media-range-track-background": tertiaryColor,
-      }
-    : {};
-
-  return stylePropsToString({
-    maxWidth: "100%",
-    color: "#ffffff",
-    ...primaryColorStyles,
-    ...secondaryColorStyles,
-    ...tertiaryColorStyles,
-  });
-};
-
 /** @type {(props: MuxProps) => PersistentFragment} */
-const MuxPlayer = (props) => html`
+const template = (props) => html`
   <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
       slot="media"
@@ -298,75 +238,9 @@ const LiveChromeLarge = (props) => html`
   </media-control-bar>
 `;
 
-const SMALL_BREAKPOINT = 700;
-const MediaChromeSizes = {
-  LG: "large",
-  SM: "small",
-};
-
-/** @type {(el: Element) => string} */
-function getPlayerSize(el) {
-  const muxPlayerRect = el.getBoundingClientRect();
-  return muxPlayerRect.width < SMALL_BREAKPOINT
-    ? MediaChromeSizes.SM
-    : MediaChromeSizes.LG;
-}
-
-/**
- * @typedef {{
- *   debug: boolean,
- *   envKey?: string,
- *   playbackId?: string,
- *   streamType?: string,
- *   startTime: number,
- *   playerSize: string,
- *   hasCaptions: boolean,
- *   showLoading: boolean,
- *   poster?: string,
- *   muted?: boolean,
- *   loop?: boolean,
- *   autoplay?: boolean,
- *   preferMse?: boolean,
- *   metadata?: Metadata
- * }} MuxProps
- */
-
-/**
- * @param  {MuxPlayerElement} el
- * @param  {MuxProps} [props]
- * @return {MuxProps}
- */
-function getProps(el, props) {
-  return {
-    debug: el.debug,
-    envKey: el.envKey,
-    playbackId: el.playbackId,
-    startTime: el.startTime,
-    streamType: el.streamType,
-    playerSize: getPlayerSize(el),
-    hasCaptions: !!getCcSubTracks(el).length,
-    showLoading: showLoading(el),
-    ...props,
-  };
-}
-
 /** @type {(el: MuxPlayerElement) => boolean} */
 const showLoading = (el) =>
   !el.video?.paused && (el.video?.readyState ?? 0) < 3;
-
-/** @type {(el: MuxPlayerElement, name: string) => ?string} */
-function getVideoAttribute(el, name) {
-  return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
-}
-
-/** @type {(el: MuxPlayerElement) => TextTrack[]} */
-function getCcSubTracks(el) {
-  return el.video
-    ? Array.from(el.video.textTracks).filter(
-        ({ kind }) => kind === "subtitles" || kind === "captions"
-      )
-    : [];
-}
 
 class MuxPlayerInternal {
   /**
@@ -377,7 +251,7 @@ class MuxPlayerInternal {
   constructor(el) {
     this.el = el;
 
-    let muxPlayer = MuxPlayer(getProps(el));
+    let muxPlayer = template(getProps(el));
     this._chromeRenderer = muxPlayer.fragments.chromeRenderer;
     this._captionsButton = this._chromeRenderer.fragments.captionsButton;
     this._center = this._chromeRenderer.fragments.center;
@@ -513,6 +387,81 @@ class MuxPlayerInternal {
     this._resizeObserver?.disconnect();
   }
 }
+
+/**
+ * @typedef {{
+ *   debug: boolean,
+ *   envKey?: string,
+ *   playbackId?: string,
+ *   streamType?: string,
+ *   startTime: number,
+ *   playerSize: string,
+ *   hasCaptions: boolean,
+ *   showLoading: boolean,
+ *   poster?: string,
+ *   muted?: boolean,
+ *   loop?: boolean,
+ *   autoplay?: boolean,
+ *   preferMse?: boolean,
+ *   metadata?: Metadata
+ * }} MuxProps
+ */
+
+/**
+ * @param  {MuxPlayerElement} el
+ * @param  {MuxProps} [props]
+ * @return {MuxProps}
+ */
+function getProps(el, props) {
+  return {
+    debug: el.debug,
+    envKey: el.envKey,
+    playbackId: el.playbackId,
+    startTime: el.startTime,
+    streamType: el.streamType,
+    playerSize: getPlayerSize(el),
+    hasCaptions: !!getCcSubTracks(el).length,
+    showLoading: showLoading(el),
+    ...props,
+  };
+}
+
+const SMALL_BREAKPOINT = 700;
+const MediaChromeSizes = {
+  LG: "large",
+  SM: "small",
+};
+
+/** @type {(el: Element) => string} */
+function getPlayerSize(el) {
+  const muxPlayerRect = el.getBoundingClientRect();
+  return muxPlayerRect.width < SMALL_BREAKPOINT
+    ? MediaChromeSizes.SM
+    : MediaChromeSizes.LG;
+}
+
+const MuxVideoAttributes = {
+  ENV_KEY: "env-key",
+  DEBUG: "debug",
+  PLAYBACK_ID: "playback-id",
+  METADATA_URL: "metadata-url",
+  PREFER_MSE: "prefer-mse",
+  METADATA_VIDEO_ID: "metadata-video-id",
+  METADATA_VIDEO_TITLE: "metadata-video-title",
+  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
+  BEACON_DOMAIN: "beacon-domain",
+  TYPE: "type",
+  STREAM_TYPE: "stream-type",
+  START_TIME: "start-time",
+};
+
+const PlayerAttributes = {
+  DEFAULT_SHOW_CAPTIONS: "default-show-captions",
+};
+
+const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
+const playerSoftwareVersion = getPlayerVersion();
+const playerSoftwareName = "mux-player";
 
 // Until real private properties are supported create private internals.
 const internals = new WeakMap();
