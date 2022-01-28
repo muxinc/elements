@@ -10,22 +10,22 @@
  * @return {PersistentFragment}
  */
 export function html(strings, ...args) {
-  const uid = uniqueId('');
+  const uid = uniqueId("");
   /** @type {*} */
   const fragments = [];
   // Add placeholder divs with unqiue id for the fragments.
   args = args.map((arg) => {
-    if (typeof arg === 'object') {
+    if (typeof arg === "object") {
       return `<div id="_${uid}${fragments.push(arg)}"></div>`;
     }
     return arg;
   });
 
   const templateString = String.raw(strings, ...args)
-    .replace(/>\n+/g, '>')
-    .replace(/\s+</g, '<')
-    .replace(/>\s+/g, '>');
-  const compiler = document.createElement('template');
+    .replace(/>\n+/g, ">")
+    .replace(/\s+</g, "<")
+    .replace(/>\s+/g, ">");
+  const compiler = document.createElement("template");
   compiler.innerHTML = templateString;
 
   const childFragments = fragments.map(
@@ -163,7 +163,7 @@ class Renderable {
 
 /** @type {(props: any) => string} */
 export function stylePropsToString(props) {
-  let style = '';
+  let style = "";
   Object.entries(props).forEach(([key, value]) => {
     style += `${kebabCase(key)}: ${value};`;
   });
@@ -172,7 +172,7 @@ export function stylePropsToString(props) {
 
 /** @type {(name: string) => string} */
 export function kebabCase(name) {
-  return name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+  return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 let idCounter = 0;

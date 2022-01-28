@@ -1,10 +1,10 @@
 const VideoAttributeNames = [
-  'autoplay',
-  'crossorigin',
-  'loop',
-  'muted',
-  'playsinline',
-  'src',
+  "autoplay",
+  "crossorigin",
+  "loop",
+  "muted",
+  "playsinline",
+  "src",
 ];
 
 class VideoApiElement extends HTMLElement {
@@ -15,7 +15,7 @@ class VideoApiElement extends HTMLElement {
   constructor() {
     super();
 
-    this.querySelectorAll(':scope > track').forEach((track) => {
+    this.querySelectorAll(":scope > track").forEach((track) => {
       this.video?.append(track.cloneNode());
     });
 
@@ -23,7 +23,7 @@ class VideoApiElement extends HTMLElement {
     /** @type {(mutationList: MutationRecord[]) => void} */
     const mutationCallback = (mutationsList) => {
       for (let mutation of mutationsList) {
-        if (mutation.type === 'childList') {
+        if (mutation.type === "childList") {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
             const track = this.video?.querySelector(
@@ -58,34 +58,34 @@ class VideoApiElement extends HTMLElement {
 
   /** @type {MuxVideoElement | null | undefined} */
   get video() {
-    return this.shadowRoot?.querySelector('mux-video');
+    return this.shadowRoot?.querySelector("mux-video");
   }
 
   get autoplay() {
-    return getVideoAttribute(this, 'autoplay') != null;
+    return getVideoAttribute(this, "autoplay") != null;
   }
 
   get crossOrigin() {
-    return getVideoAttribute(this, 'crossorigin');
+    return getVideoAttribute(this, "crossorigin");
   }
 
   get loop() {
-    return getVideoAttribute(this, 'loop') != null;
+    return getVideoAttribute(this, "loop") != null;
   }
 
   get muted() {
-    return getVideoAttribute(this, 'muted') != null;
+    return getVideoAttribute(this, "muted") != null;
   }
 
   get src() {
-    return getVideoAttribute(this, 'src');
+    return getVideoAttribute(this, "src");
   }
 
   set src(val) {
     if (val == null) {
-      this.removeAttribute('src');
+      this.removeAttribute("src");
     } else {
-      this.setAttribute('src', val);
+      this.setAttribute("src", val);
     }
   }
 }
