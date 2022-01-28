@@ -2,6 +2,18 @@ import { stylePropsToString } from "./utils.js";
 
 /** @typedef { import(".").default } MuxPlayerElement */
 
+/* eslint-disable */
+const getEnvPlayerVersion = () => {
+  try {
+    // @ts-ignore
+    return PLAYER_VERSION;
+  } catch {}
+  return "UNKNOWN";
+};
+
+const player_version = getEnvPlayerVersion();
+export const getPlayerVersion = () => player_version;
+
 /** @type {(playbackId: string | undefined) => string} */
 export const getPosterURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
