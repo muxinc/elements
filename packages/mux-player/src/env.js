@@ -1,9 +1,10 @@
 /* eslint-disable */
 const getEnvPlayerVersion = () => {
   try {
+    // @ts-ignore
     return PLAYER_VERSION;
   } catch {}
-  return "UNKNOWN";
+  return 'UNKNOWN';
 };
 
 const player_version = getEnvPlayerVersion();
