@@ -1,11 +1,7 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
 import VideoApiElement from "./video-api.js";
-import {
-  getVideoAttribute,
-  getCcSubTracks,
-  getPlayerVersion,
-} from "./helpers.js";
+import { getCcSubTracks, getPlayerVersion } from "./helpers.js";
 import { template } from "./template.js";
 
 /** @typedef { import("./utils").PersistentFragment } PersistentFragment */
@@ -165,9 +161,9 @@ class MuxPlayerInternal {
 /**
  * @typedef {{
  *   debug: boolean,
- *   envKey?: string,
- *   playbackId?: string,
- *   streamType?: string,
+ *   envKey: string?,
+ *   playbackId: string?,
+ *   streamType: string?,
  *   startTime: number,
  *   playerSize: string,
  *   hasCaptions: boolean,
@@ -296,18 +292,18 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get Mux asset playback id.
-   * @return {string | undefined}
+   * @return {string?}
    */
   get playbackId() {
-    return getVideoAttribute(this, MuxVideoAttributes.PLAYBACK_ID) ?? undefined;
+    return getVideoAttribute(this, MuxVideoAttributes.PLAYBACK_ID);
   }
 
   /**
    * Mux Data env key
-   * @return {string | undefined}
+   * @return {string?}
    */
   get envKey() {
-    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY) ?? undefined;
+    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY);
   }
 
   /**
@@ -332,22 +328,18 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get stream type.
-   * @return {string | undefined}
+   * @return {string?}
    */
   get streamType() {
-    return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE) ?? undefined;
+    return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE);
   }
 
   /**
    * Set stream type.
-   * @param  {string | undefined} val
+   * @param  {string?} val
    */
   set streamType(val) {
-    if (val) {
-      this.setAttribute(MuxVideoAttributes.STREAM_TYPE, val);
-    } else {
-      this.removeAttribute(MuxVideoAttributes.STREAM_TYPE);
-    }
+    this.setAttribute(MuxVideoAttributes.STREAM_TYPE, `${val}`);
   }
 
   /**
@@ -363,11 +355,7 @@ class MuxPlayerElement extends VideoApiElement {
    * @param  {number} val
    */
   set startTime(val) {
-    if (val == null) {
-      this.removeAttribute(MuxVideoAttributes.START_TIME);
-    } else {
-      this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
-    }
+    this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
   }
 
   /**
@@ -405,6 +393,11 @@ class MuxPlayerElement extends VideoApiElement {
   set metadata(val) {
     if (this.video) this.video.metadata = val;
   }
+}
+
+/** @type {(el: MuxPlayerElement, name: string) => ?string} */
+export function getVideoAttribute(el, name) {
+  return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */

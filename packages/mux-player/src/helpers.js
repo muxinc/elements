@@ -14,18 +14,13 @@ const getEnvPlayerVersion = () => {
 const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
-/** @type {(playbackId: string | undefined) => string} */
+/** @type {(playbackId: string?) => string} */
 export const getPosterURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 
-/** @type {(playbackId: string | undefined) => string} */
+/** @type {(playbackId: string?) => string} */
 export const getStoryboardURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/storyboard.vtt`;
-
-/** @type {(el: MuxPlayerElement, name: string) => ?string} */
-export function getVideoAttribute(el, name) {
-  return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
-}
 
 /** @type {(el: MuxPlayerElement) => TextTrack[]} */
 export function getCcSubTracks(el) {
