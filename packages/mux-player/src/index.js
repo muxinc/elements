@@ -405,12 +405,29 @@ class MuxPlayerInternal {
     }
 
     if (el.video?.hls) {
-      /** @type {*} */
-      const Hls = el.video.hls.constructor;
-
       // Temporarily here to load less segments on page load, remove later!!!!
       el.video.hls.config.maxMaxBufferLength = 2;
+    }
 
+    this._setUpMutedAutoplay(el);
+    this._setUpLoadingIndicator(el);
+    this._setUpCaptionsButton(el);
+  }
+
+  connectedCallback() {
+    this._renderChrome();
+    this._initResizing();
+  }
+
+  disconnectedCallback() {
+    this._deinitResizing();
+  }
+
+  /** @param {MuxPlayerElement} el */
+  _setUpMutedAutoplay(el) {
+    if (el.video?.hls) {
+      /** @type {*} */
+      const Hls = el.video.hls.constructor;
       if (el.autoplay) {
         el.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
           var playPromise = el.video?.play();
@@ -427,7 +444,10 @@ class MuxPlayerInternal {
         });
       }
     }
+  }
 
+  /** @param {MuxPlayerElement} el */
+  _setUpLoadingIndicator(el) {
     /** @type {number?} */
     let timeout;
     const onLoadingStateChange = () => {
@@ -445,7 +465,10 @@ class MuxPlayerInternal {
 
     el.video?.addEventListener("waiting", onLoadingStateChange);
     el.video?.addEventListener("playing", onLoadingStateChange);
+  }
 
+  /** @param {MuxPlayerElement} el */
+  _setUpCaptionsButton(el) {
     const onTrackCountChange = () => {
       const ccSubTracks = getCcSubTracks(el);
       this._captionsButton.render({ hasCaptions: !!ccSubTracks.length });
@@ -469,15 +492,6 @@ class MuxPlayerInternal {
 
     el.video?.textTracks.addEventListener("addtrack", onTrackCountChange);
     el.video?.textTracks.addEventListener("removetrack", onTrackCountChange);
-  }
-
-  connectedCallback() {
-    this._renderChrome();
-    this._initResizing();
-  }
-
-  disconnectedCallback() {
-    this._deinitResizing();
   }
 
   _renderChrome() {
