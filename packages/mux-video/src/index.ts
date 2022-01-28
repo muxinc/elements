@@ -1,4 +1,4 @@
-import CustomVideoElement from './CustomVideoElement';
+import CustomVideoElement from "./CustomVideoElement";
 
 import {
   initialize,
@@ -11,44 +11,44 @@ import {
   Metadata,
   PlaybackEngine,
   mux,
-} from '@mux-elements/playback-core';
-import { getPlayerVersion } from './env';
+} from "@mux-elements/playback-core";
+import { getPlayerVersion } from "./env";
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
-  ENV_KEY: 'env-key';
-  DEBUG: 'debug';
-  METADATA_URL: 'metadata-url';
-  METADATA_VIDEO_ID: 'metadata-video-id';
-  METADATA_VIDEO_TITLE: 'metadata-video-title';
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
-  BEACON_DOMAIN: 'beacon-domain';
-  PLAYBACK_ID: 'playback-id';
-  PREFER_MSE: 'prefer-mse';
-  TYPE: 'type';
-  STREAM_TYPE: 'stream-type';
-  START_TIME: 'start-time';
+  ENV_KEY: "env-key";
+  DEBUG: "debug";
+  METADATA_URL: "metadata-url";
+  METADATA_VIDEO_ID: "metadata-video-id";
+  METADATA_VIDEO_TITLE: "metadata-video-title";
+  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
+  BEACON_DOMAIN: "beacon-domain";
+  PLAYBACK_ID: "playback-id";
+  PREFER_MSE: "prefer-mse";
+  TYPE: "type";
+  STREAM_TYPE: "stream-type";
+  START_TIME: "start-time";
 };
 
 const Attributes: AttributeNames = {
-  ENV_KEY: 'env-key',
-  DEBUG: 'debug',
-  PLAYBACK_ID: 'playback-id',
-  METADATA_URL: 'metadata-url',
-  PREFER_MSE: 'prefer-mse',
-  METADATA_VIDEO_ID: 'metadata-video-id',
-  METADATA_VIDEO_TITLE: 'metadata-video-title',
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
-  BEACON_DOMAIN: 'beacon-domain',
-  TYPE: 'type',
-  STREAM_TYPE: 'stream-type',
-  START_TIME: 'start-time',
+  ENV_KEY: "env-key",
+  DEBUG: "debug",
+  PLAYBACK_ID: "playback-id",
+  METADATA_URL: "metadata-url",
+  PREFER_MSE: "prefer-mse",
+  METADATA_VIDEO_ID: "metadata-video-id",
+  METADATA_VIDEO_TITLE: "metadata-video-title",
+  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
+  BEACON_DOMAIN: "beacon-domain",
+  TYPE: "type",
+  STREAM_TYPE: "stream-type",
+  START_TIME: "start-time",
 };
 
 const AttributeNameValues = Object.values(Attributes);
 
 const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-video';
+const playerSoftwareName = "mux-video";
 
 class MuxVideoElement
   extends CustomVideoElement<HTMLVideoElement>
@@ -91,7 +91,7 @@ class MuxVideoElement
     // Use the attribute value as the source of truth.
     // No need to store it in two places.
     // This avoids needing a to read the attribute initially and update the src.
-    return this.getAttribute('src') as string;
+    return this.getAttribute("src") as string;
   }
 
   set src(val: string) {
@@ -100,9 +100,9 @@ class MuxVideoElement
     if (val === this.src) return;
 
     if (val == null) {
-      this.removeAttribute('src');
+      this.removeAttribute("src");
     } else {
-      this.setAttribute('src', val);
+      this.setAttribute("src", val);
     }
   }
 
@@ -116,7 +116,7 @@ class MuxVideoElement
     if (val === this.debug) return;
 
     if (val) {
-      this.setAttribute(Attributes.DEBUG, '');
+      this.setAttribute(Attributes.DEBUG, "");
     } else {
       this.removeAttribute(Attributes.DEBUG);
     }
@@ -211,7 +211,7 @@ class MuxVideoElement
 
   set preferMSE(val: boolean) {
     if (val) {
-      this.setAttribute(Attributes.PREFER_MSE, '');
+      this.setAttribute(Attributes.PREFER_MSE, "");
     } else {
       this.removeAttribute(Attributes.PREFER_MSE);
     }
@@ -224,7 +224,7 @@ class MuxVideoElement
   set metadata(val: Readonly<Metadata> | undefined) {
     this.__metadata = val ?? {};
     if (!!this.mux) {
-      this.mux.emit('hb', this.__metadata);
+      this.mux.emit("hb", this.__metadata);
     }
   }
 
@@ -259,7 +259,7 @@ class MuxVideoElement
     newValue: string | null
   ) {
     switch (attrName) {
-      case 'src':
+      case "src":
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
@@ -281,7 +281,7 @@ class MuxVideoElement
         if (!!this.mux) {
           /** @TODO Link to docs for a more detailed discussion (CJP) */
           console.info(
-            'Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.'
+            "Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src."
           );
         }
         if (!!this.hls) {
@@ -335,8 +335,8 @@ declare global {
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
-if (!globalThis.customElements.get('mux-video')) {
-  globalThis.customElements.define('mux-video', MuxVideoElement);
+if (!globalThis.customElements.get("mux-video")) {
+  globalThis.customElements.define("mux-video", MuxVideoElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxVideoElement = MuxVideoElement;
 }
