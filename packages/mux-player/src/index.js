@@ -4,6 +4,10 @@ import VideoApiElement from './video-api-element.js';
 import { html, renderable, stylePropsToString } from './utils.js';
 import { getPlayerVersion } from './env.js';
 
+/** @typedef { import("./utils").PersistentFragment } PersistentFragment */
+/** @typedef { import("./utils").RenderableFragment } RenderableFragment */
+/** @typedef { import('@mux-elements/playback-core').Metadata } Metadata */
+
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-player';
 
@@ -34,12 +38,15 @@ const PlayerAttributes = {
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
 
+/** @type {(playbackId: string | undefined) => string} */
 const getPosterURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 
+/** @type {(playbackId: string | undefined) => string} */
 const getStoryboardURLFromPlaybackId = (playbackId) =>
   `https://image.mux.com/${playbackId}/storyboard.vtt`;
 
+/** @type {(props: any) => any} */
 const getChromeStylesFromProps = (props) => {
   const { primaryColor, secondaryColor, tertiaryColor } = props;
 
@@ -74,6 +81,7 @@ const getChromeStylesFromProps = (props) => {
   });
 };
 
+/** @type {(props: MuxProps) => PersistentFragment} */
 const MuxPlayer = (props) => html`
   <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
@@ -114,6 +122,7 @@ const MuxPlayer = (props) => html`
   </media-controller>
 `;
 
+/** @type {(props: MuxProps) => PersistentFragment} */
 const ChromeRenderer = (props) => {
   const { streamType, playerSize } = props;
   if (streamType === StreamTypes.LIVE || streamType === StreamTypes.LL_LIVE) {
@@ -136,6 +145,7 @@ const Spacer = () => html`
 
 const Loading = () => html`<div>Loading...</div>`;
 
+/** @type {(props: MuxProps) => PersistentFragment} */
 const VodChromeSmall = (props) => html`
   <div
     slot="centered-chrome"
@@ -143,6 +153,7 @@ const VodChromeSmall = (props) => html`
   >
     ${renderable(
       'center',
+      /** @type {(props: MuxProps) => PersistentFragment} */
       ({ showLoading }) =>
         showLoading
           ? Loading()
@@ -168,6 +179,7 @@ const VodChromeSmall = (props) => html`
     ${Spacer()}
     ${renderable(
       'captionsButton',
+      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -177,6 +189,7 @@ const VodChromeSmall = (props) => html`
   </media-control-bar>
 `;
 
+/** @type {(props: MuxProps) => PersistentFragment} */
 const VodChromeLarge = (props) => html`
   <div
     slot="centered-chrome"
@@ -184,6 +197,7 @@ const VodChromeLarge = (props) => html`
   >
     ${renderable(
       'center',
+      /** @type {(props: MuxProps) => PersistentFragment} */
       ({ showLoading }) =>
         showLoading
           ? Loading()
@@ -204,6 +218,7 @@ const VodChromeLarge = (props) => html`
     <media-playback-rate-button></media-playback-rate-button>
     ${renderable(
       'captionsButton',
+      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -213,6 +228,7 @@ const VodChromeLarge = (props) => html`
   </media-control-bar>
 `;
 
+/** @type {(props: MuxProps) => PersistentFragment} */
 const LiveChromeSmall = (props) => html`
   <div
     slot="centered-chrome"
@@ -220,6 +236,7 @@ const LiveChromeSmall = (props) => html`
   >
     ${renderable(
       'center',
+      /** @type {(props: MuxProps) => PersistentFragment} */
       ({ showLoading }) =>
         showLoading
           ? Loading()
@@ -235,6 +252,7 @@ const LiveChromeSmall = (props) => html`
     ${Spacer()}
     ${renderable(
       'captionsButton',
+      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -244,6 +262,7 @@ const LiveChromeSmall = (props) => html`
   </media-control-bar>
 `;
 
+/** @type {(props: MuxProps) => PersistentFragment} */
 const LiveChromeLarge = (props) => html`
   <div
     slot="centered-chrome"
@@ -251,6 +270,7 @@ const LiveChromeLarge = (props) => html`
   >
     ${renderable(
       'center',
+      /** @type {(props: MuxProps) => PersistentFragment} */
       ({ showLoading }) =>
         showLoading
           ? Loading()
@@ -268,6 +288,7 @@ const LiveChromeLarge = (props) => html`
     <media-time-display></media-time-display>
     ${renderable(
       'captionsButton',
+      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
       ({ hasCaptions }) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
@@ -283,6 +304,7 @@ const MediaChromeSizes = {
   SM: 'small',
 };
 
+/** @type {(el: Element) => string} */
 function getPlayerSize(el) {
   const muxPlayerRect = el.getBoundingClientRect();
   return muxPlayerRect.width < SMALL_BREAKPOINT
@@ -290,6 +312,30 @@ function getPlayerSize(el) {
     : MediaChromeSizes.LG;
 }
 
+/**
+ * @typedef {{
+ *   debug: boolean,
+ *   envKey?: string,
+ *   playbackId?: string,
+ *   streamType?: string,
+ *   startTime: number,
+ *   playerSize: string,
+ *   hasCaptions: boolean,
+ *   showLoading: boolean,
+ *   poster?: string,
+ *   muted?: boolean,
+ *   loop?: boolean,
+ *   autoplay?: boolean,
+ *   preferMse?: boolean,
+ *   metadata?: Metadata
+ * }} MuxProps
+ */
+
+/**
+ * @param  {MuxPlayerElement} el
+ * @param  {MuxProps} [props]
+ * @return {MuxProps}
+ */
 function getProps(el, props) {
   return {
     debug: el.debug,
@@ -304,12 +350,16 @@ function getProps(el, props) {
   };
 }
 
-const showLoading = (el) => !el.video?.paused && el.video?.readyState < 3;
+/** @type {(el: MuxPlayerElement) => boolean} */
+const showLoading = (el) =>
+  !el.video?.paused && (el.video?.readyState ?? 0) < 3;
 
+/** @type {(el: MuxPlayerElement, name: string) => ?string} */
 function getVideoAttribute(el, name) {
   return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
 }
 
+/** @type {(el: MuxPlayerElement) => TextTrack[]} */
 function getCcSubTracks(el) {
   return el.video
     ? Array.from(el.video.textTracks).filter(
@@ -333,7 +383,7 @@ class MuxPlayerInternal {
     this._center = this._chromeRenderer.fragments.center;
 
     el.attachShadow({ mode: 'open' });
-    el.shadowRoot.append(...muxPlayer.childNodes);
+    el.shadowRoot?.append(...muxPlayer.childNodes);
 
     el.querySelectorAll(':scope > track').forEach((track) => {
       el.video?.append(track.cloneNode());
@@ -350,9 +400,12 @@ class MuxPlayerInternal {
     // after using document.createElement.
     // One way to get around this would be to build the native tag as a string.
     // But just fixing it manually for now.
-    el.video.muted = el.video.defaultMuted;
+    if (el.video) {
+      el.video.muted = el.video.defaultMuted;
+    }
 
     if (el.video?.hls) {
+      /** @type {*} */
       const Hls = el.video.hls.constructor;
 
       // Temporarily here to load less segments on page load, remove later!!!!
@@ -360,14 +413,14 @@ class MuxPlayerInternal {
 
       if (el.autoplay) {
         el.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          var playPromise = el.video.play();
+          var playPromise = el.video?.play();
           if (playPromise) {
             playPromise.catch((error) => {
               console.log(`${error.name} ${error.message}`);
               if (error.name === 'NotAllowedError') {
                 console.log('Attempting to play with video muted');
-                el.video.muted = true;
-                return el.video.play();
+                if (el.video) el.video.muted = true;
+                return el.video?.play();
               }
             });
           }
@@ -375,6 +428,7 @@ class MuxPlayerInternal {
       }
     }
 
+    /** @type {number?} */
     let timeout;
     const onLoadingStateChange = () => {
       if (!timeout && showLoading(el)) {
@@ -418,13 +472,11 @@ class MuxPlayerInternal {
   }
 
   connectedCallback() {
-    console.log(99);
     this._renderChrome();
     this._initResizing();
   }
 
   disconnectedCallback() {
-    console.log(11);
     this._deinitResizing();
   }
 
@@ -444,7 +496,7 @@ class MuxPlayerInternal {
   }
 
   _deinitResizing() {
-    this._resizeObserver.disconnect();
+    this._resizeObserver?.disconnect();
   }
 }
 
@@ -472,13 +524,16 @@ class MuxPlayerElement extends VideoApiElement {
     internals.get(this).disconnectedCallback();
   }
 
+  /**
+   * @param  {string} attrName
+   * @param  {string | null} oldValue
+   * @param  {string} newValue
+   */
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (MuxVideoAttributeNames.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
-    } else {
-      console.log('ATTRIBUTE', attrName, oldValue, newValue);
     }
   }
 
@@ -504,18 +559,18 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get Mux asset playback id.
-   * @return {string}
+   * @return {string | undefined}
    */
   get playbackId() {
-    return getVideoAttribute(this, MuxVideoAttributes.PLAYBACK_ID);
+    return getVideoAttribute(this, MuxVideoAttributes.PLAYBACK_ID) ?? undefined;
   }
 
   /**
    * Mux Data env key
-   * @return {string}
+   * @return {string | undefined}
    */
   get envKey() {
-    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY);
+    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY) ?? undefined;
   }
 
   /**
@@ -540,7 +595,7 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get stream type.
-   * @return {('on-demand'|'live'|'ll-live')}
+   * @return {string | undefined}
    */
   get streamType() {
     return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE) ?? undefined;
@@ -548,7 +603,7 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set stream type.
-   * @param  {('on-demand'|'live'|'ll-live')} val
+   * @param  {string | undefined} val
    */
   set streamType(val) {
     if (val) {
@@ -582,7 +637,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the preference flag for using media source.
    * @return {boolean}
    */
-  get preferMSE() {
+  get preferMse() {
     return getVideoAttribute(this, MuxVideoAttributes.PREFER_MSE) != null;
   }
 
@@ -590,7 +645,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Set the preference flag for using media source.
    * @param  {boolean} val
    */
-  set preferMSE(val) {
+  set preferMse(val) {
     if (val) {
       this.setAttribute(MuxVideoAttributes.PREFER_MSE, '');
     } else {
@@ -599,12 +654,8 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
-   * @typedef {import('@mux-elements/playback-core').Metadata} Metadata
-   */
-
-  /**
    * Get the metadata object for Mux Data.
-   * @return {Metadata}
+   * @return {Metadata | undefined}
    */
   get metadata() {
     return this.video?.metadata;
@@ -612,7 +663,7 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set the metadata object for Mux Data.
-   * @param  {Metadata} val
+   * @param  {Metadata | undefined} val
    */
   set metadata(val) {
     if (this.video) this.video.metadata = val;
@@ -623,7 +674,8 @@ class MuxPlayerElement extends VideoApiElement {
 if (!globalThis.customElements.get('mux-player')) {
   globalThis.customElements.define('mux-player', MuxPlayerElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
-  globalThis.MuxPlayerElement = MuxPlayerElement;
+  /** @type {any} */
+  (globalThis).MuxPlayerElement = MuxPlayerElement;
 }
 
 export default MuxPlayerElement;

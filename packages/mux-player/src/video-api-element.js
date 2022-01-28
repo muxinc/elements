@@ -20,12 +20,15 @@ class VideoApiElement extends HTMLElement {
     });
 
     // Watch for child adds/removes and update the native element if necessary
+    /** @type {(mutationList: MutationRecord[]) => void} */
     const mutationCallback = (mutationsList) => {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
-            const track = this.video?.querySelector(`track[src="${node.src}"]`);
+            const track = this.video?.querySelector(
+              `track[src="${/** @type {HTMLTrackElement} */ (node).src}"]`
+            );
             if (track) this.video?.removeChild(track);
           });
 
@@ -40,12 +43,20 @@ class VideoApiElement extends HTMLElement {
     observer.observe(this, { childList: true, subtree: true });
   }
 
+  /**
+   * @param  {string} attrName
+   * @param  {string | null} oldValue
+   * @param  {string} newValue
+   */
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (VideoAttributeNames.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
     }
   }
 
+  /** @typedef { import("@mux-elements/mux-video").default } MuxVideoElement */
+
+  /** @type {MuxVideoElement | null | undefined} */
   get video() {
     return this.shadowRoot?.querySelector('mux-video');
   }
@@ -79,6 +90,7 @@ class VideoApiElement extends HTMLElement {
   }
 }
 
+/** @type {(el: VideoApiElement, name: string) => ?string} */
 function getVideoAttribute(el, name) {
   return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
 }
