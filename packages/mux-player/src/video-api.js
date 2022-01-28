@@ -1,4 +1,4 @@
-const VideoAttributeNames = [
+const AllowedVideoAttributeNames = [
   "autoplay",
   "crossorigin",
   "loop",
@@ -7,11 +7,34 @@ const VideoAttributeNames = [
   "src",
 ];
 
+const AllowedVideoEvents = [
+  "loadstart",
+  "loadedmetadata",
+  "progress",
+  "durationchange",
+  "volumechange",
+  "ratechange",
+  "resize",
+  "waiting",
+  "play",
+  "playing",
+  "timeupdate",
+  "pause",
+  "seeking",
+  "seeked",
+  "ended",
+];
+
 class VideoApiElement extends HTMLElement {
   static get observedAttributes() {
-    return [...VideoAttributeNames];
+    return [...AllowedVideoAttributeNames];
   }
 
+  /**
+   * Create a HTMLVideoElement like API with opt-in methods to expose publicly.
+   * This class is intentionally not extending MuxVideoElement but composing it
+   * to opt in methods and not expose too much. More flexibility in the future.
+   */
   constructor() {
     super();
 
@@ -49,9 +72,31 @@ class VideoApiElement extends HTMLElement {
    * @param  {string} newValue
    */
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (VideoAttributeNames.includes(attrName)) {
+    if (AllowedVideoAttributeNames.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
     }
+  }
+
+  /** @type {<T extends EventTarget['addEventListener']>(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => void} */
+  addEventListener(type, listener, options) {
+    if (AllowedVideoEvents.includes(type)) {
+      this.video?.addEventListener(type, listener, options);
+    }
+  }
+
+  /** @type {<T extends EventTarget['removeEventListener']>(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => void} */
+  removeEventListener(type, listener, options) {
+    if (AllowedVideoEvents.includes(type)) {
+      this.video?.removeEventListener(type, listener, options);
+    }
+  }
+
+  play() {
+    return this.video?.play();
+  }
+
+  pause() {
+    this.video?.pause();
   }
 
   /** @typedef { import("@mux-elements/mux-video").default } MuxVideoElement */
@@ -61,20 +106,38 @@ class VideoApiElement extends HTMLElement {
     return this.shadowRoot?.querySelector("mux-video");
   }
 
-  get autoplay() {
-    return getVideoAttribute(this, "autoplay") != null;
+  get duration() {
+    return this.video?.duration;
   }
 
-  get crossOrigin() {
-    return getVideoAttribute(this, "crossorigin");
+  get ended() {
+    return this.video?.ended;
   }
 
-  get loop() {
-    return getVideoAttribute(this, "loop") != null;
+  get buffered() {
+    return this.video?.buffered;
   }
 
-  get muted() {
-    return getVideoAttribute(this, "muted") != null;
+  get readyState() {
+    return this.video?.readyState;
+  }
+
+  get videoWidth() {
+    return this.video?.videoWidth;
+  }
+
+  get videoHeight() {
+    return this.video?.videoHeight;
+  }
+
+  get currentTime() {
+    return this.video?.currentTime ?? 0;
+  }
+
+  set currentTime(val) {
+    if (this.video) {
+      this.video.currentTime = Number(val);
+    }
   }
 
   get src() {
@@ -82,10 +145,71 @@ class VideoApiElement extends HTMLElement {
   }
 
   set src(val) {
-    if (val == null) {
-      this.removeAttribute("src");
+    this.setAttribute("src", `${val}`);
+  }
+
+  get poster() {
+    return getVideoAttribute(this, "poster") ?? "";
+  }
+
+  set poster(val) {
+    this.setAttribute("poster", `${val}`);
+  }
+
+  get playbackRate() {
+    return this.video?.playbackRate ?? 1;
+  }
+
+  set playbackRate(val) {
+    if (this.video) {
+      this.video.playbackRate = Number(val);
+    }
+  }
+
+  get crossOrigin() {
+    return getVideoAttribute(this, "crossorigin");
+  }
+
+  set crossOrigin(val) {
+    this.setAttribute("crossorigin", `${val}`);
+  }
+
+  get autoplay() {
+    return getVideoAttribute(this, "autoplay") != null;
+  }
+
+  set autoplay(val) {
+    if (val) {
+      this.setAttribute("autoplay", "");
     } else {
-      this.setAttribute("src", val);
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute("autoplay");
+    }
+  }
+
+  get loop() {
+    return getVideoAttribute(this, "loop") != null;
+  }
+
+  set loop(val) {
+    if (val) {
+      this.setAttribute("loop", "");
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute("loop");
+    }
+  }
+
+  get muted() {
+    return getVideoAttribute(this, "muted") != null;
+  }
+
+  set muted(val) {
+    if (val) {
+      this.setAttribute("muted", "");
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute("muted");
     }
   }
 }

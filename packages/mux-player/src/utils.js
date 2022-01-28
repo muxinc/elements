@@ -27,7 +27,7 @@ export function uniqueId(prefix) {
  * the template literal and be appended in the place of the expression.
  *
  * @param  {TemplateStringsArray} strings
- * @param  {Array.<string|number|Node|Renderable|PersistentFragment|undefined>} args
+ * @param  {Array.<string|number|Node|Renderable|PersistentFragment|null|undefined>} args
  * @return {PersistentFragment}
  */
 export function html(strings, ...args) {
