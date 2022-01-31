@@ -106,12 +106,16 @@ class VideoApiElement extends HTMLElement {
     return this.shadowRoot?.querySelector("mux-video");
   }
 
+  get paused() {
+    return this.video?.paused ?? true;
+  }
+
   get duration() {
-    return this.video?.duration;
+    return this.video?.duration ?? NaN;
   }
 
   get ended() {
-    return this.video?.ended;
+    return this.video?.ended ?? false;
   }
 
   get buffered() {
@@ -119,7 +123,7 @@ class VideoApiElement extends HTMLElement {
   }
 
   get readyState() {
-    return this.video?.readyState;
+    return this.video?.readyState ?? 0;
   }
 
   get videoWidth() {
@@ -137,6 +141,16 @@ class VideoApiElement extends HTMLElement {
   set currentTime(val) {
     if (this.video) {
       this.video.currentTime = Number(val);
+    }
+  }
+
+  get volume() {
+    return this.video?.volume ?? 1;
+  }
+
+  set volume(val) {
+    if (this.video) {
+      this.video.volume = Number(val);
     }
   }
 
