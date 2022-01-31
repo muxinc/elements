@@ -58,8 +58,6 @@ export const MuxPlayer = React.forwardRef<
 
   const [srcLoaded, setSrcLoaded] = useState<boolean>();
 
-  const [loading, setLoading] = useState(true);
-
   /*
    * This is a pretty naiive check -- may have to make this more sophisticated
    */
@@ -69,7 +67,6 @@ export const MuxPlayer = React.forwardRef<
     if (!srcLoaded && nextIsLoading) {
       setSrcLoaded(true);
     }
-    setLoading(nextIsLoading);
   }, []);
 
   const [supportsAirPlay, setSupportsAirPlay] = useState<boolean>();
@@ -268,7 +265,6 @@ export const MuxPlayer = React.forwardRef<
       <ChromeRenderer
         captionsAvailable={captionsAvailable}
         supportsVolume={supportsVolume}
-        loading={loading}
         paused={!!muxVideoRef.current?.paused}
         supportsAirPlay={supportsAirPlay}
         streamType={streamType}

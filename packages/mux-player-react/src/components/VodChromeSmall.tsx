@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useTimeoutWhen } from "../hooks/useTimeoutWhen";
+import React from "react";
 import {
   MediaControlBar,
+  MediaLoadingIndicator,
   MediaAirplayButton,
   MediaPlayButton,
   MediaSeekBackwardButton,
@@ -11,13 +11,11 @@ import {
   MediaTimeRange,
   MediaTimeDisplay,
   MediaCaptionsButton,
-  // MediaPlaybackRateButton,
   MediaPipButton,
   MediaFullscreenButton,
   MediaPlaybackRateButton,
 } from "../media-chrome";
 import Spacer from "./Spacer";
-import Loading from "../media-chrome/components/loading";
 import type { ChromeProps } from "../types";
 
 const VodChromeSmall: React.FC<ChromeProps> = (props) => {
@@ -25,30 +23,15 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
     supportsAirPlay = false,
     supportsVolume = false,
     captionsAvailable = false,
-    loading = false,
-    paused,
   } = props;
-  const [showLoading, setShowLoading] = useState(loading && !paused);
-  useTimeoutWhen(
-    () => {
-      setShowLoading(loading && !paused);
-    },
-    500,
-    loading && !paused
-  );
-  useEffect(() => {
-    const nextShowLoading = loading && !paused;
-    if (nextShowLoading) return;
-    setShowLoading(nextShowLoading);
-  }, [loading, paused]);
   return (
     <>
       <div
         slot="centered-chrome"
         style={{
-          "--media-background-color": "none",
-          "--media-control-hover-background": "none",
-          "--media-control-background": "none",
+          "--media-background-color": "transparent",
+          "--media-control-hover-background": "transparent",
+          "--media-control-background": "transparent",
           "--media-button-icon-width": "100%",
           width: "100%",
           display: "flex",
@@ -57,21 +40,20 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
           justifyContent: "center",
         }}
       >
-        {showLoading ? (
-          <Loading />
-        ) : (
-          <>
-            <MediaSeekBackwardButton
-              style={{ padding: 0, width: "20%" }}
-            ></MediaSeekBackwardButton>
-            <MediaPlayButton
-              style={{ padding: 0, width: "20%" }}
-            ></MediaPlayButton>
-            <MediaSeekForwardButton
-              style={{ padding: 0, width: "20%" }}
-            ></MediaSeekForwardButton>
-          </>
-        )}
+        <>
+          <MediaSeekBackwardButton
+            style={{ padding: 0, width: "20%" }}
+          ></MediaSeekBackwardButton>
+          <MediaPlayButton
+            style={{ padding: 0, width: "20%" }}
+          ></MediaPlayButton>
+          <MediaSeekForwardButton
+            style={{ padding: 0, width: "20%" }}
+          ></MediaSeekForwardButton>
+        </>
+      </div>
+      <div slot="centered-chrome" no-auto-hide>
+        <MediaLoadingIndicator></MediaLoadingIndicator>
       </div>
       <MediaControlBar>
         <MediaTimeRange></MediaTimeRange>

@@ -60,6 +60,17 @@ const MediaControlBar = ({ children, ...props }) => {
 export { MediaControlBar };
 
 /** @type { MCC } */
+const MediaLoadingIndicator = ({ children, ...props }) => {
+  return React.createElement(
+    "media-loading-indicator",
+    toNativeProps(props),
+    children
+  );
+};
+
+export { MediaLoadingIndicator };
+
+/** @type { MCC } */
 const MediaTextDisplay = ({ children, ...props }) => {
   return React.createElement(
     "media-text-display",
