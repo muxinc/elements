@@ -36,7 +36,7 @@ export function html(strings, ...args) {
   const fragments = [];
   // Add placeholder divs with unqiue id for the fragments.
   args = args.map((arg) => {
-    if (typeof arg === "object") {
+    if (arg && typeof arg === "object") {
       return `<div id="_${uid}${fragments.push(arg)}"></div>`;
     }
     return arg;

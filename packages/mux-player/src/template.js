@@ -32,8 +32,8 @@ export const template = (props) => html`
   <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
       slot="media"
-      playback-id="${props.playbackId}"
-      env-key="${props.envKey}"
+      ${props.playbackId ? `playback-id="${props.playbackId}"` : ""}
+      ${props.envKey ? `env-key="${props.envKey}"` : ""}
       ${props.metadata?.video_id
         ? `metadata-video-id="${props.metadata.video_id}"`
         : ""}

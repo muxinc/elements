@@ -134,8 +134,8 @@ class MuxPlayerInternal {
       }
     };
 
-    el.video?.textTracks.addEventListener("addtrack", onTrackCountChange);
-    el.video?.textTracks.addEventListener("removetrack", onTrackCountChange);
+    el.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
+    el.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
   }
 
   _renderChrome() {
