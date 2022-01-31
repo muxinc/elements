@@ -31,8 +31,21 @@ export const template = (props: MuxTemplateProps) => html`
   <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
       slot="media"
+      crossorigin
+      playsinline
+      ${props.autoplay ||
+      props.streamType === StreamTypes.LIVE ||
+      props.streamType === StreamTypes.LL_LIVE
+        ? "autoplay"
+        : ""}
+      ${props.muted ? "muted" : ""}
+      ${props.debug ? "debug" : ""}
+      ${props.preferMse ? "prefer-mse" : ""}
+      ${props.startTime != null ? `start-time="${props.startTime}"` : ""}
+      poster="${props.poster ?? getPosterURLFromPlaybackId(props.playbackId)}"
       ${props.playbackId ? `playback-id="${props.playbackId}"` : ""}
       ${props.envKey ? `env-key="${props.envKey}"` : ""}
+      ${props.streamType ? `stream-type="${props.streamType}"` : ""}
       ${props.metadata?.video_id
         ? `metadata-video-id="${props.metadata.video_id}"`
         : ""}
@@ -41,19 +54,6 @@ export const template = (props: MuxTemplateProps) => html`
         : ""}
       ${props.metadata?.viewer_user_id
         ? `metadata-viewer-user-id="${props.metadata.viewer_user_id}"`
-        : ""}
-      stream-type="${props.streamType}"
-      start-time="${props.startTime}"
-      poster="${props.poster ?? getPosterURLFromPlaybackId(props.playbackId)}"
-      crossorigin
-      playsinline
-      ${props.debug ? "debug" : ""}
-      ${props.muted ? "muted" : ""}
-      ${props.preferMse ? "prefer-mse" : ""}
-      ${props.autoplay ||
-      props.streamType === StreamTypes.LIVE ||
-      props.streamType === StreamTypes.LL_LIVE
-        ? "autoplay"
         : ""}
     >
       <track
