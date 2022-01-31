@@ -104,6 +104,17 @@ const MediaTimeDisplay = ({ children, ...props }) => {
 export { MediaTimeDisplay };
 
 /** @type { MCC } */
+const MediaAirplayButton = ({ children, ...props }) => {
+  return React.createElement(
+    "media-airplay-button",
+    toNativeProps(props),
+    children
+  );
+};
+
+export { MediaAirplayButton };
+
+/** @type { MCC } */
 const MediaCaptionsButton = ({ children, ...props }) => {
   return React.createElement(
     "media-captions-button",

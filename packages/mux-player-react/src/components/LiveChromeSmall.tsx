@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTimeoutWhen } from "../hooks/useTimeoutWhen";
 import {
   MediaControlBar,
+  MediaAirplayButton,
   MediaPlayButton,
   MediaMuteButton,
   MediaVolumeRange,
@@ -9,14 +10,12 @@ import {
   MediaPipButton,
   MediaFullscreenButton,
 } from "../media-chrome";
-import AirPlayButton from "../media-chrome/components/air-play-button";
 import Loading from "../media-chrome/components/loading";
 import Spacer from "./Spacer";
 import type { ChromeProps } from "../types";
 
 const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
-    onAirPlaySelected,
     supportsAirPlay = false,
     supportsVolume = false,
     captionsAvailable = false,
@@ -69,7 +68,7 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {supportsAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
       </MediaControlBar>
     </>
   );
