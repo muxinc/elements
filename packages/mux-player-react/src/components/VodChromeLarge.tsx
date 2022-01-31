@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useTimeoutWhen } from "../hooks/useTimeoutWhen";
 import {
   MediaControlBar,
+  MediaAirplayButton,
   MediaPlayButton,
   MediaSeekBackwardButton,
   MediaSeekForwardButton,
@@ -14,13 +15,11 @@ import {
   MediaFullscreenButton,
   MediaPlaybackRateButton,
 } from "../media-chrome";
-import AirPlayButton from "../media-chrome/components/air-play-button";
 import Loading from "../media-chrome/components/loading";
 import type { ChromeProps } from "../types";
 
 const VodChromeLarge: React.FC<ChromeProps> = (props) => {
   const {
-    onAirPlaySelected,
     supportsAirPlay = false,
     supportsVolume = false,
     captionsAvailable = false,
@@ -73,7 +72,7 @@ const VodChromeLarge: React.FC<ChromeProps> = (props) => {
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {supportsAirPlay && <AirPlayButton onClick={onAirPlaySelected} />}
+        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
       </MediaControlBar>
     </>
   );

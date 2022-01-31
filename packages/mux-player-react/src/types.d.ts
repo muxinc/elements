@@ -34,7 +34,6 @@ export type MuxPlayerProps = Partial<MuxVideoProps> & {
 };
 
 export type ChromeProps = {
-  onAirPlaySelected?: React.MouseEventHandler;
   supportsAirPlay?: boolean;
   supportsVolume?: boolean;
   loading?: boolean;

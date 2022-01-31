@@ -271,9 +271,6 @@ export const MuxPlayer = React.forwardRef<
         loading={loading}
         paused={!!muxVideoRef.current?.paused}
         supportsAirPlay={supportsAirPlay}
-        onAirPlaySelected={() => {
-          muxVideoRef.current?.webkitShowPlaybackTargetPicker?.();
-        }}
         streamType={streamType}
         playerSize={playerSize}
       />
