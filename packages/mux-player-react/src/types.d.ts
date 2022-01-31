@@ -36,7 +36,6 @@ export type MuxPlayerProps = Partial<MuxVideoProps> & {
 export type ChromeProps = {
   supportsAirPlay?: boolean;
   supportsVolume?: boolean;
-  loading?: boolean;
   paused?: boolean;
   captionsAvailable?: boolean;
   streamType?: MuxVideoProps["streamType"];

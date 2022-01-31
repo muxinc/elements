@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useTimeoutWhen } from "../hooks/useTimeoutWhen";
+import React from "react";
 import {
   MediaControlBar,
+  MediaLoadingIndicator,
   MediaAirplayButton,
   MediaPlayButton,
   MediaSeekBackwardButton,
@@ -15,7 +15,6 @@ import {
   MediaFullscreenButton,
   MediaPlaybackRateButton,
 } from "../media-chrome";
-import Loading from "../media-chrome/components/loading";
 import type { ChromeProps } from "../types";
 
 const VodChromeLarge: React.FC<ChromeProps> = (props) => {
@@ -23,30 +22,16 @@ const VodChromeLarge: React.FC<ChromeProps> = (props) => {
     supportsAirPlay = false,
     supportsVolume = false,
     captionsAvailable = false,
-    loading = false,
-    paused,
   } = props;
-  const [showLoading, setShowLoading] = useState(loading && !paused);
-  useTimeoutWhen(
-    () => {
-      setShowLoading(loading && !paused);
-    },
-    500,
-    loading && !paused
-  );
-  useEffect(() => {
-    const nextShowLoading = loading && !paused;
-    if (nextShowLoading) return;
-    setShowLoading(nextShowLoading);
-  }, [loading, paused]);
   return (
     <>
       <div
         slot="centered-chrome"
+        no-auto-hide
         style={{
-          "--media-background-color": "none",
-          "--media-control-hover-background": "none",
-          "--media-control-background": "none",
+          "--media-background-color": "transparent",
+          "--media-control-hover-background": "transparent",
+          "--media-control-background": "transparent",
           "--media-button-icon-width": "100%",
           width: "100%",
           display: "flex",
@@ -55,7 +40,7 @@ const VodChromeLarge: React.FC<ChromeProps> = (props) => {
           justifyContent: "center",
         }}
       >
-        {showLoading ? <Loading /> : <></>}
+        <MediaLoadingIndicator></MediaLoadingIndicator>
       </div>
       <MediaControlBar>
         <MediaPlayButton></MediaPlayButton>
