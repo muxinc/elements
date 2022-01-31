@@ -27,7 +27,7 @@ function MuxPlayerPage() {
           // debug
           muted
           // autoPlay
-          // streamType={StreamTypes.LIVE}
+          streamType={StreamTypes.LIVE}
           // primaryColor="#ec407a"
           // secondaryColor="#64b5f6"
           // tertiaryColor="#b4004e"

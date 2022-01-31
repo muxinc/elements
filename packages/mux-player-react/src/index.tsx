@@ -14,6 +14,7 @@ import {
   getStoryboardURLFromPlaybackId,
   hasVolumeSupportAsync,
 } from "./utils";
+// import Poster from "./media-chrome/components/Poster";
 
 export { StreamTypes };
 
@@ -92,19 +93,19 @@ export const MuxPlayer = React.forwardRef<
 
     // NOTE: This is a hack solution to "default" CC selection. Solution *should*
     // be better default state support in media-chrome (CJP).
-    if (defaultShowCaptions && ccSubTracks.length && muxVideoRef.current) {
-      const [ccSubTrack] = ccSubTracks;
-      const eventType =
-        ccSubTrack.kind === "captions"
-          ? "mediashowcaptionsrequest"
-          : "mediashowsubtitlesrequest";
-      const showCCSubEvent = new CustomEvent(eventType, {
-        composed: true,
-        bubbles: true,
-        detail: ccSubTrack,
-      });
-      muxVideoRef.current.dispatchEvent(showCCSubEvent);
-    }
+    // if (defaultShowCaptions && ccSubTracks.length && muxVideoRef.current) {
+    //   const [ccSubTrack] = ccSubTracks;
+    //   const eventType =
+    //     ccSubTrack.kind === "captions"
+    //       ? "mediashowcaptionsrequest"
+    //       : "mediashowsubtitlesrequest";
+    //   const showCCSubEvent = new CustomEvent(eventType, {
+    //     composed: true,
+    //     bubbles: true,
+    //     detail: ccSubTrack,
+    //   });
+    //   muxVideoRef.current.dispatchEvent(showCCSubEvent);
+    // }
     setCaptionsAvailable(!!ccSubTracks.length);
   };
 
@@ -120,7 +121,6 @@ export const MuxPlayer = React.forwardRef<
         onLoadingStateChange
       );
       mediaElRef.current.removeEventListener("waiting", onLoadingStateChange);
-      mediaElRef.current.removeEventListener("stalled", onLoadingStateChange);
 
       // Remove Event Handlers from prev
       if (!!window.WebKitPlaybackTargetAvailabilityEvent) {
@@ -150,19 +150,19 @@ export const MuxPlayer = React.forwardRef<
 
     // NOTE: This is a hack solution to "default" CC selection. Solution *should*
     // be better default state support in media-chrome (CJP).
-    if (defaultShowCaptions && ccSubTracks.length) {
-      const [ccSubTrack] = ccSubTracks;
-      const eventType =
-        ccSubTrack.kind === "captions"
-          ? "mediashowcaptionsrequest"
-          : "mediashowsubtitlesrequest";
-      const showCCSubEvent = new CustomEvent(eventType, {
-        composed: true,
-        bubbles: true,
-        detail: ccSubTrack,
-      });
-      mediaElRef.current.dispatchEvent(showCCSubEvent);
-    }
+    // if (defaultShowCaptions && ccSubTracks.length) {
+    //   const [ccSubTrack] = ccSubTracks;
+    //   const eventType =
+    //     ccSubTrack.kind === "captions"
+    //       ? "mediashowcaptionsrequest"
+    //       : "mediashowsubtitlesrequest";
+    //   const showCCSubEvent = new CustomEvent(eventType, {
+    //     composed: true,
+    //     bubbles: true,
+    //     detail: ccSubTrack,
+    //   });
+    //   mediaElRef.current.dispatchEvent(showCCSubEvent);
+    // }
     setCaptionsAvailable(!!ccSubTracks.length);
 
     mediaElRef.current.addEventListener("timeupdate", onLoadingStateChange);
@@ -262,6 +262,7 @@ export const MuxPlayer = React.forwardRef<
         />
         {children}
       </MuxVideo>
+      {/* <Poster playbackId={playbackId} poster={poster} onLoaded={() => console.log('loaded!!!!')}/> */}
       <ChromeRenderer
         captionsAvailable={captionsAvailable}
         supportsVolume={supportsVolume}
