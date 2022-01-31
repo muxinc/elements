@@ -44,20 +44,20 @@ const VodChromeLarge: React.FC<ChromeProps> = (props) => {
       </div>
       <MediaControlBar>
         <MediaPlayButton></MediaPlayButton>
-        <MediaSeekForwardButton></MediaSeekForwardButton>
         <MediaSeekBackwardButton></MediaSeekBackwardButton>
-        <MediaMuteButton></MediaMuteButton>
-        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
+        <MediaSeekForwardButton></MediaSeekForwardButton>
         <MediaTimeRange></MediaTimeRange>
         <MediaTimeDisplay
           show-duration
           style={{ color: "inherit" }}
         ></MediaTimeDisplay>
-        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
+        <MediaMuteButton></MediaMuteButton>
+        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
+        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
       </MediaControlBar>
     </>
   );

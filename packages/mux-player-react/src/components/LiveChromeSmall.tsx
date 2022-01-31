@@ -12,6 +12,7 @@ import {
 } from "../media-chrome";
 import Spacer from "./Spacer";
 import type { ChromeProps } from "../types";
+import LiveIndicator from "../media-chrome/components/LiveIndicator";
 
 const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
@@ -21,6 +22,13 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   } = props;
   return (
     <>
+      <MediaControlBar slot="top-chrome">
+        <LiveIndicator></LiveIndicator>
+        <Spacer />
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
+        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
+        <MediaPipButton></MediaPipButton>
+      </MediaControlBar>
       <div
         slot="centered-chrome"
         style={{
@@ -36,10 +44,7 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         }}
       >
         <>
-          <MediaLoadingIndicator></MediaLoadingIndicator>
-          <MediaPlayButton
-            style={{ padding: 0, width: "20%" }}
-          ></MediaPlayButton>
+          <MediaPlayButton style={{ padding: 0 }}></MediaPlayButton>
         </>
       </div>
       <div slot="centered-chrome" no-auto-hide>
@@ -49,10 +54,7 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         <MediaMuteButton></MediaMuteButton>
         {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <Spacer />
-        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
-        <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
       </MediaControlBar>
     </>
   );

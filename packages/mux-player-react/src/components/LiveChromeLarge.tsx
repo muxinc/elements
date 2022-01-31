@@ -13,6 +13,7 @@ import {
 } from "../media-chrome";
 import Spacer from "./Spacer";
 import type { ChromeProps } from "../types";
+import LiveIndicator from "../media-chrome/components/LiveIndicator";
 
 const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
   const {
@@ -22,6 +23,9 @@ const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
   } = props;
   return (
     <>
+      <MediaControlBar slot="top-chrome">
+        <LiveIndicator></LiveIndicator>
+      </MediaControlBar>
       <div
         slot="centered-chrome"
         no-auto-hide
@@ -45,9 +49,9 @@ const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
         {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
         <Spacer />
         {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
+        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
         <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
       </MediaControlBar>
     </>
   );

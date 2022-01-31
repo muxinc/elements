@@ -6,8 +6,6 @@ import {
   MediaPlayButton,
   MediaSeekBackwardButton,
   MediaSeekForwardButton,
-  MediaMuteButton,
-  MediaVolumeRange,
   MediaTimeRange,
   MediaTimeDisplay,
   MediaCaptionsButton,
@@ -17,6 +15,7 @@ import {
 } from "../media-chrome";
 import Spacer from "./Spacer";
 import type { ChromeProps } from "../types";
+import MediaVolumeButton from "../media-chrome/components/MediaVolumeButton";
 
 const VodChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
@@ -26,6 +25,12 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
   } = props;
   return (
     <>
+      <MediaControlBar slot="top-chrome">
+        <Spacer />
+        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
+        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
+        <MediaPipButton></MediaPipButton>
+      </MediaControlBar>
       <div
         slot="centered-chrome"
         style={{
@@ -42,13 +47,11 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
       >
         <>
           <MediaSeekBackwardButton
-            style={{ padding: 0, width: "20%" }}
+            style={{ padding: 0 }}
           ></MediaSeekBackwardButton>
-          <MediaPlayButton
-            style={{ padding: 0, width: "20%" }}
-          ></MediaPlayButton>
+          <MediaPlayButton style={{ padding: 0 }}></MediaPlayButton>
           <MediaSeekForwardButton
-            style={{ padding: 0, width: "20%" }}
+            style={{ padding: 0 }}
           ></MediaSeekForwardButton>
         </>
       </div>
@@ -56,18 +59,11 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
         <MediaLoadingIndicator></MediaLoadingIndicator>
       </div>
       <MediaControlBar>
+        <MediaVolumeButton></MediaVolumeButton>
         <MediaTimeRange></MediaTimeRange>
-        <MediaTimeDisplay show-duration></MediaTimeDisplay>
-      </MediaControlBar>
-      <MediaControlBar>
-        <MediaMuteButton></MediaMuteButton>
-        {supportsVolume && <MediaVolumeRange></MediaVolumeRange>}
-        <Spacer />
-        {captionsAvailable && <MediaCaptionsButton></MediaCaptionsButton>}
+        <MediaTimeDisplay></MediaTimeDisplay>
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
-        <MediaPipButton></MediaPipButton>
         <MediaFullscreenButton></MediaFullscreenButton>
-        {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
       </MediaControlBar>
     </>
   );
