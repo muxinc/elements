@@ -2,11 +2,11 @@ import {
   getChromeStylesFromProps,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
-} from "./helpers.js";
-import { html, renderable } from "./utils.js";
+} from "./helpers";
+import { html, renderable } from "./utils";
 
-/** @typedef { import(".").MuxProps } MuxProps */
-/** @typedef { import("./utils").PersistentFragment } PersistentFragment */
+import type { MuxTemplateProps } from "./types";
+import type { PersistentFragment } from "./utils";
 
 export const StreamTypes = {
   VOD: "on-demand",
@@ -27,8 +27,7 @@ const Spacer = () => html`
   ></div>
 `;
 
-/** @type {(props: MuxProps) => PersistentFragment} */
-export const template = (props) => html`
+export const template = (props: MuxTemplateProps) => html`
   <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
       slot="media"
@@ -68,8 +67,7 @@ export const template = (props) => html`
   </media-controller>
 `;
 
-/** @type {(props: MuxProps) => PersistentFragment} */
-export const ChromeRenderer = (props) => {
+export const ChromeRenderer = (props: MuxTemplateProps) => {
   const { streamType, playerSize } = props;
   if (streamType === StreamTypes.LIVE || streamType === StreamTypes.LL_LIVE) {
     if (playerSize === MediaChromeSizes.LG) {
@@ -83,16 +81,14 @@ export const ChromeRenderer = (props) => {
   return VodChromeSmall(props);
 };
 
-/** @type {(props: MuxProps) => PersistentFragment} */
-export const VodChromeSmall = (props) => html`
+export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <div
     slot="centered-chrome"
     style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       "center",
-      /** @type {(props: MuxProps) => PersistentFragment} */
-      ({ showLoading }) =>
+      ({ showLoading }: Partial<MuxTemplateProps>) =>
         showLoading
           ? Loading()
           : html`<media-seek-backward-button
@@ -117,8 +113,7 @@ export const VodChromeSmall = (props) => html`
     ${Spacer()}
     ${renderable(
       "captionsButton",
-      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
-      ({ hasCaptions }) =>
+      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
     )}
@@ -127,16 +122,14 @@ export const VodChromeSmall = (props) => html`
   </media-control-bar>
 `;
 
-/** @type {(props: MuxProps) => PersistentFragment} */
-export const VodChromeLarge = (props) => html`
+export const VodChromeLarge = (props: MuxTemplateProps) => html`
   <div
     slot="centered-chrome"
     style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       "center",
-      /** @type {(props: MuxProps) => PersistentFragment} */
-      ({ showLoading }) =>
+      ({ showLoading }: Partial<MuxTemplateProps>) =>
         showLoading
           ? Loading()
           : html` <media-play-button
@@ -156,8 +149,7 @@ export const VodChromeLarge = (props) => html`
     <media-playback-rate-button></media-playback-rate-button>
     ${renderable(
       "captionsButton",
-      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
-      ({ hasCaptions }) =>
+      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
     )}
@@ -166,16 +158,14 @@ export const VodChromeLarge = (props) => html`
   </media-control-bar>
 `;
 
-/** @type {(props: MuxProps) => PersistentFragment} */
-export const LiveChromeSmall = (props) => html`
+export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   <div
     slot="centered-chrome"
     style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       "center",
-      /** @type {(props: MuxProps) => PersistentFragment} */
-      ({ showLoading }) =>
+      ({ showLoading }: Partial<MuxTemplateProps>) =>
         showLoading
           ? Loading()
           : html`<media-play-button
@@ -190,8 +180,7 @@ export const LiveChromeSmall = (props) => html`
     ${Spacer()}
     ${renderable(
       "captionsButton",
-      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
-      ({ hasCaptions }) =>
+      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
     )}
@@ -200,16 +189,14 @@ export const LiveChromeSmall = (props) => html`
   </media-control-bar>
 `;
 
-/** @type {(props: MuxProps) => PersistentFragment} */
-export const LiveChromeLarge = (props) => html`
+export const LiveChromeLarge = (props: MuxTemplateProps) => html`
   <div
     slot="centered-chrome"
     style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
   >
     ${renderable(
       "center",
-      /** @type {(props: MuxProps) => PersistentFragment} */
-      ({ showLoading }) =>
+      ({ showLoading }: Partial<MuxTemplateProps>) =>
         showLoading
           ? Loading()
           : html` <media-play-button
@@ -226,8 +213,7 @@ export const LiveChromeLarge = (props) => html`
     <media-time-display></media-time-display>
     ${renderable(
       "captionsButton",
-      /** @type {(props: MuxProps) => PersistentFragment | boolean} */
-      ({ hasCaptions }) =>
+      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
     )}

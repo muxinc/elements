@@ -2242,6 +2242,11 @@
   resolved "https://registry.yarnpkg.com/@lit/reactive-element/-/reactive-element-1.2.1.tgz#8620d7f0baf63e12821fa93c34d21e23477736f7"
   integrity sha512-03FYfMguIWo9E1y1qcTpXzoO8Ukpn0j5o4GjNFq/iHqJEPY6pYopsU44e7NSFIgCTorr8wdUU5PfVy8VeD6Rwg==
 
+"@mdn/browser-compat-data@^4.0.0":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-4.1.5.tgz#f6ea4e4764dfa0924235d9ef2ce56aac531c42c7"
+  integrity sha512-rb2LEhclR/Ykf/biC2HrZmVonqnfTL8RhsL9wdMCGmw1xfeLFqGGZLKWypob2/i15SqgmEHbtcgJZ9kwWPbKtQ==
+
 "@napi-rs/triples@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
@@ -3434,6 +3439,17 @@
     parse5 "^6.0.1"
     picomatch "^2.2.2"
     ws "^7.4.2"
+
+"@web/dev-server-esbuild@^0.2.16":
+  version "0.2.16"
+  resolved "https://registry.yarnpkg.com/@web/dev-server-esbuild/-/dev-server-esbuild-0.2.16.tgz#fc3c429f22d89c597fa60231b6a8cacd404f9294"
+  integrity sha512-a82uKy9vQ4HvfWtjd7hJ3GtaqkL2ofxpEu3a1wIZyXB2dFWPvhRSmLNe/4IPPHe4vj6PVdRpLSFPEA3lXUW5Pw==
+  dependencies:
+    "@mdn/browser-compat-data" "^4.0.0"
+    "@web/dev-server-core" "^0.3.17"
+    esbuild "^0.12.21"
+    parse5 "^6.0.1"
+    ua-parser-js "^1.0.2"
 
 "@web/dev-server-rollup@^0.3.13":
   version "0.3.15"
@@ -6859,6 +6875,11 @@ esbuild-windows-arm64@0.14.2:
   version "0.14.2"
   resolved "https://registry.yarnpkg.com/esbuild-windows-arm64/-/esbuild-windows-arm64-0.14.2.tgz#aca2a4f83d2f0d1592ad4be832ed0045fc888cda"
   integrity sha512-ZrLbhr0vX5Em/P1faMnHucjVVWPS+m3tktAtz93WkMZLmbRJevhiW1y4CbulBd2z0MEdXZ6emDa1zFHq5O5bSA==
+
+esbuild@^0.12.21:
+  version "0.12.29"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.12.29.tgz#be602db7c4dc78944a9dbde0d1ea19d36c1f882d"
+  integrity sha512-w/XuoBCSwepyiZtIRsKsetiLDUVGPVw1E/R3VTFSecIy8UR7Cq3SOtwKHJMFoVqqVG36aGkzh4e8BvpO1Fdc7g==
 
 esbuild@^0.13.13:
   version "0.13.15"
@@ -15249,6 +15270,11 @@ typical@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/typical/-/typical-5.2.0.tgz#4daaac4f2b5315460804f0acf6cb69c52bb93066"
   integrity sha512-dvdQgNDNJo+8B2uBQoqdb11eUCE1JQXhvjC/CZtgvZseVd5TYMXnq0+vuUemXbd/Se29cTaUuPX3YIc2xgbvIg==
+
+ua-parser-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.2.tgz#e2976c34dbfb30b15d2c300b2a53eac87c57a775"
+  integrity sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==
 
 uglify-js@^3.1.4:
   version "3.14.4"

@@ -1,24 +1,30 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
-import VideoApiElement from "./video-api.js";
-import { getCcSubTracks, getPlayerVersion } from "./helpers.js";
-import { template } from "./template.js";
+import VideoApiElement from "./video-api";
+import { getCcSubTracks, getPlayerVersion } from "./helpers";
+import { template } from "./template";
 
-/** @typedef { import("./utils").PersistentFragment } PersistentFragment */
-/** @typedef { import("./utils").RenderableFragment } RenderableFragment */
-/** @typedef { import('@mux-elements/playback-core').Metadata } Metadata */
+import type { MuxTemplateProps } from "./types";
+import type { Metadata } from "@mux-elements/playback-core";
+import type { PersistentFragment } from "./utils";
+import type { RenderableFragment } from "./utils";
 
-/** @type {(el: MuxPlayerElement) => boolean} */
-const showLoading = (el) =>
+const showLoading = (el: MuxPlayerElement) =>
   !el.video?.paused && (el.video?.readyState ?? 0) < 3;
 
 class MuxPlayerInternal {
+  el: MuxPlayerElement;
+  _chromeRenderer: RenderableFragment;
+  _captionsButton: RenderableFragment;
+  _center: RenderableFragment;
+  _playerSize?: string;
+  _resizeObserver?: ResizeObserver;
+
   /**
    * Create a MuxPlayerInternal instance.
    * Properties used in this class are not exposed in the public API.
-   * @param  {MuxPlayerElement} el
    */
-  constructor(el) {
+  constructor(el: MuxPlayerElement) {
     this.el = el;
 
     let muxPlayer = template(getProps(el));
@@ -67,16 +73,14 @@ class MuxPlayerInternal {
     this._deinitResizing();
   }
 
-  /** @param {MuxPlayerElement} el */
-  _setUpMutedAutoplay(el) {
+  _setUpMutedAutoplay(el: MuxPlayerElement) {
     if (el.video?.hls) {
-      /** @type {*} */
-      const Hls = el.video.hls.constructor;
+      const Hls: any = el.video.hls.constructor;
       if (el.autoplay) {
         el.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
           var playPromise = el.video?.play();
           if (playPromise) {
-            playPromise.catch((error) => {
+            playPromise.catch((error: Error) => {
               console.log(`${error.name} ${error.message}`);
               if (error.name === "NotAllowedError") {
                 console.log("Attempting to play with video muted");
@@ -90,10 +94,8 @@ class MuxPlayerInternal {
     }
   }
 
-  /** @param {MuxPlayerElement} el */
-  _setUpLoadingIndicator(el) {
-    /** @type {number?} */
-    let timeout;
+  _setUpLoadingIndicator(el: MuxPlayerElement) {
+    let timeout: number | null;
     const onLoadingStateChange = () => {
       if (!timeout && showLoading(el)) {
         timeout = setTimeout(
@@ -111,8 +113,7 @@ class MuxPlayerInternal {
     el.video?.addEventListener("playing", onLoadingStateChange);
   }
 
-  /** @param {MuxPlayerElement} el */
-  _setUpCaptionsButton(el) {
+  _setUpCaptionsButton(el: MuxPlayerElement) {
     const onTrackCountChange = () => {
       const ccSubTracks = getCcSubTracks(el);
       this._captionsButton.render({ hasCaptions: !!ccSubTracks.length });
@@ -158,31 +159,7 @@ class MuxPlayerInternal {
   }
 }
 
-/**
- * @typedef {{
- *   debug: boolean,
- *   envKey: string?,
- *   playbackId: string?,
- *   streamType: string?,
- *   startTime: number,
- *   playerSize: string,
- *   hasCaptions: boolean,
- *   showLoading: boolean,
- *   poster?: string,
- *   muted?: boolean,
- *   loop?: boolean,
- *   autoplay?: boolean,
- *   preferMse?: boolean,
- *   metadata?: Metadata
- * }} MuxProps
- */
-
-/**
- * @param  {MuxPlayerElement} el
- * @param  {MuxProps} [props]
- * @return {MuxProps}
- */
-function getProps(el, props) {
+function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
   return {
     debug: el.debug,
     envKey: el.envKey,
@@ -202,8 +179,7 @@ const MediaChromeSizes = {
   SM: "small",
 };
 
-/** @type {(el: Element) => string} */
-function getPlayerSize(el) {
+function getPlayerSize(el: Element) {
   const muxPlayerRect = el.getBoundingClientRect();
   return muxPlayerRect.width < SMALL_BREAKPOINT
     ? MediaChromeSizes.SM
@@ -257,12 +233,11 @@ class MuxPlayerElement extends VideoApiElement {
     internals.get(this).disconnectedCallback();
   }
 
-  /**
-   * @param  {string} attrName
-   * @param  {string | null} oldValue
-   * @param  {string} newValue
-   */
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string
+  ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (MuxVideoAttributeNames.includes(attrName)) {
@@ -395,8 +370,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 }
 
-/** @type {(el: MuxPlayerElement, name: string) => ?string} */
-export function getVideoAttribute(el, name) {
+export function getVideoAttribute(el: MuxPlayerElement, name: string) {
   return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
 }
 
@@ -404,8 +378,7 @@ export function getVideoAttribute(el, name) {
 if (!globalThis.customElements.get("mux-player")) {
   globalThis.customElements.define("mux-player", MuxPlayerElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
-  /** @type {any} */
-  (globalThis).MuxPlayerElement = MuxPlayerElement;
+  (globalThis as any).MuxPlayerElement = MuxPlayerElement;
 }
 
 export default MuxPlayerElement;
