@@ -1,5 +1,4 @@
-/** @type {(props: any) => string} */
-export function stylePropsToString(props) {
+export function stylePropsToString(props: any) {
   let style = "";
   Object.entries(props).forEach(([key, value]) => {
     style += `${kebabCase(key)}: ${value};`;
@@ -7,14 +6,12 @@ export function stylePropsToString(props) {
   return style;
 }
 
-/** @type {(name: string) => string} */
-export function kebabCase(name) {
+export function kebabCase(name: string) {
   return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
 let idCounter = 0;
-/** @type {(name: string) => string} */
-export function uniqueId(prefix) {
+export function uniqueId(prefix: string) {
   var id = ++idCounter;
   return `${prefix}${id}`;
 }
@@ -25,15 +22,15 @@ export function uniqueId(prefix) {
  * It adds the concept of a persistent fragment which is also returned
  * as the result. This makes it possible to use DOM nodes as an expression in
  * the template literal and be appended in the place of the expression.
- *
- * @param  {TemplateStringsArray} strings
- * @param  {Array.<string|number|Node|Renderable|PersistentFragment|null|undefined>} args
- * @return {PersistentFragment}
  */
-export function html(strings, ...args) {
+export function html(
+  strings: TemplateStringsArray,
+  ...args: Array<
+    string | number | Node | Renderable | PersistentFragment | null | undefined
+  >
+) {
   const uid = uniqueId("");
-  /** @type {*} */
-  const fragments = [];
+  const fragments: any = [];
   // Add placeholder divs with unqiue id for the fragments.
   args = args.map((arg) => {
     if (arg && typeof arg === "object") {
@@ -49,68 +46,62 @@ export function html(strings, ...args) {
   const compiler = document.createElement("template");
   compiler.innerHTML = templateString;
 
-  const childFragments = fragments.map(
-    /** @type {(fragment: *, i: number) => PersistentFragment} */
-    (fragment, i) => {
-      const { id, template, props } = fragment;
-      if (fragment instanceof Renderable) {
-        // If it's a renderable, render once and upgrade to a renderable fragment.
-        const persistentFragment = template(props) || html``;
-        fragment = new RenderableFragment(
-          persistentFragment.childNodes,
-          persistentFragment.childFragments,
-          template
-        );
-      }
-      fragment.id = id || i;
-      return fragment;
+  const childFragments = fragments.map((fragment: any, i: number) => {
+    const { id, template, props } = fragment;
+    if (fragment instanceof Renderable) {
+      // If it's a renderable, render once and upgrade to a renderable fragment.
+      const persistentFragment = template(props) || html``;
+      fragment = new RenderableFragment(
+        persistentFragment.childNodes,
+        persistentFragment.childFragments,
+        template
+      );
     }
-  );
+    fragment.id = id || i;
+    return fragment;
+  });
 
   // Replace the placeholders with the fragments.
-  childFragments.forEach(
-    /** @type {(fragment: *, i: number) => void} */
-    (fragment, i) => {
-      const df = new DocumentFragment();
-      if (fragment instanceof PersistentFragment) {
-        df.append(...fragment.childNodes);
-      } else {
-        // Could be a Node or any other object.
-        df.append(fragment);
-      }
-      const placeholder = compiler.content.querySelector(`#_${uid}${i + 1}`);
-      placeholder?.parentNode?.replaceChild(df, placeholder);
+  childFragments.forEach((fragment: any, i: number) => {
+    const df = new DocumentFragment();
+    if (fragment instanceof PersistentFragment) {
+      df.append(...fragment.childNodes);
+    } else {
+      // Could be a Node or any other object.
+      df.append(fragment);
     }
-  );
+    const placeholder = compiler.content.querySelector(`#_${uid}${i + 1}`);
+    placeholder?.parentNode?.replaceChild(df, placeholder);
+  });
 
   return new PersistentFragment(compiler.content.childNodes, childFragments);
 }
 
 export class PersistentFragment {
+  childFragments: PersistentFragment[];
+  _cachedChildNodes: Node[];
+  _mark: Text;
+  id?: string;
+
   /**
    * Create a new PersistentFragment.
    * A normal DocumentFragment loses its children when appended to the document.
    * PersistentFragment keeps track of its children and makes them easy to replace.
-   *
-   * @param  {NodeList} childNodes
-   * @param  {PersistentFragment[]} childFragments
    */
-  constructor(childNodes, childFragments) {
+  constructor(childNodes: NodeList, childFragments: PersistentFragment[]) {
     this.childFragments = childFragments;
     this._cachedChildNodes = [...childNodes];
     this._mark = new Text();
-    /** @type {string | undefined} */
     this.id = undefined;
   }
 
   /**
    * Return a map with child fragments.
    */
-  get fragments() {
-    /** @type {Object.<string, RenderableFragment>} */
-    let map = {};
+  get fragments(): Record<string, RenderableFragment> {
+    let map: Record<string, RenderableFragment> = {};
     for (let frag of this.childFragments) {
-      if (frag.id) map[frag.id] = /** @type {RenderableFragment} */ (frag);
+      if (frag.id) map[frag.id] = frag as RenderableFragment;
     }
     return map;
   }
@@ -119,8 +110,7 @@ export class PersistentFragment {
     return [this._mark, ...this._cachedChildNodes];
   }
 
-  /** @type {(...nodesOrDOMStrings: Node[]) => void} */
-  replaceChildren(...nodesOrDOMStrings) {
+  replaceChildren(...nodesOrDOMStrings: Node[]) {
     const childNodes = this._cachedChildNodes;
     this._cachedChildNodes = [...nodesOrDOMStrings];
 
@@ -134,22 +124,24 @@ export class PersistentFragment {
 }
 
 export class RenderableFragment extends PersistentFragment {
+  template: Function;
+
   /**
    * Create a new RenderableFragment.
    * The problem RenderableFragment solves is to be able to define inline
    * render functions in the template literal and then later re-render those
    * by just passing props.
-   * @param  {NodeList} childNodes
-   * @param  {PersistentFragment[]} childFragments
-   * @param  {(props?: Object) => PersistentFragment} template
    */
-  constructor(childNodes, childFragments, template) {
+  constructor(
+    childNodes: NodeList,
+    childFragments: PersistentFragment[],
+    template: Function
+  ) {
     super(childNodes, childFragments);
     this.template = template;
   }
 
-  /** @type {(props: any) => RenderableFragment} */
-  render(props) {
+  render(props: any) {
     const newFragment = this.template(props) || html``;
     this.childFragments = newFragment.childFragments;
     this.replaceChildren(...newFragment.childNodes);
@@ -160,22 +152,17 @@ export class RenderableFragment extends PersistentFragment {
 /**
  * Creates a fragment in the dom that can easily be replaced by running the
  * render method of the returned renderable fragment reference.
- * @param  {string}   id
- * @param  {Function} template
- * @param  {*}   props
- * @return {Renderable}
  */
-export function renderable(id, template, props) {
+export function renderable(id: string, template: Function, props: any) {
   return new Renderable(id, template, props);
 }
 
 class Renderable {
-  /**
-   * @param  {string} id
-   * @param  {Function} template
-   * @param  {*} props
-   */
-  constructor(id, template, props) {
+  id: string;
+  template: Function;
+  props: any;
+
+  constructor(id: string, template: Function, props: any) {
     this.id = id;
     this.template = template;
     this.props = props;

@@ -1,6 +1,5 @@
-import { stylePropsToString } from "./utils.js";
-
-/** @typedef { import(".").default } MuxPlayerElement */
+import { stylePropsToString } from "./utils";
+import type MuxPlayerElement from ".";
 
 /* eslint-disable */
 const getEnvPlayerVersion = () => {
@@ -14,16 +13,13 @@ const getEnvPlayerVersion = () => {
 const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
-/** @type {(playbackId: string?) => string} */
-export const getPosterURLFromPlaybackId = (playbackId) =>
+export const getPosterURLFromPlaybackId = (playbackId?: string) =>
   `https://image.mux.com/${playbackId}/thumbnail.jpg`;
 
-/** @type {(playbackId: string?) => string} */
-export const getStoryboardURLFromPlaybackId = (playbackId) =>
+export const getStoryboardURLFromPlaybackId = (playbackId?: string) =>
   `https://image.mux.com/${playbackId}/storyboard.vtt`;
 
-/** @type {(el: MuxPlayerElement) => TextTrack[]} */
-export function getCcSubTracks(el) {
+export function getCcSubTracks(el: MuxPlayerElement) {
   return el.video
     ? Array.from(el.video.textTracks).filter(
         ({ kind }) => kind === "subtitles" || kind === "captions"
@@ -31,8 +27,7 @@ export function getCcSubTracks(el) {
     : [];
 }
 
-/** @type {(props: any) => any} */
-export function getChromeStylesFromProps(props) {
+export function getChromeStylesFromProps(props: any) {
   const { primaryColor, secondaryColor, tertiaryColor } = props;
 
   const primaryColorStyles = primaryColor

@@ -1,5 +1,5 @@
 import { fixture, assert, aTimeout } from "@open-wc/testing";
-import "../src/index.js";
+import "../src/index.ts";
 
 describe("<mux-player>", () => {
   it("forwards attrs to mux-video", async function () {

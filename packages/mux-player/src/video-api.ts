@@ -1,3 +1,5 @@
+import type MuxVideoElement from "@mux-elements/mux-video";
+
 const AllowedVideoAttributeNames = [
   "autoplay",
   "crossorigin",
@@ -44,13 +46,13 @@ class VideoApiElement extends HTMLElement {
 
     // Watch for child adds/removes and update the native element if necessary
     /** @type {(mutationList: MutationRecord[]) => void} */
-    const mutationCallback = (mutationsList) => {
+    const mutationCallback = (mutationsList: MutationRecord[]) => {
       for (let mutation of mutationsList) {
         if (mutation.type === "childList") {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
             const track = this.video?.querySelector(
-              `track[src="${/** @type {HTMLTrackElement} */ (node).src}"]`
+              `track[src="${(node as HTMLTrackElement).src}"]`
             );
             if (track) this.video?.removeChild(track);
           });
@@ -66,26 +68,31 @@ class VideoApiElement extends HTMLElement {
     observer.observe(this, { childList: true, subtree: true });
   }
 
-  /**
-   * @param  {string} attrName
-   * @param  {string | null} oldValue
-   * @param  {string} newValue
-   */
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string
+  ) {
     if (AllowedVideoAttributeNames.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
     }
   }
 
-  /** @type {<T extends EventTarget['addEventListener']>(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => void} */
-  addEventListener(type, listener, options) {
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ) {
     if (AllowedVideoEvents.includes(type)) {
       this.video?.addEventListener(type, listener, options);
     }
   }
 
-  /** @type {<T extends EventTarget['removeEventListener']>(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions) => void} */
-  removeEventListener(type, listener, options) {
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ) {
     if (AllowedVideoEvents.includes(type)) {
       this.video?.removeEventListener(type, listener, options);
     }
@@ -99,10 +106,7 @@ class VideoApiElement extends HTMLElement {
     this.video?.pause();
   }
 
-  /** @typedef { import("@mux-elements/mux-video").default } MuxVideoElement */
-
-  /** @type {MuxVideoElement | null | undefined} */
-  get video() {
+  get video(): MuxVideoElement | null | undefined {
     return this.shadowRoot?.querySelector("mux-video");
   }
 
@@ -228,8 +232,7 @@ class VideoApiElement extends HTMLElement {
   }
 }
 
-/** @type {(el: VideoApiElement, name: string) => ?string} */
-function getVideoAttribute(el, name) {
+function getVideoAttribute(el: VideoApiElement, name: string) {
   return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
 }
 
