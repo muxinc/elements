@@ -22,12 +22,13 @@ function MuxPlayerPage() {
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
         <MuxPlayer
           ref={mediaElRef}
+          // style={{ aspectRatio: "16 / 9" }}
           playbackId={playbackId}
           onPlayerReady={() => console.log("ready!")}
           // debug
           muted
           // autoPlay
-          streamType={StreamTypes.LIVE}
+          // streamType={StreamTypes.LIVE}
           // primaryColor="#ec407a"
           // secondaryColor="#64b5f6"
           // tertiaryColor="#b4004e"
