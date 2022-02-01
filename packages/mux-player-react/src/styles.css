@@ -12,8 +12,11 @@ media-controller > [slot="centered-chrome"] {
 
 media-controller
   > [slot="centered-chrome"]
-  :is(media-play-button, media-seek-backward-button, media-seek-forward-button) {
+  :is(media-play-button, media-seek-backward-button, media-seek-forward-button, media-loading-indicator) {
   padding: 0;
+  flex-shrink: 0;
+  margin-left: 5%;
+  margin-right: 5%;
 }
 media-controller[user-inactive]:not([media-paused])
   > [slot="centered-chrome"]
@@ -45,6 +48,6 @@ media-controller[media-loading]:not([media-paused])
 }
 
 /* DO NOT KEEP */
-media-controller {
+/* media-controller {
   aspect-ratio: 16 / 9;
-}
+} */
