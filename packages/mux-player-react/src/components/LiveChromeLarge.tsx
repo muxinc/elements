@@ -26,21 +26,7 @@ const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
       <MediaControlBar slot="top-chrome">
         <LiveIndicator></LiveIndicator>
       </MediaControlBar>
-      <div
-        slot="centered-chrome"
-        no-auto-hide
-        style={{
-          "--media-background-color": "transparent",
-          "--media-control-hover-background": "transparent",
-          "--media-control-background": "transparent",
-          "--media-button-icon-width": "100%",
-          width: "100%",
-          display: "flex",
-          flexFlow: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div slot="centered-chrome" no-auto-hide>
         <MediaLoadingIndicator></MediaLoadingIndicator>
       </div>
       <MediaControlBar>

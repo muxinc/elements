@@ -3,8 +3,8 @@ import { MediaTextDisplay } from "..";
 
 const LiveIndicator = () => {
   return (
-    <MediaTextDisplay style={{ color: "inherit" }}>
-      <span style={{ color: "red" }}>●</span> Live
+    <MediaTextDisplay>
+      <span style={{ color: "#FB3C4D" }}>●</span> Live
     </MediaTextDisplay>
   );
 };
