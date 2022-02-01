@@ -22,7 +22,9 @@ const MediaChromeSizes = {
 const Spacer = () => html`<div class="mxp-spacer"></div>`;
 
 export const template = (props: MuxTemplateProps) => html`
-  <media-controller style="${getChromeStylesFromProps(props)}">
+  <media-controller
+    style="--media-aspect-ratio: 16/9; ${getChromeStylesFromProps(props)}"
+  >
     <mux-video
       slot="media"
       crossorigin
