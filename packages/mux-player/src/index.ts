@@ -16,7 +16,6 @@ class MuxPlayerInternal {
   el: MuxPlayerElement;
   _chromeRenderer: RenderableFragment;
   _captionsButton: RenderableFragment;
-  _center: RenderableFragment;
   _playerSize?: string;
   _resizeObserver?: ResizeObserver;
 
@@ -30,7 +29,6 @@ class MuxPlayerInternal {
     let muxPlayer = template(getProps(el));
     this._chromeRenderer = muxPlayer.fragments.chromeRenderer;
     this._captionsButton = this._chromeRenderer.fragments.captionsButton;
-    this._center = this._chromeRenderer.fragments.center;
 
     el.attachShadow({ mode: "open" });
     el.shadowRoot?.append(...muxPlayer.childNodes);
@@ -60,7 +58,6 @@ class MuxPlayerInternal {
     }
 
     this._setUpMutedAutoplay(el);
-    this._setUpLoadingIndicator(el);
     this._setUpCaptionsButton(el);
   }
 
@@ -92,25 +89,6 @@ class MuxPlayerInternal {
         });
       }
     }
-  }
-
-  _setUpLoadingIndicator(el: MuxPlayerElement) {
-    let timeout: number | null;
-    const onLoadingStateChange = () => {
-      if (!timeout && showLoading(el)) {
-        timeout = setTimeout(
-          () => this._center.render({ showLoading: showLoading(el) }),
-          500
-        );
-      } else if (timeout && !showLoading(el)) {
-        clearTimeout(timeout);
-        timeout = null;
-        this._center.render({ showLoading: false });
-      }
-    };
-
-    el.video?.addEventListener("waiting", onLoadingStateChange);
-    el.video?.addEventListener("playing", onLoadingStateChange);
   }
 
   _setUpCaptionsButton(el: MuxPlayerElement) {
@@ -145,7 +123,6 @@ class MuxPlayerInternal {
       this._chromeRenderer.render(getProps(this.el));
       // Get the references to the new child fragments.
       this._captionsButton = this._chromeRenderer.fragments.captionsButton;
-      this._center = this._chromeRenderer.fragments.center;
     }
   }
 

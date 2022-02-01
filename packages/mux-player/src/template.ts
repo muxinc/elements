@@ -19,13 +19,7 @@ const MediaChromeSizes = {
   SM: "small",
 };
 
-const Loading = () => html`<div>Loading...</div>`;
-
-const Spacer = () => html`
-  <div
-    style="flex-grow: 1; height: 100%; background-color: var(--media-control-background, rgba(20,20,30, 0.7));"
-  ></div>
-`;
+const Spacer = () => html`<div class="mxp-spacer"></div>`;
 
 export const template = (props: MuxTemplateProps) => html`
   <media-controller style="${getChromeStylesFromProps(props)}">
@@ -63,6 +57,56 @@ export const template = (props: MuxTemplateProps) => html`
         src=${getStoryboardURLFromPlaybackId(props.playbackId)}
       />
     </mux-video>
+    <style>
+      .mxp-spacer {
+        flex-grow: 1;
+        height: 100%;
+        background-color: var(
+          --media-control-background,
+          rgba(20, 20, 30, 0.7)
+        );
+      }
+      .mxp-center-controls {
+        --media-background-color: transparent;
+        --media-control-background: transparent;
+        --media-control-hover-background: transparent;
+        --media-button-icon-width: 100%;
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+      }
+      .mxp-center-controls media-play-button {
+        padding: 0;
+        width: min(20%, 200px);
+      }
+      .mxp-center-controls media-seek-backward-button,
+      .mxp-center-controls media-seek-forward-button {
+        padding: 0;
+        width: min(15%, 150px);
+      }
+      media-loading-indicator {
+        --media-loading-icon-width: min(20%, 200px);
+        pointer-events: none;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: center;
+      }
+      /* Intentionally don't target the div for transition but the children
+         of the div. Prevents messing with media-chrome's autohide feature. */
+      media-loading-indicator + div * {
+        transition: opacity 0.15s;
+        opacity: 1;
+      }
+      media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
+        opacity: 0;
+        transition-delay: 400ms;
+      }
+    </style>
     ${renderable("chromeRenderer", ChromeRenderer, props)}
   </media-controller>
 `;
@@ -82,26 +126,14 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
 };
 
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
-  <div
+  <media-loading-indicator
     slot="centered-chrome"
-    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
-  >
-    ${renderable(
-      "center",
-      ({ showLoading }: Partial<MuxTemplateProps>) =>
-        showLoading
-          ? Loading()
-          : html`<media-seek-backward-button
-                style="padding: 0; width: 20%"
-              ></media-seek-backward-button>
-              <media-play-button
-                style="padding: 0; width: 20%"
-              ></media-play-button>
-              <media-seek-forward-button
-                style="padding: 0; width: 20%"
-              ></media-seek-forward-button>`,
-      props
-    )}
+    no-auto-hide
+  ></media-loading-indicator>
+  <div slot="centered-chrome" class="mxp-center-controls">
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
   </div>
   <media-control-bar>
     <media-time-range></media-time-range>
@@ -123,20 +155,12 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
 `;
 
 export const VodChromeLarge = (props: MuxTemplateProps) => html`
-  <div
+  <media-loading-indicator
     slot="centered-chrome"
-    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
-  >
-    ${renderable(
-      "center",
-      ({ showLoading }: Partial<MuxTemplateProps>) =>
-        showLoading
-          ? Loading()
-          : html` <media-play-button
-              style="padding: 0; width: 20%"
-            ></media-play-button>`,
-      props
-    )}
+    no-auto-hide
+  ></media-loading-indicator>
+  <div slot="centered-chrome" class="mxp-center-controls">
+    <media-play-button></media-play-button>
   </div>
   <media-control-bar>
     <media-play-button></media-play-button>
@@ -159,20 +183,12 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
 `;
 
 export const LiveChromeSmall = (props: MuxTemplateProps) => html`
-  <div
+  <media-loading-indicator
     slot="centered-chrome"
-    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
-  >
-    ${renderable(
-      "center",
-      ({ showLoading }: Partial<MuxTemplateProps>) =>
-        showLoading
-          ? Loading()
-          : html`<media-play-button
-              style="padding: 0; width: 20%"
-            ></media-play-button>`,
-      props
-    )}
+    no-auto-hide
+  ></media-loading-indicator>
+  <div slot="centered-chrome" class="mxp-center-controls">
+    <media-play-button></media-play-button>
   </div>
   <media-control-bar>
     <media-mute-button></media-mute-button>
@@ -190,20 +206,12 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
 `;
 
 export const LiveChromeLarge = (props: MuxTemplateProps) => html`
-  <div
+  <media-loading-indicator
     slot="centered-chrome"
-    style="--media-background-color: transparent; --media-control-background: transparent; --media-control-hover-background: transparent; --media-button-icon-width: 100%; width: 100%; display: flex; flex-flow: row; align-items: center; justify-content: center;"
-  >
-    ${renderable(
-      "center",
-      ({ showLoading }: Partial<MuxTemplateProps>) =>
-        showLoading
-          ? Loading()
-          : html` <media-play-button
-              style="padding: 0; width: 20%"
-            ></media-play-button>`,
-      props
-    )}
+    no-auto-hide
+  ></media-loading-indicator>
+  <div slot="centered-chrome" class="mxp-center-controls">
+    <media-play-button></media-play-button>
   </div>
   <media-control-bar>
     <media-play-button></media-play-button>
