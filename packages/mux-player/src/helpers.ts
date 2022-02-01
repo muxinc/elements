@@ -19,6 +19,28 @@ export const getPosterURLFromPlaybackId = (playbackId?: string) =>
 export const getStoryboardURLFromPlaybackId = (playbackId?: string) =>
   `https://image.mux.com/${playbackId}/storyboard.vtt`;
 
+let testMediaEl: HTMLMediaElement | undefined;
+export const getTestMediaEl = (nodeName = "video") => {
+  if (testMediaEl) return testMediaEl;
+  if (typeof window !== "undefined") {
+    testMediaEl = document.createElement(nodeName as "video" | "audio");
+  }
+  return testMediaEl;
+};
+
+export const hasVolumeSupportAsync = async (
+  mediaEl: HTMLMediaElement | undefined = getTestMediaEl()
+) => {
+  if (!mediaEl) return false;
+  const prevVolume = mediaEl.volume;
+  mediaEl.volume = prevVolume / 2 + 0.1;
+  return new Promise<boolean>((resolve, reject) => {
+    setTimeout(() => {
+      resolve(mediaEl.volume !== prevVolume);
+    }, 0);
+  });
+};
+
 export function getCcSubTracks(el: MuxPlayerElement) {
   return el.video
     ? Array.from(el.video.textTracks).filter(

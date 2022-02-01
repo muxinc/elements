@@ -87,7 +87,7 @@ export const template = (props: MuxTemplateProps) => html`
       .mxp-center-controls media-seek-backward-button,
       .mxp-center-controls media-seek-forward-button {
         padding: 0 1%;
-        width: min(10%, 120px);
+        width: min(12%, 120px);
       }
       media-loading-indicator {
         --media-loading-icon-width: 100%;
@@ -108,6 +108,12 @@ export const template = (props: MuxTemplateProps) => html`
       media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
         opacity: 0;
         transition-delay: 400ms;
+      }
+      media-volume-range {
+        width: min(100%, 100px);
+      }
+      media-time-display {
+        white-space: nowrap;
       }
     </style>
     ${renderable("chromeRenderer", ChromeRenderer, props)}
@@ -144,7 +150,12 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
   </media-control-bar>
   <media-control-bar>
     <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
+    ${renderable(
+      "volumeRange",
+      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
+        supportsVolume && html`<media-volume-range></media-volume-range>`,
+      props
+    )}
     ${Spacer()}
     ${renderable(
       "captionsButton",
@@ -176,7 +187,12 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     <media-seek-backward-button></media-seek-backward-button>
     <media-seek-forward-button></media-seek-forward-button>
     <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
+    ${renderable(
+      "volumeRange",
+      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
+        supportsVolume && html`<media-volume-range></media-volume-range>`,
+      props
+    )}
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
     <media-playback-rate-button></media-playback-rate-button>
@@ -207,7 +223,12 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
+    ${renderable(
+      "volumeRange",
+      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
+        supportsVolume && html`<media-volume-range></media-volume-range>`,
+      props
+    )}
     ${Spacer()}
     ${renderable(
       "captionsButton",
@@ -231,7 +252,12 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
   <media-control-bar>
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
+    ${renderable(
+      "volumeRange",
+      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
+        supportsVolume && html`<media-volume-range></media-volume-range>`,
+      props
+    )}
     ${Spacer()}
     <media-time-display></media-time-display>
     ${renderable(

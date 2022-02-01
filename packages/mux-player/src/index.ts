@@ -1,7 +1,11 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
 import VideoApiElement from "./video-api";
-import { getCcSubTracks, getPlayerVersion } from "./helpers";
+import {
+  getCcSubTracks,
+  getPlayerVersion,
+  hasVolumeSupportAsync,
+} from "./helpers";
 import { template } from "./template";
 
 import type { MuxTemplateProps } from "./types";
@@ -14,9 +18,11 @@ const showLoading = (el: MuxPlayerElement) =>
 
 class MuxPlayerInternal {
   el: MuxPlayerElement;
+  _asyncProps: Partial<MuxTemplateProps> = {};
   _chromeRenderer: RenderableFragment;
   _captionsButton: RenderableFragment;
   _airplayButton: RenderableFragment;
+  _volumeRange: RenderableFragment;
   _playerSize?: string;
   _resizeObserver?: ResizeObserver;
 
@@ -31,6 +37,7 @@ class MuxPlayerInternal {
     this._chromeRenderer = muxPlayer.fragments.chromeRenderer;
     this._captionsButton = this._chromeRenderer.fragments.captionsButton;
     this._airplayButton = this._chromeRenderer.fragments.airplayButton;
+    this._volumeRange = this._chromeRenderer.fragments.volumeRange;
 
     el.attachShadow({ mode: "open" });
     el.shadowRoot?.append(...muxPlayer.childNodes);
@@ -62,6 +69,7 @@ class MuxPlayerInternal {
     this._setUpMutedAutoplay(el);
     this._setUpCaptionsButton(el);
     this._setUpAirplayButton(el);
+    this._setUpVolumeRange(el);
   }
 
   connectedCallback() {
@@ -125,6 +133,7 @@ class MuxPlayerInternal {
       const onPlaybackTargetAvailability = (evt: any) => {
         const supportsAirPlay = evt.availability === "available";
         this._airplayButton.render({ supportsAirPlay });
+        this._asyncProps.supportsAirPlay = supportsAirPlay;
       };
 
       el.video?.addEventListener(
@@ -134,13 +143,20 @@ class MuxPlayerInternal {
     }
   }
 
+  async _setUpVolumeRange(el: MuxPlayerElement) {
+    const supportsVolume = await hasVolumeSupportAsync();
+    this._volumeRange.render({ supportsVolume });
+    this._asyncProps.supportsVolume = supportsVolume;
+  }
+
   _renderChrome() {
     if (this._playerSize != getPlayerSize(this.el)) {
       this._playerSize = getPlayerSize(this.el);
-      this._chromeRenderer.render(getProps(this.el));
+      this._chromeRenderer.render(getProps(this.el, this._asyncProps));
       // Get the references to the new child fragments.
       this._captionsButton = this._chromeRenderer.fragments.captionsButton;
       this._airplayButton = this._chromeRenderer.fragments.airplayButton;
+      this._volumeRange = this._chromeRenderer.fragments.volumeRange;
     }
   }
 
@@ -166,6 +182,7 @@ function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
     hasCaptions: !!getCcSubTracks(el).length,
     showLoading: showLoading(el),
     supportsAirPlay: false,
+    supportsVolume: false,
     ...props,
   };
 }
