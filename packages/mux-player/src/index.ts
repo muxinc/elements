@@ -141,6 +141,7 @@ function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
     debug: el.debug,
     envKey: el.envKey,
     playbackId: el.playbackId,
+    poster: el.poster,
     startTime: el.startTime,
     streamType: el.streamType,
     playerSize: getPlayerSize(el),
