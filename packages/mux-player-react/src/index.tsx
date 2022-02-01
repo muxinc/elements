@@ -14,6 +14,7 @@ import {
   getStoryboardURLFromPlaybackId,
   hasVolumeSupportAsync,
 } from "./utils";
+import "./styles.css";
 // import Poster from "./media-chrome/components/Poster";
 
 export { StreamTypes };
