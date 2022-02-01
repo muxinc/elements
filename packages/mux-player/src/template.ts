@@ -73,6 +73,7 @@ export const template = (props: MuxTemplateProps) => html`
         --media-control-background: transparent;
         --media-control-hover-background: transparent;
         --media-button-icon-width: 100%;
+        pointer-events: none;
         width: 100%;
         display: flex;
         flex-flow: row;
@@ -81,18 +82,18 @@ export const template = (props: MuxTemplateProps) => html`
       }
       .mxp-center-controls media-play-button {
         padding: 0;
-        width: min(20%, 200px);
+        width: min(15%, 200px);
       }
       .mxp-center-controls media-seek-backward-button,
       .mxp-center-controls media-seek-forward-button {
-        padding: 0;
-        width: min(15%, 150px);
+        padding: 0 1%;
+        width: min(10%, 120px);
       }
       media-loading-indicator {
-        --media-loading-icon-width: min(20%, 200px);
+        --media-loading-icon-width: 100%;
         pointer-events: none;
         position: absolute;
-        width: 100%;
+        width: min(15%, 200px);
         display: flex;
         flex-flow: row;
         align-items: center;
