@@ -144,9 +144,10 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
     <media-play-button></media-play-button>
     <media-seek-forward-button></media-seek-forward-button>
   </div>
-  <media-control-bar>
-    <media-time-range></media-time-range>
-    <media-time-display show-duration remaining></media-time-display>
+  <media-control-bar style="z-index: 2;">
+    <media-time-range
+      style="height: 10px; padding: 0; --media-control-background: transparent;"
+    ></media-time-range>
   </media-control-bar>
   <media-control-bar>
     <media-mute-button></media-mute-button>
@@ -157,6 +158,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
       props
     )}
     ${Spacer()}
+    <media-time-display show-duration remaining></media-time-display>
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
@@ -230,6 +232,7 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
       props
     )}
     ${Spacer()}
+    <media-time-display></media-time-display>
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
