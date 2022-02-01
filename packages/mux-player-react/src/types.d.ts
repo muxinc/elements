@@ -7,6 +7,10 @@ declare global {
   interface HTMLVideoElement {
     webkitShowPlaybackTargetPicker?: Function;
   }
+
+  interface Element {
+    slot?: string;
+  }
 }
 
 declare module "csstype" {

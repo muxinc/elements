@@ -1,18 +1,17 @@
 import React from "react";
 import {
+  Spacer,
+  LiveIndicator,
+  MediaVolumeButton,
   MediaControlBar,
   MediaLoadingIndicator,
   MediaAirplayButton,
   MediaPlayButton,
-  MediaMuteButton,
   MediaCaptionsButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "../media-chrome";
-import Spacer from "./Spacer";
+} from "./controls";
 import type { ChromeProps } from "../types";
-import LiveIndicator from "../media-chrome/components/LiveIndicator";
-import MediaVolumeButton from "../media-chrome/components/MediaVolumeButton";
 
 const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
@@ -34,7 +33,6 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         <MediaPlayButton></MediaPlayButton>
       </div>
       <MediaControlBar>
-        <MediaMuteButton></MediaMuteButton>
         <MediaVolumeButton supportsVolume={supportsVolume}></MediaVolumeButton>
         <Spacer />
         <MediaFullscreenButton></MediaFullscreenButton>

@@ -1,5 +1,5 @@
 import React from "react";
-import { MediaMuteButton, MediaVolumeRange } from "..";
+import { MediaMuteButton, MediaVolumeRange } from "../../media-chrome";
 import { ChromeProps } from "../../types";
 
 const MediaVolumeButton: React.FC<Pick<ChromeProps, "supportsVolume">> = ({

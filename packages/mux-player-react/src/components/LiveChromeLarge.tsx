@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useTimeoutWhen } from "../hooks/useTimeoutWhen";
+import React from "react";
 import {
+  Spacer,
+  LiveIndicator,
   MediaControlBar,
   MediaLoadingIndicator,
   MediaAirplayButton,
@@ -10,10 +11,8 @@ import {
   MediaCaptionsButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "../media-chrome";
-import Spacer from "./Spacer";
+} from "./controls";
 import type { ChromeProps } from "../types";
-import LiveIndicator from "../media-chrome/components/LiveIndicator";
 
 const LiveChromeLarge: React.FC<ChromeProps> = (props) => {
   const {

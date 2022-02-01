@@ -1,5 +1,5 @@
 import React from "react";
-import { MediaTextDisplay } from "..";
+import { MediaTextDisplay } from "../../media-chrome";
 
 const LiveIndicator = () => {
   return (
