@@ -1,20 +1,20 @@
 import React from "react";
 import {
   MediaControlBar,
+  MediaTimeRange,
+  MediaTimeDisplay,
   MediaLoadingIndicator,
-  MediaAirplayButton,
+  MediaVolumeRange,
+  MediaPlaybackRateButton,
   MediaPlayButton,
   MediaSeekBackwardButton,
   MediaSeekForwardButton,
   MediaMuteButton,
-  MediaVolumeRange,
-  MediaTimeRange,
-  MediaTimeDisplay,
   MediaCaptionsButton,
+  MediaAirplayButton,
   MediaPipButton,
   MediaFullscreenButton,
-  MediaPlaybackRateButton,
-} from "../media-chrome";
+} from "./controls";
 import type { ChromeProps } from "../types";
 
 const VodChromeLarge: React.FC<ChromeProps> = (props) => {

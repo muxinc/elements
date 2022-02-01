@@ -1,5 +1,7 @@
 import React from "react";
 import {
+  Spacer,
+  MediaVolumeButton,
   MediaControlBar,
   MediaLoadingIndicator,
   MediaAirplayButton,
@@ -12,10 +14,8 @@ import {
   MediaPipButton,
   MediaFullscreenButton,
   MediaPlaybackRateButton,
-} from "../media-chrome";
-import Spacer from "./Spacer";
+} from "./controls";
 import type { ChromeProps } from "../types";
-import MediaVolumeButton from "../media-chrome/components/MediaVolumeButton";
 
 const VodChromeSmall: React.FC<ChromeProps> = (props) => {
   const {
