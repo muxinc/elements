@@ -17,6 +17,7 @@ media-controller
   flex-shrink: 0;
   margin-left: 5%;
   margin-right: 5%;
+  width: 10%;
 }
 media-controller[user-inactive]:not([media-paused])
   > [slot="centered-chrome"]
