@@ -16,6 +16,7 @@ class MuxPlayerInternal {
   el: MuxPlayerElement;
   _chromeRenderer: RenderableFragment;
   _captionsButton: RenderableFragment;
+  _airplayButton: RenderableFragment;
   _playerSize?: string;
   _resizeObserver?: ResizeObserver;
 
@@ -29,6 +30,7 @@ class MuxPlayerInternal {
     let muxPlayer = template(getProps(el));
     this._chromeRenderer = muxPlayer.fragments.chromeRenderer;
     this._captionsButton = this._chromeRenderer.fragments.captionsButton;
+    this._airplayButton = this._chromeRenderer.fragments.airplayButton;
 
     el.attachShadow({ mode: "open" });
     el.shadowRoot?.append(...muxPlayer.childNodes);
@@ -59,6 +61,7 @@ class MuxPlayerInternal {
 
     this._setUpMutedAutoplay(el);
     this._setUpCaptionsButton(el);
+    this._setUpAirplayButton(el);
   }
 
   connectedCallback() {
@@ -117,12 +120,27 @@ class MuxPlayerInternal {
     el.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
   }
 
+  _setUpAirplayButton(el: MuxPlayerElement) {
+    if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
+      const onPlaybackTargetAvailability = (evt: any) => {
+        const supportsAirPlay = evt.availability === "available";
+        this._airplayButton.render({ supportsAirPlay });
+      };
+
+      el.video?.addEventListener(
+        "webkitplaybacktargetavailabilitychanged",
+        onPlaybackTargetAvailability
+      );
+    }
+  }
+
   _renderChrome() {
     if (this._playerSize != getPlayerSize(this.el)) {
       this._playerSize = getPlayerSize(this.el);
       this._chromeRenderer.render(getProps(this.el));
       // Get the references to the new child fragments.
       this._captionsButton = this._chromeRenderer.fragments.captionsButton;
+      this._airplayButton = this._chromeRenderer.fragments.airplayButton;
     }
   }
 
@@ -147,6 +165,7 @@ function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
     playerSize: getPlayerSize(el),
     hasCaptions: !!getCcSubTracks(el).length,
     showLoading: showLoading(el),
+    supportsAirPlay: false,
     ...props,
   };
 }

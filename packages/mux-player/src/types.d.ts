@@ -8,4 +8,5 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   playerSize?: string;
   showLoading?: boolean;
   hasCaptions?: boolean;
+  supportsAirPlay?: boolean;
 };
