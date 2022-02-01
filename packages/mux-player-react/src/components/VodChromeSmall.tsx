@@ -59,7 +59,7 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
         <MediaLoadingIndicator></MediaLoadingIndicator>
       </div>
       <MediaControlBar>
-        <MediaVolumeButton></MediaVolumeButton>
+        <MediaVolumeButton supportsVolume={supportsVolume}></MediaVolumeButton>
         <MediaTimeRange></MediaTimeRange>
         <MediaTimeDisplay></MediaTimeDisplay>
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
