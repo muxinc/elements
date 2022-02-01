@@ -32,7 +32,11 @@ export const hasVolumeSupportAsync = async (
 };
 
 export const getChromeStylesFromProps = (props: MuxPlayerProps) => {
-  const { primaryColor, secondaryColor, tertiaryColor } = props;
+  const {
+    primaryColor = "#ffffff",
+    secondaryColor = "transparent",
+    tertiaryColor = "#eeeeee88",
+  } = props;
 
   const primaryColorStyles = primaryColor
     ? {
@@ -59,7 +63,6 @@ export const getChromeStylesFromProps = (props: MuxPlayerProps) => {
 
   return {
     maxWidth: "100%",
-    color: "#ffffff",
     ...primaryColorStyles,
     ...secondaryColorStyles,
     ...tertiaryColorStyles,

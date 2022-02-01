@@ -5,7 +5,6 @@ import {
   MediaAirplayButton,
   MediaPlayButton,
   MediaMuteButton,
-  MediaVolumeRange,
   MediaCaptionsButton,
   MediaPipButton,
   MediaFullscreenButton,
@@ -30,26 +29,9 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
         <MediaPipButton></MediaPipButton>
       </MediaControlBar>
-      <div
-        slot="centered-chrome"
-        style={{
-          "--media-background-color": "transparent",
-          "--media-control-hover-background": "transparent",
-          "--media-control-background": "transparent",
-          "--media-button-icon-width": "100%",
-          width: "100%",
-          display: "flex",
-          flexFlow: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <>
-          <MediaPlayButton style={{ padding: 0 }}></MediaPlayButton>
-        </>
-      </div>
       <div slot="centered-chrome" no-auto-hide>
         <MediaLoadingIndicator></MediaLoadingIndicator>
+        <MediaPlayButton></MediaPlayButton>
       </div>
       <MediaControlBar>
         <MediaMuteButton></MediaMuteButton>

@@ -31,37 +31,16 @@ const VodChromeSmall: React.FC<ChromeProps> = (props) => {
         {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
         <MediaPipButton></MediaPipButton>
       </MediaControlBar>
-      <div
-        slot="centered-chrome"
-        style={{
-          "--media-background-color": "transparent",
-          "--media-control-hover-background": "transparent",
-          "--media-control-background": "transparent",
-          "--media-button-icon-width": "100%",
-          width: "100%",
-          display: "flex",
-          flexFlow: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <>
-          <MediaSeekBackwardButton
-            style={{ padding: 0 }}
-          ></MediaSeekBackwardButton>
-          <MediaPlayButton style={{ padding: 0 }}></MediaPlayButton>
-          <MediaSeekForwardButton
-            style={{ padding: 0 }}
-          ></MediaSeekForwardButton>
-        </>
-      </div>
       <div slot="centered-chrome" no-auto-hide>
+        <MediaSeekBackwardButton></MediaSeekBackwardButton>
         <MediaLoadingIndicator></MediaLoadingIndicator>
+        <MediaPlayButton></MediaPlayButton>
+        <MediaSeekForwardButton></MediaSeekForwardButton>
       </div>
       <MediaControlBar>
-        <MediaVolumeButton supportsVolume={supportsVolume}></MediaVolumeButton>
         <MediaTimeRange></MediaTimeRange>
         <MediaTimeDisplay></MediaTimeDisplay>
+        <MediaVolumeButton supportsVolume={supportsVolume}></MediaVolumeButton>
         <MediaPlaybackRateButton></MediaPlaybackRateButton>
         <MediaFullscreenButton></MediaFullscreenButton>
       </MediaControlBar>
