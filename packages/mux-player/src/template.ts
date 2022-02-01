@@ -151,6 +151,12 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
         hasCaptions && html`<media-captions-button></media-captions-button>`,
       props
     )}
+    ${renderable(
+      "airplayButton",
+      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
+        supportsAirPlay && html`<media-airplay-button></media-airplay-button>`,
+      props
+    )}
     <media-pip-button></media-pip-button>
     <media-fullscreen-button></media-fullscreen-button>
   </media-control-bar>
@@ -177,6 +183,12 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
         hasCaptions && html`<media-captions-button></media-captions-button>`,
+      props
+    )}
+    ${renderable(
+      "airplayButton",
+      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
+        supportsAirPlay && html`<media-airplay-button></media-airplay-button>`,
       props
     )}
     <media-pip-button></media-pip-button>
