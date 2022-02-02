@@ -85,7 +85,7 @@ export const SeekBackward = (props: any) => html`
       transform="translate(.6 17.8)"
       style="font-size: 8; font-family: 'ArialMT', 'Arial'"
     >
-      30
+      ${props.amount}
     </text>
     <path style="fill: none" d="M0 0h16v18H0z" />
   </svg>
@@ -101,7 +101,7 @@ export const SeekForward = (props: any) => html`
       transform="translate(6.5 17.8)"
       style="font-size: 8; font-family: 'ArialMT', 'Arial'"
     >
-      30
+      ${props.amount}
     </text>
     <path style="fill: none" d="M0 0h16v18H0z" />
   </svg>
