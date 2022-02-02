@@ -4,6 +4,7 @@ import {
   getStoryboardURLFromPlaybackId,
 } from "./helpers";
 import { html, renderable } from "./utils";
+import * as icons from "./icons";
 
 import type { MuxTemplateProps } from "./types";
 import type { PersistentFragment } from "./utils";
@@ -22,9 +23,68 @@ const MediaChromeSizes = {
 const Spacer = () => html`<div class="mxp-spacer"></div>`;
 
 export const template = (props: MuxTemplateProps) => html`
-  <media-controller
-    style="--media-aspect-ratio: 16/9; ${getChromeStylesFromProps(props)}"
-  >
+  <style>
+    media-controller {
+      --media-control-background: transparent;
+      --media-control-hover-background: transparent;
+      --media-range-track-background: rgba(255, 255, 255, 0.5);
+      --media-range-track-border-radius: 3px;
+      --media-aspect-ratio: 16 / 9;
+    }
+    .mxp-spacer {
+      flex-grow: 1;
+      height: 100%;
+      background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
+    }
+    .mxp-center-controls {
+      --media-background-color: transparent;
+      --media-button-icon-width: 100%;
+      --media-button-icon-height: auto;
+      pointer-events: none;
+      width: 100%;
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: center;
+    }
+    .mxp-center-controls media-play-button {
+      padding: 0;
+      width: min(8%, 80px);
+    }
+    .mxp-center-controls media-seek-backward-button,
+    .mxp-center-controls media-seek-forward-button {
+      padding: 0;
+      margin: 0 10%;
+      width: min(7%, 70px);
+    }
+    media-loading-indicator {
+      --media-loading-icon-width: 100%;
+      pointer-events: none;
+      position: absolute;
+      width: min(8%, 80px);
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: center;
+    }
+    /* Intentionally don't target the div for transition but the children
+     of the div. Prevents messing with media-chrome's autohide feature. */
+    media-loading-indicator + div * {
+      transition: opacity 0.15s;
+      opacity: 1;
+    }
+    media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
+      opacity: 0;
+      transition-delay: 400ms;
+    }
+    media-volume-range {
+      width: min(100%, 100px);
+    }
+    media-time-display {
+      white-space: nowrap;
+    }
+  </style>
+  <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
       slot="media"
       crossorigin
@@ -59,63 +119,6 @@ export const template = (props: MuxTemplateProps) => html`
         src=${getStoryboardURLFromPlaybackId(props.playbackId)}
       />
     </mux-video>
-    <style>
-      .mxp-spacer {
-        flex-grow: 1;
-        height: 100%;
-        background-color: var(
-          --media-control-background,
-          rgba(20, 20, 30, 0.7)
-        );
-      }
-      .mxp-center-controls {
-        --media-background-color: transparent;
-        --media-control-background: transparent;
-        --media-control-hover-background: transparent;
-        --media-button-icon-width: 100%;
-        pointer-events: none;
-        width: 100%;
-        display: flex;
-        flex-flow: row;
-        align-items: center;
-        justify-content: center;
-      }
-      .mxp-center-controls media-play-button {
-        padding: 0;
-        width: min(15%, 200px);
-      }
-      .mxp-center-controls media-seek-backward-button,
-      .mxp-center-controls media-seek-forward-button {
-        padding: 0 1%;
-        width: min(12%, 120px);
-      }
-      media-loading-indicator {
-        --media-loading-icon-width: 100%;
-        pointer-events: none;
-        position: absolute;
-        width: min(15%, 200px);
-        display: flex;
-        flex-flow: row;
-        align-items: center;
-        justify-content: center;
-      }
-      /* Intentionally don't target the div for transition but the children
-         of the div. Prevents messing with media-chrome's autohide feature. */
-      media-loading-indicator + div * {
-        transition: opacity 0.15s;
-        opacity: 1;
-      }
-      media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
-        opacity: 0;
-        transition-delay: 400ms;
-      }
-      media-volume-range {
-        width: min(100%, 100px);
-      }
-      media-time-display {
-        white-space: nowrap;
-      }
-    </style>
     ${renderable("chromeRenderer", ChromeRenderer, props)}
   </media-controller>
 `;
@@ -134,45 +137,85 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
   return VodChromeSmall(props);
 };
 
+const MediaPlayButton = () => html`
+  <media-play-button>
+    ${icons.Play({ slot: "play", title: "Play" })}
+    ${icons.Pause({ slot: "pause", title: "Pause" })}
+  </media-play-button>
+`;
+
+const MediaSeekBackwardButton = () => html`
+  <media-seek-backward-button>
+    ${icons.SeekBackward({ slot: "backward" })}
+  </media-seek-backward-button>
+`;
+
+const MediaSeekForwardButton = () => html`
+  <media-seek-forward-button>
+    ${icons.SeekForward({ slot: "forward" })}
+  </media-seek-forward-button>
+`;
+
+const MediaMuteButton = () => html`
+  <media-mute-button>
+    ${icons.VolumeHigh({ slot: "high" })} ${icons.VolumeLow({ slot: "medium" })}
+    ${icons.VolumeLow({ slot: "low" })} ${icons.VolumeOff({ slot: "off" })}
+  </media-mute-button>
+`;
+
+const MediaCaptionsButton = () => html` <media-captions-button>
+  ${icons.CaptionsOff({ slot: "off" })} ${icons.CaptionsOn({ slot: "on" })}
+</media-captions-button>`;
+
+const MediaAirplayButton = () => html`<media-airplay-button>
+  ${icons.Airplay({ slot: "airplay" })}
+</media-airplay-button>`;
+
+const MediaPipButton = () => html` <media-pip-button>
+  ${icons.Pip({ slot: "enter", title: "Enter Picture-in-Picture" })}
+  ${icons.Pip({ slot: "exit", title: "Exit Picture-in-Picture" })}
+</media-pip-button>`;
+
+const MediaFullscreenButton = () => html` <media-fullscreen-button>
+  ${icons.FullscreenEnter({ slot: "enter", title: "Enter Fullscreen" })}
+  ${icons.FullscreenExit({ slot: "exit", title: "Exit Fullscreen" })}
+</media-fullscreen-button>`;
+
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <media-loading-indicator
     slot="centered-chrome"
     no-auto-hide
   ></media-loading-indicator>
-  <div slot="centered-chrome" class="mxp-center-controls">
-    <media-seek-backward-button></media-seek-backward-button>
-    <media-play-button></media-play-button>
-    <media-seek-forward-button></media-seek-forward-button>
-  </div>
-  <media-control-bar style="z-index: 2;">
-    <media-time-range
-      style="height: 10px; padding: 0; --media-control-background: transparent;"
-    ></media-time-range>
+  <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
+    ${renderable(
+      "captionsButton",
+      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
+        hasCaptions && MediaCaptionsButton(),
+      props
+    )}
+    ${renderable(
+      "airplayButton",
+      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
+        supportsAirPlay && MediaAirplayButton(),
+      props
+    )}
+    ${MediaPipButton()}
   </media-control-bar>
+  <div slot="centered-chrome" class="mxp-center-controls">
+    ${MediaSeekBackwardButton()} ${MediaPlayButton()}
+    ${MediaSeekForwardButton()}
+  </div>
   <media-control-bar>
-    <media-mute-button></media-mute-button>
+    <media-time-range></media-time-range>
+    <media-time-display show-duration remaining></media-time-display>
+    ${MediaMuteButton()}
     ${renderable(
       "volumeRange",
       ({ supportsVolume }: Partial<MuxTemplateProps>) =>
         supportsVolume && html`<media-volume-range></media-volume-range>`,
       props
     )}
-    ${Spacer()}
-    <media-time-display show-duration remaining></media-time-display>
-    ${renderable(
-      "captionsButton",
-      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && html`<media-captions-button></media-captions-button>`,
-      props
-    )}
-    ${renderable(
-      "airplayButton",
-      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
-        supportsAirPlay && html`<media-airplay-button></media-airplay-button>`,
-      props
-    )}
-    <media-pip-button></media-pip-button>
-    <media-fullscreen-button></media-fullscreen-button>
+    ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
@@ -182,36 +225,34 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     no-auto-hide
   ></media-loading-indicator>
   <div slot="centered-chrome" class="mxp-center-controls">
-    <media-play-button></media-play-button>
+    ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    <media-play-button></media-play-button>
-    <media-seek-backward-button></media-seek-backward-button>
-    <media-seek-forward-button></media-seek-forward-button>
-    <media-mute-button></media-mute-button>
+    ${MediaPlayButton()} ${MediaSeekBackwardButton()}
+    ${MediaSeekForwardButton()}
+    <media-time-range></media-time-range>
+    <media-time-display show-duration remaining></media-time-display>
+    ${MediaMuteButton()}
     ${renderable(
       "volumeRange",
       ({ supportsVolume }: Partial<MuxTemplateProps>) =>
         supportsVolume && html`<media-volume-range></media-volume-range>`,
       props
     )}
-    <media-time-range></media-time-range>
-    <media-time-display show-duration remaining></media-time-display>
     <media-playback-rate-button></media-playback-rate-button>
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && html`<media-captions-button></media-captions-button>`,
+        hasCaptions && MediaCaptionsButton(),
       props
     )}
     ${renderable(
       "airplayButton",
       ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
-        supportsAirPlay && html`<media-airplay-button></media-airplay-button>`,
+        supportsAirPlay && MediaAirplayButton(),
       props
     )}
-    <media-pip-button></media-pip-button>
-    <media-fullscreen-button></media-fullscreen-button>
+    ${MediaPipButton()} ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
@@ -221,10 +262,10 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
     no-auto-hide
   ></media-loading-indicator>
   <div slot="centered-chrome" class="mxp-center-controls">
-    <media-play-button></media-play-button>
+    ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    <media-mute-button></media-mute-button>
+    ${MediaMuteButton()}
     ${renderable(
       "volumeRange",
       ({ supportsVolume }: Partial<MuxTemplateProps>) =>
@@ -236,11 +277,16 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && html`<media-captions-button></media-captions-button>`,
+        hasCaptions && MediaCaptionsButton(),
       props
     )}
-    <media-pip-button></media-pip-button>
-    <media-fullscreen-button></media-fullscreen-button>
+    ${renderable(
+      "airplayButton",
+      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
+        supportsAirPlay && MediaAirplayButton(),
+      props
+    )}
+    ${MediaPipButton()} ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
@@ -250,11 +296,10 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
     no-auto-hide
   ></media-loading-indicator>
   <div slot="centered-chrome" class="mxp-center-controls">
-    <media-play-button></media-play-button>
+    ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    <media-play-button></media-play-button>
-    <media-mute-button></media-mute-button>
+    ${MediaPlayButton()} ${MediaMuteButton()}
     ${renderable(
       "volumeRange",
       ({ supportsVolume }: Partial<MuxTemplateProps>) =>
@@ -266,10 +311,15 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && html`<media-captions-button></media-captions-button>`,
+        hasCaptions && MediaCaptionsButton(),
       props
     )}
-    <media-pip-button></media-pip-button>
-    <media-fullscreen-button></media-fullscreen-button>
+    ${renderable(
+      "airplayButton",
+      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
+        supportsAirPlay && MediaAirplayButton(),
+      props
+    )}
+    ${MediaPipButton()} ${MediaFullscreenButton()}
   </media-control-bar>
 `;
