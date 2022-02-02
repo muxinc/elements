@@ -33,7 +33,12 @@ export function html(
   const fragments: any = [];
   // Add placeholder divs with unqiue id for the fragments.
   args = args.map((arg) => {
-    if (arg && typeof arg === "object") {
+    if (arg == null) return "";
+    if (
+      arg instanceof Node ||
+      arg instanceof Renderable ||
+      arg instanceof PersistentFragment
+    ) {
       return `<div id="_${uid}${fragments.push(arg)}"></div>`;
     }
     return arg;
