@@ -14,8 +14,7 @@ import {
   getStoryboardURLFromPlaybackId,
   hasVolumeSupportAsync,
 } from "./utils";
-import "./styles.css";
-// import Poster from "./media-chrome/components/Poster";
+import Styles from "./components/Styles";
 
 export { StreamTypes };
 
@@ -224,55 +223,59 @@ export const MuxPlayer = React.forwardRef<
   }, [playerReady]);
 
   return (
-    <MediaController
-      ref={mediaControllerRef}
-      style={getChromeStylesFromProps(props)}
-      autohide={1}
-    >
-      <MuxVideo
-        // This results in an RTE from Media Chrome/<media-controller>
-        // when swapping instances based on key changes. Need to investigate.
-        // Likely edge case bug in Media Chrome/<media-controller>.
-        // key={playbackId}
-        ref={muxVideoRefCb}
-        slot="media"
-        // src={src}
-        playbackId={playbackId}
-        envKey={envKey}
-        streamType={streamType}
-        metadata={metadata}
-        debug={debug}
-        startTime={startTime}
-        preferMse={preferMse}
-        autoPlay={
-          autoPlay ||
-          streamType === StreamTypes.LIVE ||
-          streamType === StreamTypes.LL_LIVE
-        }
-        poster={poster ?? getPosterURLFromPlaybackId(playbackId)}
-        crossOrigin=""
-        playsInline
-        muted={muted}
-        {...restProps}
+    <>
+      <Styles />
+      <MediaController
+        className="mux-player"
+        ref={mediaControllerRef}
+        style={getChromeStylesFromProps(props)}
+        autohide={1}
       >
-        <track
-          label="thumbnails"
-          default
-          kind="metadata"
-          src={getStoryboardURLFromPlaybackId(playbackId)}
+        <MuxVideo
+          // This results in an RTE from Media Chrome/<media-controller>
+          // when swapping instances based on key changes. Need to investigate.
+          // Likely edge case bug in Media Chrome/<media-controller>.
+          // key={playbackId}
+          ref={muxVideoRefCb}
+          slot="media"
+          // src={src}
+          playbackId={playbackId}
+          envKey={envKey}
+          streamType={streamType}
+          metadata={metadata}
+          debug={debug}
+          startTime={startTime}
+          preferMse={preferMse}
+          autoPlay={
+            autoPlay ||
+            streamType === StreamTypes.LIVE ||
+            streamType === StreamTypes.LL_LIVE
+          }
+          poster={poster ?? getPosterURLFromPlaybackId(playbackId)}
+          crossOrigin=""
+          playsInline
+          muted={muted}
+          {...restProps}
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src={getStoryboardURLFromPlaybackId(playbackId)}
+          />
+          {children}
+        </MuxVideo>
+        {/* <Poster playbackId={playbackId} poster={poster} onLoaded={() => console.log('loaded!!!!')}/> */}
+        <ChromeRenderer
+          captionsAvailable={captionsAvailable}
+          supportsVolume={supportsVolume}
+          paused={!!muxVideoRef.current?.paused}
+          supportsAirPlay={supportsAirPlay}
+          streamType={streamType}
+          playerSize={playerSize}
         />
-        {children}
-      </MuxVideo>
-      {/* <Poster playbackId={playbackId} poster={poster} onLoaded={() => console.log('loaded!!!!')}/> */}
-      <ChromeRenderer
-        captionsAvailable={captionsAvailable}
-        supportsVolume={supportsVolume}
-        paused={!!muxVideoRef.current?.paused}
-        supportsAirPlay={supportsAirPlay}
-        streamType={streamType}
-        playerSize={playerSize}
-      />
-    </MediaController>
+      </MediaController>
+    </>
   );
 });
 
