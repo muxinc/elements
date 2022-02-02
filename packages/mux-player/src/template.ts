@@ -49,7 +49,7 @@ export const template = (props: MuxTemplateProps) => html`
     }
     .mxp-center-controls media-play-button {
       padding: 0;
-      width: min(8%, 80px);
+      width: min(9%, 90px);
     }
     .mxp-center-controls media-seek-backward-button,
     .mxp-center-controls media-seek-forward-button {
@@ -59,9 +59,10 @@ export const template = (props: MuxTemplateProps) => html`
     }
     media-loading-indicator {
       --media-loading-icon-width: 100%;
+      --media-button-icon-height: auto;
       pointer-events: none;
       position: absolute;
-      width: min(8%, 80px);
+      width: min(15%, 150px);
       display: flex;
       flex-flow: row;
       align-items: center;
@@ -146,13 +147,13 @@ const MediaPlayButton = () => html`
 
 const MediaSeekBackwardButton = () => html`
   <media-seek-backward-button>
-    ${icons.SeekBackward({ slot: "backward" })}
+    ${icons.SeekBackward({ slot: "backward", amount: 30 })}
   </media-seek-backward-button>
 `;
 
 const MediaSeekForwardButton = () => html`
   <media-seek-forward-button>
-    ${icons.SeekForward({ slot: "forward" })}
+    ${icons.SeekForward({ slot: "forward", amount: 30 })}
   </media-seek-forward-button>
 `;
 
@@ -215,6 +216,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
         supportsVolume && html`<media-volume-range></media-volume-range>`,
       props
     )}
+    <media-playback-rate-button></media-playback-rate-button>
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
