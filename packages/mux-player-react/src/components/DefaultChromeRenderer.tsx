@@ -4,7 +4,7 @@ import LiveChromeLarge from "./LiveChromeLarge";
 import LiveChromeSmall from "./LiveChromeSmall";
 import VodChromeLarge from "./VodChromeLarge";
 import VodChromeSmall from "./VodChromeSmall";
-import { MediaChromeSizes } from "../constants";
+import { MediaChromeSizes } from "../shared/constants";
 import type { ChromeProps } from "../types";
 
 const DefaultChromeRenderer: React.FC<ChromeProps> = (props) => {

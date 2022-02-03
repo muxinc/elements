@@ -6,14 +6,14 @@ import { StreamTypes, ValueOf } from "@mux-elements/playback-core";
 import { useBoundingclientrect } from "./hooks/useBoundingclientrect";
 import { useCombinedRefs } from "./hooks/useCombinedRefs";
 import DefaultChromeRenderer from "./components/DefaultChromeRenderer";
-import { MediaChromeSizes } from "./constants";
+import { MediaChromeSizes } from "./shared/constants";
 import { MuxPlayerProps } from "./types";
 import {
   getChromeStylesFromProps,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
   hasVolumeSupportAsync,
-} from "./utils";
+} from "./shared/utils";
 import Styles from "./components/Styles";
 
 export { StreamTypes };

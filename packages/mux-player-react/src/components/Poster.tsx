@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { getPosterURLFromPlaybackId } from "../utils";
+import { getPosterURLFromPlaybackId } from "../shared/utils";
 
 const Poster: React.FC<{
   poster?: string;

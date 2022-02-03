@@ -1,5 +1,5 @@
 import type { Props as MuxVideoProps } from "@mux-elements/mux-video-react";
-import type { MuxPlayerProps } from "./types";
+import type { MuxPlayerProps } from "../types";
 
 export const getPosterURLFromPlaybackId = (
   playbackId: MuxVideoProps["playbackId"]
@@ -67,4 +67,23 @@ export const getChromeStylesFromProps = (props: MuxPlayerProps) => {
     ...secondaryColorStyles,
     ...tertiaryColorStyles,
   };
+};
+
+export const getTracksAvailable = (
+  textTracks: TextTrackList | undefined,
+  includeSubtitles: boolean = true
+) => {
+  if (!textTracks) return undefined;
+
+  const ccSubTracks = Array.from(textTracks).filter(
+    ({ kind }) =>
+      kind === "captions" || (includeSubtitles && kind === "subtitles")
+  );
+
+  return !!ccSubTracks.length;
+};
+
+export const getLoading = (mediaEl: HTMLMediaElement | undefined) => {
+  if (!mediaEl) return undefined;
+  return mediaEl.readyState < 3;
 };
