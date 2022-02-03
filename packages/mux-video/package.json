@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-video",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "commonjs",
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "dist/index.js",
@@ -26,7 +26,7 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@mux-elements/playback-core": "^0.1.1"
+    "@mux-elements/playback-core": "^0.1.2"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
