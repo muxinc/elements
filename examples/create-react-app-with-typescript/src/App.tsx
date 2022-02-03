@@ -13,7 +13,7 @@ function App() {
         width: "calc(100vw - 40px)",
       }}
     >
-      <Router>
+      <Router basename="/elements/examples/mux-elements-react">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="MuxVideo" element={<MuxVideoPage />} />

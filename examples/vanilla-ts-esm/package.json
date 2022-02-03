@@ -8,15 +8,18 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn build --servedir=public",
-    "build": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist"
+    "build": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages --dist public --dest ./examples/mux-elements/"
   },
   "devDependencies": {
     "esbuild": "^0.14.2",
+    "gh-pages": "^3.2.3",
     "typescript": "^4.5.2"
   },
   "dependencies": {
     "@mux-elements/mux-audio": "^0.2.0",
-    "@mux-elements/mux-video": "^0.2.0",
-    "@mux-elements/mux-player": "^0.1.0"
+    "@mux-elements/mux-player": "^0.1.0",
+    "@mux-elements/mux-video": "^0.2.0"
   }
 }

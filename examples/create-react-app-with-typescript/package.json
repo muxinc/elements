@@ -25,8 +25,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages --dist build --dest ./examples/mux-elements-react/"
   },
+  "homepage": "https://muxinc.github.io/elements/examples/mux-elements-react/",
   "eslintConfig": {
     "extends": [
       "react-app",
