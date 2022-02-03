@@ -331,23 +331,36 @@ export const loadMedia = (
       }
     });
 
-    hls.loadSource(src);
-    hls.attachMedia(mediaEl);
-    mediaEl.addEventListener("canplay", () => {
-      mediaEl.querySelectorAll("track").forEach((track) => {
-        if (track.getAttribute("label") === "thumbnails") {
-          const thumbnailsSrc = track.getAttribute("src");
-          if (!thumbnailsSrc) return;
-          track.removeAttribute("src");
-          // NOTE: This is super hacky. Need to hunt down if there's a
-          // better event to ensure this happens late enough to not
-          // be stomped on by hls.js (CJP)
+    const forceHiddenThumbnails = () => {
+      // Keeping this a forEach in case we want to expand the scope of this.
+      Array.from(mediaEl.textTracks).forEach((track) => {
+        if (["subtitles", "caption"].includes(track.kind)) return;
+        if (track.label !== "thumbnails") return;
+        if (!track.cues?.length) {
+          const trackEl = mediaEl.querySelector(
+            'track[label="thumbnails"]'
+          ) as HTMLTrackElement;
+          // Force a reload of the cues if they've been removed
+          const src = trackEl?.getAttribute("src") ?? "";
+          trackEl?.removeAttribute("src");
           setTimeout(() => {
-            track.setAttribute("src", thumbnailsSrc);
-          }, 500);
+            trackEl?.setAttribute("src", src);
+          }, 0);
+        }
+        // Force hidden mode if it's not hidden
+        if (track.mode !== "hidden") {
+          track.mode = "hidden";
         }
       });
-    });
+    };
+
+    // hls.js will forcibly clear all cues from tracks on manifest loads or media attaches.
+    // This ensures that we re-load them after it's done that.
+    hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
+    hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+
+    hls.loadSource(src);
+    hls.attachMedia(mediaEl);
   } else {
     console.error(
       "It looks like the video you're trying to play will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
