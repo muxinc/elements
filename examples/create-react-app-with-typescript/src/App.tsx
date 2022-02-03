@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages";
 import MuxVideoPage from "./pages/MuxVideo";
 import MuxAudioPage from "./pages/MuxAudio";
@@ -13,7 +13,7 @@ function App() {
         width: "calc(100vw - 40px)",
       }}
     >
-      <Router basename="/elements/examples/mux-elements-react">
+      <Router>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="MuxVideo" element={<MuxVideoPage />} />
