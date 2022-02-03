@@ -83,7 +83,7 @@ export const SeekBackward = (props: any) => html`
     />
     <text
       transform="translate(.6 17.8)"
-      style="font-size: 8; font-family: 'ArialMT', 'Arial'"
+      style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
     >
       ${props.amount}
     </text>
@@ -99,7 +99,7 @@ export const SeekForward = (props: any) => html`
     />
     <text
       transform="translate(6.5 17.8)"
-      style="font-size: 8; font-family: 'ArialMT', 'Arial'"
+      style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
     >
       ${props.amount}
     </text>
