@@ -48,11 +48,15 @@ export const template = (props: MuxTemplateProps) => html`
       justify-content: center;
     }
     .mxp-center-controls media-play-button {
+      --media-control-background: transparent;
+      --media-control-hover-background: transparent;
       padding: 0;
       width: min(9%, 90px);
     }
     .mxp-center-controls media-seek-backward-button,
     .mxp-center-controls media-seek-forward-button {
+      --media-control-background: transparent;
+      --media-control-hover-background: transparent;
       padding: 0;
       margin: 0 10%;
       width: min(7%, 70px);

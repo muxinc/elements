@@ -178,6 +178,8 @@ function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
     poster: el.poster,
     startTime: el.startTime,
     streamType: el.streamType,
+    primaryColor: el.primaryColor,
+    secondaryColor: el.secondaryColor,
     playerSize: getPlayerSize(el),
     hasCaptions: !!getCcSubTracks(el).length,
     showLoading: showLoading(el),
@@ -217,9 +219,12 @@ const MuxVideoAttributes = {
 
 const PlayerAttributes = {
   DEFAULT_SHOW_CAPTIONS: "default-show-captions",
+  PRIMARY_COLOR: "primary-color",
+  SECONDARY_COLOR: "secondary-color",
 };
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
+const PlayerAttributeNames = Object.values(PlayerAttributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = "mux-player";
 
@@ -231,6 +236,7 @@ class MuxPlayerElement extends VideoApiElement {
     return [
       ...(VideoApiElement.observedAttributes ?? []),
       ...MuxVideoAttributeNames,
+      ...PlayerAttributeNames,
     ];
   }
 
@@ -257,6 +263,14 @@ class MuxPlayerElement extends VideoApiElement {
     if (MuxVideoAttributeNames.includes(attrName)) {
       this.video?.setAttribute(attrName, newValue);
     }
+  }
+
+  get primaryColor() {
+    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+  }
+
+  get secondaryColor() {
+    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
   }
 
   get defaultShowCaptions() {
