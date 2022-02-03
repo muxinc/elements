@@ -65,20 +65,13 @@ export function getChromeStylesFromProps(props: any) {
     ? {
         "--media-background-color": secondaryColor,
         "--media-control-background": secondaryColor,
-      }
-    : {};
-
-  const tertiaryColorStyles = tertiaryColor
-    ? {
-        "--media-range-track-background": tertiaryColor,
+        "--media-control-hover-background": secondaryColor,
       }
     : {};
 
   return stylePropsToString({
     maxWidth: "100%",
-    color: "#ffffff",
     ...primaryColorStyles,
     ...secondaryColorStyles,
-    ...tertiaryColorStyles,
   });
 }
