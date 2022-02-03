@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@mux-elements/mux-video": "^0.2.0",
-    "media-chrome": "^0.4.3"
+    "media-chrome": "git+ssh://git@github.com:luwes/media-chrome.git#icons-layout"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",
