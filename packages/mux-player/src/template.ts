@@ -5,6 +5,8 @@ import {
 } from "./helpers";
 import { html, renderable } from "./utils";
 import * as icons from "./icons";
+// @ts-ignore
+import cssStr from "./styles.css";
 
 import type { MuxTemplateProps } from "./types";
 import type { PersistentFragment } from "./utils";
@@ -24,70 +26,7 @@ const Spacer = () => html`<div class="mxp-spacer"></div>`;
 
 export const template = (props: MuxTemplateProps) => html`
   <style>
-    media-controller {
-      --media-control-background: transparent;
-      --media-control-hover-background: transparent;
-      --media-range-track-background: rgba(255, 255, 255, 0.5);
-      --media-range-track-border-radius: 3px;
-      --media-aspect-ratio: 16 / 9;
-    }
-    .mxp-spacer {
-      flex-grow: 1;
-      height: 100%;
-      background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
-    }
-    .mxp-center-controls {
-      --media-background-color: transparent;
-      --media-button-icon-width: 100%;
-      --media-button-icon-height: auto;
-      pointer-events: none;
-      width: 100%;
-      display: flex;
-      flex-flow: row;
-      align-items: center;
-      justify-content: center;
-    }
-    .mxp-center-controls media-play-button {
-      --media-control-background: transparent;
-      --media-control-hover-background: transparent;
-      padding: 0;
-      width: min(9%, 90px);
-    }
-    .mxp-center-controls media-seek-backward-button,
-    .mxp-center-controls media-seek-forward-button {
-      --media-control-background: transparent;
-      --media-control-hover-background: transparent;
-      padding: 0;
-      margin: 0 10%;
-      width: min(7%, 70px);
-    }
-    media-loading-indicator {
-      --media-loading-icon-width: 100%;
-      --media-button-icon-height: auto;
-      pointer-events: none;
-      position: absolute;
-      width: min(15%, 150px);
-      display: flex;
-      flex-flow: row;
-      align-items: center;
-      justify-content: center;
-    }
-    /* Intentionally don't target the div for transition but the children
-     of the div. Prevents messing with media-chrome's autohide feature. */
-    media-loading-indicator + div * {
-      transition: opacity 0.15s;
-      opacity: 1;
-    }
-    media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
-      opacity: 0;
-      transition-delay: 400ms;
-    }
-    media-volume-range {
-      width: min(100%, 100px);
-    }
-    media-time-display {
-      white-space: nowrap;
-    }
+    ${cssStr}
   </style>
   <media-controller style="${getChromeStylesFromProps(props)}">
     <mux-video
