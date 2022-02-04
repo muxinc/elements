@@ -42,11 +42,9 @@ export const hasVolumeSupportAsync = async (
 };
 
 export function getCcSubTracks(el: MuxPlayerElement) {
-  return el.video
-    ? Array.from(el.video.textTracks).filter(
-        ({ kind }) => kind === "subtitles" || kind === "captions"
-      )
-    : [];
+  return Array.from(el.video?.textTracks ?? []).filter(
+    ({ kind }) => kind === "subtitles" || kind === "captions"
+  );
 }
 
 export function getChromeStylesFromProps(props: any) {
