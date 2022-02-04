@@ -149,15 +149,15 @@ const MediaPlayButton = () => html`
   </media-play-button>
 `;
 
-const MediaSeekBackwardButton = () => html`
-  <media-seek-backward-button>
-    ${icons.SeekBackward({ slot: "backward", amount: 30 })}
+const MediaSeekBackwardButton = (props: Partial<MuxTemplateProps>) => html`
+  <media-seek-backward-button seek-offset="${props.backwardSeekOffset}">
+    ${icons.SeekBackward({ slot: "backward", value: props.backwardSeekOffset })}
   </media-seek-backward-button>
 `;
 
-const MediaSeekForwardButton = () => html`
-  <media-seek-forward-button>
-    ${icons.SeekForward({ slot: "forward", amount: 30 })}
+const MediaSeekForwardButton = (props: Partial<MuxTemplateProps>) => html`
+  <media-seek-forward-button seek-offset="${props.forwardSeekOffset}">
+    ${icons.SeekForward({ slot: "forward", value: props.forwardSeekOffset })}
   </media-seek-forward-button>
 `;
 
@@ -207,8 +207,8 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaSeekBackwardButton()} ${MediaPlayButton()}
-    ${MediaSeekForwardButton()}
+    ${MediaSeekBackwardButton(props)} ${MediaPlayButton()}
+    ${MediaSeekForwardButton(props)}
   </div>
   <media-control-bar>
     <media-time-range></media-time-range>
@@ -234,8 +234,8 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    ${MediaPlayButton()} ${MediaSeekBackwardButton()}
-    ${MediaSeekForwardButton()}
+    ${MediaPlayButton()} ${MediaSeekBackwardButton(props)}
+    ${MediaSeekForwardButton(props)}
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
     ${MediaMuteButton()}

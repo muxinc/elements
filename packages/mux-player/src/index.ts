@@ -170,25 +170,6 @@ class MuxPlayerInternal {
   }
 }
 
-function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
-  return {
-    debug: el.debug,
-    envKey: el.envKey,
-    playbackId: el.playbackId,
-    poster: el.poster,
-    startTime: el.startTime,
-    streamType: el.streamType,
-    primaryColor: el.primaryColor,
-    secondaryColor: el.secondaryColor,
-    playerSize: getPlayerSize(el),
-    hasCaptions: !!getCcSubTracks(el).length,
-    showLoading: showLoading(el),
-    supportsAirPlay: false,
-    supportsVolume: false,
-    ...props,
-  };
-}
-
 const SMALL_BREAKPOINT = 700;
 const MediaChromeSizes = {
   LG: "large",
@@ -221,7 +202,30 @@ const PlayerAttributes = {
   DEFAULT_SHOW_CAPTIONS: "default-show-captions",
   PRIMARY_COLOR: "primary-color",
   SECONDARY_COLOR: "secondary-color",
+  FORWARD_SEEK_OFFSET: "forward-seek-offset",
+  BACKWARD_SEEK_OFFSET: "backward-seek-offset",
 };
+
+function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
+  return {
+    debug: el.debug,
+    envKey: el.envKey,
+    playbackId: el.playbackId,
+    poster: el.poster,
+    startTime: el.startTime,
+    streamType: el.streamType,
+    primaryColor: el.primaryColor,
+    secondaryColor: el.secondaryColor,
+    forwardSeekOffset: el.forwardSeekOffset,
+    backwardSeekOffset: el.backwardSeekOffset,
+    playerSize: getPlayerSize(el),
+    hasCaptions: !!getCcSubTracks(el).length,
+    showLoading: showLoading(el),
+    supportsAirPlay: false,
+    supportsVolume: false,
+    ...props,
+  };
+}
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
 const PlayerAttributeNames = Object.values(PlayerAttributes);
@@ -271,6 +275,14 @@ class MuxPlayerElement extends VideoApiElement {
 
   get secondaryColor() {
     return this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+  }
+
+  get forwardSeekOffset() {
+    return this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET);
+  }
+
+  get backwardSeekOffset() {
+    return this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET);
   }
 
   get defaultShowCaptions() {
