@@ -1,9 +1,16 @@
+:host {
+  /* default aspect ratio, overwrite w/ e.g. style="aspect-ratio: 16 / 10" */
+  aspect-ratio: 16 / 9;
+}
+
 media-controller {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   --media-range-track-background: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
-  --media-aspect-ratio: 16 / 9;
+  --media-aspect-ratio: auto;
+  width: 100%;
+  height: 100%;
 }
 
 .mxp-spacer {
