@@ -25,7 +25,7 @@ const VodChromeLarge: React.FC<ChromeProps> = (props) => {
   } = props;
   return (
     <>
-      <div slot="centered-chrome" no-auto-hide>
+      <div slot="centered-chrome" no-auto-hide="">
         <MediaLoadingIndicator></MediaLoadingIndicator>
       </div>
       <MediaControlBar>

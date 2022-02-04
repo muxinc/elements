@@ -28,7 +28,7 @@ const LiveChromeSmall: React.FC<ChromeProps> = (props) => {
         {supportsAirPlay && <MediaAirplayButton></MediaAirplayButton>}
         <MediaPipButton></MediaPipButton>
       </MediaControlBar>
-      <div slot="centered-chrome" no-auto-hide>
+      <div slot="centered-chrome" no-auto-hide="">
         <MediaLoadingIndicator></MediaLoadingIndicator>
         <MediaPlayButton></MediaPlayButton>
       </div>
