@@ -10,6 +10,7 @@ media-controller {
   --media-range-track-background: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
   --media-aspect-ratio: auto;
+  display: block;
   width: 100%;
   height: 100%;
 }
