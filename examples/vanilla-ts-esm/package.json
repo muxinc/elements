@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "yarn build --servedir=public",
-    "build": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist",
+    "build": "esbuild src/** --bundle --minify --target=es2019 --format=esm --outdir=public/dist",
     "predeploy": "yarn run build",
     "deploy": "gh-pages --dist public --dest ./examples/mux-elements/"
   },
