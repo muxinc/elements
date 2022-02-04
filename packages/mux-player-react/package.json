@@ -13,7 +13,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "dev:cjs": "yarn build:cjs --watch",
+    "dev:cjs": "open-process | yarn build:cjs --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs",
     "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --format=cjs --loader:.css=text --outdir=dist --external:react --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
