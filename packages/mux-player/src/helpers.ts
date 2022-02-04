@@ -70,7 +70,6 @@ export function getChromeStylesFromProps(props: any) {
     : {};
 
   return stylePropsToString({
-    maxWidth: "100%",
     ...primaryColorStyles,
     ...secondaryColorStyles,
   });
