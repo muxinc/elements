@@ -82,10 +82,11 @@ export const SeekBackward = (props: any) => html`
       d="M8.75 3.42H4.68l2.14-2.14A.75.75 0 0 0 5.76.22L2.22 3.75a.77.77 0 0 0 0 1.07l3.54 3.53a.75.75 0 0 0 1.06 0 .75.75 0 0 0 0-1.06L4.45 4.92h4.3A5.75 5.75 0 0 1 11 16a.75.75 0 0 0 .29 1.44.72.72 0 0 0 .29-.06A7.25 7.25 0 0 0 8.75 3.42Z"
     />
     <text
+      class="value"
       transform="translate(.6 17.8)"
       style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
     >
-      ${props.amount}
+      ${props.value}
     </text>
     <path style="fill: none" d="M0 0h16v18H0z" />
   </svg>
@@ -98,10 +99,11 @@ export const SeekForward = (props: any) => html`
       d="M7.25 3.42h4.07L9.18 1.28A.75.75 0 0 1 10.24.22l3.54 3.53a.77.77 0 0 1 0 1.07l-3.54 3.53a.75.75 0 0 1-1.06 0 .75.75 0 0 1 0-1.06l2.37-2.37h-4.3A5.75 5.75 0 0 0 5 16a.75.75 0 0 1-.29 1.44.72.72 0 0 1-.29-.06A7.25 7.25 0 0 1 7.25 3.42Z"
     />
     <text
+      class="value"
       transform="translate(6.5 17.8)"
       style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
     >
-      ${props.amount}
+      ${props.value}
     </text>
     <path style="fill: none" d="M0 0h16v18H0z" />
   </svg>
