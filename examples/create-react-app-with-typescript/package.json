@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@mux-elements/mux-audio-react": "^0.1.0",
+    "@mux-elements/mux-player-react": "^0.1.0-alpha.1",
     "@mux-elements/mux-video-react": "^0.2.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
