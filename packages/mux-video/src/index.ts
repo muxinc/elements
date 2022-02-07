@@ -106,6 +106,24 @@ class MuxVideoElement
     }
   }
 
+  get type(): ValueOf<ExtensionMimeTypeMap> | undefined {
+    return (
+      (this.getAttribute(Attributes.TYPE) as ValueOf<ExtensionMimeTypeMap>) ??
+      undefined
+    );
+  }
+
+  set type(val: ValueOf<ExtensionMimeTypeMap> | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.type) return;
+
+    if (val) {
+      this.setAttribute(Attributes.TYPE, val);
+    } else {
+      this.removeAttribute(Attributes.TYPE);
+    }
+  }
+
   /** @TODO write a generic module for well defined primitive types -> attribute getter/setters/removers (CJP) */
   get debug(): boolean {
     return this.getAttribute(Attributes.DEBUG) != null;
