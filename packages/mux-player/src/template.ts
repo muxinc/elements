@@ -56,12 +56,14 @@ export const template = (props: MuxTemplateProps) => html`
         ? `metadata-viewer-user-id="${props.metadata.viewer_user_id}"`
         : ""}
     >
-      <track
-        label="thumbnails"
-        default
-        kind="metadata"
-        src=${getStoryboardURLFromPlaybackId(props.playbackId)}
-      />
+      ${props.playbackId
+        ? html`<track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src=${getStoryboardURLFromPlaybackId(props.playbackId)}
+          />`
+        : ""}
     </mux-video>
     ${renderable("chromeRenderer", ChromeRenderer, props)}
   </media-controller>
