@@ -17,6 +17,17 @@
         margin: 40px auto;
         display: block;
       }
+
+      .buttons {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+      .buttons button {
+        margin: 5px;
+      }
     </style>
   </head>
   <body>
@@ -40,8 +51,24 @@
       stream-type="vod"
     ></mux-player>
 
+    <div class="buttons">
+      <button class="dialog-show-btn">Show dialog</button>
+      <button class="dialog-close-btn">Close dialog</button>
+    </div>
+    <br />
+
     <script>
-      console.dir(document.querySelector("mux-player"));
+      let player = document.querySelector("mux-player");
+      document
+        .querySelector(".dialog-show-btn")
+        .addEventListener("click", () => {
+          player.shadowRoot.querySelector("media-dialog").show();
+        });
+      document
+        .querySelector(".dialog-close-btn")
+        .addEventListener("click", () => {
+          player.shadowRoot.querySelector("media-dialog").close();
+        });
     </script>
 
     <a href="../">Browse Elements</a>

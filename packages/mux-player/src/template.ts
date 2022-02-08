@@ -1,3 +1,4 @@
+import "./dialog";
 import {
   getChromeStylesFromProps,
   getPosterURLFromPlaybackId,
@@ -132,6 +133,14 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
     slot="centered-chrome"
     no-auto-hide
   ></media-loading-indicator>
+  <media-dialog slot="centered-chrome" no-auto-hide>
+    <button onclick="this.parentNode.close()" tabindex="0">X</button>
+    <h1>Network Error</h1>
+    <p>
+      Some kind of network error occurred which prevented the media from being
+      successfully fetched, despite having previously been available.
+    </p>
+  </media-dialog>
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${renderable(
       "captionsButton",
@@ -174,6 +183,14 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
+  <media-dialog slot="centered-chrome" no-auto-hide>
+    <button onclick="this.parentNode.close()" tabindex="0">X</button>
+    <h1>Network Error</h1>
+    <p>
+      Some kind of network error occurred which prevented the media from being
+      successfully fetched, despite having previously been available.
+    </p>
+  </media-dialog>
   <media-control-bar>
     ${MediaPlayButton()} ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
