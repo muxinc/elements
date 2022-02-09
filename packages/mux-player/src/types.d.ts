@@ -14,4 +14,6 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   secondaryColor: string;
   forwardSeekOffset: number;
   backwardSeekOffset: number;
+  dialog: { title: string; message: string };
+  isDialogOpen: boolean;
 };
