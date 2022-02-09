@@ -83,14 +83,7 @@ class MuxPlayerInternal {
   _renderChrome() {
     if (this._playerSize != getPlayerSize(this.el)) {
       this._playerSize = getPlayerSize(this.el);
-      this._fragments.chromeRenderer.render(
-        getProps(this.el, {
-          ...this._state,
-          isDialogOpen: (
-            this._fragments.dialogContent.parentNode as MxpDialog
-          ).hasAttribute("open"),
-        })
-      );
+      this._fragments.chromeRenderer.render(getProps(this.el, this._state));
     }
   }
 
