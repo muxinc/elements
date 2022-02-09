@@ -1,5 +1,6 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
+import MxpDialog from "./dialog";
 import VideoApiElement from "./video-api";
 import {
   getCcSubTracks,
@@ -18,11 +19,8 @@ const showLoading = (el: MuxPlayerElement) =>
 
 class MuxPlayerInternal {
   el: MuxPlayerElement;
-  _asyncProps: Partial<MuxTemplateProps> = {};
-  _chromeRenderer: RenderableFragment;
-  _captionsButton: RenderableFragment;
-  _airplayButton: RenderableFragment;
-  _volumeRange: RenderableFragment;
+  _template: PersistentFragment;
+  _state: Partial<MuxTemplateProps> = {};
   _playerSize?: string;
   _resizeObserver?: ResizeObserver;
 
@@ -33,14 +31,10 @@ class MuxPlayerInternal {
   constructor(el: MuxPlayerElement) {
     this.el = el;
 
-    let muxPlayer = template(getProps(el));
-    this._chromeRenderer = muxPlayer.fragments.chromeRenderer;
-    this._captionsButton = this._chromeRenderer.fragments.captionsButton;
-    this._airplayButton = this._chromeRenderer.fragments.airplayButton;
-    this._volumeRange = this._chromeRenderer.fragments.volumeRange;
+    this._template = template(getProps(el));
 
     el.attachShadow({ mode: "open" });
-    el.shadowRoot?.append(...muxPlayer.childNodes);
+    el.shadowRoot?.append(...this._template.childNodes);
 
     el.querySelectorAll(":scope > track").forEach((track) => {
       el.video?.append(track.cloneNode());
@@ -66,6 +60,7 @@ class MuxPlayerInternal {
       el.video.hls.config.maxMaxBufferLength = 2;
     }
 
+    this._setUpErrors(el);
     this._setUpMutedAutoplay(el);
     this._setUpCaptionsButton(el);
     this._setUpAirplayButton(el);
@@ -79,6 +74,68 @@ class MuxPlayerInternal {
 
   disconnectedCallback() {
     this._deinitResizing();
+  }
+
+  get _fragments() {
+    return this._template.fragments;
+  }
+
+  _renderChrome() {
+    if (this._playerSize != getPlayerSize(this.el)) {
+      this._playerSize = getPlayerSize(this.el);
+      this._fragments.chromeRenderer.render(
+        getProps(this.el, {
+          ...this._state,
+          isDialogOpen: (
+            this._fragments.dialogContent.parentNode as MxpDialog
+          ).hasAttribute("open"),
+        })
+      );
+    }
+  }
+
+  _initResizing() {
+    this._resizeObserver = new ResizeObserver(() => this._renderChrome());
+    this._resizeObserver.observe(this.el);
+  }
+
+  _deinitResizing() {
+    this._resizeObserver?.disconnect();
+  }
+
+  _setUpErrors(el: MuxPlayerElement) {
+    if (el.video?.hls) {
+      const Hls: any = el.video.hls.constructor;
+      el.video.hls.on(Hls.Events.ERROR, (_event: any, data: any) => {
+        if (data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              this._state.dialog = {
+                title: "Network Error",
+                message:
+                  "A network error occurred. Please reload the player and try again.",
+              };
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              this._state.dialog = {
+                title: "Media Error",
+                message:
+                  "A media error occurred. Please reload the player and try again.",
+              };
+              break;
+            default:
+              this._state.dialog = {
+                title: "Error",
+                message:
+                  "An error occurred. Please reload the player and try again.",
+              };
+              break;
+          }
+          this._fragments.dialogContent.render(this._state.dialog);
+          (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
+        }
+      });
+    }
   }
 
   _setUpMutedAutoplay(el: MuxPlayerElement) {
@@ -105,7 +162,9 @@ class MuxPlayerInternal {
   _setUpCaptionsButton(el: MuxPlayerElement) {
     const onTrackCountChange = () => {
       const ccSubTracks = getCcSubTracks(el);
-      this._captionsButton.render({ hasCaptions: !!ccSubTracks.length });
+      this._fragments.captionsButton.render({
+        hasCaptions: !!ccSubTracks.length,
+      });
 
       // NOTE: This is a hack solution to "default" CC selection. Solution *should*
       // be better default state support in media-chrome (CJP).
@@ -132,8 +191,8 @@ class MuxPlayerInternal {
     if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
       const onPlaybackTargetAvailability = (evt: any) => {
         const supportsAirPlay = evt.availability === "available";
-        this._airplayButton.render({ supportsAirPlay });
-        this._asyncProps.supportsAirPlay = supportsAirPlay;
+        this._fragments.airplayButton.render({ supportsAirPlay });
+        this._state.supportsAirPlay = supportsAirPlay;
       };
 
       el.video?.addEventListener(
@@ -145,28 +204,8 @@ class MuxPlayerInternal {
 
   async _setUpVolumeRange(el: MuxPlayerElement) {
     const supportsVolume = await hasVolumeSupportAsync();
-    this._volumeRange.render({ supportsVolume });
-    this._asyncProps.supportsVolume = supportsVolume;
-  }
-
-  _renderChrome() {
-    if (this._playerSize != getPlayerSize(this.el)) {
-      this._playerSize = getPlayerSize(this.el);
-      this._chromeRenderer.render(getProps(this.el, this._asyncProps));
-      // Get the references to the new child fragments.
-      this._captionsButton = this._chromeRenderer.fragments.captionsButton;
-      this._airplayButton = this._chromeRenderer.fragments.airplayButton;
-      this._volumeRange = this._chromeRenderer.fragments.volumeRange;
-    }
-  }
-
-  _initResizing() {
-    this._resizeObserver = new ResizeObserver(() => this._renderChrome());
-    this._resizeObserver.observe(this.el);
-  }
-
-  _deinitResizing() {
-    this._resizeObserver?.disconnect();
+    this._fragments.volumeRange.render({ supportsVolume });
+    this._state.supportsVolume = supportsVolume;
   }
 }
 

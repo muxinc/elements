@@ -26,14 +26,21 @@ export function uniqueId(prefix: string) {
 export function html(
   strings: TemplateStringsArray,
   ...args: Array<
-    string | number | Node | Renderable | PersistentFragment | null | undefined
+    | string
+    | number
+    | boolean
+    | Node
+    | Renderable
+    | PersistentFragment
+    | null
+    | undefined
   >
 ) {
   const uid = uniqueId("");
   const fragments: any = [];
   // Add placeholder divs with unqiue id for the fragments.
   args = args.map((arg) => {
-    if (arg == null) return "";
+    if (arg == null || arg === false) return "";
     if (
       arg instanceof Node ||
       arg instanceof Renderable ||
@@ -107,8 +114,13 @@ export class PersistentFragment {
     let map: Record<string, RenderableFragment> = {};
     for (let frag of this.childFragments) {
       if (frag.id) map[frag.id] = frag as RenderableFragment;
+      Object.assign(map, frag.fragments);
     }
     return map;
+  }
+
+  get parentNode() {
+    return this._mark?.parentNode;
   }
 
   get childNodes() {
