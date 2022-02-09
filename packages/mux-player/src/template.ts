@@ -66,7 +66,25 @@ export const template = (props: MuxTemplateProps) => html`
           />`
         : ""}
     </mux-video>
+    <media-loading-indicator
+      slot="centered-chrome"
+      no-auto-hide
+    ></media-loading-indicator>
     ${renderable("chromeRenderer", ChromeRenderer, props)}
+    <mxp-dialog
+      slot="centered-chrome"
+      no-auto-hide${props.isDialogOpen && " open"}
+    >
+      ${renderable(
+        "dialogContent",
+        (dialog: { title: string; message: string }) =>
+          html`
+            ${dialog?.title ? `<h3>${dialog.title}</h3>` : ""}
+            ${dialog?.message ? `<p>${dialog.message}</p>` : ""}
+          `,
+        props.dialog
+      )}
+    </mxp-dialog>
   </media-controller>
 `;
 
@@ -129,24 +147,6 @@ const MediaFullscreenButton = () => html` <media-fullscreen-button>
 </media-fullscreen-button>`;
 
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
-  <media-loading-indicator
-    slot="centered-chrome"
-    no-auto-hide
-  ></media-loading-indicator>
-  <mxp-dialog
-    slot="centered-chrome"
-    no-auto-hide${props.isDialogOpen && " open"}
-  >
-    ${renderable(
-      "dialogContent",
-      (dialog: { title: string; message: string }) =>
-        html`
-          ${dialog?.title ? `<h3>${dialog.title}</h3>` : ""}
-          ${dialog?.message ? `<p>${dialog.message}</p>` : ""}
-        `,
-      props.dialog
-    )}
-  </mxp-dialog>
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${renderable(
       "captionsButton",
@@ -182,27 +182,9 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
 `;
 
 export const VodChromeLarge = (props: MuxTemplateProps) => html`
-  <media-loading-indicator
-    slot="centered-chrome"
-    no-auto-hide
-  ></media-loading-indicator>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
-  <mxp-dialog
-    slot="centered-chrome"
-    no-auto-hide${props.isDialogOpen && " open"}
-  >
-    ${renderable(
-      "dialogContent",
-      (dialog: { title: string; message: string }) =>
-        html`
-          ${dialog?.title ? `<h3>${dialog.title}</h3>` : ""}
-          ${dialog?.message ? `<p>${dialog.message}</p>` : ""}
-        `,
-      props.dialog
-    )}
-  </mxp-dialog>
   <media-control-bar>
     ${MediaPlayButton()} ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
@@ -233,10 +215,6 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
 `;
 
 export const LiveChromeSmall = (props: MuxTemplateProps) => html`
-  <media-loading-indicator
-    slot="centered-chrome"
-    no-auto-hide
-  ></media-loading-indicator>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
@@ -267,10 +245,6 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
 `;
 
 export const LiveChromeLarge = (props: MuxTemplateProps) => html`
-  <media-loading-indicator
-    slot="centered-chrome"
-    no-auto-hide
-  ></media-loading-indicator>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
