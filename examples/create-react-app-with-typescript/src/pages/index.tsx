@@ -15,6 +15,11 @@ function Home() {
             <Link to="/MuxAudio">Mux Audio Demo</Link>
           </h3>
         </li>
+        <li>
+          <h3>
+            <Link to="/MuxPlayer">Mux Player Demo</Link>
+          </h3>
+        </li>
       </ul>
     </div>
   );
