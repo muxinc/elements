@@ -158,22 +158,6 @@ class MuxPlayerInternal {
       this._fragments.captionsButton.render({
         hasCaptions: !!ccSubTracks.length,
       });
-
-      // NOTE: This is a hack solution to "default" CC selection. Solution *should*
-      // be better default state support in media-chrome (CJP).
-      if (el.defaultShowCaptions && ccSubTracks.length && el.video) {
-        const [ccSubTrack] = ccSubTracks;
-        const eventType =
-          ccSubTrack.kind === "captions"
-            ? "mediashowcaptionsrequest"
-            : "mediashowsubtitlesrequest";
-        const showCCSubEvent = new CustomEvent(eventType, {
-          composed: true,
-          bubbles: true,
-          detail: ccSubTrack,
-        });
-        el.video?.dispatchEvent(showCCSubEvent);
-      }
     };
 
     el.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
@@ -250,6 +234,7 @@ function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
     secondaryColor: el.secondaryColor,
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
+    defaultShowCaptions: el.defaultShowCaptions,
     playerSize: getPlayerSize(el),
     hasCaptions: !!getCcSubTracks(el).length,
     showLoading: showLoading(el),

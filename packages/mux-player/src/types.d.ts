@@ -16,4 +16,5 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   backwardSeekOffset: number;
   dialog: { title: string; message: string };
   isDialogOpen: boolean;
+  defaultShowCaptions: boolean;
 };
