@@ -52,7 +52,7 @@
     ></mux-player>
 
     <div class="buttons">
-      <button class="dialog-show-btn">Show dialog</button>
+      <button class="dialog-show-btn">Show error dialog</button>
       <button class="dialog-close-btn">Close dialog</button>
     </div>
     <br />
@@ -62,7 +62,11 @@
       document
         .querySelector(".dialog-show-btn")
         .addEventListener("click", () => {
-          player.shadowRoot.querySelector("mxp-dialog").show();
+          player.dispatchEvent(
+            new CustomEvent("mockerror", {
+              detail: { fatal: true, type: "networkError" },
+            })
+          );
         });
       document
         .querySelector(".dialog-close-btn")
