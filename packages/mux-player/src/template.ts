@@ -23,7 +23,7 @@ const MediaChromeSizes = {
   SM: "small",
 };
 
-const Spacer = () => html`<div class="mxp-spacer"></div>`;
+const Spacer = () => `<div class="mxp-spacer"></div>`;
 
 export const template = (props: MuxTemplateProps) => html`
   <style>
@@ -58,7 +58,7 @@ export const template = (props: MuxTemplateProps) => html`
         : ""}
     >
       ${props.playbackId
-        ? html`<track
+        ? `<track
             label="thumbnails"
             default
             kind="metadata"
@@ -102,33 +102,33 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
   return VodChromeSmall(props);
 };
 
-const MediaPlayButton = () => html`
+const MediaPlayButton = () => `
   <media-play-button>
     ${icons.Play({ slot: "play", title: "Play" })}
     ${icons.Pause({ slot: "pause", title: "Pause" })}
   </media-play-button>
 `;
 
-const MediaSeekBackwardButton = (props: Partial<MuxTemplateProps>) => html`
+const MediaSeekBackwardButton = (props: Partial<MuxTemplateProps>) => `
   <media-seek-backward-button seek-offset="${props.backwardSeekOffset}">
     ${icons.SeekBackward({ slot: "backward", value: props.backwardSeekOffset })}
   </media-seek-backward-button>
 `;
 
-const MediaSeekForwardButton = (props: Partial<MuxTemplateProps>) => html`
+const MediaSeekForwardButton = (props: Partial<MuxTemplateProps>) => `
   <media-seek-forward-button seek-offset="${props.forwardSeekOffset}">
     ${icons.SeekForward({ slot: "forward", value: props.forwardSeekOffset })}
   </media-seek-forward-button>
 `;
 
-const MediaMuteButton = () => html`
+const MediaMuteButton = () => `
   <media-mute-button>
     ${icons.VolumeHigh({ slot: "high" })} ${icons.VolumeLow({ slot: "medium" })}
     ${icons.VolumeLow({ slot: "low" })} ${icons.VolumeOff({ slot: "off" })}
   </media-mute-button>
 `;
 
-const MediaCaptionsButton = () => html` <media-captions-button>
+const MediaCaptionsButton = () => html`<media-captions-button>
   ${icons.CaptionsOff({ slot: "off" })} ${icons.CaptionsOn({ slot: "on" })}
 </media-captions-button>`;
 
@@ -136,12 +136,12 @@ const MediaAirplayButton = () => html`<media-airplay-button>
   ${icons.Airplay({ slot: "airplay" })}
 </media-airplay-button>`;
 
-const MediaPipButton = () => html` <media-pip-button>
+const MediaPipButton = () => `<media-pip-button>
   ${icons.Pip({ slot: "enter", title: "Enter Picture-in-Picture" })}
   ${icons.Pip({ slot: "exit", title: "Exit Picture-in-Picture" })}
 </media-pip-button>`;
 
-const MediaFullscreenButton = () => html` <media-fullscreen-button>
+const MediaFullscreenButton = () => `<media-fullscreen-button>
   ${icons.FullscreenEnter({ slot: "enter", title: "Enter Fullscreen" })}
   ${icons.FullscreenExit({ slot: "exit", title: "Exit Fullscreen" })}
 </media-fullscreen-button>`;

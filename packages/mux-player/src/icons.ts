@@ -1,6 +1,4 @@
-import { html } from "./utils";
-
-export const Airplay = (props: any) => html`
+export const Airplay = (props: any) => `
   <svg viewBox="0 0 20 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -12,7 +10,7 @@ export const Airplay = (props: any) => html`
   </svg>
 `;
 
-export const CaptionsOff = (props: any) => html`
+export const CaptionsOff = (props: any) => `
   <svg viewBox="0 0 20 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -21,7 +19,7 @@ export const CaptionsOff = (props: any) => html`
   </svg>
 `;
 
-export const CaptionsOn = (props: any) => html`
+export const CaptionsOn = (props: any) => `
   <svg viewBox="0 0 20 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -30,7 +28,7 @@ export const CaptionsOn = (props: any) => html`
   </svg>
 `;
 
-export const FullscreenExit = (props: any) => html`
+export const FullscreenExit = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -39,7 +37,7 @@ export const FullscreenExit = (props: any) => html`
   </svg>
 `;
 
-export const FullscreenEnter = (props: any) => html`
+export const FullscreenEnter = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -48,7 +46,7 @@ export const FullscreenEnter = (props: any) => html`
   </svg>
 `;
 
-export const Pause = (props: any) => html`
+export const Pause = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -57,7 +55,7 @@ export const Pause = (props: any) => html`
   </svg>
 `;
 
-export const Play = (props: any) => html`
+export const Play = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -66,7 +64,7 @@ export const Play = (props: any) => html`
   </svg>
 `;
 
-export const Pip = (props: any) => html`
+export const Pip = (props: any) => `
   <svg viewBox="0 0 20 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -75,7 +73,7 @@ export const Pip = (props: any) => html`
   </svg>
 `;
 
-export const SeekBackward = (props: any) => html`
+export const SeekBackward = (props: any) => `
   <svg viewBox="0 0 16 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -92,7 +90,7 @@ export const SeekBackward = (props: any) => html`
   </svg>
 `;
 
-export const SeekForward = (props: any) => html`
+export const SeekForward = (props: any) => `
   <svg viewBox="0 0 16 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -109,7 +107,7 @@ export const SeekForward = (props: any) => html`
   </svg>
 `;
 
-export const VolumeHigh = (props: any) => html`
+export const VolumeHigh = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -119,7 +117,7 @@ export const VolumeHigh = (props: any) => html`
   </svg>
 `;
 
-export const VolumeLow = (props: any) => html`
+export const VolumeLow = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
@@ -129,7 +127,7 @@ export const VolumeLow = (props: any) => html`
   </svg>
 `;
 
-export const VolumeOff = (props: any) => html`
+export const VolumeOff = (props: any) => `
   <svg viewBox="0 0 18 18" slot="${props.slot}">
     <title>${props.title}</title>
     <path
