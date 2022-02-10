@@ -89,7 +89,9 @@ class VideoApiElement extends HTMLElement {
   ) {
     if (AllowedVideoEvents.includes(type)) {
       this.video?.addEventListener(type, listener, options);
+      return;
     }
+    super.addEventListener(type, listener, options);
   }
 
   removeEventListener(
@@ -99,7 +101,9 @@ class VideoApiElement extends HTMLElement {
   ) {
     if (AllowedVideoEvents.includes(type)) {
       this.video?.removeEventListener(type, listener, options);
+      return;
     }
+    super.removeEventListener(type, listener, options);
   }
 
   play() {

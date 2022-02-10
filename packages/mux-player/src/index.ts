@@ -99,7 +99,7 @@ class MuxPlayerInternal {
   _setUpErrors(el: MuxPlayerElement) {
     if (el.video?.hls) {
       const Hls: any = el.video.hls.constructor;
-      el.video.hls.on(Hls.Events.ERROR, (_event: any, data: any) => {
+      const onError = (_event: any, data: any) => {
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
@@ -127,6 +127,18 @@ class MuxPlayerInternal {
           this._fragments.dialogContent.render(this._state.dialog);
           (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
         }
+      };
+
+      el.video.hls.on(Hls.Events.ERROR, onError);
+
+      // Listen to a mock error event to simulate showing an error dialog. e.g.
+      //
+      //   player.dispatchEvent(new CustomEvent('mockerror', {
+      //     detail: { fatal: true, type: 'networkError' }
+      //   }));
+      //
+      el.addEventListener("mockerror", (event: any) => {
+        onError(event, event.detail);
       });
     }
   }
