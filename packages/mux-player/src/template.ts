@@ -43,7 +43,11 @@ export const template = (props: MuxTemplateProps) => html`
       ${props.debug ? "debug" : ""}
       ${props.preferMse ? "prefer-mse" : ""}
       ${props.startTime != null ? `start-time="${props.startTime}"` : ""}
-      poster="${props.poster ?? getPosterURLFromPlaybackId(props.playbackId)}"
+      ${props.poster
+        ? `poster="${
+            props.poster ?? getPosterURLFromPlaybackId(props.playbackId)
+          }"`
+        : ""}
       ${props.playbackId ? `playback-id="${props.playbackId}"` : ""}
       ${props.envKey ? `env-key="${props.envKey}"` : ""}
       ${props.streamType ? `stream-type="${props.streamType}"` : ""}
