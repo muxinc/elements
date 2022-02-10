@@ -10439,9 +10439,9 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-"media-chrome@git+ssh://git@github.com:luwes/media-chrome.git#mux-player":
+"media-chrome@https://github.com/luwes/media-chrome.git#mux-player":
   version "0.4.3"
-  resolved "git+ssh://git@github.com:luwes/media-chrome.git#361404692f32c1d4f3f985d46c52a3d2e7f37621"
+  resolved "https://github.com/luwes/media-chrome.git#97146940facdc6fe5ca4b15fa558312a03fd716a"
 
 media-typer@0.3.0:
   version "0.3.0"
