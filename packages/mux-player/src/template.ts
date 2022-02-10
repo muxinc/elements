@@ -128,7 +128,8 @@ const MediaMuteButton = () => `
   </media-mute-button>
 `;
 
-const MediaCaptionsButton = () => html`<media-captions-button>
+const MediaCaptionsButton = (props: MuxTemplateProps) => html`
+<media-captions-button${props.defaultShowCaptions ? " default-showing" : ""}>
   ${icons.CaptionsOff({ slot: "off" })} ${icons.CaptionsOn({ slot: "on" })}
 </media-captions-button>`;
 
@@ -151,7 +152,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(),
+        hasCaptions && MediaCaptionsButton(props),
       props
     )}
     ${renderable(
@@ -201,7 +202,7 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(),
+        hasCaptions && MediaCaptionsButton(props),
       props
     )}
     ${renderable(
@@ -231,7 +232,7 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(),
+        hasCaptions && MediaCaptionsButton(props),
       props
     )}
     ${renderable(
@@ -261,7 +262,7 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
     ${renderable(
       "captionsButton",
       ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(),
+        hasCaptions && MediaCaptionsButton(props),
       props
     )}
     ${renderable(
