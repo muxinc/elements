@@ -143,7 +143,7 @@ class MuxPlayerInternal {
               if (error.name === "NotAllowedError") {
                 console.log("Attempting to play with video muted");
                 if (el.video) el.video.muted = true;
-                return el.video?.play();
+                return el.video?.play().catch(console.error);
               }
             });
           }
