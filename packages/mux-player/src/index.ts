@@ -55,10 +55,14 @@ class MuxPlayerInternal {
       el.video.muted = el.video.defaultMuted;
     }
 
-    if (el.video?.hls) {
-      // Temporarily here to load less segments on page load, remove later!!!!
-      el.video.hls.config.maxMaxBufferLength = 2;
-    }
+    /**
+     * @todo determine sensible defaults for preloading buffer
+     * @see https://github.com/muxinc/elements/issues/51
+     */
+    // if (el.video?.hls) {
+    //   // Temporarily here to load less segments on page load, remove later!!!!
+    //   el.video.hls.config.maxMaxBufferLength = 2;
+    // }
 
     this._setUpErrors(el);
     this._setUpMutedAutoplay(el);
