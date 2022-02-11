@@ -6,6 +6,7 @@ import {
   getCcSubTracks,
   getPlayerVersion,
   hasVolumeSupportAsync,
+  MediaError,
 } from "./helpers";
 import { template } from "./template";
 
@@ -101,9 +102,15 @@ class MuxPlayerInternal {
   }
 
   _setUpErrors(el: MuxPlayerElement) {
-    const onError = (error: { code: number } | null | undefined) => {
-      // Don't show an error dialog on an abort error.
-      if (!error?.code || error.code === MediaError.MEDIA_ERR_ABORTED) {
+    const onError = (event: Event) => {
+      let { detail: error }: { detail: any } = event as CustomEvent;
+
+      if (!(error instanceof MediaError)) {
+        error = new MediaError(error.message, error.code, error.fatal);
+      }
+
+      // Don't show an error dialog if it's not fatal.
+      if (!error?.fatal) {
         return;
       }
 
@@ -111,28 +118,25 @@ class MuxPlayerInternal {
         case MediaError.MEDIA_ERR_NETWORK:
           this._state.dialog = {
             title: "Network Error",
-            message:
-              "A network error occurred. Please reload the player and try again.",
+            message: `${error.message} Please reload the player and try again.`,
           };
           break;
         case MediaError.MEDIA_ERR_DECODE:
           this._state.dialog = {
             title: "Media Error",
-            message:
-              "A media error occurred. Please reload the player and try again.",
+            message: `${error.message} Please reload the player and try again.`,
           };
           break;
         case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
           this._state.dialog = {
             title: "Source Not Supported",
-            message: "This media source is not supported.",
+            message: error.message,
           };
           break;
         default:
           this._state.dialog = {
             title: "Error",
-            message:
-              "An error occurred. Please reload the player and try again.",
+            message: error.message,
           };
           break;
       }
@@ -140,31 +144,42 @@ class MuxPlayerInternal {
       (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
     };
 
-    if (el.video?.hls) {
-      const Hls: any = el.video.hls.constructor;
-      const onHlsError = (_event: any, data: any) => {
-        if (data.fatal) {
-          const errorMap = {
-            [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-            [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-          };
-          onError({ code: errorMap[data.type] });
-        }
-      };
-      el.video.hls.on(Hls.Events.ERROR, onHlsError);
-    }
-
-    el.video?.addEventListener("error", () => onError(el.video?.error));
-
     // Listen to a mock error event to simulate showing an error dialog. e.g.
     //
     //   player.dispatchEvent(new CustomEvent('mockerror', {
-    //     detail: { fatal: true, type: 'networkError' }
+    //     detail: { code: MediaError.MEDIA_ERR_NETWORK, fatal: true }
     //   }));
     //
-    el.addEventListener("mockerror", (event: any) => {
-      onError(event.detail);
+    el.addEventListener("mockerror", onError);
+    el.addEventListener("error", onError);
+
+    el.video?.addEventListener("error", () => {
+      const { message, code } = el.video?.error ?? {};
+      el.dispatchEvent(
+        new CustomEvent("error", {
+          detail: new MediaError(message, code),
+        })
+      );
     });
+
+    if (el.video?.hls) {
+      const Hls: any = el.video.hls.constructor;
+      const onHlsError = (_event: any, data: any) => {
+        const errorCodeMap = {
+          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
+          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+        };
+        const error = new MediaError("", errorCodeMap[data.type]);
+        error.fatal = data.fatal;
+        error.data = data;
+        el.dispatchEvent(
+          new CustomEvent("error", {
+            detail: error,
+          })
+        );
+      };
+      el.video.hls.on(Hls.Events.ERROR, onHlsError);
+    }
   }
 
   _setUpMutedAutoplay(el: MuxPlayerElement) {
