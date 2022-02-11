@@ -61,7 +61,9 @@ export const template = (props: MuxTemplateProps) => html`
         ? `metadata-viewer-user-id="${props.metadata.viewer_user_id}"`
         : ""}
     >
-      ${props.playbackId
+      ${props.playbackId &&
+      props.streamType !== StreamTypes.LIVE &&
+      props.streamType !== StreamTypes.LL_LIVE
         ? `<track
             label="thumbnails"
             default
