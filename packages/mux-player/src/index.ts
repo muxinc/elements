@@ -97,50 +97,70 @@ class MuxPlayerInternal {
   }
 
   _setUpErrors(el: MuxPlayerElement) {
+    const onError = (error: { code: number } | null | undefined) => {
+      // Don't show an error dialog on an abort error.
+      if (!error?.code || error.code === MediaError.MEDIA_ERR_ABORTED) {
+        return;
+      }
+
+      switch (error.code) {
+        case MediaError.MEDIA_ERR_NETWORK:
+          this._state.dialog = {
+            title: "Network Error",
+            message:
+              "A network error occurred. Please reload the player and try again.",
+          };
+          break;
+        case MediaError.MEDIA_ERR_DECODE:
+          this._state.dialog = {
+            title: "Media Error",
+            message:
+              "A media error occurred. Please reload the player and try again.",
+          };
+          break;
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+          this._state.dialog = {
+            title: "Source Not Supported",
+            message: "This media source is not supported.",
+          };
+          break;
+        default:
+          this._state.dialog = {
+            title: "Error",
+            message:
+              "An error occurred. Please reload the player and try again.",
+          };
+          break;
+      }
+      this._fragments.dialogContent.render(this._state.dialog);
+      (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
+    };
+
     if (el.video?.hls) {
       const Hls: any = el.video.hls.constructor;
-      const onError = (_event: any, data: any) => {
+      const onHlsError = (_event: any, data: any) => {
         if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              this._state.dialog = {
-                title: "Network Error",
-                message:
-                  "A network error occurred. Please reload the player and try again.",
-              };
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              this._state.dialog = {
-                title: "Media Error",
-                message:
-                  "A media error occurred. Please reload the player and try again.",
-              };
-              break;
-            default:
-              this._state.dialog = {
-                title: "Error",
-                message:
-                  "An error occurred. Please reload the player and try again.",
-              };
-              break;
-          }
-          this._fragments.dialogContent.render(this._state.dialog);
-          (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
+          const errorMap = {
+            [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
+            [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+          };
+          onError({ code: errorMap[data.type] });
         }
       };
-
-      el.video.hls.on(Hls.Events.ERROR, onError);
-
-      // Listen to a mock error event to simulate showing an error dialog. e.g.
-      //
-      //   player.dispatchEvent(new CustomEvent('mockerror', {
-      //     detail: { fatal: true, type: 'networkError' }
-      //   }));
-      //
-      el.addEventListener("mockerror", (event: any) => {
-        onError(event, event.detail);
-      });
+      el.video.hls.on(Hls.Events.ERROR, onHlsError);
     }
+
+    el.video?.addEventListener("error", () => onError(el.video?.error));
+
+    // Listen to a mock error event to simulate showing an error dialog. e.g.
+    //
+    //   player.dispatchEvent(new CustomEvent('mockerror', {
+    //     detail: { fatal: true, type: 'networkError' }
+    //   }));
+    //
+    el.addEventListener("mockerror", (event: any) => {
+      onError(event.detail);
+    });
   }
 
   _setUpMutedAutoplay(el: MuxPlayerElement) {

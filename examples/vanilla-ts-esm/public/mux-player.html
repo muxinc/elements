@@ -65,7 +65,7 @@
         .addEventListener("click", () => {
           player.dispatchEvent(
             new CustomEvent("mockerror", {
-              detail: { fatal: true, type: "networkError" },
+              detail: { code: MediaError.MEDIA_ERR_NETWORK },
             })
           );
         });
