@@ -64,7 +64,7 @@
         .querySelector(".dialog-show-btn")
         .addEventListener("click", () => {
           player.dispatchEvent(
-            new CustomEvent("mockerror", {
+            new CustomEvent("error", {
               detail: { code: MediaError.MEDIA_ERR_NETWORK },
             })
           );
