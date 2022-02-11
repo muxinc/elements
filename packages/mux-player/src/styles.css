@@ -19,6 +19,11 @@ media-control-bar {
   --media-button-icon-width: 18px;
 }
 
+media-control-bar [role="button"],
+media-control-bar [role="switch"] {
+  height: 44px;
+}
+
 .mxp-spacer {
   flex-grow: 1;
   height: 100%;
