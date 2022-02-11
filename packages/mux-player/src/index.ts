@@ -144,13 +144,6 @@ class MuxPlayerInternal {
       (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
     };
 
-    // Listen to a mock error event to simulate showing an error dialog. e.g.
-    //
-    //   player.dispatchEvent(new CustomEvent('mockerror', {
-    //     detail: { code: MediaError.MEDIA_ERR_NETWORK, fatal: true }
-    //   }));
-    //
-    el.addEventListener("mockerror", onError);
     el.addEventListener("error", onError);
 
     el.video?.addEventListener("error", () => {
