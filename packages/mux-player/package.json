@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@mux-elements/mux-video": "^0.2.0",
-    "media-chrome": "https://github.com/luwes/media-chrome.git#mux-player"
+    "media-chrome": "^0.5.0"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",
