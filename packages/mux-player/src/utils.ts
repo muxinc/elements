@@ -1,9 +1,9 @@
 export function stylePropsToString(props: any) {
   let style = "";
   Object.entries(props).forEach(([key, value]) => {
-    style += `${kebabCase(key)}: ${value};`;
+    style += `${kebabCase(key)}: ${value}; `;
   });
-  return style;
+  return style.trim();
 }
 
 export function kebabCase(name: string) {
