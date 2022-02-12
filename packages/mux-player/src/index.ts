@@ -9,21 +9,19 @@ import {
   MediaError,
 } from "./helpers";
 import { template } from "./template";
+import { render } from "./html";
 
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
-import type { PersistentFragment } from "./utils";
-import type { RenderableFragment } from "./utils";
-
-const showLoading = (el: MuxPlayerElement) =>
-  !el.video?.paused && (el.video?.readyState ?? 0) < 3;
 
 class MuxPlayerInternal {
   el: MuxPlayerElement;
-  _template: PersistentFragment;
-  _state: Partial<MuxTemplateProps> = {};
-  _playerSize?: string;
   _resizeObserver?: ResizeObserver;
+  _state: Partial<MuxTemplateProps> = {
+    isDialogOpen: false,
+    supportsAirPlay: false,
+    supportsVolume: false,
+  };
 
   /**
    * Create a MuxPlayerInternal instance.
@@ -32,10 +30,8 @@ class MuxPlayerInternal {
   constructor(el: MuxPlayerElement) {
     this.el = el;
 
-    this._template = template(getProps(el));
-
     el.attachShadow({ mode: "open" });
-    el.shadowRoot?.append(...this._template.childNodes);
+    this._setState({ playerSize: getPlayerSize(this.el) });
 
     el.querySelectorAll(":scope > track").forEach((track) => {
       el.video?.append(track.cloneNode());
@@ -81,14 +77,21 @@ class MuxPlayerInternal {
     this._deinitResizing();
   }
 
-  get _fragments() {
-    return this._template.fragments;
+  _setState(newState: Record<string, any>) {
+    Object.assign(this._state, newState);
+    this._render();
+  }
+
+  _render() {
+    render(
+      template(getProps(this.el, this._state)),
+      this.el.shadowRoot as Node
+    );
   }
 
   _renderChrome() {
-    if (this._playerSize != getPlayerSize(this.el)) {
-      this._playerSize = getPlayerSize(this.el);
-      this._fragments.chromeRenderer.render(getProps(this.el, this._state));
+    if (this._state.playerSize != getPlayerSize(this.el)) {
+      this._setState({ playerSize: getPlayerSize(this.el) });
     }
   }
 
@@ -114,34 +117,35 @@ class MuxPlayerInternal {
         return;
       }
 
+      let dialog;
       switch (error.code) {
         case MediaError.MEDIA_ERR_NETWORK:
-          this._state.dialog = {
+          dialog = {
             title: "Network Error",
             message: `${error.message} Please reload the player and try again.`,
           };
           break;
         case MediaError.MEDIA_ERR_DECODE:
-          this._state.dialog = {
+          dialog = {
             title: "Media Error",
             message: `${error.message} Please reload the player and try again.`,
           };
           break;
         case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          this._state.dialog = {
+          dialog = {
             title: "Source Not Supported",
             message: error.message,
           };
           break;
         default:
-          this._state.dialog = {
+          dialog = {
             title: "Error",
             message: error.message,
           };
           break;
       }
-      this._fragments.dialogContent.render(this._state.dialog);
-      (this._fragments.dialogContent.parentNode as MxpDialog)?.show();
+
+      this._setState({ isDialogOpen: true, dialog });
     };
 
     el.addEventListener("error", onError);
@@ -197,13 +201,7 @@ class MuxPlayerInternal {
   }
 
   _setUpCaptionsButton(el: MuxPlayerElement) {
-    const onTrackCountChange = () => {
-      const ccSubTracks = getCcSubTracks(el);
-      this._fragments.captionsButton.render({
-        hasCaptions: !!ccSubTracks.length,
-      });
-    };
-
+    const onTrackCountChange = () => this._render();
     el.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
     el.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
   }
@@ -212,8 +210,7 @@ class MuxPlayerInternal {
     if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
       const onPlaybackTargetAvailability = (evt: any) => {
         const supportsAirPlay = evt.availability === "available";
-        this._fragments.airplayButton.render({ supportsAirPlay });
-        this._state.supportsAirPlay = supportsAirPlay;
+        this._setState({ supportsAirPlay });
       };
 
       el.video?.addEventListener(
@@ -225,8 +222,7 @@ class MuxPlayerInternal {
 
   async _setUpVolumeRange(el: MuxPlayerElement) {
     const supportsVolume = await hasVolumeSupportAsync();
-    this._fragments.volumeRange.render({ supportsVolume });
-    this._state.supportsVolume = supportsVolume;
+    this._setState({ supportsVolume });
   }
 }
 
@@ -266,13 +262,16 @@ const PlayerAttributes = {
   BACKWARD_SEEK_OFFSET: "backward-seek-offset",
 };
 
-function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
+function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return {
     debug: el.debug,
+    muted: el.muted,
     envKey: el.envKey,
     playbackId: el.playbackId,
     poster: el.poster,
+    metadata: el.metadata,
     startTime: el.startTime,
+    preferMse: el.preferMse,
     streamType: el.streamType,
     primaryColor: el.primaryColor,
     secondaryColor: el.secondaryColor,
@@ -281,10 +280,7 @@ function getProps(el: MuxPlayerElement, props?: any): MuxTemplateProps {
     defaultShowCaptions: el.defaultShowCaptions,
     playerSize: getPlayerSize(el),
     hasCaptions: !!getCcSubTracks(el).length,
-    showLoading: showLoading(el),
-    supportsAirPlay: false,
-    supportsVolume: false,
-    ...props,
+    ...state,
   };
 }
 

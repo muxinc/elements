@@ -236,7 +236,11 @@ class MuxVideoElement
   }
 
   get metadata() {
-    return this.__metadata;
+    return Object.assign(this.__metadata, {
+      video_id: this.getAttribute(Attributes.METADATA_VIDEO_ID),
+      video_title: this.getAttribute(Attributes.METADATA_VIDEO_TITLE),
+      viewer_user_id: this.getAttribute(Attributes.METADATA_VIEWER_USER_ID),
+    });
   }
 
   set metadata(val: Readonly<Metadata> | undefined) {
