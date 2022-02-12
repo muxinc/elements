@@ -1,16 +1,20 @@
+// @ts-nocheck
 import { Link } from "react-router-dom";
-import MuxPlayer from "@mux-elements/mux-player-react";
-import { useRef, useState } from "react";
+import "@mux-elements/mux-player";
+import { useState } from "react";
 
-const INITIAL_DEBUG = true;
+// const INITIAL_DEBUG = true;
+const INITIAL_DEBUG = false;
 const INITIAL_MUTED = true;
 const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
 
-function MuxPlayerPage() {
-  const mediaElRef = useRef(null);
+function MuxVideoWCPage() {
+  // const mediaElRef = useRef(null);
   const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
+  const debugObj = debug ? { debug: "" } : {};
+  const mutedObj = muted ? { muted: "" } : {};
   return (
     <div
       style={{
@@ -20,24 +24,22 @@ function MuxPlayerPage() {
         width: "100%",
       }}
     >
-      <h1>MuxPlayer Demo</h1>
+      <h1>mux-video Demo</h1>
       <div>
-        <MuxPlayer
-          ref={mediaElRef}
+        <mux-video
           // style={{ aspectRatio: "16 / 9" }}
-          playbackId={playbackId}
-          forwardSeekOffset={10}
-          backwardSeekOffset={10}
+          playback-id={playbackId}
           // onPlayerReady={() => console.log("ready!")}
-          debug={debug}
-          muted={muted}
-          autoPlay
-          streamType={"live"}
-          primaryColor="#ec407a"
-          secondaryColor="#64b5f6"
-          tertiaryColor="#b4004e"
+          {...debugObj}
+          {...mutedObj}
+          // auto-play=""
+          // stream-type="live"
+          // primary-color="#ec407a"
+          // secondary-color="#64b5f6"
+          // tertiary-color="#b4004e"
           // startTime={12}
-        />
+          controls
+        ></mux-video>
       </div>
       <div>
         <div>
@@ -74,4 +76,4 @@ function MuxPlayerPage() {
   );
 }
 
-export default MuxPlayerPage;
+export default MuxVideoWCPage;

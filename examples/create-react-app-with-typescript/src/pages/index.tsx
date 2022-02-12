@@ -20,6 +20,16 @@ function Home() {
             <Link to="/MuxPlayer">Mux Player Demo</Link>
           </h3>
         </li>
+        <li>
+          <h3>
+            <Link to="/mux-video">Mux Video (Web Component) Demo</Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
+            <Link to="/mux-player">Mux Player (Web Component) Demo</Link>
+          </h3>
+        </li>
       </ul>
     </div>
   );
