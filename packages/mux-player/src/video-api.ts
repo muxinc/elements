@@ -8,6 +8,7 @@ const AllowedVideoAttributeNames = [
   "playsinline",
   "src",
   "poster",
+  "preload",
 ];
 
 const AllowedVideoEvents = [
@@ -78,7 +79,11 @@ class VideoApiElement extends HTMLElement {
       AllowedVideoAttributeNames.includes(attrName) &&
       this.video?.getAttribute(attrName) != newValue
     ) {
-      this.video?.setAttribute(attrName, newValue);
+      if (newValue === null) {
+        this.video?.removeAttribute(attrName);
+      } else {
+        this.video?.setAttribute(attrName, newValue);
+      }
     }
   }
 

@@ -326,7 +326,11 @@ class MuxPlayerElement extends VideoApiElement {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (MuxVideoAttributeNames.includes(attrName)) {
-      this.video?.setAttribute(attrName, newValue);
+      if (newValue === null) {
+        this.video?.removeAttribute(attrName);
+      } else {
+        this.video?.setAttribute(attrName, newValue);
+      }
     }
   }
 
