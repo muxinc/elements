@@ -19,15 +19,13 @@
   },
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "scripts/*"
   ],
   "scripts": {
     "dev": "lerna run dev --parallel --ignore demo-*",
     "build": "lerna run build",
     "prepare": "husky install && yarn build --ignore demo-*",
     "release": "lerna publish --no-private"
-  },
-  "bin": {
-    "open-process": "scripts/open-process.js"
   }
 }
