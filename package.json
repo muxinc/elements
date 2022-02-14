@@ -19,7 +19,8 @@
   },
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "scripts/*"
   ],
   "scripts": {
     "dev": "lerna run dev --parallel --ignore demo-*",
