@@ -1,0 +1,12 @@
+{
+  "name": "@mux-elements/open-process",
+  "version": "0.1.0",
+  "main": "./open-process.js",
+  "repository": "https://github.com/muxinc/elements",
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "open-process": "./open-process.js"
+  }
+}
