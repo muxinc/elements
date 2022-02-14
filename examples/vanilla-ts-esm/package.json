@@ -7,8 +7,9 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "dev": "yarn build --servedir=public",
-    "build": "esbuild src/** --bundle --minify --target=es2019 --format=esm --outdir=public/dist",
+    "dev": "yarn esbuild --servedir=public",
+    "esbuild": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist",
+    "build": "yarn esbuild --minify",
     "predeploy": "yarn run build",
     "deploy": "gh-pages --dist public --dest ./examples/mux-elements/"
   },
