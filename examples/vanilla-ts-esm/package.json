@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@mux-elements/mux-audio": "^0.2.0",
-    "@mux-elements/mux-player": "^0.1.0",
+    "@mux-elements/mux-player": "0.1.0-alpha.2",
     "@mux-elements/mux-video": "^0.2.0"
   }
 }
