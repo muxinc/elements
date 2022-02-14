@@ -423,7 +423,10 @@ class MuxPlayerElement extends VideoApiElement {
    * @return {number}
    */
   get startTime() {
-    return Number(getVideoAttribute(this, MuxVideoAttributes.START_TIME));
+    const val = getVideoAttribute(this, MuxVideoAttributes.START_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
   }
 
   /**
