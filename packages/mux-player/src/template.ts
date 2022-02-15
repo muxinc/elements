@@ -4,13 +4,12 @@ import {
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
 } from "./helpers";
-import { html, renderable } from "./utils";
+import { html } from "./html";
 import * as icons from "./icons";
 // @ts-ignore
 import cssStr from "./styles.css";
 
 import type { MuxTemplateProps } from "./types";
-import type { PersistentFragment } from "./utils";
 
 export const StreamTypes = {
   VOD: "on-demand",
@@ -23,7 +22,7 @@ const MediaChromeSizes = {
   SM: "small",
 };
 
-const Spacer = () => `<div class="mxp-spacer"></div>`;
+const Spacer = () => html`<div class="mxp-spacer"></div>`;
 
 export const template = (props: MuxTemplateProps) => html`
   <style>
@@ -34,41 +33,31 @@ export const template = (props: MuxTemplateProps) => html`
       slot="media"
       crossorigin
       playsinline
-      ${props.autoplay ||
+      autoplay="${props.autoplay ||
       props.streamType === StreamTypes.LIVE ||
-      props.streamType === StreamTypes.LL_LIVE
-        ? "autoplay"
-        : ""}
-      ${props.muted ? "muted" : ""}
-      ${props.debug ? "debug" : ""}
-      ${props.preferMse ? "prefer-mse" : ""}
-      ${props.startTime != null ? `start-time="${props.startTime}"` : ""}
-      ${props.poster
-        ? `poster="${
-            props.poster ?? getPosterURLFromPlaybackId(props.playbackId)
-          }"`
-        : ""}
-      ${props.playbackId ? `playback-id="${props.playbackId}"` : ""}
-      ${props.envKey ? `env-key="${props.envKey}"` : ""}
-      ${props.streamType ? `stream-type="${props.streamType}"` : ""}
-      ${props.metadata?.video_id
-        ? `metadata-video-id="${props.metadata.video_id}"`
-        : ""}
-      ${props.metadata?.video_title
-        ? `metadata-video-title="${props.metadata.video_title}"`
-        : ""}
-      ${props.metadata?.viewer_user_id
-        ? `metadata-viewer-user-id="${props.metadata.viewer_user_id}"`
-        : ""}
+      props.streamType === StreamTypes.LL_LIVE}"
+      muted="${props.muted}"
+      debug="${props.debug}"
+      prefer-mse="${props.preferMse}"
+      start-time="${!!props.startTime ? props.startTime : false}"
+      poster="${!!props.poster
+        ? getPosterURLFromPlaybackId(props.playbackId)
+        : false}"
+      playback-id="${props.playbackId ?? false}"
+      env-key="${props.envKey ?? false}"
+      stream-type="${props.streamType ?? false}"
+      metadata-video-id="${props.metadata?.video_id ?? false}"
+      metadata-video-title="${props.metadata?.video_title ?? false}"
+      metadata-viewer-user-id="${props.metadata?.viewer_user_id ?? false}"
     >
       ${props.playbackId &&
       props.streamType !== StreamTypes.LIVE &&
       props.streamType !== StreamTypes.LL_LIVE
-        ? `<track
+        ? html`<track
             label="thumbnails"
             default
             kind="metadata"
-            src=${getStoryboardURLFromPlaybackId(props.playbackId)}
+            src="${getStoryboardURLFromPlaybackId(props.playbackId)}"
           />`
         : ""}
     </mux-video>
@@ -76,20 +65,14 @@ export const template = (props: MuxTemplateProps) => html`
       slot="centered-chrome"
       no-auto-hide
     ></media-loading-indicator>
-    ${renderable("chromeRenderer", ChromeRenderer, props)}
+    ${ChromeRenderer(props)}
     <mxp-dialog
       slot="centered-chrome"
-      no-auto-hide${props.isDialogOpen && " open"}
+      no-auto-hide
+      open="${props.isDialogOpen}"
     >
-      ${renderable(
-        "dialogContent",
-        (dialog: { title: string; message: string }) =>
-          html`
-            ${dialog?.title ? `<h3>${dialog.title}</h3>` : ""}
-            ${dialog?.message ? `<p>${dialog.message}</p>` : ""}
-          `,
-        props.dialog
-      )}
+      ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : ""}
+      ${props.dialog?.message ? html`<p>${props.dialog.message}</p>` : ""}
     </mxp-dialog>
   </media-controller>
 `;
@@ -108,34 +91,37 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
   return VodChromeSmall(props);
 };
 
-const MediaPlayButton = () => `
+const MediaPlayButton = () => html`
   <media-play-button>
     ${icons.Play({ slot: "play", title: "Play" })}
     ${icons.Pause({ slot: "pause", title: "Pause" })}
   </media-play-button>
 `;
 
-const MediaSeekBackwardButton = (props: Partial<MuxTemplateProps>) => `
+const MediaSeekBackwardButton = (props: Partial<MuxTemplateProps>) => html`
   <media-seek-backward-button seek-offset="${props.backwardSeekOffset}">
     ${icons.SeekBackward({ slot: "backward", value: props.backwardSeekOffset })}
   </media-seek-backward-button>
 `;
 
-const MediaSeekForwardButton = (props: Partial<MuxTemplateProps>) => `
+const MediaSeekForwardButton = (props: Partial<MuxTemplateProps>) => html`
   <media-seek-forward-button seek-offset="${props.forwardSeekOffset}">
     ${icons.SeekForward({ slot: "forward", value: props.forwardSeekOffset })}
   </media-seek-forward-button>
 `;
 
-const MediaMuteButton = () => `
+const MediaMuteButton = () => html`
   <media-mute-button>
     ${icons.VolumeHigh({ slot: "high" })} ${icons.VolumeLow({ slot: "medium" })}
     ${icons.VolumeLow({ slot: "low" })} ${icons.VolumeOff({ slot: "off" })}
   </media-mute-button>
 `;
 
-const MediaCaptionsButton = (props: MuxTemplateProps) => html`
-<media-captions-button${props.defaultShowCaptions ? " default-showing" : ""}>
+const MediaCaptionsButton = (
+  props: MuxTemplateProps
+) => html` <media-captions-button
+  default-showing="${props.defaultShowCaptions}"
+>
   ${icons.CaptionsOff({ slot: "off" })} ${icons.CaptionsOn({ slot: "on" })}
 </media-captions-button>`;
 
@@ -143,31 +129,20 @@ const MediaAirplayButton = () => html`<media-airplay-button>
   ${icons.Airplay({ slot: "airplay" })}
 </media-airplay-button>`;
 
-const MediaPipButton = () => `<media-pip-button>
+const MediaPipButton = () => html`<media-pip-button>
   ${icons.Pip({ slot: "enter", title: "Enter Picture-in-Picture" })}
   ${icons.Pip({ slot: "exit", title: "Exit Picture-in-Picture" })}
 </media-pip-button>`;
 
-const MediaFullscreenButton = () => `<media-fullscreen-button>
+const MediaFullscreenButton = () => html`<media-fullscreen-button>
   ${icons.FullscreenEnter({ slot: "enter", title: "Enter Fullscreen" })}
   ${icons.FullscreenExit({ slot: "exit", title: "Exit Fullscreen" })}
 </media-fullscreen-button>`;
 
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
-    ${renderable(
-      "captionsButton",
-      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(props),
-      props
-    )}
-    ${renderable(
-      "airplayButton",
-      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
-        supportsAirPlay && MediaAirplayButton(),
-      props
-    )}
-    ${MediaPipButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaSeekBackwardButton(props)} ${MediaPlayButton()}
@@ -177,12 +152,9 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
     ${MediaMuteButton()}
-    ${renderable(
-      "volumeRange",
-      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
-        supportsVolume && html`<media-volume-range></media-volume-range>`,
-      props
-    )}
+    ${props.supportsVolume
+      ? html`<media-volume-range></media-volume-range>`
+      : ""}
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -198,26 +170,13 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
     ${MediaMuteButton()}
-    ${renderable(
-      "volumeRange",
-      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
-        supportsVolume && html`<media-volume-range></media-volume-range>`,
-      props
-    )}
+    ${props.supportsVolume
+      ? html`<media-volume-range></media-volume-range>`
+      : ""}
     <media-playback-rate-button></media-playback-rate-button>
-    ${renderable(
-      "captionsButton",
-      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(props),
-      props
-    )}
-    ${renderable(
-      "airplayButton",
-      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
-        supportsAirPlay && MediaAirplayButton(),
-      props
-    )}
-    ${MediaPipButton()} ${MediaFullscreenButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
@@ -227,27 +186,14 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    ${renderable(
-      "volumeRange",
-      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
-        supportsVolume && html`<media-volume-range></media-volume-range>`,
-      props
-    )}
+    ${props.supportsVolume
+      ? html`<media-volume-range></media-volume-range>`
+      : ""}
     ${Spacer()}
     <media-time-display></media-time-display>
-    ${renderable(
-      "captionsButton",
-      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(props),
-      props
-    )}
-    ${renderable(
-      "airplayButton",
-      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
-        supportsAirPlay && MediaAirplayButton(),
-      props
-    )}
-    ${MediaPipButton()} ${MediaFullscreenButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
@@ -257,26 +203,13 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     ${MediaPlayButton()} ${MediaMuteButton()}
-    ${renderable(
-      "volumeRange",
-      ({ supportsVolume }: Partial<MuxTemplateProps>) =>
-        supportsVolume && html`<media-volume-range></media-volume-range>`,
-      props
-    )}
+    ${props.supportsVolume
+      ? html`<media-volume-range></media-volume-range>`
+      : ""}
     ${Spacer()}
     <media-time-display></media-time-display>
-    ${renderable(
-      "captionsButton",
-      ({ hasCaptions }: Partial<MuxTemplateProps>) =>
-        hasCaptions && MediaCaptionsButton(props),
-      props
-    )}
-    ${renderable(
-      "airplayButton",
-      ({ supportsAirPlay }: Partial<MuxTemplateProps>) =>
-        supportsAirPlay && MediaAirplayButton(),
-      props
-    )}
-    ${MediaPipButton()} ${MediaFullscreenButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${MediaFullscreenButton()}
   </media-control-bar>
 `;

@@ -236,7 +236,17 @@ class MuxVideoElement
   }
 
   get metadata() {
-    return this.__metadata;
+    const video_id = this.getAttribute(Attributes.METADATA_VIDEO_ID);
+    const video_title = this.getAttribute(Attributes.METADATA_VIDEO_TITLE);
+    const viewer_user_id = this.getAttribute(
+      Attributes.METADATA_VIEWER_USER_ID
+    );
+    return {
+      ...this.__metadata,
+      ...(video_id != null ? { video_id } : {}),
+      ...(video_title != null ? { video_title } : {}),
+      ...(viewer_user_id != null ? { viewer_user_id } : {}),
+    };
   }
 
   set metadata(val: Readonly<Metadata> | undefined) {
