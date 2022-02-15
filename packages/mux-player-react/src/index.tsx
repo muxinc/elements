@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "@mux-elements/mux-player";
 import type MuxPlayerElement from "@mux-elements/mux-player";
 import { toNativeProps } from "./common/utils";
+import { useRef } from "react";
+import { useCombinedRefs } from "./useCombinedRefs";
 
 type ValueOf<T> = T[keyof T];
 
 export type MuxPlayerRefAttributes = MuxPlayerElement;
 
 type VideoApiAttributes = {
-  // currentTime: number;
+  currentTime: number;
   volume: number;
-  // src: string | null;
-  // poster: string;
-  // playbackRate: number;
+  src: string | null;
+  poster: string;
+  playbackRate: number;
   crossOrigin: string;
   autoPlay: boolean;
   loop: boolean;
@@ -48,6 +50,23 @@ export type MuxPlayerProps = {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  onLoadStart?: EventListener;
+  onLoadedMetadata?: EventListener;
+  onProgress?: EventListener;
+  onDurationChange?: EventListener;
+  onVolumeChange?: EventListener;
+  onRateChange?: EventListener;
+  onResize?: EventListener;
+  onWaiting?: EventListener;
+  onPlay?: EventListener;
+  onPlaying?: EventListener;
+  onTimeUpdate?: EventListener;
+  onPause?: EventListener;
+  onSeeking?: EventListener;
+  onSeeked?: EventListener;
+  onEnded?: EventListener;
+  onError?: EventListener;
+  onPlayerReady?: EventListener;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
 
@@ -62,21 +81,86 @@ const MuxPlayerInternal = React.forwardRef<
   );
 });
 
+const useEventCallbackEffect = (
+  type: string,
+  ref: // | ((instance: EventTarget | null) => void)
+  React.MutableRefObject<EventTarget | null> | null | undefined,
+  callback: EventListener | undefined
+) => {
+  return useEffect(() => {
+    const eventTarget = ref?.current;
+    if (!eventTarget || !callback) return;
+    eventTarget.addEventListener(type, callback);
+    return () => {
+      eventTarget.removeEventListener(type, callback);
+    };
+  }, [ref?.current, callback]);
+};
+
+const usePlayer = (
+  ref: // | ((instance: EventTarget | null) => void)
+  React.MutableRefObject<MuxPlayerElement | null> | null | undefined,
+  props: MuxPlayerProps
+) => {
+  const {
+    onLoadStart,
+    onLoadedMetadata,
+    onProgress,
+    onDurationChange,
+    onVolumeChange,
+    onRateChange,
+    onResize,
+    onWaiting,
+    onPlay,
+    onPlaying,
+    onTimeUpdate,
+    onPause,
+    onSeeking,
+    onSeeked,
+    onEnded,
+    onError,
+    onPlayerReady,
+    ...remainingProps
+  } = props;
+  useEventCallbackEffect("loadstart", ref, onLoadStart);
+  useEventCallbackEffect("loadedmetadata", ref, onLoadedMetadata);
+  useEventCallbackEffect("progress", ref, onProgress);
+  useEventCallbackEffect("durationchange", ref, onDurationChange);
+  useEventCallbackEffect("volumechange", ref, onVolumeChange);
+  useEventCallbackEffect("ratechange", ref, onRateChange);
+  useEventCallbackEffect("resize", ref, onResize);
+  useEventCallbackEffect("waiting", ref, onWaiting);
+  useEventCallbackEffect("play", ref, onPlay);
+  useEventCallbackEffect("playing", ref, onPlaying);
+  useEventCallbackEffect("timeupdate", ref, onTimeUpdate);
+  useEventCallbackEffect("pause", ref, onPause);
+  useEventCallbackEffect("seeking", ref, onSeeking);
+  useEventCallbackEffect("seeked", ref, onSeeked);
+  useEventCallbackEffect("ended", ref, onEnded);
+  useEventCallbackEffect("error", ref, onError);
+  useEventCallbackEffect("playerready", ref, onPlayerReady);
+  return [remainingProps];
+};
+
 const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProps>(
   (props, ref) => {
     const {
       /** @TODO Remove these once defaults are added to mux-player (CJP) */
       forwardSeekOffset = 10,
       backwardSeekOffset = 10,
-      /** @TODO Will have to handle event handlers here via ref (CJP) */
-      ...restProps
     } = props;
+
+    const innerPlayerRef = useRef<MuxPlayerElement>(null);
+    const playerRef = useCombinedRefs(innerPlayerRef, ref);
+    const [remainingProps] = usePlayer(innerPlayerRef, props);
+
     return (
       <MuxPlayerInternal
-        ref={ref}
+        /** @TODO Fix types relationships (CJP) */
+        ref={playerRef as typeof innerPlayerRef}
         forwardSeekOffset={forwardSeekOffset}
         backwardSeekOffset={backwardSeekOffset}
-        {...restProps}
+        {...remainingProps}
       />
     );
   }
