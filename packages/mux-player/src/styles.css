@@ -30,6 +30,13 @@ media-control-bar [role="switch"] {
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
+.mxp-background {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .mxp-center-controls {
   --media-background-color: transparent;
   --media-button-icon-width: 100%;
