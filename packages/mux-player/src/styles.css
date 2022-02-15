@@ -30,7 +30,7 @@ media-control-bar [role="switch"] {
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
-.mxp-background {
+media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
   height: 100%;
   width: 100%;
   position: absolute;

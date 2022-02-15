@@ -72,7 +72,6 @@ export const template = (props: MuxTemplateProps) => html`
           />`
         : ""}
     </mux-video>
-    <div slot="gestures-chrome" class="mxp-background"></div>
     <media-loading-indicator
       slot="centered-chrome"
       no-auto-hide
