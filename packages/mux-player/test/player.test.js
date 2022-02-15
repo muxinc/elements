@@ -102,7 +102,7 @@ describe("<mux-player>", () => {
       muted: true,
       playsInline: true,
       loop: true,
-      crossOrigin: "",
+      crossOrigin: "anonymous",
       preload: "metadata",
       poster:
         "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0",
@@ -111,11 +111,12 @@ describe("<mux-player>", () => {
 
     for (let propName in checkProps) {
       const attrName = propName.toLowerCase();
-      const attrValue = checkProps[attrName];
+      const value = checkProps[propName];
 
-      player.setAttribute(attrName, attrValue === true ? "" : attrValue);
+      player.setAttribute(attrName, value === true ? "" : value);
       assert(muxVideo.hasAttribute(attrName), `has ${attrName} attr added`);
-      assert.equal(muxVideo[attrName], attrValue, `has true ${attrName} prop`);
+
+      assert.equal(muxVideo[propName], value, `has ${propName} prop`);
 
       player.removeAttribute(attrName);
       assert(!muxVideo.hasAttribute(attrName), `has ${attrName} attr removed`);
