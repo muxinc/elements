@@ -19,7 +19,7 @@ describe("<mux-player>", () => {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
-      startTime="0"
+      start-time="0"
       stream-type="vod"
       prefer-mse
       debug
@@ -81,5 +81,45 @@ describe("<mux-player>", () => {
     await aTimeout(1000);
 
     assert.equal(String(Math.round(player.currentTime)), 3, "is about 3s in");
+  });
+
+  it("video attributes are forwarded to media element", async function () {
+    this.timeout(10000);
+
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      muted
+    ></mux-player>`);
+
+    const muxVideo = player.video;
+
+    // controls should not be forwarded! player handles show/hide media-chrome.
+    player.setAttribute("controls", "");
+    assert(!muxVideo.hasAttribute("controls"), `has no controls attr added`);
+
+    const checkProps = {
+      autoplay: true,
+      muted: true,
+      playsInline: true,
+      loop: true,
+      crossOrigin: "anonymous",
+      preload: "metadata",
+      poster:
+        "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0",
+      src: "https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8",
+    };
+
+    for (let propName in checkProps) {
+      const attrName = propName.toLowerCase();
+      const value = checkProps[propName];
+
+      player.setAttribute(attrName, value === true ? "" : value);
+      assert(muxVideo.hasAttribute(attrName), `has ${attrName} attr added`);
+
+      assert.equal(muxVideo[propName], value, `has ${propName} prop`);
+
+      player.removeAttribute(attrName);
+      assert(!muxVideo.hasAttribute(attrName), `has ${attrName} attr removed`);
+    }
   });
 });
