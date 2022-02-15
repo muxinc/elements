@@ -34,6 +34,7 @@ media-control-bar [role="switch"] {
   height: 100%;
   width: 100%;
   position: absolute;
+  pointer-events: none;
   background-color: rgba(0, 0, 0, 0.6);
 }
 
