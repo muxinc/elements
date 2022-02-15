@@ -39,7 +39,7 @@ export const template = (props: MuxTemplateProps) => html`
       muted="${props.muted}"
       debug="${props.debug}"
       prefer-mse="${props.preferMse}"
-      start-time="${!!props.startTime ? props.startTime : false}"
+      start-time="${props.startTime != null ? props.startTime : false}"
       poster="${!!props.poster
         ? getPosterURLFromPlaybackId(props.playbackId)
         : false}"
