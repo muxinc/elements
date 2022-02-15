@@ -19,7 +19,7 @@ describe("<mux-player>", () => {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
-      startTime="0"
+      start-time="0"
       stream-type="vod"
       prefer-mse
       debug
