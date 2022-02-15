@@ -26,6 +26,16 @@ function HomePage() {
             </Link>
           </h3>
         </li>
+        <li>
+          <h3>
+            <Link href="/mux-video">Mux Video (Web Component) Demo</Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
+            <Link href="/mux-player">Mux Player (Web Component) Demo</Link>
+          </h3>
+        </li>
       </ul>
     </div>
   );

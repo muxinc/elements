@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import "@mux-elements/mux-video";
 import { useState } from "react";
 
@@ -70,7 +70,7 @@ function MuxVideoWCPage() {
         </div>
       </div>
       <h3 className="title">
-        <Link to="/">Browse Elements</Link>
+        <Link href="/">Browse Elements</Link>
       </h3>
     </div>
   );
