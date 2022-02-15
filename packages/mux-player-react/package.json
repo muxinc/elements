@@ -34,7 +34,7 @@
     }
   },
   "dependencies": {
-    "@mux-elements/mux-player": "0.1.0",
+    "@mux-elements/mux-player": "0.1.0-alpha.2",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
