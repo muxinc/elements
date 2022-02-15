@@ -25,8 +25,9 @@ function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
 export function processPropertyIdentity(
   part: TemplatePart,
   value: unknown
-): void {
+): boolean {
   part.value = String(value);
+  return true;
 }
 
 export function processBooleanAttribute(
