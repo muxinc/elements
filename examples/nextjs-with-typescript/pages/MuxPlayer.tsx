@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import MuxPlayer from "@mux-elements/mux-player-react";
 import { useRef, useState } from "react";
