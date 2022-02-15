@@ -1,14 +1,13 @@
 // @ts-nocheck
-import { Link } from "react-router-dom";
-import "@mux-elements/mux-video";
+import Link from "next/link";
+import "@mux-elements/mux-player";
 import { useState } from "react";
 
-// const INITIAL_DEBUG = true;
-const INITIAL_DEBUG = false;
+const INITIAL_DEBUG = true;
 const INITIAL_MUTED = true;
 const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
 
-function MuxVideoWCPage() {
+function MuxPlayerWCPage() {
   // const mediaElRef = useRef(null);
   const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
   const [muted, setMuted] = useState(INITIAL_MUTED);
@@ -24,11 +23,13 @@ function MuxVideoWCPage() {
         width: "100%",
       }}
     >
-      <h1>mux-video Demo</h1>
+      <h1>mux-player Demo</h1>
       <div>
-        <mux-video
+        <mux-player
           // style={{ aspectRatio: "16 / 9" }}
           playback-id={playbackId}
+          forward-seek-offset={10}
+          backward-seek-offset={10}
           // onPlayerReady={() => console.log("ready!")}
           {...debugObj}
           {...mutedObj}
@@ -38,8 +39,7 @@ function MuxVideoWCPage() {
           // secondary-color="#64b5f6"
           // tertiary-color="#b4004e"
           // startTime={12}
-          controls
-        ></mux-video>
+        ></mux-player>
       </div>
       <div>
         <div>
@@ -70,10 +70,10 @@ function MuxVideoWCPage() {
         </div>
       </div>
       <h3 className="title">
-        <Link to="/">Browse Elements</Link>
+        <Link href="/">Browse Elements</Link>
       </h3>
     </div>
   );
 }
 
-export default MuxVideoWCPage;
+export default MuxPlayerWCPage;
