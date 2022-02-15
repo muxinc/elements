@@ -476,7 +476,6 @@ export function getVideoAttribute(el: MuxPlayerElement, name: string) {
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
-console.log("??? hello");
 if (!globalThis.customElements.get("mux-player")) {
   globalThis.customElements.define("mux-player", MuxPlayerElement);
   /** @TODO consider externalizing this (breaks standard modularity) */

@@ -77,7 +77,6 @@ export const template = (props: MuxTemplateProps) => html`
       no-auto-hide
     ></media-loading-indicator>
     ${renderable("chromeRenderer", ChromeRenderer, props)}
-    <div class="foo baz"></div>
     <mxp-dialog
       slot="centered-chrome"
       no-auto-hide${props.isDialogOpen && " open"}
