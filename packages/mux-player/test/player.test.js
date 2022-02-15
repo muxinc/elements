@@ -100,7 +100,7 @@ describe("<mux-player>", () => {
     const checkProps = {
       autoplay: true,
       muted: true,
-      playsinline: true,
+      playsInline: true,
       loop: true,
       crossOrigin: "",
       preload: "metadata",
@@ -115,14 +115,7 @@ describe("<mux-player>", () => {
 
       player.setAttribute(attrName, attrValue === true ? "" : attrValue);
       assert(muxVideo.hasAttribute(attrName), `has ${attrName} attr added`);
-
-      if (!["playsinline"].includes(attrName)) {
-        assert.equal(
-          muxVideo[attrName],
-          attrValue,
-          `has true ${attrName} prop`
-        );
-      }
+      assert.equal(muxVideo[attrName], attrValue, `has true ${attrName} prop`);
 
       player.removeAttribute(attrName);
       assert(!muxVideo.hasAttribute(attrName), `has ${attrName} attr removed`);
