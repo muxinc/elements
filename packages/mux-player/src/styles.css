@@ -31,10 +31,6 @@ media-control-bar [role="switch"] {
 }
 
 media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  pointer-events: none;
   background-color: rgba(0, 0, 0, 0.6);
 }
 
