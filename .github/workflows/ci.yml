@@ -18,3 +18,4 @@ jobs:
           node-version: ${{ steps.get-versions.outputs.node }}
       - run: yarn install --frozen-lockfile
       - run: yarn build
+      - run: yarn test

@@ -23,6 +23,7 @@
     "scripts/*"
   ],
   "scripts": {
+    "test": "lerna run test --ignore demo-*",
     "dev": "lerna run dev --parallel --ignore demo-*",
     "build": "lerna run build",
     "prepare": "husky install && yarn build --ignore demo-*",
