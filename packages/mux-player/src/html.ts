@@ -46,8 +46,20 @@ export function processBooleanAttribute(
   return false;
 }
 
+export function processBooleanNode(
+  part: TemplatePart,
+  value: unknown
+): boolean {
+  if (value === false && part instanceof NodeTemplatePart) {
+    part.replace("");
+    return true;
+  }
+  return false;
+}
+
 export function processPart(part: TemplatePart, value: unknown): void {
   processBooleanAttribute(part, value) ||
+    processBooleanNode(part, value) ||
     processSubTemplate(part, value) ||
     processDocumentFragment(part, value) ||
     processPropertyIdentity(part, value);
