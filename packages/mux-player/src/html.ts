@@ -1,3 +1,4 @@
+import "./dom-polyfills";
 import {
   TemplateInstance,
   NodeTemplatePart,
