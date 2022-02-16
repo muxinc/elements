@@ -133,3 +133,9 @@ export function render(
 ): void {
   result.renderInto(element);
 }
+
+export function createTemplateInstance(html: string, props?: any) {
+  const template = document.createElement("template");
+  template.innerHTML = html;
+  return new TemplateInstance(template, props);
+}

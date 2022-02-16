@@ -93,52 +93,63 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
   return VodChromeSmall(props);
 };
 
+// prettier-ignore
 const MediaPlayButton = () => html`
   <media-play-button>
-    ${icons.Play({ slot: "play", title: "Play" })}
-    ${icons.Pause({ slot: "pause", title: "Pause" })}
+    ${icons.Play()}
+    ${icons.Pause()}
   </media-play-button>
 `;
 
+// prettier-ignore
 const MediaSeekBackwardButton = (props: Partial<MuxTemplateProps>) => html`
   <media-seek-backward-button seek-offset="${props.backwardSeekOffset}">
-    ${icons.SeekBackward({ slot: "backward", value: props.backwardSeekOffset })}
+    ${icons.SeekBackward({ value: props.backwardSeekOffset })}
   </media-seek-backward-button>
 `;
 
+// prettier-ignore
 const MediaSeekForwardButton = (props: Partial<MuxTemplateProps>) => html`
   <media-seek-forward-button seek-offset="${props.forwardSeekOffset}">
-    ${icons.SeekForward({ slot: "forward", value: props.forwardSeekOffset })}
+    ${icons.SeekForward({ value: props.forwardSeekOffset })}
   </media-seek-forward-button>
 `;
 
+// prettier-ignore
 const MediaMuteButton = () => html`
   <media-mute-button>
-    ${icons.VolumeHigh({ slot: "high" })} ${icons.VolumeLow({ slot: "medium" })}
-    ${icons.VolumeLow({ slot: "low" })} ${icons.VolumeOff({ slot: "off" })}
+    ${icons.VolumeHigh()}
+    ${icons.VolumeMedium()}
+    ${icons.VolumeLow()}
+    ${icons.VolumeOff()}
   </media-mute-button>
 `;
 
-const MediaCaptionsButton = (
-  props: MuxTemplateProps
-) => html` <media-captions-button
-  default-showing="${props.defaultShowCaptions}"
->
-  ${icons.CaptionsOff({ slot: "off" })} ${icons.CaptionsOn({ slot: "on" })}
+// prettier-ignore
+const MediaCaptionsButton = (props: MuxTemplateProps) => html`
+<media-captions-button default-showing="${props.defaultShowCaptions}">
+  ${icons.CaptionsOff()}
+  ${icons.CaptionsOn()}
 </media-captions-button>`;
 
-const MediaAirplayButton = () => html`<media-airplay-button>
-  ${icons.Airplay({ slot: "airplay" })}
+// prettier-ignore
+const MediaAirplayButton = () => html`
+<media-airplay-button>
+  ${icons.Airplay()}
 </media-airplay-button>`;
 
-const MediaPipButton = () => html`<media-pip-button>
-  ${icons.Pip({ slot: "enter", title: "Enter Picture-in-Picture" })}
-  ${icons.Pip({ slot: "exit", title: "Exit Picture-in-Picture" })}
+// prettier-ignore
+const MediaPipButton = () => html`
+<media-pip-button>
+  ${icons.PipEnter()}
+  ${icons.PipExit()}
 </media-pip-button>`;
 
-const MediaFullscreenButton = () => html`<media-fullscreen-button>
-  ${icons.FullscreenEnter({ slot: "enter", title: "Enter Fullscreen" })}
-  ${icons.FullscreenExit({ slot: "exit", title: "Exit Fullscreen" })}
+// prettier-ignore
+const MediaFullscreenButton = () => html`
+<media-fullscreen-button>
+  ${icons.FullscreenEnter()}
+  ${icons.FullscreenExit()}
 </media-fullscreen-button>`;
 
 // prettier-ignore

@@ -1,0 +1,13 @@
+<svg viewBox="0 0 16 18" slot="backward">
+  <path
+    d="M8.75 3.42H4.68l2.14-2.14A.75.75 0 0 0 5.76.22L2.22 3.75a.77.77 0 0 0 0 1.07l3.54 3.53a.75.75 0 0 0 1.06 0 .75.75 0 0 0 0-1.06L4.45 4.92h4.3A5.75 5.75 0 0 1 11 16a.75.75 0 0 0 .29 1.44.72.72 0 0 0 .29-.06A7.25 7.25 0 0 0 8.75 3.42Z"
+  />
+  <text
+    class="value"
+    transform="translate(.6 17.8)"
+    style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
+  >
+    {{value}}
+  </text>
+  <path style="fill: none" d="M0 0h16v18H0z" />
+</svg>
