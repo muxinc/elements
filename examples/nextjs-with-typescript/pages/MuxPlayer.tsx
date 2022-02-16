@@ -36,6 +36,7 @@ function MuxPlayerPage() {
   const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
   const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
   const [metadata, _setMetadata] = useState(INITIAL_METADATA);
+  const [paused, setPaused] = useState<boolean | undefined>(false);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
   return (
@@ -60,19 +61,35 @@ function MuxPlayerPage() {
           // onPlayerReady={() => console.log("ready!")}
           debug={debug}
           muted={muted}
+          paused={paused}
           autoPlay
           // streamType={"live"}
           primaryColor="#ec407a"
           secondaryColor="#64b5f6"
           tertiaryColor="#b4004e"
-          onPlay={onPlay}
-          onPause={onPause}
+          onPlay={(evt) => {
+            onPlay(evt);
+            setPaused(false);
+          }}
+          onPause={(evt) => {
+            onPause(evt);
+            setPaused(true);
+          }}
           onSeeking={onSeeking}
           onSeeked={onSeeked}
           // startTime={12}
         />
       </div>
       <div>
+        <div>
+          <label htmlFor="paused-control">Paused</label>
+          <input
+            id="paused-control"
+            type="checkbox"
+            onChange={() => setPaused(!paused)}
+            checked={paused}
+          />
+        </div>
         <div>
           <label htmlFor="muted-control">Muted</label>
           <input
