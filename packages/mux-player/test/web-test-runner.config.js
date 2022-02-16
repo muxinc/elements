@@ -2,5 +2,7 @@ import { esbuildPlugin } from "@web/dev-server-esbuild";
 
 export default {
   nodeResolve: true,
-  plugins: [esbuildPlugin({ ts: true, loaders: { ".css": "text" } })],
+  plugins: [
+    esbuildPlugin({ ts: true, loaders: { ".css": "text", ".svg": "text" } }),
+  ],
 };
