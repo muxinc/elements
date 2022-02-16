@@ -1,9 +1,14 @@
+// NOTE: As a forward-looking implementation, we may want to assume
+// prop names -> attribute names is always a simple name.toLowerCase()
+// and provide a mechanism for passing in per-component overrides for
+// e.g. kebab cases, as that's the way React/Preact handles these. (CJP)
 const ReactPropToAttrNameMap = {
   className: "class",
   classname: "class",
   htmlFor: "for",
   crossOrigin: "crossorigin",
   viewBox: "viewBox",
+  // playsInline: "playsinline",
 };
 
 type KeyTypes = string | number | symbol;
@@ -34,8 +39,6 @@ export const toStyleAttr = <T>(x: T) => x;
 
 export const toNativeAttrValue = (propValue: any, propName: string) => {
   if (typeof propValue === "boolean") return "";
-  if (propName === "style" && typeof propValue === "object")
-    return toStyleAttr(propValue);
   return propValue;
 };
 
