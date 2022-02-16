@@ -2,6 +2,7 @@
   /* default aspect ratio, overwrite w/ e.g. style="aspect-ratio: 16 / 10" */
   aspect-ratio: 16 / 9;
   display: block;
+  width: 100%;
 }
 
 media-controller {
