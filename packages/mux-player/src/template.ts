@@ -141,13 +141,16 @@ const MediaFullscreenButton = () => html`<media-fullscreen-button>
   ${icons.FullscreenExit({ slot: "exit", title: "Exit Fullscreen" })}
 </media-fullscreen-button>`;
 
+// prettier-ignore
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""}
+    ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaSeekBackwardButton(props)} ${MediaPlayButton()}
+    ${MediaSeekBackwardButton(props)}
+    ${MediaPlayButton()}
     ${MediaSeekForwardButton(props)}
   </div>
   <media-control-bar>
@@ -162,12 +165,14 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const VodChromeLarge = (props: MuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    ${MediaPlayButton()} ${MediaSeekBackwardButton(props)}
+    ${MediaPlayButton()}
+    ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
@@ -177,16 +182,20 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
       : ""}
     <media-playback-rate-button></media-playback-rate-button>
     ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""}
+    ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
     <media-text-display class="mxp-live-indicator">Live</media-text-display>
-    ${Spacer()} ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${Spacer()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""}
+    ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
@@ -196,10 +205,12 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
     ${props.supportsVolume
       ? html`<media-volume-range></media-volume-range>`
       : ""}
-    ${Spacer()} ${MediaFullscreenButton()}
+    ${Spacer()}
+    ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const LiveChromeLarge = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
     <media-text-display class="mxp-live-indicator">Live</media-text-display>
@@ -212,8 +223,10 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
     ${props.supportsVolume
       ? html`<media-volume-range></media-volume-range>`
       : ""}
-    ${Spacer()} ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${Spacer()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
+    ${props.supportsAirPlay ? MediaAirplayButton() : ""}
+    ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
