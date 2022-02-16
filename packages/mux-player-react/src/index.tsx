@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
+import type { CSSProperties } from "react";
 import "@mux-elements/mux-player";
 import type MuxPlayerElement from "@mux-elements/mux-player";
 import { toNativeProps } from "./common/utils";
 import { useRef } from "react";
 import { useCombinedRefs } from "./useCombinedRefs";
-import useObjectPropEffect from "./useElementPropsEffect";
+import useObjectPropEffect from "./useObjectPropEffect";
 
 type ValueOf<T> = T[keyof T];
 
 export type MuxPlayerRefAttributes = MuxPlayerElement;
-
 type VideoApiAttributes = {
   currentTime: number;
   volume: number;
@@ -17,10 +17,13 @@ type VideoApiAttributes = {
   src: string | null;
   poster: string;
   playbackRate: number;
+  playsInline: boolean;
+  // preload: string;
   crossOrigin: string;
   autoPlay: boolean;
   loop: boolean;
   muted: boolean;
+  style: CSSProperties;
 };
 type StreamTypes = {
   VOD: "on-demand";
