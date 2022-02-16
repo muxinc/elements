@@ -89,3 +89,9 @@ media-volume-range {
 media-time-display {
   white-space: nowrap;
 }
+
+.mxp-live-indicator::before {
+  content: "● ";
+  color: #fb3c4d;
+  padding-right: 5px;
+}

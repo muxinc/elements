@@ -141,77 +141,84 @@ const MediaFullscreenButton = () => html`<media-fullscreen-button>
   ${icons.FullscreenExit({ slot: "exit", title: "Exit Fullscreen" })}
 </media-fullscreen-button>`;
 
+// prettier-ignore
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
-    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaSeekBackwardButton(props)} ${MediaPlayButton()}
+    ${MediaSeekBackwardButton(props)}
+    ${MediaPlayButton()}
     ${MediaSeekForwardButton(props)}
   </div>
   <media-control-bar>
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
     ${MediaMuteButton()}
-    ${props.supportsVolume
-      ? html`<media-volume-range></media-volume-range>`
-      : ""}
+    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const VodChromeLarge = (props: MuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    ${MediaPlayButton()} ${MediaSeekBackwardButton(props)}
+    ${MediaPlayButton()}
+    ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
     <media-time-range></media-time-range>
     <media-time-display show-duration remaining></media-time-display>
     ${MediaMuteButton()}
-    ${props.supportsVolume
-      ? html`<media-volume-range></media-volume-range>`
-      : ""}
+    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const LiveChromeSmall = (props: MuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome">
+    <media-text-display class="mxp-live-indicator">Live</media-text-display>
+    ${Spacer()}
+    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${MediaPipButton()}
+  </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    ${props.supportsVolume
-      ? html`<media-volume-range></media-volume-range>`
-      : ""}
+    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     ${Spacer()}
-    <media-time-display></media-time-display>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const LiveChromeLarge = (props: MuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome">
+    <media-text-display class="mxp-live-indicator">Live</media-text-display>
+  </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
   <media-control-bar>
-    ${MediaPlayButton()} ${MediaMuteButton()}
-    ${props.supportsVolume
-      ? html`<media-volume-range></media-volume-range>`
-      : ""}
+    ${MediaMuteButton()}
+    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     ${Spacer()}
-    <media-time-display></media-time-display>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : ""}
-    ${props.supportsAirPlay ? MediaAirplayButton() : ""} ${MediaPipButton()}
+    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
