@@ -4,6 +4,7 @@ import type MuxPlayerElement from "@mux-elements/mux-player";
 import { toNativeProps } from "./common/utils";
 import { useRef } from "react";
 import { useCombinedRefs } from "./useCombinedRefs";
+import useObjectPropEffect from "./useElementPropsEffect";
 
 type ValueOf<T> = T[keyof T];
 
@@ -12,6 +13,7 @@ export type MuxPlayerRefAttributes = MuxPlayerElement;
 type VideoApiAttributes = {
   currentTime: number;
   volume: number;
+  paused: boolean;
   src: string | null;
   poster: string;
   playbackRate: number;
@@ -120,8 +122,23 @@ const usePlayer = (
     onEnded,
     onError,
     onPlayerReady,
+    metadata,
+    paused,
     ...remainingProps
   } = props;
+  useObjectPropEffect("metadata", metadata, ref);
+  useObjectPropEffect(
+    "paused",
+    paused,
+    ref,
+    (playerEl: HTMLMediaElement, pausedVal: boolean) => {
+      if (pausedVal) {
+        playerEl.pause();
+      } else {
+        playerEl.play();
+      }
+    }
+  );
   useEventCallbackEffect("loadstart", ref, onLoadStart);
   useEventCallbackEffect("loadedmetadata", ref, onLoadedMetadata);
   useEventCallbackEffect("progress", ref, onProgress);
