@@ -27,6 +27,7 @@
     "dev": "lerna run dev --parallel --scope '@mux-elements/*'",
     "build": "lerna run build",
     "prepare": "husky install && yarn build --ignore demo-*",
-    "release": "lerna publish --no-private"
+    "release": "lerna publish --no-private",
+    "version:update": "lerna version --no-private"
   }
 }
