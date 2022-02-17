@@ -14,8 +14,6 @@ describe("<mux-player>", () => {
   });
 
   it("has a Mux specific API", async function () {
-    this.timeout(10000);
-
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
@@ -84,8 +82,6 @@ describe("<mux-player>", () => {
   });
 
   it("video attributes are forwarded to media element", async function () {
-    this.timeout(10000);
-
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       muted
@@ -121,5 +117,79 @@ describe("<mux-player>", () => {
       player.removeAttribute(attrName);
       assert(!muxVideo.hasAttribute(attrName), `has ${attrName} attr removed`);
     }
+  });
+
+  it("muted attribute behaves like expected", async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      muted
+    ></mux-player>`);
+
+    const muxVideo = player.video;
+    const nativeVideo = muxVideo.shadowRoot.querySelector("video");
+
+    assert(player.muted, "player.muted is true");
+    assert(muxVideo.muted, "muxVideo.muted is true");
+    assert(nativeVideo.muted, "nativeVideo.muted is true");
+
+    player.removeAttribute("muted");
+
+    assert(!player.muted, "player.muted is false");
+    assert(!muxVideo.muted, "muxVideo.muted is false");
+    assert(!nativeVideo.muted, "nativeVideo.muted is false");
+
+    player.setAttribute("muted", "");
+
+    assert(player.muted, "player.muted is true");
+    assert(muxVideo.muted, "muxVideo.muted is true");
+    assert(nativeVideo.muted, "nativeVideo.muted is true");
+  });
+
+  it("volume attribute behaves like expected", async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      volume="0.4"
+    ></mux-player>`);
+
+    assert.equal(player.getAttribute("volume"), "0.4");
+
+    const muxVideo = player.video;
+    const nativeVideo = muxVideo.shadowRoot.querySelector("video");
+
+    assert.equal(player.volume, 0.4, "player.volume is 0.4");
+    assert.equal(muxVideo.volume, 0.4, "muxVideo.volume is 0.4");
+    assert.equal(nativeVideo.volume, 0.4, "nativeVideo.volume is 0.4");
+
+    player.setAttribute("volume", "0.9");
+
+    assert.equal(player.volume, 0.9, "player.volume is 0.9");
+    assert.equal(muxVideo.volume, 0.9, "muxVideo.volume is 0.9");
+    assert.equal(nativeVideo.volume, 0.9, "nativeVideo.volume is 0.9");
+  });
+
+  it("playbackrate attribute behaves like expected", async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      playbackrate="2"
+    ></mux-player>`);
+
+    assert.equal(player.getAttribute("playbackrate"), "2");
+
+    const muxVideo = player.video;
+    const nativeVideo = muxVideo.shadowRoot.querySelector("video");
+
+    assert.equal(player.playbackRate, 2, "player.playbackRate is 2");
+    assert.equal(muxVideo.playbackRate, 2, "muxVideo.playbackRate is 2");
+    assert.equal(nativeVideo.playbackRate, 2, "nativeVideo.playbackRate is 2");
+
+    player.setAttribute("playbackrate", "0.7");
+
+    assert.equal(player.playbackRate, 0.7, "player.playbackRate is 0.7");
+    assert.equal(muxVideo.playbackRate, 0.7, "muxVideo.playbackRate is 0.7");
+    assert.equal(
+      nativeVideo.playbackRate,
+      0.7,
+      "nativeVideo.playbackRate is 0.7"
+    );
   });
 });

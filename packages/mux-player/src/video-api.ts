@@ -14,6 +14,9 @@ const AllowedVideoAttributes = {
 const CustomVideoAttributes = {
   VOLUME: "volume",
   PLAYBACKRATE: "playbackrate",
+  // This muted attribute also reflects to the muted property while the muted
+  // attribute on a native video element reflects only to video.defaultMuted.
+  MUTED: "muted",
 };
 
 const AllowedVideoEvents = [
@@ -35,10 +38,11 @@ const AllowedVideoEvents = [
 ];
 
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes);
+const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
 
 class VideoApiElement extends HTMLElement {
   static get observedAttributes() {
-    return [...AllowedVideoAttributeNames];
+    return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
   }
 
   /**
@@ -82,7 +86,24 @@ class VideoApiElement extends HTMLElement {
     oldValue: string | null,
     newValue: string
   ) {
+    if (
+      AllowedVideoAttributeNames.includes(attrName) &&
+      this.video?.getAttribute(attrName) != newValue
+    ) {
+      if (newValue === null) {
+        this.video?.removeAttribute(attrName);
+      } else {
+        this.video?.setAttribute(attrName, newValue);
+      }
+    }
+
     switch (attrName) {
+      case CustomVideoAttributes.MUTED: {
+        if (this.video) {
+          this.video.muted = newValue != null;
+        }
+        return;
+      }
       case CustomVideoAttributes.VOLUME: {
         const val = +newValue;
         if (this.video && !Number.isNaN(val)) {
@@ -96,17 +117,6 @@ class VideoApiElement extends HTMLElement {
           this.video.playbackRate = val;
         }
         return;
-      }
-    }
-
-    if (
-      AllowedVideoAttributeNames.includes(attrName) &&
-      this.video?.getAttribute(attrName) != newValue
-    ) {
-      if (newValue === null) {
-        this.video?.removeAttribute(attrName);
-      } else {
-        this.video?.setAttribute(attrName, newValue);
       }
     }
   }
