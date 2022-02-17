@@ -44,14 +44,6 @@ class MuxPlayerInternal {
       el.attributeChangedCallback(attrNode.name, null, attrNode.value);
     });
 
-    // Neither Chrome or Firefox support setting the muted attribute
-    // after using document.createElement.
-    // One way to get around this would be to build the native tag as a string.
-    // But just fixing it manually for now.
-    if (el.video) {
-      el.video.muted = el.video.defaultMuted;
-    }
-
     /**
      * @todo determine sensible defaults for preloading buffer
      * @see https://github.com/muxinc/elements/issues/51
