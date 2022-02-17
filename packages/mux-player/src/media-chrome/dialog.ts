@@ -53,6 +53,8 @@ const styles = `
     width: min(320px, 100%);
     max-height: 100%;
     overflow: auto;
+    text-align: center;
+    line-height: 1.4;
   }
 `;
 
