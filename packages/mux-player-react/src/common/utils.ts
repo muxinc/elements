@@ -8,7 +8,7 @@ const ReactPropToAttrNameMap = {
   htmlFor: "for",
   crossOrigin: "crossorigin",
   viewBox: "viewBox",
-  // playsInline: "playsinline",
+  playsInline: "playsinline",
 };
 
 type KeyTypes = string | number | symbol;
