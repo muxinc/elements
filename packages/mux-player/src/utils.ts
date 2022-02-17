@@ -1,3 +1,14 @@
+export function promisify(fn: Function, ctx?: any) {
+  return (...args: any[]) =>
+    new Promise((resolve) => {
+      // fn.call() didn't work for some reason.
+      fn.bind(ctx)(...args, (...res: any[]) => {
+        if (res.length > 1) resolve(res);
+        else resolve(res[0]);
+      });
+    });
+}
+
 export function stylePropsToString(props: any) {
   let style = "";
   Object.entries(props).forEach(([key, value]) => {

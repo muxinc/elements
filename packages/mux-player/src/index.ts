@@ -10,7 +10,7 @@ import {
 } from "./helpers";
 import { template } from "./template";
 import { render } from "./html";
-import { toNumberOrUndefined } from "./utils";
+import { toNumberOrUndefined, promisify } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
@@ -59,6 +59,7 @@ class MuxPlayerInternal {
     this._setUpCaptionsButton(el);
     this._setUpAirplayButton(el);
     this._setUpVolumeRange(el);
+    this._setUpPlayerReady(el);
   }
 
   connectedCallback() {
@@ -216,6 +217,24 @@ class MuxPlayerInternal {
   async _setUpVolumeRange(el: MuxPlayerElement) {
     const supportsVolume = await hasVolumeSupportAsync();
     this._setState({ supportsVolume });
+  }
+
+  async _setUpPlayerReady(el: MuxPlayerElement) {
+    const { video } = el;
+    if (!video) {
+      console.error("The video element is missing!");
+      return;
+    }
+
+    await Promise.all([
+      // If there is no video src on construction don't be waiting on loadstart.
+      // It might look like we need to check video.networkState here also but
+      // the loadstart event is always fired a tick after the video src is set.
+      video.src && promisify(video.addEventListener, video)("loadstart"),
+      hasVolumeSupportAsync(),
+    ]);
+
+    el.dispatchEvent(new CustomEvent("ready"));
   }
 }
 

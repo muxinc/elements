@@ -34,10 +34,8 @@ export const hasVolumeSupportAsync = async (
   if (!mediaEl) return false;
   const prevVolume = mediaEl.volume;
   mediaEl.volume = prevVolume / 2 + 0.1;
-  return new Promise<boolean>((resolve, reject) => {
-    setTimeout(() => {
-      resolve(mediaEl.volume !== prevVolume);
-    }, 0);
+  return Promise.resolve().then(() => {
+    return mediaEl.volume !== prevVolume;
   });
 };
 
