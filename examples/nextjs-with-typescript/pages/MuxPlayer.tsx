@@ -67,11 +67,11 @@ function MuxPlayerPage() {
           primaryColor="#ec407a"
           secondaryColor="#64b5f6"
           tertiaryColor="#b4004e"
-          onPlay={(evt) => {
+          onPlay={(evt: Event) => {
             onPlay(evt);
             setPaused(false);
           }}
-          onPause={(evt) => {
+          onPause={(evt: Event) => {
             onPause(evt);
             setPaused(true);
           }}
