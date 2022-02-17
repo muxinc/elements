@@ -10,6 +10,7 @@ import {
 } from "./helpers";
 import { template } from "./template";
 import { render } from "./html";
+import { toNumberOrUndefined } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
@@ -331,11 +332,19 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get forwardSeekOffset() {
-    return this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET);
+    return (
+      toNumberOrUndefined(
+        this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET)
+      ) ?? 10
+    );
   }
 
   get backwardSeekOffset() {
-    return this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET);
+    return (
+      toNumberOrUndefined(
+        this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET)
+      ) ?? 10
+    );
   }
 
   get defaultShowCaptions() {
@@ -415,10 +424,9 @@ class MuxPlayerElement extends VideoApiElement {
    * @return {number}
    */
   get startTime() {
-    const val = getVideoAttribute(this, MuxVideoAttributes.START_TIME);
-    if (val == null) return undefined;
-    const num = +val;
-    return !Number.isNaN(num) ? num : undefined;
+    return toNumberOrUndefined(
+      getVideoAttribute(this, MuxVideoAttributes.START_TIME)
+    );
   }
 
   /**

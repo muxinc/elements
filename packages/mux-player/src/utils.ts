@@ -15,3 +15,9 @@ export function uniqueId(prefix: string) {
   var id = ++idCounter;
   return `${prefix}${id}`;
 }
+
+export function toNumberOrUndefined(val: any) {
+  if (val == null) return undefined;
+  const num = +val;
+  return !Number.isNaN(num) ? num : undefined;
+}
