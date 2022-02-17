@@ -1,15 +1,20 @@
 import type MuxVideoElement from "@mux-elements/mux-video";
 
-const AllowedVideoAttributeNames = [
-  "autoplay",
-  "crossorigin",
-  "loop",
-  "muted",
-  "playsinline",
-  "src",
-  "poster",
-  "preload",
-];
+const AllowedVideoAttributes = {
+  AUTOPLAY: "autoplay",
+  CROSSORIGIN: "crossorigin",
+  LOOP: "loop",
+  MUTED: "muted",
+  PLAYSINLINE: "playsinline",
+  SRC: "src",
+  POSTER: "poster",
+  PRELOAD: "preload",
+};
+
+const CustomVideoAttributes = {
+  VOLUME: "volume",
+  PLAYBACKRATE: "playbackrate",
+};
 
 const AllowedVideoEvents = [
   "loadstart",
@@ -28,6 +33,8 @@ const AllowedVideoEvents = [
   "seeked",
   "ended",
 ];
+
+const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes);
 
 class VideoApiElement extends HTMLElement {
   static get observedAttributes() {
@@ -75,6 +82,23 @@ class VideoApiElement extends HTMLElement {
     oldValue: string | null,
     newValue: string
   ) {
+    switch (attrName) {
+      case CustomVideoAttributes.VOLUME: {
+        const val = +newValue;
+        if (this.video && !Number.isNaN(val)) {
+          this.video.volume = val;
+        }
+        return;
+      }
+      case CustomVideoAttributes.PLAYBACKRATE: {
+        const val = +newValue;
+        if (this.video && !Number.isNaN(val)) {
+          this.video.playbackRate = val;
+        }
+        return;
+      }
+    }
+
     if (
       AllowedVideoAttributeNames.includes(attrName) &&
       this.video?.getAttribute(attrName) != newValue
@@ -172,19 +196,19 @@ class VideoApiElement extends HTMLElement {
   }
 
   get src() {
-    return getVideoAttribute(this, "src");
+    return getVideoAttribute(this, AllowedVideoAttributes.SRC);
   }
 
   set src(val) {
-    this.setAttribute("src", `${val}`);
+    this.setAttribute(AllowedVideoAttributes.SRC, `${val}`);
   }
 
   get poster() {
-    return getVideoAttribute(this, "poster") ?? "";
+    return getVideoAttribute(this, AllowedVideoAttributes.POSTER) ?? "";
   }
 
   set poster(val) {
-    this.setAttribute("poster", `${val}`);
+    this.setAttribute(AllowedVideoAttributes.POSTER, `${val}`);
   }
 
   get playbackRate() {
@@ -198,49 +222,49 @@ class VideoApiElement extends HTMLElement {
   }
 
   get crossOrigin() {
-    return getVideoAttribute(this, "crossorigin");
+    return getVideoAttribute(this, AllowedVideoAttributes.CROSSORIGIN);
   }
 
   set crossOrigin(val) {
-    this.setAttribute("crossorigin", `${val}`);
+    this.setAttribute(AllowedVideoAttributes.CROSSORIGIN, `${val}`);
   }
 
   get autoplay() {
-    return getVideoAttribute(this, "autoplay") != null;
+    return getVideoAttribute(this, AllowedVideoAttributes.AUTOPLAY) != null;
   }
 
   set autoplay(val) {
     if (val) {
-      this.setAttribute("autoplay", "");
+      this.setAttribute(AllowedVideoAttributes.AUTOPLAY, "");
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
-      this.removeAttribute("autoplay");
+      this.removeAttribute(AllowedVideoAttributes.AUTOPLAY);
     }
   }
 
   get loop() {
-    return getVideoAttribute(this, "loop") != null;
+    return getVideoAttribute(this, AllowedVideoAttributes.LOOP) != null;
   }
 
   set loop(val) {
     if (val) {
-      this.setAttribute("loop", "");
+      this.setAttribute(AllowedVideoAttributes.LOOP, "");
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
-      this.removeAttribute("loop");
+      this.removeAttribute(AllowedVideoAttributes.LOOP);
     }
   }
 
   get muted() {
-    return getVideoAttribute(this, "muted") != null;
+    return getVideoAttribute(this, AllowedVideoAttributes.MUTED) != null;
   }
 
   set muted(val) {
     if (val) {
-      this.setAttribute("muted", "");
+      this.setAttribute(AllowedVideoAttributes.MUTED, "");
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
-      this.removeAttribute("muted");
+      this.removeAttribute(AllowedVideoAttributes.MUTED);
     }
   }
 }
