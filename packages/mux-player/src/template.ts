@@ -20,6 +20,7 @@ export const StreamTypes = {
 const MediaChromeSizes = {
   LG: "large",
   SM: "small",
+  XS: "extra-small",
 };
 
 const Spacer = () => html`<div class="mxp-spacer"></div>`;
@@ -82,15 +83,23 @@ export const template = (props: MuxTemplateProps) => html`
 export const ChromeRenderer = (props: MuxTemplateProps) => {
   const { streamType, playerSize } = props;
   if (streamType === StreamTypes.LIVE || streamType === StreamTypes.LL_LIVE) {
-    if (playerSize === MediaChromeSizes.LG) {
-      return LiveChromeLarge(props);
+    switch (playerSize) {
+      case MediaChromeSizes.LG:
+        return LiveChromeLarge(props);
+      case MediaChromeSizes.SM:
+        return LiveChromeSmall(props);
+      case MediaChromeSizes.XS:
+        return LiveChromeExtraSmall(props);
     }
-    return LiveChromeSmall(props);
   }
-  if (playerSize === MediaChromeSizes.LG) {
-    return VodChromeLarge(props);
+  switch (playerSize) {
+    case MediaChromeSizes.LG:
+      return VodChromeLarge(props);
+    case MediaChromeSizes.SM:
+      return VodChromeSmall(props);
+    case MediaChromeSizes.XS:
+      return VodChromeExtraSmall(props);
   }
-  return VodChromeSmall(props);
 };
 
 // prettier-ignore
@@ -153,6 +162,13 @@ const MediaFullscreenButton = () => html`
 </media-fullscreen-button>`;
 
 // prettier-ignore
+export const VodChromeExtraSmall = (props: MuxTemplateProps) => html`
+  <div slot="centered-chrome" class="mxp-center-controls">
+    ${MediaPlayButton()}
+  </div>
+`;
+
+// prettier-ignore
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${props.hasCaptions && MediaCaptionsButton(props)}
@@ -193,6 +209,13 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
+`;
+
+// prettier-ignore
+export const LiveChromeExtraSmall = (props: MuxTemplateProps) => html`
+  <div slot="centered-chrome" class="mxp-center-controls">
+    ${MediaPlayButton()}
+  </div>
 `;
 
 // prettier-ignore
