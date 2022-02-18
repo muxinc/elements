@@ -70,9 +70,7 @@ class CustomVideoElement extends HTMLElement {
         if (mutation.type === "childList") {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
-            this.nativeEl.removeChild(
-              this.nativeEl.querySelector(`track[src="${node.src}"]`)
-            );
+            this.nativeEl.querySelector(`track[src="${node.src}"]`)?.remove();
           });
 
           mutation.addedNodes.forEach((node) => {
