@@ -72,12 +72,9 @@ template.innerHTML = `
 class MediaDialog extends HTMLElement {
   static styles: string = styles;
   static template: HTMLTemplateElement = template;
+  static observedAttributes = ["open"];
 
   _previouslyFocusedElement?: Element | null;
-
-  get observedAttributes() {
-    return ["open"];
-  }
 
   constructor() {
     super();
@@ -99,6 +96,16 @@ class MediaDialog extends HTMLElement {
       new CustomEvent("close", { composed: true, bubbles: true })
     );
     restoreFocus(this);
+  }
+
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string
+  ) {
+    if (attrName === "open" && oldValue !== newValue) {
+      newValue != null ? this.show() : this.close();
+    }
   }
 
   connectedCallback() {
