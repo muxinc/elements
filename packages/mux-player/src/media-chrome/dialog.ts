@@ -90,7 +90,22 @@ class MediaDialog extends HTMLElement {
 
   show() {
     this.setAttribute("open", "");
-    focus(this);
+    if (document.activeElement?.nodeName.toLowerCase() === "mux-player") {
+      let parentEl: ParentNode | null | undefined = this.parentNode;
+      while (parentEl?.nodeName.toLowerCase() !== "mux-player") {
+        parentEl =
+          parentEl instanceof ShadowRoot ? parentEl.host : parentEl?.parentNode;
+        if (!parentEl || parentEl === document) {
+          console.error(
+            "Not in a mux-player or something has gone terrible wrong!"
+          );
+          break;
+        }
+      }
+      if (parentEl === document.activeElement) {
+        focus(this);
+      }
+    }
   }
 
   close() {
