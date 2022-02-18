@@ -5,6 +5,11 @@
   width: 100%;
 }
 
+/* Hide custom elements that are not defined yet */
+:not(:defined) {
+  display: none;
+}
+
 media-controller {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
