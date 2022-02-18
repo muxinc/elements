@@ -23,10 +23,10 @@
     "scripts/*"
   ],
   "scripts": {
-    "test": "lerna run test --ignore demo-*",
-    "dev": "lerna run dev --parallel --scope '@mux-elements/*'",
+    "test": "lerna run test --scope @mux-elements/*",
+    "dev": "lerna run dev --parallel --scope @mux-elements/*",
     "build": "lerna run build",
-    "prepare": "husky install && yarn build --ignore demo-*",
+    "prepare": "husky install && yarn build --scope @mux-elements/*",
     "release": "lerna publish --no-private",
     "version:update": "lerna version --no-private"
   }
