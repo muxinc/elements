@@ -25,6 +25,12 @@ media-control-bar [role="switch"] {
   height: 44px;
 }
 
+.size-extra-small media-control-bar [role="button"],
+.size-extra-small media-control-bar [role="switch"] {
+  height: auto;
+  padding: 4.4% 3.2%;
+}
+
 .mxp-spacer {
   flex-grow: 1;
   height: 100%;
@@ -56,7 +62,7 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
-  width: min(9%, 90px);
+  width: max(27px, min(9%, 90px));
 }
 
 .mxp-center-controls media-seek-backward-button,

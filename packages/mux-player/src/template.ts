@@ -29,7 +29,10 @@ export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
-  <media-controller style="${getChromeStylesFromProps(props)}">
+  <media-controller
+    style="${getChromeStylesFromProps(props) ?? false}"
+    class="size-${props.playerSize}"
+  >
     <mux-video
       slot="media"
       crossorigin
@@ -163,9 +166,20 @@ const MediaFullscreenButton = () => html`
 
 // prettier-ignore
 export const VodChromeExtraSmall = (props: MuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome">
+    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${Spacer()}
+    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${MediaPipButton()}
+  </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
+  <media-control-bar>
+    ${MediaMuteButton()}
+    ${Spacer()}
+    ${MediaFullscreenButton()}
+  </media-control-bar>
 `;
 
 // prettier-ignore
@@ -213,9 +227,20 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
 
 // prettier-ignore
 export const LiveChromeExtraSmall = (props: MuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome">
+    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${Spacer()}
+    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${MediaPipButton()}
+  </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
+  <media-control-bar>
+    ${MediaMuteButton()}
+    ${Spacer()}
+    ${MediaFullscreenButton()}
+  </media-control-bar>
 `;
 
 // prettier-ignore
