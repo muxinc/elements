@@ -2274,23 +2274,6 @@
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-4.1.5.tgz#f6ea4e4764dfa0924235d9ef2ce56aac531c42c7"
   integrity sha512-rb2LEhclR/Ykf/biC2HrZmVonqnfTL8RhsL9wdMCGmw1xfeLFqGGZLKWypob2/i15SqgmEHbtcgJZ9kwWPbKtQ==
 
-"@mux-elements/mux-player-react@0.1.0-alpha.1":
-  version "0.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@mux-elements/mux-player-react/-/mux-player-react-0.1.0-alpha.1.tgz#c9c05a071809d643205d4a223191f810c8f0c2c8"
-  integrity sha512-FcvTx+Gh0H5Z0mj8AkhRnX7d/BmeUma9n4MXa4czR3CxadxW8344j03oVCm7X8qBHXyP1oqxFKBQf5iAxnK35Q==
-  dependencies:
-    "@mux-elements/mux-video" "*"
-    media-chrome "^0.4.3"
-    prop-types "^15.7.2"
-
-"@mux-elements/mux-player@0.1.0-alpha.2":
-  version "0.1.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@mux-elements/mux-player/-/mux-player-0.1.0-alpha.2.tgz#7ab3329560d4d79dfccb74a9d1329135333e72da"
-  integrity sha512-dCNSUiAMupGNi92JtND0NW59mdk13I9xM+Zo+eaTA3RWQgSRCXhMVK0mWZJ0PnwV0GlbkoBmmw+UMarxPQz2IQ==
-  dependencies:
-    "@mux-elements/mux-video" "^0.2.0"
-    media-chrome "^0.5.0"
-
 "@napi-rs/triples@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
@@ -10810,19 +10793,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.4.3.tgz#9bf18502546fc54d79adedfc6e39bb9ebf8b8824"
-  integrity sha512-c0/bBRExvEP2AzVQ6OXYoL+caOFtVt9nm/6rKs0AJYu3ebczyQo/RW45J1XqdFx/IZtmx50HrY0pqAK2GrIgcA==
-
 media-chrome@^0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.5.0.tgz#8d5d0559e0300650fa81ae32465ae78d6e7f5aca"
   integrity sha512-skBmPy3rZW4P30xktoc5EGtjKSnaSnl9nZv9/iUjl3lh+1vcoZy85f2+9AuyZNIRE3XX4YNFXVCaAkc2ZXPaKQ==
-
-"media-chrome@git+ssh://git@github.com/luwes/media-chrome.git#mux-player":
-  version "0.4.3"
-  resolved "git+ssh://git@github.com/luwes/media-chrome.git#97146940facdc6fe5ca4b15fa558312a03fd716a"
 
 media-typer@0.3.0:
   version "0.3.0"
