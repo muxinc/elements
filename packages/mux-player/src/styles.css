@@ -32,12 +32,12 @@ media-control-bar [role="switch"] {
 }
 
 media-controller::part(vertical-layer) {
-  transition: background-color 0.25s;
+  transition: background-color 1s;
 }
 
 media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
   background-color: rgba(0, 0, 0, 0.6);
-  transition: background-color 1s;
+  transition: background-color 0.25s;
 }
 
 .mxp-center-controls {
