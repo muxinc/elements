@@ -220,18 +220,14 @@ class MuxPlayerInternal {
 }
 
 const SMALL_BREAKPOINT = 700;
-const XSMALL_BREAKPOINT = 300;
 const MediaChromeSizes = {
   LG: "large",
   SM: "small",
-  XS: "extra-small",
 };
 
 function getPlayerSize(el: Element) {
   const muxPlayerRect = el.getBoundingClientRect();
-  return muxPlayerRect.width < XSMALL_BREAKPOINT
-    ? MediaChromeSizes.XS
-    : muxPlayerRect.width < SMALL_BREAKPOINT
+  return muxPlayerRect.width < SMALL_BREAKPOINT
     ? MediaChromeSizes.SM
     : MediaChromeSizes.LG;
 }
