@@ -248,7 +248,7 @@ const MuxVideoAttributes = {
 };
 
 const PlayerAttributes = {
-  DEFAULT_SHOW_CAPTIONS: "default-show-captions",
+  DEFAULT_HIDDEN_CAPTIONS: "default-hidden-captions",
   PRIMARY_COLOR: "primary-color",
   SECONDARY_COLOR: "secondary-color",
   FORWARD_SEEK_OFFSET: "forward-seek-offset",
@@ -270,7 +270,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     secondaryColor: el.secondaryColor,
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
-    defaultShowCaptions: el.defaultShowCaptions,
+    defaultHiddenCaptions: el.defaultHiddenCaptions,
     playerSize: getPlayerSize(el),
     hasCaptions: !!getCcSubTracks(el).length,
     ...state,
@@ -347,8 +347,8 @@ class MuxPlayerElement extends VideoApiElement {
     );
   }
 
-  get defaultShowCaptions() {
-    return this.getAttribute(PlayerAttributes.DEFAULT_SHOW_CAPTIONS) || true;
+  get defaultHiddenCaptions() {
+    return this.hasAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
   }
 
   get playerSoftwareName() {
