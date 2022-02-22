@@ -127,7 +127,7 @@ const MediaMuteButton = () => html`
 
 // prettier-ignore
 const MediaCaptionsButton = (props: MuxTemplateProps) => html`
-<media-captions-button default-showing="${props.defaultShowCaptions}">
+<media-captions-button default-showing="${!props.defaultHiddenCaptions}" >
   ${icons.CaptionsOff()}
   ${icons.CaptionsOn()}
 </media-captions-button>`;
