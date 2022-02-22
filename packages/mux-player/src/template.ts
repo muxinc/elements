@@ -49,6 +49,8 @@ export const template = (props: MuxTemplateProps) => html`
         : props.playbackId
         ? getPosterURLFromPlaybackId(props.playbackId)
         : false}"
+      player-software-name="${props.playerSoftwareName}"
+      player-software-version="${props.playerSoftwareVersion}"
       playback-id="${props.playbackId ?? false}"
       env-key="${props.envKey ?? false}"
       stream-type="${props.streamType ?? false}"
