@@ -3,7 +3,7 @@ export function stylePropsToString(props: any) {
   Object.entries(props).forEach(([key, value]) => {
     style += `${kebabCase(key)}: ${value}; `;
   });
-  return style.trim();
+  return style ? style.trim() : undefined;
 }
 
 export function kebabCase(name: string) {
