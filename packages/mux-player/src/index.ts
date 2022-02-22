@@ -360,17 +360,15 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get playerSoftwareName() {
-    return (
-      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME) ??
-      playerSoftwareName
-    );
+    return this.hasAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME)
+      ? this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME)
+      : playerSoftwareName;
   }
 
   get playerSoftwareVersion() {
-    return (
-      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION) ??
-      playerSoftwareVersion
-    );
+    return this.hasAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION)
+      ? this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION)
+      : playerSoftwareVersion;
   }
 
   get hls() {
