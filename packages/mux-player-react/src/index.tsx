@@ -6,6 +6,7 @@ import { toNativeProps } from "./common/utils";
 import { useRef } from "react";
 import { useCombinedRefs } from "./useCombinedRefs";
 import useObjectPropEffect from "./useObjectPropEffect";
+import { getPlayerVersion } from "./env";
 
 type ValueOf<T> = T[keyof T];
 
@@ -48,6 +49,8 @@ type MuxMediaPropTypes = {
 
 export type MuxPlayerProps = {
   defaultHiddenCaptions?: boolean;
+  playerSoftwareVersion?: string;
+  playerSoftwareName?: string;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
   metadataVideoId?: string;
@@ -163,28 +166,34 @@ const usePlayer = (
   return [remainingProps];
 };
 
-const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProps>(
-  (props, ref) => {
-    const {
-      /** @TODO Remove these once defaults are added to mux-player (CJP) */
-      forwardSeekOffset = 10,
-      backwardSeekOffset = 10,
-    } = props;
+const playerSoftwareVersion = getPlayerVersion();
+const playerSoftwareName = "mux-player-react";
 
-    const innerPlayerRef = useRef<MuxPlayerElement>(null);
-    const playerRef = useCombinedRefs(innerPlayerRef, ref);
-    const [remainingProps] = usePlayer(innerPlayerRef, props);
+const MuxPlayer = React.forwardRef<
+  MuxPlayerRefAttributes,
+  Omit<MuxPlayerProps, "playerSoftwareVersion" | "playerSoftwareName">
+>((props, ref) => {
+  const {
+    /** @TODO Remove these once defaults are added to mux-player (CJP) */
+    forwardSeekOffset = 10,
+    backwardSeekOffset = 10,
+  } = props;
 
-    return (
-      <MuxPlayerInternal
-        /** @TODO Fix types relationships (CJP) */
-        ref={playerRef as typeof innerPlayerRef}
-        forwardSeekOffset={forwardSeekOffset}
-        backwardSeekOffset={backwardSeekOffset}
-        {...remainingProps}
-      />
-    );
-  }
-);
+  const innerPlayerRef = useRef<MuxPlayerElement>(null);
+  const playerRef = useCombinedRefs(innerPlayerRef, ref);
+  const [remainingProps] = usePlayer(innerPlayerRef, props);
+
+  return (
+    <MuxPlayerInternal
+      /** @TODO Fix types relationships (CJP) */
+      ref={playerRef as typeof innerPlayerRef}
+      playerSoftwareName={playerSoftwareName}
+      playerSoftwareVersion={playerSoftwareVersion}
+      forwardSeekOffset={forwardSeekOffset}
+      backwardSeekOffset={backwardSeekOffset}
+      {...remainingProps}
+    />
+  );
+});
 
 export default MuxPlayer;

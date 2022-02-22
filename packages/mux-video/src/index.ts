@@ -19,6 +19,8 @@ type AttributeNames = {
   ENV_KEY: "env-key";
   DEBUG: "debug";
   METADATA_URL: "metadata-url";
+  PLAYER_SOFTWARE_VERSION: "player-software-version";
+  PLAYER_SOFTWARE_NAME: "player-software-name";
   METADATA_VIDEO_ID: "metadata-video-id";
   METADATA_VIDEO_TITLE: "metadata-video-title";
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
@@ -36,6 +38,8 @@ const Attributes: AttributeNames = {
   PLAYBACK_ID: "playback-id",
   METADATA_URL: "metadata-url",
   PREFER_MSE: "prefer-mse",
+  PLAYER_SOFTWARE_VERSION: "player-software-version",
+  PLAYER_SOFTWARE_NAME: "player-software-name",
   METADATA_VIDEO_ID: "metadata-video-id",
   METADATA_VIDEO_TITLE: "metadata-video-title",
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
@@ -65,6 +69,8 @@ class MuxVideoElement
   protected __hls?: PlaybackEngine;
   protected __muxPlayerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
+  protected __playerSoftwareVersion?: string;
+  protected __playerSoftwareName?: string;
 
   constructor() {
     super();
@@ -72,11 +78,19 @@ class MuxVideoElement
   }
 
   get playerSoftwareName() {
-    return playerSoftwareName;
+    return this.__playerSoftwareName ?? playerSoftwareName;
+  }
+
+  set playerSoftwareName(value: string | undefined) {
+    this.__playerSoftwareName = value;
   }
 
   get playerSoftwareVersion() {
-    return playerSoftwareVersion;
+    return this.__playerSoftwareVersion ?? playerSoftwareVersion;
+  }
+
+  set playerSoftwareVersion(value: string | undefined) {
+    this.__playerSoftwareVersion = value;
   }
 
   get hls() {
@@ -287,6 +301,12 @@ class MuxVideoElement
     newValue: string | null
   ) {
     switch (attrName) {
+      case Attributes.PLAYER_SOFTWARE_NAME:
+        this.playerSoftwareName = newValue ?? undefined;
+        break;
+      case Attributes.PLAYER_SOFTWARE_VERSION:
+        this.playerSoftwareVersion = newValue ?? undefined;
+        break;
       case "src":
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;

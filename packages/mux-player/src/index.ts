@@ -16,9 +16,9 @@ import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
 
 class MuxPlayerInternal {
-  el: MuxPlayerElement;
-  _resizeObserver?: ResizeObserver;
-  _state: Partial<MuxTemplateProps> = {
+  protected el: MuxPlayerElement;
+  protected _resizeObserver?: ResizeObserver;
+  protected _state: Partial<MuxTemplateProps> = {
     isDialogOpen: false,
     supportsAirPlay: false,
     supportsVolume: false,
@@ -242,6 +242,8 @@ const MuxVideoAttributes = {
   PLAYBACK_ID: "playback-id",
   METADATA_URL: "metadata-url",
   PREFER_MSE: "prefer-mse",
+  PLAYER_SOFTWARE_VERSION: "player-software-version",
+  PLAYER_SOFTWARE_NAME: "player-software-name",
   METADATA_VIDEO_ID: "metadata-video-id",
   METADATA_VIDEO_TITLE: "metadata-video-title",
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
@@ -267,6 +269,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackId: el.playbackId,
     poster: el.poster,
     metadata: el.metadata,
+    playerSoftwareName: el.playerSoftwareName,
+    playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
     preferMse: el.preferMse,
     streamType: el.streamType,
@@ -356,11 +360,17 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get playerSoftwareName() {
-    return playerSoftwareName;
+    return (
+      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME) ??
+      playerSoftwareName
+    );
   }
 
   get playerSoftwareVersion() {
-    return playerSoftwareVersion;
+    return (
+      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION) ??
+      playerSoftwareVersion
+    );
   }
 
   get hls() {
