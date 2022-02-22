@@ -226,22 +226,7 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
 `;
 
 // prettier-ignore
-export const LiveChromeExtraSmall = (props: MuxTemplateProps) => html`
-  <media-control-bar slot="top-chrome">
-    ${props.hasCaptions && MediaCaptionsButton(props)}
-    ${Spacer()}
-    ${props.supportsAirPlay && MediaAirplayButton()}
-    ${MediaPipButton()}
-  </media-control-bar>
-  <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
-  </div>
-  <media-control-bar>
-    ${MediaMuteButton()}
-    ${Spacer()}
-    ${MediaFullscreenButton()}
-  </media-control-bar>
-`;
+export const LiveChromeExtraSmall = VodChromeExtraSmall;
 
 // prettier-ignore
 export const LiveChromeSmall = (props: MuxTemplateProps) => html`
