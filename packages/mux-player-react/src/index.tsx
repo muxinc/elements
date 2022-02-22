@@ -47,6 +47,7 @@ type MuxMediaPropTypes = {
 };
 
 export type MuxPlayerProps = {
+  defaultHiddenCaptions?: boolean;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
   metadataVideoId?: string;
