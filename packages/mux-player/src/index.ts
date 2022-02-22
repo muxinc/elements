@@ -143,6 +143,7 @@ class MuxPlayerElement extends VideoApiElement {
     // }
 
     this.#setUpErrors();
+    this.#setUpLiveFirstPlay();
     this.#setUpMutedAutoplay();
     this.#setUpCaptionsButton();
     this.#setUpAirplayButton();
@@ -254,6 +255,27 @@ class MuxPlayerElement extends VideoApiElement {
         );
       };
       this.video.hls.on(Hls.Events.ERROR, onHlsError);
+    }
+  }
+
+  #setUpLiveFirstPlay() {
+    if (this.video?.hls) {
+      const Hls: any = this.video.hls.constructor;
+      if (!this.autoplay) {
+        this.video.hls.on(Hls.Events.LEVEL_LOADED, (e, data) => {
+          const isLive = data.details.live;
+
+          if (isLive) {
+            this.video.addEventListener(
+              "play",
+              () => {
+                this.video.currentTime = this.video.hls.liveSyncPosition;
+              },
+              { once: true }
+            );
+          }
+        });
+      }
     }
   }
 
