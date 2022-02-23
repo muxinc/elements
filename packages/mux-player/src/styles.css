@@ -13,7 +13,7 @@
 media-controller {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
-  --media-range-track-background: rgba(255, 255, 255, 0.5);
+  --media-range-track-background-color: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
   --media-aspect-ratio: auto;
   display: block;
