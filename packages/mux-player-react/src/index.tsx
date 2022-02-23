@@ -138,7 +138,8 @@ const usePlayer = (
     "paused",
     paused,
     ref,
-    (playerEl: HTMLMediaElement, pausedVal: boolean) => {
+    (playerEl: HTMLMediaElement, pausedVal?: boolean) => {
+      if (pausedVal == null) return;
       if (pausedVal) {
         playerEl.pause();
       } else {
