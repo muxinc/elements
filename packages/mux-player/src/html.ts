@@ -27,6 +27,14 @@ export function processPropertyIdentity(
   part: TemplatePart,
   value: unknown
 ): boolean {
+  if (part instanceof AttributeTemplatePart) {
+    const ns = part.attributeNamespace;
+    const oldValue = part.element.getAttributeNS(ns, part.attributeName);
+    if (String(value) !== oldValue) {
+      part.value = String(value);
+    }
+    return true;
+  }
   part.value = String(value);
   return true;
 }
@@ -41,7 +49,11 @@ export function processBooleanAttribute(
     // can't use this because on custom elements the props are always undefined
     // typeof part.element[part.attributeName as keyof Element] === 'boolean'
   ) {
-    part.booleanValue = value;
+    const ns = part.attributeNamespace;
+    const oldValue = part.element.hasAttributeNS(ns, part.attributeName);
+    if (value !== oldValue) {
+      part.booleanValue = value;
+    }
     return true;
   }
   return false;
