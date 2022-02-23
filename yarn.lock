@@ -8621,10 +8621,10 @@ history@^5.1.0:
   dependencies:
     "@babel/runtime" "^7.7.6"
 
-hls.js@1.0.11:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.0.11.tgz#8bc4adf7a80aaaa0378e5e3ad417bb9bb9bea3eb"
-  integrity sha512-KY6WUwtp7v+L4ec5hX6waNB3N0HOGkWfp3r7XcAZtUc6MT6TzbTsH5wYjQTQVQXQ6HVrDGqF2U5ovc+/R4E3lQ==
+hls.js@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.1.5.tgz#923a8a8cfdf09542578696d47c8ae435da981ffd"
+  integrity sha512-mQX5TSNtJEzGo5HPpvcQgCu+BWoKDQM6YYtg/KbgWkmVAcqOCvSTi0SuqG2ZJLXxIzdnFcKU2z7Mrw/YQWhPOA==
 
 hmac-drbg@^1.0.1:
   version "1.0.1"
@@ -10793,10 +10793,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.5.0.tgz#8d5d0559e0300650fa81ae32465ae78d6e7f5aca"
-  integrity sha512-skBmPy3rZW4P30xktoc5EGtjKSnaSnl9nZv9/iUjl3lh+1vcoZy85f2+9AuyZNIRE3XX4YNFXVCaAkc2ZXPaKQ==
+media-chrome@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.5.1.tgz#7246400288c048dbd126ae973d775bc3b17e7a3f"
+  integrity sha512-MZIX3djWaD1iKhoKV9HVZM0WckgckOh0LkvpZ6vQW26teYCIi9SEnlmx/MoGbLyIJ6+1jdTGPel39XcHEjSVdw==
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -11183,10 +11183,10 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mux-embed@^4.2.3:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.3.0.tgz#2ea49bb10ca7f7b8b221864d3551ba473e8b91b8"
-  integrity sha512-NcOaTNZq8qulxScHicm4PAzQzg09wx1mWDNRYNqSrovAtiCwTUDsgbkCOJrm8yu559A5tvfTc8zP7lIAO7lxZA==
+mux-embed@4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.4.4.tgz#eb0369e8da350841b9b2eb194d9fc52c2ce877ca"
+  integrity sha512-JIi2izC5bx0YZacjHMt/LybHcwuUnJUq0uIErE02x1IfQ+tj0lxTJMsqRIh9BHiJo0+4OM2k+uoStWGGthsXyA==
 
 nan@^2.12.1:
   version "2.15.0"
