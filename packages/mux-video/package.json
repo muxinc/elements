@@ -24,7 +24,7 @@
     "build:types": "npm-run-all --parallel copy-dts \"tsc {1}\" --",
     "tsc": "tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" dist/types",
-    "build": "npm-run-all --parallel build:types 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify'",
+    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify'",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
