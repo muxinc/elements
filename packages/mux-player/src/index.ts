@@ -262,14 +262,16 @@ class MuxPlayerElement extends VideoApiElement {
     if (this.video?.hls) {
       const Hls: any = this.video.hls.constructor;
       if (!this.autoplay) {
-        this.video.hls.on(Hls.Events.LEVEL_LOADED, (e, data) => {
-          const isLive = data.details.live;
+        this.video.hls.on(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
+          const isLive: boolean = data.details.live;
 
           if (isLive) {
-            this.video.addEventListener(
+            this.video?.addEventListener(
               "play",
               () => {
-                this.video.currentTime = this.video.hls.liveSyncPosition;
+                if (this.video?.hls?.liveSyncPosition) {
+                  this.video.currentTime = this.video.hls.liveSyncPosition;
+                }
               },
               { once: true }
             );
