@@ -284,6 +284,32 @@ class VideoApiElement extends HTMLElement {
       this.removeAttribute(AllowedVideoAttributes.MUTED);
     }
   }
+
+  get playsInline() {
+    return getVideoAttribute(this, AllowedVideoAttributes.PLAYSINLINE) != null;
+  }
+
+  set playsInline(val) {
+    if (val) {
+      this.setAttribute(AllowedVideoAttributes.PLAYSINLINE, "");
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute(AllowedVideoAttributes.PLAYSINLINE);
+    }
+  }
+
+  get preload() {
+    return getVideoAttribute(this, AllowedVideoAttributes.PRELOAD);
+  }
+
+  set preload(val) {
+    if (val) {
+      this.setAttribute(AllowedVideoAttributes.PRELOAD, val);
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute(AllowedVideoAttributes.PRELOAD);
+    }
+  }
 }
 
 function getVideoAttribute(el: VideoApiElement, name: string) {
