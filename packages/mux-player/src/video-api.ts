@@ -20,13 +20,20 @@ const CustomVideoAttributes = {
 };
 
 const AllowedVideoEvents = [
+  "abort",
+  "canplay",
+  "canplaythrough",
+  "emptied",
   "loadstart",
   "loadedmetadata",
+  "loadeddata",
   "progress",
   "durationchange",
   "volumechange",
   "ratechange",
   "resize",
+  "stalled",
+  "suspend",
   "waiting",
   "play",
   "playing",
