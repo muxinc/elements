@@ -38,6 +38,6 @@
 	metadata-video-id="video-id-54321"
 	metadata-video-title="Svelte Kit: Episode 2"
 	metadata-viewer-user-id="user-id-sveltekit007"
-	stream-type="vod"
+	stream-type="on-demand"
 />
 <a sveltekit:prefetch href="/">Browse Elements</a>
