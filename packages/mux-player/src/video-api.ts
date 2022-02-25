@@ -20,13 +20,20 @@ const CustomVideoAttributes = {
 };
 
 const AllowedVideoEvents = [
+  "abort",
+  "canplay",
+  "canplaythrough",
+  "emptied",
   "loadstart",
   "loadedmetadata",
+  "loadeddata",
   "progress",
   "durationchange",
   "volumechange",
   "ratechange",
   "resize",
+  "stalled",
+  "suspend",
   "waiting",
   "play",
   "playing",
@@ -275,6 +282,32 @@ class VideoApiElement extends HTMLElement {
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.MUTED);
+    }
+  }
+
+  get playsInline() {
+    return getVideoAttribute(this, AllowedVideoAttributes.PLAYSINLINE) != null;
+  }
+
+  set playsInline(val) {
+    if (val) {
+      this.setAttribute(AllowedVideoAttributes.PLAYSINLINE, "");
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute(AllowedVideoAttributes.PLAYSINLINE);
+    }
+  }
+
+  get preload() {
+    return getVideoAttribute(this, AllowedVideoAttributes.PRELOAD);
+  }
+
+  set preload(val) {
+    if (val) {
+      this.setAttribute(AllowedVideoAttributes.PRELOAD, val);
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute(AllowedVideoAttributes.PRELOAD);
     }
   }
 }
