@@ -68,13 +68,14 @@ const PlayerAttributes = {
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return {
-    src: el.src,
+    // Give priority to playbackId derrived asset URL's if playbackId is set.
+    src: !el.playbackId && el.src,
+    poster: !el.playbackId && el.poster,
     debug: el.debug,
     muted: el.muted,
     envKey: el.envKey,
     playbackId: el.playbackId,
     tokens: el.tokens,
-    poster: el.poster,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
@@ -307,18 +308,7 @@ class MuxPlayerElement extends VideoApiElement {
     newValue: string
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-
-    // Prevent forwarding the playback-id, the player sets the src attribute.
-    if (
-      attrName != MuxVideoAttributes.PLAYBACK_ID &&
-      MuxVideoAttributeNames.includes(attrName)
-    ) {
-      if (newValue === null) {
-        this.video?.removeAttribute(attrName);
-      } else {
-        this.video?.setAttribute(attrName, newValue);
-      }
-    }
+    this.#render();
   }
 
   get hls() {
@@ -333,14 +323,28 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the primary color used by the player.
    */
   get primaryColor() {
-    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR) ?? undefined;
+  }
+
+  /**
+   * Set the primary color used by the player.
+   */
+  set primaryColor(val: string | undefined) {
+    this.setAttribute(PlayerAttributes.PRIMARY_COLOR, `${val}`);
   }
 
   /**
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? undefined;
+  }
+
+  /**
+   * Set the secondary color used by the player.
+   */
+  set secondaryColor(val: string | undefined) {
+    this.setAttribute(PlayerAttributes.SECONDARY_COLOR, `${val}`);
   }
 
   /**
@@ -355,6 +359,13 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
+   * Set the offset applied to the forward seek button.
+   */
+  set forwardSeekOffset(val: number | undefined) {
+    this.setAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET, `${val}`);
+  }
+
+  /**
    * Get the offset applied to the backward seek button.
    */
   get backwardSeekOffset() {
@@ -363,6 +374,13 @@ class MuxPlayerElement extends VideoApiElement {
         this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET)
       ) ?? 10
     );
+  }
+
+  /**
+   * Set the offset applied to the forward seek button.
+   */
+  set backwardSeekOffset(val: number | undefined) {
+    this.setAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET, `${val}`);
   }
 
   /**
@@ -399,14 +417,28 @@ class MuxPlayerElement extends VideoApiElement {
   get playbackId() {
     // Don't get the mux-video attribute here because it could have the
     // playback token appended to it.
-    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID);
+    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID) ?? undefined;
   }
 
   /**
-   * Mux Data env key
+   * Set Mux asset playback id.
+   */
+  set playbackId(val: string | undefined) {
+    this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, `${val}`);
+  }
+
+  /**
+   * Get Mux Data env key.
    */
   get envKey() {
-    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY);
+    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY) ?? undefined;
+  }
+
+  /**
+   * Set Mux Data env key.
+   */
+  set envKey(val: string | undefined) {
+    this.setAttribute(MuxVideoAttributes.ENV_KEY, `${val}`);
   }
 
   /**
