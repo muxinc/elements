@@ -76,6 +76,11 @@ describe("<mux-player>", () => {
       muted
     ></mux-player>`);
 
+    assert.equal(player.playbackId, "DS00Spx1CV902MCtPj5WknGlR102V5HFkDe");
+
+    // Remove playbackId otherwise poster and src are derrived from the playbackId below.
+    player.removeAttribute("playback-id");
+
     const muxVideo = player.video;
 
     // controls should not be forwarded! player handles show/hide media-chrome.

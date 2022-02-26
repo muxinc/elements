@@ -72,6 +72,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     src: !el.playbackId && el.src,
     poster: !el.playbackId && el.poster,
     debug: el.debug,
+    autoplay: el.autoplay,
     muted: el.muted,
     envKey: el.envKey,
     playbackId: el.playbackId,
