@@ -15,6 +15,12 @@ import { toNumberOrUndefined } from "./utils";
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
 
+export type Tokens = {
+  playback?: string;
+  thumbnail?: string;
+  storyboard?: string;
+};
+
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
 const MediaChromeSizes = {
@@ -315,46 +321,6 @@ class MuxPlayerElement extends VideoApiElement {
     }
   }
 
-  get primaryColor() {
-    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
-  }
-
-  get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
-  }
-
-  get forwardSeekOffset() {
-    return (
-      toNumberOrUndefined(
-        this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET)
-      ) ?? 10
-    );
-  }
-
-  get backwardSeekOffset() {
-    return (
-      toNumberOrUndefined(
-        this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET)
-      ) ?? 10
-    );
-  }
-
-  get defaultHiddenCaptions() {
-    return this.hasAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
-  }
-
-  get playerSoftwareName() {
-    return this.hasAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME)
-      ? this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME)
-      : playerSoftwareName;
-  }
-
-  get playerSoftwareVersion() {
-    return this.hasAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION)
-      ? this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION)
-      : playerSoftwareVersion;
-  }
-
   get hls() {
     return this.video?.hls;
   }
@@ -364,8 +330,71 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
+   * Get the primary color used by the player.
+   */
+  get primaryColor() {
+    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+  }
+
+  /**
+   * Get the secondary color used by the player.
+   */
+  get secondaryColor() {
+    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+  }
+
+  /**
+   * Get the offset applied to the forward seek button.
+   */
+  get forwardSeekOffset() {
+    return (
+      toNumberOrUndefined(
+        this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET)
+      ) ?? 10
+    );
+  }
+
+  /**
+   * Get the offset applied to the backward seek button.
+   */
+  get backwardSeekOffset() {
+    return (
+      toNumberOrUndefined(
+        this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET)
+      ) ?? 10
+    );
+  }
+
+  /**
+   * Get the boolean value of default hidden captions.
+   * By default returns false so captions are enabled on initial load.
+   */
+  get defaultHiddenCaptions() {
+    return this.hasAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
+  }
+
+  /**
+   * Get the player software name. Used by Mux Data.
+   */
+  get playerSoftwareName() {
+    return (
+      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME) ??
+      playerSoftwareName
+    );
+  }
+
+  /**
+   * Get the player software version. Used by Mux Data.
+   */
+  get playerSoftwareVersion() {
+    return (
+      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION) ??
+      playerSoftwareVersion
+    );
+  }
+
+  /**
    * Get Mux asset playback id.
-   * @return {string?}
    */
   get playbackId() {
     // Don't get the mux-video attribute here because it could have the
@@ -375,7 +404,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Mux Data env key
-   * @return {string?}
    */
   get envKey() {
     return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY);
@@ -383,7 +411,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get video engine debug flag.
-   * @return {boolean}
    */
   get debug() {
     return getVideoAttribute(this, MuxVideoAttributes.DEBUG) != null;
@@ -391,7 +418,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set video engine debug flag.
-   * @param  {boolean} val
    */
   set debug(val) {
     if (val) {
@@ -403,7 +429,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get stream type.
-   * @return {string?}
    */
   get streamType() {
     return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE);
@@ -411,7 +436,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set stream type.
-   * @param  {string?} val
    */
   set streamType(val) {
     this.setAttribute(MuxVideoAttributes.STREAM_TYPE, `${val}`);
@@ -419,7 +443,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get the start time.
-   * @return {number}
    */
   get startTime() {
     return toNumberOrUndefined(
@@ -429,7 +452,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set the start time.
-   * @param  {number} val
    */
   set startTime(val) {
     this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
@@ -437,7 +459,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get the preference flag for using media source.
-   * @return {boolean}
    */
   get preferMse() {
     return getVideoAttribute(this, MuxVideoAttributes.PREFER_MSE) != null;
@@ -445,7 +466,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set the preference flag for using media source.
-   * @param  {boolean} val
    */
   set preferMse(val) {
     if (val) {
@@ -457,21 +477,22 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get the metadata object for Mux Data.
-   * @return {Metadata | undefined}
    */
-  get metadata() {
+  get metadata(): Readonly<Metadata> | undefined {
     return this.video?.metadata;
   }
 
   /**
    * Set the metadata object for Mux Data.
-   * @param  {Metadata | undefined} val
    */
-  set metadata(val) {
+  set metadata(val: Readonly<Metadata> | undefined) {
     if (this.video) this.video.metadata = val;
   }
 
-  get tokens() {
+  /**
+   * Get the signing tokens for the Mux asset URL's.
+   */
+  get tokens(): Tokens {
     const playback = this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
     const thumbnail = this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
     const storyboard = this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
@@ -483,7 +504,10 @@ class MuxPlayerElement extends VideoApiElement {
     };
   }
 
-  set tokens(val) {
+  /**
+   * Set the signing tokens for the Mux asset URL's.
+   */
+  set tokens(val: Tokens | undefined) {
     this.#tokens = val ?? {};
   }
 }
