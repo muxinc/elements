@@ -15,210 +15,6 @@ import { toNumberOrUndefined } from "./utils";
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
 
-class MuxPlayerInternal {
-  protected el: MuxPlayerElement;
-  protected _resizeObserver?: ResizeObserver;
-  protected _state: Partial<MuxTemplateProps> = {
-    isDialogOpen: false,
-    supportsAirPlay: false,
-    supportsVolume: false,
-  };
-
-  /**
-   * Create a MuxPlayerInternal instance.
-   * Properties used in this class are not exposed in the public API.
-   */
-  constructor(el: MuxPlayerElement) {
-    this.el = el;
-
-    el.attachShadow({ mode: "open" });
-    this._setState({ playerSize: getPlayerSize(this.el) });
-
-    el.querySelectorAll(":scope > track").forEach((track) => {
-      el.video?.append(track.cloneNode());
-    });
-
-    // Initialize all the attribute properties
-    // The attributeChangedCallback should handle forwarding the video attributes
-    // from the mux-player to the mux-video element.
-    Array.prototype.forEach.call(el.attributes, (attrNode) => {
-      el.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
-
-    /**
-     * @todo determine sensible defaults for preloading buffer
-     * @see https://github.com/muxinc/elements/issues/51
-     */
-    // if (el.video?.hls) {
-    //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   el.video.hls.config.maxMaxBufferLength = 2;
-    // }
-
-    this._setUpErrors(el);
-    this._setUpMutedAutoplay(el);
-    this._setUpCaptionsButton(el);
-    this._setUpAirplayButton(el);
-    this._setUpVolumeRange(el);
-  }
-
-  connectedCallback() {
-    this._renderChrome();
-    this._initResizing();
-  }
-
-  disconnectedCallback() {
-    this._deinitResizing();
-  }
-
-  _setState(newState: Record<string, any>) {
-    Object.assign(this._state, newState);
-    this._render();
-  }
-
-  _render() {
-    render(
-      template(getProps(this.el, this._state)),
-      this.el.shadowRoot as Node
-    );
-  }
-
-  _renderChrome() {
-    if (this._state.playerSize != getPlayerSize(this.el)) {
-      this._setState({ playerSize: getPlayerSize(this.el) });
-    }
-  }
-
-  _initResizing() {
-    this._resizeObserver = new ResizeObserver(() => this._renderChrome());
-    this._resizeObserver.observe(this.el);
-  }
-
-  _deinitResizing() {
-    this._resizeObserver?.disconnect();
-  }
-
-  _setUpErrors(el: MuxPlayerElement) {
-    const onError = (event: Event) => {
-      let { detail: error }: { detail: any } = event as CustomEvent;
-
-      if (!(error instanceof MediaError)) {
-        error = new MediaError(error.message, error.code, error.fatal);
-      }
-
-      // Don't show an error dialog if it's not fatal.
-      if (!error?.fatal) {
-        return;
-      }
-
-      let dialog;
-      switch (error.code) {
-        case MediaError.MEDIA_ERR_NETWORK:
-          dialog = {
-            title: "Network Error",
-            message: `${error.message} Please reload the player and try again.`,
-          };
-          break;
-        case MediaError.MEDIA_ERR_DECODE:
-          dialog = {
-            title: "Media Error",
-            message: `${error.message} Please reload the player and try again.`,
-          };
-          break;
-        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          dialog = {
-            title: "Source Not Supported",
-            message: error.message,
-          };
-          break;
-        default:
-          dialog = {
-            title: "Error",
-            message: error.message,
-          };
-          break;
-      }
-
-      this._setState({ isDialogOpen: true, dialog });
-    };
-
-    el.addEventListener("error", onError);
-
-    el.video?.addEventListener("error", () => {
-      const { message, code } = el.video?.error ?? {};
-      el.dispatchEvent(
-        new CustomEvent("error", {
-          detail: new MediaError(message, code),
-        })
-      );
-    });
-
-    if (el.video?.hls) {
-      const Hls: any = el.video.hls.constructor;
-      const onHlsError = (_event: any, data: any) => {
-        const errorCodeMap = {
-          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-        };
-        const error = new MediaError("", errorCodeMap[data.type]);
-        error.fatal = data.fatal;
-        error.data = data;
-        el.dispatchEvent(
-          new CustomEvent("error", {
-            detail: error,
-          })
-        );
-      };
-      el.video.hls.on(Hls.Events.ERROR, onHlsError);
-    }
-  }
-
-  _setUpMutedAutoplay(el: MuxPlayerElement) {
-    if (el.video?.hls) {
-      const Hls: any = el.video.hls.constructor;
-      if (el.autoplay) {
-        el.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          var playPromise = el.video?.play();
-          if (playPromise) {
-            playPromise.catch((error: Error) => {
-              console.log(`${error.name} ${error.message}`);
-              if (error.name === "NotAllowedError") {
-                console.log("Attempting to play with video muted");
-                if (el.video) el.video.muted = true;
-                return el.video?.play().catch(console.error);
-              }
-            });
-          }
-        });
-      }
-    }
-  }
-
-  _setUpCaptionsButton(el: MuxPlayerElement) {
-    const onTrackCountChange = () => this._render();
-    el.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
-    el.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
-  }
-
-  _setUpAirplayButton(el: MuxPlayerElement) {
-    if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
-      const onPlaybackTargetAvailability = (evt: any) => {
-        const supportsAirPlay = evt.availability === "available";
-        this._setState({ supportsAirPlay });
-      };
-
-      el.video?.addEventListener(
-        "webkitplaybacktargetavailabilitychanged",
-        onPlaybackTargetAvailability
-      );
-    }
-  }
-
-  async _setUpVolumeRange(el: MuxPlayerElement) {
-    const supportsVolume = await hasVolumeSupportAsync();
-    this._setState({ supportsVolume });
-  }
-}
-
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
 const MediaChromeSizes = {
@@ -295,11 +91,14 @@ const PlayerAttributeNames = Object.values(PlayerAttributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = "mux-player";
 
-// Until real private properties are supported create private internals.
-const internals = new WeakMap();
-
 class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
+  #resizeObserver?: ResizeObserver;
+  #state: Partial<MuxTemplateProps> = {
+    isDialogOpen: false,
+    supportsAirPlay: false,
+    supportsVolume: false,
+  };
 
   static get observedAttributes() {
     return [
@@ -311,15 +110,189 @@ class MuxPlayerElement extends VideoApiElement {
 
   constructor() {
     super();
-    internals.set(this, new MuxPlayerInternal(this));
+
+    this.attachShadow({ mode: "open" });
+    this.#setState({ playerSize: getPlayerSize(this) });
+
+    this.querySelectorAll(":scope > track").forEach((track) => {
+      this.video?.append(track.cloneNode());
+    });
+
+    // Initialize all the attribute properties
+    // The attributeChangedCallback should handle forwarding the video attributes
+    // from the mux-player to the mux-video element.
+    Array.prototype.forEach.call(this.attributes, (attrNode) => {
+      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
+    });
+
+    /**
+     * @todo determine sensible defaults for preloading buffer
+     * @see https://github.com/muxinc/elements/issues/51
+     */
+    // if (el.video?.hls) {
+    //   // Temporarily here to load less segments on page load, remove later!!!!
+    //   el.video.hls.config.maxMaxBufferLength = 2;
+    // }
+
+    this.#setUpErrors();
+    this.#setUpMutedAutoplay();
+    this.#setUpCaptionsButton();
+    this.#setUpAirplayButton();
+    this.#setUpVolumeRange();
   }
 
   connectedCallback() {
-    internals.get(this).connectedCallback();
+    this.#renderChrome();
+    this.#initResizing();
   }
 
   disconnectedCallback() {
-    internals.get(this).disconnectedCallback();
+    this.#deinitResizing();
+  }
+
+  #setState(newState: Record<string, any>) {
+    Object.assign(this.#state, newState);
+    this.#render();
+  }
+
+  #render() {
+    render(template(getProps(this, this.#state)), this.shadowRoot as Node);
+  }
+
+  #renderChrome() {
+    if (this.#state.playerSize != getPlayerSize(this)) {
+      this.#setState({ playerSize: getPlayerSize(this) });
+    }
+  }
+
+  #initResizing() {
+    this.#resizeObserver = new ResizeObserver(() => this.#renderChrome());
+    this.#resizeObserver.observe(this);
+  }
+
+  #deinitResizing() {
+    this.#resizeObserver?.disconnect();
+  }
+
+  #setUpErrors() {
+    const onError = (event: Event) => {
+      let { detail: error }: { detail: any } = event as CustomEvent;
+
+      if (!(error instanceof MediaError)) {
+        error = new MediaError(error.message, error.code, error.fatal);
+      }
+
+      // Don't show an error dialog if it's not fatal.
+      if (!error?.fatal) {
+        return;
+      }
+
+      let dialog;
+      switch (error.code) {
+        case MediaError.MEDIA_ERR_NETWORK:
+          dialog = {
+            title: "Network Error",
+            message: `${error.message} Please reload the player and try again.`,
+          };
+          break;
+        case MediaError.MEDIA_ERR_DECODE:
+          dialog = {
+            title: "Media Error",
+            message: `${error.message} Please reload the player and try again.`,
+          };
+          break;
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+          dialog = {
+            title: "Source Not Supported",
+            message: error.message,
+          };
+          break;
+        default:
+          dialog = {
+            title: "Error",
+            message: error.message,
+          };
+          break;
+      }
+
+      this.#setState({ isDialogOpen: true, dialog });
+    };
+
+    this.addEventListener("error", onError);
+
+    this.video?.addEventListener("error", () => {
+      const { message, code } = this.video?.error ?? {};
+      this.dispatchEvent(
+        new CustomEvent("error", {
+          detail: new MediaError(message, code),
+        })
+      );
+    });
+
+    if (this.video?.hls) {
+      const Hls: any = this.video.hls.constructor;
+      const onHlsError = (_event: any, data: any) => {
+        const errorCodeMap = {
+          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
+          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+        };
+        const error = new MediaError("", errorCodeMap[data.type]);
+        error.fatal = data.fatal;
+        error.data = data;
+        this.dispatchEvent(
+          new CustomEvent("error", {
+            detail: error,
+          })
+        );
+      };
+      this.video.hls.on(Hls.Events.ERROR, onHlsError);
+    }
+  }
+
+  #setUpMutedAutoplay() {
+    if (this.video?.hls) {
+      const Hls: any = this.video.hls.constructor;
+      if (this.autoplay) {
+        this.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          var playPromise = this.video?.play();
+          if (playPromise) {
+            playPromise.catch((error: Error) => {
+              console.log(`${error.name} ${error.message}`);
+              if (error.name === "NotAllowedError") {
+                console.log("Attempting to play with video muted");
+                if (this.video) this.video.muted = true;
+                return this.video?.play().catch(console.error);
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  #setUpCaptionsButton() {
+    const onTrackCountChange = () => this.#render();
+    this.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
+    this.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
+  }
+
+  #setUpAirplayButton() {
+    if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
+      const onPlaybackTargetAvailability = (evt: any) => {
+        const supportsAirPlay = evt.availability === "available";
+        this.#setState({ supportsAirPlay });
+      };
+
+      this.video?.addEventListener(
+        "webkitplaybacktargetavailabilitychanged",
+        onPlaybackTargetAvailability
+      );
+    }
+  }
+
+  async #setUpVolumeRange() {
+    const supportsVolume = await hasVolumeSupportAsync();
+    this.#setState({ supportsVolume });
   }
 
   attributeChangedCallback(
