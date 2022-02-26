@@ -1,4 +1,4 @@
-import { stylePropsToString } from "./utils";
+import { stylePropsToString, toQuery } from "./utils";
 import type MuxPlayerElement from ".";
 
 /* eslint-disable */
@@ -13,11 +13,27 @@ const getEnvPlayerVersion = () => {
 const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
-export const getPosterURLFromPlaybackId = (playbackId?: string) =>
-  `https://image.mux.com/${playbackId}/thumbnail.jpg`;
+export const getSrcFromPlaybackId = (playbackId?: string, token?: string) => {
+  return `https://stream.mux.com/${playbackId}.m3u8${toQuery({ token })}`;
+};
 
-export const getStoryboardURLFromPlaybackId = (playbackId?: string) =>
-  `https://image.mux.com/${playbackId}/storyboard.vtt`;
+export const getPosterURLFromPlaybackId = (
+  playbackId?: string,
+  token?: string
+) => {
+  return `https://image.mux.com/${playbackId}/thumbnail.jpg${toQuery({
+    token,
+  })}`;
+};
+
+export const getStoryboardURLFromPlaybackId = (
+  playbackId?: string,
+  token?: string
+) => {
+  return `https://image.mux.com/${playbackId}/storyboard.vtt${toQuery({
+    token,
+  })}`;
+};
 
 let testMediaEl: HTMLMediaElement | undefined;
 export const getTestMediaEl = (nodeName = "video") => {

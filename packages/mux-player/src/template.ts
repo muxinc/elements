@@ -1,6 +1,7 @@
 import "./dialog";
 import {
   getChromeStylesFromProps,
+  getSrcFromPlaybackId,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
 } from "./helpers";
@@ -44,14 +45,18 @@ export const template = (props: MuxTemplateProps) => html`
       debug="${props.debug}"
       prefer-mse="${props.preferMse}"
       start-time="${props.startTime != null ? props.startTime : false}"
+      src="${!!props.src
+        ? props.src
+        : props.playbackId
+        ? getSrcFromPlaybackId(props.playbackId, props.tokens.playback)
+        : false}"
       poster="${!!props.poster
         ? props.poster
         : props.playbackId
-        ? getPosterURLFromPlaybackId(props.playbackId)
+        ? getPosterURLFromPlaybackId(props.playbackId, props.tokens.thumbnail)
         : false}"
       player-software-name="${props.playerSoftwareName}"
       player-software-version="${props.playerSoftwareVersion}"
-      playback-id="${props.playbackId ?? false}"
       env-key="${props.envKey ?? false}"
       stream-type="${props.streamType ?? false}"
       metadata-video-id="${props.metadata?.video_id ?? false}"
@@ -65,7 +70,10 @@ export const template = (props: MuxTemplateProps) => html`
             label="thumbnails"
             default
             kind="metadata"
-            src="${getStoryboardURLFromPlaybackId(props.playbackId)}"
+            src="${getStoryboardURLFromPlaybackId(
+              props.playbackId,
+              props.tokens.storyboard
+            )}"
           />`
         : ""}
     </mux-video>

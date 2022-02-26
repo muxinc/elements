@@ -17,4 +17,9 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   dialog: { title: string; message: string };
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
+  tokens: {
+    playback?: string;
+    thumbnail?: string;
+    storyboard?: string;
+  };
 };
