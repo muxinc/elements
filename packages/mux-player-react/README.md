@@ -80,6 +80,7 @@ const MuxPlayerExample = () => {
 | `envKey`                | `string`                             | Your Mux Data environment key. Note that this is different than your API Key. Get your env key from the "Mux Data" part of your [Mux Environments Dashboard](https://dashboard.mux.com/environments).                                                                                                                                                                                            | N/A           |
 | `streamType`            | `"on-demand" \| "live" \| "ll-live"` | The type of stream associated with your Mux Asset. Used to determine what UI/controls to show and what optimizations to make for playback.                                                                                                                                                                                                                                                       | `"on-demand"` |
 | `metadata`              | `object`\*                           | An object for configuring any metadata you'd like to send to Mux Data. For more, see the [Metadata section](#metadata), below.                                                                                                                                                                                                                                                                   | N/A           |
+| `tokens`                | `object`\*                           | An object for configuring any tokens for your assets if you're using [Signed URLs](https://docs.mux.com/guides/video/secure-video-playback). For more, see the [Tokens section](#tokens), below.                                                                                                                                                                                                 | N/A           |
 | `debug`                 | `boolean`                            | Enables debug mode for the underlying playback engine (currently hls.js) and mux-embed, providing additional information in the console.                                                                                                                                                                                                                                                         | `false`       |
 | `startTime`             | `number` (seconds)                   | Specify where in the media's timeline you want playback to start.                                                                                                                                                                                                                                                                                                                                | `0`           |
 | `preferMse`             | `boolean`                            | Use the underlying playback engine (currently hls.js), even if native playback is supported (e.g. in Safari). For more, see the section on [`preferMse`](#preferMse)                                                                                                                                                                                                                             | `false`       |
@@ -143,6 +144,26 @@ Example:
     viewer_user_id: "user-id-bc-789",
   }}
   envKey="YOUR_MUX_DATA_ENV_KEY"
+/>
+```
+
+### Tokens
+
+Using JSON Web Tokens allows you to secure your media content from public playback, and Mux Video provides a way to do [set this up for your assets](https://docs.mux.com/guides/video/secure-video-playback). To apply these tokens in `<MuxPlayer/>`, you can use the `tokens` property. `<MuxPlayer/>` will automatically generate appropriate URLs for each asset for any provided tokens. The possible tokens are `playback` (for the video asset/`playback-id`), `thumbnail` (for the poster image), and `storyboard` (for the seek preview thumbnail images).
+
+Example:
+
+```jsx
+<MuxPlayer
+  playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
+  tokens={{
+    playback:
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0Mzg5NjEsImF1ZCI6InYiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hWrdcJDa8FJCfVFP19oJ-9FSEVk9eB6DTOCRrucnzsrtUoZbb1OFe7swpQ38Fp3hZNNIt7-LWjdOl90TF4ucu7mhu42qyk3_i054RtmEZyQaj5Qjm3_H4sa2jLO-0QNSnOfp1A9x-fI8M_giGLg-byJPuu_eUqu1MW9bILLly_9gq8m0cNKghUa9xTMJgFmaya4XYudy5Mt2Fu72MiS3csUP3xhKlONVnGHlMRqB-dBVOgAJrayeUquAhaNY346oFBUWVM-EcAZ9G2ARtPakfy4Wpv5BsRKEGtR81P-k7EW8g27U0FKLlrvLkUz3Z-JYu53CRcJUvjkC9sDMrZLcTA",
+    thumbnail:
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTMzMTksImF1ZCI6InQiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hNBRo1-XDTT1CJMOxf90-8JPJzAygwm-3pVNBj31I7DEukSVRKVgUuhquEJbYXx1xg27xRMu8OVQxVob6jWHdjSwTyygAY040bqdyDxLsRtkDcVxwZ78iiZwtA1eTkxxY-410Ma3HbhNsG0Qjo5AWX46IhD9ARKHL-MPGaKda7FSx8J8jxa3hQ8_M1AKMsx7PrgJYOtW6n0mvkupEAFYRJlqIbkERSBeWChdrjCLYAcXRar5nfdNWlWST2pfllqz8pfJSTWjQRumTonC5BGB89jZUimHnuzkRXm_LeGyXbfZmBKb4d0j9YyGVnTPePqyVPsAQ-bzcfFDU0L67GDgyw",
+    storyboard:
+      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTM0OTgsImF1ZCI6InMiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.PKEybohVK0JyJGX_3iubRnHZx1ve5OmPmyfZdaKb17N2wVMQCYNltTc-gCUTU7EIKGeTtVOIITCSsIeTgXcI667B2GWJ5juDIErz1h-NQsPIfB-FsUeuWx2rYOap4G3FdwEIjaGc29HPncw-mG0JLcqkMB7jtDxjBY_-YlpjFYJF_z7r-1yIJM7mF3rl8YqeWstojC8oh2Iv2VRkuTyPE31QVI6fQcet5PIRWHudUIGWcNiWM56vwZskJ6qod8UvYpha7K5rhshh0Xdhnvq3Y9b6PXl3fy6VKCZIyszlPVje0IR2bR9iHDXnGbawivUsI65IDm-ZEoJrOzmZctMWAQ",
+  }}
 />
 ```
 
