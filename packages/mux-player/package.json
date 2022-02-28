@@ -28,7 +28,7 @@
   "dependencies": {
     "@github/template-parts": "^0.4.0",
     "@mux-elements/mux-video": "^0.2.5",
-    "media-chrome": "0.5.1"
+    "media-chrome": "0.5.2"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",
