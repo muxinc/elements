@@ -259,14 +259,19 @@ const PlayerAttributes = {
   SECONDARY_COLOR: "secondary-color",
   FORWARD_SEEK_OFFSET: "forward-seek-offset",
   BACKWARD_SEEK_OFFSET: "backward-seek-offset",
+  PLAYBACK_TOKEN: "playback-token",
+  THUMBNAIL_TOKEN: "thumbnail-token",
+  STORYBOARD_TOKEN: "storyboard-token",
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return {
+    src: el.src,
     debug: el.debug,
     muted: el.muted,
     envKey: el.envKey,
     playbackId: el.playbackId,
+    tokens: el.tokens,
     poster: el.poster,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
@@ -294,6 +299,8 @@ const playerSoftwareName = "mux-player";
 const internals = new WeakMap();
 
 class MuxPlayerElement extends VideoApiElement {
+  #tokens = {};
+
   static get observedAttributes() {
     return [
       ...(VideoApiElement.observedAttributes ?? []),
@@ -322,7 +329,11 @@ class MuxPlayerElement extends VideoApiElement {
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (MuxVideoAttributeNames.includes(attrName)) {
+    // Prevent forwarding the playback-id, the player sets the src attribute.
+    if (
+      attrName != MuxVideoAttributes.PLAYBACK_ID &&
+      MuxVideoAttributeNames.includes(attrName)
+    ) {
       if (newValue === null) {
         this.video?.removeAttribute(attrName);
       } else {
@@ -384,7 +395,9 @@ class MuxPlayerElement extends VideoApiElement {
    * @return {string?}
    */
   get playbackId() {
-    return getVideoAttribute(this, MuxVideoAttributes.PLAYBACK_ID);
+    // Don't get the mux-video attribute here because it could have the
+    // playback token appended to it.
+    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID);
   }
 
   /**
@@ -483,6 +496,22 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set metadata(val) {
     if (this.video) this.video.metadata = val;
+  }
+
+  get tokens() {
+    const playback = this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+    const thumbnail = this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
+    const storyboard = this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
+    return {
+      ...this.#tokens,
+      ...(playback != null ? { playback } : {}),
+      ...(thumbnail != null ? { thumbnail } : {}),
+      ...(storyboard != null ? { storyboard } : {}),
+    };
+  }
+
+  set tokens(val) {
+    this.#tokens = val ?? {};
   }
 }
 

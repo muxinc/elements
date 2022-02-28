@@ -21,3 +21,16 @@ export function toNumberOrUndefined(val: any) {
   const num = +val;
   return !Number.isNaN(num) ? num : undefined;
 }
+
+export function toQuery(obj: Record<string, any>) {
+  const params = toParams(obj).toString();
+  return params ? "?" + params : "";
+}
+
+export function toParams(obj: Record<string, any>) {
+  let params: Record<string, any> = {};
+  for (let key in obj) {
+    if (obj[key] != null) params[key] = obj[key];
+  }
+  return new URLSearchParams(params);
+}

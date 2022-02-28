@@ -2,17 +2,6 @@ import { fixture, assert, aTimeout } from "@open-wc/testing";
 import "../src/index.ts";
 
 describe("<mux-player>", () => {
-  it("forwards attrs to mux-video", async function () {
-    const player = await fixture(`<mux-player
-      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-    ></mux-player>`);
-    const muxVideo = player.shadowRoot.querySelector("mux-video");
-    await assert.equal(
-      muxVideo.getAttribute("playback-id"),
-      "DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-    );
-  });
-
   it("has a Mux specific API", async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
