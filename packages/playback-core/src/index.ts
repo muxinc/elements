@@ -322,28 +322,28 @@ export const loadMedia = (
       mediaEl.removeAttribute("src");
     }
   } else if (hls && src) {
-    hls.on(Hls.Events.ERROR, (_event, data) => {
-      if (data.fatal) {
-        switch (data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            // try to recover network error
-            console.error("fatal network error encountered, try to recover");
-            hls.startLoad();
-            break;
-          case Hls.ErrorTypes.MEDIA_ERROR:
-            console.error("fatal media error encountered, try to recover");
-            hls.recoverMediaError();
-            break;
-          default:
-            // cannot recover
-            console.error(
-              "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
-            );
-            hls.destroy();
-            break;
-        }
-      }
-    });
+    // hls.on(Hls.Events.ERROR, (_event, data) => {
+    //   if (data.fatal) {
+    //     switch (data.type) {
+    //       case Hls.ErrorTypes.NETWORK_ERROR:
+    //         // try to recover network error
+    //         console.error("fatal network error encountered, try to recover");
+    //         hls.startLoad();
+    //         break;
+    //       case Hls.ErrorTypes.MEDIA_ERROR:
+    //         console.error("fatal media error encountered, try to recover");
+    //         hls.recoverMediaError();
+    //         break;
+    //       default:
+    //         // cannot recover
+    //         console.error(
+    //           "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
+    //         );
+    //         hls.destroy();
+    //         break;
+    //     }
+    //   }
+    // });
 
     const forceHiddenThumbnails = () => {
       // Keeping this a forEach in case we want to expand the scope of this.
