@@ -359,6 +359,27 @@ export const loadMedia = (
     hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
 
+    // When we are not auto-playing, we should seek to the live sync position
+    // This will seek first play event of *any* live video including event-type,
+    // which probably shouldn't seek
+    if (!props.autoplay) {
+      hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
+        const isLive: boolean = data.details.live;
+
+        if (isLive) {
+          mediaEl.addEventListener(
+            "play",
+            () => {
+              if (hls?.liveSyncPosition) {
+                mediaEl.currentTime = hls.liveSyncPosition;
+              }
+            },
+            { once: true }
+          );
+        }
+      });
+    }
+
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
   } else {
