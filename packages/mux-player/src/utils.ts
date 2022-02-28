@@ -28,8 +28,9 @@ export function toQuery(obj: Record<string, any>) {
 }
 
 export function toParams(obj: Record<string, any>) {
+  let params: Record<string, any> = {};
   for (let key in obj) {
-    if (obj[key] == null) delete obj[key];
+    if (obj[key] != null) params[key] = obj[key];
   }
-  return new URLSearchParams(obj);
+  return new URLSearchParams(params);
 }
