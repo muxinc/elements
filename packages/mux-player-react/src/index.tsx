@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import type { CSSProperties } from "react";
 import "@mux-elements/mux-player";
 import type MuxPlayerElement from "@mux-elements/mux-player";
+import type { Tokens } from "@mux-elements/mux-player";
 import { toNativeProps } from "./common/utils";
 import { useRef } from "react";
 import { useCombinedRefs } from "./useCombinedRefs";
@@ -59,6 +60,7 @@ export type MuxPlayerProps = {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  tokens?: Tokens;
   onLoadStart?: EventListener;
   onLoadedMetadata?: EventListener;
   onProgress?: EventListener;
@@ -130,10 +132,14 @@ const usePlayer = (
     onError,
     onPlayerReady,
     metadata,
+    tokens,
     paused,
+    playbackId,
     ...remainingProps
   } = props;
   useObjectPropEffect("metadata", metadata, ref);
+  useObjectPropEffect("tokens", tokens, ref);
+  useObjectPropEffect("playbackId", playbackId, ref);
   useObjectPropEffect(
     "paused",
     paused,
