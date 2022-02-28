@@ -15,209 +15,11 @@ import { toNumberOrUndefined } from "./utils";
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
 
-class MuxPlayerInternal {
-  protected el: MuxPlayerElement;
-  protected _resizeObserver?: ResizeObserver;
-  protected _state: Partial<MuxTemplateProps> = {
-    isDialogOpen: false,
-    supportsAirPlay: false,
-    supportsVolume: false,
-  };
-
-  /**
-   * Create a MuxPlayerInternal instance.
-   * Properties used in this class are not exposed in the public API.
-   */
-  constructor(el: MuxPlayerElement) {
-    this.el = el;
-
-    el.attachShadow({ mode: "open" });
-    this._setState({ playerSize: getPlayerSize(this.el) });
-
-    el.querySelectorAll(":scope > track").forEach((track) => {
-      el.video?.append(track.cloneNode());
-    });
-
-    // Initialize all the attribute properties
-    // The attributeChangedCallback should handle forwarding the video attributes
-    // from the mux-player to the mux-video element.
-    Array.prototype.forEach.call(el.attributes, (attrNode) => {
-      el.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
-
-    /**
-     * @todo determine sensible defaults for preloading buffer
-     * @see https://github.com/muxinc/elements/issues/51
-     */
-    // if (el.video?.hls) {
-    //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   el.video.hls.config.maxMaxBufferLength = 2;
-    // }
-
-    this._setUpErrors(el);
-    this._setUpMutedAutoplay(el);
-    this._setUpCaptionsButton(el);
-    this._setUpAirplayButton(el);
-    this._setUpVolumeRange(el);
-  }
-
-  connectedCallback() {
-    this._renderChrome();
-    this._initResizing();
-  }
-
-  disconnectedCallback() {
-    this._deinitResizing();
-  }
-
-  _setState(newState: Record<string, any>) {
-    Object.assign(this._state, newState);
-    this._render();
-  }
-
-  _render() {
-    render(
-      template(getProps(this.el, this._state)),
-      this.el.shadowRoot as Node
-    );
-  }
-
-  _renderChrome() {
-    if (this._state.playerSize != getPlayerSize(this.el)) {
-      this._setState({ playerSize: getPlayerSize(this.el) });
-    }
-  }
-
-  _initResizing() {
-    this._resizeObserver = new ResizeObserver(() => this._renderChrome());
-    this._resizeObserver.observe(this.el);
-  }
-
-  _deinitResizing() {
-    this._resizeObserver?.disconnect();
-  }
-
-  _setUpErrors(el: MuxPlayerElement) {
-    const onError = (event: Event) => {
-      let { detail: error }: { detail: any } = event as CustomEvent;
-
-      if (!(error instanceof MediaError)) {
-        error = new MediaError(error.message, error.code, error.fatal);
-      }
-
-      // Don't show an error dialog if it's not fatal.
-      if (!error?.fatal) {
-        return;
-      }
-
-      let dialog;
-      switch (error.code) {
-        case MediaError.MEDIA_ERR_NETWORK:
-          dialog = {
-            title: "Network Error",
-            message: `${error.message} Please reload the player and try again.`,
-          };
-          break;
-        case MediaError.MEDIA_ERR_DECODE:
-          dialog = {
-            title: "Media Error",
-            message: `${error.message} Please reload the player and try again.`,
-          };
-          break;
-        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-          dialog = {
-            title: "Source Not Supported",
-            message: error.message,
-          };
-          break;
-        default:
-          dialog = {
-            title: "Error",
-            message: error.message,
-          };
-          break;
-      }
-
-      this._setState({ isDialogOpen: true, dialog });
-    };
-
-    el.addEventListener("error", onError);
-
-    el.video?.addEventListener("error", () => {
-      const { message, code } = el.video?.error ?? {};
-      el.dispatchEvent(
-        new CustomEvent("error", {
-          detail: new MediaError(message, code),
-        })
-      );
-    });
-
-    if (el.video?.hls) {
-      const Hls: any = el.video.hls.constructor;
-      const onHlsError = (_event: any, data: any) => {
-        const errorCodeMap = {
-          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-        };
-        const error = new MediaError("", errorCodeMap[data.type]);
-        error.fatal = data.fatal;
-        error.data = data;
-        el.dispatchEvent(
-          new CustomEvent("error", {
-            detail: error,
-          })
-        );
-      };
-      el.video.hls.on(Hls.Events.ERROR, onHlsError);
-    }
-  }
-
-  _setUpMutedAutoplay(el: MuxPlayerElement) {
-    if (el.video?.hls) {
-      const Hls: any = el.video.hls.constructor;
-      if (el.autoplay) {
-        el.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          var playPromise = el.video?.play();
-          if (playPromise) {
-            playPromise.catch((error: Error) => {
-              console.log(`${error.name} ${error.message}`);
-              if (error.name === "NotAllowedError") {
-                console.log("Attempting to play with video muted");
-                if (el.video) el.video.muted = true;
-                return el.video?.play().catch(console.error);
-              }
-            });
-          }
-        });
-      }
-    }
-  }
-
-  _setUpCaptionsButton(el: MuxPlayerElement) {
-    const onTrackCountChange = () => this._render();
-    el.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
-    el.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
-  }
-
-  _setUpAirplayButton(el: MuxPlayerElement) {
-    if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
-      const onPlaybackTargetAvailability = (evt: any) => {
-        const supportsAirPlay = evt.availability === "available";
-        this._setState({ supportsAirPlay });
-      };
-
-      el.video?.addEventListener(
-        "webkitplaybacktargetavailabilitychanged",
-        onPlaybackTargetAvailability
-      );
-    }
-  }
-
-  async _setUpVolumeRange(el: MuxPlayerElement) {
-    const supportsVolume = await hasVolumeSupportAsync();
-    this._setState({ supportsVolume });
-  }
-}
+export type Tokens = {
+  playback?: string;
+  thumbnail?: string;
+  storyboard?: string;
+};
 
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
@@ -266,13 +68,15 @@ const PlayerAttributes = {
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return {
-    src: el.src,
+    // Give priority to playbackId derrived asset URL's if playbackId is set.
+    src: !el.playbackId && el.src,
+    poster: !el.playbackId && el.poster,
     debug: el.debug,
+    autoplay: el.autoplay,
     muted: el.muted,
     envKey: el.envKey,
     playbackId: el.playbackId,
     tokens: el.tokens,
-    poster: el.poster,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
@@ -295,11 +99,14 @@ const PlayerAttributeNames = Object.values(PlayerAttributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = "mux-player";
 
-// Until real private properties are supported create private internals.
-const internals = new WeakMap();
-
 class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
+  #resizeObserver?: ResizeObserver;
+  #state: Partial<MuxTemplateProps> = {
+    isDialogOpen: false,
+    supportsAirPlay: false,
+    supportsVolume: false,
+  };
 
   static get observedAttributes() {
     return [
@@ -311,15 +118,189 @@ class MuxPlayerElement extends VideoApiElement {
 
   constructor() {
     super();
-    internals.set(this, new MuxPlayerInternal(this));
+
+    this.attachShadow({ mode: "open" });
+    this.#setState({ playerSize: getPlayerSize(this) });
+
+    this.querySelectorAll(":scope > track").forEach((track) => {
+      this.video?.append(track.cloneNode());
+    });
+
+    // Initialize all the attribute properties
+    // The attributeChangedCallback should handle forwarding the video attributes
+    // from the mux-player to the mux-video element.
+    Array.prototype.forEach.call(this.attributes, (attrNode) => {
+      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
+    });
+
+    /**
+     * @todo determine sensible defaults for preloading buffer
+     * @see https://github.com/muxinc/elements/issues/51
+     */
+    // if (el.video?.hls) {
+    //   // Temporarily here to load less segments on page load, remove later!!!!
+    //   el.video.hls.config.maxMaxBufferLength = 2;
+    // }
+
+    this.#setUpErrors();
+    this.#setUpMutedAutoplay();
+    this.#setUpCaptionsButton();
+    this.#setUpAirplayButton();
+    this.#setUpVolumeRange();
   }
 
   connectedCallback() {
-    internals.get(this).connectedCallback();
+    this.#renderChrome();
+    this.#initResizing();
   }
 
   disconnectedCallback() {
-    internals.get(this).disconnectedCallback();
+    this.#deinitResizing();
+  }
+
+  #setState(newState: Record<string, any>) {
+    Object.assign(this.#state, newState);
+    this.#render();
+  }
+
+  #render() {
+    render(template(getProps(this, this.#state)), this.shadowRoot as Node);
+  }
+
+  #renderChrome() {
+    if (this.#state.playerSize != getPlayerSize(this)) {
+      this.#setState({ playerSize: getPlayerSize(this) });
+    }
+  }
+
+  #initResizing() {
+    this.#resizeObserver = new ResizeObserver(() => this.#renderChrome());
+    this.#resizeObserver.observe(this);
+  }
+
+  #deinitResizing() {
+    this.#resizeObserver?.disconnect();
+  }
+
+  #setUpErrors() {
+    const onError = (event: Event) => {
+      let { detail: error }: { detail: any } = event as CustomEvent;
+
+      if (!(error instanceof MediaError)) {
+        error = new MediaError(error.message, error.code, error.fatal);
+      }
+
+      // Don't show an error dialog if it's not fatal.
+      if (!error?.fatal) {
+        return;
+      }
+
+      let dialog;
+      switch (error.code) {
+        case MediaError.MEDIA_ERR_NETWORK:
+          dialog = {
+            title: "Network Error",
+            message: `${error.message} Please reload the player and try again.`,
+          };
+          break;
+        case MediaError.MEDIA_ERR_DECODE:
+          dialog = {
+            title: "Media Error",
+            message: `${error.message} Please reload the player and try again.`,
+          };
+          break;
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+          dialog = {
+            title: "Source Not Supported",
+            message: error.message,
+          };
+          break;
+        default:
+          dialog = {
+            title: "Error",
+            message: error.message,
+          };
+          break;
+      }
+
+      this.#setState({ isDialogOpen: true, dialog });
+    };
+
+    this.addEventListener("error", onError);
+
+    this.video?.addEventListener("error", () => {
+      const { message, code } = this.video?.error ?? {};
+      this.dispatchEvent(
+        new CustomEvent("error", {
+          detail: new MediaError(message, code),
+        })
+      );
+    });
+
+    if (this.video?.hls) {
+      const Hls: any = this.video.hls.constructor;
+      const onHlsError = (_event: any, data: any) => {
+        const errorCodeMap = {
+          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
+          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+        };
+        const error = new MediaError("", errorCodeMap[data.type]);
+        error.fatal = data.fatal;
+        error.data = data;
+        this.dispatchEvent(
+          new CustomEvent("error", {
+            detail: error,
+          })
+        );
+      };
+      this.video.hls.on(Hls.Events.ERROR, onHlsError);
+    }
+  }
+
+  #setUpMutedAutoplay() {
+    if (this.video?.hls) {
+      const Hls: any = this.video.hls.constructor;
+      if (this.autoplay) {
+        this.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          var playPromise = this.video?.play();
+          if (playPromise) {
+            playPromise.catch((error: Error) => {
+              console.log(`${error.name} ${error.message}`);
+              if (error.name === "NotAllowedError") {
+                console.log("Attempting to play with video muted");
+                if (this.video) this.video.muted = true;
+                return this.video?.play().catch(console.error);
+              }
+            });
+          }
+        });
+      }
+    }
+  }
+
+  #setUpCaptionsButton() {
+    const onTrackCountChange = () => this.#render();
+    this.video?.textTracks?.addEventListener("addtrack", onTrackCountChange);
+    this.video?.textTracks?.addEventListener("removetrack", onTrackCountChange);
+  }
+
+  #setUpAirplayButton() {
+    if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
+      const onPlaybackTargetAvailability = (evt: any) => {
+        const supportsAirPlay = evt.availability === "available";
+        this.#setState({ supportsAirPlay });
+      };
+
+      this.video?.addEventListener(
+        "webkitplaybacktargetavailabilitychanged",
+        onPlaybackTargetAvailability
+      );
+    }
+  }
+
+  async #setUpVolumeRange() {
+    const supportsVolume = await hasVolumeSupportAsync();
+    this.#setState({ supportsVolume });
   }
 
   attributeChangedCallback(
@@ -328,58 +309,7 @@ class MuxPlayerElement extends VideoApiElement {
     newValue: string
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-
-    // Prevent forwarding the playback-id, the player sets the src attribute.
-    if (
-      attrName != MuxVideoAttributes.PLAYBACK_ID &&
-      MuxVideoAttributeNames.includes(attrName)
-    ) {
-      if (newValue === null) {
-        this.video?.removeAttribute(attrName);
-      } else {
-        this.video?.setAttribute(attrName, newValue);
-      }
-    }
-  }
-
-  get primaryColor() {
-    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
-  }
-
-  get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
-  }
-
-  get forwardSeekOffset() {
-    return (
-      toNumberOrUndefined(
-        this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET)
-      ) ?? 10
-    );
-  }
-
-  get backwardSeekOffset() {
-    return (
-      toNumberOrUndefined(
-        this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET)
-      ) ?? 10
-    );
-  }
-
-  get defaultHiddenCaptions() {
-    return this.hasAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
-  }
-
-  get playerSoftwareName() {
-    return this.hasAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME)
-      ? this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME)
-      : playerSoftwareName;
-  }
-
-  get playerSoftwareVersion() {
-    return this.hasAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION)
-      ? this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION)
-      : playerSoftwareVersion;
+    this.#render();
   }
 
   get hls() {
@@ -391,26 +321,129 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
+   * Get the primary color used by the player.
+   */
+  get primaryColor() {
+    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR) ?? undefined;
+  }
+
+  /**
+   * Set the primary color used by the player.
+   */
+  set primaryColor(val: string | undefined) {
+    this.setAttribute(PlayerAttributes.PRIMARY_COLOR, `${val}`);
+  }
+
+  /**
+   * Get the secondary color used by the player.
+   */
+  get secondaryColor() {
+    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? undefined;
+  }
+
+  /**
+   * Set the secondary color used by the player.
+   */
+  set secondaryColor(val: string | undefined) {
+    this.setAttribute(PlayerAttributes.SECONDARY_COLOR, `${val}`);
+  }
+
+  /**
+   * Get the offset applied to the forward seek button.
+   */
+  get forwardSeekOffset() {
+    return (
+      toNumberOrUndefined(
+        this.getAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET)
+      ) ?? 10
+    );
+  }
+
+  /**
+   * Set the offset applied to the forward seek button.
+   */
+  set forwardSeekOffset(val: number | undefined) {
+    this.setAttribute(PlayerAttributes.FORWARD_SEEK_OFFSET, `${val}`);
+  }
+
+  /**
+   * Get the offset applied to the backward seek button.
+   */
+  get backwardSeekOffset() {
+    return (
+      toNumberOrUndefined(
+        this.getAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET)
+      ) ?? 10
+    );
+  }
+
+  /**
+   * Set the offset applied to the forward seek button.
+   */
+  set backwardSeekOffset(val: number | undefined) {
+    this.setAttribute(PlayerAttributes.BACKWARD_SEEK_OFFSET, `${val}`);
+  }
+
+  /**
+   * Get the boolean value of default hidden captions.
+   * By default returns false so captions are enabled on initial load.
+   */
+  get defaultHiddenCaptions() {
+    return this.hasAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
+  }
+
+  /**
+   * Get the player software name. Used by Mux Data.
+   */
+  get playerSoftwareName() {
+    return (
+      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_NAME) ??
+      playerSoftwareName
+    );
+  }
+
+  /**
+   * Get the player software version. Used by Mux Data.
+   */
+  get playerSoftwareVersion() {
+    return (
+      this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION) ??
+      playerSoftwareVersion
+    );
+  }
+
+  /**
    * Get Mux asset playback id.
-   * @return {string?}
    */
   get playbackId() {
     // Don't get the mux-video attribute here because it could have the
     // playback token appended to it.
-    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID);
+    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID) ?? undefined;
   }
 
   /**
-   * Mux Data env key
-   * @return {string?}
+   * Set Mux asset playback id.
+   */
+  set playbackId(val: string | undefined) {
+    this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, `${val}`);
+  }
+
+  /**
+   * Get Mux Data env key.
    */
   get envKey() {
-    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY);
+    return getVideoAttribute(this, MuxVideoAttributes.ENV_KEY) ?? undefined;
+  }
+
+  /**
+   * Set Mux Data env key.
+   */
+  set envKey(val: string | undefined) {
+    this.setAttribute(MuxVideoAttributes.ENV_KEY, `${val}`);
   }
 
   /**
    * Get video engine debug flag.
-   * @return {boolean}
    */
   get debug() {
     return getVideoAttribute(this, MuxVideoAttributes.DEBUG) != null;
@@ -418,7 +451,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set video engine debug flag.
-   * @param  {boolean} val
    */
   set debug(val) {
     if (val) {
@@ -430,7 +462,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get stream type.
-   * @return {string?}
    */
   get streamType() {
     return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE);
@@ -438,7 +469,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set stream type.
-   * @param  {string?} val
    */
   set streamType(val) {
     this.setAttribute(MuxVideoAttributes.STREAM_TYPE, `${val}`);
@@ -446,7 +476,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get the start time.
-   * @return {number}
    */
   get startTime() {
     return toNumberOrUndefined(
@@ -456,7 +485,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set the start time.
-   * @param  {number} val
    */
   set startTime(val) {
     this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
@@ -464,7 +492,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get the preference flag for using media source.
-   * @return {boolean}
    */
   get preferMse() {
     return getVideoAttribute(this, MuxVideoAttributes.PREFER_MSE) != null;
@@ -472,7 +499,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Set the preference flag for using media source.
-   * @param  {boolean} val
    */
   set preferMse(val) {
     if (val) {
@@ -484,21 +510,22 @@ class MuxPlayerElement extends VideoApiElement {
 
   /**
    * Get the metadata object for Mux Data.
-   * @return {Metadata | undefined}
    */
-  get metadata() {
+  get metadata(): Readonly<Metadata> | undefined {
     return this.video?.metadata;
   }
 
   /**
    * Set the metadata object for Mux Data.
-   * @param  {Metadata | undefined} val
    */
-  set metadata(val) {
+  set metadata(val: Readonly<Metadata> | undefined) {
     if (this.video) this.video.metadata = val;
   }
 
-  get tokens() {
+  /**
+   * Get the signing tokens for the Mux asset URL's.
+   */
+  get tokens(): Tokens {
     const playback = this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
     const thumbnail = this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
     const storyboard = this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
@@ -510,8 +537,53 @@ class MuxPlayerElement extends VideoApiElement {
     };
   }
 
-  set tokens(val) {
+  /**
+   * Set the signing tokens for the Mux asset URL's.
+   */
+  set tokens(val: Tokens | undefined) {
     this.#tokens = val ?? {};
+  }
+
+  /**
+   * Get the playback token for signing the src URL.
+   */
+  get playbackToken() {
+    return this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+  }
+
+  /**
+   * Set the playback token for signing the src URL.
+   */
+  set playbackToken(val) {
+    this.setAttribute(PlayerAttributes.PLAYBACK_TOKEN, `${val}`);
+  }
+
+  /**
+   * Get the thumbnail token for signing the poster URL.
+   */
+  get thumbnailToken() {
+    return this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
+  }
+
+  /**
+   * Set the thumbnail token for signing the poster URL.
+   */
+  set thumbnailToken(val) {
+    this.setAttribute(PlayerAttributes.THUMBNAIL_TOKEN, `${val}`);
+  }
+
+  /**
+   * Get the storyboard token for signing the storyboard URL.
+   */
+  get storyboardToken() {
+    return this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
+  }
+
+  /**
+   * Set the storyboard token for signing the storyboard URL.
+   */
+  set storyboardToken(val) {
+    this.setAttribute(PlayerAttributes.STORYBOARD_TOKEN, `${val}`);
   }
 }
 
