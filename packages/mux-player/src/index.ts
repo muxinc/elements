@@ -543,6 +543,48 @@ class MuxPlayerElement extends VideoApiElement {
   set tokens(val: Tokens | undefined) {
     this.#tokens = val ?? {};
   }
+
+  /**
+   * Get the playback token for signing the src URL.
+   */
+  get playbackToken() {
+    return this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+  }
+
+  /**
+   * Set the playback token for signing the src URL.
+   */
+  set playbackToken(val) {
+    this.setAttribute(PlayerAttributes.PLAYBACK_TOKEN, `${val}`);
+  }
+
+  /**
+   * Get the thumbnail token for signing the poster URL.
+   */
+  get thumbnailToken() {
+    return this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
+  }
+
+  /**
+   * Set the thumbnail token for signing the poster URL.
+   */
+  set thumbnailToken(val) {
+    this.setAttribute(PlayerAttributes.THUMBNAIL_TOKEN, `${val}`);
+  }
+
+  /**
+   * Get the storyboard token for signing the storyboard URL.
+   */
+  get storyboardToken() {
+    return this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
+  }
+
+  /**
+   * Set the storyboard token for signing the storyboard URL.
+   */
+  set storyboardToken(val) {
+    this.setAttribute(PlayerAttributes.STORYBOARD_TOKEN, `${val}`);
+  }
 }
 
 export function getVideoAttribute(el: MuxPlayerElement, name: string) {
