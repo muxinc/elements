@@ -74,7 +74,9 @@ declare global {
   }
 }
 
-export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
+export type HTMLMediaElementProps = Partial<
+  Pick<HTMLMediaElement, "src" | "autoplay">
+>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
@@ -251,18 +253,20 @@ export const loadMedia = (
   props: Partial<
     Pick<
       MuxMediaProps,
-      "preferMse" | "src" | "type" | "startTime" | "streamType"
+      "preferMse" | "src" | "type" | "startTime" | "streamType" | "autoplay"
     >
   >,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
     | "on"
+    | "once"
     | "startLoad"
     | "recoverMediaError"
     | "destroy"
     | "loadSource"
     | "attachMedia"
+    | "liveSyncPosition"
   >
 ) => {
   if (!mediaEl) {
