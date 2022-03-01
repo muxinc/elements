@@ -1,0 +1,47 @@
+[
+  {
+    "playback-id": "a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M",
+    "description": "Landscape VOD",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "gZh02tKCI015W6k2XdYSh4srGnksYvsoT1uHsYOlv4Blo",
+    "description": "Landscape VOD (No Audio)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo",
+    "description": "Landscape VOD (From Live)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "vJzD4ayErsL3z5qs0201rKHfffmQOMWSk58J6A7FtECKs",
+    "description": "Landscape VOD (From LL-Live)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM",
+    "description": "Landscape VOD (Closed Captions)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "jylbh7Bh4nlUuZD00FPD5cky4Ub00MVNZQ2RKzAwGBcvY",
+    "description": "Landscape VOD (Subtitles x 2)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "TPsqaPkOFCKQHVGQ00Khp0256fLo4FAsEHjCTeWi02JyrM",
+    "description": "Portrait VOD (Closed Captions)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "XSlOp5QqFYjsCbbOueIxxtLe5L8QsX8e6HewrqycRjY",
+    "description": "Portrait VOD (Subtitles x 2)",
+    "stream-type": "on-demand"
+  },
+  {
+    "playback-id": "v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM",
+    "description": "Long Lived LL-HLS",
+    "stream-type": "ll-live"
+  }
+]
