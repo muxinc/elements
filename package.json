@@ -20,7 +20,8 @@
   "workspaces": [
     "packages/*",
     "examples/*",
-    "scripts/*"
+    "scripts/*",
+    "shared/*"
   ],
   "scripts": {
     "test": "lerna run test --scope @mux-elements/*",
