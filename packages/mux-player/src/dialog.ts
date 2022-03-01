@@ -19,10 +19,6 @@ template.innerHTML = `
       top: 1rem;
       right: 1rem;
     }
-
-    :host(:not([open])) {
-      display: none;
-    }
   </style>
 
   <div class="dialog">
