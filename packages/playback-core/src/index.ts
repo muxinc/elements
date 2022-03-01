@@ -156,7 +156,7 @@ export const teardown = (
     hls.detachMedia();
     hls.destroy();
   }
-  if (mediaEl?.mux) {
+  if (mediaEl?.mux && !mediaEl.mux.deleted) {
     mediaEl.mux.destroy();
     mediaEl.mux;
   }
