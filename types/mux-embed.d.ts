@@ -85,4 +85,6 @@ declare module "mux-embed" {
   ): void;
 
   export function destroy(): void;
+
+  export const deleted: boolean;
 }
