@@ -80,7 +80,7 @@ const MuxAudioExample = () => {
 ### Primary Props:
 
 - `playbackId: string`: This is the playback ID for your Mux Asset or Mux Live Stream. The playback-id is the variable you may have used before to construct a `.m3u8` hls url like this:`https://stream.mux.com/{PLAYBACK_ID}.m3u8`. For more, check out the [Mux Docs](https://docs.mux.com/guides/video/play-your-videos#1-get-your-playback-id).
-- `envKey: string`: This is the environment key for Mux Data. Note that this is different than your API Key. Get your env key from the "Mux Data" part of your [Mux Environments Dashboard](https://dashboard.mux.com/environments)
+- `envKey: string`: This is the environment key for Mux Data. Note that this is different than your API Key. Get your env key from the "Mux Data" part of your [Mux Environments Dashboard](https://dashboard.mux.com/environments). If undefined and you are playing a Mux Video (audio) asset, the environment will be inferred.
   <img src="../../images/env-key.png" alt="Mux Data dashboard env key"></img>
 - `metadata: Object`: This is an object for configuring any metadata you'd like to send to Mux Data. For a detailed discussion of the available metadata fields and what they represent, check out the [Mux Data docs](https://docs.mux.com/guides/data/make-your-data-actionable-with-metadata). A few high priority keys that you'll likely want to set are:
   - `video_id: string`: Your internal ID for the audio.
