@@ -237,11 +237,11 @@ class MuxVideoElement
   }
 
   /** @TODO Followup: naming convention: all lower (common per HTMLElement props) vs. camel (common per JS convention) (CJP) */
-  get preferMSE(): boolean {
+  get preferMse(): boolean {
     return this.getAttribute(Attributes.PREFER_MSE) != null;
   }
 
-  set preferMSE(val: boolean) {
+  set preferMse(val: boolean) {
     if (val) {
       this.setAttribute(Attributes.PREFER_MSE, "");
     } else {
