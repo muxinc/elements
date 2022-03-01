@@ -204,6 +204,8 @@ export const setupHls = (
   return undefined;
 };
 
+const MUX_VIDEO_DOMAIN = "mux.com";
+
 export const setupMux = (
   props: Partial<
     Pick<
@@ -215,13 +217,21 @@ export const setupMux = (
       | "debug"
       | "playerSoftwareName"
       | "playerSoftwareVersion"
+      | "playbackId"
+      | "src"
     >
   >,
   mediaEl?: HTMLMediaElement | null,
   hlsjs?: Hls
 ) => {
-  const { envKey: env_key } = props;
-  if (env_key && mediaEl) {
+  const { envKey: env_key, playbackId, src } = props;
+  const inferredEnv =
+    !!playbackId ||
+    !!(
+      typeof src === "string" &&
+      new URL(src).hostname.includes(MUX_VIDEO_DOMAIN)
+    );
+  if ((env_key || inferredEnv) && mediaEl) {
     const {
       playerInitTime: player_init_time,
       playerSoftwareName: player_software_name,
@@ -237,7 +247,7 @@ export const setupMux = (
       hlsjs,
       Hls: hlsjs ? Hls : undefined,
       data: {
-        env_key, // required
+        ...(env_key ? { env_key } : {}),
         // Metadata fields
         player_software_name,
         player_software_version,
