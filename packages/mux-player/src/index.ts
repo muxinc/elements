@@ -1,12 +1,11 @@
 import "media-chrome";
-import "@mux-elements/mux-video";
+import { MediaError } from "@mux-elements/mux-video";
 import MxpDialog from "./dialog";
 import VideoApiElement from "./video-api";
 import {
   getCcSubTracks,
   getPlayerVersion,
   hasVolumeSupportAsync,
-  MediaError,
   toPropName,
 } from "./helpers";
 import { template } from "./template";
@@ -236,33 +235,15 @@ class MuxPlayerElement extends VideoApiElement {
 
     this.addEventListener("error", onError);
 
-    this.video?.addEventListener("error", () => {
-      const { message, code } = this.video?.error ?? {};
+    this.video?.addEventListener("error", (event: Event) => {
+      let { detail: error }: { detail: any } = event as CustomEvent;
+      const { message, code } = error ?? this.video?.error ?? {};
       this.dispatchEvent(
         new CustomEvent("error", {
           detail: new MediaError(message, code),
         })
       );
     });
-
-    if (this.video?.hls) {
-      const Hls: any = this.video.hls.constructor;
-      const onHlsError = (_event: any, data: any) => {
-        const errorCodeMap = {
-          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-        };
-        const error = new MediaError("", errorCodeMap[data.type]);
-        error.fatal = data.fatal;
-        error.data = data;
-        this.dispatchEvent(
-          new CustomEvent("error", {
-            detail: error,
-          })
-        );
-      };
-      this.video.hls.on(Hls.Events.ERROR, onHlsError);
-    }
   }
 
   #setUpMutedAutoplay() {

@@ -11,6 +11,7 @@ import {
   Metadata,
   PlaybackEngine,
   mux,
+  MediaError,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
@@ -393,6 +394,7 @@ export {
   PlaybackEngine,
   PlaybackEngine as Hls,
   ExtensionMimeTypeMap as MimeTypes,
+  MediaError,
 };
 
 export default MuxVideoElement;
