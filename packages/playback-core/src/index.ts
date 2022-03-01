@@ -74,7 +74,9 @@ declare global {
   }
 }
 
-export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
+export type HTMLMediaElementProps = Partial<
+  Pick<HTMLMediaElement, "src" | "autoplay">
+>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
@@ -251,18 +253,20 @@ export const loadMedia = (
   props: Partial<
     Pick<
       MuxMediaProps,
-      "preferMse" | "src" | "type" | "startTime" | "streamType"
+      "preferMse" | "src" | "type" | "startTime" | "streamType" | "autoplay"
     >
   >,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
     | "on"
+    | "once"
     | "startLoad"
     | "recoverMediaError"
     | "destroy"
     | "loadSource"
     | "attachMedia"
+    | "liveSyncPosition"
   >
 ) => {
   if (!mediaEl) {
@@ -358,6 +362,27 @@ export const loadMedia = (
     // This ensures that we re-load them after it's done that.
     hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+
+    // When we are not auto-playing, we should seek to the live sync position
+    // This will seek first play event of *any* live video including event-type,
+    // which probably shouldn't seek
+    if (!props.autoplay) {
+      hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
+        const isLive: boolean = data.details.live;
+
+        if (isLive) {
+          mediaEl.addEventListener(
+            "play",
+            () => {
+              if (hls?.liveSyncPosition) {
+                mediaEl.currentTime = hls.liveSyncPosition;
+              }
+            },
+            { once: true }
+          );
+        }
+      });
+    }
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
