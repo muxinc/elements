@@ -4,6 +4,7 @@ import {
   initialize,
   MuxMediaProps,
   StreamTypes,
+  AutoplayTypes,
   ValueOf,
   ExtensionMimeTypeMap,
   toMuxVideoURL,
@@ -120,6 +121,39 @@ class MuxVideoElement
     }
   }
 
+  get autoplay(): boolean | ValueOf<AutoplayTypes> {
+    if (!this.hasAttribute("autoplay")) {
+      return false;
+    }
+
+    const autoplay = this.getAttribute("autoplay") as ValeOf<AutoplayTypes>;
+
+    if (autoplay === "") {
+      return true;
+    }
+
+    return autoplay ?? false;
+  }
+
+  set autoplay(val: boolean | ValeOf<AutoplayTypes>) {
+    if (
+      val === this.getAttribute("autoplay") ||
+      (val && this.hasAttribute("autoplay"))
+    ) {
+      return;
+    }
+
+    if (typeof val === "boolean") {
+      if (val) {
+        this.setAttribute("autoplay", "");
+      } else {
+        this.removeAttribute("autoplay");
+      }
+    } else {
+      this.setAttribute("autoplay", val);
+    }
+  }
+
   get type(): ValueOf<ExtensionMimeTypeMap> | undefined {
     return (
       (this.getAttribute(Attributes.TYPE) as ValueOf<ExtensionMimeTypeMap>) ??
@@ -217,7 +251,7 @@ class MuxVideoElement
     }
   }
 
-  get streamType(): ValueOf<StreamTypes> | undefined {
+  get streamType(): ValueOf<StreamTypes> {
     // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
     return (
       (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ??
@@ -225,7 +259,7 @@ class MuxVideoElement
     );
   }
 
-  set streamType(val: ValueOf<StreamTypes> | undefined) {
+  set streamType(val: ValueOf<StreamTypes>) {
     // dont' cause an infinite loop
     if (val === this.streamType) return;
 
@@ -320,6 +354,14 @@ class MuxVideoElement
           this.load();
         }
         break;
+      // case "autoplay":
+      //   if (newValue === old value) {
+      //     break;
+      //   }
+      //
+      //   if (typeof newValue === 'boolean')
+      //
+      //   break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue ?? undefined) as string;

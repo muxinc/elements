@@ -21,6 +21,20 @@ export const StreamTypes: StreamTypes = {
   LL_LIVE: "ll-live",
 };
 
+export type AutoplayTypes = {
+  ANY: "any";
+  MUTED: "muted";
+  INVIEW_MUTED: "inview-muted";
+  INVIEW_ANY: "inview-any";
+};
+
+export const AutoplayTypes: AutoplayTypes = {
+  ANY: "any",
+  MUTED: "muted",
+  INVIEW_MUTED: "inview-muted",
+  INVIEW_ANY: "inview-any",
+};
+
 export type ExtensionMimeTypeMap = {
   M3U8: "application/vnd.apple.mpegurl";
   MP4: "video/mp4";
@@ -66,6 +80,7 @@ export type MuxMediaPropTypes = {
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig["startPosition"];
+  autoplay: ValueOf<AutoplayTypes>;
 };
 
 declare global {
@@ -74,9 +89,7 @@ declare global {
   }
 }
 
-export type HTMLMediaElementProps = Partial<
-  Pick<HTMLMediaElement, "src" | "autoplay">
->;
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
@@ -390,6 +403,34 @@ export const loadMedia = (
             },
             { once: true }
           );
+        }
+      });
+    } else {
+      hls.once(Hls.Events.MANIFEST_PARSED, () => {
+        console.log("autoplay?", props.autoplay);
+        switch (props.autoplay) {
+          case AutoplayTypes.ANY:
+            mediaEl.play().catch((error: Error) => {
+              const oldMuted = mediaEl.muted;
+              mediaEl.muted = true;
+              mediaEl.play().catch(() => {
+                mediaEl.muted = oldMuted;
+              });
+            });
+            break;
+          case AutoplayTypes.MUTED:
+            mediaEl.muted = true;
+            mediaEl.play().catch(() => {});
+
+            break;
+          case AutoplayTypes.INVIEW_MUTED:
+            break;
+          case AutoplayTypes.INVIEW_ANY:
+            break;
+          case true:
+          default:
+            mediaEl.play().catch(() => {});
+            break;
         }
       });
     }
