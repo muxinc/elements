@@ -21,18 +21,15 @@ export const StreamTypes: StreamTypes = {
   LL_LIVE: "ll-live",
 };
 
+// TODO add INVIEW_MUTED, INVIEW_ANY
 export type AutoplayTypes = {
   ANY: "any";
   MUTED: "muted";
-  INVIEW_MUTED: "inview-muted";
-  INVIEW_ANY: "inview-any";
 };
 
 export const AutoplayTypes: AutoplayTypes = {
   ANY: "any",
   MUTED: "muted",
-  INVIEW_MUTED: "inview-muted",
-  INVIEW_ANY: "inview-any",
 };
 
 export type ExtensionMimeTypeMap = {
@@ -407,26 +404,29 @@ export const loadMedia = (
       });
     } else {
       hls.once(Hls.Events.MANIFEST_PARSED, () => {
-        console.log("autoplay?", props.autoplay);
+        const oldMuted = mediaEl.muted;
+        const restoreMuted = () => (mediaEl.muted = oldMuted);
         switch (props.autoplay) {
+          // ANY:
+          // try to play with current options
+          // if it fails, mute and try playing again
+          // if that fails, restore muted state and don't try playing again
           case AutoplayTypes.ANY:
             mediaEl.play().catch((error: Error) => {
-              const oldMuted = mediaEl.muted;
               mediaEl.muted = true;
-              mediaEl.play().catch(() => {
-                mediaEl.muted = oldMuted;
-              });
+              mediaEl.play().catch(restoreMuted);
             });
             break;
+          // MUTED:
+          // mute the player and then try playing
+          // if that fails, restore muted state
           case AutoplayTypes.MUTED:
             mediaEl.muted = true;
-            mediaEl.play().catch(() => {});
+            mediaEl.play().catch(restoreMuted);
 
             break;
-          case AutoplayTypes.INVIEW_MUTED:
-            break;
-          case AutoplayTypes.INVIEW_ANY:
-            break;
+          // Default or if autoplay is a boolean attribute:
+          // Try playing the video and catch the failed autoplay warning
           case true:
           default:
             mediaEl.play().catch(() => {});
