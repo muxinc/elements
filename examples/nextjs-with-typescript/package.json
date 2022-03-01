@@ -9,9 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mux-elements/assets": "^0.1.0",
     "@mux-elements/mux-audio-react": "^0.1.0",
     "@mux-elements/mux-video-react": "^0.2.0",
-    "@mux-elements/mux-player-react": "^0.1.0-alpha.2",
+    "@mux-elements/mux-player-react": "^0.1.0-alpha.5",
     "@mux-elements/mux-player": "^0.1.0-alpha.3",
     "@mux-elements/mux-video": "^0.2.0",
     "next": "^12.0.4",

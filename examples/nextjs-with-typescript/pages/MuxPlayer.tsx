@@ -2,11 +2,10 @@
 import Link from "next/link";
 import MuxPlayer from "@mux-elements/mux-player-react";
 import { useRef, useState } from "react";
+import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
 
 const INITIAL_DEBUG = false;
 const INITIAL_MUTED = true;
-const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
-// const INITIAL_PLAYBACK_ID = "bzeU5fRA47S01KDzrObYiiZvzj00j5E00dCVbt3oRzmfF00";
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 const INITIAL_METADATA = {
   "video-id": "video-id-bc789",
@@ -40,7 +39,8 @@ const onPlayerReady = console.log.bind(null, "playerready");
 
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
-  const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
+  const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
+  const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
   const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
   const [metadata, _setMetadata] = useState(INITIAL_METADATA);
   const [tokens, _setTokens] = useState(INITIAL_TOKENS);
@@ -61,9 +61,9 @@ function MuxPlayerPage() {
         <MuxPlayer
           ref={mediaElRef}
           // style={{ aspectRatio: "16 / 9" }}
-          envKey={envKey}
+          // envKey={envKey}
           metadata={metadata}
-          playbackId={playbackId}
+          playbackId={selectedAsset["playback-id"]}
           tokens={tokens}
           forwardSeekOffset={10}
           backwardSeekOffset={10}
@@ -72,7 +72,9 @@ function MuxPlayerPage() {
           muted={muted}
           paused={paused}
           // autoPlay
-          // streamType={"live"}
+          streamType={
+            selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
+          }
           primaryColor="#ec407a"
           secondaryColor="#64b5f6"
           tertiaryColor="#b4004e"
@@ -118,14 +120,6 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
-          <label htmlFor="playback-id-control">Playback Id</label>
-          <input
-            id="playback-id-control"
-            onBlur={({ currentTarget }) => setPlaybackId(currentTarget.value)}
-            defaultValue={playbackId}
-          />
-        </div>
-        <div>
           <label htmlFor="env-key-control">Env Key (Mux Data)</label>
           <input
             id="env-key-control"
@@ -133,6 +127,20 @@ function MuxPlayerPage() {
             defaultValue={envKey}
           />
         </div>
+        <select
+          onChange={({ target: { value } }) => {
+            setSelectedAsset(mediaAssets[value]);
+          }}
+        >
+          {mediaAssets.map((value, i) => {
+            const { description } = value;
+            return (
+              <option key={i} value={i}>
+                {description}
+              </option>
+            );
+          })}
+        </select>
       </div>
       <h3 className="title">
         <Link href="/">
