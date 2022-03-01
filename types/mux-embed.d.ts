@@ -2,10 +2,6 @@
 declare module "mux-embed" {
   import Hls from "hls.js";
 
-  export type RequiredMetadata = {
-    env_key: string;
-  };
-
   export type HighPriorityMetadata = {
     video_id: string;
     video_title: string;
@@ -13,6 +9,7 @@ declare module "mux-embed" {
   };
 
   type OptionalMetadata = {
+    env_key: string;
     experiment_name: string;
     page_type: string;
     player_init_time: number;
