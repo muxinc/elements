@@ -9,11 +9,12 @@ const ReactPropToAttrNameMap = {
   crossOrigin: "crossorigin",
   viewBox: "viewBox",
   playsInline: "playsinline",
+  autoPlay: "autoplay",
 };
 
 type KeyTypes = string | number | symbol;
 
-export const isNil = (x: unknown): x is null | undefined => x != undefined;
+export const isNil = (x: unknown): x is null | undefined => x == undefined;
 
 // Type Guard to determine if a given key is actually a key of some object of type T
 export const isKeyOf = <T = unknown>(k: KeyTypes, o: T): k is keyof T => {
@@ -28,10 +29,10 @@ export const toNativeAttrName = (
   propName: string,
   propValue: any
 ): string | undefined => {
+  if (typeof propValue === "boolean" && !propValue) return undefined;
   if (isKeyOf(propName, ReactPropToAttrNameMap))
     return ReactPropToAttrNameMap[propName];
   if (typeof propValue == undefined) return undefined;
-  if (typeof propValue === "boolean" && !propValue) return undefined;
   if (/[A-Z]/.test(propName)) return toKebabCase(propName);
   return propName;
 };
