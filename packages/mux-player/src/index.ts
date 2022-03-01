@@ -207,6 +207,8 @@ class MuxPlayerElement extends VideoApiElement {
         case MediaError.MEDIA_ERR_NETWORK: {
           let title = "Network Error";
           let { message } = error;
+          let linkText;
+          let linkUrl;
 
           if (!window.navigator.onLine) {
             title += " - Offline";
@@ -222,13 +224,16 @@ class MuxPlayerElement extends VideoApiElement {
               break;
             case 404:
               title += " 404 - Not Found";
-              message += ` The manifest URL could not be found at this address: ${this.video?.src}`;
+              message += ` The manifest URL could not be found at this address:`;
+              linkUrl = this.video?.src;
               break;
           }
 
           dialog = {
             title,
             message,
+            linkText,
+            linkUrl,
           };
           break;
         }
