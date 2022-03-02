@@ -59,6 +59,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
         playerInitTime,
         playerSoftwareName,
         playerSoftwareVersion,
+        autoplay: props.autoPlay,
       };
       const nextPlaybackEngineRef = initialize(
         propsWithState,

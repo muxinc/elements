@@ -4,7 +4,6 @@ import {
   initialize,
   MuxMediaProps,
   StreamTypes,
-  AutoplayTypes,
   ValueOf,
   ExtensionMimeTypeMap,
   toMuxVideoURL,
@@ -118,39 +117,6 @@ class MuxVideoElement
       this.removeAttribute("src");
     } else {
       this.setAttribute("src", val);
-    }
-  }
-
-  get autoplay(): boolean | ValueOf<AutoplayTypes> {
-    if (!this.hasAttribute("autoplay")) {
-      return false;
-    }
-
-    const autoplay = this.getAttribute("autoplay") as ValeOf<AutoplayTypes>;
-
-    if (autoplay === "") {
-      return true;
-    }
-
-    return autoplay ?? false;
-  }
-
-  set autoplay(val: boolean | ValeOf<AutoplayTypes>) {
-    if (
-      val === this.getAttribute("autoplay") ||
-      (val && this.hasAttribute("autoplay"))
-    ) {
-      return;
-    }
-
-    if (typeof val === "boolean") {
-      if (val) {
-        this.setAttribute("autoplay", "");
-      } else {
-        this.removeAttribute("autoplay");
-      }
-    } else {
-      this.setAttribute("autoplay", val);
     }
   }
 
