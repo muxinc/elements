@@ -10,7 +10,7 @@ import {
 } from "./helpers";
 import { template } from "./template";
 import { render } from "./html";
-import { toNumberOrUndefined } from "./utils";
+import { toNumberOrUndefined, camelCase } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
@@ -163,8 +163,11 @@ class MuxPlayerElement extends VideoApiElement {
     this.#render();
   }
 
-  #render() {
-    render(template(getProps(this, this.#state)), this.shadowRoot as Node);
+  #render(props: Record<string, any> = {}) {
+    render(
+      template(getProps(this, { ...this.#state, ...props })),
+      this.shadowRoot as Node
+    );
   }
 
   #renderChrome() {
@@ -309,7 +312,7 @@ class MuxPlayerElement extends VideoApiElement {
     newValue: string
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-    this.#render();
+    this.#render({ [camelCase(attrName)]: newValue });
   }
 
   get hls() {
