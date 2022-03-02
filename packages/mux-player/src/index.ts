@@ -218,6 +218,10 @@ class MuxPlayerElement extends VideoApiElement {
 
           // Only works when hls.js is used.
           switch (error.data?.response.code) {
+            case 412:
+              title += " 412 - Precondition Failed";
+              message += ` Nobody is currently streaming to this live stream endpoint.`;
+              break;
             case 403:
               title += " 403 - Forbidden";
               message += ` You don't have permission to access the manifest URL.`;
