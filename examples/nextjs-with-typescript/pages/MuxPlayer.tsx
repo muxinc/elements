@@ -13,12 +13,6 @@ const INITIAL_METADATA = {
   "video-title": "Great Stuff",
   "user-id": "user-id-6af7",
 };
-const INITIAL_TOKENS = {};
-// const INITIAL_TOKENS = {
-//   "playback": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0Mzg5NjEsImF1ZCI6InYiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hWrdcJDa8FJCfVFP19oJ-9FSEVk9eB6DTOCRrucnzsrtUoZbb1OFe7swpQ38Fp3hZNNIt7-LWjdOl90TF4ucu7mhu42qyk3_i054RtmEZyQaj5Qjm3_H4sa2jLO-0QNSnOfp1A9x-fI8M_giGLg-byJPuu_eUqu1MW9bILLly_9gq8m0cNKghUa9xTMJgFmaya4XYudy5Mt2Fu72MiS3csUP3xhKlONVnGHlMRqB-dBVOgAJrayeUquAhaNY346oFBUWVM-EcAZ9G2ARtPakfy4Wpv5BsRKEGtR81P-k7EW8g27U0FKLlrvLkUz3Z-JYu53CRcJUvjkC9sDMrZLcTA",
-//   "thumbnail": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTMzMTksImF1ZCI6InQiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hNBRo1-XDTT1CJMOxf90-8JPJzAygwm-3pVNBj31I7DEukSVRKVgUuhquEJbYXx1xg27xRMu8OVQxVob6jWHdjSwTyygAY040bqdyDxLsRtkDcVxwZ78iiZwtA1eTkxxY-410Ma3HbhNsG0Qjo5AWX46IhD9ARKHL-MPGaKda7FSx8J8jxa3hQ8_M1AKMsx7PrgJYOtW6n0mvkupEAFYRJlqIbkERSBeWChdrjCLYAcXRar5nfdNWlWST2pfllqz8pfJSTWjQRumTonC5BGB89jZUimHnuzkRXm_LeGyXbfZmBKb4d0j9YyGVnTPePqyVPsAQ-bzcfFDU0L67GDgyw",
-//   "storyboard": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTM0OTgsImF1ZCI6InMiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.PKEybohVK0JyJGX_3iubRnHZx1ve5OmPmyfZdaKb17N2wVMQCYNltTc-gCUTU7EIKGeTtVOIITCSsIeTgXcI667B2GWJ5juDIErz1h-NQsPIfB-FsUeuWx2rYOap4G3FdwEIjaGc29HPncw-mG0JLcqkMB7jtDxjBY_-YlpjFYJF_z7r-1yIJM7mF3rl8YqeWstojC8oh2Iv2VRkuTyPE31QVI6fQcet5PIRWHudUIGWcNiWM56vwZskJ6qod8UvYpha7K5rhshh0Xdhnvq3Y9b6PXl3fy6VKCZIyszlPVje0IR2bR9iHDXnGbawivUsI65IDm-ZEoJrOzmZctMWAQ",
-// };
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -44,7 +38,6 @@ function MuxPlayerPage() {
   const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
   const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
   const [metadata, _setMetadata] = useState(INITIAL_METADATA);
-  const [tokens, _setTokens] = useState(INITIAL_TOKENS);
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
@@ -66,7 +59,7 @@ function MuxPlayerPage() {
           // envKey={envKey}
           metadata={metadata}
           playbackId={selectedAsset["playback-id"]}
-          tokens={tokens}
+          tokens={selectedAsset["tokens"]}
           forwardSeekOffset={10}
           backwardSeekOffset={10}
           // onPlayerReady={() => console.log("ready!")}
