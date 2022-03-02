@@ -77,7 +77,7 @@ export type MuxMediaPropTypes = {
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig["startPosition"];
-  autoplay: ValueOf<AutoplayTypes>;
+  autoplay: boolean | ValueOf<AutoplayTypes>;
 };
 
 declare global {
@@ -402,7 +402,7 @@ export const loadMedia = (
           );
         }
       });
-    } else {
+    } else if (props.autoplay) {
       hls.once(Hls.Events.MANIFEST_PARSED, () => {
         const oldMuted = mediaEl.muted;
         const restoreMuted = () => (mediaEl.muted = oldMuted);
@@ -427,7 +427,6 @@ export const loadMedia = (
             break;
           // Default or if autoplay is a boolean attribute:
           // Try playing the video and catch the failed autoplay warning
-          case true:
           default:
             mediaEl.play().catch(() => {});
             break;
