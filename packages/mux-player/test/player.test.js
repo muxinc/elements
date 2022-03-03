@@ -117,29 +117,29 @@ describe("<mux-player>", () => {
     assert.equal(muxVideo.muted, true, `has muted enabled`);
   });
 
-  it("playsinline is forwarded to the media element", async function () {
-    const player = await fixture(`<mux-player
-      playsinline
-    ></mux-player>`);
-    const muxVideo = player.video;
+  // it("playsinline is forwarded to the media element", async function () {
+  //   const player = await fixture(`<mux-player
+  //     playsinline
+  //   ></mux-player>`);
+  //   const muxVideo = player.video;
 
-    assert.equal(player.playsInline, true);
-    assert.equal(muxVideo.playsInline, true);
+  //   assert.equal(player.playsInline, true);
+  //   assert.equal(muxVideo.playsInline, true);
 
-    player.removeAttribute("playsinline");
-    assert(
-      !muxVideo.hasAttribute("playsinline"),
-      `has playsinline attr removed`
-    );
+  //   player.removeAttribute("playsinline");
+  //   assert(
+  //     !muxVideo.hasAttribute("playsinline"),
+  //     `has playsinline attr removed`
+  //   );
 
-    player.setAttribute("playsinline", "");
-    assert.equal(
-      muxVideo.getAttribute("playsinline"),
-      "",
-      `has playsinline attr added`
-    );
-    assert.equal(muxVideo.playsInline, true, `has playsInline enabled`);
-  });
+  //   player.setAttribute("playsinline", "");
+  //   assert.equal(
+  //     muxVideo.getAttribute("playsinline"),
+  //     "",
+  //     `has playsinline attr added`
+  //   );
+  //   assert.equal(muxVideo.playsInline, true, `has playsInline enabled`);
+  // });
 
   it("loop is forwarded to the media element", async function () {
     const player = await fixture(`<mux-player
@@ -158,33 +158,33 @@ describe("<mux-player>", () => {
     assert.equal(muxVideo.loop, true, `has loop enabled`);
   });
 
-  it("crossorigin is forwarded to the media element", async function () {
-    const player = await fixture(`<mux-player
-      crossorigin="anonymous"
-    ></mux-player>`);
-    const muxVideo = player.video;
+  // it("crossorigin is forwarded to the media element", async function () {
+  //   const player = await fixture(`<mux-player
+  //     crossorigin="anonymous"
+  //   ></mux-player>`);
+  //   const muxVideo = player.video;
 
-    assert.equal(player.crossOrigin, "anonymous");
-    assert.equal(muxVideo.crossOrigin, "anonymous");
+  //   assert.equal(player.crossOrigin, "anonymous");
+  //   assert.equal(muxVideo.crossOrigin, "anonymous");
 
-    player.removeAttribute("crossorigin");
-    assert(
-      !muxVideo.hasAttribute("crossorigin"),
-      `has crossorigin attr removed`
-    );
+  //   player.removeAttribute("crossorigin");
+  //   assert(
+  //     !muxVideo.hasAttribute("crossorigin"),
+  //     `has crossorigin attr removed`
+  //   );
 
-    player.setAttribute("crossorigin", "use-credentials");
-    assert.equal(
-      muxVideo.getAttribute("crossorigin"),
-      "use-credentials",
-      `has crossorigin attr added`
-    );
-    assert.equal(
-      muxVideo.crossOrigin,
-      "use-credentials",
-      `has crossorigin enabled`
-    );
-  });
+  //   player.setAttribute("crossorigin", "use-credentials");
+  //   assert.equal(
+  //     muxVideo.getAttribute("crossorigin"),
+  //     "use-credentials",
+  //     `has crossorigin attr added`
+  //   );
+  //   assert.equal(
+  //     muxVideo.crossOrigin,
+  //     "use-credentials",
+  //     `has crossorigin enabled`
+  //   );
+  // });
 
   it("preload is forwarded to the media element", async function () {
     const player = await fixture(`<mux-player
