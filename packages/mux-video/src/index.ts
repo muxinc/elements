@@ -217,7 +217,7 @@ class MuxVideoElement
     }
   }
 
-  get streamType(): ValueOf<StreamTypes> {
+  get streamType(): ValueOf<StreamTypes> | undefined {
     // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
     return (
       (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ??
@@ -225,7 +225,7 @@ class MuxVideoElement
     );
   }
 
-  set streamType(val: ValueOf<StreamTypes>) {
+  set streamType(val: ValueOf<StreamTypes> | undefined) {
     // dont' cause an infinite loop
     if (val === this.streamType) return;
 
