@@ -320,14 +320,6 @@ class MuxVideoElement
           this.load();
         }
         break;
-      // case "autoplay":
-      //   if (newValue === old value) {
-      //     break;
-      //   }
-      //
-      //   if (typeof newValue === 'boolean')
-      //
-      //   break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue ?? undefined) as string;
