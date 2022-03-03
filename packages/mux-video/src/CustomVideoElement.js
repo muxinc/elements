@@ -121,11 +121,9 @@ class CustomVideoElement extends HTMLElement {
   // We need to handle sub-class custom attributes differently from
   // attrs meant to be passed to the internal native el.
   attributeChangedCallback(attrName, oldValue, newValue) {
-
     // Find the matching prop for custom attributes
     const ownProps = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
     const propName = arrayFindAnyCase(ownProps, attrName);
-
 
     // Check if this is the original custom native elemnt or a subclass
     const isBaseElement =
