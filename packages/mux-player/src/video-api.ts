@@ -93,17 +93,6 @@ class VideoApiElement extends HTMLElement {
     oldValue: string | null,
     newValue: string
   ) {
-    if (
-      AllowedVideoAttributeNames.includes(attrName) &&
-      this.video?.getAttribute(attrName) != newValue
-    ) {
-      if (newValue === null) {
-        this.video?.removeAttribute(attrName);
-      } else {
-        this.video?.setAttribute(attrName, newValue);
-      }
-    }
-
     switch (attrName) {
       case CustomVideoAttributes.MUTED: {
         if (this.video) {

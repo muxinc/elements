@@ -36,10 +36,12 @@ export const template = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
-      crossorigin
-      playsinline
+      crossorigin="${props.crossOrigin ?? false}"
+      playsinline="${props.playsInline ?? false}"
       autoplay="${props.autoplay ?? false}"
       muted="${props.muted ?? false}"
+      loop="${props.loop ?? false}"
+      preload="${props.preload ?? false}"
       debug="${props.debug ?? false}"
       prefer-mse="${props.preferMse ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"

@@ -1,4 +1,4 @@
-import { stylePropsToString, toQuery } from "./utils";
+import { stylePropsToString, toQuery, camelCase } from "./utils";
 import type MuxPlayerElement from ".";
 
 /* eslint-disable */
@@ -34,6 +34,15 @@ export const getStoryboardURLFromPlaybackId = (
     token,
   })}`;
 };
+
+const attrToPropNameMap: Record<string, string> = {
+  crossorigin: "crossOrigin",
+  playsinline: "playsInline",
+};
+
+export function toPropName(attrName: string) {
+  return attrToPropNameMap[attrName] ?? camelCase(attrName);
+}
 
 let testMediaEl: HTMLMediaElement | undefined;
 export const getTestMediaEl = (nodeName = "video") => {
