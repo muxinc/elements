@@ -274,13 +274,7 @@ export const loadMedia = (
   props: Partial<
     Pick<
       MuxMediaProps,
-      | "preferMse"
-      | "src"
-      | "type"
-      | "startTime"
-      | "streamType"
-      | "autoplay"
-      | "autoPlay"
+      "preferMse" | "src" | "type" | "startTime" | "streamType" | "autoplay"
     >
   >,
   mediaEl?: HTMLMediaElement | null,
