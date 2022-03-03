@@ -22,7 +22,7 @@ type VideoApiAttributes = {
   playsInline: boolean;
   // preload: string;
   crossOrigin: string;
-  autoPlay: boolean;
+  autoPlay: boolean | string;
   loop: boolean;
   muted: boolean;
   style: CSSProperties;

@@ -77,6 +77,7 @@ export type MuxMediaPropTypes = {
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig["startPosition"];
+  autoPlay: boolean | ValueOf<AutoplayTypes>;
   autoplay: boolean | ValueOf<AutoplayTypes>;
 };
 
@@ -273,7 +274,13 @@ export const loadMedia = (
   props: Partial<
     Pick<
       MuxMediaProps,
-      "preferMse" | "src" | "type" | "startTime" | "streamType" | "autoplay"
+      | "preferMse"
+      | "src"
+      | "type"
+      | "startTime"
+      | "streamType"
+      | "autoplay"
+      | "autoPlay"
     >
   >,
   mediaEl?: HTMLMediaElement | null,

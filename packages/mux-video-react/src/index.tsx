@@ -11,9 +11,12 @@ import {
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
-export type Props = React.DetailedHTMLProps<
-  React.VideoHTMLAttributes<HTMLVideoElement>,
-  HTMLVideoElement
+export type Props = Omit<
+  React.DetailedHTMLProps<
+    React.VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement
+  >,
+  "autoPlay"
 > &
   MuxMediaProps;
 
@@ -33,6 +36,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
       startTime,
       src: outerSrc,
       children,
+      autoPlay,
       ...restProps
     } = props;
 
@@ -59,7 +63,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
         playerInitTime,
         playerSoftwareName,
         playerSoftwareVersion,
-        autoplay: props.autoPlay,
+        autoplay: autoPlay,
       };
       const nextPlaybackEngineRef = initialize(
         propsWithState,
