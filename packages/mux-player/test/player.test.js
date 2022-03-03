@@ -70,47 +70,209 @@ describe("<mux-player>", () => {
     assert.equal(String(Math.round(player.currentTime)), 3, "is about 3s in");
   });
 
-  it("video attributes are forwarded to media element", async function () {
+  it("playbackId is forwarded to the media element", async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       muted
     ></mux-player>`);
 
     assert.equal(player.playbackId, "DS00Spx1CV902MCtPj5WknGlR102V5HFkDe");
+  });
 
-    // Remove playbackId otherwise poster and src are derrived from the playbackId below.
-    player.removeAttribute("playback-id");
-
+  it("autoplay is forwarded to the media element", async function () {
+    const player = await fixture(`<mux-player
+      autoplay
+    ></mux-player>`);
     const muxVideo = player.video;
 
-    // controls should not be forwarded! player handles show/hide media-chrome.
-    player.setAttribute("controls", "");
-    assert(!muxVideo.hasAttribute("controls"), `has no controls attr added`);
+    assert.equal(player.autoplay, true);
+    assert.equal(muxVideo.autoplay, true);
 
-    const checkProps = {
-      autoplay: true,
-      muted: true,
-      playsInline: true,
-      loop: true,
-      crossOrigin: "anonymous",
-      preload: "metadata",
-      poster:
-        "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0",
-      src: "https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8",
-    };
+    player.removeAttribute("autoplay");
+    assert(!muxVideo.hasAttribute("autoplay"), `has autoplay attr removed`);
 
-    for (let propName in checkProps) {
-      const attrName = propName.toLowerCase();
-      const value = checkProps[propName];
+    player.setAttribute("autoplay", "");
+    assert.equal(
+      muxVideo.getAttribute("autoplay"),
+      "",
+      `has autoplay attr added`
+    );
+    assert.equal(muxVideo.autoplay, true, `has autoplay enabled`);
+  });
 
-      player.setAttribute(attrName, value === true ? "" : value);
-      assert(muxVideo.hasAttribute(attrName), `has ${attrName} attr added`);
+  it("muted is forwarded to the media element", async function () {
+    const player = await fixture(`<mux-player
+      muted
+    ></mux-player>`);
+    const muxVideo = player.video;
 
-      assert.equal(muxVideo[propName], value, `has ${propName} prop`);
+    assert.equal(player.muted, true);
+    assert.equal(muxVideo.muted, true);
 
-      player.removeAttribute(attrName);
-      assert(!muxVideo.hasAttribute(attrName), `has ${attrName} attr removed`);
-    }
+    player.removeAttribute("muted");
+    assert(!muxVideo.hasAttribute("muted"), `has muted attr removed`);
+
+    player.setAttribute("muted", "");
+    assert.equal(muxVideo.getAttribute("muted"), "", `has muted attr added`);
+    assert.equal(muxVideo.muted, true, `has muted enabled`);
+  });
+
+  // it("playsinline is forwarded to the media element", async function () {
+  //   const player = await fixture(`<mux-player
+  //     playsinline
+  //   ></mux-player>`);
+  //   const muxVideo = player.video;
+
+  //   assert.equal(player.playsInline, true);
+  //   assert.equal(muxVideo.playsInline, true);
+
+  //   player.removeAttribute("playsinline");
+  //   assert(
+  //     !muxVideo.hasAttribute("playsinline"),
+  //     `has playsinline attr removed`
+  //   );
+
+  //   player.setAttribute("playsinline", "");
+  //   assert.equal(
+  //     muxVideo.getAttribute("playsinline"),
+  //     "",
+  //     `has playsinline attr added`
+  //   );
+  //   assert.equal(muxVideo.playsInline, true, `has playsInline enabled`);
+  // });
+
+  it("loop is forwarded to the media element", async function () {
+    const player = await fixture(`<mux-player
+      loop
+    ></mux-player>`);
+    const muxVideo = player.video;
+
+    assert.equal(player.loop, true);
+    assert.equal(muxVideo.loop, true);
+
+    player.removeAttribute("loop");
+    assert(!muxVideo.hasAttribute("loop"), `has loop attr removed`);
+
+    player.setAttribute("loop", "");
+    assert.equal(muxVideo.getAttribute("loop"), "", `has loop attr added`);
+    assert.equal(muxVideo.loop, true, `has loop enabled`);
+  });
+
+  // it("crossorigin is forwarded to the media element", async function () {
+  //   const player = await fixture(`<mux-player
+  //     crossorigin="anonymous"
+  //   ></mux-player>`);
+  //   const muxVideo = player.video;
+
+  //   assert.equal(player.crossOrigin, "anonymous");
+  //   assert.equal(muxVideo.crossOrigin, "anonymous");
+
+  //   player.removeAttribute("crossorigin");
+  //   assert(
+  //     !muxVideo.hasAttribute("crossorigin"),
+  //     `has crossorigin attr removed`
+  //   );
+
+  //   player.setAttribute("crossorigin", "use-credentials");
+  //   assert.equal(
+  //     muxVideo.getAttribute("crossorigin"),
+  //     "use-credentials",
+  //     `has crossorigin attr added`
+  //   );
+  //   assert.equal(
+  //     muxVideo.crossOrigin,
+  //     "use-credentials",
+  //     `has crossorigin enabled`
+  //   );
+  // });
+
+  it("preload is forwarded to the media element", async function () {
+    const player = await fixture(`<mux-player
+      preload="metadata"
+    ></mux-player>`);
+    const muxVideo = player.video;
+
+    assert.equal(player.preload, "metadata");
+    assert.equal(muxVideo.preload, "metadata");
+
+    player.removeAttribute("preload");
+    assert(!muxVideo.hasAttribute("preload"), `has preload attr removed`);
+
+    player.setAttribute("preload", "auto");
+    assert.equal(
+      muxVideo.getAttribute("preload"),
+      "auto",
+      `has preload attr added`
+    );
+    assert.equal(muxVideo.preload, "auto", `has preload enabled`);
+  });
+
+  it("poster is forwarded to the media element", async function () {
+    const player = await fixture(`<mux-player
+      poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
+    ></mux-player>`);
+    const muxVideo = player.video;
+
+    assert.equal(
+      player.poster,
+      "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
+    );
+    assert.equal(
+      muxVideo.poster,
+      "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
+    );
+
+    player.removeAttribute("poster");
+    assert(!muxVideo.hasAttribute("poster"), `has poster attr removed`);
+
+    player.setAttribute(
+      "poster",
+      "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1"
+    );
+    assert.equal(
+      muxVideo.getAttribute("poster"),
+      "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1",
+      `has poster attr added`
+    );
+    assert.equal(
+      muxVideo.poster,
+      "https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1",
+      `has poster enabled`
+    );
+  });
+
+  it("src is forwarded to the media element", async function () {
+    const player = await fixture(`<mux-player
+      src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+    ></mux-player>`);
+    const muxVideo = player.video;
+
+    assert.equal(
+      player.src,
+      "https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+    );
+    assert.equal(
+      muxVideo.src,
+      "https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+    );
+
+    player.removeAttribute("src");
+    assert(!muxVideo.hasAttribute("src"), `has src attr removed`);
+
+    player.setAttribute(
+      "src",
+      "https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8"
+    );
+    assert.equal(
+      muxVideo.getAttribute("src"),
+      "https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8",
+      `has src attr added`
+    );
+    assert.equal(
+      muxVideo.src,
+      "https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8",
+      `has src enabled`
+    );
   });
 
   it("muted attribute behaves like expected", async function () {

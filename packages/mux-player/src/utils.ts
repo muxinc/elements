@@ -10,6 +10,10 @@ export function kebabCase(name: string) {
   return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
+export function camelCase(name: string) {
+  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
+}
+
 let idCounter = 0;
 export function uniqueId(prefix: string) {
   var id = ++idCounter;

@@ -38,10 +38,12 @@ export const template = (props: MuxTemplateProps) => html`
       slot="media"
       crossorigin
       playsinline
-      autoplay="${props.autoplay}"
-      muted="${props.muted}"
-      debug="${props.debug}"
-      prefer-mse="${props.preferMse}"
+      autoplay="${props.autoplay ?? false}"
+      muted="${props.muted ?? false}"
+      loop="${props.loop ?? false}"
+      preload="${props.preload ?? false}"
+      debug="${props.debug ?? false}"
+      prefer-mse="${props.preferMse ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"
       src="${!!props.src
         ? props.src

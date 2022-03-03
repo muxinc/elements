@@ -7,6 +7,7 @@ import {
   getPlayerVersion,
   hasVolumeSupportAsync,
   MediaError,
+  toPropName,
 } from "./helpers";
 import { template } from "./template";
 import { render } from "./html";
@@ -71,11 +72,15 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
     poster: !el.playbackId && el.poster,
-    debug: el.debug,
     autoplay: el.autoplay,
+    crossOrigin: el.crossOrigin,
+    loop: el.loop,
     muted: el.muted,
-    envKey: el.envKey,
+    playsInline: el.playsInline,
+    preload: el.preload,
     playbackId: el.playbackId,
+    envKey: el.envKey,
+    debug: el.debug,
     tokens: el.tokens,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
@@ -163,8 +168,11 @@ class MuxPlayerElement extends VideoApiElement {
     this.#render();
   }
 
-  #render() {
-    render(template(getProps(this, this.#state)), this.shadowRoot as Node);
+  #render(props: Record<string, any> = {}) {
+    render(
+      template(getProps(this, { ...this.#state, ...props })),
+      this.shadowRoot as Node
+    );
   }
 
   #renderChrome() {
@@ -309,7 +317,7 @@ class MuxPlayerElement extends VideoApiElement {
     newValue: string
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-    this.#render();
+    this.#render({ [toPropName(attrName)]: newValue });
   }
 
   get hls() {
