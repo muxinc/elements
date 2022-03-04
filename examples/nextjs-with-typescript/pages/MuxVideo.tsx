@@ -7,7 +7,7 @@ const INITIAL_MUTED = false;
 
 function MuxVideoPage() {
   const mediaElRef = useRef(null);
-  const [autoplay, setAutplay] = useState(INITIAL_AUTOPLAY);
+  const [autoplay, setAutoplay] = useState(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
 
   return (
@@ -43,7 +43,7 @@ function MuxVideoPage() {
           <input
             id="autoplay-control"
             type="checkbox"
-            onChange={() => setAutplay(!autoplay ? "muted" : false)}
+            onChange={() => setAutoplay(!autoplay ? "muted" : false)}
             checked={autoplay}
           />
         </div>
