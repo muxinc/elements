@@ -241,7 +241,10 @@ class VideoApiElement extends HTMLElement {
 
   set autoplay(val) {
     if (val) {
-      this.setAttribute(AllowedVideoAttributes.AUTOPLAY, val);
+      this.setAttribute(
+        AllowedVideoAttributes.AUTOPLAY,
+        typeof val === "string" ? val : ""
+      );
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.AUTOPLAY);
