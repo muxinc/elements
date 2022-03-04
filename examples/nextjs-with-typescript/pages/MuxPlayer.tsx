@@ -97,6 +97,15 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
+          <label htmlFor="autoplay-control">Autoplay</label>
+          <input
+            id="autoplay-control"
+            type="checkbox"
+            onChange={() => setAutplay(!autoplay ? "muted" : false)}
+            checked={autoplay}
+          />
+        </div>
+        <div>
           <label htmlFor="muted-control">Muted</label>
           <input
             id="muted-control"
