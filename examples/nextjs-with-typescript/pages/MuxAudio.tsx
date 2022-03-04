@@ -1,7 +1,15 @@
 import Link from "next/link";
+import { useRef, useState } from "react";
 import MuxAudio from "@mux-elements/mux-audio-react";
 
-function MuxVideoPage() {
+const INITIAL_AUTOPLAY = false;
+const INITIAL_MUTED = false;
+
+function MuxAudioPage() {
+  const mediaElRef = useRef(null);
+  const [autoplay, setAutplay] = useState(INITIAL_AUTOPLAY);
+  const [muted, setMuted] = useState(INITIAL_MUTED);
+
   return (
     <div
       style={{
@@ -14,6 +22,7 @@ function MuxVideoPage() {
       <h1>MuxAudio Demo</h1>
       <div style={{ flexGrow: 1, flexShrink: 1 }}>
         <MuxAudio
+          ref={mediaElRef}
           style={{ maxWidth: "100%" }}
           playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
           // metadata={{
@@ -24,9 +33,29 @@ function MuxVideoPage() {
           // envKey="mux-data-env-key"
           streamType="on-demand"
           controls
-          autoPlay
-          muted
+          autoPlay={autoplay}
+          muted={muted}
         />
+      </div>
+      <div>
+        <div>
+          <label htmlFor="autoplay-control">Muted Autoplay</label>
+          <input
+            id="autoplay-control"
+            type="checkbox"
+            onChange={() => setAutplay(!autoplay ? "muted" : false)}
+            checked={autoplay}
+          />
+        </div>
+        <div>
+          <label htmlFor="muted-control">Muted</label>
+          <input
+            id="muted-control"
+            type="checkbox"
+            onChange={() => setMuted(!muted)}
+            checked={muted}
+          />
+        </div>
       </div>
       <h3 className="title">
         <Link href="/">
@@ -37,4 +66,4 @@ function MuxVideoPage() {
   );
 }
 
-export default MuxVideoPage;
+export default MuxAudioPage;

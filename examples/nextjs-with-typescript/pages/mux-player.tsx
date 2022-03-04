@@ -3,7 +3,7 @@ import Link from "next/link";
 import "@mux-elements/mux-player";
 import { useState } from "react";
 
-const INITIAL_DEBUG = true;
+const INITIAL_DEBUG = false;
 const INITIAL_MUTED = true;
 const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
 
