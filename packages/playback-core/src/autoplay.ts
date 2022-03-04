@@ -1,4 +1,4 @@
-export type ValueOf<T> = T[keyof T];
+import Hls from "hls.js";
 
 // TODO add INVIEW_MUTED, INVIEW_ANY
 export type AutoplayTypes = {
@@ -11,17 +11,88 @@ export const AutoplayTypes: AutoplayTypes = {
   MUTED: "muted",
 };
 
-// export const setupAutoplay = (mediaEl: HTMLMediaElement) => {
-//   const hasPlayed = false;
-//
-//   return (newAutoplay) => {
-//   };
-// };
+type ValueOf<T> = T[keyof T];
+type Autoplay = boolean | ValueOf<AutoplayTypes> | undefined;
+
+export const setupAutoplay = (
+  mediaEl: HTMLMediaElement,
+  autoplay: Autoplay,
+  hls
+) => {
+  let hasPlayed = false;
+  let isLive = false;
+
+  const updateHasPlayed = () => {
+    // hasPlayed
+    mediaEl.addEventListener(
+      "playing",
+      () => {
+        hasPlayed = true;
+      },
+      { once: true }
+    );
+  };
+
+  updateHasPlayed();
+
+  mediaEl.addEventListener(
+    "loadstart",
+    () => {
+      hasPlayed = false;
+      updateHasPlayed();
+      handleAutoplay(mediaEl, autoplay);
+    },
+    { once: true }
+  );
+
+  if (hls) {
+    hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
+      isLive = data.details.live ?? false;
+    });
+  }
+
+  // When we are not auto-playing, we should seek to the live sync position
+  // This will seek first play event of *any* live video including event-type,
+  // which probably shouldn't seek
+  if (!autoplay) {
+    mediaEl.addEventListener(
+      "play",
+      () => {
+        // seek to either hls.js's liveSyncPosition or the native seekable end
+        if (hls?.liveSyncPosition) {
+          mediaEl.currentTime = hls.liveSyncPosition;
+        } else {
+          mediaEl.currentTime = mediaEl.seekable.end(0);
+        }
+      },
+      { once: true }
+    );
+  } else if (autoplay) {
+    mediaEl.addEventListener(
+      "loadedmetadata",
+      () => {
+        handleAutoplay(mediaEl, autoplay);
+      },
+      { once: true }
+    );
+  }
+
+  return (newAutoplay) => {
+    if (!hasPlayed) {
+      autoplay = newAutoplay;
+      handleAutoplay(mediaEl, autoplay);
+    }
+  };
+};
 
 export const handleAutoplay = (
   mediaEl: HTMLMediaElement,
-  autoplay: boolean | ValueOf<AutoplayTypes> | undefined
+  autoplay: Autoplay
 ) => {
+  if (!autoplay) {
+    return;
+  }
+
   const oldMuted = mediaEl.muted;
   const restoreMuted = () => (mediaEl.muted = oldMuted);
   switch (autoplay) {

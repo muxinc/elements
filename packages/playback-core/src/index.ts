@@ -1,7 +1,7 @@
 import mux, { Options } from "mux-embed";
 
 import Hls, { HlsConfig } from "hls.js";
-import { AutoplayTypes, handleAutoplay } from "./autoplay";
+import { AutoplayTypes, setupAutoplay } from "./autoplay";
 import { isKeyOf } from "./util";
 export type ValueOf<T> = T[keyof T];
 
@@ -9,6 +9,7 @@ export type Metadata = Partial<Options["data"]>;
 export type PlaybackEngine = Hls;
 export { mux };
 export { Hls };
+export { setupAutoplay };
 
 export type StreamTypes = {
   VOD: "on-demand";
@@ -373,31 +374,6 @@ export const loadMedia = (
     // This ensures that we re-load them after it's done that.
     hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
-
-    // When we are not auto-playing, we should seek to the live sync position
-    // This will seek first play event of *any* live video including event-type,
-    // which probably shouldn't seek
-    if (!props.autoplay) {
-      hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
-        const isLive: boolean = data.details.live;
-
-        if (isLive) {
-          mediaEl.addEventListener(
-            "play",
-            () => {
-              if (hls?.liveSyncPosition) {
-                mediaEl.currentTime = hls.liveSyncPosition;
-              }
-            },
-            { once: true }
-          );
-        }
-      });
-    } else if (props.autoplay) {
-      hls.once(Hls.Events.MANIFEST_PARSED, () => {
-        handleAutoplay(mediaEl, props.autoplay);
-      });
-    }
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
