@@ -2330,37 +2330,6 @@
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-4.1.5.tgz#f6ea4e4764dfa0924235d9ef2ce56aac531c42c7"
   integrity sha512-rb2LEhclR/Ykf/biC2HrZmVonqnfTL8RhsL9wdMCGmw1xfeLFqGGZLKWypob2/i15SqgmEHbtcgJZ9kwWPbKtQ==
 
-"@mux-elements/mux-audio@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@mux-elements/mux-audio/-/mux-audio-0.2.4.tgz#f34f4a60d94e512b5ae12ca85d7bf0eaf74eedb6"
-  integrity sha512-yX6u6wRu3v0O53CWLBvBOs5ESzVY2+O0Oi4pG7S3d3AHZeBjsDENYFrCsDFARQ3gY6f6a9yjnoRgkNH1ym9MmA==
-  dependencies:
-    "@mux-elements/playback-core" "^0.1.4"
-
-"@mux-elements/mux-player@^0.1.0-alpha.5":
-  version "0.1.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/@mux-elements/mux-player/-/mux-player-0.1.0-alpha.5.tgz#9684efeb06fd520f33922287d4efb3572e6940b7"
-  integrity sha512-/ufLae2WCofxGHVZ5X+nya8vT/cjGUrliY7iNukUrHqOvm2NSr8YWoXDwPfMA4YlS/ZKEJahQRhVZXtZ6qE/1Q==
-  dependencies:
-    "@github/template-parts" "^0.4.0"
-    "@mux-elements/mux-video" "^0.2.5"
-    media-chrome "0.5.1"
-
-"@mux-elements/mux-video@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@mux-elements/mux-video/-/mux-video-0.2.5.tgz#aae3d25291b3b17b0d1051e42110e318e545e053"
-  integrity sha512-D5JHvQs91Y2c/7nWy0CNhAFLxGwkGaUPFUzvA0udfqcmCxmi7Ay/+MSM970NlxTImrQ0zKMOiAvlUq5zBuSR7w==
-  dependencies:
-    "@mux-elements/playback-core" "^0.1.4"
-
-"@mux-elements/playback-core@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@mux-elements/playback-core/-/playback-core-0.1.4.tgz#ce95b1b7c430e06aeda3bde2760ef94fa875d0ca"
-  integrity sha512-6Z6dmmU+6h//BstM/lXmLKewxEsLBAYAjam+SyT6HgsG0TQux+PUwwhl62A4/NdsaLiZRmdoyj5hxQoVY+H5Dw==
-  dependencies:
-    hls.js "1.1.5"
-    mux-embed "4.4.4"
-
 "@napi-rs/triples@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.0.3.tgz#76d6d0c3f4d16013c61e45dfca5ff1e6c31ae53c"
@@ -9135,11 +9104,6 @@ history@^5.1.0:
   integrity sha512-zPuQgPacm2vH2xdORvGGz1wQMuHSIB56yNAy5FnLuwOwgSYyPKptJtcMm6Ev+hRGeS+GzhbmRacHzvlESbFwDg==
   dependencies:
     "@babel/runtime" "^7.7.6"
-
-hls.js@1.1.5:
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.1.5.tgz#923a8a8cfdf09542578696d47c8ae435da981ffd"
-  integrity sha512-mQX5TSNtJEzGo5HPpvcQgCu+BWoKDQM6YYtg/KbgWkmVAcqOCvSTi0SuqG2ZJLXxIzdnFcKU2z7Mrw/YQWhPOA==
 
 hls.js@1.1.5:
   version "1.1.5"
