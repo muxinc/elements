@@ -4,7 +4,8 @@ import "@mux-elements/mux-player";
 import { useState } from "react";
 
 const INITIAL_DEBUG = false;
-const INITIAL_MUTED = true;
+const INITIAL_MUTED = false;
+const INITIAL_AUTOPLAY = false;
 const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
 
 function MuxPlayerWCPage() {
@@ -12,8 +13,10 @@ function MuxPlayerWCPage() {
   const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
+  const [autoplay, setAutoplay] = useState(INITIAL_AUTOPLAY);
   const debugObj = debug ? { debug: "" } : {};
   const mutedObj = muted ? { muted: "" } : {};
+  const autoplayObj = autoplay ? { autoplay } : {};
   return (
     <div
       style={{
@@ -33,7 +36,7 @@ function MuxPlayerWCPage() {
           // onPlayerReady={() => console.log("ready!")}
           {...debugObj}
           {...mutedObj}
-          // auto-play=""
+          {...autoplayObj}
           // stream-type="live"
           // primary-color="#ec407a"
           // secondary-color="#64b5f6"
@@ -42,6 +45,15 @@ function MuxPlayerWCPage() {
         ></mux-player>
       </div>
       <div>
+        <div>
+          <label htmlFor="autoplay-control">Muted Autoplay</label>
+          <input
+            id="autoplay-control"
+            type="checkbox"
+            onChange={() => setAutoplay(!autoplay ? "muted" : false)}
+            checked={autoplay}
+          />
+        </div>
         <div>
           <label htmlFor="muted-control">Muted</label>
           <input
