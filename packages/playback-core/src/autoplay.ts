@@ -45,6 +45,18 @@ export const setupAutoplay = (
     { once: true }
   );
 
+  mediaEl.addEventListener(
+    "loadedmetadata",
+    () => {
+      // only update isLive here if we're using native playback
+      if (!hls) {
+        isLive = !Number.isFinite(mediaEl.duration);
+      }
+      handleAutoplay(mediaEl, autoplay);
+    },
+    { once: true }
+  );
+
   if (hls) {
     hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
       isLive = data.details.live ?? false;
@@ -58,20 +70,16 @@ export const setupAutoplay = (
     mediaEl.addEventListener(
       "play",
       () => {
+        // don't seek if we're not live
+        if (!isLive) {
+          return;
+        }
         // seek to either hls.js's liveSyncPosition or the native seekable end
         if (hls?.liveSyncPosition) {
           mediaEl.currentTime = hls.liveSyncPosition;
         } else {
           mediaEl.currentTime = mediaEl.seekable.end(0);
         }
-      },
-      { once: true }
-    );
-  } else if (autoplay) {
-    mediaEl.addEventListener(
-      "loadedmetadata",
-      () => {
-        handleAutoplay(mediaEl, autoplay);
       },
       { once: true }
     );
