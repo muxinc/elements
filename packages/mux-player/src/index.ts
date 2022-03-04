@@ -10,7 +10,7 @@ import {
 } from "./helpers";
 import { template } from "./template";
 import { render } from "./html";
-import { toNumberOrUndefined } from "./utils";
+import { toNumberOrUndefined, i18n } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
@@ -205,30 +205,29 @@ class MuxPlayerElement extends VideoApiElement {
       let dialog;
       switch (error.code) {
         case MediaError.MEDIA_ERR_NETWORK: {
-          let title = "Network Error";
+          let title = i18n`Network Error`;
           let { message } = error;
           let linkText;
           let linkUrl;
 
           if (!window.navigator.onLine) {
-            title += " - Offline";
-            message +=
-              " Your device appears to be disconnected from the internet.";
+            title += i18n` - Offline`;
+            message += i18n` Your device appears to be disconnected from the internet.`;
           }
 
           // Only works when hls.js is used.
           switch (error.data?.response.code) {
             case 412:
-              title += " 412 - Precondition Failed";
-              message += ` Nobody is currently streaming to this live stream endpoint.`;
+              title += i18n` ${error.data?.response.code} - Precondition Failed`;
+              message += i18n` Nobody is currently streaming to this live stream endpoint.`;
               break;
             case 403:
-              title += " 403 - Forbidden";
-              message += ` You don't have permission to access the manifest URL.`;
+              title += i18n` ${error.data?.response.code} - Forbidden`;
+              message += i18n` You don't have permission to access the video URL.`;
               break;
             case 404:
-              title += " 404 - Not Found";
-              message += ` The manifest URL could not be found at this address:`;
+              title += i18n` ${error.data?.response.code} - Not Found`;
+              message += i18n` The video URL could not be found at this address:`;
               linkUrl = this.video?.src;
               break;
           }
@@ -244,21 +243,21 @@ class MuxPlayerElement extends VideoApiElement {
         case MediaError.MEDIA_ERR_DECODE: {
           let { message } = error;
           dialog = {
-            title: "Media Error",
+            title: i18n`Media Error`,
             message,
           };
           break;
         }
         case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
           dialog = {
-            title: "Source Not Supported",
+            title: i18n`Source Not Supported`,
             message: error.message,
           };
           break;
         }
         default:
           dialog = {
-            title: "Error",
+            title: i18n`Error`,
             message: error.message,
           };
           break;

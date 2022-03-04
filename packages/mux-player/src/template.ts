@@ -9,6 +9,7 @@ import { html } from "./html";
 import * as icons from "./icons";
 // @ts-ignore
 import cssStr from "./styles.css";
+import { i18n } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 
@@ -95,7 +96,8 @@ export const template = (props: MuxTemplateProps) => html`
           href="${props.dialog.linkUrl}"
           target="_blank"
           rel="external noopener"
-          aria-label="${props.dialog.linkText ?? ""} (opens in a new window)"
+          aria-label="${props.dialog.linkText ??
+          ""} ${i18n`(opens in a new window)`}"
           >${props.dialog.linkText ?? props.dialog.linkUrl}</a
         >`}
       </p>

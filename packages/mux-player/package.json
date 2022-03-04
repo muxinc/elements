@@ -14,13 +14,14 @@
   "license": "MIT",
   "scripts": {
     "test": "web-test-runner **/*test.js --coverage --config test/web-test-runner.config.js",
+    "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
-    "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=esm --loader:.css=text --loader:.svg=text --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=iife --loader:.css=text --loader:.svg=text --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --loader:.css=text --loader:.svg=text --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm": "node scripts/esbuild.js --format=esm --out-extension:.js=.mjs",
+    "build:iife": "node scripts/esbuild.js --format=iife --out-extension:.js=.js",
+    "build:cjs": "node scripts/esbuild.js --format=cjs --out-extension:.js=.cjs",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify'",
     "prepublishOnly": "yarn build"
