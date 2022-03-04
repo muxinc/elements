@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import path from "path";
 import { build } from "esbuild";
 
@@ -5,7 +6,7 @@ const camelCase = (name) => {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 };
 
-const args = process.argv.slice(2).reduce((processArgs, val) => {
+const args = process.argv.slice(3).reduce((processArgs, val) => {
   let [key, value] = val.split("=");
   let [name, prop] = key.replace(/^--?/g, "").split(":");
   processArgs[camelCase(name)] = prop ? { [prop]: value } : value ?? true;
@@ -34,8 +35,8 @@ const i18nPlugin = {
 };
 
 build({
-  entryPoints: ["src/index.ts"],
-  outdir: "dist",
+  entryPoints: [process.argv[2]],
+  outdir: args.outdir ?? "dist",
   bundle: true,
   target: "es2019",
   minify: args.minify,

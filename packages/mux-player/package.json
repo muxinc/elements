@@ -19,9 +19,9 @@
     "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
-    "build:esm": "node scripts/esbuild.js --format=esm --out-extension:.js=.mjs",
-    "build:iife": "node scripts/esbuild.js --format=iife --out-extension:.js=.js",
-    "build:cjs": "node scripts/esbuild.js --format=cjs --out-extension:.js=.cjs",
+    "build:esm": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
+    "build:iife": "esbuilder src/index.ts --format=iife --out-extension:.js=.js",
+    "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify'",
     "prepublishOnly": "yarn build"
