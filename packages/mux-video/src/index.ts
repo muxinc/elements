@@ -2,6 +2,7 @@ import CustomVideoElement from "./CustomVideoElement";
 
 import {
   initialize,
+  setupAutoplay,
   MuxMediaProps,
   StreamTypes,
   ValueOf,
@@ -277,6 +278,12 @@ class MuxVideoElement
       this.__hls
     );
     this.__hls = nextHlsInstance;
+    const updateAutoplay = setupAutoplay(
+      this.nativeEl,
+      this.autoplay,
+      nextHlsInstance
+    );
+    this.__updateAutoplay = updateAutoplay;
   }
 
   unload() {
@@ -319,6 +326,9 @@ class MuxVideoElement
           this.unload();
           this.load();
         }
+        break;
+      case "autoplay":
+        this.__updateAutoplay(newValue);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
