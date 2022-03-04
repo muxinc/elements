@@ -21,16 +21,18 @@ const styles = `
       linear-gradient(to bottom, rgba(20, 20, 30, 0.7) 50%, rgba(20, 20, 30, 0.9))
     );
     /* Needs to use !important to prevent overwrite of media-chrome */
-    transition: var(--media-dialog-transition-open, opacity .2s) !important;
+    transition: var(--media-dialog-transition-open, visibility .2s, opacity .2s) !important;
     transform: var(--media-dialog-transform-open, none) !important;
+    visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
   }
 
   :host(:not([open])) {
     /* Needs to use !important to prevent overwrite of media-chrome */
-    transition: var(--media-dialog-transition-close, opacity .1s) !important;
-    transform: var(--media-dialog-transform-close, none);
+    transition: var(--media-dialog-transition-close, visibility .1s, opacity .1s) !important;
+    transform: var(--media-dialog-transform-close, none) !important;
+    visibility: hidden !important;
     opacity: 0 !important;
     pointer-events: none !important;
   }
