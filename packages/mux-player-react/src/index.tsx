@@ -6,7 +6,7 @@ import type { Tokens } from "@mux-elements/mux-player";
 import { toNativeProps } from "./common/utils";
 import { useRef } from "react";
 import { useCombinedRefs } from "./useCombinedRefs";
-import useObjectPropEffect from "./useObjectPropEffect";
+import useObjectPropEffect, { defaultHasChanged } from "./useObjectPropEffect";
 import { getPlayerVersion } from "./env";
 
 type ValueOf<T> = T[keyof T];
@@ -156,7 +156,7 @@ const usePlayer = (
       if (playerEl.hasAttribute("autoplay") && !playerEl.hasPlayed) {
         return false;
       }
-      return true;
+      return defaultHasChanged(playerEl, value, propName);
     }
   );
   useEventCallbackEffect("loadstart", ref, onLoadStart);
