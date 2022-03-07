@@ -5,6 +5,7 @@ import {
   allMediaTypes,
   initialize,
   setupAutoplay,
+  type Autoplay,
   MuxMediaProps,
   StreamTypes,
   toMuxVideoURL,
@@ -51,7 +52,8 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     const innerMediaElRef = useRef<HTMLVideoElement>(null);
 
     const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
-    const updateAutoplayRef = useRef(null);
+    const updateAutoplayRef =
+      useRef<(a: Autoplay) => void | undefined>(undefined);
 
     useEffect(() => {
       const src = toMuxVideoURL(playbackId) ?? outerSrc;
@@ -82,7 +84,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     }, [src]);
 
     useEffect(() => {
-      updateAutoplayRef.current(autoPlay);
+      updateAutoplayRef.current?.(autoPlay);
     }, [autoPlay]);
 
     return (

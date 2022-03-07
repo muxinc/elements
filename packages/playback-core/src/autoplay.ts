@@ -1,5 +1,7 @@
 import Hls from "hls.js";
 
+type PlaybackEngine = Hls;
+
 // TODO add INVIEW_MUTED, INVIEW_ANY
 export type AutoplayTypes = {
   ANY: "any";
@@ -12,12 +14,13 @@ export const AutoplayTypes: AutoplayTypes = {
 };
 
 type ValueOf<T> = T[keyof T];
-type Autoplay = boolean | ValueOf<AutoplayTypes> | undefined;
+export type Autoplay = boolean | ValueOf<AutoplayTypes> | undefined;
+export type UpdateAutoplay = (newAutoplay: Autoplay) => void;
 
 export const setupAutoplay = (
   mediaEl: HTMLMediaElement,
   autoplay: Autoplay,
-  hls
+  hls: PlaybackEngine | undefined
 ) => {
   let hasPlayed = false;
   let isLive = false;
@@ -85,12 +88,14 @@ export const setupAutoplay = (
     );
   }
 
-  return (newAutoplay) => {
+  const updateAutoplay: UpdateAutoplay = (newAutoplay) => {
     if (!hasPlayed) {
       autoplay = newAutoplay;
       handleAutoplay(mediaEl, autoplay);
     }
   };
+
+  return updateAutoplay;
 };
 
 export const handleAutoplay = (

@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import {
   allMediaTypes,
   initialize,
+  type Autoplay,
+  type UpdateAutoplay,
   setupAutoplay,
   MuxMediaProps,
   StreamTypes,
@@ -51,7 +53,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
     const innerMediaElRef = useRef<HTMLAudioElement>(null);
 
     const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
-    const updateAutoplayRef = useRef(null);
+    const updateAutoplayRef = useRef<UpdateAutoplay | undefined>(undefined);
 
     useEffect(() => {
       const src = toMuxVideoURL(playbackId) ?? outerSrc;
@@ -82,7 +84,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
     }, [src]);
 
     useEffect(() => {
-      updateAutoplayRef.current(autoPlay);
+      updateAutoplayRef.current?.(autoPlay);
     }, [autoPlay]);
 
     return (

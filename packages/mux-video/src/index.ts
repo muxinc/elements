@@ -72,6 +72,7 @@ class MuxVideoElement
   protected __metadata: Readonly<Metadata> = {};
   protected __playerSoftwareVersion?: string;
   protected __playerSoftwareName?: string;
+  protected __updateAutoplay?;
 
   constructor() {
     super();
