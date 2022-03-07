@@ -14,16 +14,29 @@ export const AutoplayTypes: AutoplayTypes = {
 };
 
 type ValueOf<T> = T[keyof T];
-export type Autoplay = boolean | ValueOf<AutoplayTypes> | undefined;
-export type UpdateAutoplay = (newAutoplay: Autoplay) => void;
+type Maybe<T> = T | null | undefined;
+export type Autoplay = boolean | ValueOf<AutoplayTypes>;
+export type UpdateAutoplay = (newAutoplay: Maybe<string | boolean>) => void;
+
+const AutoplayTypeValues = Object.values(AutoplayTypes);
+export const isAutoplayValue = (value: unknown): value is Autoplay => {
+  return (
+    typeof value == "boolean" ||
+    (typeof value === "string" &&
+      AutoplayTypeValues.includes(value as ValueOf<AutoplayTypes>))
+  );
+};
 
 export const setupAutoplay = (
   mediaEl: HTMLMediaElement,
-  autoplay: Autoplay,
+  maybeAutoplay: Maybe<string | boolean>,
   hls: PlaybackEngine | undefined
 ) => {
   let hasPlayed = false;
   let isLive = false;
+  let autoplay: Autoplay = isAutoplayValue(maybeAutoplay)
+    ? maybeAutoplay
+    : !!maybeAutoplay;
 
   const updateHasPlayed = () => {
     // hasPlayed
@@ -90,7 +103,7 @@ export const setupAutoplay = (
 
   const updateAutoplay: UpdateAutoplay = (newAutoplay) => {
     if (!hasPlayed) {
-      autoplay = newAutoplay;
+      autoplay = isAutoplayValue(newAutoplay) ? newAutoplay : !!newAutoplay;
       handleAutoplay(mediaEl, autoplay);
     }
   };
