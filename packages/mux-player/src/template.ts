@@ -206,7 +206,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     <media-time-range></media-time-range>
-    <media-time-display show-duration remaining></media-time-display>
+    <media-time-display show-duration></media-time-display>
     ${MediaMuteButton()}
     ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>
@@ -224,7 +224,7 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
     <media-time-range></media-time-range>
-    <media-time-display show-duration remaining></media-time-display>
+    <media-time-display show-duration></media-time-display>
     ${MediaMuteButton()}
     ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>
