@@ -1,6 +1,5 @@
 import "media-chrome";
 import "@mux-elements/mux-video";
-import MxpDialog from "./dialog";
 import VideoApiElement from "./video-api";
 import {
   getCcSubTracks,
