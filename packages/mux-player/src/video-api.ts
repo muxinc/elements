@@ -154,9 +154,13 @@ class VideoApiElement extends HTMLElement {
   }
 
   get hasPlayed() {
-    return this.shadowRoot
-      ?.querySelector("media-controller")
-      .hasAttribute("media-has-played");
+    const mc = this.shadowRoot?.querySelector("media-controller");
+
+    if (mc) {
+      return mc.hasAttribute("media-has-played");
+    }
+
+    return false;
   }
 
   get paused() {

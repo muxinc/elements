@@ -7,7 +7,7 @@ const INITIAL_MUTED = false;
 
 function MuxAudioPage() {
   const mediaElRef = useRef(null);
-  const [autoplay, setAutoplay] = useState(INITIAL_AUTOPLAY);
+  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
 
   return (
@@ -44,7 +44,7 @@ function MuxAudioPage() {
             id="autoplay-control"
             type="checkbox"
             onChange={() => setAutoplay(!autoplay ? "muted" : false)}
-            checked={autoplay}
+            checked={!!autoplay}
           />
         </div>
         <div>
