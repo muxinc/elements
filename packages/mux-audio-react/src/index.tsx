@@ -54,6 +54,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
 
     const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
     const updateAutoplayRef = useRef<UpdateAutoplay | undefined>(undefined);
+    const [updateAutoplay, setUpdateAutoplay] = useState(() => (x: any) => {});
 
     useEffect(() => {
       const src = toMuxVideoURL(playbackId) ?? outerSrc;
@@ -75,16 +76,13 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
         playbackEngineRef.current
       );
       playbackEngineRef.current = nextPlaybackEngineRef;
-      const updateAutoplay = setupAutoplay(
-        mediaElRef.current,
-        autoPlay,
-        playbackEngineRef.current
+      setUpdateAutoplay(() =>
+        setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current)
       );
-      updateAutoplayRef.current = updateAutoplay;
     }, [src]);
 
     useEffect(() => {
-      updateAutoplayRef.current?.(autoPlay);
+      updateAutoplay(autoPlay);
     }, [autoPlay]);
 
     return (
