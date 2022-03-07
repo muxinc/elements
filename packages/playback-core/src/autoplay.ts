@@ -27,6 +27,12 @@ export const isAutoplayValue = (value: unknown): value is Autoplay => {
   );
 };
 
+// Given a video element, will listen to lifecycle events to determine important
+// things like whether the video is live or whether the video has played
+// and then handles autoplaying the video as appropraite.
+// It works with both the native video element or hls.js.
+// This returns a method UpdateAutoplay, that allows the user to change
+// the value of the autoplay attribute and it will react appropriately.
 export const setupAutoplay = (
   mediaEl: HTMLMediaElement,
   maybeAutoplay: Maybe<string | boolean>,
@@ -51,6 +57,9 @@ export const setupAutoplay = (
 
   updateHasPlayed();
 
+  // on `loadstart`
+  // hasPlayed should default to false
+  // we should try and autoplay
   mediaEl.addEventListener(
     "loadstart",
     () => {
@@ -61,6 +70,7 @@ export const setupAutoplay = (
     { once: true }
   );
 
+  // on `loadedmetadata` we can check whether we're live in the case of native playback
   mediaEl.addEventListener(
     "loadedmetadata",
     () => {
@@ -73,6 +83,7 @@ export const setupAutoplay = (
     { once: true }
   );
 
+  // determine if we're live for hls.js
   if (hls) {
     hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
       isLive = data.details.live ?? false;
@@ -101,6 +112,8 @@ export const setupAutoplay = (
     );
   }
 
+  // this method allows us to update the value of autoplay
+  // and try autoplaying appropriately.
   const updateAutoplay: UpdateAutoplay = (newAutoplay) => {
     if (!hasPlayed) {
       autoplay = isAutoplayValue(newAutoplay) ? newAutoplay : !!newAutoplay;
@@ -121,6 +134,7 @@ export const handleAutoplay = (
 
   const oldMuted = mediaEl.muted;
   const restoreMuted = () => (mediaEl.muted = oldMuted);
+
   switch (autoplay) {
     // ANY:
     // try to play with current options
@@ -132,14 +146,15 @@ export const handleAutoplay = (
         mediaEl.play().catch(restoreMuted);
       });
       break;
+
     // MUTED:
     // mute the player and then try playing
     // if that fails, restore muted state
     case AutoplayTypes.MUTED:
       mediaEl.muted = true;
       mediaEl.play().catch(restoreMuted);
-
       break;
+
     // Default or if autoplay is a boolean attribute:
     // Try playing the video and catch the failed autoplay warning
     default:
