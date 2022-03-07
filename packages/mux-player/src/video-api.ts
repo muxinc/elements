@@ -153,6 +153,12 @@ class VideoApiElement extends HTMLElement {
     return this.shadowRoot?.querySelector("mux-video");
   }
 
+  get hasPlayed() {
+    return this.shadowRoot
+      ?.querySelector("media-controller")
+      .hasAttribute("media-has-played");
+  }
+
   get paused() {
     return this.video?.paused ?? true;
   }

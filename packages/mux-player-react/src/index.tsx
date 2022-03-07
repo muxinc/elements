@@ -151,6 +151,12 @@ const usePlayer = (
       } else {
         playerEl.play();
       }
+    },
+    (playerEl, value, propName) => {
+      if (playerEl.hasAttribute("autoplay") && !playerEl.hasPlayed) {
+        return false;
+      }
+      return true;
     }
   );
   useEventCallbackEffect("loadstart", ref, onLoadStart);
