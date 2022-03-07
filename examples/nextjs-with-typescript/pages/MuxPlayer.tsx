@@ -41,7 +41,7 @@ function MuxPlayerPage() {
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
-  const [autoplay, setAutoplay] = useState(INITIAL_AUTOPLAY);
+  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   return (
     <div
       style={{
@@ -102,7 +102,7 @@ function MuxPlayerPage() {
             id="autoplay-control"
             type="checkbox"
             onChange={() => setAutoplay(!autoplay ? "muted" : false)}
-            checked={autoplay}
+            checked={!!autoplay}
           />
         </div>
         <div>
