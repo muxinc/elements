@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import MuxVideo from "@mux-elements/mux-video-react";
 
 const INITIAL_AUTOPLAY = false;
@@ -10,9 +10,6 @@ function MuxVideoPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [paused, setPaused] = useState<boolean | undefined>(true);
-  useEffect(() => {
-    if (!mediaElRef.current) return;
-  }, [paused]);
 
   return (
     <div

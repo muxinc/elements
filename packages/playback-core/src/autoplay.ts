@@ -21,7 +21,7 @@ export type UpdateAutoplay = (newAutoplay: Maybe<string | boolean>) => void;
 const AutoplayTypeValues = Object.values(AutoplayTypes);
 export const isAutoplayValue = (value: unknown): value is Autoplay => {
   return (
-    typeof value == "boolean" ||
+    typeof value === "boolean" ||
     (typeof value === "string" &&
       AutoplayTypeValues.includes(value as ValueOf<AutoplayTypes>))
   );
