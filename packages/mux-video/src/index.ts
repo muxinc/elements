@@ -12,6 +12,7 @@ import {
   Metadata,
   PlaybackEngine,
   mux,
+  type UpdateAutoplay,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
@@ -72,7 +73,7 @@ class MuxVideoElement
   protected __metadata: Readonly<Metadata> = {};
   protected __playerSoftwareVersion?: string;
   protected __playerSoftwareName?: string;
-  protected __updateAutoplay?;
+  protected __updateAutoplay?: UpdateAutoplay;
 
   constructor() {
     super();
@@ -329,7 +330,7 @@ class MuxVideoElement
         }
         break;
       case "autoplay":
-        this.__updateAutoplay(newValue);
+        this.__updateAutoplay?.(newValue);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */

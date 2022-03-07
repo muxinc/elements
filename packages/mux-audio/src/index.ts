@@ -3,7 +3,6 @@ import CustomAudioElement from "./CustomAudioElement";
 import {
   initialize,
   setupAutoplay,
-  type Autoplay,
   MuxMediaProps,
   StreamTypes,
   ValueOf,
@@ -13,6 +12,7 @@ import {
   PlaybackEngine,
   Metadata,
   mux,
+  type UpdateAutoplay,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
@@ -67,7 +67,7 @@ class MuxAudioElement
   protected __hls?: PlaybackEngine;
   protected __muxPlayerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
-  protected __updateAutoplay?: (a: Autoplay) => void;
+  protected __updateAutoplay?: UpdateAutoplay;
 
   constructor() {
     super();
@@ -245,7 +245,7 @@ class MuxAudioElement
         }
         break;
       case "autoplay":
-        this.__updateAutoplay?.(newValue as Autoplay);
+        this.__updateAutoplay?.(newValue);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
