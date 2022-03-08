@@ -67,7 +67,7 @@ class VideoApiElement extends HTMLElement {
     // Watch for child adds/removes and update the native element if necessary
     /** @type {(mutationList: MutationRecord[]) => void} */
     const mutationCallback = (mutationsList: MutationRecord[]) => {
-      for (let mutation of mutationsList) {
+      for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
           // Child being removed
           mutation.removedNodes.forEach((node) => {

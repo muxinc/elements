@@ -1,7 +1,5 @@
 if (typeof DocumentFragment === "undefined") {
-  class DocumentFragment {
-    constructor() {}
-  }
+  class DocumentFragment {}
   // @ts-ignore
   globalThis.DocumentFragment = DocumentFragment;
 }

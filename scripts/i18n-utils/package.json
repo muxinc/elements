@@ -1,12 +1,9 @@
 {
+  "private": true,
   "name": "@mux-elements/i18n-utils",
   "version": "0.1.0",
   "type": "module",
   "main": "./i18n-utils.js",
-  "repository": "https://github.com/muxinc/elements",
-  "author": "Mux, Inc.",
-  "license": "MIT",
-  "private": true,
   "bin": {
     "i18n-utils": "./i18n-utils.js"
   }
