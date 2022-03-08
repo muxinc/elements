@@ -13,6 +13,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --coverage --config test/web-test-runner.config.js",
     "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
     "dev:iife": "open-process | yarn build:iife --watch",
@@ -33,6 +34,8 @@
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
     "@web/dev-server-esbuild": "^0.2.16",
     "@web/test-runner": "^0.13.26",
     "esbuild": "^0.13.13",
@@ -47,8 +50,14 @@
       "node": true,
       "mocha": true
     },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "@mux-elements/i18n"
+    ],
     "extends": [
-      "eslint:recommended"
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
       "ecmaVersion": 2021,
@@ -58,7 +67,11 @@
       "globalThis": false
     },
     "rules": {
-      "no-shadow": "error"
+      "no-shadow": "error",
+      "no-extra-boolean-cast": 0,
+      "@mux-elements/i18n/no-substitutions": "error",
+      "@typescript-eslint/ban-ts-comment": 0,
+      "@typescript-eslint/no-explicit-any": 0
     }
   }
 }

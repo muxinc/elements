@@ -13,12 +13,7 @@ const regex = /\b(?:i18n`(.*?)`)/g;
 let result;
 
 while ((result = regex.exec(srcContents)) !== null) {
-  let i = 0;
-  strings.push(
-    result[1].replace(/\$\{(.*?)\}/g, (match, key) => {
-      return "${" + i++ + "}";
-    })
-  );
+  strings.push(result[1]);
 }
 
 for (let file of walkSync(langFolder)) {

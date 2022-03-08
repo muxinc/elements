@@ -215,17 +215,24 @@ class MuxPlayerElement extends VideoApiElement {
           }
 
           // Only works when hls.js is used.
-          switch (error.data?.response.code) {
+          const responseCode = error.data?.response.code;
+          switch (responseCode) {
             case 412:
-              title += i18n` ${error.data?.response.code} - Precondition Failed`;
+              title += i18n` {responseCode} - Precondition Failed`.format({
+                responseCode,
+              });
               message += i18n` Nobody is currently streaming to this live stream endpoint.`;
               break;
             case 403:
-              title += i18n` ${error.data?.response.code} - Forbidden`;
+              title += i18n` {responseCode} - Forbidden`.format({
+                responseCode,
+              });
               message += i18n` You don't have permission to access the video URL.`;
               break;
             case 404:
-              title += i18n` ${error.data?.response.code} - Not Found`;
+              title += i18n` {responseCode} - Not Found`.format({
+                responseCode,
+              });
               message += i18n` The video URL could not be found at this address:`;
               linkUrl = this.video?.src;
               break;
@@ -240,7 +247,7 @@ class MuxPlayerElement extends VideoApiElement {
           break;
         }
         case MediaError.MEDIA_ERR_DECODE: {
-          let { message } = error;
+          const { message } = error;
           dialog = {
             title: i18n`Media Error`,
             message,
