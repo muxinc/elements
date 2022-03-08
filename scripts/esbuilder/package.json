@@ -1,0 +1,16 @@
+{
+  "name": "@mux-elements/esbuilder",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./esbuilder.js",
+  "repository": "https://github.com/muxinc/elements",
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "esbuilder": "./esbuilder.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.13.13"
+  }
+}

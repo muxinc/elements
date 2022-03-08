@@ -1,3 +1,25 @@
+// @ts-ignore
+import lang from "../lang/en.json";
+
+// NL example
+// lang = {
+//   "Network Error": "Netwerk Fout",
+// };
+export function i18n(strings: TemplateStringsArray, ...exprs: any[]): string {
+  const i18nLangKeyParts = [];
+  for (let i in strings) {
+    i18nLangKeyParts.push(strings[i], "${" + i + "}");
+  }
+  i18nLangKeyParts.pop();
+
+  let i18nLangTemplate = i18nLangKeyParts.join("");
+  i18nLangTemplate = lang?.[i18nLangTemplate] ?? i18nLangTemplate;
+
+  return i18nLangTemplate.replace(/\$\{(\d)\}/g, (match, key) => {
+    return exprs[key] ?? "";
+  });
+}
+
 export function stylePropsToString(props: any) {
   let style = "";
   Object.entries(props).forEach(([key, value]) => {

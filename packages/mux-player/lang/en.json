@@ -1,0 +1,15 @@
+{
+  "(opens in a new window)": "(opens in a new window)",
+  "Network Error": "Network Error",
+  " - Offline": " - Offline",
+  " Your device appears to be disconnected from the internet.": " Your device appears to be disconnected from the internet.",
+  " ${0} - Precondition Failed": " ${0} - Precondition Failed",
+  " Nobody is currently streaming to this live stream endpoint.": " Nobody is currently streaming to this live stream endpoint.",
+  " ${0} - Forbidden": " ${0} - Forbidden",
+  " You don't have permission to access the video URL.": " You don't have permission to access the video URL.",
+  " ${0} - Not Found": " ${0} - Not Found",
+  " The video URL could not be found at this address:": " The video URL could not be found at this address:",
+  "Media Error": "Media Error",
+  "Source Not Supported": "Source Not Supported",
+  "Error": "Error"
+}

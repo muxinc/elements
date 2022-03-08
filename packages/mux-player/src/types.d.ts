@@ -14,9 +14,14 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   secondaryColor: string;
   forwardSeekOffset: number;
   backwardSeekOffset: number;
-  dialog: { title: string; message: string };
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
+  dialog: {
+    title: string;
+    message: string;
+    linkText?: string;
+    linkUrl?: string;
+  };
   tokens: {
     playback?: string;
     thumbnail?: string;

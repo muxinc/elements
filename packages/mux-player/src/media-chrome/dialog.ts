@@ -53,6 +53,7 @@ const styles = `
     background: var(--media-dialog-background, none);
     padding: var(--media-dialog-padding, 10px);
     width: min(320px, 100%);
+    word-wrap: break-word;
     max-height: 100%;
     overflow: auto;
     text-align: center;
