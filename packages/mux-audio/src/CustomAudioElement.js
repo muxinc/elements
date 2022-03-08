@@ -33,15 +33,14 @@ template.innerHTML = `
 </style>
 
 <audio crossorigin></audio>
+<slot></slot>
 `;
 
 class CustomAudioElement extends HTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector("audio"));
 
     // Initialize all the attribute properties
@@ -58,32 +57,12 @@ class CustomAudioElement extends HTMLElement {
       nativeEl.muted = true;
     }
 
-    this.shadowRoot.appendChild(nativeEl);
-
-    this.querySelectorAll(":scope > track").forEach((track) => {
-      this.nativeEl.appendChild(track.cloneNode());
+    const slotEl = this.shadowRoot.querySelector("slot");
+    slotEl.addEventListener("slotchange", () => {
+      slotEl.assignedElements().forEach((el) => {
+        nativeEl.appendChild(el);
+      });
     });
-
-    // Watch for child adds/removes and update the native element if necessary
-    const mutationCallback = (mutationsList, observer) => {
-      for (let mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          // Child being removed
-          mutation.removedNodes.forEach((node) => {
-            this.nativeEl.removeChild(
-              this.nativeEl.querySelector(`track[src="${node.src}"]`)
-            );
-          });
-
-          mutation.addedNodes.forEach((node) => {
-            this.nativeEl.appendChild(node.cloneNode());
-          });
-        }
-      }
-    };
-
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, subtree: true });
   }
 
   // observedAttributes is required to trigger attributeChangedCallback
