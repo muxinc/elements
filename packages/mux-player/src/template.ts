@@ -10,6 +10,7 @@ import { html } from "./html";
 import * as icons from "./icons";
 // @ts-ignore
 import cssStr from "./styles.css";
+import { i18n } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 
@@ -88,8 +89,19 @@ export const template = (props: MuxTemplateProps) => html`
       no-auto-hide
       open="${props.isDialogOpen}"
     >
-      ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : ""}
-      ${props.dialog?.message ? html`<p>${props.dialog.message}</p>` : ""}
+      ${props.dialog?.title && html`<h3>${props.dialog.title}</h3>`}
+      <p>
+        ${props.dialog?.message}
+        ${props.dialog?.linkUrl &&
+        html`<a
+          href="${props.dialog.linkUrl}"
+          target="_blank"
+          rel="external noopener"
+          aria-label="${props.dialog.linkText ??
+          ""} ${i18n`(opens in a new window)`}"
+          >${props.dialog.linkText ?? props.dialog.linkUrl}</a
+        >`}
+      </p>
     </mxp-dialog>
   </media-controller>
 `;

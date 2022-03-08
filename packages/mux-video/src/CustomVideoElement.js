@@ -35,6 +35,7 @@ template.innerHTML = `
 </style>
 
 <video crossorigin></video>
+<slot></slot>
 `;
 
 class CustomVideoElement extends HTMLElement {
@@ -60,28 +61,12 @@ class CustomVideoElement extends HTMLElement {
       nativeEl.muted = true;
     }
 
-    this.querySelectorAll(":scope > track").forEach((track) => {
-      this.nativeEl.appendChild(track.cloneNode());
+    const slotEl = this.shadowRoot.querySelector("slot");
+    slotEl.addEventListener("slotchange", () => {
+      slotEl.assignedElements().forEach((el) => {
+        nativeEl.appendChild(el);
+      });
     });
-
-    // Watch for child adds/removes and update the native element if necessary
-    const mutationCallback = (mutationsList, observer) => {
-      for (let mutation of mutationsList) {
-        if (mutation.type === "childList") {
-          // Child being removed
-          mutation.removedNodes.forEach((node) => {
-            this.nativeEl.querySelector(`track[src="${node.src}"]`)?.remove();
-          });
-
-          mutation.addedNodes.forEach((node) => {
-            this.nativeEl.appendChild(node.cloneNode());
-          });
-        }
-      }
-    };
-
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, subtree: true });
   }
 
   // observedAttributes is required to trigger attributeChangedCallback

@@ -10,6 +10,12 @@
   display: none;
 }
 
+a {
+  color: #fff;
+  font-size: 0.9em;
+  text-decoration: underline;
+}
+
 media-controller {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;

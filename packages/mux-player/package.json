@@ -13,14 +13,16 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --coverage --config test/web-test-runner.config.js",
+    "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
-    "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=esm --loader:.css=text --loader:.svg=text --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=iife --loader:.css=text --loader:.svg=text --outdir=dist --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --loader:.css=text --loader:.svg=text --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
+    "build:iife": "esbuilder src/index.ts --format=iife --out-extension:.js=.js",
+    "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify'",
     "prepublishOnly": "yarn build"
@@ -28,10 +30,12 @@
   "dependencies": {
     "@github/template-parts": "^0.4.0",
     "@mux-elements/mux-video": "^0.2.7",
-    "media-chrome": "0.5.2"
+    "media-chrome": "0.5.3"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
     "@web/dev-server-esbuild": "^0.2.16",
     "@web/test-runner": "^0.13.26",
     "esbuild": "^0.13.13",
@@ -46,8 +50,14 @@
       "node": true,
       "mocha": true
     },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "@mux-elements/i18n"
+    ],
     "extends": [
-      "eslint:recommended"
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
       "ecmaVersion": 2021,
@@ -57,7 +67,11 @@
       "globalThis": false
     },
     "rules": {
-      "no-shadow": "error"
+      "no-shadow": "error",
+      "no-extra-boolean-cast": 0,
+      "@mux-elements/i18n/no-substitutions": "error",
+      "@typescript-eslint/ban-ts-comment": 0,
+      "@typescript-eslint/no-explicit-any": 0
     }
   }
 }

@@ -359,7 +359,9 @@ describe("<mux-player>", () => {
     ></mux-player>`);
 
     const muxVideo = player.video;
-    const storyboardTrack = muxVideo.querySelector("track[label='thumbnails']");
+    const storyboardTrack = muxVideo.shadowRoot.querySelector(
+      "track[label='thumbnails']"
+    );
 
     assert.equal(
       muxVideo.getAttribute("src"),

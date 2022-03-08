@@ -147,8 +147,8 @@ export function render(
   result.renderInto(element);
 }
 
-export function createTemplateInstance(html: string, props?: any) {
+export function createTemplateInstance(content: string, props?: any) {
   const template = document.createElement("template");
-  template.innerHTML = html;
+  template.innerHTML = content;
   return new TemplateInstance(template, props);
 }

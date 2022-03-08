@@ -67,7 +67,7 @@ class VideoApiElement extends HTMLElement {
     // Watch for child adds/removes and update the native element if necessary
     /** @type {(mutationList: MutationRecord[]) => void} */
     const mutationCallback = (mutationsList: MutationRecord[]) => {
-      for (let mutation of mutationsList) {
+      for (const mutation of mutationsList) {
         if (mutation.type === "childList") {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
@@ -151,6 +151,16 @@ class VideoApiElement extends HTMLElement {
 
   get video(): MuxVideoElement | null | undefined {
     return this.shadowRoot?.querySelector("mux-video");
+  }
+
+  get hasPlayed() {
+    const mc = this.shadowRoot?.querySelector("media-controller");
+
+    if (mc) {
+      return mc.hasAttribute("media-has-played");
+    }
+
+    return false;
   }
 
   get paused() {
@@ -241,7 +251,10 @@ class VideoApiElement extends HTMLElement {
 
   set autoplay(val) {
     if (val) {
-      this.setAttribute(AllowedVideoAttributes.AUTOPLAY, "");
+      this.setAttribute(
+        AllowedVideoAttributes.AUTOPLAY,
+        typeof val === "string" ? val : ""
+      );
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.AUTOPLAY);

@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
 
 const INITIAL_DEBUG = false;
-const INITIAL_MUTED = true;
+const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 const INITIAL_METADATA = {
@@ -41,7 +41,7 @@ function MuxPlayerPage() {
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
-  const [autoPlay, setAutoPlay] = useState(INITIAL_AUTOPLAY);
+  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   return (
     <div
       style={{
@@ -66,7 +66,7 @@ function MuxPlayerPage() {
           debug={debug}
           muted={muted}
           paused={paused}
-          autoPlay={autoPlay}
+          autoPlay={autoplay}
           streamType={
             selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
           }
@@ -97,21 +97,21 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
+          <label htmlFor="autoplay-control">Muted Autoplay</label>
+          <input
+            id="autoplay-control"
+            type="checkbox"
+            onChange={() => setAutoplay(!autoplay ? "muted" : false)}
+            checked={!!autoplay}
+          />
+        </div>
+        <div>
           <label htmlFor="muted-control">Muted</label>
           <input
             id="muted-control"
             type="checkbox"
             onChange={() => setMuted(!muted)}
             checked={muted}
-          />
-        </div>
-        <div>
-          <label htmlFor="autoplay-control">Autoplay</label>
-          <input
-            id="autoplay-control"
-            type="checkbox"
-            onChange={() => setAutoPlay(!autoPlay)}
-            checked={autoPlay}
           />
         </div>
         <div>

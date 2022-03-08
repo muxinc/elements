@@ -1,13 +1,16 @@
 import mux, { Options } from "mux-embed";
 
 import Hls, { HlsConfig } from "hls.js";
+import { AutoplayTypes, setupAutoplay } from "./autoplay";
 import { isKeyOf } from "./util";
-export type ValueOf<T> = T[keyof T];
+import type { Autoplay, UpdateAutoplay } from "./autoplay";
 
+export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options["data"]>;
 export type PlaybackEngine = Hls;
 export { mux };
 export { Hls };
+export { Autoplay, UpdateAutoplay, setupAutoplay };
 
 export type StreamTypes = {
   VOD: "on-demand";
@@ -66,6 +69,8 @@ export type MuxMediaPropTypes = {
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig["startPosition"];
+  autoPlay: boolean | ValueOf<AutoplayTypes>;
+  autoplay: boolean | ValueOf<AutoplayTypes>;
 };
 
 declare global {
@@ -74,9 +79,7 @@ declare global {
   }
 }
 
-export type HTMLMediaElementProps = Partial<
-  Pick<HTMLMediaElement, "src" | "autoplay">
->;
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
@@ -323,26 +326,39 @@ export const loadMedia = (
     }
   } else if (hls && src) {
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      if (data.fatal) {
-        switch (data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            // try to recover network error
-            console.error("fatal network error encountered, try to recover");
-            hls.startLoad();
-            break;
-          case Hls.ErrorTypes.MEDIA_ERROR:
-            console.error("fatal media error encountered, try to recover");
-            hls.recoverMediaError();
-            break;
-          default:
-            // cannot recover
-            console.error(
-              "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
-            );
-            hls.destroy();
-            break;
-        }
-      }
+      // if (data.fatal) {
+      //   switch (data.type) {
+      //     case Hls.ErrorTypes.NETWORK_ERROR:
+      //       // try to recover network error
+      //       console.error("fatal network error encountered, try to recover");
+      //       hls.startLoad();
+      //       break;
+      //     case Hls.ErrorTypes.MEDIA_ERROR:
+      //       console.error("fatal media error encountered, try to recover");
+      //       hls.recoverMediaError();
+      //       break;
+      //     default:
+      //       // cannot recover
+      //       console.error(
+      //         "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
+      //       );
+      //       hls.destroy();
+      //       break;
+      //   }
+      // }
+
+      const errorCodeMap: Record<string, number> = {
+        [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
+        [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+      };
+      const error = new MediaError("", errorCodeMap[data.type]);
+      error.fatal = data.fatal;
+      error.data = data;
+      mediaEl.dispatchEvent(
+        new CustomEvent("error", {
+          detail: error,
+        })
+      );
     });
 
     const forceHiddenThumbnails = () => {
@@ -370,29 +386,8 @@ export const loadMedia = (
 
     // hls.js will forcibly clear all cues from tracks on manifest loads or media attaches.
     // This ensures that we re-load them after it's done that.
-    hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
-    hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
-
-    // When we are not auto-playing, we should seek to the live sync position
-    // This will seek first play event of *any* live video including event-type,
-    // which probably shouldn't seek
-    if (!props.autoplay) {
-      hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
-        const isLive: boolean = data.details.live;
-
-        if (isLive) {
-          mediaEl.addEventListener(
-            "play",
-            () => {
-              if (hls?.liveSyncPosition) {
-                mediaEl.currentTime = hls.liveSyncPosition;
-              }
-            },
-            { once: true }
-          );
-        }
-      });
-    }
+    hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
+    hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
@@ -415,3 +410,36 @@ export const initialize = (
   loadMedia(props, mediaEl, nextHlsInstance);
   return nextHlsInstance;
 };
+
+export class MediaError extends Error {
+  static MEDIA_ERR_CUSTOM: number = 0;
+  static MEDIA_ERR_ABORTED: number = 1;
+  static MEDIA_ERR_NETWORK: number = 2;
+  static MEDIA_ERR_DECODE: number = 3;
+  static MEDIA_ERR_SRC_NOT_SUPPORTED: number = 4;
+  static MEDIA_ERR_ENCRYPTED: number = 5;
+
+  static defaultMessages: Record<number, string> = {
+    1: "You aborted the media playback",
+    2: "A network error caused the media download to fail.",
+    3: "A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.",
+    4: "An unsupported error occurred. The server or network failed, or your browser does not support this format.",
+    5: "The media is encrypted and there are no keys to decrypt it.",
+  };
+
+  name: string;
+  code: number;
+  fatal: boolean;
+  data?: any;
+
+  constructor(message?: string, code: number = 0, fatal?: boolean) {
+    super(message);
+    this.name = "MediaError";
+    this.code = code;
+    this.fatal = fatal ?? code >= MediaError.MEDIA_ERR_NETWORK;
+
+    if (!this.message) {
+      this.message = MediaError.defaultMessages[this.code] ?? "";
+    }
+  }
+}

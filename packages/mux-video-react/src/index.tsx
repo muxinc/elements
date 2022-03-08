@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {
   allMediaTypes,
   initialize,
+  setupAutoplay,
   MuxMediaProps,
   StreamTypes,
   toMuxVideoURL,
@@ -11,9 +12,12 @@ import {
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
-export type Props = React.DetailedHTMLProps<
-  React.VideoHTMLAttributes<HTMLVideoElement>,
-  HTMLVideoElement
+export type Props = Omit<
+  React.DetailedHTMLProps<
+    React.VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement
+  >,
+  "autoPlay"
 > &
   MuxMediaProps;
 
@@ -33,6 +37,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
       startTime,
       src: outerSrc,
       children,
+      autoPlay,
       ...restProps
     } = props;
 
@@ -44,6 +49,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
 
     const playbackEngineRef = useRef<PlaybackEngine | undefined>(undefined);
     const innerMediaElRef = useRef<HTMLVideoElement>(null);
+    const [updateAutoplay, setUpdateAutoplay] = useState(() => (x: any) => {});
 
     const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
 
@@ -59,6 +65,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
         playerInitTime,
         playerSoftwareName,
         playerSoftwareVersion,
+        autoplay: autoPlay,
       };
       const nextPlaybackEngineRef = initialize(
         propsWithState,
@@ -66,7 +73,14 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
         playbackEngineRef.current
       );
       playbackEngineRef.current = nextPlaybackEngineRef;
+      setUpdateAutoplay(() =>
+        setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current)
+      );
     }, [src]);
+
+    useEffect(() => {
+      updateAutoplay(autoPlay);
+    }, [autoPlay]);
 
     return (
       <video ref={mediaElRef} {...restProps}>

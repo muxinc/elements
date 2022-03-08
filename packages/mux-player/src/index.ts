@@ -1,16 +1,15 @@
 import "media-chrome";
-import "@mux-elements/mux-video";
+import { MediaError } from "@mux-elements/mux-video";
 import VideoApiElement from "./video-api";
 import {
   getCcSubTracks,
   getPlayerVersion,
   hasVolumeSupportAsync,
-  MediaError,
   toPropName,
 } from "./helpers";
 import { template } from "./template";
 import { render } from "./html";
-import { toNumberOrUndefined } from "./utils";
+import { toNumberOrUndefined, i18n } from "./utils";
 
 import type { MuxTemplateProps } from "./types";
 import type { Metadata } from "@mux-elements/playback-core";
@@ -141,13 +140,12 @@ class MuxPlayerElement extends VideoApiElement {
      * @todo determine sensible defaults for preloading buffer
      * @see https://github.com/muxinc/elements/issues/51
      */
-    // if (el.video?.hls) {
+    // if (this.video?.hls) {
     //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   el.video.hls.config.maxMaxBufferLength = 2;
+    //   this.video.hls.config.maxMaxBufferLength = 2;
     // }
 
     this.#setUpErrors();
-    this.#setUpMutedAutoplay();
     this.#setUpCaptionsButton();
     this.#setUpAirplayButton();
     this.#setUpVolumeRange();
@@ -204,30 +202,75 @@ class MuxPlayerElement extends VideoApiElement {
 
       let dialog;
       switch (error.code) {
-        case MediaError.MEDIA_ERR_NETWORK:
+        case MediaError.MEDIA_ERR_NETWORK: {
+          let title = i18n`Network Error`;
+          let { message } = error;
+          let linkText;
+          let linkUrl;
+
+          if (!window.navigator.onLine) {
+            title += i18n` - Offline`;
+            message += i18n` Your device appears to be disconnected from the internet.`;
+          }
+
+          // Only works when hls.js is used.
+          const responseCode = error.data?.response.code;
+          switch (responseCode) {
+            case 412:
+              title += i18n` {responseCode} - Precondition Failed`.format({
+                responseCode,
+              });
+              message += i18n` Nobody is currently streaming to this live stream endpoint.`;
+              break;
+            case 403:
+              title += i18n` {responseCode} - Forbidden`.format({
+                responseCode,
+              });
+              message += i18n` You don't have permission to access the video URL.`;
+              break;
+            case 404:
+              title += i18n` {responseCode} - Not Found`.format({
+                responseCode,
+              });
+              message += i18n` The video URL could not be found at this address:`;
+              linkUrl = this.video?.src;
+              break;
+          }
+
           dialog = {
-            title: "Network Error",
-            message: `${error.message} Please reload the player and try again.`,
+            title,
+            message,
+            linkText,
+            linkUrl,
           };
           break;
-        case MediaError.MEDIA_ERR_DECODE:
+        }
+        case MediaError.MEDIA_ERR_DECODE: {
+          const { message } = error;
           dialog = {
-            title: "Media Error",
-            message: `${error.message} Please reload the player and try again.`,
+            title: i18n`Media Error`,
+            message,
           };
           break;
-        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+        }
+        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
           dialog = {
-            title: "Source Not Supported",
+            title: i18n`Source Not Supported`,
             message: error.message,
           };
           break;
+        }
         default:
           dialog = {
-            title: "Error",
+            title: i18n`Error`,
             message: error.message,
           };
           break;
+      }
+
+      console.error(error);
+      if (error.data) {
+        console.error(`${error.name} data:`, error.data);
       }
 
       this.#setState({ isDialogOpen: true, dialog });
@@ -235,54 +278,18 @@ class MuxPlayerElement extends VideoApiElement {
 
     this.addEventListener("error", onError);
 
-    this.video?.addEventListener("error", () => {
-      const { message, code } = this.video?.error ?? {};
+    this.video?.addEventListener("error", (event: Event) => {
+      let { detail: error }: { detail: any } = event as CustomEvent;
+      if (!error) {
+        const { message, code } = this.video?.error ?? {};
+        error = new MediaError(message, code);
+      }
       this.dispatchEvent(
         new CustomEvent("error", {
-          detail: new MediaError(message, code),
+          detail: error,
         })
       );
     });
-
-    if (this.video?.hls) {
-      const Hls: any = this.video.hls.constructor;
-      const onHlsError = (_event: any, data: any) => {
-        const errorCodeMap = {
-          [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-          [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-        };
-        const error = new MediaError("", errorCodeMap[data.type]);
-        error.fatal = data.fatal;
-        error.data = data;
-        this.dispatchEvent(
-          new CustomEvent("error", {
-            detail: error,
-          })
-        );
-      };
-      this.video.hls.on(Hls.Events.ERROR, onHlsError);
-    }
-  }
-
-  #setUpMutedAutoplay() {
-    if (this.video?.hls) {
-      const Hls: any = this.video.hls.constructor;
-      if (this.autoplay) {
-        this.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          var playPromise = this.video?.play();
-          if (playPromise) {
-            playPromise.catch((error: Error) => {
-              console.log(`${error.name} ${error.message}`);
-              if (error.name === "NotAllowedError") {
-                console.log("Attempting to play with video muted");
-                if (this.video) this.video.muted = true;
-                return this.video?.play().catch(console.error);
-              }
-            });
-          }
-        });
-      }
-    }
   }
 
   #setUpCaptionsButton() {

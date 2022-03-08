@@ -4,6 +4,9 @@ import PropTypes from "prop-types";
 import {
   allMediaTypes,
   initialize,
+  type Autoplay,
+  type UpdateAutoplay,
+  setupAutoplay,
   MuxMediaProps,
   StreamTypes,
   toMuxVideoURL,
@@ -11,9 +14,12 @@ import {
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
-export type Props = React.DetailedHTMLProps<
-  React.AudioHTMLAttributes<HTMLAudioElement>,
-  HTMLAudioElement
+export type Props = Omit<
+  React.DetailedHTMLProps<
+    React.AudioHTMLAttributes<HTMLAudioElement>,
+    HTMLAudioElement
+  >,
+  "autoPlay"
 > &
   MuxMediaProps;
 
@@ -33,6 +39,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
       startTime,
       src: outerSrc,
       children,
+      autoPlay,
       ...restProps
     } = props;
 
@@ -46,6 +53,8 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
     const innerMediaElRef = useRef<HTMLAudioElement>(null);
 
     const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
+    const updateAutoplayRef = useRef<UpdateAutoplay | undefined>(undefined);
+    const [updateAutoplay, setUpdateAutoplay] = useState(() => (x: any) => {});
 
     useEffect(() => {
       const src = toMuxVideoURL(playbackId) ?? outerSrc;
@@ -59,6 +68,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
         playerInitTime,
         playerSoftwareName,
         playerSoftwareVersion,
+        autoplay: autoPlay,
       };
       const nextPlaybackEngineRef = initialize(
         propsWithState,
@@ -66,7 +76,14 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
         playbackEngineRef.current
       );
       playbackEngineRef.current = nextPlaybackEngineRef;
+      setUpdateAutoplay(() =>
+        setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current)
+      );
     }, [src]);
+
+    useEffect(() => {
+      updateAutoplay(autoPlay);
+    }, [autoPlay]);
 
     return (
       <audio ref={mediaElRef} {...restProps}>

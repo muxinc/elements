@@ -6,7 +6,7 @@ import type { Tokens } from "@mux-elements/mux-player";
 import { toNativeProps } from "./common/utils";
 import { useRef } from "react";
 import { useCombinedRefs } from "./useCombinedRefs";
-import useObjectPropEffect from "./useObjectPropEffect";
+import useObjectPropEffect, { defaultHasChanged } from "./useObjectPropEffect";
 import { getPlayerVersion } from "./env";
 
 type ValueOf<T> = T[keyof T];
@@ -22,7 +22,7 @@ type VideoApiAttributes = {
   playsInline: boolean;
   // preload: string;
   crossOrigin: string;
-  autoPlay: boolean;
+  autoPlay: boolean | string;
   loop: boolean;
   muted: boolean;
   style: CSSProperties;
@@ -151,6 +151,12 @@ const usePlayer = (
       } else {
         playerEl.play();
       }
+    },
+    (playerEl, value, propName) => {
+      if (playerEl.hasAttribute("autoplay") && !playerEl.hasPlayed) {
+        return false;
+      }
+      return defaultHasChanged(playerEl, value, propName);
     }
   );
   useEventCallbackEffect("loadstart", ref, onLoadStart);

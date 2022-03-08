@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "name": "@mux-elements/esbuilder",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./esbuilder.js",
+  "bin": {
+    "esbuilder": "./esbuilder.js"
+  },
+  "dependencies": {
+    "esbuild": "^0.13.13"
+  }
+}
