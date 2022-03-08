@@ -153,6 +153,16 @@ class VideoApiElement extends HTMLElement {
     return this.shadowRoot?.querySelector("mux-video");
   }
 
+  get hasPlayed() {
+    const mc = this.shadowRoot?.querySelector("media-controller");
+
+    if (mc) {
+      return mc.hasAttribute("media-has-played");
+    }
+
+    return false;
+  }
+
   get paused() {
     return this.video?.paused ?? true;
   }
@@ -241,7 +251,10 @@ class VideoApiElement extends HTMLElement {
 
   set autoplay(val) {
     if (val) {
-      this.setAttribute(AllowedVideoAttributes.AUTOPLAY, "");
+      this.setAttribute(
+        AllowedVideoAttributes.AUTOPLAY,
+        typeof val === "string" ? val : ""
+      );
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.AUTOPLAY);

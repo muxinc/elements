@@ -148,7 +148,6 @@ class MuxPlayerElement extends VideoApiElement {
     // }
 
     this.#setUpErrors();
-    this.#setUpMutedAutoplay();
     this.#setUpCaptionsButton();
     this.#setUpAirplayButton();
     this.#setUpVolumeRange();
@@ -262,27 +261,6 @@ class MuxPlayerElement extends VideoApiElement {
         );
       };
       this.video.hls.on(Hls.Events.ERROR, onHlsError);
-    }
-  }
-
-  #setUpMutedAutoplay() {
-    if (this.video?.hls) {
-      const Hls: any = this.video.hls.constructor;
-      if (this.autoplay) {
-        this.video.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          var playPromise = this.video?.play();
-          if (playPromise) {
-            playPromise.catch((error: Error) => {
-              console.log(`${error.name} ${error.message}`);
-              if (error.name === "NotAllowedError") {
-                console.log("Attempting to play with video muted");
-                if (this.video) this.video.muted = true;
-                return this.video?.play().catch(console.error);
-              }
-            });
-          }
-        });
-      }
     }
   }
 

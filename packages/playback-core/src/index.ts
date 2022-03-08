@@ -1,13 +1,16 @@
 import mux, { Options } from "mux-embed";
 
 import Hls, { HlsConfig } from "hls.js";
+import { AutoplayTypes, setupAutoplay } from "./autoplay";
 import { isKeyOf } from "./util";
-export type ValueOf<T> = T[keyof T];
+import type { Autoplay, UpdateAutoplay } from "./autoplay";
 
+export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options["data"]>;
 export type PlaybackEngine = Hls;
 export { mux };
 export { Hls };
+export { Autoplay, UpdateAutoplay, setupAutoplay };
 
 export type StreamTypes = {
   VOD: "on-demand";
@@ -66,6 +69,8 @@ export type MuxMediaPropTypes = {
     | `${Uppercase<keyof MimeTypeShorthandMap>}`;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig["startPosition"];
+  autoPlay: boolean | ValueOf<AutoplayTypes>;
+  autoplay: boolean | ValueOf<AutoplayTypes>;
 };
 
 declare global {
@@ -74,9 +79,7 @@ declare global {
   }
 }
 
-export type HTMLMediaElementProps = Partial<
-  Pick<HTMLMediaElement, "src" | "autoplay">
->;
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, "src">>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
@@ -372,27 +375,6 @@ export const loadMedia = (
     // This ensures that we re-load them after it's done that.
     hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
-
-    // When we are not auto-playing, we should seek to the live sync position
-    // This will seek first play event of *any* live video including event-type,
-    // which probably shouldn't seek
-    if (!props.autoplay) {
-      hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
-        const isLive: boolean = data.details.live;
-
-        if (isLive) {
-          mediaEl.addEventListener(
-            "play",
-            () => {
-              if (hls?.liveSyncPosition) {
-                mediaEl.currentTime = hls.liveSyncPosition;
-              }
-            },
-            { once: true }
-          );
-        }
-      });
-    }
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
