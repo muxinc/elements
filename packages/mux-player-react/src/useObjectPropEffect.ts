@@ -48,7 +48,7 @@ const shallowEqual = (objA: any, objB: any): boolean => {
   return true;
 };
 
-const defaultHasChanged = (obj: any, v: any, k: string) => {
+export const defaultHasChanged = (obj: any, v: any, k: string) => {
   return !shallowEqual(v, obj[k]);
 };
 
