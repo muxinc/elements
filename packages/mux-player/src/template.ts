@@ -1,4 +1,5 @@
 import "./dialog";
+import "./time-display";
 import {
   getChromeStylesFromProps,
   getSrcFromPlaybackId,
@@ -218,7 +219,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     <media-time-range></media-time-range>
-    <media-time-display show-duration remaining></media-time-display>
+    <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>
@@ -236,7 +237,7 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
     <media-time-range></media-time-range>
-    <media-time-display show-duration remaining></media-time-display>
+    <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>
