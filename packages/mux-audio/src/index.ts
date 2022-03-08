@@ -65,13 +65,17 @@ class MuxAudioElement
 
   // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
   protected __hls?: PlaybackEngine;
-  protected __muxPlayerInitTime: number;
+  protected __playerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
   protected __updateAutoplay?: UpdateAutoplay;
 
   constructor() {
     super();
-    this.__muxPlayerInitTime = Date.now();
+    this.__playerInitTime = Date.now();
+  }
+
+  get playerInitTime() {
+    return this.__playerInitTime;
   }
 
   get playerSoftwareName() {
