@@ -207,7 +207,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     <media-time-range></media-time-range>
-    <mpx-time-display></mpx-time-display>
+    <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
     <media-playback-rate-button></media-playback-rate-button>

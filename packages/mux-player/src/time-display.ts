@@ -14,7 +14,7 @@ template.innerHTML = `
 
 const ButtonPressedKeys = ["Enter", " "];
 
-class MediaTimeDisplayToggle extends HTMLElement {
+class MxpTimeDisplay extends HTMLElement {
   static styles: string = styles;
   static template: HTMLTemplateElement = template;
   timeDisplayEl: HTMLElement | null | undefined;
@@ -62,8 +62,8 @@ class MediaTimeDisplayToggle extends HTMLElement {
 }
 
 if (!globalThis.customElements.get("mxp-time-display")) {
-  globalThis.customElements.define("mxp-time-display", MediaTimeDisplayToggle);
-  (globalThis as any).MediaTimeDisplayToggle = MediaTimeDisplayToggle;
+  globalThis.customElements.define("mxp-time-display", MxpTimeDisplay);
+  (globalThis as any).MxpTimeDisplay = MxpTimeDisplay;
 }
 
-export default MediaTimeDisplayToggle;
+export default MxpTimeDisplay;
