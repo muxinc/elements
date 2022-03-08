@@ -386,8 +386,8 @@ export const loadMedia = (
 
     // hls.js will forcibly clear all cues from tracks on manifest loads or media attaches.
     // This ensures that we re-load them after it's done that.
-    hls.on(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
-    hls.on(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+    hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
+    hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
