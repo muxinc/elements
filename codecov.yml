@@ -1,0 +1,29 @@
+# Setting coverage targets per flag
+coverage:
+  status:
+    project:
+      default:
+        target: 50% #overall project/ repo coverage
+      mux-player:
+        target: 50%
+        flags:
+          - mux-player
+
+# adding Flags to your `layout` configuration to show up in the PR comment
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: yes
+  require_head: yes
+  branches: null
+
+# New root YAML section = `flags:`
+# This is where you would define every flag from your
+# uploader, and update when new Flags added
+
+flags:
+  mux-player:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-player/src/**/*.ts
+    carryforward: false
