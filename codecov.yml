@@ -25,5 +25,5 @@ comment:
 flags:
   mux-player:
     paths: #note, accepts globs, not regexes
-      - packages/mux-player/src/**/*.ts
+      - packages/mux-player/src
     carryforward: false
