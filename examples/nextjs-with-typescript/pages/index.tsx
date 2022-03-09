@@ -28,6 +28,13 @@ function HomePage() {
         </li>
         <li>
           <h3>
+            <Link href="/MuxPlayerDynamic">
+              <a>Mux Player Demo (Dynamically Loaded)</a>
+            </Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
             <Link href="/mux-video">Mux Video (Web Component) Demo</Link>
           </h3>
         </li>

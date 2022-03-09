@@ -137,10 +137,11 @@ function MuxPlayerPage() {
           }}
         >
           {mediaAssets.map((value, i) => {
-            const { description } = value;
+            const { description, error } = value;
+            const label = `${error ? "👎 " : ""}${description}`;
             return (
               <option key={i} value={i}>
-                {description}
+                {label}
               </option>
             );
           })}
