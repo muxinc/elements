@@ -16,6 +16,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.get-versions.outputs.node }}
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --frozen-lockfile --ignore-scripts
       - run: yarn build
       - run: yarn test
