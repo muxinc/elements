@@ -3,11 +3,17 @@ coverage:
   status:
     project:
       default:
-        target: 50% #overall project/ repo coverage
+        target: auto #overall project/ repo coverage
       mux-player:
-        target: 50%
+        target: auto
         flags:
+          - mux-audio
+          - mux-audio-react
           - mux-player
+          - mux-player-react
+          - mux-video
+          - mux-video-react
+          - playback-core
 
 # adding Flags to your `layout` configuration to show up in the PR comment
 comment:
@@ -23,7 +29,24 @@ comment:
 # uploader, and update when new Flags added
 
 flags:
+  mux-audio:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-audio/src
+  mux-audio-react:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-audio-react/src
   mux-player:
     paths: #note, accepts globs, not regexes
       - packages/mux-player/src
-    carryforward: false
+  mux-player-react:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-player-react/src
+  mux-video:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-video/src
+  mux-video-react:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-video-react/src
+  playback-core:
+    paths: #note, accepts globs, not regexes
+      - packages/playback-core/src
