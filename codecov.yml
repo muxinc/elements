@@ -37,22 +37,22 @@ comment:
 flags:
   mux-audio:
     paths: #note, accepts globs, not regexes
-      - packages/mux-audio/src
+      - packages/mux-audio
   mux-audio-react:
     paths: #note, accepts globs, not regexes
-      - packages/mux-audio-react/src
+      - packages/mux-audio-react
   mux-player:
     paths: #note, accepts globs, not regexes
-      - packages/mux-player/src
+      - packages/mux-player
   mux-player-react:
     paths: #note, accepts globs, not regexes
-      - packages/mux-player-react/src
+      - packages/mux-player-react
   mux-video:
     paths: #note, accepts globs, not regexes
-      - packages/mux-video/src
+      - packages/mux-video
   mux-video-react:
     paths: #note, accepts globs, not regexes
-      - packages/mux-video-react/src
+      - packages/mux-video-react
   playback-core:
     paths: #note, accepts globs, not regexes
-      - packages/playback-core/src
+      - packages/playback-core
