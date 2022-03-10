@@ -6,14 +6,16 @@ import {
   MuxMediaProps,
   StreamTypes,
   ValueOf,
-  ExtensionMimeTypeMap,
   toMuxVideoURL,
   teardown,
-  PlaybackEngine,
   Metadata,
   mux,
-  type UpdateAutoplay,
   generatePlayerInitTime,
+} from "@mux-elements/playback-core";
+import type {
+  PlaybackEngine,
+  UpdateAutoplay,
+  ExtensionMimeTypeMap,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 

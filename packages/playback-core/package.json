@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "type": "commonjs",
   "description": "Core library for media playback in the browser shared by mux elements",
+  "module": "dist/index.mjs",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "repository": {
@@ -16,9 +17,10 @@
     "dev:cjs": "open-process | yarn build:cjs --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs",
+    "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs",
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --outdir=dist --external:mux-embed --external:hls.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build": "npm-run-all --parallel build:types 'build:cjs -- --minify'",
+    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:cjs -- --minify'",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
