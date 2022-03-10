@@ -150,6 +150,36 @@ class MuxAudioElement
     }
   }
 
+  get playbackId(): string | undefined {
+    return this.getAttribute(Attributes.PLAYBACK_ID) ?? undefined;
+  }
+
+  set playbackId(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.playbackId) return;
+
+    if (val) {
+      this.setAttribute(Attributes.PLAYBACK_ID, val);
+    } else {
+      this.removeAttribute(Attributes.PLAYBACK_ID);
+    }
+  }
+
+  get envKey(): string | undefined {
+    return this.getAttribute(Attributes.ENV_KEY) ?? undefined;
+  }
+
+  set envKey(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.envKey) return;
+
+    if (val) {
+      this.setAttribute(Attributes.ENV_KEY, val);
+    } else {
+      this.removeAttribute(Attributes.ENV_KEY);
+    }
+  }
+
   get beaconDomain(): string | undefined {
     return this.getAttribute(Attributes.BEACON_DOMAIN) ?? undefined;
   }

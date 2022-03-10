@@ -41,6 +41,7 @@ class CustomAudioElement extends HTMLElement {
   constructor() {
     super();
 
+    this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector("audio"));
 
