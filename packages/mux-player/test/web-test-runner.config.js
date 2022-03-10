@@ -9,4 +9,8 @@ export default {
       loaders: { ".css": "text", ".svg": "text" },
     }),
   ],
+  coverageConfig: {
+    report: true,
+    include: ["src/**/*"],
+  },
 };
