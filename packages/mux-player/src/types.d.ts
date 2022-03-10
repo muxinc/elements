@@ -16,16 +16,18 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   backwardSeekOffset: number;
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
-  dialog: {
-    title: string;
-    message: string;
-    linkText?: string;
-    linkUrl?: string;
-  };
   onCloseErrorDialog: (evt: CustomEvent) => void;
+  dialog: DialogOptions;
   tokens: {
     playback?: string;
     thumbnail?: string;
     storyboard?: string;
   };
+};
+
+export type DialogOptions = {
+  title?: string;
+  message?: string;
+  linkText?: string;
+  linkUrl?: string;
 };

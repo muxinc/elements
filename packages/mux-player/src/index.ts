@@ -5,8 +5,7 @@ import { getCcSubTracks, getPlayerVersion, hasVolumeSupportAsync, toPropName } f
 import { template } from './template';
 import { render } from './html';
 import { toNumberOrUndefined, i18n } from './utils';
-
-import type { MuxTemplateProps } from './types';
+import type { MuxTemplateProps, DialogOptions } from './types';
 import type { Metadata } from '@mux-elements/playback-core';
 
 export type Tokens = {
@@ -189,7 +188,7 @@ class MuxPlayerElement extends VideoApiElement {
         return;
       }
 
-      let dialog;
+      let dialog: DialogOptions;
       switch (error.code) {
         case MediaError.MEDIA_ERR_NETWORK: {
           let title = i18n`Network Error`;
@@ -197,31 +196,20 @@ class MuxPlayerElement extends VideoApiElement {
           let linkText;
           let linkUrl;
 
-          if (!window.navigator.onLine) {
-            title += i18n` - Offline`;
-            message += i18n` Your device appears to be disconnected from the internet.`;
-          }
-
           // Only works when hls.js is used.
           const responseCode = error.data?.response.code;
           switch (responseCode) {
             case 412:
-              title += i18n` {responseCode} - Precondition Failed`.format({
-                responseCode,
-              });
-              message += i18n` Nobody is currently streaming to this live stream endpoint.`;
+              title = i18n`Video is not currently available`;
+              message = i18n`Nobody is currently streaming to this video stream endpoint.`;
               break;
             case 403:
-              title += i18n` {responseCode} - Forbidden`.format({
-                responseCode,
-              });
-              message += i18n` You don't have permission to access the video URL.`;
+              title = i18n`Invalid playback URL`;
+              message = i18n`You don't have permission to access this playback URL.`;
               break;
             case 404:
-              title += i18n` {responseCode} - Not Found`.format({
-                responseCode,
-              });
-              message += i18n` The video URL could not be found at this address:`;
+              title = i18n`Playback URL does not exist`;
+              message = i18n`The playback URL could not be found at this address:`;
               linkUrl = this.video?.src;
               break;
           }
@@ -255,6 +243,13 @@ class MuxPlayerElement extends VideoApiElement {
             message: error.message,
           };
           break;
+      }
+
+      if (!window.navigator.onLine) {
+        dialog = {
+          title: i18n`Your device appears to be offline`,
+          message: i18n`Make sure your device is connected to the internet and try again.`,
+        };
       }
 
       console.error(error);
