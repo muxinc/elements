@@ -28,7 +28,7 @@ const i18nPlugin = {
     if (!lang) {
       builder.onLoad({ filter: /en.json$/ }, () => {
         // No need to import English, it's defined in the tagged template.
-        return { contents: 'export default {}' };
+        return { contents: "const code = 'en'; export default { code }" };
       });
     }
   },

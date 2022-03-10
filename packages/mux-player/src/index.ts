@@ -1,10 +1,12 @@
 import 'media-chrome';
 import { MediaError } from '@mux-elements/mux-video';
+// @ts-ignore
+import lang from '../lang/en.json';
 import VideoApiElement from './video-api';
 import { getCcSubTracks, getPlayerVersion, hasVolumeSupportAsync, toPropName } from './helpers';
 import { template } from './template';
 import { render } from './html';
-import { toNumberOrUndefined, i18n } from './utils';
+import { toNumberOrUndefined, i18n, parseJwt } from './utils';
 import type { MuxTemplateProps, DialogOptions } from './types';
 import type { Metadata } from '@mux-elements/playback-core';
 
@@ -189,6 +191,8 @@ class MuxPlayerElement extends VideoApiElement {
       }
 
       let dialog: DialogOptions;
+      let devlog = '';
+      let devlogFile = '';
       switch (error.code) {
         case MediaError.MEDIA_ERR_NETWORK: {
           let title = i18n`Network Error`;
@@ -199,19 +203,74 @@ class MuxPlayerElement extends VideoApiElement {
           // Only works when hls.js is used.
           const responseCode = error.data?.response.code;
           switch (responseCode) {
-            case 412:
+            case 412: {
               title = i18n`Video is not currently available`;
               message = i18n`Nobody is currently streaming to this video stream endpoint.`;
+
+              devlogFile = '412-live-stream-inactive.md';
               break;
-            case 403:
-              title = i18n`Invalid playback URL`;
-              message = i18n`You don't have permission to access this playback URL.`;
-              break;
-            case 404:
+            }
+            case 404: {
               title = i18n`Playback URL does not exist`;
               message = i18n`The playback URL could not be found at this address:`;
               linkUrl = this.video?.src;
+
+              devlog = i18n`This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.`;
+              devlogFile = '404-not-found.md';
               break;
+            }
+            case 403: {
+              title = i18n`Invalid playback URL`;
+              message = i18n`You don't have permission to access this playback URL.`;
+
+              devlog = i18n`403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.`;
+              devlogFile = '403-forbidden.md';
+
+              if (!this.playbackToken) break;
+
+              const { exp: tokenExpiry, aud: tokenType, sub: tokenPlaybackId } = parseJwt(this.playbackToken);
+              const tokenExpired = Date.now() > tokenExpiry * 1000;
+              const playbackIdMismatch = tokenPlaybackId !== this.playbackId;
+              const badTokenType = tokenType !== 'v';
+              const dateOptions: any = {
+                timeStyle: 'medium',
+                dateStyle: 'medium',
+              };
+
+              if (tokenExpired) {
+                title = i18n`Expired playback URL`;
+                devlog =
+                  i18n`This playback is using signed URLs and the playback token has expired. Expired at: {expiredDate}. Current time: {currentDate}.`.format(
+                    {
+                      expiredDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(tokenExpiry * 1000),
+                      currentDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(Date.now()),
+                    }
+                  );
+                break;
+              }
+
+              if (playbackIdMismatch) {
+                devlog =
+                  i18n`The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match`.format(
+                    {
+                      playbackId: this.playbackId,
+                      tokenPlaybackId,
+                    }
+                  );
+                break;
+              }
+
+              if (badTokenType) {
+                devlog =
+                  i18n`The playback-token has an incorrect aud value: {tokenType}. aud value should be v.`.format({
+                    tokenType,
+                  });
+                break;
+              }
+
+              devlog = i18n`403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.`;
+              break;
+            }
           }
 
           dialog = {
@@ -250,6 +309,14 @@ class MuxPlayerElement extends VideoApiElement {
           title: i18n`Your device appears to be offline`,
           message: i18n`Make sure your device is connected to the internet and try again.`,
         };
+      }
+
+      if (devlog) {
+        console.warn(
+          `${devlog}${
+            devlogFile ? ` ${i18n`Read more: `}\nhttps://github.com/muxinc/elements/main/errors/${devlogFile}` : ''
+          }`
+        );
       }
 
       console.error(error);
@@ -523,7 +590,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the playback token for signing the src URL.
    */
   get playbackToken() {
-    return this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+    return this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN) ?? undefined;
   }
 
   /**
@@ -537,7 +604,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the thumbnail token for signing the poster URL.
    */
   get thumbnailToken() {
-    return this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
+    return this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN) ?? undefined;
   }
 
   /**
@@ -551,7 +618,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the storyboard token for signing the storyboard URL.
    */
   get storyboardToken() {
-    return this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
+    return this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN) ?? undefined;
   }
 
   /**
