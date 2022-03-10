@@ -1,9 +1,3 @@
-codecov:
-  disable_default_path_fixes: true
-
-fixes:
-  - "/home/runner/work/elements/elements/::"
-
 # Setting coverage targets per flag
 coverage:
   status:
