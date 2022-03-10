@@ -1,7 +1,7 @@
 {
   "name": "@mux-elements/mux-video",
   "version": "0.3.0",
-  "type": "commonjs",
+  "type": "module",
   "description": "A custom mux video element for the browser that Just Works™",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
@@ -14,6 +14,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
+    "test": "web-test-runner **/*test.js --port 8002 --coverage --config test/web-test-runner.config.js",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
