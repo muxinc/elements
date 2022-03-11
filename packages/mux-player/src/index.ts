@@ -109,6 +109,8 @@ class MuxPlayerElement extends VideoApiElement {
     isDialogOpen: false,
     supportsAirPlay: false,
     supportsVolume: false,
+    onCloseErrorDialog: () =>
+      this.#setState({ dialog: undefined, isDialogOpen: false }),
   };
 
   static get observedAttributes() {
