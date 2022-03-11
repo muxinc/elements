@@ -28,6 +28,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v2
       # extract `engines.node` from package.json and save it to output
