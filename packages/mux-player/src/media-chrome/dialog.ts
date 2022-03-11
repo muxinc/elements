@@ -94,6 +94,8 @@ class MediaDialog extends HTMLElement {
   }
 
   close() {
+    // If already closed, don't re-emit value (circular due to attributeChangedCallback()) (CJP)
+    if (!this.hasAttribute("open")) return;
     this.removeAttribute("open");
     this.dispatchEvent(
       new CustomEvent("close", { composed: true, bubbles: true })
