@@ -31,8 +31,7 @@ media-control-bar {
   --media-button-icon-width: 18px;
 }
 
-media-control-bar [role='button'],
-media-control-bar [role='switch'] {
+media-control-bar :is([role='button'], [role='switch'], button) {
   height: 44px;
 }
 
@@ -117,8 +116,23 @@ media-time-display {
   white-space: nowrap;
 }
 
-.mxp-live-indicator::before {
+.mxp-seek-to-live-button {
+  background-color: var(----media-control-background);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.mxp-seek-to-live-button:disabled {
+  cursor: default;
+}
+
+.mxp-seek-to-live-button::before {
   content: '● ';
-  color: #fb3c4d;
+  color: rgb(118, 118, 118);
   padding-right: 5px;
+}
+
+.mxp-seek-to-live-button:disabled::before {
+  color: #fb3c4d;
 }

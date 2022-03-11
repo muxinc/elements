@@ -1,7 +1,14 @@
 import 'media-chrome';
 import { MediaError } from '@mux-elements/mux-video';
 import VideoApiElement from './video-api';
-import { getCcSubTracks, getPlayerVersion, hasVolumeSupportAsync, toPropName } from './helpers';
+import {
+  getCcSubTracks,
+  getPlayerVersion,
+  hasVolumeSupportAsync,
+  isInLiveWindow,
+  seekToLive,
+  toPropName,
+} from './helpers';
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
@@ -71,6 +78,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     crossOrigin: el.crossOrigin,
     loop: el.loop,
     muted: el.muted,
+    paused: el.paused,
     playsInline: el.playsInline,
     preload: el.preload,
     playbackId: el.playbackId,
@@ -109,7 +117,9 @@ class MuxPlayerElement extends VideoApiElement {
     isDialogOpen: false,
     supportsAirPlay: false,
     supportsVolume: false,
+    inLiveWindow: false,
     onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
+    onSeekToLive: () => seekToLive(this),
   };
 
   static get observedAttributes() {
@@ -167,6 +177,7 @@ class MuxPlayerElement extends VideoApiElement {
 
       this.#userInactive = this.shadowRoot?.querySelector('media-controller')?.hasAttribute('user-inactive') as boolean;
       this.#setUpCaptionsMovement();
+      this.#monitorLiveWindow();
 
       // While unlikely, we need to re-invoke render here just in case state has already changed before e.g.
       // event handlers are setup to monitor dynamic state changes.
@@ -187,6 +198,20 @@ class MuxPlayerElement extends VideoApiElement {
 
   #deinitResizing() {
     this.#resizeObserver?.disconnect();
+  }
+
+  #monitorLiveWindow() {
+    const updateLiveWindow = () => {
+      const nextInLiveWindow = isInLiveWindow(this);
+      const prevInLiveWindow = this.#state.inLiveWindow;
+      if (nextInLiveWindow !== prevInLiveWindow) {
+        this.#setState({ inLiveWindow: nextInLiveWindow });
+      }
+    };
+    this.video?.addEventListener('progress', updateLiveWindow);
+    this.video?.addEventListener('waiting', updateLiveWindow);
+    this.video?.addEventListener('timeupdate', updateLiveWindow);
+    this.video?.addEventListener('emptied', updateLiveWindow);
   }
 
   #setUpErrors() {

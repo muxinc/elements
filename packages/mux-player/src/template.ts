@@ -13,12 +13,7 @@ import cssStr from './styles.css';
 import { i18n } from './utils';
 
 import type { MuxTemplateProps } from './types';
-
-export const StreamTypes = {
-  VOD: 'on-demand',
-  LIVE: 'live',
-  LL_LIVE: 'll-live',
-};
+import { StreamTypes } from './constants';
 
 const MediaChromeSizes = {
   LG: 'large',
@@ -119,8 +114,30 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
 };
 
 // prettier-ignore
-const MediaPlayButton = () => html`
-  <media-play-button>
+const SeekToLiveButton = (props: Partial<MuxTemplateProps>) => html`
+  <button 
+    disabled="${props.inLiveWindow}" 
+    onclick="${function (this: HTMLButtonElement, evt: Event) {
+      props.onSeekToLive?.(evt);
+      if (props.paused) {
+        const evt = new CustomEvent(
+          'mediaplayrequest', 
+          { composed: true, bubbles: true }
+        );
+        (this as HTMLButtonElement).dispatchEvent(evt);
+      }
+    }}" 
+    class="mxp-seek-to-live-button"
+  >
+    Live
+  </button>
+`;
+
+// prettier-ignore
+const MediaPlayButton = (props: Partial<MuxTemplateProps>) => html`
+  <media-play-button 
+    onmediaplayrequest="${props.streamType === StreamTypes.LIVE || props.streamType === StreamTypes.LL_LIVE ? props.onSeekToLive : false}"
+  >
     ${icons.Play()}
     ${icons.Pause()}
   </media-play-button>
@@ -186,7 +203,7 @@ export const VodChromeExtraSmall = (props: MuxTemplateProps) => html`
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton(props)}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
@@ -204,7 +221,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaSeekBackwardButton(props)}
-    ${MediaPlayButton()}
+    ${MediaPlayButton(props)}
     ${MediaSeekForwardButton(props)}
   </div>
   <media-control-bar>
@@ -220,10 +237,10 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeLarge = (props: MuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton(props)}
   </div>
   <media-control-bar>
-    ${MediaPlayButton()}
+    ${MediaPlayButton(props)}
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
     <media-time-range></media-time-range>
@@ -244,14 +261,14 @@ export const LiveChromeExtraSmall = VodChromeExtraSmall;
 // prettier-ignore
 export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    <media-text-display class="mxp-live-indicator">Live</media-text-display>
+    ${SeekToLiveButton(props)}
     ${Spacer()}
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${props.supportsAirPlay ? MediaAirplayButton() : html``}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton(props)}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
@@ -264,10 +281,10 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
 // prettier-ignore
 export const LiveChromeLarge = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    <media-text-display class="mxp-live-indicator">Live</media-text-display>
+    ${SeekToLiveButton(props)}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton(props)}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
