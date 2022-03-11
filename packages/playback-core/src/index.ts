@@ -1,4 +1,4 @@
-import "@mux-elements/polyfills/dist/window";
+import "@mux-elements/polyfills/window";
 import mux, { Options } from "mux-embed";
 
 import Hls, { HlsConfig } from "hls.js";
