@@ -1,4 +1,4 @@
-import "@mux-elements/polyfills/dist/window";
+import "@mux-elements/polyfills/window";
 
 /**
  * Custom Video Element
