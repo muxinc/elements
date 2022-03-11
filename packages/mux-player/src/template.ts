@@ -88,6 +88,7 @@ export const template = (props: MuxTemplateProps) => html`
       slot="centered-chrome"
       no-auto-hide
       open="${props.isDialogOpen}"
+      onclose="${props.onCloseErrorDialog}"
     >
       ${props.dialog?.title && html`<h3>${props.dialog.title}</h3>`}
       <p>

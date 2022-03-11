@@ -22,6 +22,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
     linkText?: string;
     linkUrl?: string;
   };
+  onCloseErrorDialog: (evt: CustomEvent) => void;
   tokens: {
     playback?: string;
     thumbnail?: string;
