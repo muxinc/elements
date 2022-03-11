@@ -1,5 +1,6 @@
 import { stylePropsToString, toQuery, camelCase } from './utils';
 import type MuxPlayerElement from '.';
+import { StreamTypes } from './constants';
 
 /* eslint-disable */
 const getEnvPlayerVersion = () => {
@@ -73,6 +74,39 @@ export const hasVolumeSupportAsync = async (mediaEl: HTMLMediaElement | undefine
 export function getCcSubTracks(el: MuxPlayerElement) {
   return Array.from(el.video?.textTracks ?? []).filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
 }
+
+export const getLiveTime = (el: MuxPlayerElement) => {
+  const { video } = el;
+  return video?.hls?.liveSyncPosition ?? video?.seekable.length
+    ? video?.seekable.end(video.seekable.length - 1)
+    : undefined;
+};
+
+export const seekToLive = (el: MuxPlayerElement) => {
+  const liveTime = getLiveTime(el);
+  if (liveTime == undefined) {
+    console.warn('attempting to seek to live but cannot determine live edge time!');
+    return;
+  }
+  el.currentTime = liveTime;
+};
+
+export const isInLiveWindow = (el: MuxPlayerElement) => {
+  const { streamType } = el;
+  const liveTime = getLiveTime(el);
+  const currentTime = el.video?.currentTime;
+  if (liveTime == undefined || currentTime == undefined) {
+    return false;
+  }
+  const delta = liveTime - currentTime;
+  if (streamType === StreamTypes.LL_LIVE) {
+    return delta <= 1 * 3.5;
+  }
+  if (streamType === StreamTypes.LIVE) {
+    return delta <= 2 * 3.5;
+  }
+  return false;
+};
 
 export function getChromeStylesFromProps(props: any) {
   const { primaryColor, secondaryColor, tertiaryColor } = props;

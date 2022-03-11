@@ -18,6 +18,8 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   defaultHiddenCaptions: boolean;
   onCloseErrorDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
+  inLiveWindow: boolean;
+  onSeekToLive: (_evt: Event) => void;
   tokens: {
     playback?: string;
     thumbnail?: string;
