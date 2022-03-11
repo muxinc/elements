@@ -1,36 +1,28 @@
 if (!globalThis.customElements) {
   globalThis.customElements = {
-    get(_name: string) {
+    get(_name) {
       return undefined;
     },
-    define(
-      _name: string,
-      _constructor: CustomElementConstructor,
-      _options: ElementDefinitionOptions
-    ) {},
-    upgrade(_root: Node) {},
-    whenDefined(_name: string) {
+    define(_name, _constructor, _options) {},
+    upgrade(_root) {},
+    whenDefined(_name) {
       return Promise.resolve(globalThis.HTMLElement);
     },
   };
 }
 
 if (!globalThis.CustomEvent) {
-  class CustomEvent<T = undefined> implements CustomEvent<T> {
-    readonly detail: T;
-    constructor(typeArg: string, eventInitDict: CustomEventInit<T> = {}) {
-      // super(typeArg, eventInitDict);
-      // NOTE: Lazy fix for global env expectations
-      this.detail = eventInitDict?.detail as T;
+  class CustomEvent {
+    #detail;
+    get detail() {
+      this.#detail;
     }
-    initCustomEvent(
-      _typeArg: string,
-      _canBubbleArg: boolean,
-      _cancelableArg: boolean,
-      _detailArg: T
-    ) {}
+    constructor(typeArg, eventInitDict = {}) {
+      // super(typeArg, eventInitDict);
+      this.#detail = eventInitDict?.detail;
+    }
+    initCustomEvent(_typeArg, _canBubbleArg, _cancelableArg, _detailArg) {}
   }
-  // @ts-ignore
   globalThis.CustomEvent = CustomEvent;
 }
 
@@ -38,7 +30,7 @@ if (!globalThis.EventTarget) {
   class EventTarget {
     addEventListener() {}
     removeEventListener() {}
-    dispatchEvent(_event: Event) {
+    dispatchEvent(_event) {
       return true;
     }
   }
@@ -56,10 +48,7 @@ if (!globalThis.HTMLElement) {
 
 if (!globalThis.document?.createElement) {
   const document = globalThis.document ?? {};
-  (document.createElement = function createElement(
-    _tagName: string,
-    _options?: ElementCreationOptions
-  ): HTMLElement {
+  (document.createElement = function createElement(_tagName, _options) {
     return new HTMLElement();
   }),
     // NOTE: Adding ts-ignore since `document` typedef is much larger than what we're stubbing. Consider more robust TypeScript solution (e.g. downstream usage)
