@@ -4,15 +4,33 @@ coverage:
     project:
       default:
         target: auto #overall project/ repo coverage
-      mux-player:
+      mux-audio:
         target: auto
         flags:
           - mux-audio
+      mux-audio-react:
+        target: auto
+        flags:
           - mux-audio-react
+      mux-player:
+        target: auto
+        flags:
           - mux-player
+      mux-player-react:
+        target: auto
+        flags:
           - mux-player-react
+      mux-video:
+        target: auto
+        flags:
           - mux-video
+      mux-video-react:
+        target: auto
+        flags:
           - mux-video-react
+      playback-core:
+        target: auto
+        flags:
           - playback-core
 
 # adding Flags to your `layout` configuration to show up in the PR comment
