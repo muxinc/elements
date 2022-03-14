@@ -1,11 +1,6 @@
-import "./dom-polyfills";
-import {
-  TemplateInstance,
-  NodeTemplatePart,
-  createProcessor,
-  AttributeTemplatePart,
-} from "@github/template-parts";
-import type { TemplatePart, TemplateTypeInit } from "@github/template-parts";
+import './dom-polyfills';
+import { TemplateInstance, NodeTemplatePart, createProcessor, AttributeTemplatePart } from '@github/template-parts';
+import type { TemplatePart, TemplateTypeInit } from '@github/template-parts';
 // NOTE: These are either direct ports or significantly based off of github's jtml template part processing logic. For more, see: https://github.com/github/jtml
 
 const eventListeners = new WeakMap<Element, Map<string, EventHandler>>();
@@ -16,12 +11,9 @@ class EventHandler {
     eventListeners.get(this.element)!.set(this.type, this);
   }
   set(listener: EventListener) {
-    if (typeof listener == "function") {
+    if (typeof listener == 'function') {
       this.handleEvent = listener.bind(this.element);
-    } else if (
-      typeof listener === "object" &&
-      typeof (listener as EventHandler).handleEvent === "function"
-    ) {
+    } else if (typeof listener === 'object' && typeof (listener as EventHandler).handleEvent === 'function') {
       this.handleEvent = (listener as EventHandler).handleEvent.bind(listener);
     } else {
       this.element.removeEventListener(this.type, this);
@@ -29,8 +21,7 @@ class EventHandler {
     }
   }
   static for(part: AttributeTemplatePart): EventHandler {
-    if (!eventListeners.has(part.element))
-      eventListeners.set(part.element, new Map());
+    if (!eventListeners.has(part.element)) eventListeners.set(part.element, new Map());
     const type = part.attributeName.slice(2);
     const elementListeners = eventListeners.get(part.element)!;
     if (elementListeners.has(type)) return elementListeners.get(type)!;
@@ -39,10 +30,7 @@ class EventHandler {
 }
 
 export function processEvent(part: TemplatePart, value: unknown): boolean {
-  if (
-    part instanceof AttributeTemplatePart &&
-    part.attributeName.startsWith("on")
-  ) {
+  if (part instanceof AttributeTemplatePart && part.attributeName.startsWith('on')) {
     EventHandler.for(part).set(value as unknown as EventListener);
     part.element.removeAttributeNS(part.attributeNamespace, part.attributeName);
     return true;
@@ -66,10 +54,7 @@ function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
   return false;
 }
 
-export function processPropertyIdentity(
-  part: TemplatePart,
-  value: unknown
-): boolean {
+export function processPropertyIdentity(part: TemplatePart, value: unknown): boolean {
   if (part instanceof AttributeTemplatePart) {
     const ns = part.attributeNamespace;
     const oldValue = part.element.getAttributeNS(ns, part.attributeName);
@@ -82,12 +67,9 @@ export function processPropertyIdentity(
   return true;
 }
 
-export function processBooleanAttribute(
-  part: TemplatePart,
-  value: unknown
-): boolean {
+export function processBooleanAttribute(part: TemplatePart, value: unknown): boolean {
   if (
-    typeof value === "boolean" &&
+    typeof value === 'boolean' &&
     part instanceof AttributeTemplatePart
     // can't use this because on custom elements the props are always undefined
     // typeof part.element[part.attributeName as keyof Element] === 'boolean'
@@ -102,12 +84,9 @@ export function processBooleanAttribute(
   return false;
 }
 
-export function processBooleanNode(
-  part: TemplatePart,
-  value: unknown
-): boolean {
+export function processBooleanNode(part: TemplatePart, value: unknown): boolean {
   if (value === false && part instanceof NodeTemplatePart) {
-    part.replace("");
+    part.replace('');
     return true;
   }
   return false;
@@ -123,14 +102,8 @@ export function processPart(part: TemplatePart, value: unknown): void {
 }
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>();
-const renderedTemplates = new WeakMap<
-  Node | NodeTemplatePart,
-  HTMLTemplateElement
->();
-const renderedTemplateInstances = new WeakMap<
-  Node | NodeTemplatePart,
-  TemplateInstance
->();
+const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>();
+const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>();
 export class TemplateResult {
   constructor(
     public readonly strings: TemplateStringsArray,
@@ -142,12 +115,9 @@ export class TemplateResult {
     if (templates.has(this.strings)) {
       return templates.get(this.strings)!;
     } else {
-      const template = document.createElement("template");
+      const template = document.createElement('template');
       const end = this.strings.length - 1;
-      template.innerHTML = this.strings.reduce(
-        (str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ""),
-        ""
-      );
+      template.innerHTML = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '');
       templates.set(this.strings, template);
       return template;
     }
@@ -157,11 +127,7 @@ export class TemplateResult {
     const template = this.template;
     if (renderedTemplates.get(element) !== template) {
       renderedTemplates.set(element, template);
-      const instance = new TemplateInstance(
-        template,
-        this.values,
-        this.processor
-      );
+      const instance = new TemplateInstance(template, this.values, this.processor);
       renderedTemplateInstances.set(element, instance);
       if (element instanceof NodeTemplatePart) {
         element.replace(...instance.children);
@@ -170,29 +136,21 @@ export class TemplateResult {
       }
       return;
     }
-    renderedTemplateInstances
-      .get(element)!
-      .update(this.values as unknown as Record<string, unknown>);
+    renderedTemplateInstances.get(element)!.update(this.values as unknown as Record<string, unknown>);
   }
 }
 
 const defaultProcessor = createProcessor(processPart);
-export function html(
-  strings: TemplateStringsArray,
-  ...values: unknown[]
-): TemplateResult {
+export function html(strings: TemplateStringsArray, ...values: unknown[]): TemplateResult {
   return new TemplateResult(strings, values, defaultProcessor);
 }
 
-export function render(
-  result: TemplateResult,
-  element: Node | NodeTemplatePart
-): void {
+export function render(result: TemplateResult, element: Node | NodeTemplatePart): void {
   result.renderInto(element);
 }
 
 export function createTemplateInstance(content: string, props?: any) {
-  const template = document.createElement("template");
+  const template = document.createElement('template');
   template.innerHTML = content;
   return new TemplateInstance(template, props);
 }

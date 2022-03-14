@@ -30,13 +30,13 @@ npm i @mux-elements/mux-video
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import "@mux-elements/mux-video";
+import '@mux-elements/mux-video';
 ```
 
 or
 
 ```js
-require("@mux-elements/mux-video");
+require('@mux-elements/mux-video');
 ```
 
 ## CDN option
@@ -110,11 +110,11 @@ To set other available metadata fields use the `metadata` property on the `<mux-
 </mux-video>
 
 <script>
-  const muxVideo = document.querySelector("mux-video");
+  const muxVideo = document.querySelector('mux-video');
   muxVideo.metadata = {
-    experiment_name: "landing_page_v3",
-    video_content_type: "clip",
-    video_series: "season 1",
+    experiment_name: 'landing_page_v3',
+    video_content_type: 'clip',
+    video_series: 'season 1',
   };
 </script>
 ```
@@ -232,10 +232,7 @@ interface MuxVideoHTMLAttributes<T> extends React.VideoHTMLAttributes<T> {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "mux-video": React.DetailedHTMLProps<
-        MuxVideoHTMLAttributes<HTMLVideoElement>,
-        HTMLVideoElement
-      >;
+      'mux-video': React.DetailedHTMLProps<MuxVideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>;
     }
   }
 }

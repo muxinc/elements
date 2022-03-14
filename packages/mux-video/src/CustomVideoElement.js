@@ -1,4 +1,4 @@
-import "@mux-elements/polyfills/window";
+import '@mux-elements/polyfills/window';
 
 /**
  * Custom Video Element
@@ -7,7 +7,7 @@ import "@mux-elements/polyfills/window";
  * extended today across browsers.
  */
 
-const template = document.createElement("template");
+const template = document.createElement('template');
 // Could you get styles to apply by passing a global button from global to shadow?
 
 template.innerHTML = `
@@ -42,10 +42,10 @@ class CustomVideoElement extends HTMLElement {
   constructor() {
     super();
 
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    const nativeEl = (this.nativeEl = this.shadowRoot.querySelector("video"));
+    const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('video'));
 
     // Initialize all the attribute properties
     Array.prototype.forEach.call(this.attributes, (attrNode) => {
@@ -61,8 +61,8 @@ class CustomVideoElement extends HTMLElement {
       nativeEl.muted = true;
     }
 
-    const slotEl = this.shadowRoot.querySelector("slot");
-    slotEl.addEventListener("slotchange", () => {
+    const slotEl = this.shadowRoot.querySelector('slot');
+    slotEl.addEventListener('slotchange', () => {
       slotEl.assignedElements().forEach((el) => {
         nativeEl.appendChild(el);
       });
@@ -82,7 +82,7 @@ class CustomVideoElement extends HTMLElement {
 
       // Non-func properties throw errors because it's not an instance
       try {
-        if (typeof this.prototype[propName] === "function") {
+        if (typeof this.prototype[propName] === 'function') {
           isFunc = true;
         }
       } catch (e) {}
@@ -111,16 +111,13 @@ class CustomVideoElement extends HTMLElement {
     const propName = arrayFindAnyCase(ownProps, attrName);
 
     // Check if this is the original custom native elemnt or a subclass
-    const isBaseElement =
-      Object.getPrototypeOf(this.constructor)
-        .toString()
-        .indexOf("function HTMLElement") === 0;
+    const isBaseElement = Object.getPrototypeOf(this.constructor).toString().indexOf('function HTMLElement') === 0;
 
     // If this is a subclass custom attribute we want to set the
     // matching property on the subclass
     if (propName && !isBaseElement) {
       // Boolean props should never start as null
-      if (typeof this[propName] == "boolean") {
+      if (typeof this[propName] == 'boolean') {
         // null is returned when attributes are removed i.e. boolean attrs
         if (newValue === null) {
           this[propName] = false;
@@ -140,7 +137,7 @@ class CustomVideoElement extends HTMLElement {
       } else {
         // Ignore a few that don't need to be passed through just in case
         // it creates unexpected behavior.
-        if (["id", "class"].indexOf(attrName) === -1) {
+        if (['id', 'class'].indexOf(attrName) === -1) {
           this.nativeEl.setAttribute(attrName, newValue);
         }
       }
@@ -162,13 +159,10 @@ let nativeElProps = [];
 // Can't check typeof directly on element prototypes without
 // throwing Illegal Invocation errors, so creating an element
 // to check on instead.
-const nativeElTest = document.createElement("video");
+const nativeElTest = document.createElement('video');
 
 // Deprecated props throw warnings if used, so exclude them
-const deprecatedProps = [
-  "webkitDisplayingFullscreen",
-  "webkitSupportsFullscreen",
-];
+const deprecatedProps = ['webkitDisplayingFullscreen', 'webkitSupportsFullscreen'];
 
 // Walk the prototype chain up to HTMLElement.
 // This will grab all super class props in between.
@@ -193,7 +187,7 @@ nativeElProps = nativeElProps.concat(Object.keys(EventTarget.prototype));
 nativeElProps.forEach((prop) => {
   const type = typeof nativeElTest[prop];
 
-  if (type == "function") {
+  if (type == 'function') {
     // Function
     CustomVideoElement.prototype[prop] = function () {
       return this.nativeEl[prop].apply(this.nativeEl, arguments);
@@ -229,8 +223,8 @@ function arrayFindAnyCase(arr, word) {
   return found;
 }
 
-if (!globalThis.customElements.get("custom-video")) {
-  globalThis.customElements.define("custom-video", CustomVideoElement);
+if (!globalThis.customElements.get('custom-video')) {
+  globalThis.customElements.define('custom-video', CustomVideoElement);
   globalThis.CustomVideoElement = CustomVideoElement;
 }
 

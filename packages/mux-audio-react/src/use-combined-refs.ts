@@ -1,4 +1,4 @@
-import { useEffect, useRef, MutableRefObject } from "react";
+import { useEffect, useRef, MutableRefObject } from 'react';
 
 type Maybe<T> = T | null | undefined;
 type RefCb<T> = (instance: Maybe<T>) => void;
@@ -15,7 +15,7 @@ export const useCombinedRefs: useCombinedRefs = (...refs) => {
     refs.forEach((ref) => {
       if (!ref) return;
 
-      if (typeof ref === "function") {
+      if (typeof ref === 'function') {
         ref(targetRef.current);
       } else {
         ref.current = targetRef.current;

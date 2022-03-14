@@ -1,4 +1,4 @@
-import type MuxVideoElement from "@mux-elements/mux-video";
+import type MuxVideoElement from '@mux-elements/mux-video';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   preferMse?: boolean;

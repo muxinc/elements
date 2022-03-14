@@ -1,6 +1,6 @@
 /** @TODO Add type defs to mux-embed directly */
-declare module "mux-embed" {
-  import Hls from "hls.js";
+declare module 'mux-embed' {
+  import Hls from 'hls.js';
 
   export type HighPriorityMetadata = {
     video_id: string;
@@ -74,15 +74,9 @@ declare module "mux-embed" {
     hb: Partial<Metadata>;
   };
 
-  export function monitor(
-    id: string | HTMLMediaElement,
-    options: Options
-  ): void;
+  export function monitor(id: string | HTMLMediaElement, options: Options): void;
 
-  export function emit<K extends keyof EventTypesMap>(
-    type: K,
-    payload: EventTypesMap[K]
-  ): void;
+  export function emit<K extends keyof EventTypesMap>(type: K, payload: EventTypesMap[K]): void;
 
   export function destroy(): void;
 

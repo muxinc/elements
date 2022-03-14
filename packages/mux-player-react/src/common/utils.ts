@@ -3,13 +3,13 @@
 // and provide a mechanism for passing in per-component overrides for
 // e.g. kebab cases, as that's the way React/Preact handles these. (CJP)
 const ReactPropToAttrNameMap = {
-  className: "class",
-  classname: "class",
-  htmlFor: "for",
-  crossOrigin: "crossorigin",
-  viewBox: "viewBox",
-  playsInline: "playsinline",
-  autoPlay: "autoplay",
+  className: 'class',
+  classname: 'class',
+  htmlFor: 'for',
+  crossOrigin: 'crossorigin',
+  viewBox: 'viewBox',
+  playsInline: 'playsinline',
+  autoPlay: 'autoplay',
 };
 
 type KeyTypes = string | number | symbol;
@@ -22,16 +22,11 @@ export const isKeyOf = <T = unknown>(k: KeyTypes, o: T): k is keyof T => {
   return k in o;
 };
 
-const toKebabCase = (string: string) =>
-  string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
+const toKebabCase = (string: string) => string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 
-export const toNativeAttrName = (
-  propName: string,
-  propValue: any
-): string | undefined => {
-  if (typeof propValue === "boolean" && !propValue) return undefined;
-  if (isKeyOf(propName, ReactPropToAttrNameMap))
-    return ReactPropToAttrNameMap[propName];
+export const toNativeAttrName = (propName: string, propValue: any): string | undefined => {
+  if (typeof propValue === 'boolean' && !propValue) return undefined;
+  if (isKeyOf(propName, ReactPropToAttrNameMap)) return ReactPropToAttrNameMap[propName];
   if (typeof propValue == undefined) return undefined;
   if (/[A-Z]/.test(propName)) return toKebabCase(propName);
   return propName;
@@ -39,24 +34,21 @@ export const toNativeAttrName = (
 export const toStyleAttr = <T>(x: T) => x;
 
 export const toNativeAttrValue = (propValue: any, propName: string) => {
-  if (typeof propValue === "boolean") return "";
+  if (typeof propValue === 'boolean') return '';
   return propValue;
 };
 
 export const toNativeProps = (props = {}) => {
-  return Object.entries(props).reduce<{ [k: string]: string }>(
-    (transformedProps, [propName, propValue]) => {
-      const attrName = toNativeAttrName(propName, propValue);
+  return Object.entries(props).reduce<{ [k: string]: string }>((transformedProps, [propName, propValue]) => {
+    const attrName = toNativeAttrName(propName, propValue);
 
-      // prop was stripped. Don't add.
-      if (!attrName) {
-        return transformedProps;
-      }
-
-      const attrValue = toNativeAttrValue(propValue, propName);
-      transformedProps[attrName] = attrValue;
+    // prop was stripped. Don't add.
+    if (!attrName) {
       return transformedProps;
-    },
-    {}
-  );
+    }
+
+    const attrValue = toNativeAttrValue(propValue, propName);
+    transformedProps[attrName] = attrValue;
+    return transformedProps;
+  }, {});
 };

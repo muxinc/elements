@@ -28,13 +28,13 @@ npm i @mux-elements/mux-player-react
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import MuxPlayer from "@mux-elements/mux-player-react";
+import MuxPlayer from '@mux-elements/mux-player-react';
 ```
 
 or
 
 ```js
-const MuxPlayer = require("@mux-elements/mux-player-react");
+const MuxPlayer = require('@mux-elements/mux-player-react');
 ```
 
 ## Features and benefits
@@ -55,12 +55,12 @@ const MuxPlayerExample = () => {
     <div>
       <h1>Simple MuxPlayer Example</h1>
       <MuxPlayer
-        style={{ height: "100%", maxWidth: "100%" }}
+        style={{ height: '100%', maxWidth: '100%' }}
         playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
         metadata={{
-          video_id: "video-id-123456",
-          video_title: "Super Interesting Video",
-          viewer_user_id: "user-id-bc-789",
+          video_id: 'video-id-123456',
+          video_title: 'Super Interesting Video',
+          viewer_user_id: 'user-id-bc-789',
         }}
         envKey="YOUR_MUX_DATA_ENV_KEY"
         streamType="on-demand"
@@ -139,9 +139,9 @@ Example:
 <MuxPlayer
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
   metadata={{
-    video_id: "video-id-123456",
-    video_title: "Super Interesting Video",
-    viewer_user_id: "user-id-bc-789",
+    video_id: 'video-id-123456',
+    video_title: 'Super Interesting Video',
+    viewer_user_id: 'user-id-bc-789',
   }}
   envKey="YOUR_MUX_DATA_ENV_KEY"
 />
@@ -158,11 +158,11 @@ Example:
   playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
   tokens={{
     playback:
-      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0Mzg5NjEsImF1ZCI6InYiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hWrdcJDa8FJCfVFP19oJ-9FSEVk9eB6DTOCRrucnzsrtUoZbb1OFe7swpQ38Fp3hZNNIt7-LWjdOl90TF4ucu7mhu42qyk3_i054RtmEZyQaj5Qjm3_H4sa2jLO-0QNSnOfp1A9x-fI8M_giGLg-byJPuu_eUqu1MW9bILLly_9gq8m0cNKghUa9xTMJgFmaya4XYudy5Mt2Fu72MiS3csUP3xhKlONVnGHlMRqB-dBVOgAJrayeUquAhaNY346oFBUWVM-EcAZ9G2ARtPakfy4Wpv5BsRKEGtR81P-k7EW8g27U0FKLlrvLkUz3Z-JYu53CRcJUvjkC9sDMrZLcTA",
+      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0Mzg5NjEsImF1ZCI6InYiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hWrdcJDa8FJCfVFP19oJ-9FSEVk9eB6DTOCRrucnzsrtUoZbb1OFe7swpQ38Fp3hZNNIt7-LWjdOl90TF4ucu7mhu42qyk3_i054RtmEZyQaj5Qjm3_H4sa2jLO-0QNSnOfp1A9x-fI8M_giGLg-byJPuu_eUqu1MW9bILLly_9gq8m0cNKghUa9xTMJgFmaya4XYudy5Mt2Fu72MiS3csUP3xhKlONVnGHlMRqB-dBVOgAJrayeUquAhaNY346oFBUWVM-EcAZ9G2ARtPakfy4Wpv5BsRKEGtR81P-k7EW8g27U0FKLlrvLkUz3Z-JYu53CRcJUvjkC9sDMrZLcTA',
     thumbnail:
-      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTMzMTksImF1ZCI6InQiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hNBRo1-XDTT1CJMOxf90-8JPJzAygwm-3pVNBj31I7DEukSVRKVgUuhquEJbYXx1xg27xRMu8OVQxVob6jWHdjSwTyygAY040bqdyDxLsRtkDcVxwZ78iiZwtA1eTkxxY-410Ma3HbhNsG0Qjo5AWX46IhD9ARKHL-MPGaKda7FSx8J8jxa3hQ8_M1AKMsx7PrgJYOtW6n0mvkupEAFYRJlqIbkERSBeWChdrjCLYAcXRar5nfdNWlWST2pfllqz8pfJSTWjQRumTonC5BGB89jZUimHnuzkRXm_LeGyXbfZmBKb4d0j9YyGVnTPePqyVPsAQ-bzcfFDU0L67GDgyw",
+      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTMzMTksImF1ZCI6InQiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.hNBRo1-XDTT1CJMOxf90-8JPJzAygwm-3pVNBj31I7DEukSVRKVgUuhquEJbYXx1xg27xRMu8OVQxVob6jWHdjSwTyygAY040bqdyDxLsRtkDcVxwZ78iiZwtA1eTkxxY-410Ma3HbhNsG0Qjo5AWX46IhD9ARKHL-MPGaKda7FSx8J8jxa3hQ8_M1AKMsx7PrgJYOtW6n0mvkupEAFYRJlqIbkERSBeWChdrjCLYAcXRar5nfdNWlWST2pfllqz8pfJSTWjQRumTonC5BGB89jZUimHnuzkRXm_LeGyXbfZmBKb4d0j9YyGVnTPePqyVPsAQ-bzcfFDU0L67GDgyw',
     storyboard:
-      "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTM0OTgsImF1ZCI6InMiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.PKEybohVK0JyJGX_3iubRnHZx1ve5OmPmyfZdaKb17N2wVMQCYNltTc-gCUTU7EIKGeTtVOIITCSsIeTgXcI667B2GWJ5juDIErz1h-NQsPIfB-FsUeuWx2rYOap4G3FdwEIjaGc29HPncw-mG0JLcqkMB7jtDxjBY_-YlpjFYJF_z7r-1yIJM7mF3rl8YqeWstojC8oh2Iv2VRkuTyPE31QVI6fQcet5PIRWHudUIGWcNiWM56vwZskJ6qod8UvYpha7K5rhshh0Xdhnvq3Y9b6PXl3fy6VKCZIyszlPVje0IR2bR9iHDXnGbawivUsI65IDm-ZEoJrOzmZctMWAQ",
+      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE2NDY0OTM0OTgsImF1ZCI6InMiLCJzdWIiOiJiemVVNWZSQTQ3UzAxS0R6ck9iWWlpWnZ6ajAwajVFMDBkQ1ZidDNvUnptZkYwMCJ9.PKEybohVK0JyJGX_3iubRnHZx1ve5OmPmyfZdaKb17N2wVMQCYNltTc-gCUTU7EIKGeTtVOIITCSsIeTgXcI667B2GWJ5juDIErz1h-NQsPIfB-FsUeuWx2rYOap4G3FdwEIjaGc29HPncw-mG0JLcqkMB7jtDxjBY_-YlpjFYJF_z7r-1yIJM7mF3rl8YqeWstojC8oh2Iv2VRkuTyPE31QVI6fQcet5PIRWHudUIGWcNiWM56vwZskJ6qod8UvYpha7K5rhshh0Xdhnvq3Y9b6PXl3fy6VKCZIyszlPVje0IR2bR9iHDXnGbawivUsI65IDm-ZEoJrOzmZctMWAQ',
   }}
 />
 ```
@@ -179,9 +179,9 @@ Example:
 <MuxPlayer
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
   metadata={{
-    video_id: "video-id-123456",
-    video_title: "Super Interesting Video",
-    viewer_user_id: "user-id-bc-789",
+    video_id: 'video-id-123456',
+    video_title: 'Super Interesting Video',
+    viewer_user_id: 'user-id-bc-789',
   }}
   envKey="YOUR_MUX_DATA_ENV_KEY"
   preferMse

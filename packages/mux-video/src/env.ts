@@ -1,13 +1,13 @@
-export const isMaybeBrowser = () => typeof window != "undefined";
+export const isMaybeBrowser = () => typeof window != 'undefined';
 // @ts-ignore
-export const isMaybeServer = () => typeof global != "undefined";
+export const isMaybeServer = () => typeof global != 'undefined';
 
 const getEnvPlayerVersion = () => {
   try {
     // @ts-ignore
     return PLAYER_VERSION as string;
   } catch {}
-  return "UNKNOWN";
+  return 'UNKNOWN';
 };
 
 const player_version: string = getEnvPlayerVersion();

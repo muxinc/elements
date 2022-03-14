@@ -1,1 +1,1 @@
-import "./window";
+import './window';
