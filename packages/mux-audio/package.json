@@ -1,7 +1,6 @@
 {
   "name": "@mux-elements/mux-audio",
   "version": "0.3.0",
-  "type": "module",
   "description": "A custom mux audio element for the browser that Just Works™",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -13,7 +12,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.js",
+    "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.mjs",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-audio/src/' coverage/lcov.info",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:types": "yarn build:types -w",
