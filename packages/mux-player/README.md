@@ -44,7 +44,7 @@ require("@mux-elements/mux-player");
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-player@0.1"></script>
+<script async src="https://unpkg.com/@mux-elements/mux-player"></script>
 ```
 
 ## Features and benefits
