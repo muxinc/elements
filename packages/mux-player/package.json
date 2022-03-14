@@ -14,7 +14,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.js",
+    "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info",
     "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
     "dev:iife": "open-process | yarn build:iife --watch",
