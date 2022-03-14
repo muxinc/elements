@@ -11,6 +11,7 @@ import {
   StreamTypes,
   toMuxVideoURL,
   PlaybackEngine,
+  generatePlayerInitTime,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
@@ -43,7 +44,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
       ...restProps
     } = props;
 
-    const [playerInitTime] = useState(Date.now());
+    const [playerInitTime] = useState(generatePlayerInitTime());
 
     const [src, setSrc] = useState<MuxMediaProps["src"]>(
       toMuxVideoURL(playbackId) ?? outerSrc
