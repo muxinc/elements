@@ -13,6 +13,7 @@ import {
   Metadata,
   mux,
   type UpdateAutoplay,
+  generatePlayerInitTime,
 } from "@mux-elements/playback-core";
 import { getPlayerVersion } from "./env";
 
@@ -71,7 +72,7 @@ class MuxAudioElement
 
   constructor() {
     super();
-    this.__playerInitTime = Date.now();
+    this.__playerInitTime = generatePlayerInitTime();
   }
 
   get playerInitTime() {
