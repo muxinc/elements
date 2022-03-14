@@ -30,13 +30,13 @@ npm i @mux-elements/mux-player
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import "@mux-elements/mux-player";
+import '@mux-elements/mux-player';
 ```
 
 or
 
 ```js
-require("@mux-elements/mux-player");
+require('@mux-elements/mux-player');
 ```
 
 ## CDN option
@@ -182,11 +182,11 @@ To set other available metadata fields use the `metadata` property on the `<mux-
 </mux-player>
 
 <script>
-  const muxVideo = document.querySelector("mux-player");
+  const muxVideo = document.querySelector('mux-player');
   muxVideo.metadata = {
-    experiment_name: "landing_page_v3",
-    video_content_type: "clip",
-    video_series: "season 1",
+    experiment_name: 'landing_page_v3',
+    video_content_type: 'clip',
+    video_series: 'season 1',
   };
 </script>
 ```

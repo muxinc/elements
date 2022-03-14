@@ -35,7 +35,7 @@ coverage:
 
 # adding Flags to your `layout` configuration to show up in the PR comment
 comment:
-  layout: "reach, diff, flags, files"
+  layout: 'reach, diff, flags, files'
   behavior: default
   require_changes: false
   require_base: yes

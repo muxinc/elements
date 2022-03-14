@@ -31,13 +31,13 @@ media-control-bar {
   --media-button-icon-width: 18px;
 }
 
-media-control-bar [role="button"],
-media-control-bar [role="switch"] {
+media-control-bar [role='button'],
+media-control-bar [role='switch'] {
   height: 44px;
 }
 
-.size-extra-small media-control-bar [role="button"],
-.size-extra-small media-control-bar [role="switch"] {
+.size-extra-small media-control-bar [role='button'],
+.size-extra-small media-control-bar [role='switch'] {
   height: auto;
   padding: 4.4% 3.2%;
 }
@@ -118,7 +118,7 @@ media-time-display {
 }
 
 .mxp-live-indicator::before {
-  content: "● ";
+  content: '● ';
   color: #fb3c4d;
   padding-right: 5px;
 }

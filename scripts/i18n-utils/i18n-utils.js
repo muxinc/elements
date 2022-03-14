@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
 
 const srcFile = process.argv[2];
 const langFolder = process.argv[3];
@@ -19,7 +19,7 @@ while ((result = regex.exec(srcContents)) !== null) {
 for (let file of walkSync(langFolder)) {
   const oldDict = JSON.parse(fs.readFileSync(file).toString());
   let dict = {};
-  if (file.endsWith("en.json")) {
+  if (file.endsWith('en.json')) {
     for (let str of strings) {
       dict[str] = str;
     }
@@ -29,12 +29,8 @@ for (let file of walkSync(langFolder)) {
     }
   }
 
-  fs.writeFileSync(file, JSON.stringify(dict, null, "  "));
-  console.log(
-    `${strings.length} strings (${
-      Object.keys(dict).length
-    } unique) written to ${file}`
-  );
+  fs.writeFileSync(file, JSON.stringify(dict, null, '  '));
+  console.log(`${strings.length} strings (${Object.keys(dict).length} unique) written to ${file}`);
 }
 
 function* walkSync(dir) {

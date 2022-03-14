@@ -3,7 +3,7 @@ const getEnvPlayerVersion = () => {
     // @ts-ignore
     return PLAYER_VERSION as string;
   } catch {}
-  return "UNKNOWN";
+  return 'UNKNOWN';
 };
 
 const player_version: string = getEnvPlayerVersion();

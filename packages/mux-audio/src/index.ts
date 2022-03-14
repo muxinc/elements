@@ -1,4 +1,4 @@
-import CustomAudioElement from "./CustomAudioElement";
+import CustomAudioElement from './CustomAudioElement';
 
 import {
   initialize,
@@ -11,59 +11,49 @@ import {
   Metadata,
   mux,
   generatePlayerInitTime,
-} from "@mux-elements/playback-core";
-import type {
-  PlaybackEngine,
-  UpdateAutoplay,
-  ExtensionMimeTypeMap,
-} from "@mux-elements/playback-core";
-import { getPlayerVersion } from "./env";
+} from '@mux-elements/playback-core';
+import type { PlaybackEngine, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
+import { getPlayerVersion } from './env';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
-  ENV_KEY: "env-key";
-  DEBUG: "debug";
-  METADATA_URL: "metadata-url";
-  METADATA_VIDEO_ID: "metadata-video-id";
-  METADATA_VIDEO_TITLE: "metadata-video-title";
-  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
-  BEACON_DOMAIN: "beacon-domain";
-  PLAYBACK_ID: "playback-id";
-  PREFER_MSE: "prefer-mse";
-  TYPE: "type";
-  STREAM_TYPE: "stream-type";
-  START_TIME: "start-time";
+  ENV_KEY: 'env-key';
+  DEBUG: 'debug';
+  METADATA_URL: 'metadata-url';
+  METADATA_VIDEO_ID: 'metadata-video-id';
+  METADATA_VIDEO_TITLE: 'metadata-video-title';
+  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
+  BEACON_DOMAIN: 'beacon-domain';
+  PLAYBACK_ID: 'playback-id';
+  PREFER_MSE: 'prefer-mse';
+  TYPE: 'type';
+  STREAM_TYPE: 'stream-type';
+  START_TIME: 'start-time';
 };
 
 const Attributes: AttributeNames = {
-  ENV_KEY: "env-key",
-  DEBUG: "debug",
-  PLAYBACK_ID: "playback-id",
-  METADATA_URL: "metadata-url",
-  PREFER_MSE: "prefer-mse",
-  METADATA_VIDEO_ID: "metadata-video-id",
-  METADATA_VIDEO_TITLE: "metadata-video-title",
-  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
-  BEACON_DOMAIN: "beacon-domain",
-  TYPE: "type",
-  STREAM_TYPE: "stream-type",
-  START_TIME: "start-time",
+  ENV_KEY: 'env-key',
+  DEBUG: 'debug',
+  PLAYBACK_ID: 'playback-id',
+  METADATA_URL: 'metadata-url',
+  PREFER_MSE: 'prefer-mse',
+  METADATA_VIDEO_ID: 'metadata-video-id',
+  METADATA_VIDEO_TITLE: 'metadata-video-title',
+  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
+  BEACON_DOMAIN: 'beacon-domain',
+  TYPE: 'type',
+  STREAM_TYPE: 'stream-type',
+  START_TIME: 'start-time',
 };
 
 const AttributeNameValues = Object.values(Attributes);
 
 const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = "mux-audio";
+const playerSoftwareName = 'mux-audio';
 
-class MuxAudioElement
-  extends CustomAudioElement<HTMLAudioElement>
-  implements Partial<MuxMediaProps>
-{
+class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Partial<MuxMediaProps> {
   static get observedAttributes() {
-    return [
-      ...AttributeNameValues,
-      ...(CustomAudioElement.observedAttributes ?? []),
-    ];
+    return [...AttributeNameValues, ...(CustomAudioElement.observedAttributes ?? [])];
   }
 
   // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
@@ -101,7 +91,7 @@ class MuxAudioElement
     // Use the attribute value as the source of truth.
     // No need to store it in two places.
     // This avoids needing a to read the attribute initially and update the src.
-    return this.getAttribute("src") as string;
+    return this.getAttribute('src') as string;
   }
 
   set src(val: string) {
@@ -110,9 +100,9 @@ class MuxAudioElement
     if (val === this.src) return;
 
     if (val == null) {
-      this.removeAttribute("src");
+      this.removeAttribute('src');
     } else {
-      this.setAttribute("src", val);
+      this.setAttribute('src', val);
     }
   }
 
@@ -126,7 +116,7 @@ class MuxAudioElement
     if (val === this.debug) return;
 
     if (val) {
-      this.setAttribute(Attributes.DEBUG, "");
+      this.setAttribute(Attributes.DEBUG, '');
     } else {
       this.removeAttribute(Attributes.DEBUG);
     }
@@ -197,10 +187,7 @@ class MuxAudioElement
 
   get streamType(): ValueOf<StreamTypes> | undefined {
     // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
-    return (
-      (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ??
-      undefined
-    );
+    return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? undefined;
   }
 
   set streamType(val: ValueOf<StreamTypes> | undefined) {
@@ -221,7 +208,7 @@ class MuxAudioElement
 
   set preferMse(val: boolean) {
     if (val) {
-      this.setAttribute(Attributes.PREFER_MSE, "");
+      this.setAttribute(Attributes.PREFER_MSE, '');
     } else {
       this.removeAttribute(Attributes.PREFER_MSE);
     }
@@ -236,24 +223,16 @@ class MuxAudioElement
     if (!!this.mux) {
       /** @TODO Link to docs for a more detailed discussion (CJP) */
       console.info(
-        "Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src."
+        'Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src.'
       );
-      this.mux.emit("hb", this.__metadata);
+      this.mux.emit('hb', this.__metadata);
     }
   }
 
   load() {
-    const nextHlsInstance = initialize(
-      this as Partial<MuxMediaProps>,
-      this.nativeEl,
-      this.__hls
-    );
+    const nextHlsInstance = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__hls);
     this.__hls = nextHlsInstance;
-    const updateAutoplay = setupAutoplay(
-      this.nativeEl,
-      this.autoplay,
-      nextHlsInstance
-    );
+    const updateAutoplay = setupAutoplay(this.nativeEl, this.autoplay, nextHlsInstance);
     this.__updateAutoplay = updateAutoplay;
   }
 
@@ -262,13 +241,9 @@ class MuxAudioElement
     this.__hls = undefined;
   }
 
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
-  ) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     switch (attrName) {
-      case "src":
+      case 'src':
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
@@ -281,7 +256,7 @@ class MuxAudioElement
           this.load();
         }
         break;
-      case "autoplay":
+      case 'autoplay':
         this.__updateAutoplay?.(newValue);
         break;
       case Attributes.PLAYBACK_ID:
@@ -293,7 +268,7 @@ class MuxAudioElement
         if (!!this.mux) {
           /** @TODO Link to docs for a more detailed discussion (CJP) */
           console.info(
-            "Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src."
+            'Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.'
           );
         }
         if (!!this.hls) {
@@ -305,11 +280,7 @@ class MuxAudioElement
           fetch(newValue)
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
-            .catch((_err) =>
-              console.error(
-                `Unable to load or parse metadata JSON from metadata-url ${newValue}!`
-              )
-            );
+            .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
       default:
@@ -337,16 +308,12 @@ declare global {
   var MuxAudioElement: MuxAudioElementType;
 }
 
-if (!globalThis.customElements.get("mux-audio")) {
-  globalThis.customElements.define("mux-audio", MuxAudioElement);
+if (!globalThis.customElements.get('mux-audio')) {
+  globalThis.customElements.define('mux-audio', MuxAudioElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxAudioElement = MuxAudioElement;
 }
 
-export {
-  PlaybackEngine,
-  PlaybackEngine as Hls,
-  ExtensionMimeTypeMap as MimeTypes,
-};
+export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes };
 
 export default MuxAudioElement;

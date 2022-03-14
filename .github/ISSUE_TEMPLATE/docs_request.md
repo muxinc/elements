@@ -1,8 +1,8 @@
 ---
-name: "📄 Docs Request"
+name: '📄 Docs Request'
 about: Report a discrepancy in or an improvement to the docs.
-title: "Docs: "
-labels: "documentation"
+title: 'Docs: '
+labels: 'documentation'
 ---
 
 <!--
@@ -22,9 +22,9 @@ labels: "documentation"
 
 # Is this a discrepancy or an improvement?
 
-<!-- 
+<!--
   Uncomment all that apply
-  
+
 - discrepancy
 - improvement
 -->

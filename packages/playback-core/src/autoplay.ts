@@ -1,16 +1,16 @@
-import Hls from "hls.js";
+import Hls from 'hls.js';
 
 type PlaybackEngine = Hls;
 
 // TODO add INVIEW_MUTED, INVIEW_ANY
 export type AutoplayTypes = {
-  ANY: "any";
-  MUTED: "muted";
+  ANY: 'any';
+  MUTED: 'muted';
 };
 
 export const AutoplayTypes: AutoplayTypes = {
-  ANY: "any",
-  MUTED: "muted",
+  ANY: 'any',
+  MUTED: 'muted',
 };
 
 type ValueOf<T> = T[keyof T];
@@ -21,9 +21,8 @@ export type UpdateAutoplay = (newAutoplay: Maybe<string | boolean>) => void;
 const AutoplayTypeValues = Object.values(AutoplayTypes);
 export const isAutoplayValue = (value: unknown): value is Autoplay => {
   return (
-    typeof value === "boolean" ||
-    (typeof value === "string" &&
-      AutoplayTypeValues.includes(value as ValueOf<AutoplayTypes>))
+    typeof value === 'boolean' ||
+    (typeof value === 'string' && AutoplayTypeValues.includes(value as ValueOf<AutoplayTypes>))
   );
 };
 
@@ -40,14 +39,12 @@ export const setupAutoplay = (
 ) => {
   let hasPlayed = false;
   let isLive = false;
-  let autoplay: Autoplay = isAutoplayValue(maybeAutoplay)
-    ? maybeAutoplay
-    : !!maybeAutoplay;
+  let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
 
   const updateHasPlayed = () => {
     // hasPlayed
     mediaEl.addEventListener(
-      "playing",
+      'playing',
       () => {
         hasPlayed = true;
       },
@@ -61,7 +58,7 @@ export const setupAutoplay = (
   // hasPlayed should default to false
   // we should try and autoplay
   mediaEl.addEventListener(
-    "loadstart",
+    'loadstart',
     () => {
       hasPlayed = false;
       updateHasPlayed();
@@ -72,7 +69,7 @@ export const setupAutoplay = (
 
   // on `loadedmetadata` we can check whether we're live in the case of native playback
   mediaEl.addEventListener(
-    "loadedmetadata",
+    'loadedmetadata',
     () => {
       // only update isLive here if we're using native playback
       if (!hls) {
@@ -95,7 +92,7 @@ export const setupAutoplay = (
   // which probably shouldn't seek
   if (!autoplay) {
     mediaEl.addEventListener(
-      "play",
+      'play',
       () => {
         // don't seek if we're not live
         if (!isLive) {
@@ -124,10 +121,7 @@ export const setupAutoplay = (
   return updateAutoplay;
 };
 
-export const handleAutoplay = (
-  mediaEl: HTMLMediaElement,
-  autoplay: Autoplay
-) => {
+export const handleAutoplay = (mediaEl: HTMLMediaElement, autoplay: Autoplay) => {
   if (!autoplay) {
     return;
   }

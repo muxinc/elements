@@ -1,29 +1,29 @@
-import "./dialog";
-import "./time-display";
+import './dialog';
+import './time-display';
 import {
   getChromeStylesFromProps,
   getSrcFromPlaybackId,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
-} from "./helpers";
-import { html } from "./html";
-import * as icons from "./icons";
+} from './helpers';
+import { html } from './html';
+import * as icons from './icons';
 // @ts-ignore
-import cssStr from "./styles.css";
-import { i18n } from "./utils";
+import cssStr from './styles.css';
+import { i18n } from './utils';
 
-import type { MuxTemplateProps } from "./types";
+import type { MuxTemplateProps } from './types';
 
 export const StreamTypes = {
-  VOD: "on-demand",
-  LIVE: "live",
-  LL_LIVE: "ll-live",
+  VOD: 'on-demand',
+  LIVE: 'live',
+  LL_LIVE: 'll-live',
 };
 
 const MediaChromeSizes = {
-  LG: "large",
-  SM: "small",
-  XS: "extra-small",
+  LG: 'large',
+  SM: 'small',
+  XS: 'extra-small',
 };
 
 const Spacer = () => html`<div class="mxp-spacer"></div>`;
@@ -32,10 +32,7 @@ export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
-  <media-controller
-    style="${getChromeStylesFromProps(props) ?? false}"
-    class="size-${props.playerSize}"
-  >
+  <media-controller style="${getChromeStylesFromProps(props) ?? false}" class="size-${props.playerSize}">
     <mux-video
       slot="media"
       crossorigin
@@ -65,31 +62,18 @@ export const template = (props: MuxTemplateProps) => html`
       metadata-video-title="${props.metadata?.video_title ?? false}"
       metadata-viewer-user-id="${props.metadata?.viewer_user_id ?? false}"
     >
-      ${props.playbackId &&
-      props.streamType !== StreamTypes.LIVE &&
-      props.streamType !== StreamTypes.LL_LIVE
+      ${props.playbackId && props.streamType !== StreamTypes.LIVE && props.streamType !== StreamTypes.LL_LIVE
         ? html`<track
             label="thumbnails"
             default
             kind="metadata"
-            src="${getStoryboardURLFromPlaybackId(
-              props.playbackId,
-              props.tokens.storyboard
-            )}"
+            src="${getStoryboardURLFromPlaybackId(props.playbackId, props.tokens.storyboard)}"
           />`
-        : ""}
+        : ''}
     </mux-video>
-    <media-loading-indicator
-      slot="centered-chrome"
-      no-auto-hide
-    ></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
     ${ChromeRenderer(props)}
-    <mxp-dialog
-      slot="centered-chrome"
-      no-auto-hide
-      open="${props.isDialogOpen}"
-      onclose="${props.onCloseErrorDialog}"
-    >
+    <mxp-dialog slot="centered-chrome" no-auto-hide open="${props.isDialogOpen}" onclose="${props.onCloseErrorDialog}">
       ${props.dialog?.title && html`<h3>${props.dialog.title}</h3>`}
       <p>
         ${props.dialog?.message}
@@ -98,8 +82,7 @@ export const template = (props: MuxTemplateProps) => html`
           href="${props.dialog.linkUrl}"
           target="_blank"
           rel="external noopener"
-          aria-label="${props.dialog.linkText ??
-          ""} ${i18n`(opens in a new window)`}"
+          aria-label="${props.dialog.linkText ?? ''} ${i18n`(opens in a new window)`}"
           >${props.dialog.linkText ?? props.dialog.linkUrl}</a
         >`}
       </p>
