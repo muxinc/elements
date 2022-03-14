@@ -8,7 +8,10 @@ class EventHandler {
   handleEvent!: EventListener;
   constructor(private element: Element, private type: string) {
     this.element.addEventListener(this.type, this);
-    eventListeners.get(this.element)!.set(this.type, this);
+    const elementMap = eventListeners.get(this.element);
+    if (elementMap) {
+      elementMap.set(this.type, this);
+    }
   }
   set(listener: EventListener) {
     if (typeof listener == 'function') {
@@ -17,14 +20,17 @@ class EventHandler {
       this.handleEvent = (listener as EventHandler).handleEvent.bind(listener);
     } else {
       this.element.removeEventListener(this.type, this);
-      eventListeners.get(this.element)!.delete(this.type);
+      const elementMap = eventListeners.get(this.element);
+      if (elementMap) {
+        elementMap.delete(this.type);
+      }
     }
   }
   static for(part: AttributeTemplatePart): EventHandler {
     if (!eventListeners.has(part.element)) eventListeners.set(part.element, new Map());
     const type = part.attributeName.slice(2);
-    const elementListeners = eventListeners.get(part.element)!;
-    if (elementListeners.has(type)) return elementListeners.get(type)!;
+    const elementListeners = eventListeners.get(part.element);
+    if (elementListeners && elementListeners.has(type)) return elementListeners.get(type) as EventHandler;
     return new EventHandler(part.element, type);
   }
 }
@@ -113,7 +119,7 @@ export class TemplateResult {
 
   get template(): HTMLTemplateElement {
     if (templates.has(this.strings)) {
-      return templates.get(this.strings)!;
+      return templates.get(this.strings) as HTMLTemplateElement;
     } else {
       const template = document.createElement('template');
       const end = this.strings.length - 1;
@@ -136,7 +142,10 @@ export class TemplateResult {
       }
       return;
     }
-    renderedTemplateInstances.get(element)!.update(this.values as unknown as Record<string, unknown>);
+    const templateInstance = renderedTemplateInstances.get(element);
+    if (templateInstance) {
+      templateInstance.update(this.values as unknown as Record<string, unknown>);
+    }
   }
 }
 

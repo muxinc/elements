@@ -5,7 +5,7 @@ import lang from '../lang/en.json';
 // lang = {
 //   "Network Error": "Netwerk Fout",
 // };
-export function i18n(strings: TemplateStringsArray, ...expr: any[]): any {
+export function i18n(strings: TemplateStringsArray): any {
   // i18n template literals should not include expressions, ok to pass strings[0].
   return new IntlMessageFormat(lang?.[strings[0]] ?? strings[0]);
 }
