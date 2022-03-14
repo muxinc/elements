@@ -13,6 +13,10 @@ export { mux };
 export { Hls };
 export { Autoplay, UpdateAutoplay, setupAutoplay };
 
+export const generatePlayerInitTime = () => {
+  return mux.utils.now();
+};
+
 export type StreamTypes = {
   VOD: "on-demand";
   LIVE: "live";
