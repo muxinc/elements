@@ -3,6 +3,7 @@ import CustomVideoElement from "./CustomVideoElement";
 import {
   initialize,
   setupAutoplay,
+  generatePlayerInitTime,
   MuxMediaProps,
   StreamTypes,
   ValueOf,
@@ -78,7 +79,7 @@ class MuxVideoElement
 
   constructor() {
     super();
-    this.__playerInitTime = Date.now();
+    this.__playerInitTime = generatePlayerInitTime();
   }
 
   get playerInitTime() {
