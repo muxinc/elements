@@ -87,4 +87,8 @@ declare module "mux-embed" {
   export function destroy(): void;
 
   export const deleted: boolean;
+
+  export const utils: {
+    now: () => number;
+  };
 }
