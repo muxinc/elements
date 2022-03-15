@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import MuxVideo from "@mux-elements/mux-video-react";
+import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
@@ -8,6 +9,8 @@ const INITIAL_MUTED = false;
 function MuxVideoPage() {
   const mediaElRef = useRef(null);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
+  const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
+  const [selectedAsset, setSelectedAsset] = useState(mediaAssets.find(({ description}) => description.toLowerCase().includes('subtitles')) ?? mediaAssets[0]);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
@@ -25,14 +28,16 @@ function MuxVideoPage() {
         <MuxVideo
           ref={mediaElRef}
           style={{ height: "100%", maxWidth: "100%" }}
-          playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+          playbackId={selectedAsset["playback-id"]}
           // metadata={{
           //   video_id: "video-id-12345",
           //   video_title: "Mad Max: Fury Road Trailer",
           //   viewer_user_id: "user-id-6789",
           // }}
           // envKey="mux-data-env-key"
-          streamType="on-demand"
+          streamType={
+            selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
+          }
           controls
           autoPlay={autoplay}
           muted={muted}

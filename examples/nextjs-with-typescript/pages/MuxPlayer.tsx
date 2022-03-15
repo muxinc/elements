@@ -35,7 +35,7 @@ const onPlayerReady = console.log.bind(null, "playerready");
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
-  const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
+  const [selectedAsset, setSelectedAsset] = useState(mediaAssets.find(({ description}) => description.toLowerCase().includes('subtitles')) ?? mediaAssets[0]);
   const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
   const [metadata, _setMetadata] = useState(INITIAL_METADATA);
   const [paused, setPaused] = useState<boolean | undefined>(true);
@@ -142,6 +142,7 @@ function MuxPlayerPage() {
           onChange={({ target: { value } }) => {
             setSelectedAsset(mediaAssets[value]);
           }}
+          value={mediaAssets.indexOf(selectedAsset)}
         >
           {mediaAssets.map((value, i) => {
             const { description, error } = value;
