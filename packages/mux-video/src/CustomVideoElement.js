@@ -45,6 +45,19 @@ class CustomVideoElement extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('video'));
+    nativeEl.addTextTrack = function (kind, label, language) {
+      console.log('invoking addTextTrack!', kind, label, language);
+      const trackEl = document.createElement('track');
+      trackEl.kind = kind;
+      if (label) {
+        trackEl.label = label;
+      }
+      if (language) {
+        trackEl.srclang = language;
+      }
+      nativeEl.appendChild(trackEl);
+      return trackEl.track;
+    };
 
     // Initialize all the attribute properties
     Array.prototype.forEach.call(this.attributes, (attrNode) => {
