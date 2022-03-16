@@ -24,12 +24,12 @@
     "shared/*"
   ],
   "scripts": {
+    "clean": "lerna run clean --parallel --scope @mux-elements/*",
     "format": "prettier --write .",
     "lint": "lerna run lint --scope @mux-elements/*",
     "test": "lerna run test --scope @mux-elements/*",
     "dev": "lerna run dev --parallel --scope @mux-elements/*",
     "build": "lerna run build",
-    "prepare": "husky install && yarn build --scope @mux-elements/*",
     "release": "lerna publish --no-private",
     "version:update": "lerna version --no-private"
   }
