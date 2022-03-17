@@ -348,3 +348,173 @@ describe('<mux-player>', () => {
     );
   });
 });
+
+describe('<mux-player> should move cues up', () => {
+  it('when user the user active', async function () {
+    let done;
+    const promise = new Promise((resolve) => {
+      done = resolve;
+    });
+    const player = await fixture(`<mux-player
+      playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
+      muted
+    ></mux-player>`);
+
+    const mc = player.shadowRoot.querySelector('media-controller');
+    const media = mc.media;
+
+    media.textTracks.addEventListener('addtrack', (e) => {
+      // wait till subtitles have loaded
+      if (e.track.kind === 'subtitles') {
+        // pool until cues have loaded
+        const poolInterval = setInterval(() => {
+          if (e.track.cues?.length) {
+            clearInterval(poolInterval);
+          } else {
+            return;
+          }
+
+          const firstCue = e.track.cues[0];
+          assert.equal(firstCue.line, 'auto', "the first cue's line is set to auto");
+
+          e.track.addEventListener(
+            'cuechange',
+            () => {
+              const activeCue = e.track.activeCues[0];
+              assert.equal(activeCue.line, 'auto', "the active cue's line is set to auto");
+              mc.addEventListener(
+                'userinactivechange',
+                () => {
+                  assert.equal(activeCue.line, -4, 'the line is now set to -4');
+
+                  mc.addEventListener(
+                    'userinactivechange',
+                    () => {
+                      setTimeout(() => {
+                        assert.equal(
+                          activeCue.line,
+                          'auto',
+                          'the line prop was reset to original value after the 500ms wait'
+                        );
+                        done();
+                      }, 500);
+                    },
+                    { once: true }
+                  );
+                  mc.setAttribute('user-inactive', '');
+                  mc.dispatchEvent(new Event('userinactivechange'));
+                },
+                { once: true }
+              );
+              mc.removeAttribute('user-inactive');
+              mc.dispatchEvent(new Event('userinactivechange'));
+            },
+            { once: true }
+          );
+
+          media.currentTime = firstCue.startTime + 0.1;
+        }, 10);
+      }
+    });
+
+    player.play().catch(() => {});
+    return promise;
+  });
+
+  it('when the player is paused even if user is inactive', async function () {
+    let done;
+    const promise = new Promise((resolve) => {
+      done = resolve;
+    });
+    const player = await fixture(`<mux-player
+      playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
+      muted
+    ></mux-player>`);
+
+    const mc = player.shadowRoot.querySelector('media-controller');
+    const media = mc.media;
+
+    media.textTracks.addEventListener('addtrack', (e) => {
+      // wait till subtitles have loaded
+      if (e.track.kind === 'subtitles') {
+        // pool until cues have loaded
+        const poolInterval = setInterval(() => {
+          if (e.track.cues?.length) {
+            clearInterval(poolInterval);
+          } else {
+            return;
+          }
+
+          const firstCue = e.track.cues[0];
+          assert.equal(firstCue.line, 'auto', "the first cue's line is set to auto");
+
+          assert.isTrue(player.paused, 'player is paused');
+
+          e.track.addEventListener(
+            'cuechange',
+            () => {
+              const activeCue = e.track.activeCues[0];
+              assert.equal(activeCue.line, -4, "the active cue's line is set to -4");
+              done();
+            },
+            { once: true }
+          );
+
+          media.currentTime = firstCue.startTime + 0.1;
+        }, 10);
+      }
+    });
+
+    return promise;
+  });
+
+  it('unless the cues should be ignored', async function () {
+    let done;
+    const promise = new Promise((resolve) => {
+      done = resolve;
+    });
+    const player = await fixture(`<mux-player
+      playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
+      muted
+    ></mux-player>`);
+
+    const mc = player.shadowRoot.querySelector('media-controller');
+    const media = mc.media;
+
+    media.textTracks.addEventListener('addtrack', (e) => {
+      // wait till subtitles have loaded
+      if (e.track.kind === 'subtitles') {
+        // pool until cues have loaded
+        const poolInterval = setInterval(() => {
+          if (e.track.cues?.length) {
+            clearInterval(poolInterval);
+          } else {
+            return;
+          }
+
+          const firstCue = e.track.cues[0];
+
+          // position first cue at the top of the displayed area
+          // this should currently be ignored
+          firstCue.line = 0;
+
+          assert.isTrue(player.paused, 'player is paused');
+
+          e.track.addEventListener(
+            'cuechange',
+            () => {
+              const activeCue = e.track.activeCues[0];
+              assert.equal(activeCue.line, 0, "the active cue's line was not updated");
+              done();
+            },
+            { once: true }
+          );
+
+          media.currentTime = firstCue.startTime + 0.1;
+        }, 10);
+      }
+    });
+
+    return promise;
+  });
+});
