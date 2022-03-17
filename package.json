@@ -32,6 +32,7 @@
     "predev": "yarn build:packages",
     "build:packages": "lerna run build --scope @mux-elements/*",
     "build": "lerna run build",
+    "prepare": "husky install && yarn build --scope @mux-elements/*",
     "release": "lerna publish --no-private",
     "version:update": "lerna version --no-private"
   }
