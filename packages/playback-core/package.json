@@ -23,6 +23,7 @@
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --outdir=dist --external:mux-embed --external:hls.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:cjs -- --minify'",
+    "prebuild": "yarn clean",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
