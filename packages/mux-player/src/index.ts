@@ -100,6 +100,7 @@ const playerSoftwareName = 'mux-player';
 
 class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
+  #userInactive: boolean;
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     isDialogOpen: false,
@@ -142,6 +143,9 @@ class MuxPlayerElement extends VideoApiElement {
     this.#setUpCaptionsButton();
     this.#setUpAirplayButton();
     this.#setUpVolumeRange();
+
+    this.#userInactive = this.shadowRoot?.querySelector('media-controller')?.hasAttribute('user-inactive') ?? true;
+    this.#setUpCaptionsMovement();
   }
 
   connectedCallback() {
@@ -286,6 +290,97 @@ class MuxPlayerElement extends VideoApiElement {
     const onTrackCountChange = () => this.#render();
     this.video?.textTracks?.addEventListener('addtrack', onTrackCountChange);
     this.video?.textTracks?.addEventListener('removetrack', onTrackCountChange);
+  }
+
+  #setUpCaptionsMovement() {
+    type Maybe<T> = T | null | undefined;
+    type MediaController = Element & { media: HTMLVideoElement };
+
+    const mc: Maybe<MediaController> = this.shadowRoot?.querySelector('media-controller');
+
+    let selectedTrack: TextTrack;
+    const cuesmap = new WeakMap();
+
+    // toggles activeCues for a particular track depending on whether the user is active or not
+    const toggleLines = (track: TextTrack, userInactive: boolean) => {
+      const cues = Array.from((track && track.activeCues) || []) as VTTCue[];
+
+      cues.forEach((cue) => {
+        // ignore cues that are
+        // - positioned vertically via percentage.
+        // - cues that are not at the bottom
+        //   - line is less than -5
+        //   - line is between 0 and 10
+        if (!cue.snapToLines || cue.line < -5 || (cue.line >= 0 && cue.line < 10)) {
+          return;
+        }
+
+        // if the user is active or if the player is paused, the captions should be moved up
+        if (!userInactive || this.paused) {
+          // for cues that have more than one line, we want to push the cue further up
+          const lines = cue.text.split('\n').length;
+          // start at -3 to account for thumbnails as well.
+          const setTo = -3 - lines;
+
+          // if the line is already set to -4, we don't want to update it again
+          // this can happen in the same tick on chrome and safari which fire a cuechange
+          // event when the line property is changed to a different value.
+          if (cue.line === setTo) {
+            return;
+          }
+
+          if (!cuesmap.has(cue)) {
+            cuesmap.set(cue, cue.line);
+          }
+
+          // we have to set line to 0 first due to a chrome bug https://crbug.com/1308892
+          cue.line = 0;
+          cue.line = setTo;
+        } else {
+          setTimeout(() => {
+            cue.line = cuesmap.get(cue) || 'auto';
+          }, 500);
+        }
+      });
+    };
+
+    // this is necessary so that if a cue becomes active while the user is active, we still position it above the control bar
+    const cuechangeHandler = () => {
+      toggleLines(selectedTrack, mc?.hasAttribute('user-inactive') ?? false);
+    };
+
+    const selectTrack = () => {
+      const tracks = Array.from(mc?.media?.textTracks || []) as TextTrack[];
+      const newSelectedTrack = tracks.filter(
+        (t) => ['subtitles', 'captions'].includes(t.kind) && t.mode === 'showing'
+      )[0] as TextTrack;
+
+      if (newSelectedTrack !== selectedTrack) {
+        selectedTrack?.removeEventListener('cuechange', cuechangeHandler);
+      }
+
+      selectedTrack = newSelectedTrack;
+      selectedTrack?.addEventListener('cuechange', cuechangeHandler);
+      // it's possible there are currently active cues on the new track
+      toggleLines(selectedTrack, this.#userInactive);
+    };
+
+    selectTrack();
+    // update the selected track as necessary
+    mc?.media?.textTracks.addEventListener('change', selectTrack);
+    mc?.media?.textTracks.addEventListener('addtrack', selectTrack);
+
+    mc?.addEventListener('userinactivechange', () => {
+      const newUserInactive = mc?.hasAttribute('user-inactive');
+
+      if (this.#userInactive === newUserInactive) {
+        return;
+      }
+
+      this.#userInactive = newUserInactive;
+
+      toggleLines(selectedTrack, this.#userInactive);
+    });
   }
 
   #setUpAirplayButton() {
