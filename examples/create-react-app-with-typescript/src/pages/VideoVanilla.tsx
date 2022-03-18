@@ -25,7 +25,7 @@ function VideoVanillaPage() {
         <video
           ref={mediaElRef}
           style={{ height: "100%", maxWidth: "100%" }}
-          src="/elements/examples/mux-elements-react/tears_of_steel_720p.mp4"
+          src="https://stream.mux.com/qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM/low.mp4"
           crossOrigin=""
           controls
           muted={muted}
@@ -33,6 +33,7 @@ function VideoVanillaPage() {
         <track
           ref={(trackEl) => {
             const track = trackEl?.track as TextTrack;
+            if (!track) return;
             track.addEventListener('cuechange', () => {
               console.log(
                 'activeCues',
