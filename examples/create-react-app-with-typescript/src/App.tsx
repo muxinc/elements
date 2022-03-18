@@ -6,6 +6,8 @@ import MuxAudioPage from "./pages/MuxAudio";
 import MuxPlayerPage from "./pages/MuxPlayer";
 import MuxPlayerWCPage from "./pages/mux-player";
 import MuxVideoWCPage from "./pages/mux-video";
+import HlsVanillaPage from "./pages/HlsVanilla";
+import VideoVanillaPage from "./pages/VideoVanilla";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="MuxPlayer" element={<MuxPlayerPage />} />
           <Route path="mux-video" element={<MuxVideoWCPage />} />
           <Route path="mux-player" element={<MuxPlayerWCPage />} />
+          <Route path="HlsVanilla" element={<HlsVanillaPage />} />
+          <Route path="VideoVanilla" element={<VideoVanillaPage />} />
         </Routes>
       </Router>
     </div>

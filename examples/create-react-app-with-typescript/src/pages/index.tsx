@@ -30,6 +30,16 @@ function Home() {
             <Link to="/mux-player">Mux Player (Web Component) Demo</Link>
           </h3>
         </li>
+        <li>
+          <h3>
+            <Link to="/HlsVanilla">Vanilla Hls Comparison Demo</Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
+            <Link to="/VideoVanilla">Vanilla mp4+video Comparison Demo</Link>
+          </h3>
+        </li>
       </ul>
     </div>
   );

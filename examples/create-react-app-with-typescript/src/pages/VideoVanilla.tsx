@@ -1,12 +1,12 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { useRef, useState } from "react";
-import MuxVideo from "@mux-elements/mux-video-react";
 
 const INITIAL_AUTOPLAY = false;
-const INITIAL_MUTED = false;
+const INITIAL_MUTED = true;
 
-function MuxVideoPage() {
+function VideoVanillaPage() {
   const mediaElRef = useRef(null);
+  // const trackElRef = useRef(null);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [paused, setPaused] = useState<boolean | undefined>(true);
@@ -22,27 +22,32 @@ function MuxVideoPage() {
     >
       <h1>MuxVideo Demo</h1>
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
-        <MuxVideo
+        <video
           ref={mediaElRef}
           style={{ height: "100%", maxWidth: "100%" }}
-          playbackId="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
-          // metadata={{
-          //   video_id: "video-id-12345",
-          //   video_title: "Mad Max: Fury Road Trailer",
-          //   viewer_user_id: "user-id-6789",
-          // }}
-          // envKey="mux-data-env-key"
-          streamType="on-demand"
+          src="/elements/examples/mux-elements-react/tears_of_steel_720p.mp4"
+          crossOrigin=""
           controls
-          autoPlay={autoplay}
           muted={muted}
-          onPlay={() => {
-            setPaused(false);
+        >
+        <track
+          ref={(trackEl) => {
+            const track = trackEl?.track as TextTrack;
+            track.addEventListener('cuechange', () => {
+              console.log(
+                'activeCues',
+                ...Array.prototype.slice.call(track.activeCues)
+              );
+            })
           }}
-          onPause={() => {
-            setPaused(true);
-          }}
+          default
+          id="main-track"
+          label="English"
+          kind="captions"
+          srcLang="en"
+          src="/elements/examples/mux-elements-react/tears_of_steal.vtt"
         />
+          </video>
       </div>
       <div>
         <div>
@@ -74,12 +79,10 @@ function MuxVideoPage() {
         </div>
       </div>
       <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
+        <Link to="/">Browse Elements</Link>
       </h3>
     </div>
   );
 }
 
-export default MuxVideoPage;
+export default VideoVanillaPage;

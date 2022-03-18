@@ -1,15 +1,38 @@
-import Link from "next/link";
-import { useRef, useState } from "react";
-import MuxVideo from "@mux-elements/mux-video-react";
+import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import Hls from "hls.js";
 
 const INITIAL_AUTOPLAY = false;
-const INITIAL_MUTED = false;
+const INITIAL_MUTED = true;
 
-function MuxVideoPage() {
+export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, string?] => {
+  const qIndex = playbackIdWithOptionalParams.indexOf('?');
+  if (qIndex < 0) return [playbackIdWithOptionalParams];
+  const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
+  const queryPart = playbackIdWithOptionalParams.slice(qIndex);
+  return [idPart, queryPart];
+};
+
+export const toMuxVideoURL = (playbackId?: string) => {
+  if (!playbackId) return undefined;
+  const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
+  return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
+};
+
+function HlsVanillaPage() {
   const mediaElRef = useRef(null);
+  const [_hls, setHls] = useState<Hls>();
+  const [playbackId, _setPlaybackId] = useState("qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM")
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [paused, setPaused] = useState<boolean | undefined>(true);
+  useEffect(() => {
+    if (!(mediaElRef.current && playbackId)) return;
+    const hls = new Hls();
+    hls.loadSource(toMuxVideoURL(playbackId) as string);
+    hls.attachMedia(mediaElRef.current);
+    setHls(hls);
+  }, [playbackId])
 
   return (
     <div
@@ -22,26 +45,12 @@ function MuxVideoPage() {
     >
       <h1>MuxVideo Demo</h1>
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
-        <MuxVideo
+        <video
           ref={mediaElRef}
           style={{ height: "100%", maxWidth: "100%" }}
-          playbackId="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
-          // metadata={{
-          //   video_id: "video-id-12345",
-          //   video_title: "Mad Max: Fury Road Trailer",
-          //   viewer_user_id: "user-id-6789",
-          // }}
-          // envKey="mux-data-env-key"
-          streamType="on-demand"
+          crossOrigin=""
           controls
-          autoPlay={autoplay}
           muted={muted}
-          onPlay={() => {
-            setPaused(false);
-          }}
-          onPause={() => {
-            setPaused(true);
-          }}
         />
       </div>
       <div>
@@ -74,12 +83,10 @@ function MuxVideoPage() {
         </div>
       </div>
       <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
+        <Link to="/">Browse Elements</Link>
       </h3>
     </div>
   );
 }
 
-export default MuxVideoPage;
+export default HlsVanillaPage;
