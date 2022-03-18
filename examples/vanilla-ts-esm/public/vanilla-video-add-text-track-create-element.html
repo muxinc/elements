@@ -5,7 +5,7 @@
     <title>Basic &lt;mux-video/&gt; example</title>
   </head>
   <body>
-    <!-- <video
+    <video
       id="main-video"
       style="height: 100%; max-width: 100%"
       src="./tears_of_steel_720p.mp4"
@@ -13,15 +13,15 @@
       controls
       muted
     >
-      <track
+      <!-- <track
         default
         id="main-track"
         label="English"
         kind="captions"
         srclang="en"
         src="./tears_of_steal.vtt"
-      />
-    </video> -->
+      /> -->
+    </video>
       <video id="vtt-src-video">
         <track
           default
@@ -34,14 +34,23 @@
       </video>
     <!-- <a href="../">Browse Elements</a> -->
     <script>
-      const videoEl = document.createElement('video');
-      videoEl.setAttribute("style", "height: 100%; max-width: 100%");
-      videoEl.setAttribute("src", "./tears_of_steel_720p.mp4");
-      videoEl.setAttribute("crossorigin", "");
-      videoEl.setAttribute("controls", "");
-      videoEl.setAttribute("muted", "");
+      const videoEl = document.querySelector('video#main-video');
+      const getPosterURLFromPlaybackId = (playbackId, token) => `https://image.mux.com/${playbackId}/thumbnail.jpg`;
+      const trackEl = document.createElement('track');
+      trackEl.setAttribute('kind', 'metadata');
+      trackEl.setAttribute('label', 'thumbnails');
+      trackEl.track.mode = "hidden";
+      trackEl.setAttribute("src", getPosterURLFromPlaybackId("qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"));
+
       const track = videoEl.addTextTrack("captions", "English", "en");
       track.mode = "showing";
+      //  const trackEl = document.createElement('track');
+      //  trackEl.setAttribute("default", "");
+      //  trackEl.setAttribute("label", "English");
+      //  trackEl.setAttribute("kind", "captions");
+      //  trackEl.setAttribute("srclang", "en");
+      //  trackEl.setAttribute("src", "./tears_of_steal.vtt");
+      //  const track = trackEl?.track;
       track.addEventListener('cuechange', () => {
         console.log(
           'activeCues',
@@ -52,12 +61,20 @@
 
       vttSrcTrackEl.addEventListener('load', () => {
         const srcTrack = vttSrcTrackEl.track;
+        // const track = vidEl.addTextTrack(
+        //   srcTrack.kind,
+        //   srcTrack.label,
+        //   srcTrack.language
+        // );
+        // track.mode = "showing";
         Array.prototype.forEach.call(srcTrack.cues, (cue) => {
           track.addCue(cue);
         });
       });
-        // videoEl.appendChild(trackEl);
+        videoEl.appendChild(trackEl);
+
         document.querySelector("body").appendChild(videoEl);
+        videoEl.appendChild(trackEl);
     </script>
   </body>
 </html>
