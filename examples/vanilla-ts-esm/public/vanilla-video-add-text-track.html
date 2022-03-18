@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Basic &lt;mux-video/&gt; example</title>
+  </head>
+  <body>
+    <video
+      id="main-video"
+      style="height: 100%; max-width: 100%"
+      src="./tears_of_steel_720p.mp4"
+      crossorigin=""
+      controls
+      muted
+    >
+      <!-- <track
+        default
+        id="main-track"
+        label="English"
+        kind="captions"
+        srclang="en"
+        src="./tears_of_steal.vtt"
+      /> -->
+    </video>
+      <video id="vtt-src-video">
+        <track
+          default
+          id="vtt-src"
+          label="English"
+          kind="captions"
+          srclang="en"
+          src="./tears_of_steal.vtt"
+        />
+      </video>
+    <!-- <a href="../">Browse Elements</a> -->
+    <script>
+      const videoEl = document.querySelector('video#main-video');
+      const track = videoEl.addTextTrack("captions", "English", "en");
+      track.mode = "showing";
+      //  const trackEl = document.createElement('track');
+      //  trackEl.setAttribute("default", "");
+      //  trackEl.setAttribute("label", "English");
+      //  trackEl.setAttribute("kind", "captions");
+      //  trackEl.setAttribute("srclang", "en");
+      //  trackEl.setAttribute("src", "./tears_of_steal.vtt");
+      //  const track = trackEl?.track;
+      track.addEventListener('cuechange', () => {
+        console.log(
+          'activeCues',
+          ...Array.prototype.slice.call(track.activeCues)
+        );
+      });
+      const vttSrcTrackEl = document.querySelector('track#vtt-src');
+
+      vttSrcTrackEl.addEventListener('load', () => {
+        const srcTrack = vttSrcTrackEl.track;
+        // const track = vidEl.addTextTrack(
+        //   srcTrack.kind,
+        //   srcTrack.label,
+        //   srcTrack.language
+        // );
+        // track.mode = "showing";
+        Array.prototype.forEach.call(srcTrack.cues, (cue) => {
+          track.addCue(cue);
+        });
+      });
+        // videoEl.appendChild(trackEl);
+        // document.querySelector("body").appendChild(videoEl);
+    </script>
+  </body>
+</html>

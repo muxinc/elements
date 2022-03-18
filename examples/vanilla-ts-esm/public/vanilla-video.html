@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Basic &lt;mux-video/&gt; example</title>
+    <script type="module" src="./dist/mux-video.js"></script>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      mux-video {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <video
+      style="height: 100%; max-width: 100%"
+      src="./tears_of_steel_720p.mp4"
+      crossorigin=""
+      controls
+      muted
+    >
+    </video>
+    <script>
+       const videoEl = document.querySelector('video');
+       const trackEl = document.createElement('track');
+       trackEl.setAttribute("default", "");
+       trackEl.setAttribute("label", "English");
+       trackEl.setAttribute("kind", "captions");
+       trackEl.setAttribute("srclang", "en");
+       trackEl.setAttribute("src", "./tears_of_steal.vtt");
+       // happens with or without this
+       //  trackEl.setAttribute("default", "");
+       const track = trackEl?.track;
+        track.addEventListener('cuechange', () => {
+          console.log(
+            'activeCues',
+            ...Array.prototype.slice.call(track.activeCues)
+          );
+        });
+        videoEl.appendChild(trackEl);
+    </script>
+  </body>
+</html>
