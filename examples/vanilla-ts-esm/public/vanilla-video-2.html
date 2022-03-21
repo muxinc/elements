@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="next-head-count" content="2" />
+    <noscript data-n-css=""></noscript>
+  </head>
+  <body>
+      <div
+        style="display: flex; flex-flow: column; height: 100vh; width: 100vw;"
+      >
+        <h1>MuxVideo Demo</h1>
+        <div style="flex-grow: 1; flex-shrink: 1; height: 400px;">
+          <video
+            style="height: 100%; max-width: 100%;"
+            src="https://stream.mux.com/qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM/low.mp4"
+            crossorigin=""
+            controls=""
+            muted=""
+          >
+            <track
+              default=""
+              id="main-track"
+              label="English"
+              kind="captions"
+              srclang="en"
+              src="/tears_of_steal_v2.vtt"
+            />
+          </video>
+        </div>
+      </div>
+      <script>
+        const trackEl = document.querySelector('track');
+        const track = trackEl.track;
+        track.addEventListener('cuechange', () => {
+          console.log('current track mode:', track.mode);
+          console.log(
+            'activeCues',
+            ...Array.prototype.slice.call(track.activeCues)
+          );
+        });
+      </script>
+  </body>
+</html>
