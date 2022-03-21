@@ -46,7 +46,7 @@ function VideoVanillaPage() {
           label="English"
           kind="captions"
           srcLang="en"
-          src="/tears_of_steal.vtt"
+          src="/tears_of_steal_v2.vtt"
         />
           </video>
       </div>
