@@ -31,3 +31,8 @@ export type DialogOptions = {
   linkText?: string;
   linkUrl?: string;
 };
+
+export type DevlogOptions = {
+  message?: string;
+  file?: string;
+};
