@@ -16,4 +16,9 @@ Examples:
 # Releasing
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
-and Github Actions for continuously publishing and releasing Mux elements.
+and Github Actions for continuously publishing Mux elements.
+
+1. From the workspace root directory, run `yarn version:update`.
+   This will bump the version of the packages changed since the last release and push those changes to Github.
+   You might have to manually correct the version if the suggestion of Conventional Commits is not right.
+2. The cd.yml Github action will publish the new versions to NPM.
