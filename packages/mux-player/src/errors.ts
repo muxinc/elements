@@ -69,7 +69,7 @@ export function getErrorLogs(
             dialog.title = i18n`Video URL is formatted incorrectly`;
             dialog.message = i18n`The video’s playback ID does not match the one encoded in the playback-token.`;
             devlog.message =
-              i18n`The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match`.format(
+              i18n`The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.`.format(
                 {
                   playbackId,
                   tokenPlaybackId,

@@ -5,7 +5,7 @@ import { getCcSubTracks, getPlayerVersion, hasVolumeSupportAsync, toPropName } f
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
-import { toNumberOrUndefined, i18n } from './utils';
+import { toNumberOrUndefined, i18n, parseJwt } from './utils';
 import type { MuxTemplateProps } from './types';
 import type { Metadata } from '@mux-elements/playback-core';
 
@@ -248,6 +248,43 @@ class MuxPlayerElement extends VideoApiElement {
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     this.#render({ [toPropName(attrName)]: newValue });
+
+    switch (attrName) {
+      case PlayerAttributes.THUMBNAIL_TOKEN: {
+        const { aud } = parseJwt(newValue);
+        if (newValue && aud !== 't') {
+          console.warn(
+            i18n`The provided thumbnail-token should have audience value 't' instead of '{aud}'.`.format({ aud })
+          );
+        }
+        break;
+      }
+      case PlayerAttributes.STORYBOARD_TOKEN: {
+        const { aud } = parseJwt(newValue);
+        if (newValue && aud !== 's') {
+          console.warn(
+            i18n`The provided storyboard-token should have audience value 's' instead of '{aud}'.`.format({ aud })
+          );
+        }
+        break;
+      }
+      case MuxVideoAttributes.PLAYBACK_ID: {
+        if (!this.streamType) {
+          console.warn(
+            String(
+              i18n`No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+            )
+          );
+        } else if (!['on-demand', 'live', 'll-live'].includes(this.streamType)) {
+          console.warn(
+            i18n`Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``.format(
+              { streamType: this.streamType }
+            )
+          );
+        }
+        break;
+      }
+    }
   }
 
   get hls() {
