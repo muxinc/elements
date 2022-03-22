@@ -54,6 +54,12 @@ function MuxPlayerPage() {
       <h1>MuxPlayer Demo</h1>
       <div>
         <MuxPlayer
+          style={{
+            // set the max height of the player to be the viewport height
+            // minus the block height of the h1 so that the player
+            // will never go out of view
+            maxHeight: "calc(100vh - 6em)"
+          }}
           ref={mediaElRef}
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
