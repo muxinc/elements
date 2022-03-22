@@ -121,13 +121,6 @@ class MuxPlayerElement extends VideoApiElement {
       this.video?.append(track.cloneNode());
     });
 
-    // Initialize all the attribute properties
-    // The attributeChangedCallback should handle forwarding the video attributes
-    // from the mux-player to the mux-video element.
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
-
     /**
      * @todo determine sensible defaults for preloading buffer
      * @see https://github.com/muxinc/elements/issues/51
