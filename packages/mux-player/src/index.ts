@@ -9,6 +9,7 @@ import { toNumberOrUndefined, i18n, parseJwt } from './utils';
 import type { MuxTemplateProps } from './types';
 import type { Metadata } from '@mux-elements/playback-core';
 
+export { MediaError };
 export type Tokens = {
   playback?: string;
   thumbnail?: string;
@@ -182,7 +183,7 @@ class MuxPlayerElement extends VideoApiElement {
         return;
       }
 
-      const { dialog, devlog } = getErrorLogs(error, window.navigator.onLine, this.playbackId, this.playbackToken);
+      const { dialog, devlog } = getErrorLogs(error, !window.navigator.onLine, this.playbackId, this.playbackToken);
 
       if (devlog.message) {
         console.warn(

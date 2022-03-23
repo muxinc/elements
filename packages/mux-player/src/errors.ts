@@ -6,7 +6,7 @@ import type { DialogOptions, DevlogOptions } from './types';
 
 export function getErrorLogs(
   error: any,
-  online: boolean,
+  offline?: boolean,
   playbackId?: string,
   playbackToken?: string
 ): { dialog: DialogOptions; devlog: DevlogOptions } {
@@ -16,7 +16,7 @@ export function getErrorLogs(
   switch (error.code) {
     case MediaError.MEDIA_ERR_NETWORK: {
       dialog.title = i18n`Network Error`;
-      dialog.message = error;
+      dialog.message = error.message;
 
       // Only works when hls.js is used.
       const responseCode = error.data?.response.code;
@@ -117,7 +117,7 @@ export function getErrorLogs(
       break;
   }
 
-  if (!online) {
+  if (offline) {
     dialog = {
       title: i18n`Your device appears to be offline`,
       message: i18n`Check your internet connection and try reloading this video.`,
