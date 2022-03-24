@@ -136,6 +136,26 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  get autoplay(): string | boolean {
+    const attr = this.getAttribute('autoplay');
+
+    if (attr === null) {
+      return false;
+    } else if (attr === '') {
+      return true;
+    } else {
+      return attr;
+    }
+  }
+
+  set autoplay(val: string | boolean) {
+    if (val) {
+      this.setAttribute('autoplay', typeof val === 'string' ? val : '');
+    } else {
+      this.removeAttribute('autoplay');
+    }
+  }
+
   /** @TODO write a generic module for well defined primitive types -> attribute getter/setters/removers (CJP) */
   get debug(): boolean {
     return this.getAttribute(Attributes.DEBUG) != null;
@@ -308,6 +328,9 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         }
         break;
       case 'autoplay':
+        if (newValue === oldValue) {
+          return;
+        }
         this.__updateAutoplay?.(newValue);
         break;
       case Attributes.PLAYBACK_ID:
