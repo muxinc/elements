@@ -4,14 +4,15 @@ import lang from '../lang/en.json';
 import { i18n, parseJwt } from './utils';
 import type { DialogOptions, DevlogOptions } from './types';
 
-export function getErrorLogs(
-  error: any,
+export async function getErrorLogs(
+  error: MediaError,
   offline?: boolean,
   playbackId?: string,
-  playbackToken?: string
-): { dialog: DialogOptions; devlog: DevlogOptions } {
+  playbackToken?: string,
+  src?: string | null
+): Promise<{ dialog: DialogOptions; devlog: DevlogOptions }> {
   let dialog: DialogOptions = {};
-  const devlog: DevlogOptions = {};
+  let devlog: DevlogOptions = {};
 
   switch (error.code) {
     case MediaError.MEDIA_ERR_NETWORK: {
@@ -19,7 +20,13 @@ export function getErrorLogs(
       dialog.message = error.message;
 
       // Only works when hls.js is used.
-      const responseCode = error.data?.response.code;
+      let responseCode = error.data?.response.code;
+      if (!responseCode && src) {
+        // Attempt to get the response code from the M3U8 src url.
+        const { status } = await fetch(src as RequestInfo);
+        responseCode = status;
+      }
+
       switch (responseCode) {
         case 412: {
           dialog.title = i18n`Video is not currently available`;
@@ -103,6 +110,18 @@ export function getErrorLogs(
       break;
     }
     case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
+      // If native HLS is used on Safari, M3U8 response errors cause media src not supported errors.
+      // If the response returns an error code, fix the MediaError.code and get detailed error logs.
+      if (src) {
+        const { status } = await fetch(src as RequestInfo);
+        if (status >= 400 && status < 500) {
+          error.code = MediaError.MEDIA_ERR_NETWORK;
+          error.data = { response: { code: status } };
+          ({ dialog, devlog } = await getErrorLogs(error, offline, playbackId, playbackToken, src));
+          break;
+        }
+      }
+
       dialog = {
         title: i18n`Source Not Supported`,
         message: error.message,
