@@ -44,7 +44,7 @@ require('@mux-elements/mux-video');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-video@0.1"></script>
+<script src="https://unpkg.com/@mux-elements/mux-video@0.3"></script>
 ```
 
 ## Features and benefits
@@ -63,11 +63,8 @@ Now you are free to use this web component in your HTML, just as you would with 
 
 ```html
 <body>
-  <p></p>
-
   <mux-video
     playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-    env-key="mux-data-env-key"
     metadata-video-title="Big Buck Bunny"
     metadata-viewer-user-id="user-id-1234"
     stream-type="on-demand"
@@ -102,7 +99,6 @@ To set other available metadata fields use the `metadata` property on the `<mux-
 ```html
 <mux-video
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   controls
@@ -134,7 +130,6 @@ When `metadata-url` is specified then `<mux-video>` will asychronously fetch the
 ```html
 <mux-video
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   metadata-url="https://api.myapp.com/v1/metadata-endpoint.json"
@@ -154,7 +149,6 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 ```html
 <mux-video
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   prefer-mse
@@ -170,7 +164,6 @@ By default `<mux-video>` will try to figure out the type of media you're trying 
 ```html
 <mux-video
   src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   prefer-mse
@@ -185,7 +178,6 @@ Sometimes, however, your `src` URL may not have an identifiable extension. In th
 <mux-video
   src="https://stream.notmux.com/path/to/an/hls/source/playlist"
   type="application/vnd.apple.mpegurl"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   prefer-mse
@@ -200,7 +192,6 @@ Or, for convenience, we also support the shorthand `type="hls`:
 <mux-video
   src="https://stream.notmux.com/path/to/an/hls/source/playlist"
   type="hls"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   prefer-mse
