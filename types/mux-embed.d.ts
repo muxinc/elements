@@ -63,7 +63,7 @@ declare module 'mux-embed' {
 
   export type Options<M extends Metadata = Metadata> = {
     debug?: boolean;
-    beaconDomain?: string;
+    beaconCollectionDomain?: string;
     hlsjs?: Hls;
     Hls?: typeof Hls;
     data: M;

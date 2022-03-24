@@ -43,7 +43,7 @@ const MuxVideoAttributes = {
   METADATA_VIDEO_ID: 'metadata-video-id',
   METADATA_VIDEO_TITLE: 'metadata-video-title',
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
-  BEACON_DOMAIN: 'beacon-domain',
+  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
@@ -75,6 +75,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     envKey: el.envKey,
     debug: el.debug,
     tokens: el.tokens,
+    beaconCollectionDomain: el.beaconCollectionDomain,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
@@ -392,6 +393,27 @@ class MuxPlayerElement extends VideoApiElement {
    */
   get playerSoftwareVersion() {
     return this.getAttribute(MuxVideoAttributes.PLAYER_SOFTWARE_VERSION) ?? playerSoftwareVersion;
+  }
+
+  /**
+   * Get the beacon collection domain. Used by Mux Data.
+   */
+  get beaconCollectionDomain() {
+    return this.getAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN) ?? undefined;
+  }
+
+  /**
+   * Set the beacon collection domain. Used by Mux Data.
+   */
+ set beaconCollectionDomain(val: string | undefined) {
+    // don't cause an infinite loop
+    if (val === this.beaconCollectionDomain) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN);
+    }
   }
 
   /**

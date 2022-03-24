@@ -28,7 +28,7 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
   const {
     envKey,
     debug,
-    beaconDomain,
+    beaconCollectionDomain,
     playbackId,
     preferMse,
     type,
@@ -87,7 +87,7 @@ MuxAudio.propTypes = {
   // Improve this by adding a full shape() definition for all metadata props
   // metadata: PropTypes.shape({}),
   metadata: PropTypes.any,
-  beaconDomain: PropTypes.string,
+  beaconCollectionDomain: PropTypes.string,
   playbackId: PropTypes.string,
   playerInitTime: PropTypes.number,
   preferMse: PropTypes.bool,

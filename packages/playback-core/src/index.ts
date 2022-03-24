@@ -59,7 +59,7 @@ export type MuxMediaPropTypes = {
   envKey: Options['data']['env_key'];
   debug: Options['debug'] & Hls['config']['debug'];
   metadata: Partial<Options['data']>;
-  beaconDomain: Options['beaconDomain'];
+  beaconCollectionDomain: Options['beaconCollectionDomain'];
   playbackId: string;
   playerInitTime: Options['data']['player_init_time'];
   preferMse: boolean;
@@ -201,7 +201,7 @@ export const setupMux = (
       MuxMediaPropsInternal,
       | 'envKey'
       | 'playerInitTime'
-      | 'beaconDomain'
+      | 'beaconCollectionDomain'
       | 'metadata'
       | 'debug'
       | 'playerSoftwareName'
@@ -220,14 +220,14 @@ export const setupMux = (
       playerInitTime: player_init_time,
       playerSoftwareName: player_software_name,
       playerSoftwareVersion: player_software_version,
-      beaconDomain,
+      beaconCollectionDomain,
       metadata,
       debug,
     } = props;
 
     mux.monitor(mediaEl, {
       debug,
-      beaconDomain,
+      beaconCollectionDomain,
       hlsjs,
       Hls: hlsjs ? Hls : undefined,
       data: {
