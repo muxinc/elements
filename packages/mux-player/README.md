@@ -44,7 +44,7 @@ require('@mux-elements/mux-player');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-player@0.1"></script>
+<script src="https://unpkg.com/@mux-elements/mux-player@0.1.0-beta.0"></script>
 ```
 
 ## Features and benefits
@@ -67,7 +67,6 @@ Now you are free to use this web component in your HTML, just as you would with 
 
   <mux-player
     playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-    env-key="mux-data-env-key"
     metadata-video-title="Big Buck Bunny"
     metadata-viewer-user-id="user-id-1234"
     stream-type="on-demand"
@@ -202,7 +201,6 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 ```html
 <mux-player
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  env-key="mux-data-env-key"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
   prefer-mse

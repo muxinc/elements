@@ -62,7 +62,6 @@ const MuxPlayerExample = () => {
           video_title: 'Super Interesting Video',
           viewer_user_id: 'user-id-bc-789',
         }}
-        envKey="YOUR_MUX_DATA_ENV_KEY"
         streamType="on-demand"
         autoPlay
         muted
@@ -143,7 +142,6 @@ Example:
     video_title: 'Super Interesting Video',
     viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
 />
 ```
 
@@ -183,7 +181,6 @@ Example:
     video_title: 'Super Interesting Video',
     viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   preferMse
 />
 ```

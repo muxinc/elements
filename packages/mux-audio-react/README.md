@@ -66,7 +66,6 @@ const MuxAudioExample = () => {
           video_title: 'Super Interesting Audio',
           viewer_user_id: 'user-id-bc-789',
         }}
-        envKey="YOUR_MUX_DATA_ENV_KEY"
         streamType="on-demand"
         controls
         autoPlay
@@ -105,7 +104,6 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
     video_title: 'Super Interesting Audio',
     viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   preferMse
   controls
 />
@@ -123,7 +121,6 @@ By default `<MuxAudio/>` will try to figure out the type of media you're trying 
     video_title: 'Super Interesting Audio',
     viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   controls
 />
 ```
@@ -139,7 +136,6 @@ Sometimes, however, your `src` URL may not have an identifiable extension. In th
     video_title: 'Super Interesting Video',
     viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   controls
 />
 ```
@@ -155,7 +151,6 @@ Or, for convenience, we also support the shorthand `type="hls`:
     video_title: 'Super Interesting Audio',
     viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   controls
 />
 ```
