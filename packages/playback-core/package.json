@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "hls.js": "1.1.5",
-    "mux-embed": "4.5.0"
+    "mux-embed": "^4.7.0"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",

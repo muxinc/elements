@@ -23,7 +23,7 @@ type AttributeNames = {
   METADATA_VIDEO_ID: 'metadata-video-id';
   METADATA_VIDEO_TITLE: 'metadata-video-title';
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
-  BEACON_DOMAIN: 'beacon-domain';
+  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   PLAYBACK_ID: 'playback-id';
   PREFER_MSE: 'prefer-mse';
   TYPE: 'type';
@@ -40,7 +40,7 @@ const Attributes: AttributeNames = {
   METADATA_VIDEO_ID: 'metadata-video-id',
   METADATA_VIDEO_TITLE: 'metadata-video-title',
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
-  BEACON_DOMAIN: 'beacon-domain',
+  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
@@ -170,18 +170,18 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     }
   }
 
-  get beaconDomain(): string | undefined {
-    return this.getAttribute(Attributes.BEACON_DOMAIN) ?? undefined;
+  get beaconCollectionDomain(): string | undefined {
+    return this.getAttribute(Attributes.BEACON_COLLECTION_DOMAIN) ?? undefined;
   }
 
-  set beaconDomain(val: string | undefined) {
+  set beaconCollectionDomain(val: string | undefined) {
     // dont' cause an infinite loop
-    if (val === this.beaconDomain) return;
+    if (val === this.beaconCollectionDomain) return;
 
     if (val) {
-      this.setAttribute(Attributes.BEACON_DOMAIN, val);
+      this.setAttribute(Attributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
-      this.removeAttribute(Attributes.BEACON_DOMAIN);
+      this.removeAttribute(Attributes.BEACON_COLLECTION_DOMAIN);
     }
   }
 

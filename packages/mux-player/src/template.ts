@@ -61,6 +61,7 @@ export const template = (props: MuxTemplateProps) => html`
       metadata-video-id="${props.metadata?.video_id ?? false}"
       metadata-video-title="${props.metadata?.video_title ?? false}"
       metadata-viewer-user-id="${props.metadata?.viewer_user_id ?? false}"
+      beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
     >
       ${props.playbackId && props.streamType !== StreamTypes.LIVE && props.streamType !== StreamTypes.LL_LIVE
         ? html`<track
