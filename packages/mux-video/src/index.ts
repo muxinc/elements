@@ -26,7 +26,7 @@ type AttributeNames = {
   METADATA_VIDEO_ID: 'metadata-video-id';
   METADATA_VIDEO_TITLE: 'metadata-video-title';
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
-  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
+  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   PLAYBACK_ID: 'playback-id';
   PREFER_MSE: 'prefer-mse';
   TYPE: 'type';
