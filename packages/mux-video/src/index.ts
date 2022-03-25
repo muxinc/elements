@@ -56,9 +56,7 @@ const AttributeNameValues = Object.values(Attributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video';
 
-type Props = Omit<HTMLVideoElement, 'autoplay'> & MuxMediaProps;
-
-class MuxVideoElement extends CustomVideoElement<Omit<HTMLVideoElement, 'autoplay'>> implements Partial<MuxMediaProps> {
+class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Partial<MuxMediaProps> {
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
