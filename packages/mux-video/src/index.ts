@@ -13,7 +13,7 @@ import {
   mux,
   MediaError,
 } from '@mux-elements/playback-core';
-import type { PlaybackEngine, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
+import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
 import { getPlayerVersion } from './env';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
@@ -136,7 +136,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  get autoplay(): string | boolean {
+  get autoplay(): Autoplay {
     const attr = this.getAttribute('autoplay');
 
     if (attr === null) {
@@ -144,11 +144,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     } else if (attr === '') {
       return true;
     } else {
-      return attr;
+      return attr as Autoplay;
     }
   }
 
-  set autoplay(val: string | boolean) {
+  set autoplay(val: Autoplay) {
     if (val) {
       this.setAttribute('autoplay', typeof val === 'string' ? val : '');
     } else {
