@@ -123,8 +123,9 @@ media-time-display {
   cursor: pointer;
 }
 
-.mxp-seek-to-live-button:disabled {
+.mxp-seek-to-live-button[in-live-window] {
   cursor: default;
+  pointer-events: none;
 }
 
 .mxp-seek-to-live-button::before {
@@ -133,6 +134,6 @@ media-time-display {
   padding-right: 5px;
 }
 
-.mxp-seek-to-live-button:disabled::before {
+.mxp-seek-to-live-button[in-live-window]::before {
   color: #fb3c4d;
 }
