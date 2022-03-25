@@ -329,7 +329,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         break;
       case 'autoplay':
         if (newValue === oldValue) {
-          return;
+          break;
         }
         this.__updateAutoplay?.(newValue);
         break;
