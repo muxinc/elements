@@ -116,7 +116,8 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
 // prettier-ignore
 const SeekToLiveButton = (props: Partial<MuxTemplateProps>) => html`
   <button 
-    disabled="${props.inLiveWindow}" 
+    aria-disabled="${props.inLiveWindow}"
+    in-live-window="${props.inLiveWindow}"
     onclick="${function (this: HTMLButtonElement, evt: Event) {
       props.onSeekToLive?.(evt);
       if (props.paused) {
