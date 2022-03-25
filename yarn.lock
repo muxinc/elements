@@ -1349,10 +1349,9 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
   integrity sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==
 
-"@github/template-parts@^0.4.0":
+"@github/template-parts@https://github.com/muxinc/template-parts.git#mux-player":
   version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@github/template-parts/-/template-parts-0.4.0.tgz#2dc7ebc511650913a8c3962f374b541eea45693f"
-  integrity sha512-7jMaJAnjvqpSEiegDkAtbjV9fD+kyZP8TAc2la1w5dwO3VaSg5/HULcn9XQxLqMli8pYcJxtY820HTqFwlqleQ==
+  resolved "https://github.com/muxinc/template-parts.git#b6f556fb97afe5ddade36ac5dee54ad683c009ff"
 
 "@hapi/accept@5.0.2":
   version "5.0.2"
