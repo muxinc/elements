@@ -149,6 +149,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   set autoplay(val: Autoplay) {
+    const currentVal = this.autoplay;
+    if (val === currentVal) {
+      return;
+    }
+
     if (val) {
       this.setAttribute('autoplay', typeof val === 'string' ? val : '');
     } else {
