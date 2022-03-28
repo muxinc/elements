@@ -33,7 +33,7 @@
   "dependencies": {
     "@github/template-parts": "https://github.com/muxinc/template-parts.git#mux-player",
     "@mux-elements/mux-video": "^0.3.0",
-    "media-chrome": "0.5.3"
+    "media-chrome": "0.5.4"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",
