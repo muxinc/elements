@@ -4,8 +4,8 @@ concurrency: production
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '**' # Push events to every tag including hierarchical tags like v1.0/beta
 
 jobs:
   build:
