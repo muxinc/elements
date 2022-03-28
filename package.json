@@ -34,7 +34,7 @@
     "build:packages": "lerna run build --scope @mux-elements/*",
     "build": "lerna run build",
     "prepare": "husky install && yarn build:packages",
-    "deploy": "lerna publish from-package --no-private -no-verify-access",
+    "deploy": "lerna publish from-package --no-private --no-verify-access",
     "version:update": "lerna version --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react"
   }
 }
