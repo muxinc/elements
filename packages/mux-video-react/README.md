@@ -30,13 +30,13 @@ npm i @mux-elements/mux-video-react
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import MuxVideo from "@mux-elements/mux-video-react";
+import MuxVideo from '@mux-elements/mux-video-react';
 ```
 
 or
 
 ```js
-const MuxVideo = require("@mux-elements/mux-video-react");
+const MuxVideo = require('@mux-elements/mux-video-react');
 ```
 
 ## Features and benefits
@@ -59,14 +59,13 @@ const MuxVideoExample = () => {
     <div>
       <h1>Simple MuxVideo Example</h1>
       <MuxVideo
-        style={{ height: "100%", maxWidth: "100%" }}
+        style={{ height: '100%', maxWidth: '100%' }}
         playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
         metadata={{
-          video_id: "video-id-123456",
-          video_title: "Super Interesting Video",
-          viewer_user_id: "user-id-bc-789",
+          video_id: 'video-id-123456',
+          video_title: 'Super Interesting Video',
+          viewer_user_id: 'user-id-bc-789',
         }}
-        envKey="YOUR_MUX_DATA_ENV_KEY"
         streamType="on-demand"
         controls
         autoPlay
@@ -101,11 +100,10 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 <MuxVideo
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
   metadata={{
-    video_id: "video-id-123456",
-    video_title: "Super Interesting Video",
-    viewer_user_id: "user-id-bc-789",
+    video_id: 'video-id-123456',
+    video_title: 'Super Interesting Video',
+    viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   preferMse
   controls
 />
@@ -119,11 +117,10 @@ By default `<MuxVideo/>` will try to figure out the type of media you're trying 
 <MuxVideo
   src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   metadata={{
-    video_id: "video-id-123456",
-    video_title: "Super Interesting Video",
-    viewer_user_id: "user-id-bc-789",
+    video_id: 'video-id-123456',
+    video_title: 'Super Interesting Video',
+    viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   controls
 />
 ```
@@ -135,11 +132,10 @@ Sometimes, however, your `src` URL may not have an identifiable extension. In th
   src="https://stream.notmux.com/path/to/an/hls/source/playlist"
   type="application/vnd.apple.mpegurl"
   metadata={{
-    video_id: "video-id-123456",
-    video_title: "Super Interesting Video",
-    viewer_user_id: "user-id-bc-789",
+    video_id: 'video-id-123456',
+    video_title: 'Super Interesting Video',
+    viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   controls
 />
 ```
@@ -151,11 +147,10 @@ Or, for convenience, we also support the shorthand `type="hls`:
   src="https://stream.notmux.com/path/to/an/hls/source/playlist"
   type="hls"
   metadata={{
-    video_id: "video-id-123456",
-    video_title: "Super Interesting Video",
-    viewer_user_id: "user-id-bc-789",
+    video_id: 'video-id-123456',
+    video_title: 'Super Interesting Video',
+    viewer_user_id: 'user-id-bc-789',
   }}
-  envKey="YOUR_MUX_DATA_ENV_KEY"
   controls
 />
 ```

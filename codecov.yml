@@ -1,0 +1,70 @@
+# Setting coverage targets per flag
+coverage:
+  status:
+    project:
+      default:
+        target: auto #overall project/ repo coverage
+      mux-audio:
+        target: auto
+        flags:
+          - mux-audio
+      mux-audio-react:
+        target: auto
+        flags:
+          - mux-audio-react
+      mux-player:
+        target: auto
+        flags:
+          - mux-player
+      mux-player-react:
+        target: auto
+        flags:
+          - mux-player-react
+      mux-video:
+        target: auto
+        flags:
+          - mux-video
+      mux-video-react:
+        target: auto
+        flags:
+          - mux-video-react
+      playback-core:
+        target: auto
+        flags:
+          - playback-core
+
+# adding Flags to your `layout` configuration to show up in the PR comment
+comment:
+  layout: 'reach, diff, flags, files'
+  behavior: default
+  require_changes: false
+  require_base: yes
+  require_head: yes
+  branches: null
+
+# New root YAML section = `flags:`
+# This is where you would define every flag from your
+# uploader, and update when new Flags added
+
+flags:
+  mux-audio:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-audio
+  mux-audio-react:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-audio-react
+  mux-player:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-player
+  mux-player-react:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-player-react
+  mux-video:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-video
+  mux-video-react:
+    paths: #note, accepts globs, not regexes
+      - packages/mux-video-react
+  playback-core:
+    paths: #note, accepts globs, not regexes
+      - packages/playback-core

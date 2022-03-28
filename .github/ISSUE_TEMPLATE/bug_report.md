@@ -1,8 +1,8 @@
 ---
-name: "🐛 Bug Report"
+name: '🐛 Bug Report'
 about: Report a reproducible bug or regression.
-title: "Bug: "
-labels: "bug, Status: Unconfirmed"
+title: 'Bug: '
+labels: 'bug, Status: Unconfirmed'
 ---
 
 <!--

@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-import type { CSSProperties } from "react";
-import "@mux-elements/mux-player";
-import type MuxPlayerElement from "@mux-elements/mux-player";
-import type { Tokens } from "@mux-elements/mux-player";
-import { toNativeProps } from "./common/utils";
-import { useRef } from "react";
-import { useCombinedRefs } from "./useCombinedRefs";
-import useObjectPropEffect, { defaultHasChanged } from "./useObjectPropEffect";
-import { getPlayerVersion } from "./env";
+import React, { useEffect } from 'react';
+import type { CSSProperties } from 'react';
+import '@mux-elements/mux-player';
+import type MuxPlayerElement from '@mux-elements/mux-player';
+import type { Tokens } from '@mux-elements/mux-player';
+import { toNativeProps } from './common/utils';
+import { useRef } from 'react';
+import { useCombinedRefs } from './useCombinedRefs';
+import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
+import { getPlayerVersion } from './env';
 
 type ValueOf<T> = T[keyof T];
 
@@ -28,9 +28,9 @@ type VideoApiAttributes = {
   style: CSSProperties;
 };
 type StreamTypes = {
-  VOD: "on-demand";
-  LIVE: "live";
-  LL_LIVE: "ll-live";
+  VOD: 'on-demand';
+  LIVE: 'live';
+  LL_LIVE: 'll-live';
 };
 
 type MuxMediaPropTypes = {
@@ -40,10 +40,10 @@ type MuxMediaPropTypes = {
   debug: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
-  beaconDomain: string;
+  beaconCollectionDomain: string;
   playbackId: string;
   preferMse: boolean;
-  streamType: ValueOf<StreamTypes> | "vod";
+  streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;
   children: never[];
 };
@@ -81,15 +81,8 @@ export type MuxPlayerProps = {
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
 
-const MuxPlayerInternal = React.forwardRef<
-  MuxPlayerRefAttributes,
-  MuxPlayerProps
->(({ children, ...props }, ref) => {
-  return React.createElement(
-    "mux-player",
-    toNativeProps({ ...props, ref }),
-    children
-  );
+const MuxPlayerInternal = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProps>(({ children, ...props }, ref) => {
+  return React.createElement('mux-player', toNativeProps({ ...props, ref }), children);
 });
 
 const useEventCallbackEffect = (
@@ -137,11 +130,11 @@ const usePlayer = (
     playbackId,
     ...remainingProps
   } = props;
-  useObjectPropEffect("metadata", metadata, ref);
-  useObjectPropEffect("tokens", tokens, ref);
-  useObjectPropEffect("playbackId", playbackId, ref);
+  useObjectPropEffect('metadata', metadata, ref);
+  useObjectPropEffect('tokens', tokens, ref);
+  useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect(
-    "paused",
+    'paused',
     paused,
     ref,
     (playerEl: HTMLMediaElement, pausedVal?: boolean) => {
@@ -153,38 +146,38 @@ const usePlayer = (
       }
     },
     (playerEl, value, propName) => {
-      if (playerEl.hasAttribute("autoplay") && !playerEl.hasPlayed) {
+      if (playerEl.hasAttribute('autoplay') && !playerEl.hasPlayed) {
         return false;
       }
       return defaultHasChanged(playerEl, value, propName);
     }
   );
-  useEventCallbackEffect("loadstart", ref, onLoadStart);
-  useEventCallbackEffect("loadedmetadata", ref, onLoadedMetadata);
-  useEventCallbackEffect("progress", ref, onProgress);
-  useEventCallbackEffect("durationchange", ref, onDurationChange);
-  useEventCallbackEffect("volumechange", ref, onVolumeChange);
-  useEventCallbackEffect("ratechange", ref, onRateChange);
-  useEventCallbackEffect("resize", ref, onResize);
-  useEventCallbackEffect("waiting", ref, onWaiting);
-  useEventCallbackEffect("play", ref, onPlay);
-  useEventCallbackEffect("playing", ref, onPlaying);
-  useEventCallbackEffect("timeupdate", ref, onTimeUpdate);
-  useEventCallbackEffect("pause", ref, onPause);
-  useEventCallbackEffect("seeking", ref, onSeeking);
-  useEventCallbackEffect("seeked", ref, onSeeked);
-  useEventCallbackEffect("ended", ref, onEnded);
-  useEventCallbackEffect("error", ref, onError);
-  useEventCallbackEffect("playerready", ref, onPlayerReady);
+  useEventCallbackEffect('loadstart', ref, onLoadStart);
+  useEventCallbackEffect('loadedmetadata', ref, onLoadedMetadata);
+  useEventCallbackEffect('progress', ref, onProgress);
+  useEventCallbackEffect('durationchange', ref, onDurationChange);
+  useEventCallbackEffect('volumechange', ref, onVolumeChange);
+  useEventCallbackEffect('ratechange', ref, onRateChange);
+  useEventCallbackEffect('resize', ref, onResize);
+  useEventCallbackEffect('waiting', ref, onWaiting);
+  useEventCallbackEffect('play', ref, onPlay);
+  useEventCallbackEffect('playing', ref, onPlaying);
+  useEventCallbackEffect('timeupdate', ref, onTimeUpdate);
+  useEventCallbackEffect('pause', ref, onPause);
+  useEventCallbackEffect('seeking', ref, onSeeking);
+  useEventCallbackEffect('seeked', ref, onSeeked);
+  useEventCallbackEffect('ended', ref, onEnded);
+  useEventCallbackEffect('error', ref, onError);
+  useEventCallbackEffect('playerready', ref, onPlayerReady);
   return [remainingProps];
 };
 
 const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = "mux-player-react";
+const playerSoftwareName = 'mux-player-react';
 
 const MuxPlayer = React.forwardRef<
   MuxPlayerRefAttributes,
-  Omit<MuxPlayerProps, "playerSoftwareVersion" | "playerSoftwareName">
+  Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>
 >((props, ref) => {
   const {
     /** @TODO Remove these once defaults are added to mux-player (CJP) */

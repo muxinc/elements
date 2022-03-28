@@ -1,11 +1,11 @@
 // @ts-ignore
-import lang from "../lang/en.json";
+import lang from '../lang/en.json';
 
 // NL example
 // lang = {
 //   "Network Error": "Netwerk Fout",
 // };
-export function i18n(strings: TemplateStringsArray, ...expr: any[]): any {
+export function i18n(strings: TemplateStringsArray): any {
   // i18n template literals should not include expressions, ok to pass strings[0].
   return new IntlMessageFormat(lang?.[strings[0]] ?? strings[0]);
 }
@@ -18,14 +18,14 @@ class IntlMessageFormat {
   message: string;
   locale: string;
 
-  constructor(message: string, locale = "en-US") {
+  constructor(message: string, locale = 'en-US') {
     this.message = message;
     this.locale = locale;
   }
 
   format(values: Record<string, any>): string {
     return this.message.replace(/\{(\w+)\}/g, (match, key) => {
-      return values[key] ?? "";
+      return values[key] ?? '';
     });
   }
 
@@ -35,7 +35,7 @@ class IntlMessageFormat {
 }
 
 export function stylePropsToString(props: any) {
-  let style = "";
+  let style = '';
   Object.entries(props).forEach(([key, value]) => {
     style += `${kebabCase(key)}: ${value}; `;
   });
@@ -43,7 +43,7 @@ export function stylePropsToString(props: any) {
 }
 
 export function kebabCase(name: string) {
-  return name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+  return name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
 export function camelCase(name: string) {
@@ -64,7 +64,7 @@ export function toNumberOrUndefined(val: any) {
 
 export function toQuery(obj: Record<string, any>) {
   const params = toParams(obj).toString();
-  return params ? "?" + params : "";
+  return params ? '?' + params : '';
 }
 
 export function toParams(obj: Record<string, any>) {

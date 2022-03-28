@@ -1,8 +1,8 @@
 ---
-name: "🎥 Feature Request"
+name: '🎥 Feature Request'
 about: Create a feature request for one or more Mux Elements, or for a new Mux Element you'd like to see.
-title: "Feature: "
-labels: "enhancement"
+title: 'Feature: '
+labels: 'enhancement'
 ---
 
 <!--

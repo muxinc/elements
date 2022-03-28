@@ -1,47 +1,47 @@
-import type MuxVideoElement from "@mux-elements/mux-video";
+import type MuxVideoElement from '@mux-elements/mux-video';
 
 const AllowedVideoAttributes = {
-  AUTOPLAY: "autoplay",
-  CROSSORIGIN: "crossorigin",
-  LOOP: "loop",
-  MUTED: "muted",
-  PLAYSINLINE: "playsinline",
-  SRC: "src",
-  POSTER: "poster",
-  PRELOAD: "preload",
+  AUTOPLAY: 'autoplay',
+  CROSSORIGIN: 'crossorigin',
+  LOOP: 'loop',
+  MUTED: 'muted',
+  PLAYSINLINE: 'playsinline',
+  SRC: 'src',
+  POSTER: 'poster',
+  PRELOAD: 'preload',
 };
 
 const CustomVideoAttributes = {
-  VOLUME: "volume",
-  PLAYBACKRATE: "playbackrate",
+  VOLUME: 'volume',
+  PLAYBACKRATE: 'playbackrate',
   // This muted attribute also reflects to the muted property while the muted
   // attribute on a native video element reflects only to video.defaultMuted.
-  MUTED: "muted",
+  MUTED: 'muted',
 };
 
 const AllowedVideoEvents = [
-  "abort",
-  "canplay",
-  "canplaythrough",
-  "emptied",
-  "loadstart",
-  "loadedmetadata",
-  "loadeddata",
-  "progress",
-  "durationchange",
-  "volumechange",
-  "ratechange",
-  "resize",
-  "stalled",
-  "suspend",
-  "waiting",
-  "play",
-  "playing",
-  "timeupdate",
-  "pause",
-  "seeking",
-  "seeked",
-  "ended",
+  'abort',
+  'canplay',
+  'canplaythrough',
+  'emptied',
+  'loadstart',
+  'loadedmetadata',
+  'loadeddata',
+  'progress',
+  'durationchange',
+  'volumechange',
+  'ratechange',
+  'resize',
+  'stalled',
+  'suspend',
+  'waiting',
+  'play',
+  'playing',
+  'timeupdate',
+  'pause',
+  'seeking',
+  'seeked',
+  'ended',
 ];
 
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes);
@@ -60,7 +60,7 @@ class VideoApiElement extends HTMLElement {
   constructor() {
     super();
 
-    this.querySelectorAll(":scope > track").forEach((track) => {
+    this.querySelectorAll(':scope > track').forEach((track) => {
       this.video?.append(track.cloneNode());
     });
 
@@ -68,12 +68,10 @@ class VideoApiElement extends HTMLElement {
     /** @type {(mutationList: MutationRecord[]) => void} */
     const mutationCallback = (mutationsList: MutationRecord[]) => {
       for (const mutation of mutationsList) {
-        if (mutation.type === "childList") {
+        if (mutation.type === 'childList') {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
-            const track = this.video?.querySelector(
-              `track[src="${(node as HTMLTrackElement).src}"]`
-            );
+            const track = this.video?.querySelector(`track[src="${(node as HTMLTrackElement).src}"]`);
             if (track) this.video?.removeChild(track);
           });
 
@@ -88,11 +86,7 @@ class VideoApiElement extends HTMLElement {
     observer.observe(this, { childList: true, subtree: true });
   }
 
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string
-  ) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     switch (attrName) {
       case CustomVideoAttributes.MUTED: {
         if (this.video) {
@@ -150,14 +144,14 @@ class VideoApiElement extends HTMLElement {
   }
 
   get video(): MuxVideoElement | null | undefined {
-    return this.shadowRoot?.querySelector("mux-video");
+    return this.shadowRoot?.querySelector('mux-video');
   }
 
   get hasPlayed() {
-    const mc = this.shadowRoot?.querySelector("media-controller");
+    const mc = this.shadowRoot?.querySelector('media-controller');
 
     if (mc) {
-      return mc.hasAttribute("media-has-played");
+      return mc.hasAttribute('media-has-played');
     }
 
     return false;
@@ -220,7 +214,7 @@ class VideoApiElement extends HTMLElement {
   }
 
   get poster() {
-    return getVideoAttribute(this, AllowedVideoAttributes.POSTER) ?? "";
+    return getVideoAttribute(this, AllowedVideoAttributes.POSTER) ?? '';
   }
 
   set poster(val) {
@@ -251,10 +245,7 @@ class VideoApiElement extends HTMLElement {
 
   set autoplay(val) {
     if (val) {
-      this.setAttribute(
-        AllowedVideoAttributes.AUTOPLAY,
-        typeof val === "string" ? val : ""
-      );
+      this.setAttribute(AllowedVideoAttributes.AUTOPLAY, typeof val === 'string' ? val : '');
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.AUTOPLAY);
@@ -267,7 +258,7 @@ class VideoApiElement extends HTMLElement {
 
   set loop(val) {
     if (val) {
-      this.setAttribute(AllowedVideoAttributes.LOOP, "");
+      this.setAttribute(AllowedVideoAttributes.LOOP, '');
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.LOOP);
@@ -280,7 +271,7 @@ class VideoApiElement extends HTMLElement {
 
   set muted(val) {
     if (val) {
-      this.setAttribute(AllowedVideoAttributes.MUTED, "");
+      this.setAttribute(AllowedVideoAttributes.MUTED, '');
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.MUTED);
@@ -293,7 +284,7 @@ class VideoApiElement extends HTMLElement {
 
   set playsInline(val) {
     if (val) {
-      this.setAttribute(AllowedVideoAttributes.PLAYSINLINE, "");
+      this.setAttribute(AllowedVideoAttributes.PLAYSINLINE, '');
     } else {
       // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.PLAYSINLINE);

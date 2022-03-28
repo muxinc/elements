@@ -1,20 +1,20 @@
 // @ts-nocheck
-import { html, createTemplateInstance } from "./html";
-import airplayIcon from "./icons/airplay.svg";
-import captionsOffIcon from "./icons/captions-off.svg";
-import captionsOnIcon from "./icons/captions-on.svg";
-import fullscreenEnter from "./icons/fullscreen-enter.svg";
-import fullscreenExit from "./icons/fullscreen-exit.svg";
-import pause from "./icons/pause.svg";
-import pipEnter from "./icons/pip-enter.svg";
-import pipExit from "./icons/pip-exit.svg";
-import play from "./icons/play.svg";
-import seekBackward from "./icons/seek-backward.svg";
-import seekForward from "./icons/seek-forward.svg";
-import volumeHigh from "./icons/volume-high.svg";
-import volumeLow from "./icons/volume-low.svg";
-import volumeMedium from "./icons/volume-medium.svg";
-import volumeOff from "./icons/volume-off.svg";
+import { createTemplateInstance } from './html';
+import airplayIcon from './icons/airplay.svg';
+import captionsOffIcon from './icons/captions-off.svg';
+import captionsOnIcon from './icons/captions-on.svg';
+import fullscreenEnter from './icons/fullscreen-enter.svg';
+import fullscreenExit from './icons/fullscreen-exit.svg';
+import pause from './icons/pause.svg';
+import pipEnter from './icons/pip-enter.svg';
+import pipExit from './icons/pip-exit.svg';
+import play from './icons/play.svg';
+import seekBackward from './icons/seek-backward.svg';
+import seekForward from './icons/seek-forward.svg';
+import volumeHigh from './icons/volume-high.svg';
+import volumeLow from './icons/volume-low.svg';
+import volumeMedium from './icons/volume-medium.svg';
+import volumeOff from './icons/volume-off.svg';
 
 export const Airplay = () => createTemplateInstance(airplayIcon);
 export const CaptionsOff = () => createTemplateInstance(captionsOffIcon);

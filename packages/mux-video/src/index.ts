@@ -1,4 +1,4 @@
-import CustomVideoElement from "./CustomVideoElement";
+import CustomVideoElement from './CustomVideoElement';
 
 import {
   initialize,
@@ -7,66 +7,58 @@ import {
   MuxMediaProps,
   StreamTypes,
   ValueOf,
-  ExtensionMimeTypeMap,
   toMuxVideoURL,
   teardown,
   Metadata,
-  PlaybackEngine,
   mux,
   MediaError,
-  type UpdateAutoplay,
-} from "@mux-elements/playback-core";
-import { getPlayerVersion } from "./env";
+} from '@mux-elements/playback-core';
+import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
+import { getPlayerVersion } from './env';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
-  ENV_KEY: "env-key";
-  DEBUG: "debug";
-  METADATA_URL: "metadata-url";
-  PLAYER_SOFTWARE_VERSION: "player-software-version";
-  PLAYER_SOFTWARE_NAME: "player-software-name";
-  METADATA_VIDEO_ID: "metadata-video-id";
-  METADATA_VIDEO_TITLE: "metadata-video-title";
-  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
-  BEACON_DOMAIN: "beacon-domain";
-  PLAYBACK_ID: "playback-id";
-  PREFER_MSE: "prefer-mse";
-  TYPE: "type";
-  STREAM_TYPE: "stream-type";
-  START_TIME: "start-time";
+  ENV_KEY: 'env-key';
+  DEBUG: 'debug';
+  METADATA_URL: 'metadata-url';
+  PLAYER_SOFTWARE_VERSION: 'player-software-version';
+  PLAYER_SOFTWARE_NAME: 'player-software-name';
+  METADATA_VIDEO_ID: 'metadata-video-id';
+  METADATA_VIDEO_TITLE: 'metadata-video-title';
+  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
+  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
+  PLAYBACK_ID: 'playback-id';
+  PREFER_MSE: 'prefer-mse';
+  TYPE: 'type';
+  STREAM_TYPE: 'stream-type';
+  START_TIME: 'start-time';
 };
 
 const Attributes: AttributeNames = {
-  ENV_KEY: "env-key",
-  DEBUG: "debug",
-  PLAYBACK_ID: "playback-id",
-  METADATA_URL: "metadata-url",
-  PREFER_MSE: "prefer-mse",
-  PLAYER_SOFTWARE_VERSION: "player-software-version",
-  PLAYER_SOFTWARE_NAME: "player-software-name",
-  METADATA_VIDEO_ID: "metadata-video-id",
-  METADATA_VIDEO_TITLE: "metadata-video-title",
-  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
-  BEACON_DOMAIN: "beacon-domain",
-  TYPE: "type",
-  STREAM_TYPE: "stream-type",
-  START_TIME: "start-time",
+  ENV_KEY: 'env-key',
+  DEBUG: 'debug',
+  PLAYBACK_ID: 'playback-id',
+  METADATA_URL: 'metadata-url',
+  PREFER_MSE: 'prefer-mse',
+  PLAYER_SOFTWARE_VERSION: 'player-software-version',
+  PLAYER_SOFTWARE_NAME: 'player-software-name',
+  METADATA_VIDEO_ID: 'metadata-video-id',
+  METADATA_VIDEO_TITLE: 'metadata-video-title',
+  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
+  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
+  TYPE: 'type',
+  STREAM_TYPE: 'stream-type',
+  START_TIME: 'start-time',
 };
 
 const AttributeNameValues = Object.values(Attributes);
 
 const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = "mux-video";
+const playerSoftwareName = 'mux-video';
 
-class MuxVideoElement
-  extends CustomVideoElement<HTMLVideoElement>
-  implements Partial<MuxMediaProps>
-{
+class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Partial<MuxMediaProps> {
   static get observedAttributes() {
-    return [
-      ...AttributeNameValues,
-      ...(CustomVideoElement.observedAttributes ?? []),
-    ];
+    return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
 
   // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
@@ -114,7 +106,7 @@ class MuxVideoElement
     // Use the attribute value as the source of truth.
     // No need to store it in two places.
     // This avoids needing a to read the attribute initially and update the src.
-    return this.getAttribute("src") as string;
+    return this.getAttribute('src') as string;
   }
 
   set src(val: string) {
@@ -123,17 +115,14 @@ class MuxVideoElement
     if (val === this.src) return;
 
     if (val == null) {
-      this.removeAttribute("src");
+      this.removeAttribute('src');
     } else {
-      this.setAttribute("src", val);
+      this.setAttribute('src', val);
     }
   }
 
   get type(): ValueOf<ExtensionMimeTypeMap> | undefined {
-    return (
-      (this.getAttribute(Attributes.TYPE) as ValueOf<ExtensionMimeTypeMap>) ??
-      undefined
-    );
+    return (this.getAttribute(Attributes.TYPE) as ValueOf<ExtensionMimeTypeMap>) ?? undefined;
   }
 
   set type(val: ValueOf<ExtensionMimeTypeMap> | undefined) {
@@ -147,6 +136,31 @@ class MuxVideoElement
     }
   }
 
+  get autoplay(): Autoplay {
+    const attr = this.getAttribute('autoplay');
+
+    if (attr === null) {
+      return false;
+    } else if (attr === '') {
+      return true;
+    } else {
+      return attr as Autoplay;
+    }
+  }
+
+  set autoplay(val: Autoplay) {
+    const currentVal = this.autoplay;
+    if (val === currentVal) {
+      return;
+    }
+
+    if (val) {
+      this.setAttribute('autoplay', typeof val === 'string' ? val : '');
+    } else {
+      this.removeAttribute('autoplay');
+    }
+  }
+
   /** @TODO write a generic module for well defined primitive types -> attribute getter/setters/removers (CJP) */
   get debug(): boolean {
     return this.getAttribute(Attributes.DEBUG) != null;
@@ -157,7 +171,7 @@ class MuxVideoElement
     if (val === this.debug) return;
 
     if (val) {
-      this.setAttribute(Attributes.DEBUG, "");
+      this.setAttribute(Attributes.DEBUG, '');
     } else {
       this.removeAttribute(Attributes.DEBUG);
     }
@@ -211,27 +225,24 @@ class MuxVideoElement
     }
   }
 
-  get beaconDomain(): string | undefined {
-    return this.getAttribute(Attributes.BEACON_DOMAIN) ?? undefined;
+  get beaconCollectionDomain(): string | undefined {
+    return this.getAttribute(Attributes.BEACON_COLLECTION_DOMAIN) ?? undefined;
   }
 
-  set beaconDomain(val: string | undefined) {
-    // dont' cause an infinite loop
-    if (val === this.beaconDomain) return;
+  set beaconCollectionDomain(val: string | undefined) {
+    // don't cause an infinite loop
+    if (val === this.beaconCollectionDomain) return;
 
     if (val) {
-      this.setAttribute(Attributes.BEACON_DOMAIN, val);
+      this.setAttribute(Attributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
-      this.removeAttribute(Attributes.BEACON_DOMAIN);
+      this.removeAttribute(Attributes.BEACON_COLLECTION_DOMAIN);
     }
   }
 
   get streamType(): ValueOf<StreamTypes> | undefined {
     // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
-    return (
-      (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ??
-      undefined
-    );
+    return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? undefined;
   }
 
   set streamType(val: ValueOf<StreamTypes> | undefined) {
@@ -252,7 +263,7 @@ class MuxVideoElement
 
   set preferMse(val: boolean) {
     if (val) {
-      this.setAttribute(Attributes.PREFER_MSE, "");
+      this.setAttribute(Attributes.PREFER_MSE, '');
     } else {
       this.removeAttribute(Attributes.PREFER_MSE);
     }
@@ -261,9 +272,7 @@ class MuxVideoElement
   get metadata() {
     const video_id = this.getAttribute(Attributes.METADATA_VIDEO_ID);
     const video_title = this.getAttribute(Attributes.METADATA_VIDEO_TITLE);
-    const viewer_user_id = this.getAttribute(
-      Attributes.METADATA_VIEWER_USER_ID
-    );
+    const viewer_user_id = this.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
     return {
       ...this.__metadata,
       ...(video_id != null ? { video_id } : {}),
@@ -275,22 +284,14 @@ class MuxVideoElement
   set metadata(val: Readonly<Metadata> | undefined) {
     this.__metadata = val ?? {};
     if (!!this.mux) {
-      this.mux.emit("hb", this.__metadata);
+      this.mux.emit('hb', this.__metadata);
     }
   }
 
   load() {
-    const nextHlsInstance = initialize(
-      this as Partial<MuxMediaProps>,
-      this.nativeEl,
-      this.__hls
-    );
+    const nextHlsInstance = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__hls);
     this.__hls = nextHlsInstance;
-    const updateAutoplay = setupAutoplay(
-      this.nativeEl,
-      this.autoplay,
-      nextHlsInstance
-    );
+    const updateAutoplay = setupAutoplay(this.nativeEl, this.autoplay, nextHlsInstance);
     this.__updateAutoplay = updateAutoplay;
   }
 
@@ -310,11 +311,7 @@ class MuxVideoElement
   //   }
   // }
 
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
-  ) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     switch (attrName) {
       case Attributes.PLAYER_SOFTWARE_NAME:
         this.playerSoftwareName = newValue ?? undefined;
@@ -322,7 +319,7 @@ class MuxVideoElement
       case Attributes.PLAYER_SOFTWARE_VERSION:
         this.playerSoftwareVersion = newValue ?? undefined;
         break;
-      case "src":
+      case 'src':
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
@@ -335,7 +332,10 @@ class MuxVideoElement
           this.load();
         }
         break;
-      case "autoplay":
+      case 'autoplay':
+        if (newValue === oldValue) {
+          break;
+        }
         this.__updateAutoplay?.(newValue);
         break;
       case Attributes.PLAYBACK_ID:
@@ -347,7 +347,7 @@ class MuxVideoElement
         if (!!this.mux) {
           /** @TODO Link to docs for a more detailed discussion (CJP) */
           console.info(
-            "Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src."
+            'Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.'
           );
         }
         if (!!this.hls) {
@@ -359,11 +359,7 @@ class MuxVideoElement
           fetch(newValue)
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
-            .catch((_err) =>
-              console.error(
-                `Unable to load or parse metadata JSON from metadata-url ${newValue}!`
-              )
-            );
+            .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
       default:
@@ -401,17 +397,12 @@ declare global {
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
-if (!globalThis.customElements.get("mux-video")) {
-  globalThis.customElements.define("mux-video", MuxVideoElement);
+if (!globalThis.customElements.get('mux-video')) {
+  globalThis.customElements.define('mux-video', MuxVideoElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxVideoElement = MuxVideoElement;
 }
 
-export {
-  PlaybackEngine,
-  PlaybackEngine as Hls,
-  ExtensionMimeTypeMap as MimeTypes,
-  MediaError,
-};
+export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError };
 
 export default MuxVideoElement;

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-"use strict";
+'use strict';
 
 setInterval(() => {}, 1 << 30);
-console.info("stdin open?");
+console.info('stdin open?');

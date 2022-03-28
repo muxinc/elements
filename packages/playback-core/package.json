@@ -3,6 +3,7 @@
   "version": "0.2.0",
   "type": "commonjs",
   "description": "Core library for media playback in the browser shared by mux elements",
+  "module": "dist/index.mjs",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "repository": {
@@ -13,22 +14,28 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
+    "clean": "shx rm -rf dist/",
     "dev:cjs": "open-process | yarn build:cjs --watch",
+    "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
-    "dev": "npm-run-all --parallel dev:types dev:cjs",
+    "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm",
+    "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs",
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --outdir=dist --external:mux-embed --external:hls.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build": "npm-run-all --parallel build:types 'build:cjs -- --minify'",
+    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:cjs -- --minify'",
+    "prebuild": "yarn clean",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "hls.js": "1.1.5",
-    "mux-embed": "4.5.0"
+    "mux-embed": "^4.7.0"
   },
   "devDependencies": {
+    "@mux-elements/open-process": "0.1.0",
     "@mux-elements/polyfills": "0.1.0",
     "esbuild": "^0.13.13",
     "npm-run-all": "^4.1.5",
+    "shx": "^0.3.4",
     "typescript": "^4.5.2"
   }
 }

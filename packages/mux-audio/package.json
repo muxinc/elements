@@ -12,6 +12,9 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
+    "clean": "shx rm -rf dist/",
+    "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.mjs",
+    "posttest": "replace 'SF:src/' 'SF:packages/mux-audio/src/' coverage/lcov.info",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:iife",
@@ -20,15 +23,22 @@
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify'",
+    "prebuild": "yarn clean",
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
     "@mux-elements/playback-core": "^0.2.0"
   },
   "devDependencies": {
+    "@mux-elements/open-process": "0.1.0",
     "@mux-elements/polyfills": "0.1.0",
+    "@open-wc/testing": "^3.0.3",
+    "@web/dev-server-esbuild": "^0.2.16",
+    "@web/test-runner": "^0.13.26",
     "esbuild": "^0.13.13",
     "npm-run-all": "^4.1.5",
+    "replace": "^1.2.1",
+    "shx": "^0.3.4",
     "typescript": "^4.5.2"
   }
 }

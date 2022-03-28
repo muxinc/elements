@@ -30,13 +30,13 @@ npm i @mux-elements/mux-audio
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import "@mux-elements/mux-audio";
+import '@mux-elements/mux-audio';
 ```
 
 or
 
 ```js
-require("@mux-elements/mux-audio");
+require('@mux-elements/mux-audio');
 ```
 
 ## CDN option
@@ -44,7 +44,7 @@ require("@mux-elements/mux-audio");
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-audio@0.1"></script>
+<script src="https://unpkg.com/@mux-elements/mux-audio@0.3"></script>
 ```
 
 ## Usage
@@ -64,10 +64,7 @@ interface MuxAudioHTMLAttributes<T> extends React.AudioHTMLAttributes<T> {
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "mux-audio": React.DetailedHTMLProps<
-        MuxAudioHTMLAttributes<HTMLAudioElement>,
-        HTMLAudioElement
-      >;
+      'mux-audio': React.DetailedHTMLProps<MuxAudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
     }
   }
 }

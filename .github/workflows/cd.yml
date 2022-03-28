@@ -1,0 +1,48 @@
+name: Deployment
+
+concurrency: production
+
+on:
+  push:
+    tags:
+      - '**' # Push events to every tag including hierarchical tags like v1.0/beta
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # extract `engines.node` from package.json and save it to output
+      - name: Get Node.JS version from package.json
+        id: get-versions
+        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
+      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ steps.get-versions.outputs.node }}
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
+      - run: yarn test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v2
+      # extract `engines.node` from package.json and save it to output
+      - name: Get Node.JS version from package.json
+        id: get-versions
+        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
+      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ steps.get-versions.outputs.node }}
+      - name: Publish
+        run: |
+          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          yarn deploy --yes --create-release github
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
