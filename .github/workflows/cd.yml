@@ -43,9 +43,7 @@ jobs:
         with:
           node-version: ${{ steps.get-versions.outputs.node }}
       - name: Publish
-        run: |
-          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
-          yarn deploy --yes --create-release github
+        run: yarn deploy --yes --create-release github
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
