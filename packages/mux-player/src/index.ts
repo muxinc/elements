@@ -4,11 +4,12 @@ import VideoApiElement from './video-api';
 import { getCcSubTracks, getPlayerVersion, hasVolumeSupportAsync, toPropName } from './helpers';
 import { template } from './template';
 import { render } from './html';
-import { toNumberOrUndefined, i18n } from './utils';
-
+import { getErrorLogs } from './errors';
+import { toNumberOrUndefined, i18n, parseJwt } from './utils';
 import type { MuxTemplateProps } from './types';
 import type { Metadata } from '@mux-elements/playback-core';
 
+export { MediaError };
 export type Tokens = {
   playback?: string;
   thumbnail?: string;
@@ -122,13 +123,6 @@ class MuxPlayerElement extends VideoApiElement {
       this.video?.append(track.cloneNode());
     });
 
-    // Initialize all the attribute properties
-    // The attributeChangedCallback should handle forwarding the video attributes
-    // from the mux-player to the mux-video element.
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
-
     /**
      * @todo determine sensible defaults for preloading buffer
      * @see https://github.com/muxinc/elements/issues/51
@@ -178,7 +172,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #setUpErrors() {
-    const onError = (event: Event) => {
+    const onError = async (event: Event) => {
       let { detail: error }: { detail: any } = event as CustomEvent;
 
       if (!(error instanceof MediaError)) {
@@ -190,72 +184,20 @@ class MuxPlayerElement extends VideoApiElement {
         return;
       }
 
-      let dialog;
-      switch (error.code) {
-        case MediaError.MEDIA_ERR_NETWORK: {
-          let title = i18n`Network Error`;
-          let { message } = error;
-          let linkText;
-          let linkUrl;
+      const { dialog, devlog } = await getErrorLogs(
+        error,
+        !window.navigator.onLine,
+        this.playbackId,
+        this.playbackToken,
+        this.src
+      );
 
-          if (!window.navigator.onLine) {
-            title += i18n` - Offline`;
-            message += i18n` Your device appears to be disconnected from the internet.`;
-          }
-
-          // Only works when hls.js is used.
-          const responseCode = error.data?.response.code;
-          switch (responseCode) {
-            case 412:
-              title += i18n` {responseCode} - Precondition Failed`.format({
-                responseCode,
-              });
-              message += i18n` Nobody is currently streaming to this live stream endpoint.`;
-              break;
-            case 403:
-              title += i18n` {responseCode} - Forbidden`.format({
-                responseCode,
-              });
-              message += i18n` You don't have permission to access the video URL.`;
-              break;
-            case 404:
-              title += i18n` {responseCode} - Not Found`.format({
-                responseCode,
-              });
-              message += i18n` The video URL could not be found at this address:`;
-              linkUrl = this.video?.src;
-              break;
-          }
-
-          dialog = {
-            title,
-            message,
-            linkText,
-            linkUrl,
-          };
-          break;
-        }
-        case MediaError.MEDIA_ERR_DECODE: {
-          const { message } = error;
-          dialog = {
-            title: i18n`Media Error`,
-            message,
-          };
-          break;
-        }
-        case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
-          dialog = {
-            title: i18n`Source Not Supported`,
-            message: error.message,
-          };
-          break;
-        }
-        default:
-          dialog = {
-            title: i18n`Error`,
-            message: error.message,
-          };
-          break;
+      if (devlog.message) {
+        console.warn(
+          `${devlog.message}${
+            devlog.file ? ` ${i18n`Read more: `}\nhttps://github.com/muxinc/elements/main/errors/${devlog.file}` : ''
+          }`
+        );
       }
 
       console.error(error);
@@ -307,6 +249,43 @@ class MuxPlayerElement extends VideoApiElement {
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     this.#render({ [toPropName(attrName)]: newValue });
+
+    switch (attrName) {
+      case PlayerAttributes.THUMBNAIL_TOKEN: {
+        const { aud } = parseJwt(newValue);
+        if (newValue && aud !== 't') {
+          console.warn(
+            i18n`The provided thumbnail-token should have audience value 't' instead of '{aud}'.`.format({ aud })
+          );
+        }
+        break;
+      }
+      case PlayerAttributes.STORYBOARD_TOKEN: {
+        const { aud } = parseJwt(newValue);
+        if (newValue && aud !== 's') {
+          console.warn(
+            i18n`The provided storyboard-token should have audience value 's' instead of '{aud}'.`.format({ aud })
+          );
+        }
+        break;
+      }
+      case MuxVideoAttributes.PLAYBACK_ID: {
+        if (!this.streamType) {
+          console.warn(
+            String(
+              i18n`No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+            )
+          );
+        } else if (!['on-demand', 'live', 'll-live'].includes(this.streamType)) {
+          console.warn(
+            i18n`Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``.format(
+              { streamType: this.streamType }
+            )
+          );
+        }
+        break;
+      }
+    }
   }
 
   get hls() {
@@ -550,7 +529,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the playback token for signing the src URL.
    */
   get playbackToken() {
-    return this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+    return this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN) ?? undefined;
   }
 
   /**
@@ -564,7 +543,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the thumbnail token for signing the poster URL.
    */
   get thumbnailToken() {
-    return this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
+    return this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN) ?? undefined;
   }
 
   /**
@@ -578,7 +557,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the storyboard token for signing the storyboard URL.
    */
   get storyboardToken() {
-    return this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
+    return this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN) ?? undefined;
   }
 
   /**

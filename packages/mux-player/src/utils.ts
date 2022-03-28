@@ -18,7 +18,7 @@ class IntlMessageFormat {
   message: string;
   locale: string;
 
-  constructor(message: string, locale = 'en-US') {
+  constructor(message: string, locale = lang.code ?? 'en') {
     this.message = message;
     this.locale = locale;
   }
@@ -73,4 +73,18 @@ export function toParams(obj: Record<string, any>) {
     if (obj[key] != null) params[key] = obj[key];
   }
   return new URLSearchParams(params);
+}
+
+export function parseJwt(token: string) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join('')
+  );
+  return JSON.parse(jsonPayload);
 }
