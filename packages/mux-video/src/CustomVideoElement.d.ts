@@ -8,4 +8,6 @@ export default class CustomVideoElement<V extends HTMLVideoElement = HTMLVideoEl
   static readonly observedAttributes: Array<string>;
   readonly nativeEl: V;
   attributeChangedCallback(attrName: string, oldValue?: string | null, newValue?: string | null): void;
+  get autoplay(): string | boolean;
+  set autoplay(): string | boolean;
 }
