@@ -121,11 +121,11 @@ const SeekToLiveButton = (props: Partial<MuxTemplateProps>) => html`
     onclick="${function (this: HTMLButtonElement, evt: Event) {
       props.onSeekToLive?.(evt);
       if (props.paused) {
-        const evt = new CustomEvent(
+        const playRequestEvt = new CustomEvent(
           'mediaplayrequest', 
           { composed: true, bubbles: true }
         );
-        (this as HTMLButtonElement).dispatchEvent(evt);
+        (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
       }
     }}" 
     class="mxp-seek-to-live-button"
