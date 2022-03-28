@@ -74,12 +74,6 @@ export type MuxMediaPropTypes = {
   autoplay: boolean | ValueOf<AutoplayTypes>;
 };
 
-declare global {
-  interface HTMLMediaElement {
-    mux?: typeof mux;
-  }
-}
-
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src'>>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;

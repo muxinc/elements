@@ -83,7 +83,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     return this.__hls;
   }
 
-  get mux(): Readonly<typeof mux> | undefined {
+  get mux(): Readonly<HTMLAudioElement['mux']> | undefined {
     return this.nativeEl.mux;
   }
 
