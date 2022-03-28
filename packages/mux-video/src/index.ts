@@ -98,7 +98,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return this.__hls;
   }
 
-  get mux(): Readonly<typeof mux> | undefined {
+  get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
     return this.nativeEl.mux;
   }
 
