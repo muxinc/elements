@@ -11,27 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      # extract `engines.node` from package.json and save it to output
-      - name: Get Node.JS version from package.json
-        id: get-versions
-        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
-      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ steps.get-versions.outputs.node }}
-          # this line is required for the setup-node action to be able to run the npm publish below.
-          registry-url: 'https://registry.npmjs.org'
-      - run: yarn install --frozen-lockfile
-      - run: yarn build
-      - run: yarn test
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -44,6 +24,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.get-versions.outputs.node }}
+          # this line is required for the setup-node action to be able to run the npm publish below.
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install
+        run: yarn install --frozen-lockfile
+      - name: Build packages
+        run: yarn build:packages
+      - name: Test
+        run: yarn test
       - name: Publish
         run: yarn deploy --yes --create-release github
         env:
