@@ -1,3 +1,4 @@
+import '@mux-elements/polyfills/window';
 import 'media-chrome';
 import { MediaError } from '@mux-elements/mux-video';
 import VideoApiElement from './video-api';
@@ -206,6 +207,9 @@ class MuxPlayerElement extends VideoApiElement {
       const prevInLiveWindow = this.#state.inLiveWindow;
       if (nextInLiveWindow !== prevInLiveWindow) {
         this.#setState({ inLiveWindow: nextInLiveWindow });
+        this.dispatchEvent(
+          new CustomEvent('inlivewindowchange', { composed: true, bubbles: true, detail: this.inLiveWindow })
+        );
       }
     };
     this.video?.addEventListener('progress', updateLiveWindow);
