@@ -27,13 +27,14 @@
     "clean": "lerna run clean --parallel --scope @mux-elements/*",
     "format": "prettier --write .",
     "lint": "lerna run lint --scope @mux-elements/*",
+    "pretest": "yarn build:packages",
     "test": "lerna run test --scope @mux-elements/*",
     "i18n": "lerna run i18n --scope @mux-elements/*",
     "dev": "lerna run dev --parallel --scope @mux-elements/*",
     "predev": "yarn build:packages",
     "build:packages": "lerna run build --scope @mux-elements/*",
     "build": "lerna run build",
-    "prepare": "husky install && yarn build:packages",
+    "prepare": "husky install",
     "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react",
     "version:update": "lerna version --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react"
   }
