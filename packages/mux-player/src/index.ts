@@ -428,6 +428,10 @@ class MuxPlayerElement extends VideoApiElement {
     }
   }
 
+  get inLiveWindow() {
+    return this.#state.inLiveWindow;
+  }
+
   get hls() {
     return this.video?.hls;
   }
