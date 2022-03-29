@@ -24,4 +24,6 @@ and Github Actions for continuously publishing Mux elements.
 1. From the workspace root directory, run `yarn version:update`.
    This will bump the version of the packages changed since the last release and push those changes to Github.
    You might have to manually correct the version if the suggestion of Conventional Commits is not right.
-2. The cd.yml Github action will publish the new versions to NPM.
+1. Go to the [Github Actions tab for elements](https://github.com/muxinc/elements/actions), select "Deployment" action in the left sidebar
+1. Click the 'Run workflow' dropdown and "Run workflow" on the `main` branch
+1. Starting this workflow will require an approval. After approving this will kick off the deploy action which will publish all the updated packages to NPM
