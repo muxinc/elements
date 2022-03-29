@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout, waitUntil, nextFrame } from '@open-wc/testing';
+import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-player>', () => {
@@ -348,7 +348,7 @@ describe('<mux-player>', () => {
     );
   });
 
-  describe.only('seek to live behaviors', () => {
+  describe('seek to live behaviors', () => {
     it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {
       const playerEl = await fixture(`<mux-player
         playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
@@ -385,23 +385,47 @@ describe('<mux-player>', () => {
       assert.exists(seekToLiveEl);
     });
 
-    it('should should disallow user interaction of seek to live button when in the live window', async function () {
+    it('should should seek to live when seek to live button pressed', async function () {
+      this.timeout(12000);
       const playerEl = await fixture(`<mux-player
         playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
         muted
         stream-type="ll-live"
       ></mux-player>`);
-      try {
-        playerEl.play();
-      } catch (_e) {}
 
       const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
-      seekToLiveEl.addEventListener('click', () => {
-        assert.fail('user interaction should be disabled');
-      });
-      await waitUntil(() => !playerEl.paused);
+      // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
+      try {
+        await playerEl.play();
+      } catch (_e) {}
+      await waitUntil(() => !playerEl.paused, 'play() failed');
+      await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
+      playerEl.pause();
+      await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
       seekToLiveEl.click();
-      await nextFrame();
+      await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
+      return Promise.resolve();
+    });
+
+    it('should should seek to live when play button is pressed', async function () {
+      this.timeout(12000);
+      const playerEl = await fixture(`<mux-player
+        playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+        muted
+        stream-type="ll-live"
+      ></mux-player>`);
+
+      const mcPlayEl = playerEl.shadowRoot.querySelector('media-play-button');
+      // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
+      try {
+        await playerEl.play();
+      } catch (_e) {}
+      await waitUntil(() => !playerEl.paused, 'play() failed');
+      await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
+      playerEl.pause();
+      await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
+      mcPlayEl.click();
+      await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
       return Promise.resolve();
     });
   });
