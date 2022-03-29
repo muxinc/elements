@@ -18,7 +18,7 @@ jobs:
           node-version: ${{ steps.get-versions.outputs.node }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn build --scope @mux-elements/*
+      - run: yarn build:packages
 
   lint:
     runs-on: ubuntu-latest
