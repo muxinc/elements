@@ -37,11 +37,11 @@
     }
   },
   "dependencies": {
-    "@mux-elements/open-process": "0.1.0",
     "@mux-elements/playback-core": "^0.3.0",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
+    "@mux-elements/open-process": "0.1.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "esbuild": "^0.13.13",
