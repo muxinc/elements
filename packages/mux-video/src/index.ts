@@ -1,5 +1,3 @@
-import CustomVideoElement from './CustomVideoElement';
-
 import {
   initialize,
   setupAutoplay,
@@ -15,6 +13,8 @@ import {
 } from '@mux-elements/playback-core';
 import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
 import { getPlayerVersion } from './env';
+// this must be imported after playback-core for the polyfill to be included
+import CustomVideoElement from './CustomVideoElement';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {

@@ -2,6 +2,14 @@
   "name": "@mux-elements/polyfills",
   "version": "0.1.0",
   "main": "./index.js",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.mjs"
+    },
+    "./window": "./window.js"
+  },
   "repository": "https://github.com/muxinc/elements",
   "author": "Mux, Inc.",
   "license": "MIT",

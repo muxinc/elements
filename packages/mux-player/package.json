@@ -3,8 +3,16 @@
   "version": "0.1.0-beta.4",
   "type": "module",
   "description": "An open source Mux player web component that Just Works™",
-  "main": "dist/index.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/mux-player.js",
+  "unpkg": "./dist/mux-player.js",
   "types": "dist/types/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.cjs"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
@@ -15,7 +23,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs",
+    "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info --silent",
     "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
     "dev:iife": "open-process | yarn build:iife --watch",
@@ -23,10 +31,11 @@
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
     "build:esm": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
+    "build:esm-module": "esbuilder src/index.ts --format=esm-module --out-extension:.js=.mjs",
     "build:iife": "esbuilder src/index.ts --format=iife --out-extension:.js=.js",
     "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify'",
+    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
     "prebuild": "yarn clean",
     "prepublishOnly": "yarn build"
   },
@@ -37,10 +46,12 @@
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",
+    "@mux-elements/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
     "@web/dev-server-esbuild": "^0.2.16",
+    "@web/dev-server-import-maps": "^0.0.6",
     "@web/test-runner": "^0.13.26",
     "esbuild": "^0.13.13",
     "eslint": "^7.11.0",

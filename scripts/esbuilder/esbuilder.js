@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import path from 'path';
 import { build } from 'esbuild';
+import fs from 'fs';
 
 const camelCase = (name) => {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
@@ -34,7 +35,9 @@ const i18nPlugin = {
   },
 };
 
-build({
+const esmScriptModule = args.format === 'esm-module';
+
+const options = {
   entryPoints: [process.argv[2]],
   outdir: args.outdir ?? 'dist',
   bundle: true,
@@ -43,6 +46,7 @@ build({
   format: args.format,
   watch: args.watch,
   outExtension: args.outExtension,
+  metafile: true,
   plugins: [i18nPlugin],
   loader: {
     '.css': 'text',
@@ -51,4 +55,39 @@ build({
   define: {
     PLAYER_VERSION: `"${process.env.npm_package_version}"`,
   },
-}).catch(() => process.exit(1));
+};
+
+if (options.format === 'esm' || options.format === 'cjs') {
+  options.external = ['@mux-elements/*'];
+}
+
+if (options.format === 'esm') {
+  options.external.push('@github/template-parts', 'media-chrome');
+}
+
+if (options.format === 'iife') {
+  delete options.outdir;
+  options.outfile = 'dist/mux-player.js';
+}
+
+if (esmScriptModule) {
+  delete options.external;
+  delete options.outdir;
+
+  options.outfile = 'dist/mux-player.mjs';
+  options.format = 'esm';
+}
+
+build(options).then(
+  (result) => {
+    let name = options.format;
+
+    if (esmScriptModule) {
+      name = 'module';
+    }
+
+    // write-out the metafile
+    fs.writeFileSync(`./dist/${name}.json`, JSON.stringify(result.metafile));
+  },
+  () => process.exit(1)
+);
