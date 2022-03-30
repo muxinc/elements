@@ -37,7 +37,7 @@
     }
   },
   "dependencies": {
-    "@mux-elements/playback-core": "^0.3.0",
+    "@mux-elements/playback-core": "0.3.0",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
