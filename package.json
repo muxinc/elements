@@ -36,6 +36,6 @@
     "build": "lerna run build",
     "prepare": "husky install",
     "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react"
+    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react --create-release github"
   }
 }
