@@ -27,7 +27,7 @@ jobs:
       - name: Test
         run: yarn test
       - name: Publish
-        run: yarn deploy --yes --create-release github
+        run: yarn deploy --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
