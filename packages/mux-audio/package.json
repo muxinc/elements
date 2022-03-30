@@ -27,7 +27,7 @@
     "prepublishOnly": "yarn build"
   },
   "dependencies": {
-    "@mux-elements/playback-core": "^0.3.0"
+    "@mux-elements/playback-core": "0.3.0"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",
