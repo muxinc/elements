@@ -44,7 +44,13 @@ require('@mux-elements/mux-audio');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-audio@0.3"></script>
+<script src="https://unpkg.com/@mux-elements/mux-audio@0.4"></script>
+```
+
+If you are using ecmascript modules, you can also load the `mux-audio.mjs` file with `type=module`:
+
+```html
+<script type="module" src="https://unpkg.com/@mux-elements/mux-audio@0.4/dist/mux-audio.mjs"></script>
 ```
 
 ## Usage

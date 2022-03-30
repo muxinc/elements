@@ -1,1 +1,1 @@
-import './window';
+require('./window.js');

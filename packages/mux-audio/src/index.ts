@@ -1,5 +1,3 @@
-import CustomAudioElement from './CustomAudioElement';
-
 import {
   initialize,
   setupAutoplay,
@@ -14,6 +12,8 @@ import {
 } from '@mux-elements/playback-core';
 import type { PlaybackEngine, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
 import { getPlayerVersion } from './env';
+// this must be imported after playback-core for the polyfill to be included
+import CustomAudioElement from './CustomAudioElement';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {

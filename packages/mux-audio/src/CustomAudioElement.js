@@ -1,4 +1,3 @@
-import '@mux-elements/polyfills/window';
 /**
  * Custom Video Element
  * The goal is to create an element that works just like the audio element

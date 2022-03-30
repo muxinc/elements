@@ -1,0 +1,20 @@
+{
+  "name": "@mux-elements/test-esm-exports",
+  "version": "0.1.0",
+  "main": "",
+  "repository": "https://github.com/muxinc/elements",
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "esbuild ./hls.mjs ./mux-embed.mjs --bundle --outdir=dist --out-extension:.js=.js --format=esm"
+  },
+  "dependencies": {
+    "hls.js": "1.1.5",
+    "mux-embed": "^4.7.0"
+  },
+  "devDependencies": {
+    "@mux-elements/open-process": "0.1.0",
+    "esbuild": "^0.13.13"
+  }
+}

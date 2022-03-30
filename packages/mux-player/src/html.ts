@@ -1,4 +1,3 @@
-import './dom-polyfills';
 import { TemplateInstance, NodeTemplatePart, createProcessor, AttributeTemplatePart } from '@github/template-parts';
 import type { TemplatePart, TemplateTypeInit } from '@github/template-parts';
 // NOTE: These are either direct ports or significantly based off of github's jtml template part processing logic. For more, see: https://github.com/github/jtml

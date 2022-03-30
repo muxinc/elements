@@ -120,3 +120,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 *.sublime-*
+
+# ignore esbuild metafiles
+**/*/esm.json
+**/*/cjs.json
+**/*/iife.json
+**/*/module.json

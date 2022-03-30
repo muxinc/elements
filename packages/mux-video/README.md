@@ -44,7 +44,13 @@ require('@mux-elements/mux-video');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-video@0.3"></script>
+<script src="https://unpkg.com/@mux-elements/mux-video@0.4"></script>
+```
+
+If you are using ECMAScript modules, you can also load the `mux-video.mjs` file with `type=module`:
+
+```html
+<script type="module" src="https://unpkg.com/@mux-elements/mux-video@0.4/dist/mux-video.mjs"></script>
 ```
 
 ## Features and benefits

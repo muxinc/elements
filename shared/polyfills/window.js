@@ -1,3 +1,9 @@
+if (typeof DocumentFragment === 'undefined') {
+  class DocumentFragment {}
+  // @ts-ignore
+  globalThis.DocumentFragment = DocumentFragment;
+}
+
 if (!globalThis.customElements) {
   globalThis.customElements = {
     get(_name) {
