@@ -32,7 +32,7 @@ export async function getErrorLogs(
           dialog.title = i18n`Video is not currently available`;
           dialog.message = i18n`The live stream or video file are not yet ready.`;
           devlog.message = i18n`This playback-id may belong to a live stream that is not currently active or an asset that is not ready.`;
-          devlog.file = '412-live-stream-inactive.md';
+          devlog.file = '412-not-playable.md';
           break;
         }
         case 404: {
@@ -46,7 +46,7 @@ export async function getErrorLogs(
           dialog.title = i18n`Invalid playback URL`;
           dialog.message = i18n`The video URL or playback-token are formatted with incorrect or incomplete information.`;
           devlog.message = i18n`403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.`;
-          devlog.file = '403-forbidden.md';
+          devlog.file = 'missing-signed-tokens.md';
 
           if (!playbackToken) break;
 
@@ -69,6 +69,7 @@ export async function getErrorLogs(
                   currentDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(Date.now()),
                 }
               );
+            devlog.file = '403-expired-token.md';
             break;
           }
 
@@ -82,6 +83,7 @@ export async function getErrorLogs(
                   tokenPlaybackId,
                 }
               );
+            devlog.file = '403-playback-id-mismatch.md';
             break;
           }
 
@@ -92,10 +94,12 @@ export async function getErrorLogs(
               i18n`The playback-token has an incorrect aud value: {tokenType}. aud value should be v.`.format({
                 tokenType,
               });
+            devlog.file = '403-incorrect-aud-value.md';
             break;
           }
 
           devlog.message = i18n`403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.`;
+          devlog.file = '403-malformatted-token.md';
           break;
         }
       }
@@ -107,6 +111,7 @@ export async function getErrorLogs(
         title: i18n`Media Error`,
         message,
       };
+      devlog.file = 'media-decode-error.md';
       break;
     }
     case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
@@ -126,6 +131,7 @@ export async function getErrorLogs(
         title: i18n`Source Not Supported`,
         message: error.message,
       };
+      devlog.file = 'media-src-not-supported.md';
       break;
     }
     default:
