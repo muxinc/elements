@@ -6,6 +6,7 @@ import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt } from './utils';
+import * as logger from './logger';
 import type { MuxTemplateProps } from './types';
 import type { Metadata } from '@mux-elements/playback-core';
 
@@ -197,16 +198,12 @@ class MuxPlayerElement extends VideoApiElement {
       );
 
       if (devlog.message) {
-        console.warn(
-          `${devlog.message}${
-            devlog.file ? ` ${i18n`Read more: `}\nhttps://github.com/muxinc/elements/main/errors/${devlog.file}` : ''
-          }`
-        );
+        logger.devlog(devlog);
       }
 
-      console.error(error);
+      logger.error(error);
       if (error.data) {
-        console.error(`${error.name} data:`, error.data);
+        logger.error(`${error.name} data:`, error.data);
       }
 
       this.#setState({ isDialogOpen: true, dialog });
@@ -349,7 +346,7 @@ class MuxPlayerElement extends VideoApiElement {
       case PlayerAttributes.THUMBNAIL_TOKEN: {
         const { aud } = parseJwt(newValue);
         if (newValue && aud !== 't') {
-          console.warn(
+          logger.warn(
             i18n`The provided thumbnail-token should have audience value 't' instead of '{aud}'.`.format({ aud })
           );
         }
@@ -358,7 +355,7 @@ class MuxPlayerElement extends VideoApiElement {
       case PlayerAttributes.STORYBOARD_TOKEN: {
         const { aud } = parseJwt(newValue);
         if (newValue && aud !== 's') {
-          console.warn(
+          logger.warn(
             i18n`The provided storyboard-token should have audience value 's' instead of '{aud}'.`.format({ aud })
           );
         }
@@ -366,17 +363,20 @@ class MuxPlayerElement extends VideoApiElement {
       }
       case MuxVideoAttributes.PLAYBACK_ID: {
         if (!this.streamType) {
-          console.warn(
-            String(
+          logger.devlog({
+            file: 'invalid-stream-type.md',
+            message: String(
               i18n`No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
-            )
-          );
+            ),
+          });
         } else if (!['on-demand', 'live', 'll-live'].includes(this.streamType)) {
-          console.warn(
-            i18n`Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``.format(
-              { streamType: this.streamType }
-            )
-          );
+          logger.devlog({
+            file: 'invalid-stream-type.md',
+            message:
+              i18n`Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``.format(
+                { streamType: this.streamType }
+              ),
+          });
         }
         break;
       }
@@ -479,7 +479,7 @@ class MuxPlayerElement extends VideoApiElement {
   /**
    * Set the beacon collection domain. Used by Mux Data.
    */
- set beaconCollectionDomain(val: string | undefined) {
+  set beaconCollectionDomain(val: string | undefined) {
     // don't cause an infinite loop
     if (val === this.beaconCollectionDomain) return;
 
