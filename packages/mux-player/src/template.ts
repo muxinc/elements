@@ -117,7 +117,6 @@ export const ChromeRenderer = (props: MuxTemplateProps) => {
 const SeekToLiveButton = (props: Partial<MuxTemplateProps>) => html`
   <button 
     aria-disabled="${props.inLiveWindow}"
-    in-live-window="${props.inLiveWindow}"
     onclick="${function (this: HTMLButtonElement, evt: Event) {
       props.onSeekToLive?.(evt);
       if (props.paused) {
