@@ -101,8 +101,9 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-player';
 
 class MuxPlayerElement extends VideoApiElement {
+  #setupHappened = false;
   #tokens = {};
-  #userInactive: boolean;
+  #userInactive = true;
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     isDialogOpen: false,
@@ -133,14 +134,6 @@ class MuxPlayerElement extends VideoApiElement {
     //   // Temporarily here to load less segments on page load, remove later!!!!
     //   this.video.hls.config.maxMaxBufferLength = 2;
     // }
-
-    this.#setUpErrors();
-    this.#setUpCaptionsButton();
-    this.#setUpAirplayButton();
-    this.#setUpVolumeRange();
-
-    this.#userInactive = this.shadowRoot?.querySelector('media-controller')?.hasAttribute('user-inactive') ?? true;
-    this.#setUpCaptionsMovement();
   }
 
   connectedCallback() {
@@ -159,6 +152,26 @@ class MuxPlayerElement extends VideoApiElement {
 
   #render(props: Record<string, any> = {}) {
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
+    // Wait until after 1+ renders to check if we have the relevant elements on the (shadow) DOM. Only after they're
+    // available should we setup the various internal state monitoring methods, events, etc.
+    if (
+      !this.#setupHappened &&
+      this.video?.shadowRoot?.querySelector('video') &&
+      this.shadowRoot?.querySelector('media-controller')
+    ) {
+      this.#setupHappened = true;
+      this.#setUpErrors();
+      this.#setUpCaptionsButton();
+      this.#setUpAirplayButton();
+      this.#setUpVolumeRange();
+
+      this.#userInactive = this.shadowRoot?.querySelector('media-controller')?.hasAttribute('user-inactive') as boolean;
+      this.#setUpCaptionsMovement();
+
+      // While unlikely, we need to re-invoke render here just in case state has already changed before e.g.
+      // event handlers are setup to monitor dynamic state changes.
+      render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
+    }
   }
 
   #renderChrome() {
@@ -226,9 +239,16 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #setUpCaptionsButton() {
-    const onTrackCountChange = () => this.#render();
-    this.video?.textTracks?.addEventListener('addtrack', onTrackCountChange);
-    this.video?.textTracks?.addEventListener('removetrack', onTrackCountChange);
+    const onTrackCountChange = () => {
+      this.#render();
+    };
+    const textTracks = this.video?.textTracks;
+    if (!textTracks) {
+      console.warn('trying to setup captions monitoring but no TextTracks available!');
+      return;
+    }
+    textTracks.addEventListener('addtrack', onTrackCountChange);
+    textTracks.addEventListener('removetrack', onTrackCountChange);
   }
 
   #setUpCaptionsMovement() {
