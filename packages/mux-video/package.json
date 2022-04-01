@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-video",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "type": "commonjs",
   "description": "A custom mux video element for the browser that Just Works™",
   "module": "dist/index.mjs",

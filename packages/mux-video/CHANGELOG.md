@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.0...@mux-elements/mux-video@0.4.1) (2022-04-01)
+
+**Note:** Version bump only for package @mux-elements/mux-video
+
 # [0.4.0](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.3.0...@mux-elements/mux-video@0.4.0) (2022-03-28)
 
 ### Bug Fixes
