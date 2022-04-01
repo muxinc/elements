@@ -31,7 +31,7 @@ For feature requests, you can start by reviewing and filling out a [Feature Requ
 
 Before submitting a pull request, make sure you've reviewed and filled out an appropriate [Issue](https://github.com/muxinc/elements/issues/new/choose). We recommend doing this before starting any work, just in case an issue already exists, or it's unlikely the maintainers will be able to review the PR because it e.g. lacks sufficient reproduction steps. In addition, we recommend the following:
 
-1. While we do not (_**yet!**_) use [semantic releases/commits](https://openbase.com/js/@semantic-release/commit-analyzer/documentation), please try to name your branch and prefix your commits according to the type of changes you're making, and try to be as descriptive as possible in your commit messages. For example:
+1. We use [semantic releases/commits](https://openbase.com/js/@semantic-release/commit-analyzer/documentation), please try to name your branch and prefix your commits according to the type of changes you're making, and try to be as descriptive as possible in your commit messages. For example:
 
 - For Bug Fixes: `fix/my-fix-for-foo`
 - For Features: `feat/mux-video-feat-bar`
