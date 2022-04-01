@@ -32,6 +32,10 @@ export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
+  ${content(props)}
+`;
+
+export const content = (props: MuxTemplateProps) => html`
   <media-controller style="${getChromeStylesFromProps(props) ?? false}" class="size-${props.playerSize}">
     <mux-video
       slot="media"
@@ -70,22 +74,23 @@ export const template = (props: MuxTemplateProps) => html`
             kind="metadata"
             src="${getStoryboardURLFromPlaybackId(props.playbackId, props.tokens.storyboard)}"
           />`
-        : ''}
+        : html``}
     </mux-video>
     <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
     ${ChromeRenderer(props)}
     <mxp-dialog slot="centered-chrome" no-auto-hide open="${props.isDialogOpen}" onclose="${props.onCloseErrorDialog}">
-      ${props.dialog?.title && html`<h3>${props.dialog.title}</h3>`}
+      ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : html``}
       <p>
         ${props.dialog?.message}
-        ${props.dialog?.linkUrl &&
-        html`<a
-          href="${props.dialog.linkUrl}"
-          target="_blank"
-          rel="external noopener"
-          aria-label="${props.dialog.linkText ?? ''} ${i18n`(opens in a new window)`}"
-          >${props.dialog.linkText ?? props.dialog.linkUrl}</a
-        >`}
+        ${props.dialog?.linkUrl
+          ? html`<a
+              href="${props.dialog.linkUrl}"
+              target="_blank"
+              rel="external noopener"
+              aria-label="${props.dialog.linkText ?? ''} ${i18n`(opens in a new window)`}"
+              >${props.dialog.linkText ?? props.dialog.linkUrl}</a
+            >`
+          : html``}
       </p>
     </mxp-dialog>
   </media-controller>
@@ -175,9 +180,9 @@ const MediaFullscreenButton = () => html`
 // prettier-ignore
 export const VodChromeExtraSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.hasCaptions && MediaCaptionsButton(props)}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${Spacer()}
-    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${props.supportsAirPlay ? MediaAirplayButton() : html``}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -193,8 +198,8 @@ export const VodChromeExtraSmall = (props: MuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
-    ${props.hasCaptions && MediaCaptionsButton(props)}
-    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${props.supportsAirPlay ? MediaAirplayButton() : html``}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -206,7 +211,7 @@ export const VodChromeSmall = (props: MuxTemplateProps) => html`
     <media-time-range></media-time-range>
     <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
-    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
+    ${props.supportsVolume ? html`<media-volume-range></media-volume-range>` : html``}
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -224,10 +229,10 @@ export const VodChromeLarge = (props: MuxTemplateProps) => html`
     <media-time-range></media-time-range>
     <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
-    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
+    ${props.supportsVolume ? html`<media-volume-range></media-volume-range>` : html``}
     <media-playback-rate-button></media-playback-rate-button>
-    ${props.hasCaptions && MediaCaptionsButton(props)}
-    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${props.supportsAirPlay ? MediaAirplayButton() : html``}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -241,8 +246,8 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
     <media-text-display class="mxp-live-indicator">Live</media-text-display>
     ${Spacer()}
-    ${props.hasCaptions && MediaCaptionsButton(props)}
-    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${props.supportsAirPlay ? MediaAirplayButton() : html``}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -250,7 +255,7 @@ export const LiveChromeSmall = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
+    ${props.supportsVolume ? html`<media-volume-range></media-volume-range>` : html``}
     ${Spacer()}
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -266,10 +271,10 @@ export const LiveChromeLarge = (props: MuxTemplateProps) => html`
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    ${props.supportsVolume && html`<media-volume-range></media-volume-range>`}
+    ${props.supportsVolume ? html`<media-volume-range></media-volume-range>` : html``}
     ${Spacer()}
-    ${props.hasCaptions && MediaCaptionsButton(props)}
-    ${props.supportsAirPlay && MediaAirplayButton()}
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${props.supportsAirPlay ? MediaAirplayButton() : html``}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
