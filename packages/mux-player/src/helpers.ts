@@ -14,7 +14,19 @@ const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
 export const getSrcFromPlaybackId = (playbackId?: string, token?: string) => {
-  return `https://stream.mux.com/${playbackId}.m3u8${toQuery({ token })}`;
+  /*
+   * 2022-04-01 djhaveri
+   *
+   * `redundant_streams` query param can only be added to public
+   * playback IDs, in order to use this feature with signed URLs
+   * the query param must be added to the signing token.
+   *
+   * https://docs.mux.com/guides/video/play-your-videos#add-delivery-redundancy-with-redundant-streams
+   *
+   * */
+  const isSignedUrl = !!token;
+  const query = isSignedUrl ? { token } : { redundant_streams: true };
+  return `https://stream.mux.com/${playbackId}.m3u8${toQuery(query)}`;
 };
 
 export const getPosterURLFromPlaybackId = (playbackId?: string, token?: string) => {
