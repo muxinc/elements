@@ -91,6 +91,11 @@ export const seekToLive = (el: MuxPlayerElement) => {
   el.currentTime = liveTime;
 };
 
+export const LL_LIVE_SEGMENT_SECS = 1;
+export const LIVE_SEGMENT_SECS = 2;
+export const DEFAULT_HOLDBACK = 3;
+export const LIVE_HOLDBACK_MOE = 0.5;
+
 export const isInLiveWindow = (el: MuxPlayerElement) => {
   const { streamType } = el;
   const liveTime = getLiveTime(el);
@@ -99,11 +104,13 @@ export const isInLiveWindow = (el: MuxPlayerElement) => {
     return false;
   }
   const delta = liveTime - currentTime;
+  // The live window is based on whether or not the current playhead is within n segment durations (plus a margin of error)
+  // of the live edge (CJP)
   if (streamType === StreamTypes.LL_LIVE) {
-    return delta <= 1 * 3.5;
+    return delta <= LL_LIVE_SEGMENT_SECS * (DEFAULT_HOLDBACK + LIVE_HOLDBACK_MOE);
   }
   if (streamType === StreamTypes.LIVE) {
-    return delta <= 2 * 3.5;
+    return delta <= LIVE_SEGMENT_SECS * (DEFAULT_HOLDBACK + LIVE_HOLDBACK_MOE);
   }
   return false;
 };

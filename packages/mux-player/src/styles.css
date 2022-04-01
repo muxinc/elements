@@ -117,13 +117,13 @@ media-time-display {
 }
 
 .mxp-seek-to-live-button {
-  background-color: var(----media-control-background);
+  background-color: var(--media-control-background);
   color: white;
   border: none;
   cursor: pointer;
 }
 
-.mxp-seek-to-live-button[in-live-window] {
+.mxp-seek-to-live-button[aria-disabled] {
   cursor: default;
   pointer-events: none;
 }
@@ -134,6 +134,6 @@ media-time-display {
   padding-right: 5px;
 }
 
-.mxp-seek-to-live-button[in-live-window]::before {
+.mxp-seek-to-live-button[aria-disabled]::before {
   color: #fb3c4d;
 }
