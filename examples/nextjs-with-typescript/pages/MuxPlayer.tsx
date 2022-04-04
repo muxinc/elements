@@ -42,6 +42,7 @@ function MuxPlayerPage() {
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
+
   return (
     <div
       style={{
