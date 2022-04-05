@@ -25,6 +25,8 @@ export type Tokens = {
   storyboard?: string;
 };
 
+type MediaController = Element & { media: HTMLVideoElement };
+
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
 const MediaChromeSizes = {
@@ -130,7 +132,14 @@ class MuxPlayerElement extends VideoApiElement {
     super();
 
     this.attachShadow({ mode: 'open' });
+    // The next line triggers the first render of the template.
     this.#setState({ playerSize: getPlayerSize(this) });
+
+    // Fixes a bug in React where mux-player's CE children were not upgraded yet.
+    // These lines ensure the rendered mux-video and media-controller are upgraded,
+    // even before they are connected to the main document.
+    customElements.upgrade(this.video);
+    customElements.upgrade(this.mediaController);
 
     this.querySelectorAll(':scope > track').forEach((track) => {
       this.video?.append(track.cloneNode());
@@ -150,10 +159,14 @@ class MuxPlayerElement extends VideoApiElement {
     this.#setUpAirplayButton();
     this.#setUpVolumeRange();
 
-    this.#userInactive = this.shadowRoot?.querySelector('media-controller')?.hasAttribute('user-inactive') ?? true;
+    this.#userInactive = this.mediaController.hasAttribute('user-inactive');
     this.#setUpCaptionsMovement();
 
     this.#monitorLiveWindow();
+  }
+
+  get mediaController(): MediaController {
+    return (this.shadowRoot as ShadowRoot).querySelector('media-controller') as MediaController;
   }
 
   connectedCallback() {
@@ -263,7 +276,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   #setUpCaptionsMovement() {
     type Maybe<T> = T | null | undefined;
-    type MediaController = Element & { media: HTMLVideoElement };
 
     const mc: Maybe<MediaController> = this.shadowRoot?.querySelector('media-controller');
 
