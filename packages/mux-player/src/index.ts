@@ -1,6 +1,7 @@
 import '@mux-elements/polyfills/window';
-import 'media-chrome';
-import { MediaError } from '@mux-elements/mux-video';
+// @ts-ignore
+import { MediaController } from 'media-chrome';
+import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
 import VideoApiElement from './video-api';
 import {
   getCcSubTracks,
@@ -113,7 +114,7 @@ const playerSoftwareName = 'mux-player';
 
 class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
-  #userInactive: boolean;
+  #userInactive = true;
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     isDialogOpen: false,
@@ -138,8 +139,15 @@ class MuxPlayerElement extends VideoApiElement {
     // Fixes a bug in React where mux-player's CE children were not upgraded yet.
     // These lines ensure the rendered mux-video and media-controller are upgraded,
     // even before they are connected to the main document.
-    customElements.upgrade(this.video);
-    customElements.upgrade(this.mediaController);
+    customElements.upgrade(this.video as Node);
+    if (!(this.video instanceof MuxVideoElement)) {
+      logger.error('<mux-video> failed to upgrade!');
+    }
+
+    customElements.upgrade(this.mediaController as Node);
+    if (!(this.mediaController instanceof MediaController)) {
+      logger.error('<media-controller> failed to upgrade!');
+    }
 
     this.querySelectorAll(':scope > track').forEach((track) => {
       this.video?.append(track.cloneNode());
@@ -158,15 +166,13 @@ class MuxPlayerElement extends VideoApiElement {
     this.#setUpCaptionsButton();
     this.#setUpAirplayButton();
     this.#setUpVolumeRange();
-
-    this.#userInactive = this.mediaController.hasAttribute('user-inactive');
-    this.#setUpCaptionsMovement();
-
     this.#monitorLiveWindow();
+    this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
+    this.#setUpCaptionsMovement();
   }
 
-  get mediaController(): MediaController {
-    return (this.shadowRoot as ShadowRoot).querySelector('media-controller') as MediaController;
+  get mediaController(): MediaController | null | undefined {
+    return this.shadowRoot?.querySelector('media-controller');
   }
 
   connectedCallback() {
