@@ -136,8 +136,9 @@ class CustomVideoElement extends HTMLElement {
         this.nativeEl.removeAttribute(attrName);
       } else {
         // Ignore a few that don't need to be passed through just in case
-        // it creates unexpected behavior.
-        if (['id', 'class'].indexOf(attrName) === -1) {
+        // it creates unexpected behavior. Exclude attributes with a dash
+        // which are most likely custom attributes.
+        if (!/^(id|class)$|-/.test(attrName)) {
           this.nativeEl.setAttribute(attrName, newValue);
         }
       }
