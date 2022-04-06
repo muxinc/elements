@@ -1,6 +1,7 @@
 import '@mux-elements/polyfills/window';
-import 'media-chrome';
-import { MediaError } from '@mux-elements/mux-video';
+// @ts-ignore
+import { MediaController } from 'media-chrome';
+import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
 import VideoApiElement from './video-api';
 import {
   getCcSubTracks,
@@ -24,6 +25,8 @@ export type Tokens = {
   thumbnail?: string;
   storyboard?: string;
 };
+
+type MediaController = Element & { media: HTMLVideoElement };
 
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
@@ -110,7 +113,6 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-player';
 
 class MuxPlayerElement extends VideoApiElement {
-  #setupHappened = false;
   #tokens = {};
   #userInactive = true;
   #resizeObserver?: ResizeObserver;
@@ -131,7 +133,21 @@ class MuxPlayerElement extends VideoApiElement {
     super();
 
     this.attachShadow({ mode: 'open' });
+    // The next line triggers the first render of the template.
     this.#setState({ playerSize: getPlayerSize(this) });
+
+    // Fixes a bug in React where mux-player's CE children were not upgraded yet.
+    // These lines ensure the rendered mux-video and media-controller are upgraded,
+    // even before they are connected to the main document.
+    customElements.upgrade(this.video as Node);
+    if (!(this.video instanceof MuxVideoElement)) {
+      logger.error('<mux-video> failed to upgrade!');
+    }
+
+    customElements.upgrade(this.mediaController as Node);
+    if (!(this.mediaController instanceof MediaController)) {
+      logger.error('<media-controller> failed to upgrade!');
+    }
 
     this.querySelectorAll(':scope > track').forEach((track) => {
       this.video?.append(track.cloneNode());
@@ -145,6 +161,18 @@ class MuxPlayerElement extends VideoApiElement {
     //   // Temporarily here to load less segments on page load, remove later!!!!
     //   this.video.hls.config.maxMaxBufferLength = 2;
     // }
+
+    this.#setUpErrors();
+    this.#setUpCaptionsButton();
+    this.#setUpAirplayButton();
+    this.#setUpVolumeRange();
+    this.#monitorLiveWindow();
+    this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
+    this.#setUpCaptionsMovement();
+  }
+
+  get mediaController(): MediaController | null | undefined {
+    return this.shadowRoot?.querySelector('media-controller');
   }
 
   connectedCallback() {
@@ -163,27 +191,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   #render(props: Record<string, any> = {}) {
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
-    // Wait until after 1+ renders to check if we have the relevant elements on the (shadow) DOM. Only after they're
-    // available should we setup the various internal state monitoring methods, events, etc.
-    if (
-      !this.#setupHappened &&
-      this.video?.shadowRoot?.querySelector('video') &&
-      this.shadowRoot?.querySelector('media-controller')
-    ) {
-      this.#setupHappened = true;
-      this.#setUpErrors();
-      this.#setUpCaptionsButton();
-      this.#setUpAirplayButton();
-      this.#setUpVolumeRange();
-
-      this.#userInactive = this.shadowRoot?.querySelector('media-controller')?.hasAttribute('user-inactive') as boolean;
-      this.#setUpCaptionsMovement();
-      this.#monitorLiveWindow();
-
-      // While unlikely, we need to re-invoke render here just in case state has already changed before e.g.
-      // event handlers are setup to monitor dynamic state changes.
-      render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
-    }
   }
 
   #renderChrome() {
@@ -268,21 +275,13 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #setUpCaptionsButton() {
-    const onTrackCountChange = () => {
-      this.#render();
-    };
-    const textTracks = this.video?.textTracks;
-    if (!textTracks) {
-      console.warn('trying to setup captions monitoring but no TextTracks available!');
-      return;
-    }
-    textTracks.addEventListener('addtrack', onTrackCountChange);
-    textTracks.addEventListener('removetrack', onTrackCountChange);
+    const onTrackCountChange = () => this.#render();
+    this.video?.textTracks?.addEventListener('addtrack', onTrackCountChange);
+    this.video?.textTracks?.addEventListener('removetrack', onTrackCountChange);
   }
 
   #setUpCaptionsMovement() {
     type Maybe<T> = T | null | undefined;
-    type MediaController = Element & { media: HTMLVideoElement };
 
     const mc: Maybe<MediaController> = this.shadowRoot?.querySelector('media-controller');
 
