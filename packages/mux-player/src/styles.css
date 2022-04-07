@@ -116,6 +116,10 @@ media-time-display {
   white-space: nowrap;
 }
 
+:is(media-time-display, media-text-display, media-playback-rate-button) {
+  color: inherit;
+}
+
 .mxp-seek-to-live-button {
   background-color: var(--media-control-background);
   color: white;

@@ -2,6 +2,9 @@ const styles = `
   :host {
     cursor: pointer;
   }
+  media-time-display {
+    color: inherit;
+  }
 `;
 
 const template = document.createElement('template');
