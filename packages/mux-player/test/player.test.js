@@ -347,87 +347,87 @@ describe('<mux-player>', () => {
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/storyboard.vtt?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3NzcsImF1ZCI6InMiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.aVd0dsOJUVeQko3BWd9YEhL41Eytf_ZfaBeNzHSSUqU_gREa_jJEVTlRfuiE4g71cKJLSiVTKP7f-F7Txh6DlL8E2SkonfIPB2H0f_3DQxYLso2E8qI4zuJkyxKORbQFLAEB_vSE-2lMbrHXfdpQhv6SrVyu6di9ku0LpFpoyz-_7fVJICr8nhlsqOGt66AYcaa99TXoZ582FWzBaePmWw-WWKYsLvtNjLS9UoxbdVaBRwNylohvhh-i1Y9dNilyNooJ7O8Cj4GuMjeh1pCj0BOrGagxrWrswm3HjUVNUqFq5JCWnJCxgjjwiV4RLZg_4z7gkBXyX7H2-i1dKA3Cpw'
     );
   });
+});
 
-  describe('seek to live behaviors', () => {
-    it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {
-      const playerEl = await fixture(`<mux-player
-        playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-        stream-type="vod"
-      ></mux-player>`);
+describe('seek to live behaviors', () => {
+  it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {
+    const playerEl = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="vod"
+    ></mux-player>`);
 
-      const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
-      const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
-      assert.exists(mediaControllerEl);
-      assert.notExists(seekToLiveEl);
-    });
+    const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    assert.exists(mediaControllerEl);
+    assert.notExists(seekToLiveEl);
+  });
 
-    it('should have a seek to live button if the stream-type is live', async function () {
-      const playerEl = await fixture(`<mux-player
-        playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
-        stream-type="live"
-      ></mux-player>`);
+  it('should have a seek to live button if the stream-type is live', async function () {
+    const playerEl = await fixture(`<mux-player
+      playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+      stream-type="live"
+    ></mux-player>`);
 
-      const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
-      const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
-      assert.exists(mediaControllerEl);
-      assert.exists(seekToLiveEl);
-    });
+    const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    assert.exists(mediaControllerEl);
+    assert.exists(seekToLiveEl);
+  });
 
-    it('should have a seek to live button if the stream-type is ll-live', async function () {
-      const playerEl = await fixture(`<mux-player
-        playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
-        stream-type="ll-live"
-      ></mux-player>`);
+  it('should have a seek to live button if the stream-type is ll-live', async function () {
+    const playerEl = await fixture(`<mux-player
+      playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+      stream-type="ll-live"
+    ></mux-player>`);
 
-      const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
-      const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
-      assert.exists(mediaControllerEl);
-      assert.exists(seekToLiveEl);
-    });
+    const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    assert.exists(mediaControllerEl);
+    assert.exists(seekToLiveEl);
+  });
 
-    it('should should seek to live when seek to live button pressed', async function () {
-      this.timeout(12000);
-      const playerEl = await fixture(`<mux-player
-        playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
-        muted
-        stream-type="ll-live"
-      ></mux-player>`);
+  it('should should seek to live when seek to live button pressed', async function () {
+    this.timeout(12000);
+    const playerEl = await fixture(`<mux-player
+      playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+      muted
+      stream-type="ll-live"
+    ></mux-player>`);
 
-      const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
-      // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
-      try {
-        await playerEl.play();
-      } catch (_e) {}
-      await waitUntil(() => !playerEl.paused, 'play() failed');
-      await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
-      playerEl.pause();
-      await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
-      seekToLiveEl.click();
-      await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
-      return Promise.resolve();
-    });
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
+    try {
+      await playerEl.play();
+    } catch (_e) {}
+    await waitUntil(() => !playerEl.paused, 'play() failed');
+    await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
+    playerEl.pause();
+    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
+    seekToLiveEl.click();
+    await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
+    return Promise.resolve();
+  });
 
-    it('should should seek to live when play button is pressed', async function () {
-      this.timeout(12000);
-      const playerEl = await fixture(`<mux-player
-        playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
-        muted
-        stream-type="ll-live"
-      ></mux-player>`);
+  it('should should seek to live when play button is pressed', async function () {
+    this.timeout(12000);
+    const playerEl = await fixture(`<mux-player
+      playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+      muted
+      stream-type="ll-live"
+    ></mux-player>`);
 
-      const mcPlayEl = playerEl.shadowRoot.querySelector('media-play-button');
-      // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
-      try {
-        await playerEl.play();
-      } catch (_e) {}
-      await waitUntil(() => !playerEl.paused, 'play() failed');
-      await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
-      playerEl.pause();
-      await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
-      mcPlayEl.click();
-      await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
-      return Promise.resolve();
-    });
+    const mcPlayEl = playerEl.shadowRoot.querySelector('media-play-button');
+    // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
+    try {
+      await playerEl.play();
+    } catch (_e) {}
+    await waitUntil(() => !playerEl.paused, 'play() failed');
+    await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
+    playerEl.pause();
+    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
+    mcPlayEl.click();
+    await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
+    return Promise.resolve();
   });
 });
 
