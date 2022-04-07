@@ -112,15 +112,20 @@ const PlayerAttributeNames = Object.values(PlayerAttributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-player';
 
+const initialState = {
+  dialog: undefined,
+  isDialogOpen: false,
+  inLiveWindow: false,
+};
+
 class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
   #userInactive = true;
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
-    isDialogOpen: false,
+    ...initialState,
     supportsAirPlay: false,
     supportsVolume: false,
-    inLiveWindow: false,
     onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
     onSeekToLive: () => seekToLive(this),
   };
@@ -388,6 +393,11 @@ class MuxPlayerElement extends VideoApiElement {
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (attrName === MuxVideoAttributes.PLAYBACK_ID && oldValue !== newValue) {
+      this.#state = { ...this.#state, ...initialState };
+    }
+
     this.#render({ [toPropName(attrName)]: newValue });
 
     switch (attrName) {
