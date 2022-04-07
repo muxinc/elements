@@ -354,6 +354,25 @@ describe('<mux-player>', () => {
   });
 });
 
+describe('<mux-player> playbackId transitions', () => {
+  it('loads the new playbackId', async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
+
+    player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';
+
+    assert.equal(
+      player.src,
+      'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8?redundant_streams=true'
+    );
+  });
+});
+
 describe('seek to live behaviors', () => {
   it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {
     const playerEl = await fixture(`<mux-player
