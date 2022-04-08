@@ -1,0 +1,46 @@
+:host {
+  /* default aspect ratio, overwrite w/ e.g. style="aspect-ratio: 16 / 10" */
+  aspect-ratio: 16 / 9;
+  display: block;
+  width: 100%;
+}
+
+/* Hide custom elements that are not defined yet */
+:not(:defined) {
+  display: none;
+}
+
+a {
+  color: #fff;
+  font-size: 0.9em;
+  text-decoration: underline;
+}
+
+media-controller {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mxp-seek-to-live-button {
+  height: 44px;
+  background-color: var(--media-control-background);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.mxp-seek-to-live-button[aria-disabled] {
+  cursor: default;
+  pointer-events: none;
+}
+
+.mxp-seek-to-live-button::before {
+  content: '● ';
+  color: rgb(118, 118, 118);
+  padding-right: 5px;
+}
+
+.mxp-seek-to-live-button[aria-disabled]::before {
+  color: #fb3c4d;
+}

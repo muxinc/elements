@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { createTemplateInstance } from './html';
+import { createTemplateInstance } from '../html';
 import airplayIcon from './icons/airplay.svg';
 import captionsOffIcon from './icons/captions-off.svg';
 import captionsOnIcon from './icons/captions-on.svg';

@@ -3,6 +3,9 @@ import '@mux-elements/playback-core';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
+import type { Metadata } from '@mux-elements/playback-core';
+import MediaThemeMux from './media-theme-mux/media-theme-mux';
+import { StreamTypes } from './constants';
 import VideoApiElement from './video-api';
 import {
   getCcSubTracks,
@@ -18,7 +21,6 @@ import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps } from './types';
-import type { Metadata } from '@mux-elements/playback-core';
 
 export { MediaError };
 export type Tokens = {
@@ -150,6 +152,11 @@ class MuxPlayerElement extends VideoApiElement {
     // Fixes a bug in React where mux-player's CE children were not upgraded yet.
     // These lines ensure the rendered mux-video and media-controller are upgraded,
     // even before they are connected to the main document.
+    customElements.upgrade(this.theme as Node);
+    if (!(this.theme instanceof MediaThemeMux)) {
+      logger.error('<media-theme-mux> failed to upgrade!');
+    }
+
     customElements.upgrade(this.video as Node);
     if (!(this.video instanceof MuxVideoElement)) {
       logger.error('<mux-video> failed to upgrade!');
@@ -182,8 +189,12 @@ class MuxPlayerElement extends VideoApiElement {
     this.#setUpCaptionsMovement();
   }
 
+  get theme(): Element | null | undefined {
+    return Array.from(this.shadowRoot?.children ?? []).find(({ localName }) => localName.startsWith('media-theme-'));
+  }
+
   get mediaController(): MediaController | null | undefined {
-    return this.shadowRoot?.querySelector('media-controller');
+    return this.theme?.shadowRoot?.querySelector('media-controller');
   }
 
   connectedCallback() {
@@ -220,6 +231,15 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #monitorLiveWindow() {
+    this.mediaController?.addEventListener('mediaplayrequest', (event) => {
+      if (
+        (event.target as Element)?.localName === 'media-play-button' &&
+        (this.streamType === StreamTypes.LIVE || this.streamType === StreamTypes.LL_LIVE)
+      ) {
+        seekToLive(this);
+      }
+    });
+
     const updateLiveWindow = () => {
       const nextInLiveWindow = isInLiveWindow(this);
       const prevInLiveWindow = this.#state.inLiveWindow;

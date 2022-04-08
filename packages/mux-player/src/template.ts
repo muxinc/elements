@@ -1,3 +1,4 @@
+import './media-theme-mux/media-theme-mux';
 import './dialog';
 import {
   getChromeStylesFromProps,
@@ -21,7 +22,16 @@ export const template = (props: MuxTemplateProps) => html`
 `;
 
 export const content = (props: MuxTemplateProps) => html`
-  <media-theme-mux style="${getChromeStylesFromProps(props) ?? false}" class="size-${props.playerSize}">
+  <media-theme-mux
+    style="${getChromeStylesFromProps(props) ?? false}"
+    class="size-${props.playerSize}"
+    stream-type="${props.streamType}"
+    player-size="${props.playerSize}"
+    has-captions="${props.hasCaptions}"
+    default-hidden-captions="${props.defaultHiddenCaptions}"
+    forward-seek-offset="${props.forwardSeekOffset}"
+    backward-seek-offset="${props.backwardSeekOffset}"
+  >
     <mux-video
       slot="media"
       crossorigin
@@ -61,8 +71,21 @@ export const content = (props: MuxTemplateProps) => html`
           />`
         : html``}
     </mux-video>
-
-    <mxp-dialog slot="centered-chrome" no-auto-hide open="${props.isDialogOpen}" onclose="${props.onCloseErrorDialog}">
+    <button
+      slot="seek-to-live-button"
+      aria-disabled="${props.inLiveWindow}"
+      onclick="${function (this: HTMLButtonElement, evt: Event) {
+        props.onSeekToLive?.(evt);
+        if (props.paused) {
+          const playRequestEvt = new CustomEvent('mediaplayrequest', { composed: true, bubbles: true });
+          (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
+        }
+      }}"
+      class="mxp-seek-to-live-button"
+    >
+      Live
+    </button>
+    <mxp-dialog no-auto-hide open="${props.isDialogOpen}" onclose="${props.onCloseErrorDialog}">
       ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : html``}
       <p>
         ${props.dialog?.message}

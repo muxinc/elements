@@ -2,15 +2,16 @@
   display: inline-block;
 }
 
-/* Hide custom elements that are not defined yet */
-:not(:defined) {
+media-airplay-button[media-airplay-unavailable] {
   display: none;
 }
 
-a {
-  color: #fff;
-  font-size: 0.9em;
-  text-decoration: underline;
+media-volume-range[media-volume-unavailable] {
+  display: none;
+}
+
+media-pip-button[media-pip-unavailable] {
+  display: none;
 }
 
 media-controller {
@@ -113,26 +114,4 @@ media-time-display {
 
 :is(media-time-display, media-text-display, media-playback-rate-button) {
   color: inherit;
-}
-
-.mxp-seek-to-live-button {
-  background-color: var(--media-control-background);
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.mxp-seek-to-live-button[aria-disabled] {
-  cursor: default;
-  pointer-events: none;
-}
-
-.mxp-seek-to-live-button::before {
-  content: '● ';
-  color: rgb(118, 118, 118);
-  padding-right: 5px;
-}
-
-.mxp-seek-to-live-button[aria-disabled]::before {
-  color: #fb3c4d;
 }
