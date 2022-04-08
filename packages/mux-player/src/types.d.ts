@@ -25,6 +25,9 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
     thumbnail?: string;
     storyboard?: string;
   };
+  metadataVideoId: string;
+  metadataVideoTitle: string;
+  metadataViewerUserId: string;
 };
 
 export type DialogOptions = {

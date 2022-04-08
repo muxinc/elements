@@ -103,6 +103,11 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     defaultHiddenCaptions: el.defaultHiddenCaptions,
     playerSize: getPlayerSize(el),
     hasCaptions: !!getCcSubTracks(el).length,
+    // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
+    // and to guarantee they'll all be set *before* the playback id is set, using attr values here (CJP)
+    metadataVideoId: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_ID),
+    metadataVideoTitle: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_TITLE),
+    metadataViewerUserId: el.getAttribute(MuxVideoAttributes.METADATA_VIEWER_USER_ID),
     ...state,
   };
 }

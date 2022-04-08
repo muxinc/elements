@@ -43,6 +43,14 @@ export const content = (props: MuxTemplateProps) => html`
       debug="${props.debug ?? false}"
       prefer-mse="${props.preferMse ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"
+      metadata-video-id="${props.metadataVideoId ?? props.metadata?.video_id ?? false}"
+      metadata-video-title="${props.metadataVideoTitle ?? props.metadata?.video_title ?? false}"
+      metadata-viewer-user-id="${props.metadataViewerUserId ?? props.metadata?.viewer_user_id ?? false}"
+      beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
+      player-software-name="${props.playerSoftwareName}"
+      player-software-version="${props.playerSoftwareVersion}"
+      env-key="${props.envKey ?? false}"
+      stream-type="${props.streamType ?? false}"
       src="${!!props.src
         ? props.src
         : props.playbackId
@@ -53,14 +61,6 @@ export const content = (props: MuxTemplateProps) => html`
         : props.playbackId
         ? getPosterURLFromPlaybackId(props.playbackId, props.tokens.thumbnail)
         : false}"
-      player-software-name="${props.playerSoftwareName}"
-      player-software-version="${props.playerSoftwareVersion}"
-      env-key="${props.envKey ?? false}"
-      stream-type="${props.streamType ?? false}"
-      metadata-video-id="${props.metadata?.video_id ?? false}"
-      metadata-video-title="${props.metadata?.video_title ?? false}"
-      metadata-viewer-user-id="${props.metadata?.viewer_user_id ?? false}"
-      beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
     >
       ${props.playbackId && props.streamType !== StreamTypes.LIVE && props.streamType !== StreamTypes.LL_LIVE
         ? html`<track
