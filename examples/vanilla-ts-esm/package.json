@@ -7,7 +7,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "dev": "yarn esbuild --servedir=public",
+    "dev": "yarn esbuild --servedir=public --serve=localhost:8004",
     "esbuild": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist",
     "build": "yarn esbuild --minify",
     "predeploy": "yarn run build",
