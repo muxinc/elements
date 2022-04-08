@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.2](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.1...@mux-elements/mux-video@0.4.2) (2022-04-08)
+
+### Bug Fixes
+
+- **mux-video:** prevent forward custom attrs ([#172](https://github.com/muxinc/elements/issues/172)) ([91a7812](https://github.com/muxinc/elements/commit/91a7812dff7163396440d8d1af26f94d04d3fea3))
+
 ## [0.4.1](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.0...@mux-elements/mux-video@0.4.1) (2022-04-01)
 
 **Note:** Version bump only for package @mux-elements/mux-video
