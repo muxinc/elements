@@ -5,37 +5,6 @@
     <title>Basic &lt;mux-player/&gt; example</title>
     <script type="module" src="./dist/mux-player.js"></script>
     <style>
-      body {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      mux-player {
-        width: 100%;
-        max-width: 800px;
-        margin: 40px auto;
-        display: block;
-      }
-
-      .buttons {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-
-      @media (max-width: 300px) {
-        .buttons {
-          display: inline-block;
-        }
-      }
-
-      .buttons button {
-        margin: 5px;
-      }
     </style>
   </head>
   <body>
@@ -52,38 +21,66 @@
       forward-seek-offset="10"
       backward-seek-offset="10"
      -->
-
-    <mux-player
-      playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
-      env-key="5e67cqdt7hgc9vkla7p0qch7q"
-      metadata-video-id="video-id-54321"
-      metadata-video-title="Star Wars: Episode 2"
-      metadata-viewer-user-id="user-id-007"
-      stream-type="on-demand"
-    ></mux-player>
-
-    <div class="buttons">
-      <button class="dialog-show-btn">Show error dialog</button>
-      <button class="dialog-close-btn">Close dialog</button>
-    </div>
-    <br />
+     <div>
+       <mux-player
+         id="media"
+         stream-type="on-demand"
+         muted
+       ></mux-player>
+     </div>
+     <div>
+       <label for="playbackIdInput">Playback Id</label>
+       <input id="playbackIdInput" type="text"/>
+       <label for="widthInput">Width</label>
+       <input id="widthInput" type="text"/>
+       <label for="heightInput">Height</label>
+       <input id="heightInput" type="text"/>
+     </div>
 
     <script>
-      let player = document.querySelector("mux-player");
-      document
-        .querySelector(".dialog-show-btn")
-        .addEventListener("click", () => {
-          player.dispatchEvent(
-            new CustomEvent("error", {
-              detail: { code: MediaError.MEDIA_ERR_NETWORK },
-            })
-          );
-        });
-      document
-        .querySelector(".dialog-close-btn")
-        .addEventListener("click", () => {
-          player.shadowRoot.querySelector("mxp-dialog").close();
-        });
+      const params = new URLSearchParams(window.location.search);
+      const mediaEl = document.querySelector('#media');
+
+      const playbackIdInput = document.querySelector('#playbackIdInput');
+      playbackIdInput.addEventListener('change', () => {
+        if (mediaEl.getAttribute('playback-id') !== playbackIdInput.value) {
+          mediaEl.setAttribute('playback-id', playbackIdInput.value);
+        }
+      });
+      if (params.has('playback-id')) {
+        playbackIdInput.value = params.get('playback-id');
+        if (mediaEl.getAttribute('playback-id') !== playbackIdInput.value) {
+          mediaEl.setAttribute('playback-id', playbackIdInput.value);
+        }
+      }
+
+      const widthInput = document.querySelector('#widthInput');
+      widthInput.addEventListener('change', () => {
+        if (mediaEl.style.width !== widthInput.value) {
+          mediaEl.style.width = widthInput.value;
+        }
+      });
+      if (params.has('width')) {
+        widthInput.value = params.get('width');
+        if (mediaEl.style.width !== widthInput.value) {
+          mediaEl.style.width = widthInput.value;
+        }
+      }
+
+      const heightInput = document.querySelector('#heightInput');
+      heightInput.addEventListener('change', () => {
+        if (mediaEl.style.height !== heightInput.value) {
+          mediaEl.style.height = heightInput.value;
+        }
+      });
+
+      if (params.has('height')) {
+        heightInput.value = params.get('height');
+        if (mediaEl.style.height !== heightInput.value) {
+          mediaEl.style.height = heightInput.value;
+        }
+      }
+      
     </script>
 
     <a href="../">Browse Elements</a>

@@ -5,16 +5,52 @@
     <title>Basic &lt;mux-video/&gt; example</title>
     <script type="module" src="./dist/mux-video.js"></script>
     <style>
+      media-controller {
+        --media-aspect-ratio: auto;
+        --media-control-background: transparent;
+        --media-control-hover-background: transparent;
+        --media-range-track-background-color: rgba(255, 255, 255, 0.5);
+        --media-range-track-border-radius: 3px;
+        --media-aspect-ratio: auto;
+        display: inline-block;
+        width: auto;
+        height: auto;
+      }
+
+      media-controller::part(media-layer) {
+        /* "reset" current styles for media-layer */
+        position: initial;
+        top: initial;
+        left: initial;
+        bottom: initial;
+        right: initial;
+        flex-flow: initial;
+        align-items: initial;
+        /* end of "reset" current styles for media-layer */
+        display: contents;
+      }
+
+      media-controller :is(mux-video, media-poster-image) {
+        min-width: 100%;
+        min-height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+      }
     </style>
   </head>
   <body>
     <div>
-      <mux-video
-        id="media"
-        stream-type="on-demand"
-        muted
-        controls
-      ></mux-video>
+      <media-controller>
+        <mux-video
+          id="media"
+          slot="media"
+          stream-type="on-demand"
+          muted
+          controls
+        ></mux-video>
+      </media-controller>
     </div>
     <div>
       <label for="playbackIdInput">Playback Id</label>
@@ -28,6 +64,7 @@
    <script>
      const params = new URLSearchParams(window.location.search);
      const mediaEl = document.querySelector('#media');
+     const mcEl = document.querySelector('media-controller');
 
      const playbackIdInput = document.querySelector('#playbackIdInput');
      playbackIdInput.addEventListener('change', () => {
@@ -44,28 +81,28 @@
 
      const widthInput = document.querySelector('#widthInput');
      widthInput.addEventListener('change', () => {
-       if (mediaEl.style.width !== widthInput.value) {
-         mediaEl.style.width = widthInput.value;
+       if (mcEl.style.width !== widthInput.value) {
+        mcEl.style.width = widthInput.value;
        }
      });
      if (params.has('width')) {
        widthInput.value = params.get('width');
-       if (mediaEl.style.width !== widthInput.value) {
-         mediaEl.style.width = widthInput.value;
+       if (mcEl.style.width !== widthInput.value) {
+        mcEl.style.width = widthInput.value;
        }
      }
 
      const heightInput = document.querySelector('#heightInput');
      heightInput.addEventListener('change', () => {
-       if (mediaEl.style.height !== heightInput.value) {
-         mediaEl.style.height = heightInput.value;
+       if (mcEl.style.height !== heightInput.value) {
+        mcEl.style.height = heightInput.value;
        }
      });
 
      if (params.has('height')) {
        heightInput.value = params.get('height');
-       if (mediaEl.style.height !== heightInput.value) {
-         mediaEl.style.height = heightInput.value;
+       if (mcEl.style.height !== heightInput.value) {
+        mcEl.style.height = heightInput.value;
        }
      }
      
