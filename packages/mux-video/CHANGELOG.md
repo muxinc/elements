@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.3](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.2...@mux-elements/mux-video@0.4.3) (2022-04-12)
+
+### Bug Fixes
+
+- clear some state on playbackId change ([#174](https://github.com/muxinc/elements/issues/174)) ([af0738e](https://github.com/muxinc/elements/commit/af0738ea5ae5a75861f75fc2ae3809ada735f3e2))
+
 ## [0.4.2](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.1...@mux-elements/mux-video@0.4.2) (2022-04-08)
 
 ### Bug Fixes
