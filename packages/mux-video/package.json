@@ -16,7 +16,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/",
     "test": "web-test-runner **/*test.js --port 8002 --coverage --config test/web-test-runner.config.mjs",
-    "posttest": "replace 'SF:src/' 'SF:packages/mux-video/src/' coverage/lcov.info",
+    "posttest": "replace 'SF:src/' 'SF:packages/mux-video/src/' coverage/lcov.info --silent",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",

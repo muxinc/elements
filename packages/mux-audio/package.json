@@ -14,7 +14,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/",
     "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.mjs",
-    "posttest": "replace 'SF:src/' 'SF:packages/mux-audio/src/' coverage/lcov.info",
+    "posttest": "replace 'SF:src/' 'SF:packages/mux-audio/src/' coverage/lcov.info --silent",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:iife",

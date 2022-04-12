@@ -9,7 +9,6 @@ describe('<mux-video>', () => {
       start-time="0"
       stream-type="vod"
       prefer-mse
-      debug
       muted
     ></mux-video>`);
 
@@ -18,7 +17,7 @@ describe('<mux-video>', () => {
     assert.equal(player.startTime, 0, 'startTime is set to 0');
     assert.equal(player.streamType, 'vod', 'stream-type is vod');
     assert.equal(player.preferMse, true, 'prefer-mse is on');
-    assert.equal(player.debug, true, 'debug is on');
+    assert.equal(player.debug, false, 'debug is off');
   });
 
   it('can use extended autoplay properties on initial load', async function () {
