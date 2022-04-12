@@ -251,6 +251,21 @@ describe('<mux-player>', () => {
     );
   });
 
+  it('should forward metadata attributes to the media element', async () => {
+    const video_id = 'test-video-id';
+    const video_title = 'test-video-title';
+    const viewer_user_id = 'test-viewer-user-id';
+    const player = await fixture(`<mux-player
+      metadata-video-id="${video_id}"
+      metadata-video-title="${video_title}"
+      metadata-viewer-user-id="${viewer_user_id}"
+    ></mux-player>`);
+
+    const actual = player.video.metadata;
+    const expected = { video_id, video_title, viewer_user_id };
+    assert.include(actual, expected, 'has expected metadata entries from attrs');
+  });
+
   it('muted attribute behaves like expected', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
