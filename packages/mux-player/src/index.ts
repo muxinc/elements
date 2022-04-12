@@ -245,6 +245,10 @@ class MuxPlayerElement extends VideoApiElement {
 
       // Don't show an error dialog if it's not fatal.
       if (!error?.fatal) {
+        logger.warn(error);
+        if (error.data) {
+          logger.warn(`${error.name} data:`, error.data);
+        }
         return;
       }
 
@@ -268,14 +272,23 @@ class MuxPlayerElement extends VideoApiElement {
       this.#setState({ isDialogOpen: true, dialog });
     };
 
+    // Keep this event listener on mux-player instead of calling onError directly
+    // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', onError);
 
     this.video?.addEventListener('error', (event: Event) => {
       let { detail: error }: { detail: any } = event as CustomEvent;
+
+      // If it is a hls.js error event there will be an error object in the event.
+      // If it is a native video error event there will be no error object.
       if (!error) {
         const { message, code } = this.video?.error ?? {};
         error = new MediaError(message, code);
       }
+
+      // Don't fire a mux-player error event for non-fatal errors.
+      if (!error?.fatal) return;
+
       this.dispatchEvent(
         new CustomEvent('error', {
           detail: error,

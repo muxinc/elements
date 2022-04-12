@@ -1,8 +1,50 @@
-import { assert } from '@open-wc/testing';
+import { fixture, assert } from '@open-wc/testing';
 import { MediaError } from '../src/index.ts';
 import { getErrorLogs } from '../src/errors.ts';
 
 describe('errors', () => {
+  it("doesn't propagate non-fatal error events", async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    let fired;
+    player.addEventListener('error', () => {
+      fired = true;
+    });
+
+    player.video.dispatchEvent(
+      new CustomEvent('error', {
+        detail: { code: 0, data: {} },
+      })
+    );
+
+    assert(fired !== true, 'the error handler was not fired');
+  });
+
+  it('does propagate fatal error events', async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    let fired;
+    player.addEventListener('error', () => {
+      fired = true;
+    });
+
+    player.video.dispatchEvent(
+      new CustomEvent('error', {
+        detail: { code: MediaError.MEDIA_ERR_DECODE, fatal: true },
+      })
+    );
+
+    assert(fired === true, 'the error handler was fired');
+  });
+
   it('default message for MediaError.MEDIA_ERR_ABORTED', async function () {
     const error = new MediaError(undefined, MediaError.MEDIA_ERR_ABORTED);
     const { dialog } = await getErrorLogs(error);
