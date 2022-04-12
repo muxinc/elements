@@ -17,7 +17,7 @@ describe('errors', () => {
 
     player.video.dispatchEvent(
       new CustomEvent('error', {
-        detail: { code: 0 },
+        detail: { code: 0, data: {} },
       })
     );
 
