@@ -402,7 +402,6 @@ describe('<mux-player> playbackId transitions', () => {
       })
     );
 
-    await waitUntil(() => player.shadowRoot.querySelector('mxp-dialog h3'), 2000);
     assert.equal(player.shadowRoot.querySelector('mxp-dialog h3').textContent, 'Network Error');
 
     player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';

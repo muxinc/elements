@@ -237,7 +237,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #setUpErrors() {
-    const onError = async (event: Event) => {
+    const onError = (event: Event) => {
       let { detail: error }: { detail: any } = event as CustomEvent;
 
       if (!(error instanceof MediaError)) {
@@ -253,13 +253,7 @@ class MuxPlayerElement extends VideoApiElement {
         return;
       }
 
-      const { dialog, devlog } = await getErrorLogs(
-        error,
-        !window.navigator.onLine,
-        this.playbackId,
-        this.playbackToken,
-        this.src
-      );
+      const { dialog, devlog } = getErrorLogs(error, !window.navigator.onLine, this.playbackId, this.playbackToken);
 
       if (devlog.message) {
         logger.devlog(devlog);
