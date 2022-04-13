@@ -417,8 +417,8 @@ describe('seek to live behaviors', () => {
       stream-type="on-demand"
     ></mux-player>`);
 
-    const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    const mediaControllerEl = playerEl.mediaController;
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('slot[name="seek-to-live-button"]');
     assert.exists(mediaControllerEl);
     assert.notExists(seekToLiveEl);
   });
@@ -429,8 +429,8 @@ describe('seek to live behaviors', () => {
       stream-type="live"
     ></mux-player>`);
 
-    const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    const mediaControllerEl = playerEl.mediaController;
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('slot[name="seek-to-live-button"]');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -441,13 +441,13 @@ describe('seek to live behaviors', () => {
       stream-type="ll-live"
     ></mux-player>`);
 
-    const mediaControllerEl = playerEl.shadowRoot.querySelector('media-controller');
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
+    const mediaControllerEl = playerEl.mediaController;
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('slot[name="seek-to-live-button"]');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
 
-  it('should should seek to live when seek to live button pressed', async function () {
+  it('should seek to live when seek to live button pressed', async function () {
     this.timeout(12000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
@@ -469,7 +469,7 @@ describe('seek to live behaviors', () => {
     return Promise.resolve();
   });
 
-  it('should should seek to live when play button is pressed', async function () {
+  it('should seek to live when play button is pressed', async function () {
     this.timeout(12000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
@@ -477,7 +477,7 @@ describe('seek to live behaviors', () => {
       stream-type="ll-live"
     ></mux-player>`);
 
-    const mcPlayEl = playerEl.shadowRoot.querySelector('media-play-button');
+    const mcPlayEl = playerEl.theme.shadowRoot.querySelector('media-play-button');
     // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
     try {
       await playerEl.play();
@@ -504,7 +504,7 @@ describe('<mux-player> should move cues up', () => {
       muted
     ></mux-player>`);
 
-    const mc = player.shadowRoot.querySelector('media-controller');
+    const mc = player.mediaController;
     const media = mc.media;
 
     media.textTracks.addEventListener('addtrack', (e) => {
@@ -576,7 +576,7 @@ describe('<mux-player> should move cues up', () => {
       muted
     ></mux-player>`);
 
-    const mc = player.shadowRoot.querySelector('media-controller');
+    const mc = player.mediaController;
     const media = mc.media;
 
     media.textTracks.addEventListener('addtrack', (e) => {
@@ -624,7 +624,7 @@ describe('<mux-player> should move cues up', () => {
       muted
     ></mux-player>`);
 
-    const mc = player.shadowRoot.querySelector('media-controller');
+    const mc = player.mediaController;
     const media = mc.media;
 
     media.textTracks.addEventListener('addtrack', (e) => {

@@ -11,7 +11,7 @@ describe('<mux-player> template render', () => {
     render(content({}), div);
     assert.equal(
       minify(div.innerHTML),
-      '<media-controller class="size-"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version=""></mux-video><media-loading-indicator slot="centered-chrome" no-auto-hide=""></media-loading-indicator><mxp-dialog slot="centered-chrome" no-auto-hide="" open=""><p></p></mxp-dialog></media-controller>'
+      '<media-theme-mux class="size-" stream-type="" player-size="" has-captions="" default-hidden-captions="" forward-seek-offset="" backward-seek-offset=""><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version=""></mux-video><button slot="seek-to-live-button" aria-disabled="" class="mxp-seek-to-live-button">\n      Live\n    </button><mxp-dialog no-auto-hide="" open=""><p></p></mxp-dialog></media-theme-mux>'
     );
   });
 
@@ -29,7 +29,7 @@ describe('<mux-player> template render', () => {
     div.querySelectorAll('svg').forEach((svg) => svg.remove());
     assert.equal(
       minify(div.innerHTML),
-      '<media-controller class="size-extra-small"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand"></mux-video><media-loading-indicator slot="centered-chrome" no-auto-hide=""></media-loading-indicator><media-control-bar slot="top-chrome"><div class="mxp-spacer"></div><media-pip-button></media-pip-button></media-control-bar><div slot="centered-chrome" class="mxp-center-controls"><media-play-button></media-play-button></div><media-control-bar><media-mute-button></media-mute-button><div class="mxp-spacer"></div><media-fullscreen-button></media-fullscreen-button></media-control-bar><mxp-dialog slot="centered-chrome" no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-controller>'
+      '<media-theme-mux class="size-extra-small" stream-type="on-demand" player-size="extra-small" has-captions="" default-hidden-captions="" forward-seek-offset="" backward-seek-offset=""><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand"></mux-video><button slot="seek-to-live-button" aria-disabled="" class="mxp-seek-to-live-button">\n      Live\n    </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>'
     );
   });
 
@@ -45,7 +45,7 @@ describe('<mux-player> template render', () => {
     div.querySelectorAll('svg').forEach((svg) => svg.remove());
     assert.equal(
       minify(div.innerHTML),
-      '<media-controller class="size-large"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand"></mux-video><media-loading-indicator slot="centered-chrome" no-auto-hide=""></media-loading-indicator><div slot="centered-chrome" class="mxp-center-controls"><media-play-button></media-play-button></div><media-control-bar><media-play-button></media-play-button><media-seek-backward-button seek-offset=""></media-seek-backward-button><media-seek-forward-button seek-offset=""></media-seek-forward-button><media-time-range></media-time-range><mxp-time-display></mxp-time-display><media-mute-button></media-mute-button><media-playback-rate-button></media-playback-rate-button><media-captions-button default-showing=""></media-captions-button><media-pip-button></media-pip-button><media-fullscreen-button></media-fullscreen-button></media-control-bar><mxp-dialog slot="centered-chrome" no-auto-hide="" open=""><p></p></mxp-dialog></media-controller>'
+      '<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" has-captions="" default-hidden-captions="" forward-seek-offset="" backward-seek-offset=""><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand"></mux-video><button slot="seek-to-live-button" aria-disabled="" class="mxp-seek-to-live-button">\n      Live\n    </button><mxp-dialog no-auto-hide="" open=""><p></p></mxp-dialog></media-theme-mux>'
     );
   });
 
@@ -64,7 +64,7 @@ describe('<mux-player> template render', () => {
     div.querySelectorAll('svg').forEach((svg) => svg.remove());
     assert.equal(
       minify(div.innerHTML),
-      '<media-controller class="size-large"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand"></mux-video><media-loading-indicator slot="centered-chrome" no-auto-hide=""></media-loading-indicator><div slot="centered-chrome" class="mxp-center-controls"><media-play-button></media-play-button></div><media-control-bar><media-play-button></media-play-button><media-seek-backward-button seek-offset=""></media-seek-backward-button><media-seek-forward-button seek-offset=""></media-seek-forward-button><media-time-range></media-time-range><mxp-time-display></mxp-time-display><media-mute-button></media-mute-button><media-playback-rate-button></media-playback-rate-button><media-pip-button></media-pip-button><media-fullscreen-button></media-fullscreen-button></media-control-bar><mxp-dialog slot="centered-chrome" no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-controller>'
+      '<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" default-hidden-captions="" forward-seek-offset="" backward-seek-offset=""><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand"></mux-video><button slot="seek-to-live-button" aria-disabled="" class="mxp-seek-to-live-button">\n      Live\n    </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>'
     );
   });
 });

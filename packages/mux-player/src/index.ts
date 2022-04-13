@@ -321,7 +321,7 @@ class MuxPlayerElement extends VideoApiElement {
   #setUpCaptionsMovement() {
     type Maybe<T> = T | null | undefined;
 
-    const mc: Maybe<MediaController> = this.shadowRoot?.querySelector('media-controller');
+    const mc: Maybe<MediaController> = this.mediaController;
 
     let selectedTrack: TextTrack;
     const cuesmap = new WeakMap();
