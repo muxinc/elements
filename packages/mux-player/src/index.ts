@@ -1,4 +1,5 @@
-import '@mux-elements/polyfills/window';
+// import playback-core here to make sure that the polyfill is loaded
+import '@mux-elements/playback-core';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
