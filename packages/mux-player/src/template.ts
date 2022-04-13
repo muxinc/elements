@@ -27,6 +27,11 @@ export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
+  <style class="sizes">
+    :host {
+      aspect-ratio: 16 / 9;
+    }
+  </style>
   ${content(props)}
 `;
 

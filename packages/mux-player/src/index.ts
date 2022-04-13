@@ -179,6 +179,14 @@ class MuxPlayerElement extends VideoApiElement {
     this.#monitorLiveWindow();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
+
+    this.video?.addEventListener('loadedmetadata', () => {
+      const { videoWidth, videoHeight } = this.video;
+
+      setTimeout(() => {
+        this.shadowRoot.styleSheets[1].cssRules[0].style.aspectRatio = `${videoWidth} / ${videoHeight}`;
+      });
+    });
   }
 
   get mediaController(): MediaController | null | undefined {
