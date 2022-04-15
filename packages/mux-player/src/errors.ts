@@ -4,13 +4,12 @@ import lang from '../lang/en.json';
 import { i18n, parseJwt } from './utils';
 import type { DialogOptions, DevlogOptions } from './types';
 
-export async function getErrorLogs(
+export function getErrorLogs(
   error: MediaError,
   offline?: boolean,
   playbackId?: string,
-  playbackToken?: string,
-  src?: string | null
-): Promise<{ dialog: DialogOptions; devlog: DevlogOptions }> {
+  playbackToken?: string
+): { dialog: DialogOptions; devlog: DevlogOptions } {
   let dialog: DialogOptions = {};
   let devlog: DevlogOptions = {};
 
@@ -19,15 +18,7 @@ export async function getErrorLogs(
       dialog.title = i18n`Network Error`;
       dialog.message = error.message;
 
-      // Only works when hls.js is used.
-      let responseCode = error.data?.response.code;
-      if (!responseCode && src) {
-        // Attempt to get the response code from the M3U8 src url.
-        const { status } = await fetch(src as RequestInfo);
-        responseCode = status;
-      }
-
-      switch (responseCode) {
+      switch (error.data?.response.code) {
         case 412: {
           dialog.title = i18n`Video is not currently available`;
           dialog.message = i18n`The live stream or video file are not yet ready.`;
@@ -117,14 +108,12 @@ export async function getErrorLogs(
     case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
       // If native HLS is used on Safari, M3U8 response errors cause media src not supported errors.
       // If the response returns an error code, fix the MediaError.code and get detailed error logs.
-      if (src) {
-        const { status } = await fetch(src as RequestInfo);
-        if (status >= 400 && status < 500) {
-          error.code = MediaError.MEDIA_ERR_NETWORK;
-          error.data = { response: { code: status } };
-          ({ dialog, devlog } = await getErrorLogs(error, offline, playbackId, playbackToken, src));
-          break;
-        }
+      const status = error.data?.response?.status;
+      if (status >= 400 && status < 500) {
+        error.code = MediaError.MEDIA_ERR_NETWORK;
+        error.data = { response: { code: status } };
+        ({ dialog, devlog } = getErrorLogs(error, offline, playbackId, playbackToken));
+        break;
       }
 
       dialog = {

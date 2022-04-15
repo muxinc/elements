@@ -3,15 +3,14 @@ import mux, { Options } from 'mux-embed';
 
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
+import { MediaError } from './errors';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
-export { mux };
-export { Hls };
-export { Autoplay, UpdateAutoplay, setupAutoplay };
+export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay };
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
@@ -138,10 +137,7 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
-export const teardown = (
-  mediaEl?: Pick<HTMLMediaElement, 'mux'> | null,
-  hls?: Pick<Hls, 'detachMedia' | 'destroy'>
-) => {
+export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'detachMedia' | 'destroy'>) => {
   if (hls) {
     hls.detachMedia();
     hls.destroy();
@@ -150,6 +146,7 @@ export const teardown = (
     mediaEl.mux.destroy();
     mediaEl.mux;
   }
+  mediaEl?.removeEventListener('error', handleNativeError);
 };
 
 export const setupHls = (
@@ -280,6 +277,8 @@ export const loadMedia = (
     } else {
       mediaEl.removeAttribute('src');
     }
+
+    mediaEl.addEventListener('error', handleNativeError);
   } else if (hls && src) {
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
@@ -352,6 +351,31 @@ export const loadMedia = (
   }
 };
 
+async function handleNativeError(event: Event) {
+  // If this is a CustomEvent w/ detail return, preventing an infinite loop.
+  if ((event as CustomEvent).detail) return;
+
+  // Stop immediate propagation of the native error event, re-dispatch below!
+  event.stopImmediatePropagation();
+
+  const mediaEl = event.target as HTMLMediaElement;
+  const { message, code } = mediaEl?.error ?? {};
+  const error = new MediaError(message, code);
+
+  if (mediaEl.src && (code !== MediaError.MEDIA_ERR_DECODE || code !== undefined)) {
+    // Attempt to get the response code from the video src url.
+    const { status } = await fetch(mediaEl.src as RequestInfo);
+    // Use the same hls.js data structure.
+    error.data = { response: { code: status } };
+  }
+
+  mediaEl.dispatchEvent(
+    new CustomEvent('error', {
+      detail: error,
+    })
+  );
+}
+
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, hls);
@@ -360,36 +384,3 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTML
   loadMedia(props, mediaEl, nextHlsInstance);
   return nextHlsInstance;
 };
-
-export class MediaError extends Error {
-  static MEDIA_ERR_CUSTOM: number = 0;
-  static MEDIA_ERR_ABORTED: number = 1;
-  static MEDIA_ERR_NETWORK: number = 2;
-  static MEDIA_ERR_DECODE: number = 3;
-  static MEDIA_ERR_SRC_NOT_SUPPORTED: number = 4;
-  static MEDIA_ERR_ENCRYPTED: number = 5;
-
-  static defaultMessages: Record<number, string> = {
-    1: 'You aborted the media playback',
-    2: 'A network error caused the media download to fail.',
-    3: 'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.',
-    4: 'An unsupported error occurred. The server or network failed, or your browser does not support this format.',
-    5: 'The media is encrypted and there are no keys to decrypt it.',
-  };
-
-  name: string;
-  code: number;
-  fatal: boolean;
-  data?: any;
-
-  constructor(message?: string, code: number = 0, fatal?: boolean) {
-    super(message);
-    this.name = 'MediaError';
-    this.code = code;
-    this.fatal = fatal ?? code >= MediaError.MEDIA_ERR_NETWORK;
-
-    if (!this.message) {
-      this.message = MediaError.defaultMessages[this.code] ?? '';
-    }
-  }
-}
