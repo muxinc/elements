@@ -42,7 +42,7 @@
   "dependencies": {
     "@github/template-parts": "https://github.com/muxinc/template-parts.git#mux-player",
     "@mux-elements/mux-video": "0.4.3",
-    "media-chrome": "0.5.4"
+    "media-chrome": "0.6.0"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",

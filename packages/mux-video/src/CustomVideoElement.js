@@ -17,6 +17,7 @@ template.innerHTML = `
     /* display:inline (like the native el) makes it so you can't fill
       the container with the native el */
     display: inline-block;
+    line-height: 0;
     box-sizing: border-box;
 
     width: auto;
