@@ -48,12 +48,24 @@ export const MimeTypeShorthandMap: MimeTypeShorthandMap = {
 };
 
 export const shorthandKeys = Object.keys(MimeTypeShorthandMap);
+
+export type MediaTypes =
+  | ValueOf<ExtensionMimeTypeMap>
+  | keyof MimeTypeShorthandMap
+  /** @TODO Figure out a way to "downgrade" derived types below to early TS syntax (e.g. 3.4) instead of explicit versions here (CJP) */
+  | 'hls';
+// | `${Lowercase<keyof MimeTypeShorthandMap>}`
+// | `${Uppercase<keyof MimeTypeShorthandMap>}`;
+
 export const allMediaTypes = [
   ...(Object.values(ExtensionMimeTypeMap) as ValueOf<ExtensionMimeTypeMap>[]),
-  ...(shorthandKeys as (keyof MimeTypeShorthandMap)[]),
-  ...(shorthandKeys.map((k) => k.toUpperCase()) as `${Uppercase<keyof MimeTypeShorthandMap>}`[]),
-  ...(shorthandKeys.map((k) => k.toLowerCase()) as `${Lowercase<keyof MimeTypeShorthandMap>}`[]),
-];
+  /** @TODO Figure out a way to "downgrade" derived types below to early TS syntax (e.g. 3.4) instead of explicit versions here (CJP) */
+  'hls',
+  'HLS',
+  // ...(shorthandKeys as (keyof MimeTypeShorthandMap)[]),
+  // ...(shorthandKeys.map((k) => k.toUpperCase()) as `${Uppercase<keyof MimeTypeShorthandMap>}`[]),
+  // ...(shorthandKeys.map((k) => k.toLowerCase()) as `${Lowercase<keyof MimeTypeShorthandMap>}`[]),
+] as MediaTypes[];
 
 export type MuxMediaPropTypes = {
   envKey: Options['data']['env_key'];
@@ -63,11 +75,7 @@ export type MuxMediaPropTypes = {
   playbackId: string;
   playerInitTime: Options['data']['player_init_time'];
   preferMse: boolean;
-  type:
-    | ValueOf<ExtensionMimeTypeMap>
-    | keyof MimeTypeShorthandMap
-    | `${Lowercase<keyof MimeTypeShorthandMap>}`
-    | `${Uppercase<keyof MimeTypeShorthandMap>}`;
+  type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig['startPosition'];
   autoPlay: boolean | ValueOf<AutoplayTypes>;
