@@ -6,11 +6,18 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/mux-audio.js",
   "unpkg": "./dist/mux-audio.js",
-  "types": "dist/types/index.d.ts",
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs",
     "default": "./dist/index.cjs"
+  },
+  "types": "dist/types-ts3.4/index.d.ts",
+  "typesVersions": {
+    ">=4.3.5": {
+      "*": [
+        "dist/types/index.d.ts"
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -30,7 +37,7 @@
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-audio.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs --external:@mux-elements/* --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-audio.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types' && downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
     "prebuild": "yarn clean",
     "prepublishOnly": "yarn build"
@@ -46,6 +53,7 @@
     "@web/dev-server-esbuild": "^0.2.16",
     "@web/dev-server-import-maps": "^0.0.6",
     "@web/test-runner": "^0.13.26",
+    "downlevel-dts": "^0.9.0",
     "esbuild": "^0.13.13",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
