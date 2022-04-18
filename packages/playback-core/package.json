@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/playback-core",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "commonjs",
   "description": "Core library for media playback in the browser shared by mux elements",
   "main": "./dist/index.cjs",
