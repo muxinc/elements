@@ -56,6 +56,7 @@ class CustomVideoElement extends HTMLElement {
         trackEl.srclang = language;
       }
       nativeEl.appendChild(trackEl);
+      trackEl.track.addEventListener('cuechange', console.log.bind(null, 'CUE CHANGE'));
       return trackEl.track;
     };
 
