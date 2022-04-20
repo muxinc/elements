@@ -1,13 +1,16 @@
 // @ts-ignore
 import lang from '../lang/en.json';
 
+const DEFAULT_LOCALE = 'en';
+
 // NL example
 // lang = {
 //   "Network Error": "Netwerk Fout",
 // };
-export function i18n(strings: TemplateStringsArray): any {
-  // i18n template literals should not include expressions, ok to pass strings[0].
-  return new IntlMessageFormat(lang?.[strings[0]] ?? strings[0]);
+export function i18n(str: string, translate = true): any {
+  const message = translate ? lang?.[str] ?? str : str;
+  const locale = translate ? lang.code : DEFAULT_LOCALE;
+  return new IntlMessageFormat(message, locale);
 }
 
 /**
@@ -18,7 +21,7 @@ class IntlMessageFormat {
   message: string;
   locale: string;
 
-  constructor(message: string, locale = lang.code ?? 'en') {
+  constructor(message: string, locale = lang.code ?? DEFAULT_LOCALE) {
     this.message = message;
     this.locale = locale;
   }
