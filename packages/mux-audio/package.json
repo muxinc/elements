@@ -4,7 +4,6 @@
   "description": "A custom mux audio element for the browser that Just Works™",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "browser": "./dist/mux-audio.js",
   "unpkg": "./dist/mux-audio.js",
   "exports": {
     "import": "./dist/index.mjs",
