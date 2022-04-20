@@ -20,7 +20,7 @@ import { render } from './html';
 import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode } from './utils';
 import * as logger from './logger';
-import type { MuxTemplateProps } from './types';
+import type { MuxTemplateProps, ErrorEvent } from './types';
 
 export { MediaError };
 export type Tokens = {
@@ -294,6 +294,25 @@ class MuxPlayerElement extends VideoApiElement {
     // Keep this event listener on mux-player instead of calling onError directly
     // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', onError);
+
+    if (this.media) {
+      this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
+        const { player_error, player_error_message } = errorEvent;
+        if (!player_error) return errorEvent;
+
+        const { devlog } = getErrorLogs(
+          player_error,
+          !window.navigator.onLine,
+          this.playbackId,
+          this.playbackToken,
+          false
+        );
+        return {
+          player_error_code: player_error.code,
+          player_error_message: devlog.message ? String(devlog.message) : player_error_message,
+        };
+      };
+    }
 
     this.media?.addEventListener('error', (event: Event) => {
       let { detail: error }: { detail: any } = event as CustomEvent;

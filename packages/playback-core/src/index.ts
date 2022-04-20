@@ -1,5 +1,5 @@
 import '@mux-elements/polyfills';
-import mux, { Options } from 'mux-embed';
+import mux, { Options, ErrorEvent } from 'mux-embed';
 
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
@@ -71,6 +71,7 @@ export type MuxMediaPropTypes = {
   debug: Options['debug'] & Hls['config']['debug'];
   metadata: Partial<Options['data']>;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
+  errorTranslator: Options['errorTranslator'];
   playbackId: string;
   playerInitTime: Options['data']['player_init_time'];
   preferMse: boolean;
@@ -154,7 +155,11 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
     mediaEl.mux.destroy();
     mediaEl.mux;
   }
-  mediaEl?.removeEventListener('error', handleNativeError);
+  if (mediaEl) {
+    mediaEl.removeEventListener('error', handleNativeError);
+    mediaEl.removeEventListener('error', handleInternalError);
+    muxMediaProps.delete(mediaEl);
+  }
 };
 
 export const setupHls = (
@@ -193,6 +198,7 @@ export const setupHls = (
 };
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
+const muxMediaProps: WeakMap<HTMLMediaElement, any> = new WeakMap();
 
 export const setupMux = (
   props: Partial<
@@ -224,11 +230,15 @@ export const setupMux = (
       debug,
     } = props;
 
+    muxMediaProps.set(mediaEl, props);
+
     mux.monitor(mediaEl, {
       debug,
       beaconCollectionDomain,
       hlsjs,
       Hls: hlsjs ? Hls : undefined,
+      automaticErrorTracking: false,
+      errorTranslator: muxEmbedErrorTranslator,
       data: {
         ...(env_key ? { env_key } : {}),
         // Metadata fields
@@ -241,6 +251,12 @@ export const setupMux = (
     });
   }
 };
+
+function muxEmbedErrorTranslator(error: ErrorEvent) {
+  // mux-embed auto tracks fatal hls.js errors, turn it off.
+  // playback-core will emit errors with a numeric code manually to mux-embed.
+  return typeof error.player_error_code === 'string' ? false : error;
+}
 
 export const loadMedia = (
   props: Partial<Pick<MuxMediaProps, 'preferMse' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
@@ -295,6 +311,7 @@ export const loadMedia = (
     }
 
     mediaEl.addEventListener('error', handleNativeError);
+    mediaEl.addEventListener('error', handleInternalError);
   } else if (hls && src) {
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
@@ -331,6 +348,7 @@ export const loadMedia = (
         })
       );
     });
+    mediaEl.addEventListener('error', handleInternalError);
 
     const forceHiddenThumbnails = () => {
       // Keeping this a forEach in case we want to expand the scope of this.
@@ -386,14 +404,18 @@ export const loadMedia = (
 };
 
 async function handleNativeError(event: Event) {
-  // If this is a CustomEvent w/ detail return, preventing an infinite loop.
-  if ((event as CustomEvent).detail) return;
+  // Return if the event was created or modified by a script or dispatched
+  // via EventTarget.dispatchEvent() preventing an infinite loop.
+  if (!event.isTrusted) return;
 
   // Stop immediate propagation of the native error event, re-dispatch below!
   event.stopImmediatePropagation();
 
   const mediaEl = event.target as HTMLMediaElement;
-  const { message, code } = mediaEl?.error ?? {};
+  // Safari sometimes throws an error event with a null error.
+  if (!mediaEl?.error) return;
+
+  const { message, code } = mediaEl.error;
   const error = new MediaError(message, code);
 
   if (mediaEl.src && (code !== MediaError.MEDIA_ERR_DECODE || code !== undefined)) {
@@ -408,6 +430,30 @@ async function handleNativeError(event: Event) {
       detail: error,
     })
   );
+}
+
+/**
+ * Use a event listener instead of a function call when dispatching the Custom error
+ * event so consumers are still able to disable or intercept this error event.
+ * @param {Event} event
+ */
+function handleInternalError(event: Event) {
+  if (!(event instanceof CustomEvent) || !(event.detail instanceof MediaError)) return;
+
+  const mediaEl = event.target as HTMLMediaElement;
+  const error = event.detail;
+
+  const { errorTranslator = (e: ErrorEvent) => e } = muxMediaProps.get(mediaEl);
+
+  // mux-player requires the MediaError object with extra data for the custom Mux data messages.
+  const { player_error_code, player_error_message } = errorTranslator({
+    player_error: error,
+    player_error_code: error.code,
+    player_error_message: error.message,
+  });
+
+  // Only pass valid mux-embed props: player_error_code, player_error_message
+  mediaEl.mux?.emit('error', { player_error_code, player_error_message });
 }
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
