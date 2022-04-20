@@ -68,6 +68,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   protected __playerSoftwareVersion?: string;
   protected __playerSoftwareName?: string;
   protected __updateAutoplay?: UpdateAutoplay;
+  protected __errorTranslator?: Function;
 
   constructor() {
     super();
@@ -100,6 +101,14 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
     return this.nativeEl.mux;
+  }
+
+  get errorTranslator() {
+    return this.__errorTranslator;
+  }
+
+  set errorTranslator(value: Function | undefined) {
+    this.__errorTranslator = value;
   }
 
   get src() {
