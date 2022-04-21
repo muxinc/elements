@@ -41,7 +41,8 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types' && copyfiles -u 1 \"src/**/*.d.ts\" dist/types && downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
     "prebuild": "yarn clean",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "create-release-notes": "create-release-notes ./CHANGELOG.md"
   },
   "dependencies": {
     "@mux-elements/playback-core": "0.3.2"

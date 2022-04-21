@@ -28,7 +28,8 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types' && downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel build:types 'build:cjs -- --minify'",
     "prebuild": "yarn clean",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "create-release-notes": "create-release-notes ./CHANGELOG.md"
   },
   "peerDependencies": {
     "@types/react": "^16.8.6 || ^17.0.0",
