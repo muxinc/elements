@@ -1,11 +1,10 @@
 {
   "name": "@mux-elements/mux-video",
   "version": "0.4.4",
-  "type": "commonjs",
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "browser": "./dist/mux-video.js",
+  "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-video.js",
   "exports": {
     "import": "./dist/index.mjs",

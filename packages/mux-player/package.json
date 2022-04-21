@@ -1,11 +1,10 @@
 {
   "name": "@mux-elements/mux-player",
   "version": "0.1.0-beta.7",
-  "type": "module",
   "description": "An open source Mux player web component that Just Works™",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "browser": "./dist/mux-player.js",
+  "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-player.js",
   "exports": {
     "import": "./dist/index.mjs",
