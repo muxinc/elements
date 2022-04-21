@@ -1,0 +1,26 @@
+name: Create Release Notes
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  changelog-to-release-notes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      # extract `engines.node` from package.json and save it to output
+      - name: Get Node.JS version from package.json
+        id: get-versions
+        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
+      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ steps.get-versions.outputs.node }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: Create Release
+        run: yarn create-release-notes
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
