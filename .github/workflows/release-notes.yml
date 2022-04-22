@@ -10,6 +10,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
       # extract `engines.node` from package.json and save it to output
       - name: Get Node.JS version from package.json
         id: get-versions
@@ -23,4 +25,4 @@ jobs:
       - name: Create Release
         run: yarn create-release-notes
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

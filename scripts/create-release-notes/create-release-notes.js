@@ -49,7 +49,7 @@ async function getTagName() {
 
 const changelog = await extractLog(process.argv[2]);
 const tag = await getTagName();
-const octokit = new Octokit({ auth: process.env.GH_TOKEN });
+const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 try {
   await octokit.request('POST /repos/{owner}/{repo}/releases', {
@@ -58,7 +58,7 @@ try {
     tag_name: tag,
     name: tag,
     body: changelog,
-    draft: true,
+    draft: false,
     prerelease: tag.includes('-alpha.') || tag.includes('-beta.'),
     generate_release_notes: false,
   });
