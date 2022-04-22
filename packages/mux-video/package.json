@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-video",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -45,7 +45,7 @@
     "create-release-notes": "create-release-notes ./CHANGELOG.md"
   },
   "dependencies": {
-    "@mux-elements/playback-core": "0.3.2"
+    "@mux-elements/playback-core": "0.3.3"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",

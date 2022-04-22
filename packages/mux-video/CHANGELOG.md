@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.5](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.4...@mux-elements/mux-video@0.4.5) (2022-04-22)
+
+### Bug Fixes
+
+- point pkgjson#browser at mjs build for webpack 4 ([#191](https://github.com/muxinc/elements/issues/191)) ([a73a495](https://github.com/muxinc/elements/commit/a73a4951052bfc77cc24667b9bc0a05efbcbb355))
+
 ## [0.4.4](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.3...@mux-elements/mux-video@0.4.4) (2022-04-18)
 
 ### Bug Fixes
