@@ -6,11 +6,12 @@ import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
+import { addRemovableTextTracks } from './textTracks';
 
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
-export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay };
+export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addRemovableTextTracks };
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
@@ -288,6 +289,7 @@ export const loadMedia = (
 
     mediaEl.addEventListener('error', handleNativeError);
   } else if (hls && src) {
+    // const mediaElRemovable = addRemovableTextTracks(mediaEl);
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
       //   switch (data.type) {
@@ -325,6 +327,7 @@ export const loadMedia = (
     });
 
     const forceHiddenThumbnails = () => {
+      console.log(...(hls as Hls).subtitleTracks);
       // Keeping this a forEach in case we want to expand the scope of this.
       Array.from(mediaEl.textTracks).forEach((track) => {
         if (['subtitles', 'caption'].includes(track.kind)) return;
@@ -349,6 +352,7 @@ export const loadMedia = (
     // This ensures that we re-load them after it's done that.
     hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+    hls.on(Hls.Events.MEDIA_DETACHING, () => console.log(...(hls as Hls).subtitleTracks));
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);
