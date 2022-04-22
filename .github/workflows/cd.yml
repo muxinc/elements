@@ -12,6 +12,8 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
       # extract `engines.node` from package.json and save it to output
       - name: Get Node.JS version from package.json
         id: get-versions
@@ -30,4 +32,7 @@ jobs:
         run: yarn deploy --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Create Release Notes
+        run: yarn create-release-notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
