@@ -297,19 +297,19 @@ class MuxPlayerElement extends VideoApiElement {
 
     if (this.media) {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
-        const { player_error, player_error_message } = errorEvent;
-        if (!player_error) return errorEvent;
+        if (!this.media?.error) return errorEvent;
 
         const { devlog } = getErrorLogs(
-          player_error,
+          this.media?.error,
           !window.navigator.onLine,
           this.playbackId,
           this.playbackToken,
           false
         );
+
         return {
-          player_error_code: player_error.code,
-          player_error_message: devlog.message ? String(devlog.message) : player_error_message,
+          player_error_code: this.media?.error.code,
+          player_error_message: devlog.message ? String(devlog.message) : errorEvent.player_error_message,
         };
       };
     }

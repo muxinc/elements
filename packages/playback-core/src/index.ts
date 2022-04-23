@@ -146,6 +146,12 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
+let muxMediaState: WeakMap<HTMLMediaElement, { error?: MediaError }> = new WeakMap();
+
+export const getError = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.error;
+};
+
 export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'detachMedia' | 'destroy'>) => {
   if (hls) {
     hls.detachMedia();
@@ -158,7 +164,7 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
   if (mediaEl) {
     mediaEl.removeEventListener('error', handleNativeError);
     mediaEl.removeEventListener('error', handleInternalError);
-    muxMediaProps.delete(mediaEl);
+    muxMediaState.delete(mediaEl);
   }
 };
 
@@ -198,7 +204,6 @@ export const setupHls = (
 };
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
-const muxMediaProps: WeakMap<HTMLMediaElement, any> = new WeakMap();
 
 export const setupMux = (
   props: Partial<
@@ -207,6 +212,7 @@ export const setupMux = (
       | 'envKey'
       | 'playerInitTime'
       | 'beaconCollectionDomain'
+      | 'errorTranslator'
       | 'metadata'
       | 'debug'
       | 'playerSoftwareName'
@@ -230,7 +236,17 @@ export const setupMux = (
       debug,
     } = props;
 
-    muxMediaProps.set(mediaEl, props);
+    const muxEmbedErrorTranslator = (error: ErrorEvent) => {
+      // mux-embed auto tracks fatal hls.js errors, turn it off.
+      // playback-core will emit errors with a numeric code manually to mux-embed.
+      if (typeof error.player_error_code === 'string') return false;
+
+      if (typeof props.errorTranslator === 'function') {
+        return props.errorTranslator(error);
+      }
+
+      return error;
+    };
 
     mux.monitor(mediaEl, {
       debug,
@@ -251,12 +267,6 @@ export const setupMux = (
     });
   }
 };
-
-function muxEmbedErrorTranslator(error: ErrorEvent) {
-  // mux-embed auto tracks fatal hls.js errors, turn it off.
-  // playback-core will emit errors with a numeric code manually to mux-embed.
-  return typeof error.player_error_code === 'string' ? false : error;
-}
 
 export const loadMedia = (
   props: Partial<Pick<MuxMediaProps, 'preferMse' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
@@ -442,23 +452,22 @@ function handleInternalError(event: Event) {
 
   const mediaEl = event.target as HTMLMediaElement;
   const error = event.detail;
+  if (!error) return;
 
-  const { errorTranslator = (e: ErrorEvent) => e } = muxMediaProps.get(mediaEl);
+  const state = muxMediaState.get(mediaEl);
+  if (state) state.error = error;
 
-  // mux-player requires the MediaError object with extra data for the custom Mux data messages.
-  const { player_error_code, player_error_message } = errorTranslator({
-    player_error: error,
+  // Only pass valid mux-embed props: player_error_code, player_error_message
+  mediaEl.mux?.emit('error', {
     player_error_code: error.code,
     player_error_message: error.message,
   });
-
-  // Only pass valid mux-embed props: player_error_code, player_error_message
-  mediaEl.mux?.emit('error', { player_error_code, player_error_message });
 }
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, hls);
+  muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
