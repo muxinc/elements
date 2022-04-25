@@ -1,4 +1,5 @@
 import type MuxVideoElement from '@mux-elements/mux-video';
+import * as logger from './logger';
 
 const AllowedVideoAttributes = {
   AUTOPLAY: 'autoplay',
@@ -145,6 +146,14 @@ class VideoApiElement extends HTMLElement {
 
   get media(): MuxVideoElement | null | undefined {
     return this.shadowRoot?.querySelector('mux-video');
+  }
+
+  /**
+   * @deprecated please use .media instead
+   */
+  get video(): MuxVideoElement | null | undefined {
+    logger.warn('<mux-player>.video is deprecated, please use .media instead');
+    return this.media;
   }
 
   get hasPlayed() {
