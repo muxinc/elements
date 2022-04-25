@@ -17,7 +17,7 @@ describe('errors', () => {
       fired = true;
     });
 
-    player.video.dispatchEvent(
+    player.media.dispatchEvent(
       new CustomEvent('error', {
         detail: { code: 0, data: {} },
       })
@@ -40,7 +40,7 @@ describe('errors', () => {
       fired = true;
     });
 
-    player.video.dispatchEvent(
+    player.media.dispatchEvent(
       new CustomEvent('error', {
         detail: { code: MediaError.MEDIA_ERR_DECODE, fatal: true },
       })

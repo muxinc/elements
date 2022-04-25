@@ -83,7 +83,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       autoplay
     ></mux-player>`);
-    const muxVideo = player.video;
+    const muxVideo = player.media;
 
     assert.equal(player.autoplay, true);
     assert.equal(muxVideo.autoplay, true);
@@ -100,7 +100,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       muted
     ></mux-player>`);
-    const muxVideo = player.video;
+    const muxVideo = player.media;
 
     assert.equal(player.muted, true);
     assert.equal(muxVideo.muted, true);
@@ -117,7 +117,7 @@ describe('<mux-player>', () => {
   //   const player = await fixture(`<mux-player
   //     playsinline
   //   ></mux-player>`);
-  //   const muxVideo = player.video;
+  //   const muxVideo = player.media;
 
   //   assert.equal(player.playsInline, true);
   //   assert.equal(muxVideo.playsInline, true);
@@ -141,7 +141,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       loop
     ></mux-player>`);
-    const muxVideo = player.video;
+    const muxVideo = player.media;
 
     assert.equal(player.loop, true);
     assert.equal(muxVideo.loop, true);
@@ -158,7 +158,7 @@ describe('<mux-player>', () => {
   //   const player = await fixture(`<mux-player
   //     crossorigin="anonymous"
   //   ></mux-player>`);
-  //   const muxVideo = player.video;
+  //   const muxVideo = player.media;
 
   //   assert.equal(player.crossOrigin, "anonymous");
   //   assert.equal(muxVideo.crossOrigin, "anonymous");
@@ -186,7 +186,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       preload="metadata"
     ></mux-player>`);
-    const muxVideo = player.video;
+    const muxVideo = player.media;
 
     assert.equal(player.preload, 'metadata');
     assert.equal(muxVideo.preload, 'metadata');
@@ -203,7 +203,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
     ></mux-player>`);
-    const muxVideo = player.video;
+    const muxVideo = player.media;
 
     assert.equal(
       player.poster,
@@ -237,7 +237,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
     ></mux-player>`);
-    const muxVideo = player.video;
+    const muxVideo = player.media;
 
     assert.equal(player.src, 'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8');
     assert.equal(muxVideo.src, 'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8');
@@ -268,7 +268,7 @@ describe('<mux-player>', () => {
       metadata-viewer-user-id="${viewer_user_id}"
     ></mux-player>`);
 
-    const actual = player.video.metadata;
+    const actual = player.media.metadata;
     const expected = { video_id, video_title, viewer_user_id };
     assert.include(actual, expected, 'has expected metadata entries from attrs');
   });
@@ -280,7 +280,7 @@ describe('<mux-player>', () => {
       muted
     ></mux-player>`);
 
-    const muxVideo = player.video;
+    const muxVideo = player.media;
     const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
     assert(player.muted, 'player.muted is true');
@@ -309,7 +309,7 @@ describe('<mux-player>', () => {
 
     assert.equal(player.getAttribute('volume'), '0.4');
 
-    const muxVideo = player.video;
+    const muxVideo = player.media;
     const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
     assert.equal(player.volume, 0.4, 'player.volume is 0.4');
@@ -332,7 +332,7 @@ describe('<mux-player>', () => {
 
     assert.equal(player.getAttribute('playbackrate'), '2');
 
-    const muxVideo = player.video;
+    const muxVideo = player.media;
     const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
     assert.equal(player.playbackRate, 2, 'player.playbackRate is 2');
@@ -356,7 +356,7 @@ describe('<mux-player>', () => {
       storyboard-token="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3NzcsImF1ZCI6InMiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.aVd0dsOJUVeQko3BWd9YEhL41Eytf_ZfaBeNzHSSUqU_gREa_jJEVTlRfuiE4g71cKJLSiVTKP7f-F7Txh6DlL8E2SkonfIPB2H0f_3DQxYLso2E8qI4zuJkyxKORbQFLAEB_vSE-2lMbrHXfdpQhv6SrVyu6di9ku0LpFpoyz-_7fVJICr8nhlsqOGt66AYcaa99TXoZ582FWzBaePmWw-WWKYsLvtNjLS9UoxbdVaBRwNylohvhh-i1Y9dNilyNooJ7O8Cj4GuMjeh1pCj0BOrGagxrWrswm3HjUVNUqFq5JCWnJCxgjjwiV4RLZg_4z7gkBXyX7H2-i1dKA3Cpw"
     ></mux-player>`);
 
-    const muxVideo = player.video;
+    const muxVideo = player.media;
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(
