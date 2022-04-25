@@ -17,6 +17,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
   onCloseErrorDialog: (evt: CustomEvent) => void;
+  onInitFocusDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
   inLiveWindow: boolean;
   onSeekToLive: (_evt: Event) => void;

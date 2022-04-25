@@ -85,7 +85,12 @@ export const content = (props: MuxTemplateProps) => html`
     >
       Live
     </button>
-    <mxp-dialog no-auto-hide open="${props.isDialogOpen}" onclose="${props.onCloseErrorDialog}">
+    <mxp-dialog
+      no-auto-hide
+      open="${props.isDialogOpen}"
+      onclose="${props.onCloseErrorDialog}"
+      oninitfocus="${props.onInitFocusDialog}"
+    >
       ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : html``}
       <p>
         ${props.dialog?.message}

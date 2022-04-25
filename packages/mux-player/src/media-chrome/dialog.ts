@@ -88,6 +88,7 @@ class MediaDialog extends HTMLElement {
 
   show() {
     this.setAttribute('open', '');
+    this.dispatchEvent(new CustomEvent('open', { composed: true, bubbles: true }));
     focus(this);
   }
 
@@ -117,6 +118,12 @@ class MediaDialog extends HTMLElement {
 }
 
 function focus(el: MediaDialog) {
+  const initFocus = new CustomEvent('initfocus', { composed: true, bubbles: true, cancelable: true });
+  el.dispatchEvent(initFocus);
+
+  // If `event.preventDefault()` was called in a listener prevent focusing.
+  if (initFocus.defaultPrevented) return;
+
   // Find element with `autofocus` attribute, or fall back to the first form/tabindex control.
   let target: Element | null | undefined = el.querySelector('[autofocus]:not([disabled])');
   if (!target && (el as HTMLElement).tabIndex >= 0) {
@@ -132,7 +139,7 @@ function focus(el: MediaDialog) {
   }
 
   if (target instanceof HTMLElement) {
-    target.focus();
+    target.focus({ preventScroll: true });
   }
 }
 
