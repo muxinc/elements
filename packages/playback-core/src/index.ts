@@ -7,6 +7,12 @@ import { MediaError } from './errors';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
+declare global {
+  interface HTMLMediaElement {
+    removeTextTrack?(track: TextTrack): void;
+  }
+}
+
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
