@@ -179,9 +179,9 @@ class MuxPlayerElement extends VideoApiElement {
      * @todo determine sensible defaults for preloading buffer
      * @see https://github.com/muxinc/elements/issues/51
      */
-    // if (this.media?.hls) {
+    // if (this.media?._hls) {
     //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   this.media.hls.config.maxMaxBufferLength = 2;
+    //   this.media._hls.config.maxMaxBufferLength = 2;
     // }
 
     this.#setUpErrors();
@@ -482,8 +482,8 @@ class MuxPlayerElement extends VideoApiElement {
     return this.#state.inLiveWindow;
   }
 
-  get hls() {
-    return this.media?.hls;
+  get _hls() {
+    return this.media?._hls;
   }
 
   get mux() {

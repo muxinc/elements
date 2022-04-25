@@ -79,7 +79,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     return playerSoftwareVersion;
   }
 
-  get hls() {
+  get _hls() {
     return this.__hls;
   }
 
@@ -271,8 +271,8 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
             'Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.'
           );
         }
-        if (!!this.hls) {
-          this.hls.config.debug = debug;
+        if (!!this._hls) {
+          this._hls.config.debug = debug;
         }
         break;
       case Attributes.METADATA_URL:
