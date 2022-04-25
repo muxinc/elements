@@ -94,6 +94,14 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     this.__playerSoftwareVersion = value;
   }
 
+  /**
+   * @deprecated please use ._hls instead
+   */
+  get hls() {
+    console.warn('<mux-video>.hls is deprecated, please use ._hls instead');
+    return this._hls;
+  }
+
   get _hls() {
     return this.__hls;
   }
