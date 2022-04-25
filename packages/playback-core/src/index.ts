@@ -6,12 +6,11 @@ import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
-import { addRemovableTextTracks } from './textTracks';
 
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
-export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addRemovableTextTracks };
+export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay };
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
@@ -352,7 +351,12 @@ export const loadMedia = (
     // This ensures that we re-load them after it's done that.
     hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
-    hls.on(Hls.Events.MEDIA_DETACHING, () => console.log(...(hls as Hls).subtitleTracks));
+    hls.on(Hls.Events.DESTROYING, () => {
+      Array.from(mediaEl.textTracks).forEach((textTrack) => {
+        if (!['captions', 'subtitles'].includes(textTrack.kind)) return;
+        mediaEl.removeTextTrack?.(textTrack);
+      });
+    });
 
     hls.loadSource(src);
     hls.attachMedia(mediaEl);

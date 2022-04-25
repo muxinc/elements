@@ -5,6 +5,91 @@
  * extended today across browsers.
  */
 
+const removedTextTrack = Symbol('@@removedTextTrack');
+
+export const removeAllCues = (track) => {
+  const { mode } = track;
+  track.mode = 'hidden';
+  while (track.cues?.length) {
+    const cue = track.cues[0];
+    track.removeCue(cue);
+  }
+  track.mode = mode;
+};
+
+class VideoExtended extends HTMLVideoElement {
+  constructor() {
+    super();
+    this.__textTracksProxy = new Proxy(super.textTracks, {
+      get(target, propName, receiver) {
+        if (propName === Symbol.iterator) {
+          const iteratorFn = target[Symbol.iterator].bind(target);
+          return () => {
+            const iterator = iteratorFn();
+            return {
+              next: () => {
+                let val = iterator.next();
+                while (!val.done && val.value[removedTextTrack]) {
+                  val = iterator.next();
+                }
+                return val;
+              },
+            };
+          };
+        }
+        if (propName === 'length') {
+          const length = Array.prototype.filter.call(target, (textTrack) => !textTrack[removedTextTrack]).length;
+          return length;
+        }
+        if (typeof propName === 'string' && Number.isInteger(+propName)) {
+          const tracks = Array.prototype.filter.call(target, (textTrack) => !textTrack[removedTextTrack]);
+          return tracks[+propName];
+        }
+
+        const propValue = Reflect.get(target, propName, receiver);
+        if (typeof propValue === 'function') {
+          return propValue.bind(target);
+        }
+        return propValue;
+      },
+      set(target, propName, value, receiver) {
+        return Reflect.set(target, propName, value, receiver);
+      },
+    });
+  }
+
+  get textTracks() {
+    return this.__textTracksProxy;
+  }
+
+  addTextTrack(kind, label, language) {
+    console.log('addTextTrack', kind, label, language);
+    const recycledTrack = Array.from(super.textTracks).find((track) => {
+      return track[removedTextTrack] && track.kind === kind && track.label === label && track.language === language;
+    });
+
+    if (!recycledTrack) return super.addTextTrack(kind, label, language);
+
+    delete recycledTrack[removedTextTrack];
+    console.log('recycled!!!', recycledTrack, 'still removed???', recycledTrack[removedTextTrack]);
+    return recycledTrack;
+  }
+
+  removeTextTrack(track) {
+    console.log('removeTextTrack', track);
+    if (track[removedTextTrack] || !Array.prototype.includes.call(this.textTracks, track)) return;
+    removeAllCues(track);
+    track.mode = 'disabled';
+    track[removedTextTrack] = true;
+    console.log('removed??', track, 'has removed???', track[removedTextTrack]);
+  }
+}
+
+if (!globalThis.customElements.get('video-extended')) {
+  globalThis.customElements.define('video-extended', VideoExtended, { extends: 'video' });
+  globalThis.VideoExtended = VideoExtended;
+}
+
 const template = document.createElement('template');
 // Could you get styles to apply by passing a global button from global to shadow?
 
@@ -33,7 +118,7 @@ template.innerHTML = `
 
 </style>
 
-<video crossorigin></video>
+<video is="video-extended" crossorigin></video>
 <slot></slot>
 `;
 
@@ -45,6 +130,7 @@ class CustomVideoElement extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('video'));
+    customElements.upgrade(this.nativeEl);
 
     // Initialize all the attribute properties
     Array.prototype.forEach.call(this.attributes, (attrNode) => {
