@@ -61,7 +61,7 @@ class VideoApiElement extends HTMLElement {
     super();
 
     this.querySelectorAll(':scope > track').forEach((track) => {
-      this.video?.append(track.cloneNode());
+      this.media?.append(track.cloneNode());
     });
 
     // Watch for child adds/removes and update the native element if necessary
@@ -71,12 +71,12 @@ class VideoApiElement extends HTMLElement {
         if (mutation.type === 'childList') {
           // Child being removed
           mutation.removedNodes.forEach((node) => {
-            const track = this.video?.querySelector(`track[src="${(node as HTMLTrackElement).src}"]`);
-            if (track) this.video?.removeChild(track);
+            const track = this.media?.querySelector(`track[src="${(node as HTMLTrackElement).src}"]`);
+            if (track) this.media?.removeChild(track);
           });
 
           mutation.addedNodes.forEach((node) => {
-            this.video?.append(node.cloneNode());
+            this.media?.append(node.cloneNode());
           });
         }
       }
@@ -89,22 +89,22 @@ class VideoApiElement extends HTMLElement {
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     switch (attrName) {
       case CustomVideoAttributes.MUTED: {
-        if (this.video) {
-          this.video.muted = newValue != null;
+        if (this.media) {
+          this.media.muted = newValue != null;
         }
         return;
       }
       case CustomVideoAttributes.VOLUME: {
         const val = +newValue;
-        if (this.video && !Number.isNaN(val)) {
-          this.video.volume = val;
+        if (this.media && !Number.isNaN(val)) {
+          this.media.volume = val;
         }
         return;
       }
       case CustomVideoAttributes.PLAYBACKRATE: {
         const val = +newValue;
-        if (this.video && !Number.isNaN(val)) {
-          this.video.playbackRate = val;
+        if (this.media && !Number.isNaN(val)) {
+          this.media.playbackRate = val;
         }
         return;
       }
@@ -117,7 +117,7 @@ class VideoApiElement extends HTMLElement {
     options?: boolean | EventListenerOptions
   ) {
     if (AllowedVideoEvents.includes(type)) {
-      this.video?.addEventListener(type, listener, options);
+      this.media?.addEventListener(type, listener, options);
       return;
     }
     super.addEventListener(type, listener, options);
@@ -129,21 +129,21 @@ class VideoApiElement extends HTMLElement {
     options?: boolean | EventListenerOptions
   ) {
     if (AllowedVideoEvents.includes(type)) {
-      this.video?.removeEventListener(type, listener, options);
+      this.media?.removeEventListener(type, listener, options);
       return;
     }
     super.removeEventListener(type, listener, options);
   }
 
   play() {
-    return this.video?.play();
+    return this.media?.play();
   }
 
   pause() {
-    this.video?.pause();
+    this.media?.pause();
   }
 
-  get video(): MuxVideoElement | null | undefined {
+  get media(): MuxVideoElement | null | undefined {
     return this.shadowRoot?.querySelector('mux-video');
   }
 
@@ -158,50 +158,50 @@ class VideoApiElement extends HTMLElement {
   }
 
   get paused() {
-    return this.video?.paused ?? true;
+    return this.media?.paused ?? true;
   }
 
   get duration() {
-    return this.video?.duration ?? NaN;
+    return this.media?.duration ?? NaN;
   }
 
   get ended() {
-    return this.video?.ended ?? false;
+    return this.media?.ended ?? false;
   }
 
   get buffered() {
-    return this.video?.buffered;
+    return this.media?.buffered;
   }
 
   get readyState() {
-    return this.video?.readyState ?? 0;
+    return this.media?.readyState ?? 0;
   }
 
   get videoWidth() {
-    return this.video?.videoWidth;
+    return this.media?.videoWidth;
   }
 
   get videoHeight() {
-    return this.video?.videoHeight;
+    return this.media?.videoHeight;
   }
 
   get currentTime() {
-    return this.video?.currentTime ?? 0;
+    return this.media?.currentTime ?? 0;
   }
 
   set currentTime(val) {
-    if (this.video) {
-      this.video.currentTime = Number(val);
+    if (this.media) {
+      this.media.currentTime = Number(val);
     }
   }
 
   get volume() {
-    return this.video?.volume ?? 1;
+    return this.media?.volume ?? 1;
   }
 
   set volume(val) {
-    if (this.video) {
-      this.video.volume = Number(val);
+    if (this.media) {
+      this.media.volume = Number(val);
     }
   }
 
@@ -222,12 +222,12 @@ class VideoApiElement extends HTMLElement {
   }
 
   get playbackRate() {
-    return this.video?.playbackRate ?? 1;
+    return this.media?.playbackRate ?? 1;
   }
 
   set playbackRate(val) {
-    if (this.video) {
-      this.video.playbackRate = Number(val);
+    if (this.media) {
+      this.media.playbackRate = Number(val);
     }
   }
 
@@ -306,7 +306,7 @@ class VideoApiElement extends HTMLElement {
 }
 
 function getVideoAttribute(el: VideoApiElement, name: string) {
-  return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
+  return el.media ? el.media.getAttribute(name) : el.getAttribute(name);
 }
 
 export default VideoApiElement;

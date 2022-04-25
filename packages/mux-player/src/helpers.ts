@@ -72,13 +72,13 @@ export const hasVolumeSupportAsync = async (mediaEl: HTMLMediaElement | undefine
 };
 
 export function getCcSubTracks(el: MuxPlayerElement) {
-  return Array.from(el.video?.textTracks ?? []).filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
+  return Array.from(el.media?.textTracks ?? []).filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
 }
 
 export const getLiveTime = (el: MuxPlayerElement) => {
-  const { video } = el;
-  return video?.hls?.liveSyncPosition ?? video?.seekable.length
-    ? video?.seekable.end(video.seekable.length - 1)
+  const { media } = el;
+  return media?._hls?.liveSyncPosition ?? media?.seekable.length
+    ? media?.seekable.end(media.seekable.length - 1)
     : undefined;
 };
 
@@ -99,7 +99,7 @@ export const LIVE_HOLDBACK_MOE = 0.5;
 export const isInLiveWindow = (el: MuxPlayerElement) => {
   const { streamType } = el;
   const liveTime = getLiveTime(el);
-  const currentTime = el.video?.currentTime;
+  const currentTime = el.media?.currentTime;
   if (liveTime == undefined || currentTime == undefined) {
     return false;
   }
