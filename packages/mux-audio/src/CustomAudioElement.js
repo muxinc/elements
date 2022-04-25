@@ -32,7 +32,7 @@ template.innerHTML = `
 
 </style>
 
-<audio crossorigin></audio>
+<audio part="audio" crossorigin></audio>
 <slot></slot>
 `;
 

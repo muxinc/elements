@@ -33,7 +33,7 @@ template.innerHTML = `
 
 </style>
 
-<video crossorigin></video>
+<video part="video" crossorigin></video>
 <slot></slot>
 `;
 
