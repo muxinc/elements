@@ -94,7 +94,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     this.__playerSoftwareVersion = value;
   }
 
-  get hls() {
+  get _hls() {
     return this.__hls;
   }
 
@@ -304,7 +304,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   // play() {
   //   if (this.readyState === 0 && this.networkState < 2) {
   //     this.load();
-  //     this.hls.on(Hls.Events.MANIFEST_PARSED,function() {
+  //     this._hls.on(Hls.Events.MANIFEST_PARSED,function() {
   //     video.play();
   //
   //     return this.nativeEl.play();
@@ -350,8 +350,8 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
             'Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.'
           );
         }
-        if (!!this.hls) {
-          this.hls.config.debug = debug;
+        if (!!this._hls) {
+          this._hls.config.debug = debug;
         }
         break;
       case Attributes.METADATA_URL:
