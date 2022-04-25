@@ -157,8 +157,8 @@ class MuxPlayerElement extends VideoApiElement {
       logger.error('<media-theme-mux> failed to upgrade!');
     }
 
-    customElements.upgrade(this.video as Node);
-    if (!(this.video instanceof MuxVideoElement)) {
+    customElements.upgrade(this.media as Node);
+    if (!(this.media instanceof MuxVideoElement)) {
       logger.error('<mux-video> failed to upgrade!');
     }
 
@@ -168,16 +168,16 @@ class MuxPlayerElement extends VideoApiElement {
     }
 
     this.querySelectorAll(':scope > track').forEach((track) => {
-      this.video?.append(track.cloneNode());
+      this.media?.append(track.cloneNode());
     });
 
     /**
      * @todo determine sensible defaults for preloading buffer
      * @see https://github.com/muxinc/elements/issues/51
      */
-    // if (this.video?.hls) {
+    // if (this.media?.hls) {
     //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   this.video.hls.config.maxMaxBufferLength = 2;
+    //   this.media.hls.config.maxMaxBufferLength = 2;
     // }
 
     this.#setUpErrors();
@@ -250,10 +250,10 @@ class MuxPlayerElement extends VideoApiElement {
         );
       }
     };
-    this.video?.addEventListener('progress', updateLiveWindow);
-    this.video?.addEventListener('waiting', updateLiveWindow);
-    this.video?.addEventListener('timeupdate', updateLiveWindow);
-    this.video?.addEventListener('emptied', updateLiveWindow);
+    this.media?.addEventListener('progress', updateLiveWindow);
+    this.media?.addEventListener('waiting', updateLiveWindow);
+    this.media?.addEventListener('timeupdate', updateLiveWindow);
+    this.media?.addEventListener('emptied', updateLiveWindow);
   }
 
   #setUpErrors() {
@@ -291,13 +291,13 @@ class MuxPlayerElement extends VideoApiElement {
     // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', onError);
 
-    this.video?.addEventListener('error', (event: Event) => {
+    this.media?.addEventListener('error', (event: Event) => {
       let { detail: error }: { detail: any } = event as CustomEvent;
 
       // If it is a hls.js error event there will be an error object in the event.
       // If it is a native video error event there will be no error object.
       if (!error) {
-        const { message, code } = this.video?.error ?? {};
+        const { message, code } = this.media?.error ?? {};
         error = new MediaError(message, code);
       }
 
@@ -314,8 +314,8 @@ class MuxPlayerElement extends VideoApiElement {
 
   #setUpCaptionsButton() {
     const onTrackCountChange = () => this.#render();
-    this.video?.textTracks?.addEventListener('addtrack', onTrackCountChange);
-    this.video?.textTracks?.addEventListener('removetrack', onTrackCountChange);
+    this.media?.textTracks?.addEventListener('addtrack', onTrackCountChange);
+    this.media?.textTracks?.addEventListener('removetrack', onTrackCountChange);
   }
 
   #setUpCaptionsMovement() {
@@ -415,7 +415,7 @@ class MuxPlayerElement extends VideoApiElement {
         this.#setState({ supportsAirPlay });
       };
 
-      this.video?.addEventListener('webkitplaybacktargetavailabilitychanged', onPlaybackTargetAvailability);
+      this.media?.addEventListener('webkitplaybacktargetavailabilitychanged', onPlaybackTargetAvailability);
     }
   }
 
@@ -479,11 +479,11 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get hls() {
-    return this.video?.hls;
+    return this.media?.hls;
   }
 
   get mux() {
-    return this.video?.mux;
+    return this.media?.mux;
   }
 
   /**
@@ -683,14 +683,14 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the metadata object for Mux Data.
    */
   get metadata(): Readonly<Metadata> | undefined {
-    return this.video?.metadata;
+    return this.media?.metadata;
   }
 
   /**
    * Set the metadata object for Mux Data.
    */
   set metadata(val: Readonly<Metadata> | undefined) {
-    if (this.video) this.video.metadata = val;
+    if (this.media) this.media.metadata = val;
   }
 
   /**
@@ -759,7 +759,7 @@ class MuxPlayerElement extends VideoApiElement {
 }
 
 export function getVideoAttribute(el: MuxPlayerElement, name: string) {
-  return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
+  return el.media ? el.media.getAttribute(name) : el.getAttribute(name);
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
