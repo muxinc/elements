@@ -79,6 +79,14 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     return playerSoftwareVersion;
   }
 
+  /**
+   * @deprecated please use ._hls instead
+   */
+  get hls() {
+    console.warn('<mux-audio>.hls is deprecated, please use ._hls instead');
+    return this._hls;
+  }
+
   get _hls() {
     return this.__hls;
   }

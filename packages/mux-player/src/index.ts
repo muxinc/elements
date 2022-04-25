@@ -482,6 +482,14 @@ class MuxPlayerElement extends VideoApiElement {
     return this.#state.inLiveWindow;
   }
 
+  /**
+   * @deprecated please use ._hls instead
+   */
+  get hls() {
+    logger.warn('<mux-player>.hls is deprecated, please use ._hls instead');
+    return this._hls;
+  }
+
   get _hls() {
     return this.media?._hls;
   }
