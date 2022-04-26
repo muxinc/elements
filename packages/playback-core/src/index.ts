@@ -4,6 +4,7 @@ import mux, { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
+import { setupTracks } from './tracks';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
@@ -243,31 +244,6 @@ export const setupMux = (
   }
 };
 
-export const createTextTrack = (
-  mediaEl: HTMLMediaElement,
-  kind: TextTrackKind,
-  label: string,
-  lang?: string,
-  id?: string
-): TextTrack | undefined => {
-  if (!mediaEl) {
-    return;
-  }
-  const trackEl = document.createElement('track');
-  trackEl.kind = kind;
-  trackEl.label = label;
-  if (lang) {
-    trackEl.srclang = lang;
-  }
-  if (id) {
-    trackEl.id = id;
-  }
-  trackEl.track.mode = 'disabled';
-  mediaEl.appendChild(trackEl);
-  trackEl.addEventListener('cuechange', console.log.bind(null, 'cue change', id));
-  return trackEl.track;
-};
-
 export const loadMedia = (
   props: Partial<Pick<MuxMediaProps, 'preferMse' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
   mediaEl?: HTMLMediaElement | null,
@@ -359,90 +335,8 @@ export const loadMedia = (
         })
       );
     });
-    hls.on(Hls.Events.NON_NATIVE_TEXT_TRACKS_FOUND, (_type, { tracks }) => {
-      tracks.forEach((trackObj) => {
-        const baseTrackObj = trackObj.subtitleTrack ?? trackObj.closedCaptions;
-        const idx = hls.subtitleTracks.findIndex(({ lang, name, type }) => {
-          return lang == baseTrackObj?.lang && name === trackObj.label && type.toLowerCase() === trackObj.kind;
-        });
-        createTextTrack(
-          mediaEl,
-          trackObj.kind as TextTrackKind,
-          trackObj.label,
-          baseTrackObj?.lang,
-          `${trackObj.kind}${idx}`
-        );
-      });
-    });
-    hls.on(Hls.Events.CUES_PARSED, (_type, { track, type, cues }) => {
-      const textTrack: TextTrack = Array.prototype.find.call(mediaEl.textTracks, (textTrack) => {
-        return textTrack.kind === type && textTrack.id === track;
-      });
-      if (!textTrack) return;
-      const disabled = textTrack.mode === 'disabled';
-      if (disabled) {
-        textTrack.mode = 'hidden';
-      }
-      cues.forEach((cue: VTTCue) => {
-        if (textTrack.cues?.getCueById(cue.id)) return;
-        textTrack.addCue(cue);
-      });
-      if (disabled) {
-        textTrack.mode = 'disabled';
-      }
-    });
-    const changeHandler = () => {
-      const showingTrack = Array.prototype.find.call(mediaEl.textTracks, (textTrack: TextTrack) => {
-        return textTrack.id && textTrack.mode === 'showing' && ['subtitles', 'captions'].includes(textTrack.kind);
-      }) as TextTrack;
-      if (
-        showingTrack &&
-        (hls.subtitleTrack < 0 ||
-          showingTrack?.id !== `${hls.subtitleTracks[hls.subtitleTrack].type.toLowerCase()}${hls.subtitleTrack}`)
-      ) {
-        const idx = hls.subtitleTracks.findIndex(({ lang, name, type }) => {
-          return (
-            lang == showingTrack.language && name === showingTrack.label && type.toLowerCase() === showingTrack.kind
-          );
-        });
-        hls.subtitleTrack = idx;
-      }
-    };
-    mediaEl.textTracks.addEventListener('change', changeHandler);
-    hls.on(Hls.Events.DESTROYING, () => {
-      const trackEls = mediaEl.querySelectorAll('track');
-      Array.prototype.forEach.call(trackEls, (trackEl: HTMLTrackElement) => {
-        if (!(trackEl.id && ['subtitles', 'captions'].includes(trackEl.kind))) return;
-        if (!hls.subtitleTracks.some(({ type }, idx) => trackEl.id === `${type.toLowerCase()}${idx}`)) return;
-        mediaEl.removeChild(trackEl);
-      });
-    });
 
-    const forceHiddenThumbnails = () => {
-      // Keeping this a forEach in case we want to expand the scope of this.
-      Array.from(mediaEl.textTracks).forEach((track) => {
-        if (['subtitles', 'caption'].includes(track.kind)) return;
-        if (track.label !== 'thumbnails') return;
-        if (!track.cues?.length) {
-          const trackEl = mediaEl.querySelector('track[label="thumbnails"]') as HTMLTrackElement;
-          // Force a reload of the cues if they've been removed
-          const src = trackEl?.getAttribute('src') ?? '';
-          trackEl?.removeAttribute('src');
-          setTimeout(() => {
-            trackEl?.setAttribute('src', src);
-          }, 0);
-        }
-        // Force hidden mode if it's not hidden
-        if (track.mode !== 'hidden') {
-          track.mode = 'hidden';
-        }
-      });
-    };
-
-    // hls.js will forcibly clear all cues from tracks on manifest loads or media attaches.
-    // This ensures that we re-load them after it's done that.
-    hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
-    hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+    setupTracks(mediaEl, hls);
 
     switch (mediaEl.preload) {
       case 'none':
