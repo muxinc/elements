@@ -247,7 +247,15 @@ export const loadMedia = (
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
-    'on' | 'once' | 'startLoad' | 'recoverMediaError' | 'destroy' | 'loadSource' | 'attachMedia' | 'liveSyncPosition'
+    | 'on'
+    | 'once'
+    | 'startLoad'
+    | 'stopLoad'
+    | 'recoverMediaError'
+    | 'destroy'
+    | 'loadSource'
+    | 'attachMedia'
+    | 'liveSyncPosition'
   >
 ) => {
   if (!mediaEl) {
@@ -350,7 +358,25 @@ export const loadMedia = (
     hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
     hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
 
-    hls.loadSource(src);
+    switch (mediaEl.preload) {
+      case 'none':
+        // when preload is none, load the source on first play
+        mediaEl.addEventListener('play', () => hls.loadSource(src), { once: true });
+        break;
+
+      case 'metadata':
+        // when preload is metadata, stop loading when the manifest is loaded
+        hls.once(Hls.Events.MANIFEST_LOADED, () => hls.stopLoad());
+        // then restart loading on first play
+        mediaEl.addEventListener('play', () => hls.startLoad(), { once: true });
+        hls.loadSource(src);
+        break;
+
+      default:
+        // load source immediately for any other preload value
+        hls.loadSource(src);
+    }
+
     hls.attachMedia(mediaEl);
   } else {
     console.error(
