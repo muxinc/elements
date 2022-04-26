@@ -88,3 +88,9 @@ export function parseJwt(token: string) {
   );
   return JSON.parse(jsonPayload);
 }
+
+export const containsComposedNode = (rootNode: Node, childNode?: Node | Element | null): boolean => {
+  if (!rootNode || !childNode) return false;
+  if (rootNode.contains(childNode)) return true;
+  return containsComposedNode(rootNode, (childNode.getRootNode() as ShadowRoot).host);
+};

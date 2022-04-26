@@ -18,7 +18,7 @@ import {
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
-import { toNumberOrUndefined, i18n, parseJwt } from './utils';
+import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps } from './types';
 
@@ -135,6 +135,10 @@ class MuxPlayerElement extends VideoApiElement {
     supportsAirPlay: false,
     supportsVolume: false,
     onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
+    onInitFocusDialog: (e) => {
+      const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
+      if (!isFocusedElementInPlayer) e.preventDefault();
+    },
     onSeekToLive: () => seekToLive(this),
   };
 
