@@ -138,9 +138,15 @@ function focus(el: MediaDialog) {
     document.activeElement.blur();
   }
 
-  if (target instanceof HTMLElement) {
-    target.focus({ preventScroll: true });
-  }
+  el.addEventListener(
+    'transitionend',
+    () => {
+      if (target instanceof HTMLElement) {
+        target.focus({ preventScroll: true });
+      }
+    },
+    { once: true }
+  );
 }
 
 function findFocusableElementWithin(hostElement: Element | ShadowRoot | null | undefined): Element | null | undefined {
