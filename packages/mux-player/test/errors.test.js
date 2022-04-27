@@ -4,6 +4,8 @@ import { getErrorLogs } from '../src/errors.ts';
 
 describe('errors', () => {
   it("doesn't propagate non-fatal error events", async function () {
+    this.timeout(5000);
+
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -22,6 +24,8 @@ describe('errors', () => {
     );
 
     assert(fired !== true, 'the error handler was not fired');
+
+    return Promise.resolve();
   });
 
   it('does propagate fatal error events', async function () {
@@ -43,6 +47,8 @@ describe('errors', () => {
     );
 
     assert(fired === true, 'the error handler was fired');
+
+    return Promise.resolve();
   });
 
   it('default message for MediaError.MEDIA_ERR_ABORTED', function () {
