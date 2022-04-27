@@ -31,6 +31,7 @@ describe('<mux-player>', () => {
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
       muted
+      preload="auto"
     ></mux-player>`);
 
     assert(player.paused, 'is paused on initialization');
@@ -423,6 +424,7 @@ describe('seek to live behaviors', function () {
     const playerEl = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
+      preload="auto"
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
@@ -435,6 +437,7 @@ describe('seek to live behaviors', function () {
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       stream-type="live"
+      preload="auto"
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
@@ -447,6 +450,7 @@ describe('seek to live behaviors', function () {
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       stream-type="ll-live"
+      preload="auto"
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
@@ -460,6 +464,7 @@ describe('seek to live behaviors', function () {
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
       stream-type="ll-live"
+      preload="auto"
     ></mux-player>`);
 
     const seekToLiveEl = playerEl.shadowRoot.querySelector('.mxp-seek-to-live-button');
@@ -481,6 +486,7 @@ describe('seek to live behaviors', function () {
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
       stream-type="ll-live"
+      preload="auto"
     ></mux-player>`);
 
     const mcPlayEl = playerEl.theme.shadowRoot.querySelector('media-play-button');
@@ -508,6 +514,7 @@ describe('<mux-player> should move cues up', () => {
       playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
       stream-type="on-demand"
       muted
+      preload="auto"
     ></mux-player>`);
 
     const mc = player.mediaController;
@@ -580,6 +587,7 @@ describe('<mux-player> should move cues up', () => {
       playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
       stream-type="on-demand"
       muted
+      preload="auto"
     ></mux-player>`);
 
     const mc = player.mediaController;
@@ -628,6 +636,7 @@ describe('<mux-player> should move cues up', () => {
       playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
       stream-type="on-demand"
       muted
+      preload="auto"
     ></mux-player>`);
 
     const mc = player.mediaController;
