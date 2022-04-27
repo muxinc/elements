@@ -3,6 +3,8 @@ import '../src/index.ts';
 
 describe('<mux-player>', () => {
   it('has a Mux specific API', async function () {
+    this.timeout(5000);
+
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
@@ -18,6 +20,8 @@ describe('<mux-player>', () => {
     assert.equal(player.streamType, 'on-demand', 'stream-type is on-demand');
     assert.equal(player.preferMse, true, 'prefer-mse is on');
     assert.equal(player.debug, false, 'debug is off');
+
+    return Promise.resolve();
   });
 
   it('has a video like API', async function () {
@@ -60,6 +64,8 @@ describe('<mux-player>', () => {
     await aTimeout(1000);
 
     assert.equal(String(Math.round(player.currentTime)), 3, 'is about 3s in');
+
+    return Promise.resolve();
   });
 
   it('playbackId is forwarded to the media element', async function () {
@@ -410,7 +416,9 @@ describe('<mux-player> playbackId transitions', () => {
   });
 });
 
-describe('seek to live behaviors', () => {
+describe('seek to live behaviors', function () {
+  this.timeout(55000);
+
   it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {
     const playerEl = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
@@ -448,7 +456,6 @@ describe('seek to live behaviors', () => {
   });
 
   it('should seek to live when seek to live button pressed', async function () {
-    this.timeout(12000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
@@ -470,7 +477,6 @@ describe('seek to live behaviors', () => {
   });
 
   it('should seek to live when play button is pressed', async function () {
-    this.timeout(12000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
