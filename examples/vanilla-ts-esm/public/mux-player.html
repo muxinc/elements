@@ -72,6 +72,15 @@
 
     <script>
       let player = document.querySelector("mux-player");
+
+      player.addEventListener('loadedmetadata', (e) => {
+        console.log(111, e)
+      });
+
+      document.addEventListener('play', (e) => {
+        console.log(222, e);
+      }, { capture: true });
+
       document
         .querySelector(".dialog-show-btn")
         .addEventListener("click", () => {
