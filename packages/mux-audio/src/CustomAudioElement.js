@@ -1,9 +1,34 @@
 /**
- * Custom Video Element
+ * Custom Audio Element
  * The goal is to create an element that works just like the audio element
  * but can be extended/sub-classed, because native elements cannot be
  * extended today across browsers.
  */
+
+export const AudioEvents = [
+  'abort',
+  'canplay',
+  'canplaythrough',
+  'durationchange',
+  'emptied',
+  'ended',
+  'error',
+  'loadeddata',
+  'loadedmetadata',
+  'loadstart',
+  'pause',
+  'play',
+  'playing',
+  'progress',
+  'ratechange',
+  'seeked',
+  'seeking',
+  'stalled',
+  'suspend',
+  'timeupdate',
+  'volumechange',
+  'waiting',
+];
 
 const template = document.createElement('template');
 // Could you get styles to apply by passing a global button from global to shadow?
@@ -57,6 +82,14 @@ class CustomAudioElement extends HTMLElement {
     if (nativeEl.defaultMuted) {
       nativeEl.muted = true;
     }
+
+    // The audio events are dispatched on the CustomAudioElement instance.
+    // This makes it possible to add event listeners before the element is upgraded.
+    AudioEvents.forEach((type) => {
+      nativeEl.addEventListener(type, (evt) => {
+        this.dispatchEvent(new Event(evt.type));
+      });
+    });
 
     const slotEl = this.shadowRoot.querySelector('slot');
     slotEl.addEventListener('slotchange', () => {
@@ -163,7 +196,7 @@ const deprecatedProps = ['webkitDisplayingFullscreen', 'webkitSupportsFullscreen
 
 // Walk the prototype chain up to HTMLElement.
 // This will grab all super class props in between.
-// i.e. VideoElement and MediaElement
+// i.e. AudioElement and MediaElement
 for (
   let proto = Object.getPrototypeOf(nativeElTest);
   proto && proto !== HTMLElement.prototype;
@@ -175,10 +208,6 @@ for (
     }
   });
 }
-
-// For the audio element we also want to pass through all event listeners
-// because all the important events happen there.
-nativeElProps = nativeElProps.concat(Object.keys(EventTarget.prototype));
 
 // Passthrough native el functions from the custom el to the native el
 nativeElProps.forEach((prop) => {

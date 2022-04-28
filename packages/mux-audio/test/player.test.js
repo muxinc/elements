@@ -1,5 +1,5 @@
 import { fixture, assert, aTimeout } from '@open-wc/testing';
-import '../src/index.ts';
+import MuxAudioElement, { AudioEvents } from '../src/index.ts';
 
 describe('<mux-audio>', () => {
   it('has a Mux specific API', async function () {
@@ -18,5 +18,43 @@ describe('<mux-audio>', () => {
     assert.equal(player.streamType, 'vod', 'stream-type is vod');
     assert.equal(player.preferMse, true, 'prefer-mse is on');
     assert.equal(player.debug, false, 'debug is off');
+  });
+
+  it('dispatches events properly', async function () {
+    const player = await fixture(`<mux-audio
+      playback-id="vDpm5ygrRJgfIEPNIc02IJR4Trf3z00AiP"
+      muted
+    ></mux-audio>`);
+
+    const eventMap = {};
+    AudioEvents.forEach((type) => {
+      eventMap[type] = false;
+      player.addEventListener(type, (e) => {
+        assert.equal(e.target, player);
+        eventMap[e.type] = true;
+      });
+    });
+
+    player.volume = 0.5;
+
+    // Seems only <audio> is throwing in my tests:
+    //
+    //   NotAllowedError: play() failed because the user didn't interact
+    //   with the document first. https://goo.gl/xX8pDD
+    //
+    // try {
+    //   await player.play();
+    // } catch (error) {
+    //   console.warn(error);
+    // }
+
+    // needs one tick for the event to have been called
+    await aTimeout(100);
+
+    assert.deepInclude(eventMap, {
+      emptied: true,
+      loadstart: true,
+      volumechange: true,
+    });
   });
 });

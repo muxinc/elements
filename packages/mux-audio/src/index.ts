@@ -9,11 +9,12 @@ import {
   Metadata,
   mux,
   generatePlayerInitTime,
+  MediaError,
 } from '@mux-elements/playback-core';
 import type { PlaybackEngine, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import CustomAudioElement from './CustomAudioElement';
+import CustomAudioElement, { AudioEvents } from './CustomAudioElement';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -322,6 +323,6 @@ if (!globalThis.customElements.get('mux-audio')) {
   globalThis.MuxAudioElement = MuxAudioElement;
 }
 
-export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes };
+export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError, AudioEvents };
 
 export default MuxAudioElement;
