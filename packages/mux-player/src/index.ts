@@ -1,8 +1,8 @@
 // import playback-core here to make sure that the polyfill is loaded
-import '@mux-elements/playback-core';
+import { MediaError } from '@mux-elements/playback-core';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
-import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
+import MuxVideoElement from '@mux-elements/mux-video';
 import type { Metadata } from '@mux-elements/playback-core';
 import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import { StreamTypes } from './constants';
@@ -22,7 +22,6 @@ import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode } from './uti
 import * as logger from './logger';
 import type { MuxTemplateProps } from './types';
 
-export { MediaError };
 export type Tokens = {
   playback?: string;
   thumbnail?: string;
@@ -762,7 +761,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 }
 
-export function getVideoAttribute(el: MuxPlayerElement, name: string) {
+function getVideoAttribute(el: MuxPlayerElement, name: string) {
   return el.video ? el.video.getAttribute(name) : el.getAttribute(name);
 }
 

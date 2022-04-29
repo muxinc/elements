@@ -403,6 +403,4 @@ if (!globalThis.customElements.get('mux-video')) {
   globalThis.MuxVideoElement = MuxVideoElement;
 }
 
-export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError };
-
 export default MuxVideoElement;

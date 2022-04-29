@@ -314,6 +314,4 @@ if (!globalThis.customElements.get('mux-audio')) {
   globalThis.MuxAudioElement = MuxAudioElement;
 }
 
-export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes };
-
 export default MuxAudioElement;

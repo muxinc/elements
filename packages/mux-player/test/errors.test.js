@@ -1,5 +1,6 @@
 import { fixture, assert } from '@open-wc/testing';
-import { MediaError } from '../src/index.ts';
+import '../src/index.ts';
+import { MediaError } from '@mux-elements/playback-core';
 import { getErrorLogs } from '../src/errors.ts';
 
 describe('errors', () => {
@@ -22,6 +23,8 @@ describe('errors', () => {
     );
 
     assert(fired !== true, 'the error handler was not fired');
+
+    return Promise.resolve();
   });
 
   it('does propagate fatal error events', async function () {
@@ -43,6 +46,8 @@ describe('errors', () => {
     );
 
     assert(fired === true, 'the error handler was fired');
+
+    return Promise.resolve();
   });
 
   it('default message for MediaError.MEDIA_ERR_ABORTED', function () {
