@@ -24,8 +24,6 @@ describe('errors', () => {
     );
 
     assert(fired !== true, 'the error handler was not fired');
-
-    return Promise.resolve();
   });
 
   it('does propagate fatal error events', async function () {
@@ -47,8 +45,6 @@ describe('errors', () => {
     );
 
     assert(fired === true, 'the error handler was fired');
-
-    return Promise.resolve();
   });
 
   it('default message for MediaError.MEDIA_ERR_ABORTED', function () {

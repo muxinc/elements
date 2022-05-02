@@ -21,9 +21,12 @@ describe('<mux-video>', () => {
   });
 
   it('dispatches events properly', async function () {
+    this.timeout(10000);
+
     const player = await fixture(`<mux-video
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       muted
+      preload="auto"
     ></mux-video>`);
 
     const eventMap = {};

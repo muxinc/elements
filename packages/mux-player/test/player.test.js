@@ -20,8 +20,6 @@ describe('<mux-player>', () => {
     assert.equal(player.streamType, 'on-demand', 'stream-type is on-demand');
     assert.equal(player.preferMse, true, 'prefer-mse is on');
     assert.equal(player.debug, false, 'debug is off');
-
-    return Promise.resolve();
   });
 
   it('has a video like API', async function () {
@@ -65,8 +63,6 @@ describe('<mux-player>', () => {
     await aTimeout(1000);
 
     assert.equal(String(Math.round(player.currentTime)), 3, 'is about 3s in');
-
-    return Promise.resolve();
   });
 
   it('playbackId is forwarded to the media element', async function () {
@@ -478,7 +474,6 @@ describe('seek to live behaviors', function () {
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
     seekToLiveEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
-    return Promise.resolve();
   });
 
   it('should seek to live when play button is pressed', async function () {
@@ -500,7 +495,6 @@ describe('seek to live behaviors', function () {
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
     mcPlayEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
-    return Promise.resolve();
   });
 });
 
