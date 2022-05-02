@@ -4,6 +4,7 @@ import mux, { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
+import { setupTracks } from './tracks';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
@@ -185,6 +186,7 @@ export const setupHls = (
       debug,
       startPosition,
       ...streamTypeConfig,
+      renderTextTracksNatively: false,
     });
 
     return hls;
@@ -256,6 +258,8 @@ export const loadMedia = (
     | 'loadSource'
     | 'attachMedia'
     | 'liveSyncPosition'
+    | 'subtitleTracks'
+    | 'subtitleTrack'
   >
 ) => {
   if (!mediaEl) {
@@ -332,31 +336,7 @@ export const loadMedia = (
       );
     });
 
-    const forceHiddenThumbnails = () => {
-      // Keeping this a forEach in case we want to expand the scope of this.
-      Array.from(mediaEl.textTracks).forEach((track) => {
-        if (['subtitles', 'caption'].includes(track.kind)) return;
-        if (track.label !== 'thumbnails') return;
-        if (!track.cues?.length) {
-          const trackEl = mediaEl.querySelector('track[label="thumbnails"]') as HTMLTrackElement;
-          // Force a reload of the cues if they've been removed
-          const src = trackEl?.getAttribute('src') ?? '';
-          trackEl?.removeAttribute('src');
-          setTimeout(() => {
-            trackEl?.setAttribute('src', src);
-          }, 0);
-        }
-        // Force hidden mode if it's not hidden
-        if (track.mode !== 'hidden') {
-          track.mode = 'hidden';
-        }
-      });
-    };
-
-    // hls.js will forcibly clear all cues from tracks on manifest loads or media attaches.
-    // This ensures that we re-load them after it's done that.
-    hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
-    hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+    setupTracks(mediaEl, hls);
 
     switch (mediaEl.preload) {
       case 'none':
