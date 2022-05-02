@@ -1,10 +1,11 @@
 export class MediaError extends Error {
-  static MEDIA_ERR_CUSTOM: number = 0;
   static MEDIA_ERR_ABORTED: number = 1;
   static MEDIA_ERR_NETWORK: number = 2;
   static MEDIA_ERR_DECODE: number = 3;
   static MEDIA_ERR_SRC_NOT_SUPPORTED: number = 4;
   static MEDIA_ERR_ENCRYPTED: number = 5;
+  // @see https://docs.mux.com/guides/data/monitor-html5-video-element#customize-error-tracking-behavior
+  static MEDIA_ERR_CUSTOM: number = 100;
 
   static defaultMessages: Record<number, string> = {
     1: 'You aborted the media playback',
@@ -19,11 +20,11 @@ export class MediaError extends Error {
   fatal: boolean;
   data?: any;
 
-  constructor(message?: string, code: number = 0, fatal?: boolean) {
+  constructor(message?: string, code: number = MediaError.MEDIA_ERR_CUSTOM, fatal?: boolean) {
     super(message);
     this.name = 'MediaError';
     this.code = code;
-    this.fatal = fatal ?? code >= MediaError.MEDIA_ERR_NETWORK;
+    this.fatal = fatal ?? (code >= MediaError.MEDIA_ERR_NETWORK && code <= MediaError.MEDIA_ERR_ENCRYPTED);
 
     if (!this.message) {
       this.message = MediaError.defaultMessages[this.code] ?? '';

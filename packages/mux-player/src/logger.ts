@@ -17,7 +17,7 @@ export function devlog(opts: DevlogOptions) {
   let message = opts.message ?? '';
   if (opts.file) {
     const githubErrorsBase = 'https://github.com/muxinc/elements/blob/main/errors/';
-    message += ` ${i18n`Read more: `}\n${githubErrorsBase}${opts.file}`;
+    message += ` ${i18n(`Read more: `)}\n${githubErrorsBase}${opts.file}`;
   }
   warn(message);
 }

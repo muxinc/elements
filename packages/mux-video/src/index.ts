@@ -10,6 +10,7 @@ import {
   Metadata,
   mux,
   MediaError,
+  getError,
 } from '@mux-elements/playback-core';
 import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
 import { getPlayerVersion } from './env';
@@ -68,6 +69,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   protected __playerSoftwareVersion?: string;
   protected __playerSoftwareName?: string;
   protected __updateAutoplay?: UpdateAutoplay;
+  protected __errorTranslator?: Function;
 
   constructor() {
     super();
@@ -108,6 +110,19 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
     return this.nativeEl.mux;
+  }
+
+  // @ts-ignore
+  get error(): MediaError | null {
+    return getError(this.nativeEl) ?? null;
+  }
+
+  get errorTranslator() {
+    return this.__errorTranslator;
+  }
+
+  set errorTranslator(value: Function | undefined) {
+    this.__errorTranslator = value;
   }
 
   get src() {

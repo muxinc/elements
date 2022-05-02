@@ -20,7 +20,7 @@ import { render } from './html';
 import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode } from './utils';
 import * as logger from './logger';
-import type { MuxTemplateProps } from './types';
+import type { MuxTemplateProps, ErrorEvent } from './types';
 
 export { MediaError };
 export type Tokens = {
@@ -295,6 +295,25 @@ class MuxPlayerElement extends VideoApiElement {
     // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', onError);
 
+    if (this.media) {
+      this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
+        if (!this.media?.error) return errorEvent;
+
+        const { devlog } = getErrorLogs(
+          this.media?.error,
+          !window.navigator.onLine,
+          this.playbackId,
+          this.playbackToken,
+          false
+        );
+
+        return {
+          player_error_code: this.media?.error.code,
+          player_error_message: devlog.message ? String(devlog.message) : errorEvent.player_error_message,
+        };
+      };
+    }
+
     this.media?.addEventListener('error', (event: Event) => {
       let { detail: error }: { detail: any } = event as CustomEvent;
 
@@ -442,7 +461,7 @@ class MuxPlayerElement extends VideoApiElement {
         const { aud } = parseJwt(newValue);
         if (newValue && aud !== 't') {
           logger.warn(
-            i18n`The provided thumbnail-token should have audience value 't' instead of '{aud}'.`.format({ aud })
+            i18n(`The provided thumbnail-token should have audience value 't' instead of '{aud}'.`).format({ aud })
           );
         }
         break;
@@ -451,7 +470,7 @@ class MuxPlayerElement extends VideoApiElement {
         const { aud } = parseJwt(newValue);
         if (newValue && aud !== 's') {
           logger.warn(
-            i18n`The provided storyboard-token should have audience value 's' instead of '{aud}'.`.format({ aud })
+            i18n(`The provided storyboard-token should have audience value 's' instead of '{aud}'.`).format({ aud })
           );
         }
         break;
@@ -461,16 +480,17 @@ class MuxPlayerElement extends VideoApiElement {
           logger.devlog({
             file: 'invalid-stream-type.md',
             message: String(
-              i18n`No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+              i18n(
+                `No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+              )
             ),
           });
         } else if (!['on-demand', 'live', 'll-live'].includes(this.streamType)) {
           logger.devlog({
             file: 'invalid-stream-type.md',
-            message:
-              i18n`Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``.format(
-                { streamType: this.streamType }
-              ),
+            message: i18n(
+              `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+            ).format({ streamType: this.streamType }),
           });
         }
         break;

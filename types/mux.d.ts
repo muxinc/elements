@@ -455,7 +455,7 @@ type EventParamsMap = {
   [events.SEEKED]: void;
   [events.REBUFFER_START]: void;
   [events.REBUFFER_END]: void;
-  [events.ERROR]: void;
+  [events.ERROR]: ErrorEvent;
   [events.ENDED]: void;
   [events.RENDITION_CHANGE]: RenditionChangeEvent;
   [events.ORIENTATION_CHANGE]: OrientationChangeEvent;

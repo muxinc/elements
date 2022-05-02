@@ -1,4 +1,4 @@
-import type MuxVideoElement from '@mux-elements/mux-video';
+import type MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   preferMse?: boolean;
@@ -41,4 +41,10 @@ export type DialogOptions = {
 export type DevlogOptions = {
   message?: string;
   file?: string;
+};
+
+export type ErrorEvent = {
+  player_error?: MediaError;
+  player_error_code?: number;
+  player_error_message?: string;
 };

@@ -9,7 +9,8 @@ const srcContents = fs.readFileSync(srcFile).toString();
 const baseLangContents = {};
 
 const strings = [];
-const regex = /\b(?:i18n`(.*?)`)/g;
+// @see https://regexr.com/6jtib
+const regex = /\b(?:i18n\(\s*['"`](.*?)['"`]\s*[,)])/g;
 let result;
 
 while ((result = regex.exec(srcContents)) !== null) {

@@ -99,7 +99,7 @@ export const content = (props: MuxTemplateProps) => html`
               href="${props.dialog.linkUrl}"
               target="_blank"
               rel="external noopener"
-              aria-label="${props.dialog.linkText ?? ''} ${i18n`(opens in a new window)`}"
+              aria-label="${props.dialog.linkText ?? ''} ${i18n(`(opens in a new window)`)}"
               >${props.dialog.linkText ?? props.dialog.linkUrl}</a
             >`
           : html``}
