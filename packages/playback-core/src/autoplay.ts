@@ -91,18 +91,34 @@ export const setupAutoplay = (
   // This will seek first play event of *any* live video including event-type,
   // which probably shouldn't seek
   if (!autoplay) {
+    const handleSeek = () => {
+      // don't seek if we're not live
+      if (!isLive) {
+        return;
+      }
+      // seek to either hls.js's liveSyncPosition or the native seekable end
+      if (hls?.liveSyncPosition) {
+        mediaEl.currentTime = hls.liveSyncPosition;
+      } else {
+        mediaEl.currentTime = mediaEl.seekable.end(0);
+      }
+    };
     mediaEl.addEventListener(
       'play',
       () => {
-        // don't seek if we're not live
-        if (!isLive) {
-          return;
-        }
-        // seek to either hls.js's liveSyncPosition or the native seekable end
-        if (hls?.liveSyncPosition) {
-          mediaEl.currentTime = hls.liveSyncPosition;
+        if (mediaEl.preload === 'metadata') {
+          if (hls) {
+            hls.once(Hls.Events.LEVEL_UPDATED, handleSeek);
+          } else if (mediaEl.seekable.end(0) === Infinity) {
+            const interval = setInterval(() => {
+              if (mediaEl.seekable.end(0) !== Infinity) {
+                clearInterval(interval);
+                handleSeek();
+              }
+            }, 100);
+          }
         } else {
-          mediaEl.currentTime = mediaEl.seekable.end(0);
+          handleSeek();
         }
       },
       { once: true }
