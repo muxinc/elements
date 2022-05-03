@@ -373,8 +373,9 @@ export const loadMedia = (
         break;
 
       case 'metadata':
-        // when preload is metadata, stop loading when the manifest is loaded
-        hls.once(Hls.Events.MANIFEST_LOADED, () => hls.stopLoad());
+        // when preload is metadata, stop loading when the manifest is parsed
+        // need to use MANIFEST_PARSED as per https://github.com/video-dev/hls.js/blob/master/docs/API.md#hlsstartloadstartposition-1
+        hls.once(Hls.Events.MANIFEST_PARSED, () => hls.stopLoad());
         // then restart loading on first play
         mediaEl.addEventListener('play', () => hls.startLoad(), { once: true });
         hls.loadSource(src);
