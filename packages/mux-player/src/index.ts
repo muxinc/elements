@@ -240,7 +240,10 @@ class MuxPlayerElement extends VideoApiElement {
         (event.target as Element)?.localName === 'media-play-button' &&
         (this.streamType === StreamTypes.LIVE || this.streamType === StreamTypes.LL_LIVE)
       ) {
-        seekToLive(this);
+        // playback core should handle the seek to live on first play
+        if (this.hasPlayed) {
+          seekToLive(this);
+        }
       }
     });
 

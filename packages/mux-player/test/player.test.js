@@ -481,7 +481,7 @@ describe('seek to live behaviors', function () {
     return Promise.resolve();
   });
 
-  it('should seek to live when play button is pressed', async function () {
+  it.skip('should seek to live when play button is pressed', async function () {
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
