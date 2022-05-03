@@ -414,7 +414,7 @@ describe('<mux-player> playbackId transitions', () => {
 });
 
 describe('seek to live behaviors', function () {
-  this.timeout(55000);
+  this.timeout(12000);
 
   it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {
     const playerEl = await fixture(`<mux-player
