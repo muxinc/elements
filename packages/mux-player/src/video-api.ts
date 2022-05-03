@@ -1,3 +1,4 @@
+import { VideoEvents } from '@mux-elements/mux-video';
 import type MuxVideoElement from '@mux-elements/mux-video';
 import * as logger from './logger';
 
@@ -20,33 +21,27 @@ const CustomVideoAttributes = {
   MUTED: 'muted',
 };
 
-const AllowedVideoEvents = [
-  'abort',
-  'canplay',
-  'canplaythrough',
-  'emptied',
-  'loadstart',
-  'loadedmetadata',
-  'loadeddata',
-  'progress',
-  'durationchange',
-  'volumechange',
-  'ratechange',
-  'resize',
-  'stalled',
-  'suspend',
-  'waiting',
-  'play',
-  'playing',
-  'timeupdate',
-  'pause',
-  'seeking',
-  'seeked',
-  'ended',
-];
-
+const AllowedVideoEvents = VideoEvents.filter((type) => type !== 'error');
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes);
 const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
+
+/**
+ * Gets called from mux-player when mux-video is rendered and upgraded.
+ * We might just merge VideoApiElement in MuxPlayerElement and remove this?
+ */
+export function initVideoApi(el: VideoApiElement) {
+  el.querySelectorAll(':scope > track').forEach((track) => {
+    el.media?.append(track.cloneNode());
+  });
+
+  // The video events are dispatched on the VideoApiElement instance.
+  // This makes it possible to add event listeners before the element is upgraded.
+  AllowedVideoEvents.forEach((type) => {
+    el.media?.addEventListener(type, (evt) => {
+      el.dispatchEvent(new Event(evt.type));
+    });
+  });
+}
 
 class VideoApiElement extends HTMLElement {
   static get observedAttributes() {
@@ -110,30 +105,6 @@ class VideoApiElement extends HTMLElement {
         return;
       }
     }
-  }
-
-  addEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions
-  ) {
-    if (AllowedVideoEvents.includes(type)) {
-      this.media?.addEventListener(type, listener, options);
-      return;
-    }
-    super.addEventListener(type, listener, options);
-  }
-
-  removeEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions
-  ) {
-    if (AllowedVideoEvents.includes(type)) {
-      this.media?.removeEventListener(type, listener, options);
-      return;
-    }
-    super.removeEventListener(type, listener, options);
   }
 
   play() {

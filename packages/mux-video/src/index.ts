@@ -15,7 +15,7 @@ import {
 import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import CustomVideoElement from './CustomVideoElement';
+import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -426,6 +426,6 @@ if (!globalThis.customElements.get('mux-video')) {
   globalThis.MuxVideoElement = MuxVideoElement;
 }
 
-export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError };
+export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError, VideoEvents };
 
 export default MuxVideoElement;

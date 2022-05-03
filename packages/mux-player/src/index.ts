@@ -6,7 +6,7 @@ import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
 import type { Metadata } from '@mux-elements/playback-core';
 import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import { StreamTypes } from './constants';
-import VideoApiElement from './video-api';
+import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getCcSubTracks,
   getPlayerVersion,
@@ -171,9 +171,7 @@ class MuxPlayerElement extends VideoApiElement {
       logger.error('<media-controller> failed to upgrade!');
     }
 
-    this.querySelectorAll(':scope > track').forEach((track) => {
-      this.media?.append(track.cloneNode());
-    });
+    initVideoApi(this);
 
     /**
      * @todo determine sensible defaults for preloading buffer

@@ -1,3 +1,5 @@
+import { VideoEvents } from './CustomVideoElement.js';
+
 /** @TODO Add type defs to custom-video-element directly */
 export default class CustomVideoElement<V extends HTMLVideoElement = HTMLVideoElement>
   // NOTE: "lying" here since we programmatically merge props/methods from HTMLVideoElement into the CustomVideoElement's prototype in an attempt to make it "look like"
@@ -11,3 +13,5 @@ export default class CustomVideoElement<V extends HTMLVideoElement = HTMLVideoEl
   get autoplay(): string | boolean;
   set autoplay(): string | boolean;
 }
+
+export const VideoEvents: string[] = VideoEvents;

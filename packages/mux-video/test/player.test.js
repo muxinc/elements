@@ -1,5 +1,5 @@
 import { fixture, assert, aTimeout } from '@open-wc/testing';
-import '../src/index.ts';
+import MuxVideoElement, { VideoEvents } from '../src/index.ts';
 
 describe('<mux-video>', () => {
   it('has a Mux specific API', async function () {
@@ -18,6 +18,48 @@ describe('<mux-video>', () => {
     assert.equal(player.streamType, 'vod', 'stream-type is vod');
     assert.equal(player.preferMse, true, 'prefer-mse is on');
     assert.equal(player.debug, false, 'debug is off');
+  });
+
+  it('dispatches events properly', async function () {
+    this.timeout(10000);
+
+    const player = await fixture(`<mux-video
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      muted
+      preload="auto"
+    ></mux-video>`);
+
+    const eventMap = {};
+    VideoEvents.forEach((type) => {
+      eventMap[type] = false;
+      player.addEventListener(type, (e) => {
+        assert.equal(e.target, player);
+        eventMap[e.type] = true;
+      });
+    });
+
+    player.volume = 0.5;
+
+    try {
+      await player.play();
+    } catch (error) {
+      console.warn(error);
+    }
+
+    assert.deepInclude(eventMap, {
+      canplay: true,
+      durationchange: true,
+      emptied: true,
+      loadeddata: true,
+      loadedmetadata: true,
+      loadstart: true,
+      play: true,
+      playing: true,
+      timeupdate: true,
+      volumechange: true,
+      waiting: true,
+      resize: true,
+    });
   });
 
   it('can use extended autoplay properties on initial load', async function () {
