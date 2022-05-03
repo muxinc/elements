@@ -476,7 +476,7 @@ describe('seek to live behaviors', function () {
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
 
-  it('should seek to live when play button is pressed', async function () {
+  it.skip('should seek to live when play button is pressed', async function () {
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
