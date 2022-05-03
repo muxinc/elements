@@ -499,6 +499,10 @@ class MuxPlayerElement extends VideoApiElement {
     }
   }
 
+  get hasPlayed() {
+    return this.mediaController?.hasAttribute('media-has-played') ?? false;
+  }
+
   get inLiveWindow() {
     return this.#state.inLiveWindow;
   }
