@@ -110,12 +110,15 @@ export const setupAutoplay = (
           if (hls) {
             hls.once(Hls.Events.LEVEL_UPDATED, handleSeek);
           } else if (mediaEl.seekable.end(0) === Infinity) {
-            const interval = setInterval(() => {
-              if (mediaEl.seekable.end(0) !== Infinity) {
-                clearInterval(interval);
-                handleSeek();
-              }
-            }, 100);
+            mediaEl.addEventListener(
+              'canplay',
+              () => {
+                // we need a setTimeout because seeking immediately on canplay
+                // can cause the player to stop get into a non-playing state
+                setTimeout(handleSeek, 100);
+              },
+              { once: true }
+            );
           }
         } else {
           handleSeek();
