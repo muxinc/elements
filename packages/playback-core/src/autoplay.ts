@@ -100,7 +100,9 @@ export const setupAutoplay = (
       if (hls?.liveSyncPosition) {
         mediaEl.currentTime = hls.liveSyncPosition;
       } else {
-        mediaEl.currentTime = mediaEl.seekable.end(0);
+        if (Number.isFinite(mediaEl.seekable.end(0))) {
+          mediaEl.currentTime = mediaEl.seekable.end(0);
+        }
       }
     };
     mediaEl.addEventListener(
