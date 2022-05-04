@@ -411,6 +411,28 @@ describe('<mux-player> playbackId transitions', () => {
 
     assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
   });
+
+  it('loads the new src and clears dialog state', async function () {
+    const player = await fixture(`<mux-player
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8');
+
+    player.dispatchEvent(
+      new CustomEvent('error', {
+        detail: { code: MediaError.MEDIA_ERR_NETWORK },
+      })
+    );
+
+    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3').textContent, 'Network Error');
+
+    player.src = 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8';
+
+    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+  });
 });
 
 describe('seek to live behaviors', function () {

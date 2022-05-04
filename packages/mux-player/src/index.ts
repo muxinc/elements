@@ -48,6 +48,10 @@ function getPlayerSize(el: Element) {
     : MediaChromeSizes.LG;
 }
 
+const VideoAttributes = {
+  SRC: 'src',
+};
+
 const MuxVideoAttributes = {
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
@@ -451,7 +455,13 @@ class MuxPlayerElement extends VideoApiElement {
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MuxVideoAttributes.PLAYBACK_ID && oldValue !== newValue) {
+    const shouldClearState = [
+      MuxVideoAttributes.PLAYBACK_ID,
+      VideoAttributes.SRC,
+      PlayerAttributes.PLAYBACK_TOKEN,
+    ].includes(attrName);
+
+    if (shouldClearState && oldValue !== newValue) {
       this.#state = { ...this.#state, ...initialState };
     }
 
