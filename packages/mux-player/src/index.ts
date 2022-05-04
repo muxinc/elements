@@ -104,7 +104,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
-    playerSize: getPlayerSize(el),
+    playerSize: getPlayerSize(el.mediaController ?? el),
     hasCaptions: !!getCcSubTracks(el).length,
     // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
     // and to guarantee they'll all be set *before* the playback id is set, using attr values here (CJP)
@@ -218,14 +218,14 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #renderChrome() {
-    if (this.#state.playerSize != getPlayerSize(this)) {
-      this.#setState({ playerSize: getPlayerSize(this) });
+    if (this.#state.playerSize != getPlayerSize(this.mediaController ?? this)) {
+      this.#setState({ playerSize: getPlayerSize(this.mediaController ?? this) });
     }
   }
 
   #initResizing() {
     this.#resizeObserver = new ResizeObserver(() => this.#renderChrome());
-    this.#resizeObserver.observe(this);
+    this.#resizeObserver.observe(this.mediaController ?? this);
   }
 
   #deinitResizing() {

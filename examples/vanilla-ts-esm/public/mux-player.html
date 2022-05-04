@@ -19,6 +19,7 @@
         display: block;
         aspect-ratio: 16 / 9;
         background-color: #000;
+        line-height: 0;
       }
 
       .buttons {
@@ -72,14 +73,6 @@
 
     <script>
       let player = document.querySelector("mux-player");
-
-      player.addEventListener('loadedmetadata', (e) => {
-        console.log(111, e)
-      });
-
-      document.addEventListener('play', (e) => {
-        console.log(222, e);
-      }, { capture: true });
 
       document
         .querySelector(".dialog-show-btn")
