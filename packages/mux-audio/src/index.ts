@@ -254,7 +254,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   async attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     switch (attrName) {
       case 'src':
-        // Return early if an update was already started, hasAttribute() gets the fresh value.
+        // Return early if an update was already started, getAttribute() gets the fresh value.
         if (this.__isUpdating) return;
         this.__isUpdating = true;
 
@@ -262,7 +262,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
         await Promise.resolve();
 
         const hadSrc = !!oldValue;
-        const hasSrc = !!newValue;
+        const hasSrc = !!this.getAttribute('src');
         if (!hadSrc && hasSrc) {
           this.load();
         } else if (hadSrc && !hasSrc) {
