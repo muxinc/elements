@@ -101,6 +101,10 @@ class VideoApiElement extends HTMLElement {
         const val = +newValue;
         if (this.media && !Number.isNaN(val)) {
           this.media.playbackRate = val;
+          // The playbackRate resets after a src change to the defaultPlaybackRate.
+          // Set it here because the src is set with one tick delay in mux-video.
+          // @see https://html.spec.whatwg.org/multipage/media.html#loading-the-media-resource
+          this.media.defaultPlaybackRate = val;
         }
         return;
       }

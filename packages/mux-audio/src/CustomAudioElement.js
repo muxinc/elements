@@ -75,7 +75,7 @@ class CustomAudioElement extends HTMLElement {
     // One way to get around this would be to build the native tag as a string.
     // But just fixing it manually for now.
     // Apparently this may also be an issue with <input checked> for buttons
-    if (nativeEl.defaultMuted) {
+    if (this.hasAttribute('muted')) {
       nativeEl.muted = true;
     }
 

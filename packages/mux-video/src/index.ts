@@ -70,6 +70,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   protected __playerSoftwareName?: string;
   protected __updateAutoplay?: UpdateAutoplay;
   protected __errorTranslator?: Function;
+  protected __isUpdating = false;
 
   constructor() {
     super();
@@ -334,17 +335,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   //   }
   // }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  async attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     switch (attrName) {
-      case Attributes.PLAYER_SOFTWARE_NAME:
-        this.playerSoftwareName = newValue ?? undefined;
-        break;
-      case Attributes.PLAYER_SOFTWARE_VERSION:
-        this.playerSoftwareVersion = newValue ?? undefined;
-        break;
       case 'src':
+        // Return early if an update was already started, hasAttribute() gets the fresh value.
+        if (this.__isUpdating) return;
+        this.__isUpdating = true;
+
+        // Wait one tick. Gives a chance to set more properties on load.
+        await Promise.resolve();
+
         const hadSrc = !!oldValue;
-        const hasSrc = !!newValue;
+        const hasSrc = this.hasAttribute('src');
         if (!hadSrc && hasSrc) {
           this.load();
         } else if (hadSrc && !hasSrc) {
@@ -354,6 +356,8 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           this.unload();
           this.load();
         }
+
+        this.__isUpdating = false;
         break;
       case 'autoplay':
         if (newValue === oldValue) {
@@ -384,6 +388,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
             .then((json) => (this.metadata = json))
             .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
+        break;
+      case Attributes.PLAYER_SOFTWARE_NAME:
+        this.playerSoftwareName = newValue ?? undefined;
+        break;
+      case Attributes.PLAYER_SOFTWARE_VERSION:
+        this.playerSoftwareVersion = newValue ?? undefined;
         break;
       default:
         break;

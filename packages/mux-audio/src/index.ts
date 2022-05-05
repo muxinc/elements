@@ -62,6 +62,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   protected __playerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
   protected __updateAutoplay?: UpdateAutoplay;
+  protected __isUpdating = false;
 
   constructor() {
     super();
@@ -250,9 +251,16 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     this.__hls = undefined;
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  async attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     switch (attrName) {
       case 'src':
+        // Return early if an update was already started, hasAttribute() gets the fresh value.
+        if (this.__isUpdating) return;
+        this.__isUpdating = true;
+
+        // Wait one tick. Gives a chance to set more properties on load.
+        await Promise.resolve();
+
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
@@ -264,6 +272,8 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
           this.unload();
           this.load();
         }
+
+        this.__isUpdating = false;
         break;
       case 'autoplay':
         this.__updateAutoplay?.(newValue);
