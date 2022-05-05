@@ -2,14 +2,14 @@
   "name": "@mux-elements/mux-audio",
   "version": "0.5.1",
   "description": "A custom mux audio element for the browser that Just Works™",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-audio.js",
   "exports": {
     "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs",
-    "default": "./dist/index.cjs"
+    "require": "./dist/index.cjs.js",
+    "default": "./dist/index.cjs.js"
   },
   "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
@@ -38,7 +38,7 @@
     "dev": "npm-run-all --parallel dev:types build:cjs build:esm build:esm-module dev:iife",
     "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --external:@mux-elements/* --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-audio.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs --external:@mux-elements/* --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:@mux-elements/* --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-audio.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types' && shx cp -r \"src/**/*.d.ts\" dist/types && downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
