@@ -57,4 +57,45 @@ describe('<mux-audio>', () => {
       volumechange: true,
     });
   });
+
+  it('enqueues source changes', async function () {
+    const player = await fixture(`<mux-audio
+      muted
+      preload="auto"
+    ></mux-audio>`);
+
+    let count = 0;
+    player.addEventListener('loadstart', () => count++);
+
+    player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';
+    player.playbackId = 'r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA';
+
+    // setting the source and loadstart are async, wait just a little bit.
+    await aTimeout(100);
+
+    assert.equal(count, 1, 'loadstart was called 1 time on 2 subsequent source changes');
+    assert.equal(player.playbackId, 'r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA');
+    assert.equal(player.preload, 'auto');
+    assert(player.muted);
+  });
+
+  it('allows preload changes after setting source', async function () {
+    this.timeout(10000);
+
+    const player = await fixture(`<mux-audio
+      preload="auto"
+    ></mux-audio>`);
+
+    let count = 0;
+    player.addEventListener('loadedmetadata', () => count++);
+
+    player.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+    player.preload = 'none';
+
+    // setting the source and loadedmetadata are async, wait just a little bit.
+    await aTimeout(2000);
+
+    assert.equal(player.preload, 'none');
+    assert.equal(count, 0, 'loadedmetadata was not called because preload is none');
+  });
 });
