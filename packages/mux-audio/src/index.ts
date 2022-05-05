@@ -302,14 +302,6 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   disconnectedCallback() {
     this.unload();
   }
-
-  /** @TODO Followup - investigate why this is necessary (attributeChanged not invoked on initial load when setting playback-id) (CJP) */
-  connectedCallback() {
-    // Only auto-load if we have a src
-    if (this.src) {
-      this.load();
-    }
-  }
 }
 
 type MuxAudioElementType = typeof MuxAudioElement;

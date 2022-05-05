@@ -395,23 +395,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   disconnectedCallback() {
     this.unload();
   }
-
-  /** @TODO Followup - investigate why this is necessary (attributeChanged not invoked on initial load when setting playback-id) (CJP) */
-  connectedCallback() {
-    // Only auto-load if we have a src
-    if (this.src) {
-      this.load();
-    }
-
-    // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
-    // Not preloading might require faking the play() promise
-    // so that you can call play(), call load() within that
-    // But wait until MANIFEST_PARSED to actually call play()
-    // on the nativeEl.
-    // if (this.preload === 'auto') {
-    //   this.load();
-    // }
-  }
 }
 
 type MuxVideoElementType = typeof MuxVideoElement;

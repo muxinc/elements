@@ -74,11 +74,6 @@ class CustomVideoElement extends HTMLElement {
 
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('video'));
 
-    // Initialize all the attribute properties
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
-
     // Neither Chrome or Firefox support setting the muted attribute
     // after using document.createElement.
     // One way to get around this would be to build the native tag as a string.

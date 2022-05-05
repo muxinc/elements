@@ -67,12 +67,8 @@ class CustomAudioElement extends HTMLElement {
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('audio'));
 
-    // Initialize all the attribute properties
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
-    });
+    const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('audio'));
 
     // Neither Chrome or Firefox support setting the muted attribute
     // after using document.createElement.
