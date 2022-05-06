@@ -18,8 +18,6 @@ const MediaChromeSizes = {
   XS: 'extra-small',
 };
 
-const Spacer = () => html`<div class="mxp-spacer"></div>`;
-
 type ThemeMuxTemplateProps = {
   streamType: string;
   playerSize: string;
@@ -127,7 +125,7 @@ const MediaFullscreenButton = () => html`
 export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     ${MediaAirplayButton()}
     ${MediaPipButton()}
   </media-control-bar>
@@ -136,7 +134,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
@@ -158,9 +156,10 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
     <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaFullscreenButton()}
+    <div class="mxp-padding-2"></div>
   </media-control-bar>
 `;
 
@@ -177,12 +176,13 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     <media-playback-rate-button></media-playback-rate-button>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
+    <div class="mxp-padding-2"></div>
   </media-control-bar>
 `;
 
@@ -193,7 +193,7 @@ export const LiveChromeExtraSmall = VodChromeExtraSmall;
 export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
     <slot name="seek-to-live-button"></slot>
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
     ${MediaPipButton()}
@@ -204,7 +204,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     ${MediaFullscreenButton()}
   </media-control-bar>
 `;
@@ -220,7 +220,7 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
-    ${Spacer()}
+    <div class="mxp-spacer"></div>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
     ${MediaPipButton()}

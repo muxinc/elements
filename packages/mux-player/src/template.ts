@@ -1,15 +1,10 @@
 import './media-theme-mux/media-theme-mux';
 import './dialog';
-import {
-  getChromeStylesFromProps,
-  getSrcFromPlaybackId,
-  getPosterURLFromPlaybackId,
-  getStoryboardURLFromPlaybackId,
-} from './helpers';
+import { getSrcFromPlaybackId, getPosterURLFromPlaybackId, getStoryboardURLFromPlaybackId } from './helpers';
 import { html } from './html';
 // @ts-ignore
 import cssStr from './styles.css';
-import { i18n } from './utils';
+import { i18n, stylePropsToString } from './utils';
 
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from './constants';
@@ -23,7 +18,10 @@ export const template = (props: MuxTemplateProps) => html`
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme-mux
-    style="${getChromeStylesFromProps(props) ?? false}"
+    style="${stylePropsToString({
+      '--primary-color': props.primaryColor,
+      '--secondary-color': props.secondaryColor,
+    }) ?? false}"
     class="size-${props.playerSize}"
     stream-type="${props.streamType}"
     player-size="${props.playerSize}"

@@ -1,4 +1,13 @@
 :host {
+  color: var(--primary-color);
+  --media-icon-color: var(--primary-color);
+  --media-range-thumb-background: var(--primary-color);
+  --media-range-bar-color: var(--primary-color);
+  --media-control-background: var(--secondary-color, transparent);
+  --media-control-hover-background: var(--secondary-color, transparent);
+  --media-time-buffered-color: rgba(255, 255, 255, 0.7);
+  --media-range-track-background-color: rgba(255, 255, 255, 0.5);
+  --media-range-track-border-radius: 3px;
   display: inline-block;
   width: 100%;
   height: 100%;
@@ -17,17 +26,14 @@ media-pip-button[media-pip-unavailable] {
 }
 
 media-controller {
-  --media-control-background: transparent;
-  --media-control-hover-background: transparent;
-  --media-range-track-background-color: rgba(255, 255, 255, 0.5);
-  --media-range-track-border-radius: 3px;
   width: 100%;
   height: 100%;
 }
 
 media-time-range {
+  z-index: 10;
   width: 100%;
-  height: 6px;
+  height: 4px;
 }
 
 media-control-bar {
@@ -50,6 +56,14 @@ media-control-bar :is([role='button'], [role='switch'], button) {
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
+/* Add a small space on the right to have the play button and
+ * fullscreen button aligned in relation to the progress bar. */
+.size-large .mxp-padding-2 {
+  width: 2px;
+  height: 100%;
+  background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
+}
+
 media-controller::part(vertical-layer) {
   transition: background-color 1s;
 }
@@ -60,7 +74,6 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
 }
 
 .mxp-center-controls {
-  --media-background-color: transparent;
   --media-button-icon-width: 100%;
   --media-button-icon-height: auto;
   pointer-events: none;
