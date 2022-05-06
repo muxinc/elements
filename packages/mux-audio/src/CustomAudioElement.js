@@ -36,9 +36,6 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    /* Supposed to reset styles. Need to understand the specific effects more */
-    all: initial;
-
     /* display:inline (like the native el) makes it so you can't fill
       the container with the native el */
     display: inline-block;
@@ -70,8 +67,10 @@ class CustomAudioElement extends HTMLElement {
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('audio'));
 
     // Initialize all the attribute properties
-    Array.prototype.forEach.call(this.attributes, (attrNode) => {
-      this.attributeChangedCallback(attrNode.name, null, attrNode.value);
+    // This is required before attributeChangedCallback is called after construction
+    // so the initial state of all the attributes are forwarded to the native element.
+    Array.from(this.attributes).forEach((attrNode) => {
+      this.forwardAttribute(attrNode.name, null, attrNode.value);
     });
 
     // Neither Chrome or Firefox support setting the muted attribute
@@ -136,6 +135,10 @@ class CustomAudioElement extends HTMLElement {
   // We need to handle sub-class custom attributes differently from
   // attrs meant to be passed to the internal native el.
   attributeChangedCallback(attrName, oldValue, newValue) {
+    this.forwardAttribute(attrName, oldValue, newValue);
+  }
+
+  forwardAttribute(attrName, oldValue, newValue) {
     // Find the matching prop for custom attributes
     const ownProps = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
     const propName = arrayFindAnyCase(ownProps, attrName);
