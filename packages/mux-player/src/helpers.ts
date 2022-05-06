@@ -1,4 +1,4 @@
-import { stylePropsToString, toQuery, camelCase } from './utils';
+import { toQuery, camelCase } from './utils';
 import type MuxPlayerElement from '.';
 import { StreamTypes } from './constants';
 
