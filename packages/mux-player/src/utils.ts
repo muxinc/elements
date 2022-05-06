@@ -40,6 +40,7 @@ class IntlMessageFormat {
 export function stylePropsToString(props: any) {
   let style = '';
   Object.entries(props).forEach(([key, value]) => {
+    if (value == null) return;
     style += `${kebabCase(key)}: ${value}; `;
   });
   return style ? style.trim() : undefined;

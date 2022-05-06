@@ -114,29 +114,3 @@ export const isInLiveWindow = (el: MuxPlayerElement) => {
   }
   return false;
 };
-
-export function getChromeStylesFromProps(props: any) {
-  const { primaryColor, secondaryColor, tertiaryColor } = props;
-
-  const primaryColorStyles = primaryColor
-    ? {
-        '--media-icon-color': primaryColor,
-        '--media-range-thumb-background': primaryColor,
-        '--media-range-bar-color': primaryColor,
-        color: primaryColor,
-      }
-    : {};
-
-  const secondaryColorStyles = secondaryColor
-    ? {
-        '--media-background-color': secondaryColor,
-        '--media-control-background': secondaryColor,
-        '--media-control-hover-background': secondaryColor,
-      }
-    : {};
-
-  return stylePropsToString({
-    ...primaryColorStyles,
-    ...secondaryColorStyles,
-  });
-}
