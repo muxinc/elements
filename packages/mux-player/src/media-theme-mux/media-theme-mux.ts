@@ -153,11 +153,12 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaPlayButton()}
     ${MediaSeekForwardButton(props)}
   </div>
+  <media-time-range></media-time-range>
   <media-control-bar>
-    <media-time-range></media-time-range>
     <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
+    ${Spacer()}
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -168,14 +169,15 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
     ${MediaPlayButton()}
   </div>
+  <media-time-range></media-time-range>
   <media-control-bar>
     ${MediaPlayButton()}
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
-    <media-time-range></media-time-range>
     <mxp-time-display></mxp-time-display>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
+    ${Spacer()}
     <media-playback-rate-button></media-playback-rate-button>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
