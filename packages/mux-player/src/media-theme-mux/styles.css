@@ -25,6 +25,11 @@ media-controller {
   height: 100%;
 }
 
+media-time-range {
+  width: 100%;
+  height: 6px;
+}
+
 media-control-bar {
   --media-button-icon-width: 18px;
 }
