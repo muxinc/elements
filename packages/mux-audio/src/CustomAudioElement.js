@@ -86,7 +86,7 @@ class CustomAudioElement extends HTMLElement {
     // This makes it possible to add event listeners before the element is upgraded.
     AudioEvents.forEach((type) => {
       nativeEl.addEventListener(type, (evt) => {
-        this.dispatchEvent(new Event(evt.type));
+        this.dispatchEvent(new CustomEvent(evt.type, { detail: evt.detail }));
       });
     });
 
