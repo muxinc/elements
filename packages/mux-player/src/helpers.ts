@@ -30,9 +30,12 @@ export const getSrcFromPlaybackId = (playbackId?: string, token?: string) => {
   return `https://stream.mux.com/${playbackId}.m3u8${toQuery(query)}`;
 };
 
-export const getPosterURLFromPlaybackId = (playbackId?: string, token?: string) => {
+export const getPosterURLFromPlaybackId = (playbackId?: string, thumbnailTime?: number, token?: string) => {
+  // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
+  const time = token == null ? thumbnailTime : undefined;
   return `https://image.mux.com/${playbackId}/thumbnail.jpg${toQuery({
     token,
+    time,
   })}`;
 };
 

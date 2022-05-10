@@ -78,6 +78,7 @@ const PlayerAttributes = {
   PLAYBACK_TOKEN: 'playback-token',
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
+  THUMBNAIL_TIME: 'thumbnail-time',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -85,6 +86,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
     poster: !el.playbackId && el.poster,
+    thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
     loop: el.loop,
@@ -468,6 +470,16 @@ class MuxPlayerElement extends VideoApiElement {
     this.#render({ [toPropName(attrName)]: newValue });
 
     switch (attrName) {
+      case PlayerAttributes.THUMBNAIL_TIME: {
+        if (newValue != null && this.tokens.thumbnail) {
+          logger.warn(
+            i18n(`Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`).format(
+              {}
+            )
+          );
+        }
+        break;
+      }
       case PlayerAttributes.THUMBNAIL_TOKEN: {
         const { aud } = parseJwt(newValue);
         if (newValue && aud !== 't') {
@@ -531,6 +543,20 @@ class MuxPlayerElement extends VideoApiElement {
 
   get mux() {
     return this.media?.mux;
+  }
+
+  /**
+   * Get the thumbnailTime offset used for the poster image.
+   */
+  get thumbnailTime() {
+    return toNumberOrUndefined(this.getAttribute(PlayerAttributes.THUMBNAIL_TIME));
+  }
+
+  /**
+   * Set the thumbnailTime offset used for the poster image.
+   */
+  set thumbnailTime(val: number | undefined) {
+    this.setAttribute(PlayerAttributes.THUMBNAIL_TIME, `${val}`);
   }
 
   /**

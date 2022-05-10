@@ -57,7 +57,7 @@ export const content = (props: MuxTemplateProps) => html`
       poster="${!!props.poster
         ? props.poster
         : props.playbackId
-        ? getPosterURLFromPlaybackId(props.playbackId, props.tokens.thumbnail)
+        ? getPosterURLFromPlaybackId(props.playbackId, props.thumbnailTime ?? props.startTime, props.tokens.thumbnail)
         : false}"
     >
       ${props.playbackId && props.streamType !== StreamTypes.LIVE && props.streamType !== StreamTypes.LL_LIVE

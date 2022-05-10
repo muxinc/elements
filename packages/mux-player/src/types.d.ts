@@ -10,6 +10,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   hasCaptions: boolean;
   supportsAirPlay: boolean;
   supportsVolume: boolean;
+  thumbnailTime: number;
   primaryColor: string;
   secondaryColor: string;
   forwardSeekOffset: number;
