@@ -60,6 +60,7 @@ export type MuxPlayerProps = {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  thumbnailTime?: number;
   tokens?: Tokens;
   onLoadStart?: EventListener;
   onLoadedMetadata?: EventListener;
