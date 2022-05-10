@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.5.0...@mux-elements/mux-video@0.5.1) (2022-05-10)
+
+### Bug Fixes
+
+- error message was not passed back to player ([ade8143](https://github.com/muxinc/elements/commit/ade81438834610a7bddfa158ff20ec671ccd508f))
+- fix 3x init of playback-core if `src` used ([#213](https://github.com/muxinc/elements/issues/213)) ([1d3e465](https://github.com/muxinc/elements/commit/1d3e465f8cc40544f0fb2c17ff4fb435c9e9a807))
+
 # [0.5.0](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.4.5...@mux-elements/mux-video@0.5.0) (2022-05-03)
 
 ### Bug Fixes

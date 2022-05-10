@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.10](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.9...@mux-elements/mux-player@0.1.0-beta.10) (2022-05-10)
+
+### Bug Fixes
+
+- clear state on other src related attrs ([17e75e7](https://github.com/muxinc/elements/commit/17e75e78d9b14c913138c2d181d279a58ef98832))
+- fullscreen controls layout ([#208](https://github.com/muxinc/elements/issues/208)) ([7bda89d](https://github.com/muxinc/elements/commit/7bda89de57e540e31f92a6b51f7379c94aad983d))
+- make height larger for touch temporarily ([86aaa84](https://github.com/muxinc/elements/commit/86aaa849340ff3a5acdc758f2a3a8fc6065e314e))
+- move hasPlayed into mux-player ([62bcd07](https://github.com/muxinc/elements/commit/62bcd076612a02f4d449ebe1ad0d34c8d8106942))
+- put progress bar above controls ([3f454e0](https://github.com/muxinc/elements/commit/3f454e01f464a74be6bc3c7a14a5920d2ae48623))
+
 # [0.1.0-beta.9](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.8...@mux-elements/mux-player@0.1.0-beta.9) (2022-05-03)
 
 ### Bug Fixes
