@@ -20,7 +20,7 @@ type VideoApiAttributes = {
   poster: string;
   playbackRate: number;
   playsInline: boolean;
-  // preload: string;
+  preload: string;
   crossOrigin: string;
   autoPlay: boolean | string;
   loop: boolean;
