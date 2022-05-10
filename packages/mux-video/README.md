@@ -241,6 +241,6 @@ declare global {
 
 No, you do not. The way Mux delivers HLS video is compliant with the HLS spec. Any video player that supports HLS will work with Mux Video.
 
-### If I'm not use Mux Video, can I still use this library?
+### If I'm not using Mux Video, can I still use this library?
 
 You sure can! Instead of passing in `playback-id=""` attribute, pass in `src=""` with an HLS url. You can still use `env-key=""` to get all the features of Mux Data with your non-Mux video.
