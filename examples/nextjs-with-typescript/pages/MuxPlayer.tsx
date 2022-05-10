@@ -4,6 +4,8 @@ import MuxPlayer from "@mux-elements/mux-player-react";
 import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
 
+const INITIAL_START_TIME = undefined;
+const INITIAL_THUMBNAIL_TIME = undefined;
 const INITIAL_DEBUG = false;
 const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
@@ -41,6 +43,8 @@ function MuxPlayerPage() {
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
+  const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
+  const [thumbnailTime, _setThumbnailTime] = useState(INITIAL_THUMBNAIL_TIME);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
 
   return (
@@ -65,6 +69,8 @@ function MuxPlayerPage() {
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
           metadata={metadata}
+          startTime={startTime}
+          thumbnailTime={thumbnailTime}
           playbackId={selectedAsset["playback-id"]}
           tokens={selectedAsset["tokens"]}
           forwardSeekOffset={10}
