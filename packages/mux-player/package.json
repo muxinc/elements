@@ -49,7 +49,7 @@
     "create-release-notes": "create-release-notes ./CHANGELOG.md"
   },
   "dependencies": {
-    "@github/template-parts": "https://github.com/muxinc/template-parts.git#mux-player",
+    "@github/template-parts": "^0.5.2",
     "@mux-elements/mux-video": "0.5.1",
     "@mux-elements/playback-core": "0.4.1",
     "media-chrome": "0.6.1"
