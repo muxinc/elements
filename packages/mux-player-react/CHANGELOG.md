@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.11](https://github.com/muxinc/elements/compare/@mux-elements/mux-player-react@0.1.0-beta.10...@mux-elements/mux-player-react@0.1.0-beta.11) (2022-05-11)
+
+### Bug Fixes
+
+- **mux-player-react:** Missing preload prop type def. ([19b2e15](https://github.com/muxinc/elements/commit/19b2e15dc844e6fb0f90e9ad62a436587260094a))
+
+### Features
+
+- **mux-player-react:** Add thumbnail-time support to mux-player-react. Document prop. ([d1c1a4c](https://github.com/muxinc/elements/commit/d1c1a4c65b200c59bab7cc68453c0e307eb75ae4))
+
 # [0.1.0-beta.10](https://github.com/muxinc/elements/compare/@mux-elements/mux-player-react@0.1.0-beta.9...@mux-elements/mux-player-react@0.1.0-beta.10) (2022-05-10)
 
 **Note:** Version bump only for package @mux-elements/mux-player-react

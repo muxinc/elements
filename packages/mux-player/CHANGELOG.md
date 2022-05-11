@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.11](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.10...@mux-elements/mux-player@0.1.0-beta.11) (2022-05-11)
+
+### Bug Fixes
+
+- **mux-player:** Ensure that the externally set poster attr is used iff it's set. ([e761073](https://github.com/muxinc/elements/commit/e76107359375de8e7db41cf3762734fa98c9d543))
+
+### Features
+
+- **mux-player:** Add thumbnail-time support to mux-player. Document attr&prop. Warn when used with thumbnail-token. ([ee235e0](https://github.com/muxinc/elements/commit/ee235e014bd76daee470e21eff2944b9a85c9ac9))
+
 # [0.1.0-beta.10](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.9...@mux-elements/mux-player@0.1.0-beta.10) (2022-05-10)
 
 ### Bug Fixes
