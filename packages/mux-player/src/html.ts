@@ -1,5 +1,12 @@
-import { TemplateInstance, NodeTemplatePart, createProcessor, AttributeTemplatePart } from '@github/template-parts';
-import type { TemplatePart, TemplateTypeInit } from '@github/template-parts';
+// NOTE: In @github/template-parts@0.5.2 the published package has some incorrect pathing for default modules.
+// Pointing directly to the current deep (likely unintentionally published) paths until this is resolved in a later published version (CJP)
+import {
+  TemplateInstance,
+  NodeTemplatePart,
+  createProcessor,
+  AttributeTemplatePart,
+} from '@github/template-parts/lib/src/index.js';
+import type { TemplatePart, TemplateTypeInit } from '@github/template-parts/lib/src/types';
 // NOTE: These are either direct ports or significantly based off of github's jtml template part processing logic. For more, see: https://github.com/github/jtml
 
 const eventListeners = new WeakMap<Element, Map<string, EventHandler>>();
