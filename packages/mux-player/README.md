@@ -44,13 +44,13 @@ require('@mux-elements/mux-player');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-player@0.1.0-beta.4"></script>
+<script src="https://unpkg.com/@mux-elements/mux-player"></script>
 ```
 
 If you are using ECMAScript modules, you can also load the `mux-player.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://unpkg.com/@mux-elements/mux-player@0.1.0-beta.4/dist/mux-player.mjs"></script>
+<script type="module" src="https://unpkg.com/@mux-elements/mux-player/dist/mux-player.mjs"></script>
 ```
 
 ## Features and benefits
