@@ -1,16 +1,19 @@
 import { i18n } from './utils';
+import { getPlayerVersion } from './helpers';
 import type { DevlogOptions } from './types';
 
+const prefix = `[mux-player ${getPlayerVersion()}]`;
+
 export function log(...args: any[]) {
-  console.log('[mux-player]', ...args);
+  console.log(prefix, ...args);
 }
 
 export function warn(...args: any[]) {
-  console.warn('[mux-player]', ...args);
+  console.warn(prefix, ...args);
 }
 
 export function error(...args: any[]) {
-  console.error('[mux-player]', ...args);
+  console.error(prefix, ...args);
 }
 
 export function devlog(opts: DevlogOptions) {
