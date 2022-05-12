@@ -34,5 +34,6 @@ and Github Actions for continuously publishing Mux elements.
 
 - Update stream.new
 - Update the player on docs.mux.com
+- Update the player on mux.com
 - Update the Mux Player guide in the docs (document any new functionality, add release notes at the bottom)
 - Post in #player to let product team know
