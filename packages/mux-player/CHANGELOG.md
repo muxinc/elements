@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.12](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.11...@mux-elements/mux-player@0.1.0-beta.12) (2022-05-12)
+
+### Bug Fixes
+
+- bump media-chrome dep for fullscreen bugfix ([7ba458c](https://github.com/muxinc/elements/commit/7ba458ca38d29d2a0c9d4dd8a950bb3cd394c543))
+
 # [0.1.0-beta.11](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.10...@mux-elements/mux-player@0.1.0-beta.11) (2022-05-11)
 
 ### Bug Fixes
