@@ -3,9 +3,8 @@ import '@mux-elements/playback-core';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
-import type { Metadata } from '@mux-elements/playback-core';
+import { Metadata, StreamTypes } from '@mux-elements/playback-core';
 import MediaThemeMux from './media-theme-mux/media-theme-mux';
-import { StreamTypes } from './constants';
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getCcSubTracks,
@@ -30,6 +29,8 @@ export type Tokens = {
 };
 
 type MediaController = Element & { media: HTMLVideoElement };
+
+const streamTypeValues = Object.values(StreamTypes);
 
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
@@ -245,7 +246,8 @@ class MuxPlayerElement extends VideoApiElement {
     this.mediaController?.addEventListener('mediaplayrequest', (event) => {
       if (
         (event.target as Element)?.localName === 'media-play-button' &&
-        (this.streamType === StreamTypes.LIVE || this.streamType === StreamTypes.LL_LIVE)
+        this.streamType &&
+        [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any)
       ) {
         // playback core should handle the seek to live on first play
         if (this.hasPlayed) {
@@ -521,7 +523,7 @@ class MuxPlayerElement extends VideoApiElement {
               )
             ),
           });
-        } else if (!['on-demand', 'live', 'll-live'].includes(this.streamType)) {
+        } else if (this.streamType != null && !streamTypeValues.includes(this.streamType as any)) {
           logger.devlog({
             file: 'invalid-stream-type.md',
             message: i18n(

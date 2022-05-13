@@ -19,14 +19,20 @@ export const generatePlayerInitTime = () => {
 
 export type StreamTypes = {
   VOD: 'on-demand';
+  ON_DEMAND: 'on-demand';
   LIVE: 'live';
   LL_LIVE: 'll-live';
+  DVR: 'live:dvr';
+  LL_DVR: 'll-live:dvr';
 };
 
 export const StreamTypes: StreamTypes = {
   VOD: 'on-demand',
+  ON_DEMAND: 'on-demand',
   LIVE: 'live',
   LL_LIVE: 'll-live',
+  DVR: 'live:dvr',
+  LL_DVR: 'll-live:dvr',
 };
 
 export type ExtensionMimeTypeMap = {

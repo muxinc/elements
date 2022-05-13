@@ -1,6 +1,6 @@
 import { toQuery, camelCase } from './utils';
 import type MuxPlayerElement from '.';
-import { StreamTypes } from './constants';
+import { StreamTypes } from '@mux-elements/playback-core';
 
 /* eslint-disable */
 const getEnvPlayerVersion = () => {
@@ -109,10 +109,10 @@ export const isInLiveWindow = (el: MuxPlayerElement) => {
   const delta = liveTime - currentTime;
   // The live window is based on whether or not the current playhead is within n segment durations (plus a margin of error)
   // of the live edge (CJP)
-  if (streamType === StreamTypes.LL_LIVE) {
+  if (streamType === StreamTypes.LL_LIVE || streamType === StreamTypes.LL_DVR) {
     return delta <= LL_LIVE_SEGMENT_SECS * (DEFAULT_HOLDBACK + LIVE_HOLDBACK_MOE);
   }
-  if (streamType === StreamTypes.LIVE) {
+  if (streamType === StreamTypes.LIVE || streamType === StreamTypes.DVR) {
     return delta <= LIVE_SEGMENT_SECS * (DEFAULT_HOLDBACK + LIVE_HOLDBACK_MOE);
   }
   return false;

@@ -7,7 +7,7 @@ import cssStr from './styles.css';
 import { i18n, stylePropsToString } from './utils';
 
 import type { MuxTemplateProps } from './types';
-import { StreamTypes } from './constants';
+import { StreamTypes } from '@mux-elements/playback-core';
 
 export const template = (props: MuxTemplateProps) => html`
   <style>
@@ -62,7 +62,8 @@ export const content = (props: MuxTemplateProps) => html`
         ? getPosterURLFromPlaybackId(props.playbackId, props.thumbnailTime ?? props.startTime, props.tokens.thumbnail)
         : false}"
     >
-      ${props.playbackId && props.streamType !== StreamTypes.LIVE && props.streamType !== StreamTypes.LL_LIVE
+      ${props.playbackId &&
+      ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)
         ? html`<track
             label="thumbnails"
             default

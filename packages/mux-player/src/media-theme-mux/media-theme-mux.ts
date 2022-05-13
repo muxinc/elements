@@ -5,12 +5,7 @@ import '../media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
 import * as icons from './icons';
-
-export const StreamTypes = {
-  VOD: 'on-demand',
-  LIVE: 'live',
-  LL_LIVE: 'll-live',
-};
+import { StreamTypes } from '@mux-elements/playback-core';
 
 const MediaChromeSizes = {
   LG: 'large',
@@ -42,23 +37,40 @@ const template = (props: ThemeMuxTemplateProps) => html`
 
 const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
   const { streamType, playerSize } = props;
-  if (streamType === StreamTypes.LIVE || streamType === StreamTypes.LL_LIVE) {
-    switch (playerSize) {
-      case MediaChromeSizes.LG:
-        return LiveChromeLarge(props);
-      case MediaChromeSizes.SM:
-        return LiveChromeSmall(props);
-      case MediaChromeSizes.XS:
-        return LiveChromeExtraSmall(props);
+  switch (streamType) {
+    case StreamTypes.LIVE:
+    case StreamTypes.LL_LIVE: {
+      switch (playerSize) {
+        case MediaChromeSizes.LG:
+          return LiveChromeLarge(props);
+        case MediaChromeSizes.SM:
+          return LiveChromeSmall(props);
+        case MediaChromeSizes.XS:
+          return LiveChromeExtraSmall(props);
+      }
     }
-  }
-  switch (playerSize) {
-    case MediaChromeSizes.LG:
-      return VodChromeLarge(props);
-    case MediaChromeSizes.SM:
-      return VodChromeSmall(props);
-    case MediaChromeSizes.XS:
-      return VodChromeExtraSmall(props);
+    case StreamTypes.DVR:
+    case StreamTypes.LL_DVR: {
+      switch (playerSize) {
+        case MediaChromeSizes.LG:
+          return DvrChromeLarge(props);
+        case MediaChromeSizes.SM:
+          return DvrChromeSmall(props);
+        case MediaChromeSizes.XS:
+          return DvrChromeExtraSmall(props);
+      }
+    }
+    case StreamTypes.ON_DEMAND:
+    default: {
+      switch (playerSize) {
+        case MediaChromeSizes.LG:
+          return VodChromeLarge(props);
+        case MediaChromeSizes.SM:
+          return VodChromeSmall(props);
+        case MediaChromeSizes.XS:
+          return VodChromeExtraSmall(props);
+      }
+    }
   }
 };
 
@@ -225,6 +237,54 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
     ${MediaAirplayButton()}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
+  </media-control-bar>
+`;
+
+// prettier-ignore
+export const DvrChromeExtraSmall = VodChromeExtraSmall;
+
+// prettier-ignore
+export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaAirplayButton()}
+    ${MediaPipButton()}
+  </media-control-bar>
+  <div slot="centered-chrome" class="mxp-center-controls">
+    ${MediaSeekBackwardButton(props)}
+    ${MediaPlayButton()}
+    ${MediaSeekForwardButton(props)}
+  </div>
+  <media-time-range></media-time-range>
+  <media-control-bar>
+    ${MediaMuteButton()}
+    <media-volume-range></media-volume-range>
+    <slot name="seek-to-live-button"></slot>
+    <div class="mxp-spacer"></div>
+    ${MediaFullscreenButton()}
+    <div class="mxp-padding-2"></div>
+  </media-control-bar>
+`;
+
+// prettier-ignore
+export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
+  <div slot="centered-chrome" class="mxp-center-controls">
+    ${MediaPlayButton()}
+  </div>
+  <media-time-range></media-time-range>
+  <media-control-bar>
+    ${MediaPlayButton()}
+    ${MediaSeekBackwardButton(props)}
+    ${MediaSeekForwardButton(props)}
+    ${MediaMuteButton()}
+    <media-volume-range></media-volume-range>
+    <slot name="seek-to-live-button"></slot>
+    <div class="mxp-spacer"></div>
+    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaAirplayButton()}
+    ${MediaPipButton()}
+    ${MediaFullscreenButton()}
+    <div class="mxp-padding-2"></div>
   </media-control-bar>
 `;
 
