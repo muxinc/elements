@@ -139,10 +139,19 @@ export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => 
 };
 
 export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
-  if (streamType === StreamTypes.LL_LIVE) {
-    return {
-      maxFragLookUpTolerance: 0.001,
+  if ([StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(streamType as any)) {
+    const liveConfig = {
+      backBufferLength: 12,
     };
+
+    if (streamType === StreamTypes.LL_LIVE) {
+      return {
+        ...liveConfig,
+        maxFragLookUpTolerance: 0.001,
+      };
+    }
+
+    return liveConfig;
   }
   return {};
 };
@@ -190,14 +199,19 @@ export const setupHls = (
 
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
   if (hlsType && !shouldUseNative && hlsSupported) {
+    const defaultConfig = {
+      backBufferLength: 30,
+      renderTextTracksNatively: false,
+      liveDurationInfinity: true,
+    };
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
       debug,
       startPosition,
+      ...defaultConfig,
       ...streamTypeConfig,
-      renderTextTracksNatively: false,
     });
 
     return hls;
