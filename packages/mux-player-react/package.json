@@ -3,8 +3,6 @@
   "version": "0.1.0-beta.13",
   "description": "An open source Mux player for React that Just Works™",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "browser": "dist/index.mjs",
   "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
     ">=4.3.5": {
@@ -23,13 +21,11 @@
   "scripts": {
     "clean": "shx rm -rf dist/",
     "dev:cjs": "open-process | yarn build:cjs --watch",
-    "dev:esm": "open-process | yarn build:esm --watch",
     "dev:types": "yarn build:types -w",
-    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs",
+    "dev": "npm-run-all --parallel dev:types dev:cjs",
     "build:cjs": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --external:react --external:@mux-elements/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:esm": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outfile=./dist/index.mjs --external:react --external:@mux-elements/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types' && downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:cjs -- --minify'",
+    "build": "npm-run-all --parallel build:types 'build:cjs -- --minify'",
     "prebuild": "yarn clean",
     "prepublishOnly": "yarn build",
     "create-release-notes": "create-release-notes ./CHANGELOG.md"
