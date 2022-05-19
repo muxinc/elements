@@ -4,7 +4,7 @@
   "description": "An open source Mux player web component that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
-  "browser": "./dist/index.cjs.js",
+  "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-player.js",
   "exports": {
     "import": "./dist/index.mjs",

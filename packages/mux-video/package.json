@@ -4,7 +4,7 @@
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
-  "browser": "./dist/index.cjs.js",
+  "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-video.js",
   "exports": {
     "import": "./dist/index.mjs",
