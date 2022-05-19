@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.13](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.12...@mux-elements/mux-player@0.1.0-beta.13) (2022-05-19)
+
+### Bug Fixes
+
+- bump LIVE_SEGMENT_SECS to 5 ([3fdf72d](https://github.com/muxinc/elements/commit/3fdf72d0e1322571aa18e8de74649f0dce5ae7b9))
+
 # [0.1.0-beta.12](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.11...@mux-elements/mux-player@0.1.0-beta.12) (2022-05-12)
 
 ### Bug Fixes
