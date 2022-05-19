@@ -95,7 +95,7 @@ export const seekToLive = (el: MuxPlayerElement) => {
 };
 
 export const LL_LIVE_SEGMENT_SECS = 1;
-export const LIVE_SEGMENT_SECS = 2;
+export const LIVE_SEGMENT_SECS = 5;
 export const DEFAULT_HOLDBACK = 3;
 export const LIVE_HOLDBACK_MOE = 0.5;
 
