@@ -381,6 +381,17 @@ class MuxPlayerElement extends VideoApiElement {
 
     // toggles activeCues for a particular track depending on whether the user is active or not
     const toggleLines = (track: TextTrack, userInactive: boolean) => {
+      // if we're live, exit early from here because our controls design means captions don't need to shift
+      // unless secondary color is set, in which case the entire bottom control bar may be opaque
+      if (
+        this.streamType &&
+        ['live', 'll-live'].includes(this.streamType) &&
+        !this.secondaryColor &&
+        this.offsetWidth >= 800
+      ) {
+        return;
+      }
+
       const cues = Array.from((track && track.activeCues) || []) as VTTCue[];
 
       cues.forEach((cue) => {
@@ -398,7 +409,12 @@ class MuxPlayerElement extends VideoApiElement {
           // for cues that have more than one line, we want to push the cue further up
           const lines = cue.text.split('\n').length;
           // start at -3 to account for thumbnails as well.
-          const setTo = -3 - lines;
+          let offset = -3;
+          if (this.streamType && ['live', 'll-live'].includes(this.streamType)) {
+            offset = -2;
+          }
+
+          const setTo = offset - lines;
 
           // if the line is already set to -4, we don't want to update it again
           // this can happen in the same tick on chrome and safari which fire a cuechange
