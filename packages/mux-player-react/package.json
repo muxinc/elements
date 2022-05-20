@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-player-react",
-  "version": "0.1.0-beta.13",
+  "version": "0.1.0-beta.14",
   "description": "An open source Mux player for React that Just Works™",
   "main": "dist/index.js",
   "types": "dist/types-ts3.4/index.d.ts",
@@ -44,7 +44,7 @@
     }
   },
   "dependencies": {
-    "@mux-elements/mux-player": "0.1.0-beta.13",
+    "@mux-elements/mux-player": "0.1.0-beta.14",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

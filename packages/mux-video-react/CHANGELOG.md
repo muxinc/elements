@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.8](https://github.com/muxinc/elements/compare/@mux-elements/mux-video-react@0.4.7...@mux-elements/mux-video-react@0.4.8) (2022-05-20)
+
+### Bug Fixes
+
+- switch cjs extension to .cjs.js ([30e83c3](https://github.com/muxinc/elements/commit/30e83c3ce0bd9bfda4817c30ffe0921e425619e4))
+
 ## [0.4.7](https://github.com/muxinc/elements/compare/@mux-elements/mux-video-react@0.4.6...@mux-elements/mux-video-react@0.4.7) (2022-05-10)
 
 **Note:** Version bump only for package @mux-elements/mux-video-react

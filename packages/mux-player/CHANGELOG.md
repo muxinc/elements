@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.14](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.13...@mux-elements/mux-player@0.1.0-beta.14) (2022-05-20)
+
+### Bug Fixes
+
+- switch cjs extension to .cjs.js ([30e83c3](https://github.com/muxinc/elements/commit/30e83c3ce0bd9bfda4817c30ffe0921e425619e4))
+
 # [0.1.0-beta.13](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.12...@mux-elements/mux-player@0.1.0-beta.13) (2022-05-19)
 
 ### Bug Fixes
