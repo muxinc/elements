@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-player",
-  "version": "0.1.0-beta.14",
+  "version": "0.1.0-beta.15",
   "description": "An open source Mux player web component that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",

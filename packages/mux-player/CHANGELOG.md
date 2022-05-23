@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.15](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.14...@mux-elements/mux-player@0.1.0-beta.15) (2022-05-23)
+
+### Bug Fixes
+
+- **mux-player:** upgrade Media Chrome to 0.6.5 ([45415e6](https://github.com/muxinc/elements/commit/45415e63bbf8b6f7b115231022f06d3805da051e))
+
 # [0.1.0-beta.14](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.13...@mux-elements/mux-player@0.1.0-beta.14) (2022-05-20)
 
 ### Bug Fixes
