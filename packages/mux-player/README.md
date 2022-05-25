@@ -218,13 +218,3 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 >
 </mux-player>
 ```
-
-### Signed URLs and other playback query params
-
-Mux supports a number of query parameters on HLS playback URLs. Most commonly is the `token=` param [used for signed URLs](https://docs.mux.com/guides/video/secure-video-playback).
-
-In order to use `token=` -- or any other query params, pass them through with the `playback-id` attribute:
-
-```
-playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?token=jwt-signed-token"
-```
