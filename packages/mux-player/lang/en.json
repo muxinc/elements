@@ -6,6 +6,7 @@
   "This playback-id may belong to a live stream that is not currently active or an asset that is not ready.": "This playback-id may belong to a live stream that is not currently active or an asset that is not ready.",
   "Video does not exist": "Video does not exist",
   "This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.": "This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.",
+  "The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.": "The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.",
   "Invalid playback URL": "Invalid playback URL",
   "The video URL or playback-token are formatted with incorrect or incomplete information.": "The video URL or playback-token are formatted with incorrect or incomplete information.",
   "403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.": "403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.",
