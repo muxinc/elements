@@ -452,7 +452,8 @@ function handleInternalError(event: Event) {
 
   const mediaEl = event.target as HTMLMediaElement;
   const error = event.detail;
-  if (!error) return;
+  // Prevent tracking non-fatal errors in Mux data.
+  if (!error || !error.fatal) return;
 
   const state = muxMediaState.get(mediaEl);
   if (state) state.error = error;
