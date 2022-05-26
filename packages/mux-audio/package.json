@@ -1,6 +1,6 @@
 {
   "name": "@mux-elements/mux-audio",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "A custom mux audio element for the browser that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
@@ -47,7 +47,7 @@
     "create-release-notes": "create-release-notes ./CHANGELOG.md"
   },
   "dependencies": {
-    "@mux-elements/playback-core": "0.5.1"
+    "@mux-elements/playback-core": "0.5.2"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",

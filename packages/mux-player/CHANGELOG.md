@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.17](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.16...@mux-elements/mux-player@0.1.0-beta.17) (2022-05-26)
+
+### Bug Fixes
+
+- add an error if a token is provided via the playback ID ([d09446d](https://github.com/muxinc/elements/commit/d09446d6da3dc3b332db031336c97ee9349ac9f1))
+
 # [0.1.0-beta.16](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.15...@mux-elements/mux-player@0.1.0-beta.16) (2022-05-23)
 
 **Note:** Version bump only for package @mux-elements/mux-player
