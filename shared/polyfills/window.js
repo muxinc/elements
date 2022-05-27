@@ -52,6 +52,14 @@ if (!globalThis.HTMLElement) {
   globalThis.HTMLElement = HTMLElement;
 }
 
+if (!globalThis.HTMLVideoElement) {
+  class HTMLVideoElement extends EventTarget {}
+
+  // NOTE: Adding ts-ignore since `HTMLVideoElement` typedef is much larger than what we're stubbing. Consider more robust TypeScript solution (e.g. downstream usage)
+  // @ts-ignore
+  globalThis.HTMLVideoElement = HTMLVideoElement;
+}
+
 if (!globalThis.document?.createElement) {
   const document = globalThis.document ?? {};
   (document.createElement = function createElement(_tagName, _options) {

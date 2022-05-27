@@ -28,8 +28,8 @@ export const CastableVideoMixin = (superclass) =>
 
     static initCast = () => {
       if (!this.#isChromeCastAvailable) {
-        window.__onGCastApiAvailable = () => {
-          // The window.__onGCastApiAvailable callback alone is not reliable for
+        globalThis.__onGCastApiAvailable = () => {
+          // The globalThis.__onGCastApiAvailable callback alone is not reliable for
           // the added cast.framework. It's loaded in a separate JS file.
           // http://www.gstatic.com/eureka/clank/101/cast_sender.js
           // http://www.gstatic.com/cast/sdk/libs/sender/1.0/cast_framework.js
