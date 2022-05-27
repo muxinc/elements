@@ -3,6 +3,10 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Basic &lt;mux-player/&gt; example</title>
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
     <script type="module" src="./dist/mux-player.js"></script>
     <style>
       body {
@@ -72,6 +76,8 @@
     <div class="buttons">
       <button class="dialog-show-btn">Show error dialog</button>
       <button class="dialog-close-btn">Close dialog</button>
+      <button class="cast-btn">Request Cast</button>
+      <button class="stop-cast-btn">Stop Cast</button>
     </div>
     <br />
 
@@ -91,6 +97,16 @@
         .querySelector(".dialog-close-btn")
         .addEventListener("click", () => {
           player.shadowRoot.querySelector("mxp-dialog").close();
+        });
+      document
+        .querySelector(".cast-btn")
+        .addEventListener("click", () => {
+          player.requestCast();
+        });
+      document
+        .querySelector(".stop-cast-btn")
+        .addEventListener("click", () => {
+          window.CastableVideoElement.exitCast();
         });
     </script>
 

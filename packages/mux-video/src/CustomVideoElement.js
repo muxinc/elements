@@ -49,7 +49,7 @@ template.innerHTML = `
     height: auto;
   }
 
-  video {
+  ::slotted(video), video {
     max-width: 100%;
     max-height: 100%;
     min-width: 100%;
@@ -58,7 +58,7 @@ template.innerHTML = `
 
 </style>
 
-<video part="video" crossorigin></video>
+<slot name="media"><video part="video" crossorigin></video></slot>
 <slot></slot>
 `;
 
@@ -69,7 +69,26 @@ class CustomVideoElement extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('video'));
+    const media = this.shadowRoot.querySelector('[name=media]');
+    const nativeEl = (this.nativeEl = media.assignedElements({ flatten: true })[0]);
+
+    if (nativeEl.hasAttribute('is')) {
+      customElements.whenDefined(nativeEl.getAttribute('is')).then(() => {
+        // If nativeEl is a custom built-in forward new methods and props.
+        const props = Object.getOwnPropertyNames(Object.getPrototypeOf(nativeEl));
+        forwardProps(nativeEl, props);
+
+        // Forward new events defined as onevent like properties.
+        props
+          .filter((prop) => prop.startsWith('on'))
+          .forEach((prop) => {
+            const type = prop.slice(2);
+            nativeEl.addEventListener(type, (evt) => {
+              this.dispatchEvent(new CustomEvent(evt.type, { detail: evt.detail }));
+            });
+          });
+      });
+    }
 
     // Initialize all the attribute properties
     // This is required before attributeChangedCallback is called after construction
@@ -98,6 +117,8 @@ class CustomVideoElement extends HTMLElement {
     const slotEl = this.shadowRoot.querySelector('slot');
     slotEl.addEventListener('slotchange', () => {
       slotEl.assignedElements().forEach((el) => {
+        // don't move elements that have a specific slot name like [name=media].
+        if (el.slot) return;
         nativeEl.appendChild(el);
       });
     });
@@ -218,33 +239,38 @@ for (
   });
 }
 
-// Passthrough native el functions from the custom el to the native el
-nativeElProps.forEach((prop) => {
-  const type = typeof nativeElTest[prop];
+forwardProps(nativeElTest, nativeElProps);
 
-  if (type == 'function') {
-    // Function
-    CustomVideoElement.prototype[prop] = function () {
-      return this.nativeEl[prop].apply(this.nativeEl, arguments);
-    };
-  } else {
-    // Getter
-    let config = {
-      get() {
-        return this.nativeEl[prop];
-      },
-    };
+function forwardProps(nativeEl, props) {
+  // Passthrough native el functions from the custom el to the native el
+  props.forEach((prop) => {
+    if (prop in CustomVideoElement.prototype) return;
 
-    if (prop !== prop.toUpperCase()) {
-      // Setter (not a CONSTANT)
-      config.set = function (val) {
-        this.nativeEl[prop] = val;
+    const type = typeof nativeEl[prop];
+    if (type == 'function') {
+      // Function
+      CustomVideoElement.prototype[prop] = function () {
+        return this.nativeEl[prop].apply(this.nativeEl, arguments);
       };
-    }
+    } else {
+      // Getter
+      let config = {
+        get() {
+          return this.nativeEl[prop];
+        },
+      };
 
-    Object.defineProperty(CustomVideoElement.prototype, prop, config);
-  }
-});
+      if (prop !== prop.toUpperCase()) {
+        // Setter (not a CONSTANT)
+        config.set = function (val) {
+          this.nativeEl[prop] = val;
+        };
+      }
+
+      Object.defineProperty(CustomVideoElement.prototype, prop, config);
+    }
+  });
+}
 
 function arrayFindAnyCase(arr, word) {
   let found = null;

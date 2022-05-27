@@ -1,3 +1,4 @@
+import './castable-video';
 import './media-theme-mux/media-theme-mux';
 import './dialog';
 import { getSrcFromPlaybackId, getPosterURLFromPlaybackId, getStoryboardURLFromPlaybackId } from './helpers';

@@ -8,8 +8,6 @@
     "declaration": true,
     "sourceMap": true,
     "composite": true,
-    "allowJs": true,
-    "checkJs": true,
     "strict": true,
     "noImplicitAny": true,
     "moduleResolution": "Node",
