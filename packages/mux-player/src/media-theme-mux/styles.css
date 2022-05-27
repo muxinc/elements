@@ -6,7 +6,7 @@
   --media-control-background: var(--secondary-color, transparent);
   --media-control-hover-background: var(--secondary-color, transparent);
   --media-time-buffered-color: rgba(255, 255, 255, 0.7);
-  --media-range-track-background-color: rgba(255, 255, 255, 0.5);
+  --media-range-track-background: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
   display: inline-block;
   width: 100%;
@@ -31,9 +31,12 @@ media-controller {
 }
 
 media-time-range {
+  padding: var(--mux-time-range-padding, 0 10px);
   z-index: 10;
   width: 100%;
   height: 22px;
+  --media-range-track-translate-y: 6px;
+  background: linear-gradient(180deg, transparent, transparent 15px, var(--media-control-background) 15px);
 }
 
 media-control-bar {

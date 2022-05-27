@@ -21,6 +21,8 @@ export const content = (props: MuxTemplateProps) => html`
     style="${stylePropsToString({
       '--primary-color': props.primaryColor,
       '--secondary-color': props.secondaryColor,
+      '--mux-time-range-padding': props.secondaryColor ? '0' : null,
+      '--media-range-track-border-radius': props.secondaryColor ? '0' : null,
     }) ?? false}"
     class="size-${props.playerSize}"
     stream-type="${props.streamType}"
