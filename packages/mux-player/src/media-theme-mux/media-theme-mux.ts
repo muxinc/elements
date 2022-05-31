@@ -122,11 +122,6 @@ const MediaAirplayButton = () => html`
 </media-airplay-button>`;
 
 // prettier-ignore
-const MediaCastButton = () => html`
-<media-cast-button>
-</media-cast-button>`;
-
-// prettier-ignore
 const MediaPipButton = () => html`
 <media-pip-button>
   ${icons.PipEnter()}
@@ -163,7 +158,7 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
-    ${MediaCastButton()}
+    <media-cast-button></media-cast-button>
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -200,7 +195,7 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <media-playback-rate-button></media-playback-rate-button>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
-    ${MediaCastButton()}
+    <media-cast-button></media-cast-button>
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
     <div class="mxp-padding-2"></div>
@@ -217,7 +212,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
     <div class="mxp-spacer"></div>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
-    ${MediaCastButton()}
+    <media-cast-button></media-cast-button>
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -245,7 +240,7 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <div class="mxp-spacer"></div>
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     ${MediaAirplayButton()}
-    ${MediaCastButton()}
+    <media-cast-button></media-cast-button>
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>

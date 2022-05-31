@@ -131,6 +131,8 @@ export const CastableVideoMixin = (superclass) =>
 
       this.textTracks.addEventListener('change', this.#onLocalTextTracksChange.bind(this));
 
+      /** @todo add listeners for addtrack, removetrack */
+
       // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
       // https://developers.google.com/cast/docs/reference/web_sender/cast.framework#.CastState
       const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
@@ -243,7 +245,7 @@ export const CastableVideoMixin = (superclass) =>
       if (!this.castPlayer) return;
 
       // Note this could also include audio or video tracks, diff against local state.
-      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0].activeTrackIds;
+      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds;
 
       const subtitles = [...this.textTracks].filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
       const hiddenSubtitles = subtitles.filter(({ mode }) => mode !== 'showing');
@@ -279,13 +281,14 @@ export const CastableVideoMixin = (superclass) =>
     }
 
     set onentercast(callback) {
+      if (this.#enterCastCallback) {
+        this.removeEventListener('entercast', this.#enterCastCallback);
+        this.#enterCastCallback = null;
+      }
       if (typeof callback == 'function') {
         this.#enterCastCallback = callback;
         this.addEventListener('entercast', callback);
-        return;
       }
-      this.#enterCastCallback = null;
-      this.removeEventListener('entercast', callback);
     }
 
     get onleavecast() {
@@ -293,13 +296,14 @@ export const CastableVideoMixin = (superclass) =>
     }
 
     set onleavecast(callback) {
+      if (this.#leaveCastCallback) {
+        this.removeEventListener('leavecast', this.#leaveCastCallback);
+        this.#leaveCastCallback = null;
+      }
       if (typeof callback == 'function') {
         this.#leaveCastCallback = callback;
         this.addEventListener('leavecast', callback);
-        return;
       }
-      this.#leaveCastCallback = null;
-      this.removeEventListener('leavecast', callback);
     }
 
     get oncastchange() {
@@ -307,13 +311,14 @@ export const CastableVideoMixin = (superclass) =>
     }
 
     set oncastchange(callback) {
+      if (this.#castChangeCallback) {
+        this.removeEventListener('castchange', this.#castChangeCallback);
+        this.#castChangeCallback = null;
+      }
       if (typeof callback == 'function') {
         this.#castChangeCallback = callback;
         this.addEventListener('castchange', callback);
-        return;
       }
-      this.#castChangeCallback = null;
-      this.removeEventListener('castchange', callback);
     }
 
     async requestCast(options = {}) {
