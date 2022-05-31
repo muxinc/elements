@@ -37,6 +37,7 @@ const template = (props: ThemeMuxTemplateProps) => html`
 
 const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
   const { streamType, playerSize } = props;
+  /* eslint-disable no-fallthrough */
   switch (streamType) {
     case StreamTypes.LIVE:
     case StreamTypes.LL_LIVE: {
@@ -72,6 +73,7 @@ const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
       }
     }
   }
+  /* eslint-enable */
 };
 
 // prettier-ignore
