@@ -1,6 +1,6 @@
 /* global chrome, cast */
 
-export const CastableVideoMixin = (superclass) =>
+const CastableVideoMixin = (superclass) =>
   class CastableVideo extends superclass {
     static observedAttributes = ['cast-src'];
     static instances = new Set();
@@ -558,5 +558,3 @@ if (!customElements.get('castable-video')) {
 }
 
 CastableVideoElement.initCast();
-
-export { CastableVideoElement };
