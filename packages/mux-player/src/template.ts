@@ -18,6 +18,7 @@ export const template = (props: MuxTemplateProps) => html`
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme-mux
+    audio="${props.audio || false}"
     style="${stylePropsToString({
       '--primary-color': props.primaryColor,
       '--secondary-color': props.secondaryColor,
@@ -58,7 +59,7 @@ export const content = (props: MuxTemplateProps) => html`
         : false}"
       poster="${!!props.poster
         ? props.poster
-        : props.playbackId
+        : props.playbackId && !props.audio
         ? getPosterURLFromPlaybackId(props.playbackId, props.thumbnailTime ?? props.startTime, props.tokens.thumbnail)
         : false}"
       cast-src="${!!props.src
@@ -69,6 +70,7 @@ export const content = (props: MuxTemplateProps) => html`
       cast-stream-type="${[StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any) ? 'live' : false}"
     >
       ${props.playbackId &&
+      !props.audio &&
       ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)
         ? html`<track
             label="thumbnails"

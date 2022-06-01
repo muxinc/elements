@@ -15,6 +15,7 @@ const MediaChromeSizes = {
 
 type ThemeMuxTemplateProps = {
   streamType: string;
+  audio: boolean;
   playerSize: string;
   defaultHiddenCaptions: boolean;
   hasCaptions: boolean;
@@ -27,7 +28,7 @@ const template = (props: ThemeMuxTemplateProps) => html`
     ${cssStr}
   </style>
 
-  <media-controller class="size-${props.playerSize}">
+  <media-controller audio="${props.audio || false}" class="size-${props.playerSize}">
     <slot name="media" slot="media"></slot>
     <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
     ${ChromeRenderer(props)}
@@ -36,7 +37,8 @@ const template = (props: ThemeMuxTemplateProps) => html`
 `;
 
 const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
-  const { streamType, playerSize } = props;
+  const { streamType, playerSize, audio } = props;
+  if (audio) return AudioChrome(props);
   /* eslint-disable no-fallthrough */
   switch (streamType) {
     case StreamTypes.LIVE:
@@ -134,6 +136,20 @@ const MediaFullscreenButton = () => html`
   ${icons.FullscreenEnter()}
   ${icons.FullscreenExit()}
 </media-fullscreen-button>`;
+
+export const AudioChrome = (props: ThemeMuxTemplateProps) => html`
+  <media-control-bar>
+    ${MediaPlayButton()} ${MediaSeekBackwardButton(props)} ${MediaSeekForwardButton(props)}
+    <mxp-time-display></mxp-time-display>
+    <media-time-range></media-time-range>
+    ${MediaMuteButton()}
+    <media-volume-range></media-volume-range>
+    <div class="mxp-spacer"></div>
+    <media-playback-rate-button></media-playback-rate-button>
+    ${MediaAirplayButton()}
+    <div class="mxp-padding-2"></div>
+  </media-control-bar>
+`;
 
 // prettier-ignore
 export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
@@ -292,6 +308,7 @@ export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
 
 function getProps(el: MediaThemeMux, state?: any): ThemeMuxTemplateProps {
   return {
+    audio: el.hasAttribute('audio'),
     streamType: el.getAttribute('stream-type'),
     playerSize: el.getAttribute('player-size'),
     defaultHiddenCaptions: el.hasAttribute('default-hidden-captions'),
@@ -305,6 +322,7 @@ function getProps(el: MediaThemeMux, state?: any): ThemeMuxTemplateProps {
 class MediaThemeMux extends HTMLElement {
   static get observedAttributes() {
     return [
+      'audio',
       'stream-type',
       'player-size',
       'default-hidden-captions',

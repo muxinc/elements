@@ -83,6 +83,7 @@ const PlayerAttributes = {
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
   THUMBNAIL_TIME: 'thumbnail-time',
+  AUDIO: 'audio',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -111,6 +112,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
     preferMse: el.preferMse,
+    audio: el.audio,
     streamType: el.streamType,
     primaryColor: el.primaryColor,
     secondaryColor: el.secondaryColor,
@@ -561,6 +563,23 @@ class MuxPlayerElement extends VideoApiElement {
 
   get mux() {
     return this.media?.mux;
+  }
+
+  /**
+   * Get the thumbnailTime offset used for the poster image.
+   */
+  get audio() {
+    return this.hasAttribute(PlayerAttributes.AUDIO);
+  }
+
+  /**
+   * Set the thumbnailTime offset used for the poster image.
+   */
+  set audio(val: boolean) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.AUDIO);
+    }
+    this.setAttribute(PlayerAttributes.AUDIO, '');
   }
 
   /**

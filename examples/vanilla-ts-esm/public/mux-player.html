@@ -21,9 +21,12 @@
         max-width: 800px;
         margin: 40px auto;
         display: block;
-        aspect-ratio: 16 / 9;
         background-color: #000;
         line-height: 0;
+      }
+
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
       }
 
       .buttons {
@@ -51,9 +54,11 @@
       primary-color="#5c6ac4"
       secondary-color="#ecc94b"
       playback-id="xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE"
+      playback-id="x00Y6AhtNCs01UIW02FhPY4H6hZHkQLuiLoD1tTMj00zuxE" // audio-only playback id
       playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
       src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+      audio
       muted
       volume="0.4"
       playbackrate="2"
