@@ -52,7 +52,6 @@
     "@github/template-parts": "^0.5.3",
     "@mux-elements/mux-video": "0.5.4",
     "@mux-elements/playback-core": "0.5.2",
-    "castable-video": "^0.3.0",
     "media-chrome": "0.6.6"
   },
   "devDependencies": {

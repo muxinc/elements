@@ -277,7 +277,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
-    const nativeVideo = muxVideo.querySelector('video');
+    const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
     assert(player.muted, 'player.muted is true');
     assert(muxVideo.muted, 'muxVideo.muted is true');
@@ -306,7 +306,7 @@ describe('<mux-player>', () => {
     assert.equal(player.getAttribute('volume'), '0.4');
 
     const muxVideo = player.media;
-    const nativeVideo = muxVideo.querySelector('video');
+    const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
     assert.equal(player.volume, 0.4, 'player.volume is 0.4');
     assert.equal(muxVideo.volume, 0.4, 'muxVideo.volume is 0.4');
@@ -329,7 +329,7 @@ describe('<mux-player>', () => {
     assert.equal(player.getAttribute('playbackrate'), '2');
 
     const muxVideo = player.media;
-    const nativeVideo = muxVideo.querySelector('video');
+    const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
     assert.equal(player.playbackRate, 2, 'player.playbackRate is 2');
     assert.equal(muxVideo.playbackRate, 2, 'muxVideo.playbackRate is 2');
@@ -353,7 +353,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
-    const storyboardTrack = muxVideo.querySelector("track[label='thumbnails']");
+    const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(
       muxVideo.getAttribute('src'),
