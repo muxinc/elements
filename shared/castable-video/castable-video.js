@@ -77,6 +77,7 @@ export const CastableVideoMixin = (superclass) =>
     #remotePlayer;
     #remoteListeners = [];
     #textTrackState = new Map();
+    #textTrackIdCount = 0;
     #enterCastCallback;
     #leaveCastCallback;
     #castChangeCallback;
@@ -369,7 +370,7 @@ export const CastableVideoMixin = (superclass) =>
         .filter(({ kind }) => kind === 'subtitles' || kind === 'captions')
         .forEach((track) => {
           if (!this.#textTrackState.has(track)) {
-            const trackId = this.#textTrackState.size + 1;
+            const trackId = ++this.#textTrackIdCount;
             this.#textTrackState.set(track, { trackId });
           }
         });
