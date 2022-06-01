@@ -358,6 +358,10 @@ class MuxPlayerElement extends VideoApiElement {
 
     const mc: Maybe<MediaController> = this.mediaController;
 
+    // Any Safari
+    const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
+    const isIphone = /.*iPhone.*/.test(navigator.userAgent);
+
     let selectedTrack: TextTrack;
     const cuesmap = new WeakMap();
 
@@ -391,9 +395,11 @@ class MuxPlayerElement extends VideoApiElement {
           // for cues that have more than one line, we want to push the cue further up
           const lines = cue.text.split('\n').length;
           // start at -3 to account for thumbnails as well.
-          let offset = -3;
+          // default safari styles are taller than other browsers
+          let offset = isSafari ? -2 : -3;
+
           if (this.streamType && ['live', 'll-live'].includes(this.streamType)) {
-            offset = -2;
+            offset = isSafari ? -1 : -2;
           }
 
           const setTo = offset - lines;
