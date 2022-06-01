@@ -1,10 +1,13 @@
 // import playback-core here to make sure that the polyfill is loaded
 import '@mux-elements/playback-core';
+// import castable-video before mux-video so globalThis.CastableVideoElement
+// is available in mux-video. make castable-video external for import order.
+import '@mux-elements/castable-video';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
+import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
 import { Metadata, StreamTypes } from '@mux-elements/playback-core';
-import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getCcSubTracks,

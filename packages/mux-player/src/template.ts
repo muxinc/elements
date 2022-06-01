@@ -1,4 +1,3 @@
-import './castable-video';
 import './media-theme-mux/media-theme-mux';
 import './dialog';
 import { getSrcFromPlaybackId, getPosterURLFromPlaybackId, getStoryboardURLFromPlaybackId } from './helpers';
@@ -61,6 +60,11 @@ export const content = (props: MuxTemplateProps) => html`
         ? props.poster
         : props.playbackId
         ? getPosterURLFromPlaybackId(props.playbackId, props.thumbnailTime ?? props.startTime, props.tokens.thumbnail)
+        : false}"
+      cast-src="${!!props.src
+        ? props.src
+        : props.playbackId
+        ? getSrcFromPlaybackId(props.playbackId, props.tokens.playback)
         : false}"
     >
       ${props.playbackId &&
