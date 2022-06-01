@@ -392,7 +392,7 @@ class MuxPlayerElement extends VideoApiElement {
       // - native fullscreen on iPhones
       return (
         this.streamType &&
-        ['live', 'll-live'].includes(this.streamType) &&
+        [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(this.streamType as any) &&
         !this.secondaryColor &&
         this.offsetWidth >= 800
       );
@@ -424,7 +424,7 @@ class MuxPlayerElement extends VideoApiElement {
           // default safari styles are taller than other browsers
           let offset = isSafari ? -2 : -3;
 
-          if (this.streamType && ['live', 'll-live'].includes(this.streamType)) {
+          if (this.streamType && [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(this.streamType as any)) {
             offset = isSafari ? -1 : -2;
           }
 
