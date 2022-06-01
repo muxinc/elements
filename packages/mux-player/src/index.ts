@@ -380,19 +380,27 @@ class MuxPlayerElement extends VideoApiElement {
     const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
     const isIphone = /.*iPhone.*/.test(navigator.userAgent);
 
+    // ignore iphones
+    if (isIphone) return;
+
     let selectedTrack: TextTrack;
     const cuesmap = new WeakMap();
 
-    // toggles activeCues for a particular track depending on whether the user is active or not
-    const toggleLines = (track: TextTrack, userInactive: boolean) => {
-      // if we're live, exit early from here because our controls design means captions don't need to shift
-      // unless secondary color is set, in which case the entire bottom control bar may be opaque
-      if (
+    const shouldSkipLineToggle = () => {
+      // skip line toggle when:
+      // - streamType is live, unless secondary color is set or player size is too small
+      // - native fullscreen on iPhones
+      return (
         this.streamType &&
         ['live', 'll-live'].includes(this.streamType) &&
         !this.secondaryColor &&
         this.offsetWidth >= 800
-      ) {
+      );
+    };
+
+    // toggles activeCues for a particular track depending on whether the user is active or not
+    const toggleLines = (track: TextTrack, userInactive: boolean) => {
+      if (shouldSkipLineToggle()) {
         return;
       }
 
