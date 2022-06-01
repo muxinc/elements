@@ -66,6 +66,7 @@ export const content = (props: MuxTemplateProps) => html`
         : props.playbackId
         ? getSrcFromPlaybackId(props.playbackId, props.tokens.playback)
         : false}"
+      cast-stream-type="${[StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any) ? 'live' : false}"
     >
       ${props.playbackId &&
       ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)

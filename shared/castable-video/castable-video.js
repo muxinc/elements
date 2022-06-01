@@ -397,7 +397,7 @@ const CastableVideoMixin = (superclass) =>
         });
       }
 
-      if (this.castStreamType?.includes('live')) {
+      if (this.castStreamType === 'live') {
         mediaInfo.streamType = chrome.cast.media.StreamType.LIVE;
       } else {
         mediaInfo.streamType = chrome.cast.media.StreamType.BUFFERED;
