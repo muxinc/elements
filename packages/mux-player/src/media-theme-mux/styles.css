@@ -13,9 +13,25 @@
   height: 100%;
 }
 
+:host([audio]) ::slotted([slot='media']) {
+  height: 0px;
+}
+
+:host([audio]) media-control-bar {
+  width: 100%;
+}
+
 media-airplay-button[media-airplay-unavailable],
 media-cast-button[media-cast-unavailable],
 media-volume-range[media-volume-unavailable],
+media-airplay-button[media-airplay-unavailable] {
+  display: none;
+}
+
+media-volume-range[media-volume-unavailable] {
+  display: none;
+}
+
 media-pip-button[media-pip-unavailable] {
   display: none;
 }
