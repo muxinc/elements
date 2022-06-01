@@ -1,0 +1,16 @@
+{
+  "name": "@mux-elements/castable-video",
+  "version": "0.1.0",
+  "main": "./index.js",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.mjs"
+    }
+  },
+  "repository": "https://github.com/muxinc/elements",
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "private": true
+}

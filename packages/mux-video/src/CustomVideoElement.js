@@ -5,12 +5,15 @@
  * extended today across browsers.
  */
 
+// The onevent like props are weirdly set on the HTMLElement prototype with other
+// generic events making it impossible to pick these specific to HTMLMediaElement.
 export const VideoEvents = [
   'abort',
   'canplay',
   'canplaythrough',
   'durationchange',
   'emptied',
+  'encrypted',
   'ended',
   'error',
   'loadeddata',
@@ -28,9 +31,13 @@ export const VideoEvents = [
   'timeupdate',
   'volumechange',
   'waiting',
+  'waitingforkey',
   'resize',
   'enterpictureinpicture',
   'leavepictureinpicture',
+  'castchange',
+  'entercast',
+  'leavecast',
 ];
 
 const template = document.createElement('template');
@@ -39,12 +46,8 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    /* display:inline (like the native el) makes it so you can't fill
-      the container with the native el */
     display: inline-block;
     line-height: 0;
-    box-sizing: border-box;
-
     width: auto;
     height: auto;
   }
@@ -55,27 +58,60 @@ template.innerHTML = `
     min-width: 100%;
     min-height: 100%;
   }
-
 </style>
-
-<video part="video" crossorigin></video>
+<video is="castable-video" part="video" crossorigin></video>
 <slot></slot>
 `;
 
 class CustomVideoElement extends HTMLElement {
+  #hasAttrCallback;
+  #isInit;
+
   constructor() {
     super();
-
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('video'));
+    // If the custom element is defined before the <custom-video> HTML is parsed
+    // no attributes will be available in the constructor (construction process).
+    // Wait until initializing attributes in the attributeChangedCallback.
+    // If this element is connected to the DOM, the attributes will be available.
+    if (this.isConnected) {
+      this.#init();
+    }
+  }
+
+  #init() {
+    if (this.#isInit) return;
+    this.#isInit = true;
+
+    this.shadowRoot.append(template.content.cloneNode(true));
+    this.nativeEl = this.shadowRoot.querySelector('video');
+
+    // The video events are dispatched on the CustomVideoElement instance.
+    // This makes it possible to add event listeners before the element is upgraded.
+    VideoEvents.forEach((type) => {
+      this.nativeEl.addEventListener(type, (evt) => {
+        this.dispatchEvent(new CustomEvent(evt.type, { detail: evt.detail }));
+      });
+    });
+
+    // An unnamed <slot> will be filled with all of the custom element's
+    // top-level child nodes that do not have the slot attribute.
+    const slotEl = this.shadowRoot.querySelector('slot');
+    slotEl.addEventListener('slotchange', () => {
+      slotEl.assignedElements().forEach((el) => {
+        if (!['track', 'source'].includes(el.localName)) return;
+        this.nativeEl.append(el);
+      });
+    });
 
     // Initialize all the attribute properties
     // This is required before attributeChangedCallback is called after construction
     // so the initial state of all the attributes are forwarded to the native element.
-    Array.from(this.attributes).forEach((attrNode) => {
-      this.forwardAttribute(attrNode.name, null, attrNode.value);
+    // Don't call attributeChangedCallback directly here because the extending class
+    // could have overridden attributeChangedCallback leading to unexpected results.
+    Array.prototype.forEach.call(this.attributes, (attrNode) => {
+      this.#forwardAttribute(attrNode.name, null, attrNode.value);
     });
 
     // Neither Chrome or Firefox support setting the muted attribute
@@ -83,24 +119,9 @@ class CustomVideoElement extends HTMLElement {
     // One way to get around this would be to build the native tag as a string.
     // But just fixing it manually for now.
     // Apparently this may also be an issue with <input checked> for buttons
-    if (nativeEl.defaultMuted) {
-      nativeEl.muted = true;
+    if (this.nativeEl.defaultMuted) {
+      this.nativeEl.muted = true;
     }
-
-    // The video events are dispatched on the CustomVideoElement instance.
-    // This makes it possible to add event listeners before the element is upgraded.
-    VideoEvents.forEach((type) => {
-      nativeEl.addEventListener(type, (evt) => {
-        this.dispatchEvent(new CustomEvent(evt.type, { detail: evt.detail }));
-      });
-    });
-
-    const slotEl = this.shadowRoot.querySelector('slot');
-    slotEl.addEventListener('slotchange', () => {
-      slotEl.assignedElements().forEach((el) => {
-        nativeEl.appendChild(el);
-      });
-    });
   }
 
   // observedAttributes is required to trigger attributeChangedCallback
@@ -109,8 +130,12 @@ class CustomVideoElement extends HTMLElement {
   static get observedAttributes() {
     let attrs = [];
 
-    // Instead of manually creating a list of all observed attributes,
-    // observe any getter/setter prop name (lowercased)
+    const kebabCase = (name) => {
+      return name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    };
+
+    // Instead of manually creating a list of all observed attributes, observe
+    // any getter/setter prop name (lowercase or kebab-case for custom builtins)
     Object.getOwnPropertyNames(this.prototype).forEach((propName) => {
       let isFunc = false;
 
@@ -123,7 +148,7 @@ class CustomVideoElement extends HTMLElement {
 
       // Exclude functions and constants
       if (!isFunc && propName !== propName.toUpperCase()) {
-        attrs.push(propName.toLowerCase());
+        attrs.push(propName.toLowerCase(), kebabCase(propName));
       }
     });
 
@@ -137,13 +162,19 @@ class CustomVideoElement extends HTMLElement {
     return attrs;
   }
 
-  // We need to handle sub-class custom attributes differently from
-  // attrs meant to be passed to the internal native el.
   attributeChangedCallback(attrName, oldValue, newValue) {
-    this.forwardAttribute(attrName, oldValue, newValue);
+    // Initialize the attributes right after construction when they become available.
+    if (!this.#hasAttrCallback && !this.isConnected) {
+      this.#hasAttrCallback = true;
+      this.#init();
+    }
+
+    this.#forwardAttribute(attrName, oldValue, newValue);
   }
 
-  forwardAttribute(attrName, oldValue, newValue) {
+  // We need to handle sub-class custom attributes differently from
+  // attrs meant to be passed to the internal native el.
+  #forwardAttribute(attrName, oldValue, newValue) {
     // Find the matching prop for custom attributes
     const ownProps = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
     const propName = arrayFindAnyCase(ownProps, attrName);
@@ -174,9 +205,8 @@ class CustomVideoElement extends HTMLElement {
         this.nativeEl.removeAttribute(attrName);
       } else {
         // Ignore a few that don't need to be passed through just in case
-        // it creates unexpected behavior. Exclude attributes with a dash
-        // which are most likely custom attributes.
-        if (!/^(id|class)$|-/.test(attrName)) {
+        // it creates unexpected behavior.
+        if (['id', 'class'].indexOf(attrName) === -1) {
           this.nativeEl.setAttribute(attrName, newValue);
         }
       }
@@ -191,14 +221,14 @@ class CustomVideoElement extends HTMLElement {
 // Skipping HTMLElement because of things like "attachShadow"
 // causing issues. Most of those props still need to apply to
 // the custom element.
-// But includign EventTarget props because most events emit from
-// the native element.
 let nativeElProps = [];
 
 // Can't check typeof directly on element prototypes without
 // throwing Illegal Invocation errors, so creating an element
 // to check on instead.
-const nativeElTest = document.createElement('video');
+const nativeElTest = document.createElement('video', {
+  is: 'castable-video',
+});
 
 // Deprecated props throw warnings if used, so exclude them
 const deprecatedProps = ['webkitDisplayingFullscreen', 'webkitSupportsFullscreen'];
@@ -211,7 +241,7 @@ for (
   proto && proto !== HTMLElement.prototype;
   proto = Object.getPrototypeOf(proto)
 ) {
-  Object.keys(proto).forEach((key) => {
+  Object.getOwnPropertyNames(proto).forEach((key) => {
     if (deprecatedProps.indexOf(key) === -1) {
       nativeElProps.push(key);
     }
@@ -220,8 +250,9 @@ for (
 
 // Passthrough native el functions from the custom el to the native el
 nativeElProps.forEach((prop) => {
-  const type = typeof nativeElTest[prop];
+  if (prop in CustomVideoElement.prototype) return;
 
+  const type = typeof nativeElTest[prop];
   if (type == 'function') {
     // Function
     CustomVideoElement.prototype[prop] = function () {

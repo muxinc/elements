@@ -2,6 +2,18 @@ import { VideoEvents } from '@mux-elements/mux-video';
 import type MuxVideoElement from '@mux-elements/mux-video';
 import * as logger from './logger';
 
+export type CastOptions = {
+  receiverApplicationId: string;
+  autoJoinPolicy: string;
+  androidReceiverCompatible: boolean;
+  language: string;
+  resumeSavedSession: boolean;
+};
+
+export type MuxVideoElementExt = MuxVideoElement & {
+  requestCast(options: CastOptions): Promise<undefined>;
+};
+
 const AllowedVideoAttributes = {
   AUTOPLAY: 'autoplay',
   CROSSORIGIN: 'crossorigin',
@@ -115,14 +127,18 @@ class VideoApiElement extends HTMLElement {
     this.media?.pause();
   }
 
-  get media(): MuxVideoElement | null | undefined {
+  requestCast(options: CastOptions) {
+    return this.media?.requestCast(options);
+  }
+
+  get media(): MuxVideoElementExt | null | undefined {
     return this.shadowRoot?.querySelector('mux-video');
   }
 
   /**
    * @deprecated please use .media instead
    */
-  get video(): MuxVideoElement | null | undefined {
+  get video(): MuxVideoElementExt | null | undefined {
     logger.warn('<mux-player>.video is deprecated, please use .media instead');
     return this.media;
   }
