@@ -1,4 +1,4 @@
-/* global chrome, cast */
+/* global globalThis, chrome, cast */
 
 const CastableVideoMixin = (superclass) =>
   class CastableVideo extends superclass {
@@ -71,13 +71,17 @@ const CastableVideoMixin = (superclass) =>
       return CastableVideo.#castContext?.getCurrentSession();
     }
 
-    #castAvailable = false;
+    #editTracksInfo(request) {
+      return new Promise((resolve, reject) => {
+        CastableVideo.#currentSession?.getSessionObj().media[0].editTracksInfo(request, resolve, reject);
+      });
+    }
+
+    #isInit = false;
     #localState = { paused: false };
     #remoteState = { paused: false, currentTime: 0, muted: false };
     #remotePlayer;
     #remoteListeners = [];
-    #textTrackState = new Map();
-    #textTrackIdCount = 0;
     #enterCastCallback;
     #leaveCastCallback;
     #castChangeCallback;
@@ -126,11 +130,11 @@ const CastableVideoMixin = (superclass) =>
     }
 
     #init() {
-      if (!CastableVideo.#isCastFrameworkAvailable || this.#castAvailable) return;
-      this.#castAvailable = true;
+      if (!CastableVideo.#isCastFrameworkAvailable || this.#isInit) return;
+      this.#isInit = true;
       this.#setOptions();
 
-      this.textTracks.addEventListener('change', this.#onLocalTextTracksChange.bind(this));
+      this.textTracks.addEventListener('change', this.#syncTextTrack.bind(this));
 
       /** @todo add listeners for addtrack, removetrack */
 
@@ -164,7 +168,12 @@ const CastableVideoMixin = (superclass) =>
             this.dispatchEvent(new Event(value ? 'entercast' : 'leavecast'));
           },
         ],
-        [cast.framework.RemotePlayerEventType.DURATION_CHANGED, () => this.dispatchEvent(new Event('durationchange'))],
+        [
+          cast.framework.RemotePlayerEventType.DURATION_CHANGED,
+          () => {
+            this.dispatchEvent(new Event('durationchange'));
+          },
+        ],
         [
           cast.framework.RemotePlayerEventType.VOLUME_LEVEL_CHANGED,
           () => this.dispatchEvent(new Event('volumechange')),
@@ -185,7 +194,12 @@ const CastableVideoMixin = (superclass) =>
             }
           },
         ],
-        [cast.framework.RemotePlayerEventType.VIDEO_INFO_CHANGED, () => this.dispatchEvent(new Event('resize'))],
+        [
+          cast.framework.RemotePlayerEventType.VIDEO_INFO_CHANGED,
+          () => {
+            this.dispatchEvent(new Event('resize'));
+          },
+        ],
         [
           cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED,
           () => {
@@ -209,6 +223,12 @@ const CastableVideoMixin = (superclass) =>
                 }[this.castPlayer?.playerState]
               )
             );
+          },
+        ],
+        [
+          cast.framework.RemotePlayerEventType.MEDIA_INFO_CHANGED,
+          () => {
+            this.#onRemoteMediaInfoChanged();
           },
         ],
       ];
@@ -236,90 +256,6 @@ const CastableVideoMixin = (superclass) =>
 
         ...options,
       });
-    }
-
-    #getTrackId(track) {
-      return this.#textTrackState.get(track)?.trackId;
-    }
-
-    #onLocalTextTracksChange() {
-      if (!this.castPlayer) return;
-
-      // Note this could also include audio or video tracks, diff against local state.
-      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds;
-
-      const subtitles = [...this.textTracks].filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
-      const hiddenSubtitles = subtitles.filter(({ mode }) => mode !== 'showing');
-      const hiddenTrackIds = hiddenSubtitles.map(this.#getTrackId, this);
-      const showingSubtitle = subtitles.find(({ mode }) => mode === 'showing');
-
-      let requestTrackIds = activeTrackIds;
-
-      if (activeTrackIds.length) {
-        // Filter out all local hidden subtitle trackId's.
-        requestTrackIds = requestTrackIds.filter((id) => !hiddenTrackIds.includes(id));
-      }
-
-      if (!requestTrackIds.includes(showingSubtitle)) {
-        const showingTrackId = this.#getTrackId(showingSubtitle);
-        if (showingTrackId) {
-          requestTrackIds = [...requestTrackIds, showingTrackId];
-        }
-      }
-
-      const request = new chrome.cast.media.EditTracksInfoRequest(requestTrackIds);
-      CastableVideo.#currentSession?.getSessionObj().media[0].editTracksInfo(
-        request,
-        () => {
-          // noop
-        },
-        (error) => console.error(error)
-      );
-    }
-
-    get onentercast() {
-      return this.#enterCastCallback;
-    }
-
-    set onentercast(callback) {
-      if (this.#enterCastCallback) {
-        this.removeEventListener('entercast', this.#enterCastCallback);
-        this.#enterCastCallback = null;
-      }
-      if (typeof callback == 'function') {
-        this.#enterCastCallback = callback;
-        this.addEventListener('entercast', callback);
-      }
-    }
-
-    get onleavecast() {
-      return this.#leaveCastCallback;
-    }
-
-    set onleavecast(callback) {
-      if (this.#leaveCastCallback) {
-        this.removeEventListener('leavecast', this.#leaveCastCallback);
-        this.#leaveCastCallback = null;
-      }
-      if (typeof callback == 'function') {
-        this.#leaveCastCallback = callback;
-        this.addEventListener('leavecast', callback);
-      }
-    }
-
-    get oncastchange() {
-      return this.#castChangeCallback;
-    }
-
-    set oncastchange(callback) {
-      if (this.#castChangeCallback) {
-        this.removeEventListener('castchange', this.#castChangeCallback);
-        this.#castChangeCallback = null;
-      }
-      if (typeof callback == 'function') {
-        this.#castChangeCallback = callback;
-        this.addEventListener('castchange', callback);
-      }
     }
 
     async requestCast(options = {}) {
@@ -358,31 +294,22 @@ const CastableVideoMixin = (superclass) =>
 
       const mediaInfo = new chrome.cast.media.MediaInfo(this.castSrc, this.castContentType);
 
-      mediaInfo.textTrackStyle = new chrome.cast.media.TextTrackStyle();
-      mediaInfo.textTrackStyle.backgroundColor = '#00000000';
-      mediaInfo.textTrackStyle.edgeColor = '#000000FF';
-      mediaInfo.textTrackStyle.edgeType = chrome.cast.media.TextTrackEdgeType.OUTLINE;
-      mediaInfo.textTrackStyle.fontScale = 1.0;
-      mediaInfo.textTrackStyle.foregroundColor = '#FFFFFF';
-
-      // First give all text tracks a unique ID and save them in a Map().
-      [...this.textTracks]
-        .filter(({ kind }) => kind === 'subtitles' || kind === 'captions')
-        .forEach((track) => {
-          if (!this.#textTrackState.has(track)) {
-            const trackId = ++this.#textTrackIdCount;
-            this.#textTrackState.set(track, { trackId });
-          }
-        });
-
-      const subtitles = [...this.querySelectorAll('track')].filter(({ kind }) => {
-        return kind === 'subtitles' || kind === 'captions';
+      // Manually add text tracks with a `src` attribute.
+      // M3U8's load text tracks in the receiver, handle these in the media loaded event.
+      const subtitles = [...this.querySelectorAll('track')].filter(({ kind, src }) => {
+        return src && (kind === 'subtitles' || kind === 'captions');
       });
 
+      const activeTrackIds = [];
+      let textTrackIdCount = 0;
+
       if (subtitles.length) {
-        mediaInfo.tracks = subtitles.map((trackEl, i) => {
-          const trackId = this.#getTrackId(subtitles[i].track);
-          if (!trackId) return;
+        mediaInfo.tracks = subtitles.map((trackEl) => {
+          const trackId = ++textTrackIdCount;
+          // only activate 1 subtitle text track.
+          if (activeTrackIds.length === 0 && trackEl.track.mode === 'showing') {
+            activeTrackIds.push(trackId);
+          }
 
           const track = new chrome.cast.media.Track(trackId, chrome.cast.media.TrackType.TEXT);
           track.trackContentId = trackEl.src;
@@ -414,18 +341,62 @@ const CastableVideoMixin = (superclass) =>
       const request = new chrome.cast.media.LoadRequest(mediaInfo);
       request.currentTime = super.currentTime ?? 0;
       request.autoplay = !this.#localState.paused;
-
-      for (let i = 0; i < subtitles.length; i++) {
-        const trackId = this.#getTrackId(subtitles[i].track);
-        if (subtitles[i].track.mode === 'showing' && trackId) {
-          request.activeTrackIds = [trackId];
-          break;
-        }
-      }
+      request.activeTrackIds = activeTrackIds;
 
       await CastableVideo.#currentSession?.loadMedia(request);
 
       this.dispatchEvent(new Event('volumechange'));
+    }
+
+    #onRemoteMediaInfoChanged() {
+      this.#syncTextTrack();
+    }
+
+    async #syncTextTrack() {
+      if (!this.castPlayer) return;
+
+      // Get the tracks w/ trackId's that have been loaded; manually or via a playlist like a M3U8 or MPD.
+      const remoteTracks = this.#remotePlayer.mediaInfo.tracks;
+      const remoteSubtitles = remoteTracks.filter(({ type }) => type === chrome.cast.media.TrackType.TEXT);
+
+      const localSubtitles = [...this.textTracks].filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
+
+      // Create a new array from the local subs w/ the trackId's from the remote subs.
+      const subtitles = remoteSubtitles.map(({ language, name, trackId }) => {
+        // Find the corresponding local text track and assign the trackId.
+        const { mode } = localSubtitles.find((local) => local.language === language && local.label === name);
+        if (mode) return { mode, trackId };
+      });
+
+      const hiddenSubtitles = subtitles.filter(({ mode }) => mode && mode !== 'showing');
+      const hiddenTrackIds = hiddenSubtitles.map(({ trackId }) => trackId);
+      const showingSubtitle = subtitles.find(({ mode }) => mode === 'showing');
+
+      // Note this could also include audio or video tracks, diff against local state.
+      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds;
+      let requestTrackIds = activeTrackIds;
+
+      if (activeTrackIds.length) {
+        // Filter out all local hidden subtitle trackId's.
+        requestTrackIds = requestTrackIds.filter((id) => !hiddenTrackIds.includes(id));
+      }
+
+      if (showingSubtitle?.trackId) {
+        requestTrackIds = [...requestTrackIds, showingSubtitle.trackId];
+      }
+
+      // Remove duplicate ids.
+      requestTrackIds = [...new Set(requestTrackIds)];
+
+      const arrayEquals = (a, b) => a.length === b.length && a.every((a) => b.includes(a));
+      if (!arrayEquals(activeTrackIds, requestTrackIds)) {
+        try {
+          const request = new chrome.cast.media.EditTracksInfoRequest(requestTrackIds);
+          await this.#editTracksInfo(request);
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
 
     play() {
@@ -545,6 +516,51 @@ const CastableVideoMixin = (superclass) =>
         return;
       }
       super.currentTime = val;
+    }
+
+    get onentercast() {
+      return this.#enterCastCallback;
+    }
+
+    set onentercast(callback) {
+      if (this.#enterCastCallback) {
+        this.removeEventListener('entercast', this.#enterCastCallback);
+        this.#enterCastCallback = null;
+      }
+      if (typeof callback == 'function') {
+        this.#enterCastCallback = callback;
+        this.addEventListener('entercast', callback);
+      }
+    }
+
+    get onleavecast() {
+      return this.#leaveCastCallback;
+    }
+
+    set onleavecast(callback) {
+      if (this.#leaveCastCallback) {
+        this.removeEventListener('leavecast', this.#leaveCastCallback);
+        this.#leaveCastCallback = null;
+      }
+      if (typeof callback == 'function') {
+        this.#leaveCastCallback = callback;
+        this.addEventListener('leavecast', callback);
+      }
+    }
+
+    get oncastchange() {
+      return this.#castChangeCallback;
+    }
+
+    set oncastchange(callback) {
+      if (this.#castChangeCallback) {
+        this.removeEventListener('castchange', this.#castChangeCallback);
+        this.#castChangeCallback = null;
+      }
+      if (typeof callback == 'function') {
+        this.#castChangeCallback = callback;
+        this.addEventListener('castchange', callback);
+      }
     }
   };
 

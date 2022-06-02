@@ -12,5 +12,19 @@
   "repository": "https://github.com/muxinc/elements",
   "author": "Mux, Inc.",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    }
+  }
 }
