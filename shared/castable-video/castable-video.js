@@ -134,7 +134,7 @@ const CastableVideoMixin = (superclass) =>
       this.#isInit = true;
       this.#setOptions();
 
-      this.textTracks.addEventListener('change', this.#syncTextTrack.bind(this));
+      this.textTracks.addEventListener('change', this.#updateRemoteTextTrack.bind(this));
 
       /** @todo add listeners for addtrack, removetrack */
 
@@ -188,10 +188,10 @@ const CastableVideoMixin = (superclass) =>
         [
           cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
           () => {
-            if (this.#isMediaLoaded) {
-              this.#remoteState.currentTime = this.currentTime;
-              this.dispatchEvent(new Event('timeupdate'));
-            }
+            if (!this.#isMediaLoaded) return;
+
+            this.#remoteState.currentTime = this.currentTime;
+            this.dispatchEvent(new Event('timeupdate'));
           },
         ],
         [
@@ -226,9 +226,13 @@ const CastableVideoMixin = (superclass) =>
           },
         ],
         [
-          cast.framework.RemotePlayerEventType.MEDIA_INFO_CHANGED,
-          () => {
-            this.#onRemoteMediaInfoChanged();
+          cast.framework.RemotePlayerEventType.IS_MEDIA_LOADED_CHANGED,
+          async () => {
+            if (!this.#isMediaLoaded) return;
+
+            // mediaInfo is not immediately available due to a bug? wait one tick
+            await Promise.resolve();
+            this.#onRemoteMediaLoaded();
           },
         ],
       ];
@@ -348,32 +352,35 @@ const CastableVideoMixin = (superclass) =>
       this.dispatchEvent(new Event('volumechange'));
     }
 
-    #onRemoteMediaInfoChanged() {
-      this.#syncTextTrack();
+    #onRemoteMediaLoaded() {
+      this.#updateRemoteTextTrack();
     }
 
-    async #syncTextTrack() {
+    async #updateRemoteTextTrack() {
       if (!this.castPlayer) return;
 
       // Get the tracks w/ trackId's that have been loaded; manually or via a playlist like a M3U8 or MPD.
-      const remoteTracks = this.#remotePlayer.mediaInfo.tracks;
+      const remoteTracks = this.#remotePlayer.mediaInfo?.tracks ?? [];
       const remoteSubtitles = remoteTracks.filter(({ type }) => type === chrome.cast.media.TrackType.TEXT);
 
       const localSubtitles = [...this.textTracks].filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
 
       // Create a new array from the local subs w/ the trackId's from the remote subs.
-      const subtitles = remoteSubtitles.map(({ language, name, trackId }) => {
-        // Find the corresponding local text track and assign the trackId.
-        const { mode } = localSubtitles.find((local) => local.language === language && local.label === name);
-        if (mode) return { mode, trackId };
-      });
+      const subtitles = remoteSubtitles
+        .map(({ language, name, trackId }) => {
+          // Find the corresponding local text track and assign the trackId.
+          const { mode } = localSubtitles.find((local) => local.language === language && local.label === name) ?? {};
+          if (mode) return { mode, trackId };
+          return false;
+        })
+        .filter(Boolean);
 
-      const hiddenSubtitles = subtitles.filter(({ mode }) => mode && mode !== 'showing');
+      const hiddenSubtitles = subtitles.filter(({ mode }) => mode !== 'showing');
       const hiddenTrackIds = hiddenSubtitles.map(({ trackId }) => trackId);
       const showingSubtitle = subtitles.find(({ mode }) => mode === 'showing');
 
       // Note this could also include audio or video tracks, diff against local state.
-      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds;
+      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds ?? [];
       let requestTrackIds = activeTrackIds;
 
       if (activeTrackIds.length) {
