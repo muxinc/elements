@@ -99,6 +99,12 @@ const CastableVideoMixin = (superclass) =>
       });
     }
 
+    static #getMediaStatus(request) {
+      return new Promise((resolve, reject) => {
+        CastableVideo.#currentMedia.getStatus(request, resolve, reject);
+      });
+    }
+
     static #setOptions(options) {
       return CastableVideo.#castContext.setOptions({
         // Set the receiver application ID to your own (created in the
@@ -207,13 +213,18 @@ const CastableVideoMixin = (superclass) =>
             this.#remotePlayer.controller.addEventListener(event, listener);
           });
 
-          // #remotePlayer state is not immediately updated due to a bug? wait one tick
-          await Promise.resolve();
-
           /**
-           * @TODO there is cast framework resume session bug when you refresh the page a few
+           * There is cast framework resume session bug when you refresh the page a few
            * times the this.#remotePlayer.currentTime will not be in sync with the receiver :(
+           * The below status request syncs it back up.
            */
+          try {
+            await CastableVideo.#getMediaStatus(new chrome.cast.media.GetStatusRequest());
+          } catch (error) {
+            console.error(error);
+          }
+
+          // Dispatch the play, playing events manually to sync remote playing state.
           this.#remoteListeners[cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED]();
           this.#remoteListeners[cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED]();
         }
