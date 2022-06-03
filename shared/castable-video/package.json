@@ -26,5 +26,9 @@
       "ecmaVersion": 2022,
       "sourceType": "module"
     }
+  },
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "prettier": "^2.3.2"
   }
 }

@@ -12,7 +12,7 @@
  */
 const CastableVideoMixin = (superclass) =>
   class CastableVideo extends superclass {
-    static observedAttributes = ['cast-src'];
+    static observedAttributes = ['cast-src', 'cast-content-type', 'cast-stream-type'];
     static instances = new Set();
 
     static #castElement;
@@ -144,13 +144,14 @@ const CastableVideoMixin = (superclass) =>
     }
 
     get #isMediaLoaded() {
-      return this.#remotePlayer?.isMediaLoaded;
+      return this.castPlayer?.isMediaLoaded;
     }
 
     attributeChangedCallback(attrName) {
       if (!this.castPlayer) return;
 
       switch (attrName) {
+        case 'cast-stream-type':
         case 'cast-src':
           this.load();
           break;
@@ -209,7 +210,12 @@ const CastableVideoMixin = (superclass) =>
           // #remotePlayer state is not immediately updated due to a bug? wait one tick
           await Promise.resolve();
 
-          this.dispatchEvent(new Event(this.paused ? 'pause' : 'play'));
+          /**
+           * @TODO there is cast framework resume session bug when you refresh the page a few
+           * times the this.#remotePlayer.currentTime will not be in sync with the receiver :(
+           */
+          this.#remoteListeners[cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED]();
+          this.#remoteListeners[cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED]();
         }
       }
     }
