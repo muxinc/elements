@@ -140,6 +140,7 @@ const initialState = {
 };
 
 class MuxPlayerElement extends VideoApiElement {
+  #isInit = false;
   #tokens = {};
   #userInactive = true;
   #resizeObserver?: ResizeObserver;
@@ -163,6 +164,20 @@ class MuxPlayerElement extends VideoApiElement {
     super();
 
     this.attachShadow({ mode: 'open' });
+
+    // If the custom element is defined before the <mux-player> HTML is parsed
+    // no attributes will be available in the constructor (construction process).
+    // Wait until initializing attributes in the attributeChangedCallback.
+    // If this element is connected to the DOM, the attributes will be available.
+    if (this.isConnected) {
+      this.#init();
+    }
+  }
+
+  #init() {
+    if (this.#isInit) return;
+    this.#isInit = true;
+
     // The next line triggers the first render of the template.
     this.#setState({ playerSize: getPlayerSize(this) });
 
@@ -463,6 +478,11 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
+    if (!this.#isInit) {
+      // Initialize right after construction when the attributes become available.
+      this.#init();
+    }
+
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     const shouldClearState = [
