@@ -206,7 +206,7 @@ const CastableVideoMixin = (superclass) =>
          * it would be possible to pass this unique id w/ `LoadRequest.customData`
          * and verify against CastableVideo.#currentMedia.customData below.
          */
-        if (this.castSrc === CastableVideo.#currentMedia.media.contentId) {
+        if (this.castSrc === CastableVideo.#currentMedia?.media.contentId) {
           CastableVideo.#castElement = this;
 
           Object.entries(this.#remoteListeners).forEach(([event, listener]) => {
