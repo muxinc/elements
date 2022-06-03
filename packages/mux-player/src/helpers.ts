@@ -80,9 +80,10 @@ export function getCcSubTracks(el: MuxPlayerElement) {
 
 export const getLiveTime = (el: MuxPlayerElement) => {
   const { media } = el;
-  return media?._hls?.liveSyncPosition ?? media?.seekable.length
-    ? media?.seekable.end(media.seekable.length - 1)
-    : undefined;
+  return (
+    media?._hls?.liveSyncPosition ??
+    (media?.seekable.length ? media?.seekable.end(media.seekable.length - 1) : undefined)
+  );
 };
 
 export const seekToLive = (el: MuxPlayerElement) => {
