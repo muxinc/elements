@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
+import type { StreamTypes } from '@mux-elements/playback-core';
 import '@mux-elements/mux-player';
 import type MuxPlayerElement from '@mux-elements/mux-player';
 import type { Tokens } from '@mux-elements/mux-player';
@@ -27,13 +28,9 @@ type VideoApiAttributes = {
   muted: boolean;
   style: CSSProperties;
 };
-type StreamTypes = {
-  VOD: 'on-demand';
-  LIVE: 'live';
-  LL_LIVE: 'll-live';
-};
 
 type MuxMediaPropTypes = {
+  audio: boolean;
   // envKey: Options["data"]["env_key"];
   envKey: string;
   // debug: Options["debug"] & Hls["config"]["debug"];
