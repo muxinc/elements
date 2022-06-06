@@ -1,8 +1,18 @@
-/* global chrome, cast */
+/* global globalThis, chrome, cast */
 
+/**
+ * CastableVideoMixin
+ *
+ * Because there can only be one custom built-in (is="my-video") this mixin function
+ * provides a way to compose multiple classes to create one custom built-in class.
+ * @see https://justinfagnani.com/2015/12/21/real-mixins-with-javascript-classes/
+ *
+ * @param  {HTMLVideoElement} superclass - HTMLVideoElement or an extended class of it.
+ * @return {CastableVideo}
+ */
 const CastableVideoMixin = (superclass) =>
   class CastableVideo extends superclass {
-    static observedAttributes = ['cast-src'];
+    static observedAttributes = ['cast-src', 'cast-content-type', 'cast-stream-type'];
     static instances = new Set();
 
     static #castElement;
@@ -46,9 +56,17 @@ const CastableVideoMixin = (superclass) =>
       if (isAvailable) {
         this.#castEnabled = true;
 
-        for (const video of this.instances) {
-          video.#init();
-        }
+        const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
+        CastableVideo.#castContext.addEventListener(CAST_STATE_CHANGED, (e) => {
+          this.instances.forEach((video) => video.#onCastStateChanged(e));
+        });
+
+        const { SESSION_STATE_CHANGED } = cast.framework.CastContextEventType;
+        CastableVideo.#castContext.addEventListener(SESSION_STATE_CHANGED, (e) => {
+          this.instances.forEach((video) => video.#onSessionStateChanged(e));
+        });
+
+        this.instances.forEach((video) => video.#init());
       }
     };
 
@@ -71,150 +89,23 @@ const CastableVideoMixin = (superclass) =>
       return CastableVideo.#castContext?.getCurrentSession();
     }
 
-    #castAvailable = false;
-    #localState = { paused: false };
-    #remoteState = { paused: false, currentTime: 0, muted: false };
-    #remotePlayer;
-    #remoteListeners = [];
-    #textTrackState = new Map();
-    #textTrackIdCount = 0;
-    #enterCastCallback;
-    #leaveCastCallback;
-    #castChangeCallback;
-
-    constructor() {
-      super();
-      this.castEnabled = false;
-
-      CastableVideo.instances.add(this);
-      this.#init();
+    static get #currentMedia() {
+      return CastableVideo.#currentSession?.getSessionObj().media[0];
     }
 
-    get castPlayer() {
-      if (CastableVideo.castElement === this) return this.#remotePlayer;
-      return undefined;
-    }
-
-    get #isMediaLoaded() {
-      return this.#remotePlayer?.isMediaLoaded;
-    }
-
-    attributeChangedCallback(attrName) {
-      if (!this.castPlayer) return;
-
-      switch (attrName) {
-        case 'cast-src':
-          this.load();
-          break;
-      }
-    }
-
-    #disconnect() {
-      if (CastableVideo.#castElement !== this) return;
-
-      this.#remoteListeners.forEach(([event, listener]) => {
-        this.#remotePlayer.controller.removeEventListener(event, listener);
+    static #editTracksInfo(request) {
+      return new Promise((resolve, reject) => {
+        CastableVideo.#currentMedia.editTracksInfo(request, resolve, reject);
       });
-
-      CastableVideo.#castElement = undefined;
-
-      this.muted = this.#remoteState.muted;
-      this.currentTime = this.#remoteState.currentTime;
-      if (this.#remoteState.paused === false) {
-        this.play();
-      }
     }
 
-    #init() {
-      if (!CastableVideo.#isCastFrameworkAvailable || this.#castAvailable) return;
-      this.#castAvailable = true;
-      this.#setOptions();
-
-      this.textTracks.addEventListener('change', this.#onLocalTextTracksChange.bind(this));
-
-      /** @todo add listeners for addtrack, removetrack */
-
-      // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
-      // https://developers.google.com/cast/docs/reference/web_sender/cast.framework#.CastState
-      const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
-      CastableVideo.#castContext.addEventListener(CAST_STATE_CHANGED, () => {
-        this.dispatchEvent(
-          new CustomEvent('castchange', {
-            detail: CastableVideo.#castContext.getCastState(),
-          })
-        );
+    static #getMediaStatus(request) {
+      return new Promise((resolve, reject) => {
+        CastableVideo.#currentMedia.getStatus(request, resolve, reject);
       });
-
-      this.dispatchEvent(
-        new CustomEvent('castchange', {
-          detail: CastableVideo.#castContext.getCastState(),
-        })
-      );
-
-      this.#remotePlayer = new cast.framework.RemotePlayer();
-      new cast.framework.RemotePlayerController(this.#remotePlayer);
-
-      this.#remoteListeners = [
-        [
-          cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED,
-          ({ value }) => {
-            if (value === false) {
-              this.#disconnect();
-            }
-            this.dispatchEvent(new Event(value ? 'entercast' : 'leavecast'));
-          },
-        ],
-        [cast.framework.RemotePlayerEventType.DURATION_CHANGED, () => this.dispatchEvent(new Event('durationchange'))],
-        [
-          cast.framework.RemotePlayerEventType.VOLUME_LEVEL_CHANGED,
-          () => this.dispatchEvent(new Event('volumechange')),
-        ],
-        [
-          cast.framework.RemotePlayerEventType.IS_MUTED_CHANGED,
-          () => {
-            this.#remoteState.muted = this.muted;
-            this.dispatchEvent(new Event('volumechange'));
-          },
-        ],
-        [
-          cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED,
-          () => {
-            if (this.#isMediaLoaded) {
-              this.#remoteState.currentTime = this.currentTime;
-              this.dispatchEvent(new Event('timeupdate'));
-            }
-          },
-        ],
-        [cast.framework.RemotePlayerEventType.VIDEO_INFO_CHANGED, () => this.dispatchEvent(new Event('resize'))],
-        [
-          cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED,
-          () => {
-            this.#remoteState.paused = this.paused;
-            this.dispatchEvent(new Event(this.paused ? 'pause' : 'play'));
-          },
-        ],
-        [
-          cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED,
-          () => {
-            // pause event is handled above.
-            if (this.castPlayer?.playerState === chrome.cast.media.PlayerState.PAUSED) {
-              return;
-            }
-            this.dispatchEvent(
-              new Event(
-                {
-                  [chrome.cast.media.PlayerState.PLAYING]: 'playing',
-                  [chrome.cast.media.PlayerState.BUFFERING]: 'waiting',
-                  [chrome.cast.media.PlayerState.IDLE]: 'emptied',
-                }[this.castPlayer?.playerState]
-              )
-            );
-          },
-        ],
-      ];
     }
 
-    #setOptions(options) {
+    static #setOptions(options) {
       return CastableVideo.#castContext.setOptions({
         // Set the receiver application ID to your own (created in the
         // Google Cast Developer Console), or optionally
@@ -232,101 +123,191 @@ const CastableVideoMixin = (superclass) =>
         androidReceiverCompatible: false,
 
         language: 'en-US',
-        resumeSavedSession: false,
+        resumeSavedSession: true,
 
         ...options,
       });
     }
 
-    #getTrackId(track) {
-      return this.#textTrackState.get(track)?.trackId;
+    castEnabled = false;
+    #localState = { paused: false };
+    #remotePlayer;
+    #remoteListeners = {};
+    #enterCastCallback;
+    #leaveCastCallback;
+    #castChangeCallback;
+
+    constructor() {
+      super();
+
+      CastableVideo.instances.add(this);
+      this.#init();
     }
 
-    #onLocalTextTracksChange() {
+    get castPlayer() {
+      if (CastableVideo.castElement === this) return this.#remotePlayer;
+      return undefined;
+    }
+
+    get #isMediaLoaded() {
+      return this.castPlayer?.isMediaLoaded;
+    }
+
+    attributeChangedCallback(attrName) {
       if (!this.castPlayer) return;
 
-      // Note this could also include audio or video tracks, diff against local state.
-      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds;
-
-      const subtitles = [...this.textTracks].filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
-      const hiddenSubtitles = subtitles.filter(({ mode }) => mode !== 'showing');
-      const hiddenTrackIds = hiddenSubtitles.map(this.#getTrackId, this);
-      const showingSubtitle = subtitles.find(({ mode }) => mode === 'showing');
-
-      let requestTrackIds = activeTrackIds;
-
-      if (activeTrackIds.length) {
-        // Filter out all local hidden subtitle trackId's.
-        requestTrackIds = requestTrackIds.filter((id) => !hiddenTrackIds.includes(id));
+      switch (attrName) {
+        case 'cast-stream-type':
+        case 'cast-src':
+          this.load();
+          break;
       }
+    }
 
-      if (!requestTrackIds.includes(showingSubtitle)) {
-        const showingTrackId = this.#getTrackId(showingSubtitle);
-        if (showingTrackId) {
-          requestTrackIds = [...requestTrackIds, showingTrackId];
-        }
+    #disconnect() {
+      if (CastableVideo.#castElement !== this) return;
+
+      Object.entries(this.#remoteListeners).forEach(([event, listener]) => {
+        this.#remotePlayer.controller.removeEventListener(event, listener);
+      });
+
+      CastableVideo.#castElement = undefined;
+
+      // isMuted is not in savedPlayerState. should we sync this back to local?
+      this.muted = this.#remotePlayer.isMuted;
+      this.currentTime = this.#remotePlayer.savedPlayerState.currentTime;
+      if (this.#remotePlayer.savedPlayerState.isPaused === false) {
+        this.play();
       }
+    }
 
-      const request = new chrome.cast.media.EditTracksInfoRequest(requestTrackIds);
-      CastableVideo.#currentSession?.getSessionObj().media[0].editTracksInfo(
-        request,
-        () => {
-          // noop
-        },
-        (error) => console.error(error)
+    #onCastStateChanged() {
+      // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
+      // https://developers.google.com/cast/docs/reference/web_sender/cast.framework#.CastState
+      this.dispatchEvent(
+        new CustomEvent('castchange', {
+          detail: CastableVideo.#castContext.getCastState(),
+        })
       );
     }
 
-    get onentercast() {
-      return this.#enterCastCallback;
+    async #onSessionStateChanged() {
+      // Session states: NO_SESSION, SESSION_STARTING, SESSION_STARTED, SESSION_START_FAILED,
+      //                 SESSION_ENDING, SESSION_ENDED, SESSION_RESUMED
+      // https://developers.google.com/cast/docs/reference/web_sender/cast.framework#.SessionState
+
+      const { SESSION_RESUMED } = cast.framework.SessionState;
+      if (CastableVideo.#castContext.getSessionState() === SESSION_RESUMED) {
+        /**
+         * Figure out if this was the video that started the resumed session.
+         * @TODO make this more specific than just checking against the video src!! (WL)
+         *
+         * If this video element can get the same unique id on each browser refresh
+         * it would be possible to pass this unique id w/ `LoadRequest.customData`
+         * and verify against CastableVideo.#currentMedia.customData below.
+         */
+        if (this.castSrc === CastableVideo.#currentMedia?.media.contentId) {
+          CastableVideo.#castElement = this;
+
+          Object.entries(this.#remoteListeners).forEach(([event, listener]) => {
+            this.#remotePlayer.controller.addEventListener(event, listener);
+          });
+
+          /**
+           * There is cast framework resume session bug when you refresh the page a few
+           * times the this.#remotePlayer.currentTime will not be in sync with the receiver :(
+           * The below status request syncs it back up.
+           */
+          try {
+            await CastableVideo.#getMediaStatus(new chrome.cast.media.GetStatusRequest());
+          } catch (error) {
+            console.error(error);
+          }
+
+          // Dispatch the play, playing events manually to sync remote playing state.
+          this.#remoteListeners[cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED]();
+          this.#remoteListeners[cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED]();
+        }
+      }
     }
 
-    set onentercast(callback) {
-      if (this.#enterCastCallback) {
-        this.removeEventListener('entercast', this.#enterCastCallback);
-        this.#enterCastCallback = null;
-      }
-      if (typeof callback == 'function') {
-        this.#enterCastCallback = callback;
-        this.addEventListener('entercast', callback);
-      }
-    }
+    #init() {
+      if (!CastableVideo.#isCastFrameworkAvailable || this.castEnabled) return;
+      this.castEnabled = true;
+      CastableVideo.#setOptions();
 
-    get onleavecast() {
-      return this.#leaveCastCallback;
-    }
+      /**
+       * @TODO add listeners for addtrack, removetrack (WL)
+       * This only has an impact on <track> with a `src` because these have to be
+       * loaded manually in the load() method. This will require a new load() call
+       * for each added/removed track w/ src.
+       */
+      this.textTracks.addEventListener('change', this.#updateRemoteTextTrack.bind(this));
 
-    set onleavecast(callback) {
-      if (this.#leaveCastCallback) {
-        this.removeEventListener('leavecast', this.#leaveCastCallback);
-        this.#leaveCastCallback = null;
-      }
-      if (typeof callback == 'function') {
-        this.#leaveCastCallback = callback;
-        this.addEventListener('leavecast', callback);
-      }
-    }
+      this.#onCastStateChanged();
 
-    get oncastchange() {
-      return this.#castChangeCallback;
-    }
+      this.#remotePlayer = new cast.framework.RemotePlayer();
+      new cast.framework.RemotePlayerController(this.#remotePlayer);
 
-    set oncastchange(callback) {
-      if (this.#castChangeCallback) {
-        this.removeEventListener('castchange', this.#castChangeCallback);
-        this.#castChangeCallback = null;
-      }
-      if (typeof callback == 'function') {
-        this.#castChangeCallback = callback;
-        this.addEventListener('castchange', callback);
-      }
+      this.#remoteListeners = {
+        [cast.framework.RemotePlayerEventType.IS_CONNECTED_CHANGED]: ({ value }) => {
+          if (value === false) {
+            this.#disconnect();
+          }
+          this.dispatchEvent(new Event(value ? 'entercast' : 'leavecast'));
+        },
+        [cast.framework.RemotePlayerEventType.DURATION_CHANGED]: () => {
+          this.dispatchEvent(new Event('durationchange'));
+        },
+        [cast.framework.RemotePlayerEventType.VOLUME_LEVEL_CHANGED]: () => {
+          this.dispatchEvent(new Event('volumechange'));
+        },
+        [cast.framework.RemotePlayerEventType.IS_MUTED_CHANGED]: () => {
+          this.dispatchEvent(new Event('volumechange'));
+        },
+        [cast.framework.RemotePlayerEventType.CURRENT_TIME_CHANGED]: () => {
+          if (!this.#isMediaLoaded) return;
+          this.dispatchEvent(new Event('timeupdate'));
+        },
+        [cast.framework.RemotePlayerEventType.VIDEO_INFO_CHANGED]: () => {
+          this.dispatchEvent(new Event('resize'));
+        },
+        [cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED]: () => {
+          this.dispatchEvent(new Event(this.paused ? 'pause' : 'play'));
+        },
+        [cast.framework.RemotePlayerEventType.PLAYER_STATE_CHANGED]: () => {
+          // Player states: IDLE, PLAYING, PAUSED, BUFFERING
+          // https://developers.google.com/cast/docs/reference/web_sender/chrome.cast.media#.PlayerState
+
+          // pause event is handled above.
+          if (this.castPlayer?.playerState === chrome.cast.media.PlayerState.PAUSED) {
+            return;
+          }
+          this.dispatchEvent(
+            new Event(
+              {
+                [chrome.cast.media.PlayerState.PLAYING]: 'playing',
+                [chrome.cast.media.PlayerState.BUFFERING]: 'waiting',
+                [chrome.cast.media.PlayerState.IDLE]: 'emptied',
+              }[this.castPlayer?.playerState]
+            )
+          );
+        },
+        [cast.framework.RemotePlayerEventType.IS_MEDIA_LOADED_CHANGED]: async () => {
+          if (!this.#isMediaLoaded) return;
+
+          // mediaInfo is not immediately available due to a bug? wait one tick
+          await Promise.resolve();
+          this.#onRemoteMediaLoaded();
+        },
+      };
     }
 
     async requestCast(options = {}) {
-      this.#setOptions(options);
+      CastableVideo.#setOptions(options);
       CastableVideo.#castElement = this;
 
-      this.#remoteListeners.forEach(([event, listener]) => {
+      Object.entries(this.#remoteListeners).forEach(([event, listener]) => {
         this.#remotePlayer.controller.addEventListener(event, listener);
       });
 
@@ -358,31 +339,22 @@ const CastableVideoMixin = (superclass) =>
 
       const mediaInfo = new chrome.cast.media.MediaInfo(this.castSrc, this.castContentType);
 
-      mediaInfo.textTrackStyle = new chrome.cast.media.TextTrackStyle();
-      mediaInfo.textTrackStyle.backgroundColor = '#00000000';
-      mediaInfo.textTrackStyle.edgeColor = '#000000FF';
-      mediaInfo.textTrackStyle.edgeType = chrome.cast.media.TextTrackEdgeType.OUTLINE;
-      mediaInfo.textTrackStyle.fontScale = 1.0;
-      mediaInfo.textTrackStyle.foregroundColor = '#FFFFFF';
-
-      // First give all text tracks a unique ID and save them in a Map().
-      [...this.textTracks]
-        .filter(({ kind }) => kind === 'subtitles' || kind === 'captions')
-        .forEach((track) => {
-          if (!this.#textTrackState.has(track)) {
-            const trackId = ++this.#textTrackIdCount;
-            this.#textTrackState.set(track, { trackId });
-          }
-        });
-
-      const subtitles = [...this.querySelectorAll('track')].filter(({ kind }) => {
-        return kind === 'subtitles' || kind === 'captions';
+      // Manually add text tracks with a `src` attribute.
+      // M3U8's load text tracks in the receiver, handle these in the media loaded event.
+      const subtitles = [...this.querySelectorAll('track')].filter(({ kind, src }) => {
+        return src && (kind === 'subtitles' || kind === 'captions');
       });
 
+      const activeTrackIds = [];
+      let textTrackIdCount = 0;
+
       if (subtitles.length) {
-        mediaInfo.tracks = subtitles.map((trackEl, i) => {
-          const trackId = this.#getTrackId(subtitles[i].track);
-          if (!trackId) return;
+        mediaInfo.tracks = subtitles.map((trackEl) => {
+          const trackId = ++textTrackIdCount;
+          // only activate 1 subtitle text track.
+          if (activeTrackIds.length === 0 && trackEl.track.mode === 'showing') {
+            activeTrackIds.push(trackId);
+          }
 
           const track = new chrome.cast.media.Track(trackId, chrome.cast.media.TrackType.TEXT);
           track.trackContentId = trackEl.src;
@@ -414,18 +386,65 @@ const CastableVideoMixin = (superclass) =>
       const request = new chrome.cast.media.LoadRequest(mediaInfo);
       request.currentTime = super.currentTime ?? 0;
       request.autoplay = !this.#localState.paused;
-
-      for (let i = 0; i < subtitles.length; i++) {
-        const trackId = this.#getTrackId(subtitles[i].track);
-        if (subtitles[i].track.mode === 'showing' && trackId) {
-          request.activeTrackIds = [trackId];
-          break;
-        }
-      }
+      request.activeTrackIds = activeTrackIds;
 
       await CastableVideo.#currentSession?.loadMedia(request);
 
       this.dispatchEvent(new Event('volumechange'));
+    }
+
+    #onRemoteMediaLoaded() {
+      this.#updateRemoteTextTrack();
+    }
+
+    async #updateRemoteTextTrack() {
+      if (!this.castPlayer) return;
+
+      // Get the tracks w/ trackId's that have been loaded; manually or via a playlist like a M3U8 or MPD.
+      const remoteTracks = this.#remotePlayer.mediaInfo?.tracks ?? [];
+      const remoteSubtitles = remoteTracks.filter(({ type }) => type === chrome.cast.media.TrackType.TEXT);
+
+      const localSubtitles = [...this.textTracks].filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
+
+      // Create a new array from the local subs w/ the trackId's from the remote subs.
+      const subtitles = remoteSubtitles
+        .map(({ language, name, trackId }) => {
+          // Find the corresponding local text track and assign the trackId.
+          const { mode } = localSubtitles.find((local) => local.language === language && local.label === name) ?? {};
+          if (mode) return { mode, trackId };
+          return false;
+        })
+        .filter(Boolean);
+
+      const hiddenSubtitles = subtitles.filter(({ mode }) => mode !== 'showing');
+      const hiddenTrackIds = hiddenSubtitles.map(({ trackId }) => trackId);
+      const showingSubtitle = subtitles.find(({ mode }) => mode === 'showing');
+
+      // Note this could also include audio or video tracks, diff against local state.
+      const activeTrackIds = CastableVideo.#currentSession?.getSessionObj().media[0]?.activeTrackIds ?? [];
+      let requestTrackIds = activeTrackIds;
+
+      if (activeTrackIds.length) {
+        // Filter out all local hidden subtitle trackId's.
+        requestTrackIds = requestTrackIds.filter((id) => !hiddenTrackIds.includes(id));
+      }
+
+      if (showingSubtitle?.trackId) {
+        requestTrackIds = [...requestTrackIds, showingSubtitle.trackId];
+      }
+
+      // Remove duplicate ids.
+      requestTrackIds = [...new Set(requestTrackIds)];
+
+      const arrayEquals = (a, b) => a.length === b.length && a.every((a) => b.includes(a));
+      if (!arrayEquals(activeTrackIds, requestTrackIds)) {
+        try {
+          const request = new chrome.cast.media.EditTracksInfoRequest(requestTrackIds);
+          await CastableVideo.#editTracksInfo(request);
+        } catch (error) {
+          console.error(error);
+        }
+      }
     }
 
     play() {
@@ -545,6 +564,51 @@ const CastableVideoMixin = (superclass) =>
         return;
       }
       super.currentTime = val;
+    }
+
+    get onentercast() {
+      return this.#enterCastCallback;
+    }
+
+    set onentercast(callback) {
+      if (this.#enterCastCallback) {
+        this.removeEventListener('entercast', this.#enterCastCallback);
+        this.#enterCastCallback = null;
+      }
+      if (typeof callback == 'function') {
+        this.#enterCastCallback = callback;
+        this.addEventListener('entercast', callback);
+      }
+    }
+
+    get onleavecast() {
+      return this.#leaveCastCallback;
+    }
+
+    set onleavecast(callback) {
+      if (this.#leaveCastCallback) {
+        this.removeEventListener('leavecast', this.#leaveCastCallback);
+        this.#leaveCastCallback = null;
+      }
+      if (typeof callback == 'function') {
+        this.#leaveCastCallback = callback;
+        this.addEventListener('leavecast', callback);
+      }
+    }
+
+    get oncastchange() {
+      return this.#castChangeCallback;
+    }
+
+    set oncastchange(callback) {
+      if (this.#castChangeCallback) {
+        this.removeEventListener('castchange', this.#castChangeCallback);
+        this.#castChangeCallback = null;
+      }
+      if (typeof callback == 'function') {
+        this.#castChangeCallback = callback;
+        this.addEventListener('castchange', callback);
+      }
     }
   };
 
