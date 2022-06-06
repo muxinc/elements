@@ -17,6 +17,10 @@
   height: 0px;
 }
 
+:host([audio]) media-controller {
+  background: var(--secondary-color, transparent);
+}
+
 :host([audio]) media-control-bar {
   width: 100%;
 }
@@ -41,7 +45,7 @@ media-controller {
   height: 100%;
 }
 
-media-time-range {
+:host(:not([audio])) media-time-range {
   padding: var(--mux-time-range-padding, 0 10px);
   z-index: 10;
   width: 100%;
