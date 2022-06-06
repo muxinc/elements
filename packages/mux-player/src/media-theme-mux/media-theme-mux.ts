@@ -144,10 +144,8 @@ export const AudioChrome = (props: ThemeMuxTemplateProps) => html`
     <media-time-range></media-time-range>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
-    <div class="mxp-spacer"></div>
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaAirplayButton()}
-    <div class="mxp-padding-2"></div>
   </media-control-bar>
 `;
 
