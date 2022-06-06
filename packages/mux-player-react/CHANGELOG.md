@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.18](https://github.com/muxinc/elements/compare/@mux-elements/mux-player-react@0.1.0-beta.17...@mux-elements/mux-player-react@0.1.0-beta.18) (2022-06-06)
+
+### Features
+
+- **mux-player-react:** Add audio only. Cleanup StreamTypes source of truth. ([4f37d7f](https://github.com/muxinc/elements/commit/4f37d7f10ef66eef48af0dd9cf1efc79322b660d))
+
 # [0.1.0-beta.17](https://github.com/muxinc/elements/compare/@mux-elements/mux-player-react@0.1.0-beta.16...@mux-elements/mux-player-react@0.1.0-beta.17) (2022-05-26)
 
 **Note:** Version bump only for package @mux-elements/mux-player-react

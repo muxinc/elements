@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.5.4...@mux-elements/mux-video@0.6.0) (2022-06-06)
+
+### Features
+
+- add casting logic without cast-button ([#237](https://github.com/muxinc/elements/issues/237)) ([f7f1fe9](https://github.com/muxinc/elements/commit/f7f1fe9713f8c2dcedb2840f463b5478d6fffca0))
+
 ## [0.5.4](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.5.3...@mux-elements/mux-video@0.5.4) (2022-05-26)
 
 **Note:** Version bump only for package @mux-elements/mux-video

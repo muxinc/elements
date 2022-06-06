@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.18](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.17...@mux-elements/mux-player@0.1.0-beta.18) (2022-06-06)
+
+### Bug Fixes
+
+- attrs not available in constructor ([#240](https://github.com/muxinc/elements/issues/240)) ([add468a](https://github.com/muxinc/elements/commit/add468a0fc93ddfb745dfbc60a08e8a9120621be))
+- don't shift captions on iphones ([a4ae5f1](https://github.com/muxinc/elements/commit/a4ae5f1df0ce030f1ffedd74972873ff0f600483))
+- don't shift captions on live, unless secondary color is set ([b474980](https://github.com/muxinc/elements/commit/b4749806ba1ec082fb21642edae9e963e9287643))
+- lower captions offset for safari ([2f97a45](https://github.com/muxinc/elements/commit/2f97a452397ee276235a55d1deb29c8f0f4d2975))
+
+### Features
+
+- add casting logic without cast-button ([#237](https://github.com/muxinc/elements/issues/237)) ([f7f1fe9](https://github.com/muxinc/elements/commit/f7f1fe9713f8c2dcedb2840f463b5478d6fffca0))
+- **dvr:** Initial effort for DVR support. ([d58d78f](https://github.com/muxinc/elements/commit/d58d78fe6716d21ff03e5edb7d47c73e85ef4c85))
+- **mux-player:** Add audio-only support. Update vanilla example for audio use case. ([28c3db1](https://github.com/muxinc/elements/commit/28c3db19afb7b885316c034f1e02499dec472f7d))
+- **mux-player:** minor cleanup for audio only UI. ([909a5ea](https://github.com/muxinc/elements/commit/909a5eaee520c2be982f4d3a139dc6836265d514))
+- subtitles for M3U8 playlists, resume session, add cast-button ([#239](https://github.com/muxinc/elements/issues/239)) ([89793d0](https://github.com/muxinc/elements/commit/89793d0f98776252b1a585f605a0af39bd5c22d2))
+- vertical align progress bar and improve second color background ([#235](https://github.com/muxinc/elements/issues/235)) ([37e9eb7](https://github.com/muxinc/elements/commit/37e9eb74339f0f544f5e96e717396a6899446be0))
+
 # [0.1.0-beta.17](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.16...@mux-elements/mux-player@0.1.0-beta.17) (2022-05-26)
 
 ### Bug Fixes
