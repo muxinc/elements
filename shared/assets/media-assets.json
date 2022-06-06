@@ -125,6 +125,12 @@
     }
   },
   {
+    "playback-id": "x00Y6AhtNCs01UIW02FhPY4H6hZHkQLuiLoD1tTMj00zuxE",
+    "description": "Audio Only",
+    "stream-type": "on-demand",
+    "audio": true
+  },
+  {
     "playback-id": "ksRzTDPIU02PiQZK00SHHL3pqb9mevdJwi",
     "description": "Unavailable VOD",
     "stream-type": "on-demand",
