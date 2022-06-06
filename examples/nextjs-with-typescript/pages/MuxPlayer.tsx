@@ -83,6 +83,7 @@ function MuxPlayerPage() {
           streamType={
             selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
           }
+          audio={selectedAsset["audio"] ?? false}
           primaryColor="#ec407a"
           secondaryColor="#64b5f6"
           tertiaryColor="#b4004e"
