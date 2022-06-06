@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@mux-elements/mux-player": "0.1.0-beta.17",
+    "@mux-elements/playback-core": "0.5.2",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
