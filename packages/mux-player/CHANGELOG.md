@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.19](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.18...@mux-elements/mux-player@0.1.0-beta.19) (2022-06-07)
+
+### Bug Fixes
+
+- importing castable-video ([44cbb2f](https://github.com/muxinc/elements/commit/44cbb2f26290952ac8d3fe51a1d933352b0b9134))
+
 # [0.1.0-beta.18](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.17...@mux-elements/mux-player@0.1.0-beta.18) (2022-06-06)
 
 ### Bug Fixes
