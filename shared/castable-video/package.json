@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/castable-video",
+  "name": "castable-video",
   "version": "0.1.0",
   "main": "./index.js",
   "module": "./index.mjs",

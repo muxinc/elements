@@ -1,3 +1,5 @@
+import 'castable-video';
+
 /**
  * Custom Video Element
  * The goal is to create an element that works just like the video element
