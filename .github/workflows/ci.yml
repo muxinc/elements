@@ -19,6 +19,10 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn build:packages
+      - run: yarn deploy:canary --yes
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
