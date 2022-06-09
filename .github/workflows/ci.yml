@@ -16,6 +16,8 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ steps.get-versions.outputs.node }}
+          # this line is required for the setup-node action to be able to run the npm publish below.
+          registry-url: 'https://registry.npmjs.org'
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn build:packages
