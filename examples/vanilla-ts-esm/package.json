@@ -21,6 +21,7 @@
   "dependencies": {
     "@mux-elements/mux-audio": ">=0.3.0",
     "@mux-elements/mux-player": ">=0.1.0-beta.0",
+    "@mux-elements/mux-uploader": ">=0.1.0-beta.0",
     "@mux-elements/mux-video": ">=0.3.0"
   }
 }
