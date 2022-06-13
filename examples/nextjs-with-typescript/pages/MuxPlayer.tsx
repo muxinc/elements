@@ -4,6 +4,8 @@ import MuxPlayer from "@mux-elements/mux-player-react";
 import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
 
+const INITIAL_PRIMARY_COLOR = undefined;
+const INITIAL_SECONDARY_COLOR = undefined;
 const INITIAL_START_TIME = undefined;
 const INITIAL_THUMBNAIL_TIME = undefined;
 const INITIAL_DEBUG = false;
@@ -46,6 +48,8 @@ function MuxPlayerPage() {
   const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
   const [thumbnailTime, _setThumbnailTime] = useState(INITIAL_THUMBNAIL_TIME);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
+  const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
+  const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
 
   return (
     <div
@@ -84,8 +88,8 @@ function MuxPlayerPage() {
             selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
           }
           audio={selectedAsset["audio"] ?? false}
-          primaryColor="#ec407a"
-          secondaryColor="#64b5f6"
+          primaryColor={primaryColor}
+          secondaryColor={secondaryColor}
           tertiaryColor="#b4004e"
           onPlay={(evt: Event) => {
             onPlay(evt);
@@ -101,6 +105,24 @@ function MuxPlayerPage() {
         />
       </div>
       <div>
+        <div>
+          <label htmlFor="primarycolor-control">Primary Color </label>
+          <input
+            id="primarycolor-control"
+            type="color"
+            onChange={(event) => setPrimaryColor(event.target.value)}
+            value={primaryColor}
+          />
+        </div>
+        <div>
+          <label htmlFor="secondarycolor-control">Secondary Color </label>
+          <input
+            id="secondarycolor-control"
+            type="color"
+            onChange={(event) => setSecondaryColor(event.target.value)}
+            value={secondaryColor}
+          />
+        </div>
         <div>
           <label htmlFor="paused-control">Paused</label>
           <input
