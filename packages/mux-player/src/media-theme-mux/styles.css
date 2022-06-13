@@ -1,10 +1,14 @@
+:host(:not([audio])) {
+  --secondary-color: transparent;
+}
+
 :host {
   color: var(--primary-color);
   --media-icon-color: var(--primary-color);
   --media-range-thumb-background: var(--primary-color);
   --media-range-bar-color: var(--primary-color);
-  --media-control-background: var(--secondary-color, transparent);
-  --media-control-hover-background: var(--secondary-color, transparent);
+  --media-control-background: var(--secondary-color);
+  --media-control-hover-background: var(--secondary-color);
   --media-time-buffered-color: rgba(255, 255, 255, 0.7);
   --media-range-track-background: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
@@ -18,7 +22,11 @@
 }
 
 :host([audio]) media-controller {
-  background: var(--secondary-color, transparent);
+  background: transparent;
+}
+
+:host([audio]) media-controller::part(vertical-layer) {
+  background: transparent;
 }
 
 :host([audio]) media-control-bar {
