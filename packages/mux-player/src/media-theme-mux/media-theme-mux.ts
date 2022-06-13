@@ -38,7 +38,22 @@ const template = (props: ThemeMuxTemplateProps) => html`
 
 const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
   const { streamType, playerSize, audio } = props;
-  if (audio) return AudioChrome(props);
+  if (audio) {
+    switch (streamType) {
+      case StreamTypes.LIVE:
+      case StreamTypes.LL_LIVE: {
+        return AudioLiveChrome(props);
+      }
+      case StreamTypes.DVR:
+      case StreamTypes.LL_DVR: {
+        return AudioDvrChrome(props);
+      }
+      case StreamTypes.ON_DEMAND:
+      default: {
+        return AudioVodChrome(props);
+      }
+    }
+  }
   /* eslint-disable no-fallthrough */
   switch (streamType) {
     case StreamTypes.LIVE:
@@ -137,7 +152,7 @@ const MediaFullscreenButton = () => html`
   ${icons.FullscreenExit()}
 </media-fullscreen-button>`;
 
-export const AudioChrome = (props: ThemeMuxTemplateProps) => html`
+export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaPlayButton()} ${MediaSeekBackwardButton(props)} ${MediaSeekForwardButton(props)}
     <mxp-time-display></mxp-time-display>
@@ -145,6 +160,30 @@ export const AudioChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
     <media-playback-rate-button></media-playback-rate-button>
+    ${MediaAirplayButton()}
+  </media-control-bar>
+`;
+
+export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
+  <media-control-bar>
+    ${MediaPlayButton()}
+    <slot name="seek-to-live-button"></slot>
+    ${MediaSeekBackwardButton(props)} ${MediaSeekForwardButton(props)}
+    <mxp-time-display></mxp-time-display>
+    <media-time-range></media-time-range>
+    ${MediaMuteButton()}
+    <media-volume-range></media-volume-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    ${MediaAirplayButton()}
+  </media-control-bar>
+`;
+
+export const AudioLiveChrome = (_props: ThemeMuxTemplateProps) => html`
+  <media-control-bar>
+    ${MediaPlayButton()}
+    <slot name="seek-to-live-button"></slot>
+    ${MediaMuteButton()}
+    <media-volume-range></media-volume-range>
     ${MediaAirplayButton()}
   </media-control-bar>
 `;
