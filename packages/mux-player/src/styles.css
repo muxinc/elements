@@ -20,7 +20,7 @@ media-controller {
 
 .mxp-seek-to-live-button {
   height: 44px;
-  background-color: var(--media-control-background);
+  background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
   color: white;
   border: none;
   cursor: pointer;
