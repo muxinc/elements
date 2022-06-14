@@ -132,13 +132,21 @@ media-control-bar :is([role='button'], [role='switch'], button) {
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
-media-controller::part(vertical-layer) {
-  transition: background-color 1s;
+media-controller::part(gesture-layer)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.56));
+  transition-duration: 1s;
+  opacity: 0;
 }
 
-media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
-  background-color: rgba(0, 0, 0, 0.6);
-  transition: background-color 0.25s;
+media-controller:is([media-paused], :not([user-inactive]))::part(gesture-layer)::before {
+  opacity: 1;
+  transition: opacity 0.25s;
 }
 
 .center-controls {
