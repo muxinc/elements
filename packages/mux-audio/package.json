@@ -44,7 +44,7 @@
     "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
     "prebuild": "yarn clean",
     "prepublishOnly": "yarn build",
-    "deploy:canary": "npm version $(semver $(npm view @mux-elements/mux-audio versions --json | jq -r '. - map(select(contains(\"alpha\") or contains(\"beta\"))) | last' | sed -r 's/-[a-z0-9]{7}$//g') -i prerelease --preid canary)-$(git rev-parse --short HEAD) --git-tag-version false && npm publish --tag canary",
+    "deploy:canary": "npm version $(semver $(npm view @mux-elements/mux-audio versions --json | jq -r '. - map(select(contains(\"alpha\") or contains(\"beta\"))) | last' | sed -r 's/-[a-z0-9]{7}$//g') -i prerelease --preid canary)-$(git rev-parse --short HEAD) --git-tag-version false && npm publish --tag canary --access public",
     "create-release-notes": "create-release-notes ./CHANGELOG.md"
   },
   "dependencies": {
