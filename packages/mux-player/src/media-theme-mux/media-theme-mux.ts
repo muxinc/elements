@@ -197,6 +197,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
     ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
     <div class="mxp-spacer"></div>
     ${MediaAirplayButton()}
+    <media-cast-button></media-cast-button>
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
