@@ -11,6 +11,8 @@
 
 The player UI is built on [`<media-chrome>`](https://github.com/muxinc/media-chrome/) and [`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video) drives the core video logic used to play Mux Video content that Just Works.
 
+Be sure to check out our [official Mux documentation](https://docs.mux.com/guides/video/mux-player), too!
+
 # Installation
 
 If you're using `npm` or `yarn`, install that way:

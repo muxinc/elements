@@ -9,6 +9,8 @@
 
 `<MuxPlayer/>` is a Mux-flavored React video player component, built on top of our [mux-player web componnent](../mux-player/README.md) and used to play Mux Video content that Just Works.
 
+Be sure to check out our [official Mux documentation](https://docs.mux.com/guides/video/mux-player), too!
+
 # Installation
 
 If you're using `npm` or `yarn`, install that way:
