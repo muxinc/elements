@@ -161,6 +161,7 @@ export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
     <media-volume-range></media-volume-range>
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaAirplayButton()}
+    <media-cast-button></media-cast-button>
   </media-control-bar>
 `;
 
@@ -175,6 +176,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
     <media-volume-range></media-volume-range>
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaAirplayButton()}
+    <media-cast-button></media-cast-button>
   </media-control-bar>
 `;
 
@@ -185,6 +187,7 @@ export const AudioLiveChrome = (_props: ThemeMuxTemplateProps) => html`
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
     ${MediaAirplayButton()}
+    <media-cast-button></media-cast-button>
   </media-control-bar>
 `;
 
