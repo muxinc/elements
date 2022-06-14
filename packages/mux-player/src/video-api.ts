@@ -217,6 +217,16 @@ class VideoApiElement extends HTMLElement {
     }
   }
 
+  get defaultPlaybackRate() {
+    return this.media?.defaultPlaybackRate ?? 1;
+  }
+
+  set defaultPlaybackRate(val) {
+    if (this.media) {
+      this.media.defaultPlaybackRate = Number(val);
+    }
+  }
+
   get crossOrigin() {
     return getVideoAttribute(this, AllowedVideoAttributes.CROSSORIGIN);
   }
@@ -256,6 +266,19 @@ class VideoApiElement extends HTMLElement {
   }
 
   set muted(val) {
+    if (val) {
+      this.setAttribute(AllowedVideoAttributes.MUTED, '');
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute(AllowedVideoAttributes.MUTED);
+    }
+  }
+
+  get defaultMuted() {
+    return getVideoAttribute(this, AllowedVideoAttributes.MUTED) != null;
+  }
+
+  set defaultMuted(val) {
     if (val) {
       this.setAttribute(AllowedVideoAttributes.MUTED, '');
     } else {
