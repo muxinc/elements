@@ -76,10 +76,6 @@ button:active {
   padding-bottom: 16px;
 }
 
-:host([draggable]) .upload-instruction {
-  display: block;
-}
-
 :host([type="radial"][upload-in-progress]) .radial-type {
   display: block;
 }
