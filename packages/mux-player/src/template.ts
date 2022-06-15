@@ -55,17 +55,21 @@ export const content = (props: MuxTemplateProps) => html`
       src="${!!props.src
         ? props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, props.tokens.playback)
+        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
         : false}"
       poster="${!!props.poster
         ? props.poster
         : props.playbackId && !props.audio
-        ? getPosterURLFromPlaybackId(props.playbackId, props.thumbnailTime ?? props.startTime, props.tokens.thumbnail)
+        ? getPosterURLFromPlaybackId(props.playbackId, {
+            domain: props.customDomain,
+            thumbnailTime: props.thumbnailTime ?? props.startTime,
+            token: props.tokens.thumbnail,
+          })
         : false}"
       cast-src="${!!props.src
         ? props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, props.tokens.playback)
+        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
         : false}"
       cast-stream-type="${[StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any) ? 'live' : false}"
     >
@@ -76,7 +80,10 @@ export const content = (props: MuxTemplateProps) => html`
             label="thumbnails"
             default
             kind="metadata"
-            src="${getStoryboardURLFromPlaybackId(props.playbackId, props.tokens.storyboard)}"
+            src="${getStoryboardURLFromPlaybackId(props.playbackId, {
+              domain: props.customDomain,
+              token: props.tokens.storyboard,
+            })}"
           />`
         : html``}
     </mux-video>

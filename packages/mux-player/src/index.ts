@@ -65,6 +65,7 @@ const MuxVideoAttributes = {
   METADATA_VIDEO_TITLE: 'metadata-video-title',
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
+  CUSTOM_DOMAIN: 'custom-domain',
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
@@ -116,6 +117,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
+    customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     playerSize: getPlayerSize(el.mediaController ?? el),
     hasCaptions: !!getCcSubTracks(el).length,
     // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
@@ -756,6 +758,27 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set playbackId(val: string | undefined) {
     this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, `${val}`);
+  }
+
+  /**
+   * Get Mux asset custom domain.
+   */
+  get customDomain() {
+    return this.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined;
+  }
+
+  /**
+   * Set Mux asset custom domain.
+   */
+  set customDomain(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.customDomain) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.CUSTOM_DOMAIN, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.CUSTOM_DOMAIN);
+    }
   }
 
   /**
