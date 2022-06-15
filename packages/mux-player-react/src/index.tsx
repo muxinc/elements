@@ -38,6 +38,7 @@ type MuxMediaPropTypes = {
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
   beaconCollectionDomain: string;
+  customDomain: string;
   playbackId: string;
   preferMse: boolean;
   streamType: ValueOf<StreamTypes> | 'vod';
