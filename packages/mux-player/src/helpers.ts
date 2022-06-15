@@ -2,6 +2,8 @@ import { toQuery, camelCase } from './utils';
 import type MuxPlayerElement from '.';
 import { StreamTypes } from '@mux-elements/playback-core';
 
+const MUX_VIDEO_DOMAIN = 'mux.com';
+
 /* eslint-disable */
 const getEnvPlayerVersion = () => {
   try {
@@ -14,7 +16,10 @@ const getEnvPlayerVersion = () => {
 const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
-export const getSrcFromPlaybackId = (playbackId?: string, token?: string) => {
+export const getSrcFromPlaybackId = (
+  playbackId?: string,
+  { token, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string } = {}
+) => {
   /*
    * 2022-04-01 djhaveri
    *
@@ -27,20 +32,26 @@ export const getSrcFromPlaybackId = (playbackId?: string, token?: string) => {
    * */
   const isSignedUrl = !!token;
   const query = isSignedUrl ? { token } : { redundant_streams: true };
-  return `https://stream.mux.com/${playbackId}.m3u8${toQuery(query)}`;
+  return `https://stream.${domain}/${playbackId}.m3u8${toQuery(query)}`;
 };
 
-export const getPosterURLFromPlaybackId = (playbackId?: string, thumbnailTime?: number, token?: string) => {
+export const getPosterURLFromPlaybackId = (
+  playbackId?: string,
+  { token, thumbnailTime, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string; thumbnailTime?: number } = {}
+) => {
   // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
   const time = token == null ? thumbnailTime : undefined;
-  return `https://image.mux.com/${playbackId}/thumbnail.jpg${toQuery({
+  return `https://image.${domain}/${playbackId}/thumbnail.jpg${toQuery({
     token,
     time,
   })}`;
 };
 
-export const getStoryboardURLFromPlaybackId = (playbackId?: string, token?: string) => {
-  return `https://image.mux.com/${playbackId}/storyboard.vtt${toQuery({
+export const getStoryboardURLFromPlaybackId = (
+  playbackId?: string,
+  { token, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string } = {}
+) => {
+  return `https://image.${domain}/${playbackId}/storyboard.vtt${toQuery({
     token,
   })}`;
 };
