@@ -28,6 +28,7 @@ type AttributeNames = {
   METADATA_VIDEO_TITLE: 'metadata-video-title';
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
+  CUSTOM_DOMAIN: 'custom-domain';
   PLAYBACK_ID: 'playback-id';
   PREFER_MSE: 'prefer-mse';
   TYPE: 'type';
@@ -47,6 +48,7 @@ const Attributes: AttributeNames = {
   METADATA_VIDEO_TITLE: 'metadata-video-title',
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
+  CUSTOM_DOMAIN: 'custom-domain',
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
@@ -233,6 +235,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  get customDomain() {
+    return this.getAttribute(Attributes.CUSTOM_DOMAIN) ?? undefined;
+  }
+
+  set customDomain(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.customDomain) return;
+
+    if (val) {
+      this.setAttribute(Attributes.CUSTOM_DOMAIN, val);
+    } else {
+      this.removeAttribute(Attributes.CUSTOM_DOMAIN);
+    }
+  }
+
   get envKey(): string | undefined {
     return this.getAttribute(Attributes.ENV_KEY) ?? undefined;
   }
@@ -364,7 +381,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
-        this.src = toMuxVideoURL(newValue ?? undefined) as string;
+        this.src = toMuxVideoURL(newValue ?? undefined, { domain: this.customDomain }) as string;
         break;
       case Attributes.DEBUG:
         const debug = this.debug;
