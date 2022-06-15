@@ -13,6 +13,8 @@ export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
 export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay };
 
+const MUX_VIDEO_DOMAIN = 'mux.com';
+
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
 };
@@ -105,10 +107,10 @@ export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string
   return [idPart, queryPart];
 };
 
-export const toMuxVideoURL = (playbackId?: string) => {
+export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
-  return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
+  return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
 };
 
 export const inferMimeTypeFromURL = (url: string) => {
@@ -224,8 +226,6 @@ export const setupHls = (
   }
   return undefined;
 };
-
-const MUX_VIDEO_DOMAIN = 'mux.com';
 
 export const setupMux = (
   props: Partial<
