@@ -77,6 +77,7 @@ function MuxPlayerPage() {
           thumbnailTime={thumbnailTime}
           playbackId={selectedAsset["playback-id"]}
           tokens={selectedAsset["tokens"]}
+          customDomain={selectedAsset["custom-domain"]}
           forwardSeekOffset={10}
           backwardSeekOffset={10}
           // onPlayerReady={() => console.log("ready!")}

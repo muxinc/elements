@@ -131,6 +131,12 @@
     "audio": true
   },
   {
+    "playback-id": "ddelbUriZy02iIgTZx5YLp6fy5eGKzZO7",
+    "description": "On Demand with Custom Domain",
+    "stream-type": "on-demand",
+    "custom-domain": "media.heymux.com"
+  },
+  {
     "playback-id": "ksRzTDPIU02PiQZK00SHHL3pqb9mevdJwi",
     "description": "Unavailable VOD",
     "stream-type": "on-demand",
