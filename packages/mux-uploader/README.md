@@ -61,12 +61,9 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 <body>
   <p></p>
 
-  <mux-player
-    playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-    metadata-video-title="Big Buck Bunny"
-    metadata-viewer-user-id="user-id-1234"
-    stream-type="on-demand"
-    controls
+  <mux-uploader
+    url="authenticated-url"
+    id="uploader"
   ></mux-player>
 </body>
 ```
