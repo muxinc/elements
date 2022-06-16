@@ -126,3 +126,5 @@ dist
 **/*/cjs.json
 **/*/iife.json
 **/*/module.json
+
+.turbo
