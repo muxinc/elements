@@ -2,6 +2,11 @@ name: CI
 
 on: [push, pull_request]
 
+# To use Turborepo Remote Caching, set the following environment variables for the job.
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
