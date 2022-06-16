@@ -15,7 +15,8 @@
     "husky": "^7.0.0",
     "lerna": "^4.0.0",
     "prettier": "^2.3.2",
-    "pretty-quick": "^3.1.1"
+    "pretty-quick": "^3.1.1",
+    "turbo": "^1.2.16"
   },
   "workspaces": [
     "packages/*",
@@ -24,19 +25,20 @@
     "shared/*"
   ],
   "scripts": {
-    "clean": "lerna run clean --parallel --scope @mux/*",
+    "clean": "turbo run clean --parallel --filter @mux/*",
     "format": "prettier --write .",
-    "lint": "lerna run lint --scope @mux/*",
-    "pretest": "yarn build:packages --scope @mux/test-esm-exports",
-    "test": "lerna run test --scope @mux/*",
-    "i18n": "lerna run i18n --scope @mux/*",
-    "dev": "lerna run dev --parallel --scope @mux/*",
+    "lint": "turbo run lint --filter @mux/*",
+    "pretest": "yarn build:packages --filter @mux/test-esm-exports",
+    "test": "turbo run test --filter @mux/*",
+    "i18n": "turbo run i18n --filter @mux/*",
+    "dev": "turbo run dev --parallel --no-cache --filter @mux/*",
     "predev": "yarn build:packages",
-    "build:packages": "lerna run build --scope @mux/*",
-    "build": "lerna run build",
+    "build:packages": "turbo run build --filter @mux/*",
+    "build": "turbo run build",
     "prepare": "husky install",
-    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react,@mux/mux-uploader",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react,@mux/mux-uploader",
+    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react",
+    "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope @mux/*",
+    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react",
     "create-release-notes": "lerna run create-release-notes --scope @mux/*",
     "publish-release": "lerna run publish-release --scope @mux/* --"
   },
