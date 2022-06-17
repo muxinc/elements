@@ -79,6 +79,7 @@ export type MuxMediaPropTypes = {
   envKey: Options['data']['env_key'];
   debug: Options['debug'] & Hls['config']['debug'];
   metadata: Partial<Options['data']>;
+  customDomain: string;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   errorTranslator: Options['errorTranslator'];
   playbackId: string;
@@ -227,6 +228,18 @@ export const setupHls = (
   return undefined;
 };
 
+export const isMuxVideoSrc = ({
+  playbackId,
+  src,
+  customDomain,
+}: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'src' | 'customDomain'>>) => {
+  if (!!playbackId) return true;
+  // having no playback id and no src string should never actually happen, but could
+  if (typeof src !== 'string') return false;
+  const hostname = new URL(src).hostname.toLocaleLowerCase();
+  return hostname.includes(MUX_VIDEO_DOMAIN) || (!!customDomain && hostname.includes(customDomain.toLocaleLowerCase()));
+};
+
 export const setupMux = (
   props: Partial<
     Pick<
@@ -241,13 +254,15 @@ export const setupMux = (
       | 'playerSoftwareVersion'
       | 'playbackId'
       | 'src'
+      | 'customDomain'
     >
   >,
   mediaEl?: HTMLMediaElement | null,
   hlsjs?: Hls
 ) => {
-  const { envKey: env_key, playbackId, src } = props;
-  const inferredEnv = !!playbackId || !!(typeof src === 'string' && new URL(src).hostname.includes(MUX_VIDEO_DOMAIN));
+  const { envKey: env_key } = props;
+  const inferredEnv = isMuxVideoSrc(props);
+
   if ((env_key || inferredEnv) && mediaEl) {
     const {
       playerInitTime: player_init_time,

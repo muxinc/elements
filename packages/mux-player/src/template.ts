@@ -52,6 +52,7 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-version="${props.playerSoftwareVersion}"
       env-key="${props.envKey ?? false}"
       stream-type="${props.streamType ?? false}"
+      custom-domain="${props.customDomain ?? false}"
       src="${!!props.src
         ? props.src
         : props.playbackId
