@@ -1,8 +1,10 @@
 ---
-name: '📄 Docs Request'
+name: "\U0001F4C4 Docs Request"
 about: Report a discrepancy in or an improvement to the docs.
 title: 'Docs: '
-labels: 'documentation'
+labels: documentation
+assignees: ''
+
 ---
 
 <!--
