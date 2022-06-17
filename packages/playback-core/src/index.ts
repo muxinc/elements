@@ -310,6 +310,7 @@ export const loadMedia = (
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
+    | 'config'
     | 'on'
     | 'once'
     | 'startLoad'
@@ -408,16 +409,21 @@ export const loadMedia = (
         break;
 
       case 'metadata':
-        // when preload is metadata, stop loading when the manifest is parsed,
-        hls.once(Hls.Events.MANIFEST_LOADED, () => {
-          // unless we're no longer paused, which can happen with autoplay,
-          // where play will happen before MANIFEST_LOADED ends up triggering
-          if (mediaEl.paused) {
-            hls.stopLoad();
-          }
-        });
-        // then restart loading on first play
-        mediaEl.addEventListener('play', () => hls.startLoad(), { once: true });
+        const originalLength = hls.config.maxBufferLength;
+        const originalSize = hls.config.maxBufferSize;
+
+        // load the least amount of data possible
+        hls.config.maxBufferLength = 1;
+        hls.config.maxBufferSize = 1;
+        // and once a user has player, allow for it to load data as normal
+        mediaEl.addEventListener(
+          'play',
+          () => {
+            hls.config.maxBufferLength = originalLength;
+            hls.config.maxBufferSize = originalSize;
+          },
+          { once: true }
+        );
         hls.loadSource(src);
         break;
 
