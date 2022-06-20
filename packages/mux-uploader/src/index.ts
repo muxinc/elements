@@ -8,6 +8,15 @@ const styles = `
   background-color: var(--uploader-background-color, inherit);
 }
 
+.sr-only {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+  }
+
 p {
   color: black;
 }
@@ -50,7 +59,7 @@ button:active {
   width: 100%;
 }
 
-.radial-type, .bar-type, .upload-status, .retry-message, .text-container {
+.radial-type, .bar-type, .upload-status, .retry-button, .text-container {
   display: none;
 }
 
@@ -62,7 +71,7 @@ button:active {
   display: none;
 }
 
-.retry-message {
+.retry-button {
   color: #e22c3e;
   text-decoration-line: underline;
   cursor: pointer;
@@ -108,7 +117,7 @@ button:active {
   display: none;
 }
 
-:host([upload-error]) .retry-message {
+:host([upload-error]) .retry-button {
   display: inline-block;
 }
 
@@ -168,9 +177,11 @@ template.innerHTML = `
 
 <p class="upload-instruction" id="upload-instruction">Drop file to upload</p>
 
+<div class="sr-only" id="sr-only" aria-live="polite"></div>
+
 <div class=text-container>
-  <span class="status-message" id="status-message"></span>
-  <span class="retry-message" id="retry-message">Try again</span>
+  <span class="status-message" id="status-message" aria-live="polite"></span>
+  <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 </div>
 
 <input type="file" />
@@ -178,7 +189,8 @@ template.innerHTML = `
 <slot name="custom-progress"><p class="upload-status" id="upload-status"></p></slot>
 
 <div class="bar-type">
-  <div class="progress-bar" id="progress-bar"></div>
+  <div role="progressbar" aria-description="A bounded progress bar from 0 to 100" aria-valuemin="0"
+  aria-valuemax="100" class="progress-bar" id="progress-bar" tabindex="0"></div>
 </div>
 <div class="radial-type">
   <svg
@@ -216,7 +228,8 @@ class MuxUploaderElement extends HTMLElement {
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
   statusMessage: HTMLElement | null | undefined;
-  retryMessage: HTMLElement | null | undefined;
+  retryButton: HTMLElement | null | undefined;
+  srOnlyText: HTMLElement | null | undefined;
   _dropHandler: Function;
 
   constructor() {
@@ -232,7 +245,8 @@ class MuxUploaderElement extends HTMLElement {
     this.progressBar = this.shadowRoot?.getElementById('progress-bar');
     this.uploadPercentage = this.shadowRoot?.getElementById('upload-status');
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
-    this.retryMessage = this.shadowRoot?.getElementById('retry-message');
+    this.retryButton = this.shadowRoot?.getElementById('retry-button');
+    this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
 
     this._dropHandler = this.handleUpload.bind(this);
   }
@@ -242,10 +256,6 @@ class MuxUploaderElement extends HTMLElement {
     this.setupFilePickerButton();
     this.setupRetry();
     this.setupDropHandler();
-
-    this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-label', 'progress bar');
-    this.setAttribute('aria-live', 'polite');
 
     // TO-DO: Might want to standardize if we prefer to have users disable or enable things. (TD).
     // Edge case: User wants to use the uploader without drag.
@@ -294,17 +304,35 @@ class MuxUploaderElement extends HTMLElement {
   }
 
   setupRetry() {
-    this.retryMessage?.addEventListener('click', () => {
-      this.removeAttribute('upload-error');
-      this.removeAttribute('upload-in-progress');
-      if (this.statusMessage) this.statusMessage.innerHTML = '';
-      if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
+    this.retryButton?.addEventListener('click', () => {
+      this.resetState();
+    });
+
+    this.retryButton?.addEventListener('keydown', (event) => {
+      const key = event.key || event.keyCode;
+
+      switch (key) {
+        // To-DO: Space bar not being recognized but is behaviour kb users will expect with a button. (TD).
+        case 'Space' || 32: {
+          this.resetState();
+        }
+        case 'Enter' || 13: {
+          this.resetState();
+        }
+      }
     });
   }
 
   setupDropHandler() {
     //@ts-ignore
     this.addEventListener('mux-drop', this._dropHandler);
+  }
+
+  resetState() {
+    this.removeAttribute('upload-error');
+    this.removeAttribute('upload-in-progress');
+    if (this.statusMessage) this.statusMessage.innerHTML = '';
+    if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
   }
 
   setupFilePickerButton() {
@@ -337,8 +365,7 @@ class MuxUploaderElement extends HTMLElement {
 
   setProgress(percent: number) {
     if (this.uploadPercentage) this.uploadPercentage.innerHTML = `${Math.floor(percent)}%`;
-    this.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
-    this.setAttribute('aria-valuetext', `${Math.floor(percent)} percent`);
+    this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
 
     switch (this.getAttribute('type')) {
       case TYPES.BAR: {
@@ -358,10 +385,11 @@ class MuxUploaderElement extends HTMLElement {
 
   handleUpload(evt: CustomEvent) {
     const url = this.url;
+    const invalidUrlMessage = 'No url attribute specified -- cannot handleUpload';
 
     if (!url) {
-      if (this.statusMessage) this.statusMessage.innerHTML = 'No url attribute specified -- cannot handleUpload';
-      console.error('No url attribute specified -- cannot handleUpload');
+      if (this.statusMessage) this.statusMessage.innerHTML = invalidUrlMessage;
+      console.error(invalidUrlMessage);
     } else {
       if (this.statusMessage) this.statusMessage.innerHTML = '';
     }
@@ -372,6 +400,7 @@ class MuxUploaderElement extends HTMLElement {
     }
 
     this.setAttribute('upload-in-progress', '');
+    this.progressBar?.focus();
 
     const upload = UpChunk.createUpload({
       endpoint:
@@ -381,11 +410,14 @@ class MuxUploaderElement extends HTMLElement {
     });
 
     upload.on('error', (err) => {
+      const errorMessage = 'An error has occurred';
+
       this.setAttribute('upload-error', '');
 
-      if (this.statusMessage && this.uploadPercentage) {
-        this.statusMessage.innerHTML = 'An error has occurred';
+      if (this.statusMessage) {
+        this.statusMessage.innerHTML = errorMessage;
       }
+
       console.error(err.detail.message);
     });
 
@@ -394,7 +426,19 @@ class MuxUploaderElement extends HTMLElement {
     });
 
     upload.on('success', () => {
-      console.info('Upload complete!');
+      const successMessage = 'Upload complete!';
+
+      if (this.statusMessage) {
+        this.statusMessage.innerHTML = successMessage;
+      }
+
+      // TO-DO: It seems like statusMessage cannot be updated within two different events. (TD).
+      // Timing? Need to look into this...
+      if (this.srOnlyText) {
+        this.srOnlyText.innerHTML = successMessage;
+      }
+
+      console.info(successMessage);
     });
   }
 }
