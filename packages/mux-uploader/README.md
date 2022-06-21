@@ -61,10 +61,7 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 <body>
   <p></p>
 
-  <mux-uploader
-    url="authenticated-url"
-    id="uploader"
-  ></mux-player>
+  <mux-uploader url="authenticated-url" id="uploader"></mux-uploader>
 </body>
 ```
 
@@ -77,9 +74,9 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 | `url`                | `string`  | The authenticated URL that your file will be uploaded to. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined` |
 | `id`                 | `string`  | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required.                                                                                                                                                 | N/A         |
 | `type`               | `"bar"`   | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                  | "bar"       |
-| `upload-in-progress` | `boolean` | The thumbnail token for signing the `poster` URL.                                                                                                                                                                         | false       |
-| `upload-error`       | `boolean` | The storyboard token for signing the storyboard URL.                                                                                                                                                                      | false       |
-| `status`             | `boolean` | This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)                            | false       |
+| `upload-in-progress` | `boolean` | Toggles visual status of progress bar while upload is n progress.                                                                                                                                                         | false       |
+| `upload-error`       | `boolean` | Toggles visual status of progress bar when upload encounters an error.                                                                                                                                                    | false       |
+| `status`             | `boolean` | Toggles text status of progress bar, which is a percentage by default.                                                                                                                                                    | false       |
 
 #### `mux-uploader-drop`
 
@@ -97,7 +94,7 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 
 ### Styling
 
-`mus-uploader` can be styled with CSS variables.
+`mux-uploader` can be styled with CSS variables.
 
 #### Elements
 
