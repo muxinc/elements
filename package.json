@@ -35,9 +35,9 @@
     "build:packages": "lerna run build --scope @mux-elements/*",
     "build": "lerna run build",
     "prepare": "husky install",
-    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react",
+    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react,@mux-elements/mux-uploader",
     "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope @mux-elements/*",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react",
+    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react,@mux-elements/mux-uploader",
     "create-release-notes": "lerna run create-release-notes --scope @mux-elements/*"
   },
   "dependencies": {}
