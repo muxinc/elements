@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
+import Script from 'next/script';
 import MuxPlayer from "@mux-elements/mux-player-react";
 import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
@@ -62,6 +63,7 @@ function MuxPlayerPage() {
     >
       <h1>MuxPlayer Demo</h1>
       <div>
+        <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
           style={{
             // set the max height of the player to be the viewport height

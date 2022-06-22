@@ -25,6 +25,10 @@ const CastableVideoMixin = (superclass) =>
       return CastableVideo.#castEnabled;
     }
 
+    static get castState() {
+      return CastableVideo.#castContext?.getCastState();
+    }
+
     static async exitCast() {
       // Should the receiver application be stopped or just disconnected.
       const stopCasting = true;

@@ -83,6 +83,59 @@ Now you are free to use this web component in your HTML, just as you would with 
 </body>
 ```
 
+### Metadata
+
+To go above and beyond `metadata-*` attributes
+
+To set other available metadata fields use the `metadata` property on the `<mux-player>` element like so:
+
+```html
+<mux-player
+  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+  env-key="mux-data-env-key"
+  metadata-video-title="Big Buck Bunny"
+  metadata-viewer-user-id="user-id-1234"
+  controls
+>
+</mux-player>
+
+<script>
+  const muxVideo = document.querySelector('mux-player');
+  muxVideo.metadata = {
+    experiment_name: 'landing_page_v3',
+    video_content_type: 'clip',
+    video_series: 'season 1',
+  };
+</script>
+```
+
+Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-data-actionable-with-metadata) to view an exhaustive list of available values.
+
+### Chromecast
+
+Enable the [Google Cast](https://developers.google.com/cast) button in the controlbar by dropping in the `<script>` tag below in the `<head>` of your webpage.
+
+```html
+<script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+```
+
+### prefer-mse
+
+By default `<mux-player>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
+
+If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then pass in the `prefer-mse` attribute.
+
+```html
+<mux-player
+  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+  metadata-video-title="Big Buck Bunny"
+  metadata-viewer-user-id="user-id-1234"
+  prefer-mse
+  controls
+>
+</mux-player>
+```
+
 ### Attributes
 
 | Attribute                  | Type                                 | Description                                                                                                                                                                                                                                                                                                                                                                                      | Default       |
@@ -176,48 +229,3 @@ Now you are free to use this web component in your HTML, just as you would with 
 | `timeupdate`     | Fired when the time indicated by the currentTime property has been updated.                                                                                                               |
 | `volumechange`   | Fired when the volume has changed.                                                                                                                                                        |
 | `waiting`        | Fired when playback has stopped because of a temporary lack of data.                                                                                                                      |
-
-### Metadata
-
-To go above and beyond `metadata-*` attributes
-
-To set other available metadata fields use the `metadata` property on the `<mux-player>` element like so:
-
-```html
-<mux-player
-  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  env-key="mux-data-env-key"
-  metadata-video-title="Big Buck Bunny"
-  metadata-viewer-user-id="user-id-1234"
-  controls
->
-</mux-player>
-
-<script>
-  const muxVideo = document.querySelector('mux-player');
-  muxVideo.metadata = {
-    experiment_name: 'landing_page_v3',
-    video_content_type: 'clip',
-    video_series: 'season 1',
-  };
-</script>
-```
-
-Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-data-actionable-with-metadata) to view an exhaustive list of available values.
-
-### prefer-mse
-
-By default `<mux-player>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
-
-If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then pass in the `prefer-mse` attribute.
-
-```html
-<mux-player
-  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  metadata-video-title="Big Buck Bunny"
-  metadata-viewer-user-id="user-id-1234"
-  prefer-mse
-  controls
->
-</mux-player>
-```
