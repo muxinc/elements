@@ -48,12 +48,14 @@ function release {
 };
 
 function canary {
-  PKG_NAME=$(npm pkg get name | sed 's/"//g')
-  PKG_VERSION=$(npm pkg get version | sed 's/"//g')
+  PKG_NAME=$(cat package.json | jq -r '.name')
+  PKG_VERSION=$(cat package.json | jq -r '.version')
   # get last published version from NPM without alpha / beta, remove -SHA hash
-  LAST_VERSION=$(npm view $PKG_NAME versions --json 2>/dev/null |
+  LAST_VERSION=$(npm view $PKG_NAME versions --json |
     jq -r '. - map(select(contains("alpha") or contains("beta"))) | last' |
     sed -r 's/-[a-z0-9]{7}$//g')
+  # GH actions made this a `null` string, replace it with a null value
+  LAST_VERSION=$(echo $LAST_VERSION | sed "s/null//g")
   # default to local package version if no last version was found on NPM
   PRE_VERSION=$(npx semver ${LAST_VERSION:-$PKG_VERSION} -i prerelease --preid canary)
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
