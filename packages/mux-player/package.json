@@ -53,7 +53,7 @@
     "@github/template-parts": "^0.5.3",
     "@mux-elements/mux-video": "0.6.1",
     "@mux-elements/playback-core": "0.6.0",
-    "media-chrome": "0.6.7"
+    "media-chrome": "0.6.9"
   },
   "devDependencies": {
     "@mux-elements/open-process": "0.1.0",
