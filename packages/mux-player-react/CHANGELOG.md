@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.20](https://github.com/muxinc/elements/compare/@mux-elements/mux-player-react@0.1.0-beta.19...@mux-elements/mux-player-react@0.1.0-beta.20) (2022-06-23)
+
+### Bug Fixes
+
+- enable cast docs + cast fix ([#253](https://github.com/muxinc/elements/issues/253)) ([421d515](https://github.com/muxinc/elements/commit/421d515cc4700cf9d7ca4f0d09aa600ec4adac7b))
+
+### Features
+
+- **mux-player-react:** Add basic support for custom video domains. ([ac61aff](https://github.com/muxinc/elements/commit/ac61affffdd38ef0df3151d2f75023f7d2772688))
+
 # [0.1.0-beta.19](https://github.com/muxinc/elements/compare/@mux-elements/mux-player-react@0.1.0-beta.18...@mux-elements/mux-player-react@0.1.0-beta.19) (2022-06-07)
 
 **Note:** Version bump only for package @mux-elements/mux-player-react

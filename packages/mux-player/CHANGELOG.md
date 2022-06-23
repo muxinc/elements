@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.20](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.19...@mux-elements/mux-player@0.1.0-beta.20) (2022-06-23)
+
+### Bug Fixes
+
+- enable cast docs + cast fix ([#253](https://github.com/muxinc/elements/issues/253)) ([421d515](https://github.com/muxinc/elements/commit/421d515cc4700cf9d7ca4f0d09aa600ec4adac7b))
+- **mux-player:** Add cc btn to Vod XS chrome. ([#249](https://github.com/muxinc/elements/issues/249)) ([cf4ebe0](https://github.com/muxinc/elements/commit/cf4ebe0051c22223bcb50b0f8e2fc9a71b015ff0))
+- **mux-player:** Update theme css to better account for audio vs. non-audio styling. ([81aa045](https://github.com/muxinc/elements/commit/81aa045be8a80e38b9da39800d1ae03cd806412e))
+- upgrade Media Chrome v0.6.9 ([#267](https://github.com/muxinc/elements/issues/267)) ([0ec48f7](https://github.com/muxinc/elements/commit/0ec48f79b2cafe2066425a75d95c06fbeb6a236f))
+
+### Features
+
+- Handle inferred mux data env key for custom domain cases. ([eedc19e](https://github.com/muxinc/elements/commit/eedc19e2025844f99909cf3d0751811b55239329))
+- **mux-player:** Add basic chromes for audio only live & dvr. ([bc7dfdf](https://github.com/muxinc/elements/commit/bc7dfdf78aee96ab12980354384ea36a8e30ff05))
+- **mux-player:** Add basic support for custom video domains. ([d355705](https://github.com/muxinc/elements/commit/d355705511df296c693fbb9f9168a15c34ae0993))
+- **mux-player:** Add chromecast button for audio only chromes. ([3f2462b](https://github.com/muxinc/elements/commit/3f2462b51621a3e077d6e0471963d10cc606dbe8))
+
 # [0.1.0-beta.19](https://github.com/muxinc/elements/compare/@mux-elements/mux-player@0.1.0-beta.18...@mux-elements/mux-player@0.1.0-beta.19) (2022-06-07)
 
 ### Bug Fixes

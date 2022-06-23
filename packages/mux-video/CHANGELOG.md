@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.6.1...@mux-elements/mux-video@0.7.0) (2022-06-23)
+
+### Features
+
+- **mux-video:** Add basic support for custom video domains. ([82cfb15](https://github.com/muxinc/elements/commit/82cfb15ecb9729329018c1fe999a1585bcae55c7))
+
 ## [0.6.1](https://github.com/muxinc/elements/compare/@mux-elements/mux-video@0.6.0...@mux-elements/mux-video@0.6.1) (2022-06-07)
 
 ### Bug Fixes

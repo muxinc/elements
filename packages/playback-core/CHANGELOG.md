@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/muxinc/elements/compare/@mux-elements/playback-core@0.6.0...@mux-elements/playback-core@0.7.0) (2022-06-23)
+
+### Bug Fixes
+
+- preload=metadata now triggers loadedmetadata ([73c49a6](https://github.com/muxinc/elements/commit/73c49a6b3b11512b3e206c27d65cdef8472e461d))
+
+### Features
+
+- Handle inferred mux data env key for custom domain cases. ([eedc19e](https://github.com/muxinc/elements/commit/eedc19e2025844f99909cf3d0751811b55239329))
+- **mux-video:** Add basic support for custom video domains. ([82cfb15](https://github.com/muxinc/elements/commit/82cfb15ecb9729329018c1fe999a1585bcae55c7))
+
 # [0.6.0](https://github.com/muxinc/elements/compare/@mux-elements/playback-core@0.5.2...@mux-elements/playback-core@0.6.0) (2022-06-06)
 
 ### Features
