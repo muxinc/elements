@@ -180,7 +180,7 @@ template.innerHTML = `
 <div class="sr-only" id="sr-only" aria-live="polite"></div>
 
 <div class=text-container>
-  <span class="status-message" id="status-message" aria-live="polite"></span>
+  <span class="status-message" id="status-message" role="status" aria-live="polite"></span>
   <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 </div>
 
@@ -189,8 +189,7 @@ template.innerHTML = `
 <slot name="custom-progress"><p class="upload-status" id="upload-status"></p></slot>
 
 <div class="bar-type">
-  <div role="progressbar" aria-description="A bounded progress bar from 0 to 100" aria-valuemin="0"
-  aria-valuemax="100" class="progress-bar" id="progress-bar" tabindex="0"></div>
+  <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="progress-bar" id="progress-bar" tabindex="0"></div>
 </div>
 <div class="radial-type">
   <svg
@@ -221,6 +220,10 @@ const getRadius = (el: MuxUploaderElement) => Number(el.svgCircle?.getAttribute(
 
 const getCircumference = (el: MuxUploaderElement) => getRadius(el) * 2 * Math.PI;
 
+const ariaDescription = 'Media upload progress bar';
+
+const ButtonPressedKeys = ['Enter', ' '];
+
 class MuxUploaderElement extends HTMLElement {
   hiddenFileInput: HTMLInputElement | null | undefined;
   filePickerButton: HTMLButtonElement | null | undefined;
@@ -249,6 +252,8 @@ class MuxUploaderElement extends HTMLElement {
     this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
 
     this._dropHandler = this.handleUpload.bind(this);
+
+    this.progressBar?.setAttribute('aria-description', ariaDescription);
   }
 
   connectedCallback() {
@@ -308,18 +313,25 @@ class MuxUploaderElement extends HTMLElement {
       this.resetState();
     });
 
-    this.retryButton?.addEventListener('keydown', (event) => {
-      const key = event.key || event.keyCode;
-
-      switch (key) {
-        // To-DO: Space bar not being recognized but is behaviour kb users will expect with a button. (TD).
-        case 'Space' || 32: {
-          this.resetState();
-        }
-        case 'Enter' || 13: {
-          this.resetState();
-        }
+    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+    // but this should be good enough for most use cases.
+    const keyUpHandler = (e: KeyboardEvent) => {
+      const { key } = e;
+      if (!ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
       }
+
+      this.resetState();
+    };
+
+    this.addEventListener('keydown', (e) => {
+      const { metaKey, altKey, key } = e;
+      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+      this.addEventListener('keyup', keyUpHandler);
     });
   }
 
@@ -341,7 +353,7 @@ class MuxUploaderElement extends HTMLElement {
     });
 
     this.filePickerButton?.addEventListener('click', () => {
-      // TO-DO: Allows user to reattempt uploading the same file after an error.
+      // TO-DO: Allow user to reattempt uploading the same file after an error.
       // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
       // Source: https://stackoverflow.com/a/46689013
 
