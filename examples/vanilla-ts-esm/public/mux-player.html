@@ -75,6 +75,7 @@
      -->
 
     <mux-player
+      theme="media-theme-simple"
       stream-type="on-demand"
       playback-id="026vljfeZ99KwUPRbl5YHVdCTSrBsPfxjkyM3PSlfWGw"
       primary-color="coral"
@@ -129,6 +130,31 @@
         .addEventListener("click", () => {
           window.CastableVideoElement.exitCast();
         });
+
+      const template = document.createElement('template');
+      template.innerHTML = `
+        <style>
+        </style>
+        <media-controller>
+          <slot name="media" slot="media"></slot>
+          <media-time-range></media-time-range>
+          <media-control-bar>
+            <media-play-button></media-play-button>
+          </media-control-bar>
+        </media-controller>
+      `;
+
+      class MediaThemeSimple extends HTMLElement {
+        constructor() {
+          super();
+          this.attachShadow({ mode: 'open' });
+          this.shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+      }
+
+      if (!customElements.get('media-theme-simple')) {
+        customElements.define('media-theme-simple', MediaThemeSimple);
+      }
     </script>
 
     <a href="../">Browse Elements</a>

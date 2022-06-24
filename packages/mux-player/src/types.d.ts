@@ -6,6 +6,7 @@ export type MuxPlayerProps = Partial<MuxVideoElement> & {
 
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   audio: boolean;
+  theme?: string;
   playerSize: string;
   showLoading: boolean;
   thumbnailTime: number;

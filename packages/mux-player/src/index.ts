@@ -2,7 +2,6 @@
 import '@mux/playback-core';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
-import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
 import { Metadata, StreamTypes } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
@@ -83,6 +82,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // it's used if/when it's been explicitly set "from the outside"
     // (See template.ts for additional context) (CJP)
     poster: el.getAttribute('poster'),
+    theme: el.getAttribute('theme'),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
@@ -173,19 +173,25 @@ class MuxPlayerElement extends VideoApiElement {
     // Fixes a bug in React where mux-player's CE children were not upgraded yet.
     // These lines ensure the rendered mux-video and media-controller are upgraded,
     // even before they are connected to the main document.
-    customElements.upgrade(this.theme as Node);
-    if (!(this.theme instanceof MediaThemeMux)) {
-      logger.error('<media-theme-mux> failed to upgrade!');
+    try {
+      customElements.upgrade(this.theme as Node);
+      if (!(this.theme instanceof HTMLElement)) throw '';
+    } catch (error) {
+      logger.error(`<${this.theme?.localName}> failed to upgrade!`);
     }
 
-    customElements.upgrade(this.media as Node);
-    if (!(this.media instanceof MuxVideoElement)) {
+    try {
+      customElements.upgrade(this.media as Node);
+      if (!(this.media instanceof MuxVideoElement)) throw '';
+    } catch (error) {
       logger.error('<mux-video> failed to upgrade!');
     }
 
-    customElements.upgrade(this.mediaController as Node);
-    if (!(this.mediaController instanceof MediaController)) {
-      logger.error('<media-controller> failed to upgrade!');
+    try {
+      customElements.upgrade(this.mediaController as Node);
+      if (!(this.mediaController instanceof MediaController)) throw '';
+    } catch (error) {
+      logger.error(`<media-controller> failed to upgrade!`);
     }
 
     initVideoApi(this);

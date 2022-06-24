@@ -56,6 +56,13 @@ export const getStoryboardURLFromPlaybackId = (
   })}`;
 };
 
+export function castThemeName(themeName?: string): string | undefined {
+  if (themeName && /^media-theme-[\w-]+$/.test(themeName)) {
+    return themeName;
+  }
+  return undefined;
+}
+
 const attrToPropNameMap: Record<string, string> = {
   crossorigin: 'crossOrigin',
   playsinline: 'playsInline',
