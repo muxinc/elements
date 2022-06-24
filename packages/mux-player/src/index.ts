@@ -21,8 +21,6 @@ export type Tokens = {
   storyboard?: string;
 };
 
-type MediaController = Element & { media: HTMLVideoElement };
-
 const streamTypeValues = Object.values(StreamTypes);
 
 const SMALL_BREAKPOINT = 700;
