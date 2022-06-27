@@ -1,1 +1,1 @@
-export * as MuxAudio from "@mux-elements/mux-audio";
+export * as MuxAudio from "@mux/mux-audio";

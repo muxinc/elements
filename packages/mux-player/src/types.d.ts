@@ -1,4 +1,4 @@
-import type MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
+import type MuxVideoElement, { MediaError } from '@mux/mux-video';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   preferMse?: boolean;

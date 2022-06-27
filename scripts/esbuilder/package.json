@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@mux-elements/esbuilder",
+  "name": "@mux/esbuilder",
   "version": "0.1.0",
   "type": "module",
   "main": "./esbuilder.js",

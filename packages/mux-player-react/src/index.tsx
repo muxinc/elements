@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import type { StreamTypes } from '@mux-elements/playback-core';
-import '@mux-elements/mux-player';
-import type MuxPlayerElement from '@mux-elements/mux-player';
-import type { Tokens } from '@mux-elements/mux-player';
+import type { StreamTypes } from '@mux/playback-core';
+import '@mux/mux-player';
+import type MuxPlayerElement from '@mux/mux-player';
+import type { Tokens } from '@mux/mux-player';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';

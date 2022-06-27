@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/mux-player-react",
+  "name": "@mux/mux-player-react",
   "version": "0.1.0-beta.20",
   "description": "An open source Mux player for React that Just Works™",
   "main": "dist/index.js",
@@ -23,7 +23,7 @@
     "dev:cjs": "open-process | yarn build:cjs --watch",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs",
-    "build:cjs": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --external:react --external:@mux-elements/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types' && downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel build:types 'build:cjs -- --minify'",
     "prebuild": "yarn clean",
@@ -45,12 +45,12 @@
     }
   },
   "dependencies": {
-    "@mux-elements/mux-player": "0.1.0-beta.20",
-    "@mux-elements/playback-core": "0.7.0",
+    "@mux/mux-player": "0.1.0-beta.20",
+    "@mux/playback-core": "0.7.0",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
-    "@mux-elements/open-process": "0.1.0",
+    "@mux/open-process": "0.1.0",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
     "downlevel-dts": "^0.9.0",

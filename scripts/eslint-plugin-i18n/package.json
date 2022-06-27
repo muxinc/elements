@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@mux-elements/eslint-plugin-i18n",
+  "name": "@mux/eslint-plugin-i18n",
   "version": "0.1.0",
   "main": "./no-substitutions.js"
 }

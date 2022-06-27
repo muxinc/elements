@@ -22,14 +22,14 @@ web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner
 
 Then, in `web-test-runner.config.mjs`, with the `@web/dev-server-import-maps` plugin, imports are configured so files from `test/` are grabbed from the expected working directory. For example, for mux-player, `'/test/': '/packages/mux-player/test/`. This is to basically undo the fact that we had set the root-dir up to the root of the repo rather than for the actual package.
 
-Afterwards, we want to configure `hls.js` and `mux-embed` to point at a shared location. Currently, it's set up to point into the workspace's shared node_modules which yarn should set up: `'hls.js': '/node_modules/@mux-elements/test-esm-exports/dist/hls.js'`.
+Afterwards, we want to configure `hls.js` and `mux-embed` to point at a shared location. Currently, it's set up to point into the workspace's shared node_modules which yarn should set up: `'hls.js': '/node_modules/@mux/test-esm-exports/dist/hls.js'`.
 
 So, the imports given to `@web/dev-server-import-maps` should look something like this:
 
 ```json
 "imports": {
   "/test/": "/packages/mux-player/test/",
-  "hls.js": "/node_modules/@mux-elements/test-esm-exports/dist/hls.js",
-  "mux-embed": "/node_modules/@mux-elements/test-esm-exports/dist/mux-embed.js",
+  "hls.js": "/node_modules/@mux/test-esm-exports/dist/hls.js",
+  "mux-embed": "/node_modules/@mux/test-esm-exports/dist/mux-embed.js",
 }
 ```

@@ -1,1 +1,1 @@
-export * as MuxVideo from "@mux-elements/mux-video";
+export * as MuxVideo from "@mux/mux-video";

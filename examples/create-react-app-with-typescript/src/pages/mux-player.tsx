@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Link } from "react-router-dom";
-import "@mux-elements/mux-player";
+import "@mux/mux-player";
 import { useState } from "react";
 
 const INITIAL_DEBUG = true;

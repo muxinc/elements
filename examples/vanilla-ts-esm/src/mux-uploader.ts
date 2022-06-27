@@ -1,1 +1,1 @@
-export * as MuxUploader from "@mux-elements/mux-uploader";
+export * as MuxUploader from "@mux/mux-uploader";

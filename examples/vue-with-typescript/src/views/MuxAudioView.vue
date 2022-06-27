@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import "@mux-elements/mux-audio";
+import "@mux/mux-audio";
 </script>
 
 <template>

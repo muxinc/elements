@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import "@mux-elements/mux-player";
+import "@mux/mux-player";
 </script>
 
 <template>

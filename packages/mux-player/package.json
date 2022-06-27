@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/mux-player",
+  "name": "@mux/mux-player",
   "version": "0.1.0-beta.20",
   "description": "An open source Mux player web component that Just Works™",
   "main": "./dist/index.cjs.js",
@@ -51,13 +51,13 @@
   },
   "dependencies": {
     "@github/template-parts": "^0.5.3",
-    "@mux-elements/mux-video": "0.7.0",
-    "@mux-elements/playback-core": "0.7.0",
+    "@mux/mux-video": "0.7.0",
+    "@mux/playback-core": "0.7.0",
     "media-chrome": "0.6.9"
   },
   "devDependencies": {
-    "@mux-elements/open-process": "0.1.0",
-    "@mux-elements/test-esm-exports": "0.1.0",
+    "@mux/open-process": "0.1.0",
+    "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
@@ -82,7 +82,7 @@
     "parser": "@typescript-eslint/parser",
     "plugins": [
       "@typescript-eslint",
-      "@mux-elements/i18n"
+      "@mux/i18n"
     ],
     "extends": [
       "eslint:recommended",
@@ -98,7 +98,7 @@
     "rules": {
       "no-shadow": "error",
       "no-extra-boolean-cast": 0,
-      "@mux-elements/i18n/no-substitutions": "error",
+      "@mux/i18n/no-substitutions": "error",
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-explicit-any": 0
     }

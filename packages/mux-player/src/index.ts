@@ -1,10 +1,10 @@
 // import playback-core here to make sure that the polyfill is loaded
-import '@mux-elements/playback-core';
+import '@mux/playback-core';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MediaThemeMux from './media-theme-mux/media-theme-mux';
-import MuxVideoElement, { MediaError } from '@mux-elements/mux-video';
-import { Metadata, StreamTypes } from '@mux-elements/playback-core';
+import MuxVideoElement, { MediaError } from '@mux/mux-video';
+import { Metadata, StreamTypes } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getCcSubTracks,

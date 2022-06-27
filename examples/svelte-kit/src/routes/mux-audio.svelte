@@ -14,7 +14,7 @@
 	// import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	onMount(async () => {
-		await import('@mux-elements/mux-audio');
+		await import('@mux/mux-audio');
 	});
 </script>
 

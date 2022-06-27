@@ -1,8 +1,8 @@
 <p align="center">
   <h1 align="center">&lt;MuxPlayer/&gt;</h1>
-  <a href="https://npmcharts.com/compare/@mux-elements/mux-player-react?interval=30"><img src="https://img.shields.io/npm/dm/@mux-elements/mux-player-react.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-player-react"><img src="https://img.shields.io/npm/v/@mux-elements/mux-player-react.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-player-react"><img src="https://img.shields.io/npm/l/@mux-elements/mux-player-react.svg?sanitize=true" alt="License"></a>
+  <a href="https://npmcharts.com/compare/@mux/mux-player-react?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-player-react.svg?sanitize=true" alt="Downloads"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-player-react"><img src="https://img.shields.io/npm/v/@mux/mux-player-react.svg?sanitize=true" alt="Version"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-player-react"><img src="https://img.shields.io/npm/l/@mux/mux-player-react.svg?sanitize=true" alt="License"></a>
 </p>
 
 # Introduction
@@ -18,25 +18,25 @@ If you're using `npm` or `yarn`, install that way:
 ## Package manager
 
 ```
-yarn add @mux-elements/mux-player-react
+yarn add @mux/mux-player-react
 ```
 
 or
 
 ```
-npm i @mux-elements/mux-player-react
+npm i @mux/mux-player-react
 ```
 
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import MuxPlayer from '@mux-elements/mux-player-react';
+import MuxPlayer from '@mux/mux-player-react';
 ```
 
 or
 
 ```js
-const MuxPlayer = require('@mux-elements/mux-player-react');
+const MuxPlayer = require('@mux/mux-player-react');
 ```
 
 ## Features and benefits

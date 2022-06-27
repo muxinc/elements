@@ -1,8 +1,8 @@
 <p align="center">
   <h1 align="center">&lt;mux-video/&gt;</h1>
-  <a href="https://npmcharts.com/compare/@mux-elements/mux-video?interval=30"><img src="https://img.shields.io/npm/dm/@mux-elements/mux-video.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-video"><img src="https://img.shields.io/npm/v/@mux-elements/mux-video.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-video"><img src="https://img.shields.io/npm/l/@mux-elements/mux-video.svg?sanitize=true" alt="License"></a>
+  <a href="https://npmcharts.com/compare/@mux/mux-video?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-video.svg?sanitize=true" alt="Downloads"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-video"><img src="https://img.shields.io/npm/v/@mux/mux-video.svg?sanitize=true" alt="Version"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-video"><img src="https://img.shields.io/npm/l/@mux/mux-video.svg?sanitize=true" alt="License"></a>
 </p>
 
 # Introduction
@@ -18,25 +18,25 @@ If you're using `npm` or `yarn`, install that way:
 ## Package manager
 
 ```
-yarn add @mux-elements/mux-video
+yarn add @mux/mux-video
 ```
 
 or
 
 ```
-npm i @mux-elements/mux-video
+npm i @mux/mux-video
 ```
 
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import '@mux-elements/mux-video';
+import '@mux/mux-video';
 ```
 
 or
 
 ```js
-require('@mux-elements/mux-video');
+require('@mux/mux-video');
 ```
 
 ## CDN option
@@ -44,13 +44,13 @@ require('@mux-elements/mux-video');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-video@0.4"></script>
+<script src="https://unpkg.com/@mux/mux-video@0.4"></script>
 ```
 
 If you are using ECMAScript modules, you can also load the `mux-video.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://unpkg.com/@mux-elements/mux-video@0.4/dist/mux-video.mjs"></script>
+<script type="module" src="https://unpkg.com/@mux/mux-video@0.4/dist/mux-video.mjs"></script>
 ```
 
 ## Features and benefits

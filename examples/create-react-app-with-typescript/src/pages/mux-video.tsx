@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Link } from "react-router-dom";
-import "@mux-elements/mux-video";
+import "@mux/mux-video";
 import { useState } from "react";
 
 // const INITIAL_DEBUG = true;

@@ -1,8 +1,8 @@
 <p align="center">
   <h1 align="center">&lt;mux-player&gt;</h1>
-  <a href="https://npmcharts.com/compare/@mux-elements/mux-player?interval=30"><img src="https://img.shields.io/npm/dm/@mux-elements/mux-player.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-player"><img src="https://img.shields.io/npm/v/@mux-elements/mux-player.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-player"><img src="https://img.shields.io/npm/l/@mux-elements/mux-player.svg?sanitize=true" alt="License"></a>
+  <a href="https://npmcharts.com/compare/@mux/mux-player?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-player.svg?sanitize=true" alt="Downloads"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-player"><img src="https://img.shields.io/npm/v/@mux/mux-player.svg?sanitize=true" alt="Version"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-player"><img src="https://img.shields.io/npm/l/@mux/mux-player.svg?sanitize=true" alt="License"></a>
 </p>
 
 # Introduction
@@ -20,25 +20,25 @@ If you're using `npm` or `yarn`, install that way:
 ## Package manager
 
 ```
-yarn add @mux-elements/mux-player
+yarn add @mux/mux-player
 ```
 
 or
 
 ```
-npm i @mux-elements/mux-player
+npm i @mux/mux-player
 ```
 
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import '@mux-elements/mux-player';
+import '@mux/mux-player';
 ```
 
 or
 
 ```js
-require('@mux-elements/mux-player');
+require('@mux/mux-player');
 ```
 
 ## CDN option
@@ -46,13 +46,13 @@ require('@mux-elements/mux-player');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-player"></script>
+<script src="https://unpkg.com/@mux/mux-player"></script>
 ```
 
 If you are using ECMAScript modules, you can also load the `mux-player.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://unpkg.com/@mux-elements/mux-player/dist/mux-player.mjs"></script>
+<script type="module" src="https://unpkg.com/@mux/mux-player/dist/mux-player.mjs"></script>
 ```
 
 ## Features and benefits
