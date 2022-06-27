@@ -10,7 +10,7 @@ import {
   toMuxVideoURL,
   PlaybackEngine,
   generatePlayerInitTime,
-} from '@mux-elements/playback-core';
+} from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 
 export type Props = Omit<

@@ -14,7 +14,7 @@
 	// import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	onMount(async () => {
-		await import('@mux-elements/mux-video');
+		await import('@mux/mux-video');
 	});
 </script>
 <mux-video

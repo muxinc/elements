@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/open-process",
+  "name": "@mux/open-process",
   "version": "0.1.0",
   "main": "./open-process.js",
   "repository": "https://github.com/muxinc/elements",

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import MuxAudio from "@mux-elements/mux-audio-react";
+import MuxAudio from "@mux/mux-audio-react";
 
 function MuxVideoPage() {
   return (

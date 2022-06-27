@@ -58,7 +58,7 @@ const options = {
 };
 
 if (options.format === 'esm' || options.format === 'cjs') {
-  options.external = ['@mux-elements/*'];
+  options.external = ['@mux/*'];
 }
 
 if (options.format === 'esm') {

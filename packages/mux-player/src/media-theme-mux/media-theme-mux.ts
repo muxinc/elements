@@ -5,7 +5,7 @@ import '../media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
 import * as icons from './icons';
-import { StreamTypes } from '@mux-elements/playback-core';
+import { StreamTypes } from '@mux/playback-core';
 
 const MediaChromeSizes = {
   LG: 'large',

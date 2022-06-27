@@ -1,6 +1,6 @@
 import { toQuery, camelCase } from './utils';
 import type MuxPlayerElement from '.';
-import { StreamTypes } from '@mux-elements/playback-core';
+import { StreamTypes } from '@mux/playback-core';
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 

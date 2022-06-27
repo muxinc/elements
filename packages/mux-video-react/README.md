@@ -1,8 +1,8 @@
 <p align="center">
   <h1 align="center">&lt;mux-video/&gt;</h1>
-  <a href="https://npmcharts.com/compare/@mux-elements/mux-video-react?interval=30"><img src="https://img.shields.io/npm/dm/@mux-elements/mux-video-react.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-video-react"><img src="https://img.shields.io/npm/v/@mux-elements/mux-video-react.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-video-react"><img src="https://img.shields.io/npm/l/@mux-elements/mux-video-react.svg?sanitize=true" alt="License"></a>
+  <a href="https://npmcharts.com/compare/@mux/mux-video-react?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-video-react.svg?sanitize=true" alt="Downloads"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-video-react"><img src="https://img.shields.io/npm/v/@mux/mux-video-react.svg?sanitize=true" alt="Version"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-video-react"><img src="https://img.shields.io/npm/l/@mux/mux-video-react.svg?sanitize=true" alt="License"></a>
 </p>
 
 # Introduction
@@ -18,25 +18,25 @@ If you're using `npm` or `yarn`, install that way:
 ## Package manager
 
 ```
-yarn add @mux-elements/mux-video-react
+yarn add @mux/mux-video-react
 ```
 
 or
 
 ```
-npm i @mux-elements/mux-video-react
+npm i @mux/mux-video-react
 ```
 
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import MuxVideo from '@mux-elements/mux-video-react';
+import MuxVideo from '@mux/mux-video-react';
 ```
 
 or
 
 ```js
-const MuxVideo = require('@mux-elements/mux-video-react');
+const MuxVideo = require('@mux/mux-video-react');
 ```
 
 ## Features and benefits

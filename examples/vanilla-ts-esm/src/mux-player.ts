@@ -1,1 +1,1 @@
-export * as MuxPlayer from "@mux-elements/mux-player";
+export * as MuxPlayer from "@mux/mux-player";

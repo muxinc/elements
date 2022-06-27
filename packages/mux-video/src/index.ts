@@ -11,8 +11,8 @@ import {
   mux,
   MediaError,
   getError,
-} from '@mux-elements/playback-core';
-import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux-elements/playback-core';
+} from '@mux/playback-core';
+import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomVideoElement, { VideoEvents } from './CustomVideoElement';

@@ -1,5 +1,5 @@
-import { VideoEvents } from '@mux-elements/mux-video';
-import type MuxVideoElement from '@mux-elements/mux-video';
+import { VideoEvents } from '@mux/mux-video';
+import type MuxVideoElement from '@mux/mux-video';
 import * as logger from './logger';
 
 export type CastOptions = {

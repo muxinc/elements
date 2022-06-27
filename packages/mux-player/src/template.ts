@@ -7,7 +7,7 @@ import cssStr from './styles.css';
 import { i18n, stylePropsToString } from './utils';
 
 import type { MuxTemplateProps } from './types';
-import { StreamTypes } from '@mux-elements/playback-core';
+import { StreamTypes } from '@mux/playback-core';
 
 export const template = (props: MuxTemplateProps) => html`
   <style>

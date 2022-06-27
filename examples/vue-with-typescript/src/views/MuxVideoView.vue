@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import "@mux-elements/mux-video";
+import "@mux/mux-video";
 </script>
 
 <template>

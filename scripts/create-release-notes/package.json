@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/create-release-notes",
+  "name": "@mux/create-release-notes",
   "version": "0.1.0",
   "main": "./create-release-notes.js",
   "type": "module",

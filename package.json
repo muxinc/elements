@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/elements",
+  "name": "@mux/elements",
   "engines": {
     "node": "^14.17.0",
     "npm": "^7.17.0"
@@ -24,21 +24,21 @@
     "shared/*"
   ],
   "scripts": {
-    "clean": "lerna run clean --parallel --scope @mux-elements/*",
+    "clean": "lerna run clean --parallel --scope @mux/*",
     "format": "prettier --write .",
-    "lint": "lerna run lint --scope @mux-elements/*",
-    "pretest": "yarn build:packages --scope @mux-elements/test-esm-exports",
-    "test": "lerna run test --scope @mux-elements/*",
-    "i18n": "lerna run i18n --scope @mux-elements/*",
-    "dev": "lerna run dev --parallel --scope @mux-elements/*",
+    "lint": "lerna run lint --scope @mux/*",
+    "pretest": "yarn build:packages --scope @mux/test-esm-exports",
+    "test": "lerna run test --scope @mux/*",
+    "i18n": "lerna run i18n --scope @mux/*",
+    "dev": "lerna run dev --parallel --scope @mux/*",
     "predev": "yarn build:packages",
-    "build:packages": "lerna run build --scope @mux-elements/*",
+    "build:packages": "lerna run build --scope @mux/*",
     "build": "lerna run build",
     "prepare": "husky install",
-    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react,@mux-elements/mux-uploader",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux-elements/mux-player,@mux-elements/mux-player-react,@mux-elements/mux-uploader",
-    "create-release-notes": "lerna run create-release-notes --scope @mux-elements/*",
-    "publish-release": "lerna run publish-release --npm-client=npm --scope @mux-elements/* --"
+    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react,@mux/mux-uploader",
+    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react,@mux/mux-uploader",
+    "create-release-notes": "lerna run create-release-notes --scope @mux/*",
+    "publish-release": "lerna run publish-release --npm-client=npm --scope @mux/* --"
   },
   "dependencies": {}
 }

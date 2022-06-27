@@ -1,5 +1,5 @@
 {
-  "name": "@mux-elements/playback-core",
+  "name": "@mux/playback-core",
   "version": "0.7.0",
   "description": "Core library for media playback in the browser shared by mux elements",
   "main": "./dist/index.cjs.js",
@@ -50,8 +50,8 @@
     "mux-embed": "^4.7.0"
   },
   "devDependencies": {
-    "@mux-elements/open-process": "0.1.0",
-    "@mux-elements/polyfills": "0.1.0",
+    "@mux/open-process": "0.1.0",
+    "@mux/polyfills": "0.1.0",
     "downlevel-dts": "^0.9.0",
     "esbuild": "^0.13.13",
     "npm-run-all": "^4.1.5",

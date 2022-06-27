@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
-import MuxAudio from "@mux-elements/mux-audio-react";
+import MuxAudio from "@mux/mux-audio-react";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;

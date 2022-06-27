@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import Script from 'next/script';
-import MuxPlayer from "@mux-elements/mux-player-react";
+import MuxPlayer from "@mux/mux-player-react";
 import { useRef, useState } from "react";
-import mediaAssetsJSON from "@mux-elements/assets/media-assets.json";
+import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
 const INITIAL_PRIMARY_COLOR = undefined;
 const INITIAL_SECONDARY_COLOR = undefined;

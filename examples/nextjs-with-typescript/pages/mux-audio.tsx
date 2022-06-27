@@ -1,6 +1,6 @@
 // @ts-nocheck
 import Link from "next/link";
-import "@mux-elements/mux-audio";
+import "@mux/mux-audio";
 import { useState } from "react";
 
 // const INITIAL_DEBUG = true;

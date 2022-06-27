@@ -14,7 +14,7 @@
 	// import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	onMount(async () => {
-		await import('@mux-elements/mux-player');
+		await import('@mux/mux-player');
 	});
 </script>
 

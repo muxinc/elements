@@ -1,8 +1,8 @@
 <p align="center">
   <h1 align="center">&lt;mux-audio/&gt;</h1>
-  <a href="https://npmcharts.com/compare/@mux-elements/mux-audio?interval=30"><img src="https://img.shields.io/npm/dm/@mux-elements/mux-audio.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-audio"><img src="https://img.shields.io/npm/v/@mux-elements/mux-audio.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@mux-elements/mux-audio"><img src="https://img.shields.io/npm/l/@mux-elements/mux-audio.svg?sanitize=true" alt="License"></a>
+  <a href="https://npmcharts.com/compare/@mux/mux-audio?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-audio.svg?sanitize=true" alt="Downloads"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-audio"><img src="https://img.shields.io/npm/v/@mux/mux-audio.svg?sanitize=true" alt="Version"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-audio"><img src="https://img.shields.io/npm/l/@mux/mux-audio.svg?sanitize=true" alt="License"></a>
 </p>
 
 # Introduction
@@ -18,25 +18,25 @@ If you're using `npm` or `yarn`, install that way:
 ## Package manager
 
 ```
-yarn add @mux-elements/mux-audio
+yarn add @mux/mux-audio
 ```
 
 or
 
 ```
-npm i @mux-elements/mux-audio
+npm i @mux/mux-audio
 ```
 
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import '@mux-elements/mux-audio';
+import '@mux/mux-audio';
 ```
 
 or
 
 ```js
-require('@mux-elements/mux-audio');
+require('@mux/mux-audio');
 ```
 
 ## CDN option
@@ -44,13 +44,13 @@ require('@mux-elements/mux-audio');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux-elements/mux-audio@0.4"></script>
+<script src="https://unpkg.com/@mux/mux-audio@0.4"></script>
 ```
 
 If you are using ecmascript modules, you can also load the `mux-audio.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://unpkg.com/@mux-elements/mux-audio@0.4/dist/mux-audio.mjs"></script>
+<script type="module" src="https://unpkg.com/@mux/mux-audio@0.4/dist/mux-audio.mjs"></script>
 ```
 
 ## Usage

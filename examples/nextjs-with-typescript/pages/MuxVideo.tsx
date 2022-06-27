@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
-import MuxVideo from "@mux-elements/mux-video-react";
+import MuxVideo from "@mux/mux-video-react";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
