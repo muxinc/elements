@@ -185,6 +185,7 @@ template.innerHTML = `
 </div>
 
 <input type="file" />
+<!--TO-DO: Slots not receiving events or not having the right visual behaviour as the original elements. (TD).-->
 <slot name="custom-button"><button type="button">Upload video</button></slot>
 <slot name="custom-progress"><p class="upload-status" id="upload-status"></p></slot>
 
@@ -233,7 +234,6 @@ class MuxUploaderElement extends HTMLElement {
   statusMessage: HTMLElement | null | undefined;
   retryButton: HTMLElement | null | undefined;
   srOnlyText: HTMLElement | null | undefined;
-  _dropHandler: Function;
 
   constructor() {
     super();
@@ -250,8 +250,6 @@ class MuxUploaderElement extends HTMLElement {
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
     this.retryButton = this.shadowRoot?.getElementById('retry-button');
     this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
-
-    this._dropHandler = this.handleUpload.bind(this);
 
     this.progressBar?.setAttribute('aria-description', ariaDescription);
   }
@@ -275,7 +273,7 @@ class MuxUploaderElement extends HTMLElement {
 
   disconnectedCallback() {
     //@ts-ignore
-    this.removeEventListener('mux-drop', this._dropHandler, false);
+    this.removeEventListener('file-ready', this.handleUpload, false);
   }
 
   get url() {
@@ -337,7 +335,7 @@ class MuxUploaderElement extends HTMLElement {
 
   setupDropHandler() {
     //@ts-ignore
-    this.addEventListener('mux-drop', this._dropHandler);
+    this.addEventListener('file-ready', this.handleUpload);
   }
 
   resetState() {
@@ -348,6 +346,7 @@ class MuxUploaderElement extends HTMLElement {
   }
 
   setupFilePickerButton() {
+    // TO-DO: Troubleshoot click event when user clicks custom button. Currently not getting the slotted element. (TD).
     this.shadowRoot?.querySelector('slot[name=custom-button]')?.addEventListener('slotchange', () => {
       this.filePickerButton = this.shadowRoot?.querySelector('slot[name=custom-button]');
     });
@@ -365,7 +364,7 @@ class MuxUploaderElement extends HTMLElement {
 
       if (file) {
         this.dispatchEvent(
-          new CustomEvent('mux-drop', {
+          new CustomEvent('file-ready', {
             composed: true,
             bubbles: true,
             detail: file,
