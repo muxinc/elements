@@ -155,7 +155,7 @@ class MuxUploaderDropElement extends HTMLElement {
       const uploaderController = this.muxUploader ?? this;
 
       uploaderController.dispatchEvent(
-        new CustomEvent('mux-drop', {
+        new CustomEvent('file-ready', {
           composed: true,
           bubbles: true,
           detail: file,
