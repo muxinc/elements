@@ -59,10 +59,36 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 
 ```html
 <body>
-  <p></p>
+  <!-- Upload button by itself with default drag an drop scoped to the space it takes up. Displays upload progress in text as percentage.-->
+  <mux-uploader url="authenticated-url" type="bar" status></mux-uploader>
 
-  <mux-uploader url="authenticated-url" id="uploader"></mux-uploader>
+  <!-- Upload button by itself with drag an drop disabled. Does not display text percentage.-->
+  <mux-uploader url="authenticated-url" type="bar" disable-drop></mux-uploader>
+
+  <!-- Upload button with access to additional drag and drop features via slots i.e. fullscreen drag and drop with text overlay (work-in-progress).-->
+  <mux-uploader url="authenticated-url">
+    <mux-uploader-drop slot="dropzone" text="Upload to stream.new" fullscreen overlay></mux-uploader-drop>
+  </mux-uploader>
 </body>
+```
+
+## Drag and Drop
+
+The `mux-uploader`, whether you use `mux-uploader-drop` and its additional features or not i.e. fullscreen and text overlay, has basic drag and drop functionality available to it by default. If you'd rather shop your own drag and drop solution, you can disable the default drag and drop on `mux-uploader` and dispatch a custom `file-ready` event when you need to upload. `mux-uploader` will handle the upload upon receiving the event.
+
+```html
+<script>
+  const muxUploader = document.querySelector('mux-uploader');
+
+  // Dispatch custom event to trigger upload
+  muxUploader.dispatchEvent(
+    new CustomEvent('file-ready', {
+      composed: true,
+      bubbles: true,
+      detail: file,
+    })
+  );
+</script>
 ```
 
 ### Attributes
@@ -72,19 +98,19 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 | Attribute            | Type      | Description                                                                                                                                                                                                               | Default     |
 | -------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `url`                | `string`  | The authenticated URL that your file will be uploaded to. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined` |
-| `id`                 | `string`  | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required.                                                                                                                                                 | N/A         |
+| `id`                 | `string`  | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Not necessary unless the unlikely scenario you need to nest `mux-uploader` inside `mux-uploader-drop`.                                                    | N/A         |
 | `type`               | `"bar"`   | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                  | "bar"       |
-| `upload-in-progress` | `boolean` | Toggles visual status of progress bar while upload is n progress.                                                                                                                                                         | false       |
-| `upload-error`       | `boolean` | Toggles visual status of progress bar when upload encounters an error.                                                                                                                                                    | false       |
-| `status`             | `boolean` | Toggles text status of progress bar, which is a percentage by default.                                                                                                                                                    | false       |
+| `upload-in-progress` | `boolean` | Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].                                        | false       |
+| `upload-error`       | `boolean` | Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].                                       | false       |
+| `status`             | `boolean` | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                      | false       |
 
 #### `mux-uploader-drop`
 
-| Attribute       | Type       | Description                                            | Default |
-| --------------- | ---------- | ------------------------------------------------------ | ------- |
-| `fullscreen`    | `boolean`  | Toggles fullscreen drag and drop (work-in-progress).   | false   |
-| `overlay`       | `boolean`  | Toggles fullscreen overlay on dragover.                | false   |
-| `disable-drop ` | `booleann` | Toggles off drag and drop which is enabled by default. | false   |
+| Attribute       | Type      | Description                                            | Default |
+| --------------- | --------- | ------------------------------------------------------ | ------- |
+| `fullscreen`    | `boolean` | Toggles fullscreen drag and drop (work-in-progress).   | false   |
+| `overlay`       | `boolean` | Toggles fullscreen overlay on dragover.                | false   |
+| `disable-drop ` | `boolean` | Toggles off drag and drop which is enabled by default. | false   |
 
 ### Methods
 
