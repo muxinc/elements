@@ -13,6 +13,9 @@ Examples:
   - include `--scope '*-esm'` in the dev script
   - Run `npx lerna run dev --scope '*-esm'` locally after running `yarn dev`
 
+# Media Chrome Canaries
+It's helpful to point at Media Chrome canaries for developing PRs and having all the live examples work; however, we should not merge any PRs that point at a Media Chrome Canary release.
+
 # Releasing
 
 This repo uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
