@@ -1,0 +1,48 @@
+{
+  "name": "@mux/mux-uploader-react",
+  "version": "0.1.0-beta.1",
+  "type": "commonjs",
+  "description": "An uploader element for React that handles Mux Direct Uploads and a visual progress bar for you",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muxinc/elements",
+    "directory": "packages/mux-uploader-react"
+  },
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "dev:cjs": "open-process | yarn build:cjs --watch",
+    "dev:types": "yarn build:types -w",
+    "dev": "npm-run-all --parallel dev:types dev:cjs",
+    "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --format=cjs --loader:.css=text --outdir=dist --external:react --external:prop-types",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build": "npm-run-all --parallel build:types build:cjs"
+  },
+  "peerDependencies": {
+    "@types/react": "^16.8.6 || ^17.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "@types/react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@mux-elements/mux-uploader": "0.1.0-beta.1",
+    "prop-types": "^15.7.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.11",
+    "esbuild": "^0.13.13",
+    "npm-run-all": "^4.1.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
