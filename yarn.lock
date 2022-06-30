@@ -2221,6 +2221,13 @@
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-4.1.19.tgz#33f8c6c63a14a3acc50062df93eaa92f33a10a0a"
   integrity sha512-zDrdjvX2dwunW4HOGwpibLHvfnDRQOJ89bGnkQ7TXZ7H7JSehbg2Gf0zNbML+R/03QItZ7EI6QHloOJ2znFSdA==
 
+"@mux-elements/mux-uploader@0.1.0-beta.1":
+  version "0.1.0-beta.1"
+  resolved "https://registry.yarnpkg.com/@mux-elements/mux-uploader/-/mux-uploader-0.1.0-beta.1.tgz#bf5547922db56d3996925e47271de866392d8d26"
+  integrity sha512-U4olvf7nYrUfgVGJus7n9giD00bJ3UtkuGp5zROyX8VeB8AYtIc2ez2Ij49WoPBu3DcE5tWmUipmn0ZUYbbWug==
+  dependencies:
+    "@mux/upchunk" "^2.3.1"
+
 "@mux/upchunk@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-2.3.1.tgz#726e83b78622eac917dcc49e54571d1d0bf81785"
