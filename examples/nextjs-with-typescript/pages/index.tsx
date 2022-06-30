@@ -35,6 +35,13 @@ function HomePage() {
         </li>
         <li>
           <h3>
+            <Link href="/MuxUploader">
+              <a>Mux Uploader with Mux Uploader Drop Demo</a>
+            </Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
             <Link href="/mux-video">Mux Video (Web Component) Demo</Link>
           </h3>
         </li>
