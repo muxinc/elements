@@ -2,9 +2,7 @@
   "name": "@mux/mux-elements-codemod",
   "version": "0.0.0",
   "description": "A codemod to transform @mux-elments scope imports into @mux scope imports",
-  "bin": {
-    "mux-elements-codemod": "./dist/index.mjs"
-  },
+  "bin": "./dist/index.mjs",
   "type": "module",
   "repository": {
     "type": "git",
