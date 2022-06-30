@@ -22,6 +22,11 @@ function Home() {
         </li>
         <li>
           <h3>
+            <Link to="/MuxUploader">Mux Uploader Demo</Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
             <Link to="/mux-video">Mux Video (Web Component) Demo</Link>
           </h3>
         </li>
