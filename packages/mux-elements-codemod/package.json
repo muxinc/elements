@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-elements-codemod",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "A codemod to transform @mux-elments scope imports into @mux scope imports",
   "bin": {
     "mux-elements-codemod": "./dist/index.mjs"
@@ -54,7 +54,7 @@
     "parser": "@typescript-eslint/parser",
     "plugins": [
       "@typescript-eslint",
-      "@mux-elements/i18n"
+      "@mux/i18n"
     ],
     "extends": [
       "eslint:recommended",
@@ -70,7 +70,7 @@
     "rules": {
       "no-shadow": "error",
       "no-extra-boolean-cast": 0,
-      "@mux-elements/i18n/no-substitutions": "error",
+      "@mux/i18n/no-substitutions": "error",
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-explicit-any": 0
     }

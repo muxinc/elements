@@ -24,7 +24,7 @@ const args = minimist(argv.slice(2), {
 });
 
 const paths = args._;
-const ignores = args.ignore ? [].concat(args.ignore) : [];
+const ignoresArray = args.ignore ? [].concat(args.ignore) : [];
 const exts = (args.extensions.split(' ') as string[]).map((ext) => (ext.startsWith('.') ? ext : '.' + ext)) as string[];
 const force = args.force;
 
@@ -86,7 +86,9 @@ const getFiles = (
 };
 
 const imports = () => {
-  const files = getFiles(paths, ignores, exts, (file: string | ShellString) => sh.cat(file).includes('@mux-elements'));
+  const files = getFiles(paths, ignoresArray, exts, (file: string | ShellString) =>
+    sh.cat(file).includes('@mux-elements')
+  );
 
   if (force) {
     sh.echo('Modifying the following files to replace `@mux-elements/` scope with `@mux`:');
