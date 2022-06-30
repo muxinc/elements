@@ -1,4 +1,5 @@
 import * as UpChunk from '@mux/upchunk';
+import '@mux/polyfills';
 import './mux-uploader-drop';
 
 const styles = `
