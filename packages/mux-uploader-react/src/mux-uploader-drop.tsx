@@ -1,4 +1,5 @@
 import React from 'react';
+import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import type MuxUploaderDropElement from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
@@ -12,6 +13,7 @@ export type MuxUploaderDropProps = {
   overlay?: boolean;
   text?: string;
   disableDrop?: boolean;
+  style?: CSSProperties;
 };
 
 const MuxUploaderDropInternal = React.forwardRef<MuxUploaderDropRefAttributes, MuxUploaderDropProps>(
