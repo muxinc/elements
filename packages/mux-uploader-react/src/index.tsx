@@ -1,4 +1,5 @@
 import React from 'react';
+import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
 import type MuxUploaderElement from '@mux/mux-uploader';
@@ -16,6 +17,7 @@ export type MuxUploaderProps = {
   uploadError?: boolean;
   status?: boolean;
   disableDrop?: boolean;
+  style?: CSSProperties;
   children?: React.ReactNode;
 };
 
