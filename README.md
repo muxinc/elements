@@ -17,8 +17,8 @@ Elements are written to make it easy to work in a variety of web frameworks. If 
 | [mux-video](packages/mux-video)               | A Mux-flavored HTML5 video element          | Web Component | Public Beta             |
 | [mux-audio](packages/mux-audio)               | A Mux-flavored HTML5 audio element          | Web Component | Public Beta             |
 | [mux-video-react](packages/mux-video-react)   | A Mux-flavored React video component        | React         | Public Beta             |
-| [mux-player](packages/mux-player)             | A Mux-flavored HTML5 media player component | Web Component | Public Alpha            |
-| [mux-player-react](packages/mux-player-react) | A Mux-flavored React media player component | React         | Public Alpha            |
+| [mux-player](packages/mux-player)             | A Mux-flavored HTML5 media player component | Web Component | Public Beta             |
+| [mux-player-react](packages/mux-player-react) | A Mux-flavored React media player component | React         | Public Beta             |
 
 # Contribution
 
