@@ -1,0 +1,76 @@
+{
+  "name": "@mux/mux-elements-codemod",
+  "version": "1.0.0-0",
+  "description": "A codemod to transform @mux-elments scope imports into @mux scope imports",
+  "bin": "./dist/index.mjs",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muxinc/elements",
+    "directory": "packages/mux-player"
+  },
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "clean": "shx rm -rf dist/",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "dev:esm": "open-process | yarn build:esm --watch",
+    "dev:types": "yarn build:types -w --preserveWatchOutput",
+    "dev": "npm-run-all --parallel dev:types dev:esm",
+    "build:esm": "esbuild src/index.ts --target=es2019 --format=esm --outdir=dist --out-extension:.js=.mjs",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build": "npm-run-all --parallel build:types build:esm",
+    "prebuild": "yarn clean",
+    "prepublishOnly": "yarn build",
+    "create-release-notes": "create-release-notes ./CHANGELOG.md",
+    "publish-release": "../../scripts/publish.sh"
+  },
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "minimist": "^1.2.6",
+    "shelljs": "^0.8.5"
+  },
+  "devDependencies": {
+    "@types/shelljs": "^0.8.11",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "downlevel-dts": "^0.9.0",
+    "esbuild": "^0.13.13",
+    "eslint": "^7.11.0",
+    "npm-run-all": "^4.1.5",
+    "replace": "^1.2.1",
+    "shx": "^0.3.4",
+    "typescript": "^4.7.4"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": false,
+      "es6": true,
+      "node": true,
+      "mocha": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "@mux/i18n"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2021,
+      "sourceType": "module"
+    },
+    "globals": {
+      "globalThis": false
+    },
+    "rules": {
+      "no-shadow": "error",
+      "no-extra-boolean-cast": 0,
+      "@mux/i18n/no-substitutions": "error",
+      "@typescript-eslint/ban-ts-comment": 0,
+      "@typescript-eslint/no-explicit-any": 0
+    }
+  }
+}
