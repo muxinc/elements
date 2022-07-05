@@ -86,41 +86,55 @@ const getFiles = (
 };
 
 const imports = () => {
-  const files = getFiles(paths, ignoresArray, exts, (file: string | ShellString) =>
-    sh.cat(file).includes('@mux-elements')
-  );
+  const linesFileMap = new Map();
+
+  const files = getFiles(paths, ignoresArray, exts, (file: string | ShellString) => {
+    const fileText = sh.cat(file);
+    const includesMuxElements = fileText.includes('@mux-elements');
+
+    // if in dry-run, store unchanges lines here for use below
+    if (!force && includesMuxElements) {
+      const lineNumbers: number[] = [];
+      const lines = fileText.split('\n').filter((line, i) => {
+        const included = line.includes('@mux-elements');
+        if (included) {
+          lineNumbers.push(i);
+        }
+        return included;
+      });
+      linesFileMap.set(file, [lineNumbers, lines]);
+    }
+
+    return includesMuxElements;
+  });
 
   if (force) {
-    sh.echo('Modifying the following files to replace `@mux-elements/` scope with `@mux`:');
+    sh.echo('Modifying the following files to replace `@mux-elements/` scope with `@mux/`:');
   } else {
     sh.echo('Running in dry run mode. The following files will be modified:');
   }
 
   files.forEach((file) => {
-    const sedOptions: [string, string, string] | [string, string, string, string] = ['@mux-elements/', '@mux/', file];
+    type SedOptions = [string, string, string] | [string, string, string, string];
+    const sedOptions: SedOptions = ['@mux-elements/', '@mux/', file];
     if (force) {
       sedOptions.unshift('-i');
     }
     const sedFile = sh.sed(...sedOptions);
 
     sh.echo(`${chalk.green(file)}`);
+
     if (!force) {
-      const lineNumbers: number[] = [];
-      const lines = sedFile.split('\n').filter((line, i) => {
-        const included = line.includes('@mux');
-        if (included) {
-          lineNumbers.push(i);
-        }
-        return included;
-      });
+      const [lineNumbers, beforeLines] = linesFileMap.get(file) as [number[], string[]];
+      const lines = sedFile.split('\n');
 
       sh.echo('Before:');
-      lines.forEach((line, i) => {
-        sh.echo(`\t${chalk.yellow(lineNumbers[i])}:${line.replace('@mux/', '@mux-elements/')}`);
+      beforeLines.forEach((beforeLine, i) => {
+        sh.echo(`\t${chalk.yellow(lineNumbers[i])}:${beforeLine}`);
       });
       sh.echo('After:');
-      lines.forEach((line, i) => {
-        sh.echo(`\t${chalk.yellow(lineNumbers[i])}:${line}`);
+      lineNumbers.forEach((lineNumber) => {
+        sh.echo(`\t${chalk.yellow(lineNumber)}:${lines[lineNumber]}`);
       });
     }
   });
