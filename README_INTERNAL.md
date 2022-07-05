@@ -14,6 +14,7 @@ Examples:
   - Run `npx lerna run dev --scope '*-esm'` locally after running `yarn dev`
 
 # Media Chrome Canaries
+
 It's helpful to point at Media Chrome canaries for developing PRs and having all the live examples work; however, we should not merge any PRs that point at a Media Chrome Canary release.
 
 # Releasing
@@ -30,7 +31,7 @@ and Github Actions for continuously publishing Mux elements.
 1. Click the "Run workflow" dropdown and "Run workflow" on the `main` branch
 1. Starting this workflow will require an approval from a core contributor. Click into the 'pending' workflow to get it approved.
 1. After approving this will kick off the deploy action which will publish all the updated packages to NPM and create release notes in Github
-1. Confirm the package(s) were successfully published to npm by checking the latest version and publish time on npmjs, e.g.: https://www.npmjs.com/package/@mux-elements/mux-player
+1. Confirm the package(s) were successfully published to npm by checking the latest version and publish time on npmjs, e.g.: https://www.npmjs.com/package/@mux/mux-player
 1. Confirm in the [Releases tab](https://github.com/muxinc/elements/releases) that the releases have been created.
 
 # After releasing Mux Player
