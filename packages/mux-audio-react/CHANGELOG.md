@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.4.0 (2022-07-05)
+
+### Bug Fixes
+
+- **mux-audio-react:** use generateInitTime() instead of Date.now. ([d60f98c](https://github.com/muxinc/elements/commit/d60f98c3f9d626c2a0cb656ccafbb21b4802ca13))
+- prettier format all elements files ([741d607](https://github.com/muxinc/elements/commit/741d607521ca9578cfad9f0a9216a6565b4c56a1))
+- switch cjs extension to .cjs.js ([30e83c3](https://github.com/muxinc/elements/commit/30e83c3ce0bd9bfda4817c30ffe0921e425619e4))
+- update react peerDependencies to allow ^18 ([1cfb019](https://github.com/muxinc/elements/commit/1cfb019b71cf9aa280abccaf4a7818d585b56d86))
+
+### Features
+
+- add beaconCollectionDomain option to replace beaconDomain ([a44b699](https://github.com/muxinc/elements/commit/a44b699ae3138590b9d953f693f95971694658df))
+- Extended autoplay options ([#116](https://github.com/muxinc/elements/issues/116)) ([475e838](https://github.com/muxinc/elements/commit/475e83884f641c578fa601c9501147d485fc1831))
+
 ## [0.3.11](https://github.com/muxinc/elements/compare/@mux-elements/mux-audio-react@0.3.10...@mux-elements/mux-audio-react@0.3.11) (2022-06-23)
 
 **Note:** Version bump only for package @mux-elements/mux-audio-react
