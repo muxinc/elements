@@ -9,6 +9,7 @@ import { useCombinedRefs } from './useCombinedRefs';
 export type MuxUploaderDropRefAttributes = MuxUploaderDropElement;
 
 export type MuxUploaderDropProps = {
+  slot?: string;
   fullscreen?: boolean;
   overlay?: boolean;
   text?: string;
