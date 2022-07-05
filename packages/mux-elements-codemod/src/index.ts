@@ -12,7 +12,7 @@ const args = minimist(argv.slice(2), {
   string: ['extensions'],
   boolean: ['imports'],
   default: {
-    extensions: 'js ts jsx tsx json html mjs cjs',
+    extensions: 'js ts jsx tsx html mjs cjs',
     imports: false,
     force: false,
   },
@@ -51,7 +51,7 @@ Options:
   -i --imports      update imports/requires scope from @mux-elements to @mux
      --ignore       Add a name to ignore in the files, multiples can be provided
   -e --extensions   specifiy the specific file extensions to use as a space separated string
-                    default is "js ts jsx tsx json html mjs cjs"
+                    default is "js ts jsx tsx html mjs cjs"
   -f --force        by default, this does a dry run, run with --force to replace the text inline
   -h --help         show this help
 `
