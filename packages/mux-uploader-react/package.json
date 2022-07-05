@@ -34,7 +34,7 @@
     }
   },
   "dependencies": {
-    "@mux/mux-uploader": "0.1.0-beta.1",
+    "@mux/mux-uploader": "^0.1.0-beta.2",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
