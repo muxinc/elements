@@ -4,7 +4,6 @@ about: Report a reproducible bug or regression.
 title: 'Bug: '
 labels: 'bug, enhancement, Status: Unconfirmed'
 assignees: ''
-
 ---
 
 <!--
@@ -13,7 +12,7 @@ assignees: ''
 
 ### Checklist
 
-- [] Verified whether your issue exists in the latest version Mux Element(s) release: `npm install @mux-elements/[element_name]` or `yarn @mux-elements/[element_name]`.
+- [] Verified whether your issue exists in the latest version Mux Element(s) release: `npm install @mux/[element_name]` or `yarn @mux/[element_name]`.
   - (NOTE: If the issue is not occurring in the latest version, we may not resolve it.)
 - [] Confirmed that this issue hasn't [already been filed](https://github.com/muxinc/elements/issues?q=is%3Aopen+is%3Aissue+label%3Abug).
 
