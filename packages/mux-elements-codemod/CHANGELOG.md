@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.0.0...@mux/mux-elements-codemod@1.0.1) (2022-07-05)
+
+### Bug Fixes
+
+- codemod dry-run shouldn't print [@mux](https://github.com/mux) lines that weren't [@mux-elements](https://github.com/mux-elements) previously ([a12e1dd](https://github.com/muxinc/elements/commit/a12e1dd268bd2437eb1d63e6963c7df673d668b9))
+- make codemod replace multiple items on a line ([68dd623](https://github.com/muxinc/elements/commit/68dd6238b88a72bde4bd6d11c034d99a1c33bbc8))
+- remove json from the default filetypes ([2686be8](https://github.com/muxinc/elements/commit/2686be8e584070fb6d07d9d278293bb0bf47b0e8))
+
 # 1.0.0 (2022-07-05)
 
 ### Features
