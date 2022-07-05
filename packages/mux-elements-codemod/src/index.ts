@@ -115,8 +115,9 @@ const imports = () => {
   }
 
   files.forEach((file) => {
-    type SedOptions = [string, string, string] | [string, string, string, string];
-    const sedOptions: SedOptions = ['@mux-elements/', '@mux/', file];
+    type SedOptions = [RegExp, string, string] | [string, RegExp, string, string];
+    // use the regex with `/g` so that multiple items on a line get replaced
+    const sedOptions: SedOptions = [/@mux-elements\//g, '@mux/', file];
     if (force) {
       sedOptions.unshift('-i');
     }
