@@ -48,16 +48,16 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
   return (
     <div>
       <h1>Simple MuxUploader and Mux Uploader Drop Examples</h1>
-        <!-- Upload button by itself with default drag an drop scoped to the space it takes up. Displays upload progress in text as percentage.-->
-        <MuxUploader url="authenticated-url" type="bar" status></MuxUploader>
+      {/* Upload button by itself with default drag an drop scoped to the space it takes up. Displays upload progress in text as percentage. */}
+      <MuxUploader url="authenticated-url" type="bar" status></MuxUploader>
 
-        <!-- Upload button by itself with drag an drop disabled. Does not display text percentage.-->
-        <MuxUploader url="authenticated-url" type="bar" disableDrop></MuxUploader>
+      {/* Upload button by itself with drag an drop disabled. Does not display text percentage. */}
+      <MuxUploader url="authenticated-url" type="bar" disableDrop></MuxUploader>
 
-        <!-- Upload button with access to additional drag and drop features via slots i.e. fullscreen drag and drop with text overlay (work-in-progress).-->
-        <MuxUploader url="authenticated-url">
-          <MuxUploaderDrop slot="dropzone" text="Upload to stream.new" fullscreen overlay></MuxUploaderDrop>
-        </MuxUploader>
+      {/* Upload button with access to additional drag and drop features via slots i.e. fullscreen drag and drop with text overlay (work-in-progress). */}
+      <MuxUploader url="authenticated-url">
+        <MuxUploaderDrop slot="dropzone" text="Upload to stream.new" fullscreen overlay></MuxUploaderDrop>
+      </MuxUploader>
     </div>
   );
 };
