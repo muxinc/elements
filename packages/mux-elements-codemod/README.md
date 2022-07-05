@@ -75,6 +75,6 @@ And then, you can run it with `--force` to make the replacements inline.
 
 ```sh
 $ mux-elements-codemod --imports ./src --force
-Modifying the following files to replace `@mux-elements/` scope with `@mux`:
+Modifying the following files to replace `@mux-elements/` scope with `@mux/`:
 src/player.tsx
 ```
