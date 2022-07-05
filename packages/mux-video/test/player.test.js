@@ -49,7 +49,6 @@ describe('<mux-video>', () => {
     assert.deepInclude(eventMap, {
       canplay: true,
       durationchange: true,
-      emptied: true,
       loadeddata: true,
       loadedmetadata: true,
       loadstart: true,
@@ -57,7 +56,6 @@ describe('<mux-video>', () => {
       playing: true,
       timeupdate: true,
       volumechange: true,
-      waiting: true,
       resize: true,
     });
   });
