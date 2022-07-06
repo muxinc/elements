@@ -163,8 +163,10 @@ const updatePackage = () => {
 
   const pkg = JSON.parse(sh.cat('./package.json').toString());
 
-  const muxElDeps = Object.keys(pkg.dependencies).filter((dep) => dep.startsWith('@mux-elements/')) as string[];
-  const muxElDevDeps = Object.keys(pkg.devDependencies).filter((dep) => dep.startsWith('@mux-elements/')) as string[];
+  const muxElDeps = Object.keys(pkg.dependencies ?? {}).filter((dep) => dep.startsWith('@mux-elements/')) as string[];
+  const muxElDevDeps = Object.keys(pkg.devDependencies ?? {}).filter((dep) =>
+    dep.startsWith('@mux-elements/')
+  ) as string[];
 
   type ExecType = 'dep' | 'dev';
   type Command = 'add' | 'remove';
