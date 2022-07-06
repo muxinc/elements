@@ -9,17 +9,20 @@ import minimist from 'minimist';
 import chalk from 'chalk';
 
 const args = minimist(argv.slice(2), {
-  string: ['extensions'],
+  string: ['extensions', 'npm-client'],
   boolean: ['imports'],
   default: {
     extensions: 'js ts jsx tsx html mjs cjs',
     imports: false,
     force: false,
+    package: false,
   },
   alias: {
     e: 'extensions',
     i: 'imports',
     f: 'force',
+    n: 'npm-client',
+    p: 'package',
   },
 });
 
@@ -27,6 +30,12 @@ const paths = args._;
 const ignoresArray = args.ignore ? [].concat(args.ignore) : [];
 const exts = (args.extensions.split(' ') as string[]).map((ext) => (ext.startsWith('.') ? ext : '.' + ext)) as string[];
 const force = args.force;
+let npmClient: 'npm' | 'yarn' = args['npm-client'] ?? 'npm';
+
+// default npm client to yarn if yarn.lock is present
+if (!args['npm-client'] && sh.test('-f', './yarn.lock')) {
+  npmClient = 'yarn';
+}
 
 if (paths.length === 0) {
   paths.push('./');
@@ -52,8 +61,12 @@ Options:
      --ignore       Add a name to ignore in the files, multiples can be provided
   -e --extensions   specifiy the specific file extensions to use as a space separated string
                     default is "js ts jsx tsx html mjs cjs"
-  -f --force        by default, this does a dry run, run with --force to replace the text inline
+  -f --force        by default, this does a dry run, run with --force to apply changes
   -h --help         show this help
+  -p --package      Update the package.json in the current working directory to:
+                    - remove existing dependencies and dev dependencies of @mux-elements/ scope
+                    - add the packages with the new @mux/ scope
+  -n --npm-client   set an npm client. By default it is npm unless a yarn.lock file is present, in which case it is yarn.
 `
   );
 };
@@ -141,10 +154,115 @@ const imports = () => {
   });
 };
 
+const updatePackage = () => {
+  if (!sh.test('-f', './package.json')) {
+    sh.echo(chalk.red("This folder isn't a module an doesn't include a package.json file."));
+    sh.exit(1);
+    return;
+  }
+
+  const pkg = JSON.parse(sh.cat('./package.json').toString());
+
+  const muxElDeps = Object.keys(pkg.dependencies).filter((dep) => dep.startsWith('@mux-elements/')) as string[];
+  const muxElDevDeps = Object.keys(pkg.devDependencies).filter((dep) => dep.startsWith('@mux-elements/')) as string[];
+
+  type ExecType = 'dep' | 'dev';
+  type Command = 'add' | 'remove';
+  const getExec = (type: ExecType, command: Command, deps: string[]) => {
+    const execOptions = [npmClient, '--color=always', command];
+
+    if (command === 'add') {
+      if (type === 'dev') {
+        if (npmClient === 'yarn') {
+          execOptions.push('--dev');
+        } else {
+          execOptions.push('--save-dev');
+        }
+      } else if (type === 'dep' && npmClient === 'npm') {
+        execOptions.push('--save');
+      }
+    }
+
+    return execOptions.concat(deps);
+  };
+
+  const errors = [];
+  let code, stdout, stderr;
+
+  if (muxElDeps.length) {
+    if (force) {
+      sh.echo(`Running ${npmClient} remove on ${muxElDeps.join(' ')}`);
+      ({ code, stdout, stderr } = sh.exec(getExec('dep', 'remove', muxElDeps).join(' ')));
+      errors.push(['remove dependencies', code, stdout, stderr]);
+
+      sh.echo(`Running ${npmClient} add on ${muxElDeps.join(' ')}`);
+      ({ code, stdout, stderr } = sh.exec(
+        getExec(
+          'dep',
+          'add',
+          muxElDeps.map((dep) => dep.replace('@mux-elements/', '@mux/'))
+        ).join(' ')
+      ));
+      errors.push(['add dependencies', code, stdout, stderr]);
+    } else {
+      sh.echo('The following dependencies will be removed and re-added with the updated @mux/ scope:');
+      muxElDeps.forEach((dep) => {
+        sh.echo('\t', chalk.yellow(dep));
+      });
+    }
+  }
+
+  if (muxElDevDeps.length) {
+    if (force) {
+      sh.echo(`Running ${npmClient} remove on ${muxElDevDeps.join(' ')}`);
+      ({ code, stdout, stderr } = sh.exec(getExec('dev', 'remove', muxElDevDeps).join(' ')));
+      errors.push(['remove dev dependencies', code, stdout, stderr]);
+
+      sh.echo(`Running ${npmClient} add on ${muxElDevDeps.join(' ')}`);
+      ({ code, stdout, stderr } = sh.exec(
+        getExec(
+          'dev',
+          'add',
+          muxElDevDeps.map((dep) => dep.replace('@mux-elements/', '@mux/'))
+        ).join(' ')
+      ));
+      errors.push(['add dev dependencies', code, stdout, stderr]);
+    } else {
+      sh.echo('The following dev dependencies will be removed and re-added with the updated @mux/ scope:');
+      muxElDevDeps.forEach((dep) => {
+        sh.echo('\t', chalk.yellow(dep));
+      });
+    }
+  }
+
+  sh.echo();
+  let err = false;
+  errors.forEach(([scenario, _code, _stdout, _stderr]) => {
+    if (_code !== 0) {
+      sh.echo(chalk.red(`scenario ${chalk.bold(scenario)} exited with code`), String(_code));
+      // if (verbose === '--verbose' || verbose === '-v') {
+      sh.echo(chalk.dim(chalk.red(_stdout)));
+      sh.echo(chalk.dim(chalk.red(_stderr)));
+      // }
+      err = true;
+    }
+  });
+
+  if (err) {
+    sh.exit(1);
+  } else {
+    if (force) {
+      sh.echo(chalk.green('Replacing @mux-elements scope to @mux in package succeeded successfully! 🎉'));
+    }
+  }
+};
+
 if (args.help) {
   printHelp();
 } else if (args.imports) {
   imports();
+} else if (args.package) {
+  updatePackage();
 } else {
   printHelp();
 }

@@ -78,3 +78,68 @@ $ mux-elements-codemod --imports ./src --force
 Modifying the following files to replace `@mux-elements/` scope with `@mux/`:
 src/player.tsx
 ```
+
+## Package update
+
+This command will allow you to more easily remove the old scoped packages (`@mux-elements/`) and re-add them via the new scope (`@mux`).
+
+If the current working directory has a `package.json`, it will assume it's a module and will update the dependencies.
+It will assume that `yarn` is being used when if a `yarn.lock` is present, otherwise, can be told to use a specific client via `--npm client yarn`.
+
+```sh
+$ mux-elements-codemod --package
+The following dependencies will be removed and re-added with the updated @mux/ scope:
+	 @mux-elements/mux-audio
+	 @mux-elements/mux-audio-react
+	 @mux-elements/mux-player
+	 @mux-elements/mux-player-react
+	 @mux-elements/mux-video
+	 @mux-elements/mux-video-react
+```
+
+And then you can run it with `--force` to apply the changes
+
+```sh
+mux-elements-codemod -p --force
+Running yarn remove on @mux-elements/mux-audio @mux-elements/mux-audio-react @mux-elements/mux-player @mux-elements/mux-player-react @mux-elements/mux-video @mux-elements/mux-video-react
+yarn remove v1.22.17
+[1/7] Removing module @mux-elements/mux-audio...
+[2/7] Removing module @mux-elements/mux-audio-react...
+[3/7] Removing module @mux-elements/mux-player...
+[4/7] Removing module @mux-elements/mux-player-react...
+[5/7] Removing module @mux-elements/mux-video...
+[6/7] Removing module @mux-elements/mux-video-react...
+[7/7] Regenerating lockfile and installing missing dependencies...
+success Uninstalled packages.
+Done in 0.39s.
+Running yarn add on @mux-elements/mux-audio @mux-elements/mux-audio-react @mux-elements/mux-player @mux-elements/mux-player-react @mux-elements/mux-video @mux-elements/mux-video-react
+yarn add v1.22.17
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved lockfile.
+success Saved 11 new dependencies.
+info Direct dependencies
+├─ @mux/mux-audio-react@0.4.0
+├─ @mux/mux-audio@0.6.0
+├─ @mux/mux-player-react@0.1.0-beta.22
+├─ @mux/mux-player@0.1.0-beta.22
+├─ @mux/mux-video-react@0.5.0
+└─ @mux/mux-video@0.8.1
+info All dependencies
+├─ @github/template-parts@0.5.3
+├─ @mux/mux-audio-react@0.4.0
+├─ @mux/mux-audio@0.6.0
+├─ @mux/mux-player-react@0.1.0-beta.22
+├─ @mux/mux-player@0.1.0-beta.22
+├─ @mux/mux-video-react@0.5.0
+├─ @mux/mux-video@0.8.1
+├─ hls.js@1.1.5
+├─ media-chrome@0.6.9
+├─ mux-embed@4.9.4
+└─ react-is@16.13.1
+Done in 7.31s.
+
+Replacing @mux-elements scope to @mux in package succeeded successfully! 🎉
+```
