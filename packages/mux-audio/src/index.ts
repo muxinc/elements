@@ -16,6 +16,11 @@ import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomAudioElement, { AudioEvents } from './CustomAudioElement';
 
+console.warn(`
+We have recently transitioned the package name from @mux-elements/<element name> to @mux/<element name>.
+Please update your imports or scripts. See #_#_INSERT_URL_HERE_#_# for more information.
+`);
+
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
   ENV_KEY: 'env-key';

@@ -1,6 +1,11 @@
 import * as UpChunk from '@mux/upchunk';
 import './mux-uploader-drop';
 
+console.warn(`
+We have recently transitioned the package name from @mux-elements/mux-uploader to @mux/mux-uploader.
+Please update your imports or scripts. See #_#_INSERT_URL_HERE_#_# for more information.
+`);
+
 const styles = `
 :host {
   font-family: var(--uploader-font-family, Arial);
