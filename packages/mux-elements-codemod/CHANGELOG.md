@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.0.1...@mux/mux-elements-codemod@1.1.0) (2022-07-06)
+
+### Features
+
+- command to run npm remove/add for scope migration ([8eff156](https://github.com/muxinc/elements/commit/8eff156dc8797191ba491767068258a0f750ef70))
+
 ## [1.0.1](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.0.0...@mux/mux-elements-codemod@1.0.1) (2022-07-05)
 
 ### Bug Fixes
