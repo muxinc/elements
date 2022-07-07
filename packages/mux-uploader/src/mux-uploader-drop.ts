@@ -1,12 +1,9 @@
 const template = document.createElement('template');
 
 /** @todo: Currently removing all styles. Follow up on overlay styling (CJP) */
-/** @todo: If any styling is here for the mux-uploader descendant use case, move those styles to mux-uploader def (CJP) */
 template.innerHTML = `
 <style>
-
-  /* TO-DO: Make default dropzone hover more apparent. (TD).*/
-
+  /*
   .overlay {
     display: none;
   }
