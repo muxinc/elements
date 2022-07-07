@@ -13,8 +13,8 @@ export type MuxUploaderDropProps = {
   fullscreen?: boolean;
   overlay?: boolean;
   text?: string;
-  disableDrop?: boolean;
   style?: CSSProperties;
+  children?: React.ReactNode;
 };
 
 const MuxUploaderDropInternal = React.forwardRef<MuxUploaderDropRefAttributes, MuxUploaderDropProps>(
@@ -28,13 +28,13 @@ const useUploaderDrop = (
   React.MutableRefObject<MuxUploaderDropElement | null> | null | undefined,
   props: MuxUploaderDropProps
 ) => {
-  const { fullscreen, overlay, text, disableDrop, ...remainingProps } = props;
+  const { fullscreen, overlay, text, ...remainingProps } = props;
 
   return [remainingProps];
 };
 
 const MuxUploaderDrop = React.forwardRef<MuxUploaderDropRefAttributes, MuxUploaderDropProps>((props, ref) => {
-  const { fullscreen, overlay, text, disableDrop } = props;
+  const { fullscreen, overlay, text } = props;
 
   const innerUploaderDropRef = useRef<MuxUploaderDropElement>(null);
   const uploaderDropRef = useCombinedRefs(innerUploaderDropRef, ref);
@@ -46,7 +46,6 @@ const MuxUploaderDrop = React.forwardRef<MuxUploaderDropRefAttributes, MuxUpload
       fullscreen={fullscreen}
       overlay={overlay}
       text={text}
-      disableDrop={disableDrop}
       {...remainingProps}
     />
   );

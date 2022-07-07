@@ -14,7 +14,6 @@ export type MuxUploaderProps = {
   id?: string;
   type?: string;
   status?: boolean;
-  disableDrop?: boolean;
   style?: CSSProperties;
   children?: React.ReactNode;
 };
@@ -30,13 +29,13 @@ const useUploader = (
   React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
   props: MuxUploaderProps
 ) => {
-  const { url, id, type, status, disableDrop, ...remainingProps } = props;
+  const { url, id, type, status, ...remainingProps } = props;
 
   return [remainingProps];
 };
 
 const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>((props, ref) => {
-  const { url, id, type, status, disableDrop } = props;
+  const { url, id, type, status } = props;
 
   const innerUploaderRef = useRef<MuxUploaderElement>(null);
   const uploaderRef = useCombinedRefs(innerUploaderRef, ref);
@@ -49,7 +48,6 @@ const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>
       id={id}
       type={type}
       status={status}
-      disableDrop={disableDrop}
       {...remainingProps}
     />
   );

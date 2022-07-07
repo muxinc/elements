@@ -4,24 +4,8 @@ const template = document.createElement('template');
 /** @todo: If any styling is here for the mux-uploader descendant use case, move those styles to mux-uploader def (CJP) */
 template.innerHTML = `
 <style>
-  /* These styles simulate a user passing these via props. Until
-     that's implemented, we just hardcode it for non-full-screen demo purposes. (TD).
-  */
-  /* .dropzone {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-  }
 
   /* TO-DO: Make default dropzone hover more apparent. (TD).*/
-
-  :host([disable-drop]) .dropzone {
-    display: none;
-  }
 
   .overlay {
     display: none;
@@ -69,7 +53,7 @@ template.innerHTML = `
   */
 </style>
 
-<div class="dropzone" id="dropzone">
+<div id="dropzone">
   <slot></slot>
   <div class="overlay" id="overlay">
     <h1 id="overlay-text"></h1>
@@ -107,30 +91,6 @@ class MuxUploaderDropElement extends HTMLElement {
     const uploaderId = this.getAttribute('mux-uploader');
     return uploaderId ? document.getElementById(uploaderId) : null;
   }
-
-  /* TO-DO: Maybe use something like this from player so allow users to fully customize the dropzone
-     without having to make a ton of CSS variables available i.e. position absolute. (TD).
-
-  kebabCase(string: String) {
-    return string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
-  }
-
-  stylePropsToString(props: any) {
-    let style = '';
-    Object.entries(props).forEach(([key, value]) => {
-      style += `${this.kebabCase(key)}: ${value}; `;
-    });
-    return style ? style.trim() : undefined;
-  }
-  
-
-  customizeDropzone() {
-    if(this.getAttribute('props')) {
-      // change .dropzone to use styles returned from stylePropsToString;
-      // this.setClass('dropzone', this.stylePropsToString(this.getAttribute('props')));
-    }
-  }
-  */
 
   setupDragEvents() {
     this.addEventListener('dragenter', (evt) => {

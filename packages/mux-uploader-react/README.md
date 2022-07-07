@@ -48,16 +48,16 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
   return (
     <div>
       <h1>Simple MuxUploader and Mux Uploader Drop Examples</h1>
-      {/* Upload button by itself with default drag an drop scoped to the space it takes up. Displays upload progress in text as percentage. */}
+      {/* Upload button by itself. Displays upload progress in text as percentage. */}
       <MuxUploader url="authenticated-url" type="bar" status></MuxUploader>
 
-      {/* Upload button by itself with drag an drop disabled. Does not display text percentage. */}
-      <MuxUploader url="authenticated-url" type="bar" disableDrop></MuxUploader>
+      {/* Upload button by itself. Does not display text percentage. */}
+      <MuxUploader url="authenticated-url" type="bar"></MuxUploader>
 
-      {/* Upload button with access to additional drag and drop features via slots i.e. fullscreen drag and drop with text overlay (work-in-progress). */}
-      <MuxUploader url="authenticated-url">
-        <MuxUploaderDrop slot="dropzone" text="Upload to stream.new" fullscreen overlay></MuxUploaderDrop>
-      </MuxUploader>
+      {/* Upload button with access to optional supplentary drag and drop features. */}
+      <MuxUploaderDrop mux-uploader="uploader">
+        <MuxUploader url="authenticated-url" id="uploader"></MuxUploader>
+      </MuxUploaderDrop>
     </div>
   );
 };
@@ -70,7 +70,7 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 | Attribute          | Type      | Description                                                                                                                                                                                                               | Default     |
 | ------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `url`              | `string`  | The authenticated URL that your file will be uploaded to. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined` |
-| `id`               | `string`  | An ID that allows `MuxUploaderDrop` to locate `MuxUploader`. Not necessary unless the unlikely scenario you need to nest `MuxUploader` inside `MuxUploaderDrop`.                                                          | N/A         |
+| `id`               | `string`  | An ID that allows `MuxUploaderDrop` to locate `MuxUploader`. Required if you use `MuxUploaderDrop.                                                                                                                        | N/A         |
 | `type`             | `"bar"`   | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                  | "bar"       |
 | `uploadInProgress` | `boolean` | Toggles visual status of progress bar while upload is in progress.                                                                                                                                                        | false       |
 | `uploadError`      | `boolean` | Toggles visual status of progress bar when upload encounters an error.                                                                                                                                                    | false       |
@@ -78,11 +78,11 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 
 #### `MuxUploaderDrop`
 
-| Attribute      | Type      | Description                                            | Default |
-| -------------- | --------- | ------------------------------------------------------ | ------- |
-| `fullscreen`   | `boolean` | Toggles fullscreen drag and drop (work-in-progress).   | false   |
-| `overlay`      | `boolean` | Toggles fullscreen overlay on dragover.                | false   |
-| `disableDrop ` | `boolean` | Toggles off drag and drop which is enabled by default. | false   |
+| Attribute      | Type      | Description                                          | Default |
+| -------------- | --------- | ---------------------------------------------------- | ------- |
+| `fullscreen`   | `boolean` | Toggles fullscreen drag and drop (work-in-progress). | false   |
+| `overlay`      | `boolean` | Toggles fullscreen overlay on dragover.              | false   |
+| `mux-uploader` | `string ` | Must match the `id` on `MuxUploader`. Required.      | N/A     |
 
 ### Methods
 

@@ -98,7 +98,7 @@ The `mux-uploader`, whether you use `mux-uploader-drop` and its additional featu
 | Attribute            | Type      | Description                                                                                                                                                                                                               | Default     |
 | -------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `url`                | `string`  | The authenticated URL that your file will be uploaded to. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined` |
-| `id`                 | `string`  | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Not necessary unless the unlikely scenario you need to nest `mux-uploader` inside `mux-uploader-drop`.                                                    | N/A         |
+| `id`                 | `string`  | An ID that allows `MuxUploaderDrop` to locate `MuxUploader`. Required if you use `MuxUploaderDrop.                                                                                                                        | N/A         |
 | `type`               | `"bar"`   | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                  | "bar"       |
 | `upload-in-progress` | `boolean` | Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].                                        | false       |
 | `upload-error`       | `boolean` | Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].                                       | false       |
@@ -106,13 +106,15 @@ The `mux-uploader`, whether you use `mux-uploader-drop` and its additional featu
 
 #### `mux-uploader-drop`
 
-| Attribute       | Type      | Description                                            | Default |
-| --------------- | --------- | ------------------------------------------------------ | ------- |
-| `fullscreen`    | `boolean` | Toggles fullscreen drag and drop (work-in-progress).   | false   |
-| `overlay`       | `boolean` | Toggles fullscreen overlay on dragover.                | false   |
-| `disable-drop ` | `boolean` | Toggles off drag and drop which is enabled by default. | false   |
+| Attribute      | Type      | Description                                          | Default |
+| -------------- | --------- | ---------------------------------------------------- | ------- |
+| `fullscreen`   | `boolean` | Toggles fullscreen drag and drop (work-in-progress). | false   |
+| `overlay`      | `boolean` | Toggles fullscreen overlay on dragover.              | false   |
+| `mux-uploader` | `string ` | Must match the `id` on `MuxUploader`. Required.      | N/A     |
 
 ### Methods
+
+#### `mux-uploader`
 
 | Method           | Description                 |
 | ---------------- | --------------------------- |

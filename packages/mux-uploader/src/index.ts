@@ -206,10 +206,6 @@ template.innerHTML = `
     />
   <svg>
 </div>
-
-<slot name="dropzone">
-  <mux-uploader-drop></mux-uploader-drop>
-</slot>
 `;
 
 // Note: Use "bar" for now since the CSS for radial is WIP. (TD).
@@ -260,16 +256,6 @@ class MuxUploaderElement extends HTMLElement {
     this.setupFilePickerButton();
     this.setupRetry();
     this.setupDropHandler();
-
-    // TO-DO: Might want to standardize if we prefer to have users disable or enable things. (TD).
-    // Edge case: User wants to use the uploader without drag.
-    // Because we slot a default mux-uploader-drop if they don't slot one,
-    // in order to disable drop, the user has to pass disable-drop to mux-uploader and mux-uploader-drop
-    // must apply it in order to disable the drop. It currently requires you to explicit pass "true".
-    if (this.hasAttribute('disable-drop')) {
-      const muxUploaderDrop = this.shadowRoot?.querySelector('mux-uploader-drop');
-      muxUploaderDrop?.setAttribute('disable-drop', '');
-    }
   }
 
   disconnectedCallback() {

@@ -27,7 +27,6 @@ function MuxUploaderPage() {
         <MuxUploader
           url={url}
           type="bar"
-          disableDrop
           status
         />
       </div>
