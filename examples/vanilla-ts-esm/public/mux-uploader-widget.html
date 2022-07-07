@@ -33,19 +33,12 @@
 
       .widget {
         margin-bottom: 30px;
-        padding: 20px;
         height: 250px;
         width: 500px;
         border-radius: 20px;
         background-color: #f9f9f9;
         box-sizing: border-box;
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        position: relative;
       }
 
       header {
@@ -85,6 +78,17 @@
       mux-uploader[upload-in-progress] {
         width: inherit;
       }
+
+      mux-uploader-drop {
+        box-sizing: border-box;
+        padding: 20px;
+        height: 100%;
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
   </head>
   <body>
@@ -96,8 +100,10 @@
       <div class="dashboard">
         <div class="widget"></div>
         <div class="widget">
-          <mux-uploader type="bar" disable-drop status>
+        <mux-uploader-drop mux-uploader="uploader">
+          <mux-uploader type="bar" id="uploader" status>
           </mux-uploader>
+        </mux-uploader-drop>
         </div>
         <div class="widget"></div>
         <div class="widget"></div>
