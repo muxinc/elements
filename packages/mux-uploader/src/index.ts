@@ -411,6 +411,11 @@ class MuxUploaderElement extends HTMLElement {
       this.statusMessage.innerHTML = '';
     }
 
+    // Bail early if no url.
+    if (!url) {
+      return;
+    }
+
     this.setAttribute('upload-in-progress', '');
     this.progressBar?.focus();
 
@@ -431,13 +436,16 @@ class MuxUploaderElement extends HTMLElement {
       }
 
       console.error(err.detail.message);
+      this.dispatchEvent(new CustomEvent('error', err));
     });
 
     upload.on('progress', (progress) => {
       this.setProgress(progress.detail);
+      progress.constructor;
+      this.dispatchEvent(new CustomEvent('progress', progress));
     });
 
-    upload.on('success', () => {
+    upload.on('success', (event) => {
       const successMessage = 'Upload complete!';
 
       if (this.statusMessage) {
@@ -451,6 +459,7 @@ class MuxUploaderElement extends HTMLElement {
       }
 
       console.info(successMessage);
+      this.dispatchEvent(new CustomEvent('success', event));
     });
   }
 }
