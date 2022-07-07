@@ -1,11 +1,13 @@
 const template = document.createElement('template');
 
+/** @todo: Currently removing all styles. Follow up on overlay styling (CJP) */
+/** @todo: If any styling is here for the mux-uploader descendant use case, move those styles to mux-uploader def (CJP) */
 template.innerHTML = `
 <style>
   /* These styles simulate a user passing these via props. Until
      that's implemented, we just hardcode it for non-full-screen demo purposes. (TD).
   */
-  .dropzone {
+  /* .dropzone {
     position: absolute;
     top: 0;
     left: 0;
@@ -64,12 +66,14 @@ template.innerHTML = `
   :host([active][overlay]) h1 {
     display: block;
   }
+  */
 </style>
 
 <div class="overlay" id="overlay">
   <h1 id="overlay-text"></h1>
 </div>
 <div class="dropzone" id="dropzone">
+  <slot></slot>
 </div>
 `;
 
