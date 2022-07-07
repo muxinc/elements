@@ -91,7 +91,10 @@
             <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
           </section>
           <div class="button-container">
-            <mux-uploader id="uploader" type="bar" status></mux-uploader>
+            <mux-uploader id="uploader" type="bar" status>
+              <!-- Uncomment for examples of customization via slots -->
+              <!-- <button slot="upload-button">I AM A SUPER CUSTOM BUTTON</button> -->
+            </mux-uploader>
             <button class="second-button">Some other sample button</button>
           </div>
         </main>
