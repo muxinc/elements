@@ -186,8 +186,7 @@ template.innerHTML = `
 </div>
 
 <input type="file" />
-<!--TO-DO: Slots not receiving events or not having the right visual behaviour as the original elements. (TD).-->
-<slot name="custom-button"><button type="button">Upload video</button></slot>
+<slot name="upload-button"><button type="button">Upload video</button></slot>
 <slot name="custom-progress"><p class="upload-status" id="upload-status"></p></slot>
 
 <div class="bar-type">
@@ -224,7 +223,7 @@ const ButtonPressedKeys = ['Enter', ' '];
 
 class MuxUploaderElement extends HTMLElement {
   hiddenFileInput: HTMLInputElement | null | undefined;
-  filePickerButton: HTMLButtonElement | null | undefined;
+  protected _filePickerButton: HTMLElement | null | undefined;
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
@@ -240,7 +239,9 @@ class MuxUploaderElement extends HTMLElement {
     shadow.appendChild(uploaderHtml);
 
     this.hiddenFileInput = this.shadowRoot?.querySelector('input[type="file"]');
-    this.filePickerButton = this.shadowRoot?.querySelector('button');
+    // Since we have a "default slotted" element, we still need to initialize the slottable elements
+    // (Note the difference in selectors and related code in 'slotchange' handler, below)
+    this.filePickerButton = this.shadowRoot?.querySelector('slot[name=upload-button] > *');
     this.svgCircle = this.shadowRoot?.querySelector('circle');
     this.progressBar = this.shadowRoot?.getElementById('progress-bar');
     this.uploadPercentage = this.shadowRoot?.getElementById('upload-status');
@@ -249,11 +250,34 @@ class MuxUploaderElement extends HTMLElement {
     this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
 
     this.progressBar?.setAttribute('aria-description', ariaDescription);
+
+    // These should only ever be setup once on instantiation/construction.
+    this.hiddenFileInput?.addEventListener('change', (evt) => {
+      const file = this.hiddenFileInput?.files?.[0];
+
+      if (file) {
+        this.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
+      }
+    });
+    this.shadowRoot?.querySelector('slot[name=upload-button]')?.addEventListener('slotchange', () => {
+      this.filePickerButton = (
+        this.shadowRoot?.querySelector('slot[name=upload-button]') as HTMLSlotElement
+      )?.assignedNodes()[0] as HTMLButtonElement;
+    });
+
+    // NOTE: Binding this so that we have a reference to remove the event listener
+    // but can still reference `this` in the method. (CJP)
+    this.handleFilePickerButtonClick = this.handleFilePickerButtonClick.bind(this);
   }
 
   connectedCallback() {
     this.setDefaultType();
-    this.setupFilePickerButton();
     this.setupRetry();
     this.setupDropHandler();
   }
@@ -261,6 +285,29 @@ class MuxUploaderElement extends HTMLElement {
   disconnectedCallback() {
     //@ts-ignore
     this.removeEventListener('file-ready', this.handleUpload, false);
+  }
+
+  protected get filePickerButton() {
+    return this._filePickerButton;
+  }
+
+  protected set filePickerButton(value: HTMLElement | null | undefined) {
+    if (value === this._filePickerButton) return;
+    if (this._filePickerButton) {
+      this._filePickerButton.removeEventListener('click', this.handleFilePickerButtonClick);
+    }
+    this._filePickerButton = value;
+    if (this._filePickerButton) {
+      this._filePickerButton.addEventListener('click', this.handleFilePickerButtonClick);
+    }
+  }
+
+  handleFilePickerButtonClick() {
+    // TO-DO: Allow user to reattempt uploading the same file after an error.
+    // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
+    // Source: https://stackoverflow.com/a/46689013
+
+    this.hiddenFileInput?.click();
   }
 
   get url() {
@@ -332,35 +379,6 @@ class MuxUploaderElement extends HTMLElement {
     if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
   }
 
-  setupFilePickerButton() {
-    // TO-DO: Troubleshoot click event when user clicks custom button. Currently not getting the slotted element. (TD).
-    this.shadowRoot?.querySelector('slot[name=custom-button]')?.addEventListener('slotchange', () => {
-      this.filePickerButton = this.shadowRoot?.querySelector('slot[name=custom-button]');
-    });
-
-    this.filePickerButton?.addEventListener('click', () => {
-      // TO-DO: Allow user to reattempt uploading the same file after an error.
-      // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
-      // Source: https://stackoverflow.com/a/46689013
-
-      this.hiddenFileInput?.click();
-    });
-
-    this.hiddenFileInput?.addEventListener('change', (evt) => {
-      const file = this.hiddenFileInput?.files?.[0];
-
-      if (file) {
-        this.dispatchEvent(
-          new CustomEvent('file-ready', {
-            composed: true,
-            bubbles: true,
-            detail: file,
-          })
-        );
-      }
-    });
-  }
-
   setProgress(percent: number) {
     if (this.uploadPercentage) this.uploadPercentage.innerHTML = `${Math.floor(percent)}%`;
     this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
@@ -383,9 +401,9 @@ class MuxUploaderElement extends HTMLElement {
 
   handleUpload(evt: CustomEvent) {
     const url = this.url;
-    const invalidUrlMessage = 'No url attribute specified -- cannot handleUpload';
 
     if (!url) {
+      const invalidUrlMessage = 'No url attribute specified -- cannot handleUpload';
       if (this.statusMessage) this.statusMessage.innerHTML = invalidUrlMessage;
       console.error(invalidUrlMessage);
     } else {
