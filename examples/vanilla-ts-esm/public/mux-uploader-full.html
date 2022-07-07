@@ -6,8 +6,11 @@
     <script type="module" src="./dist/mux-uploader.js"></script>
     <style>
       body {
+        font-family: Arial;
         margin: 0;
         background: #f8f8f8;
+        width: 100vw;
+        height: 100vh;
       }
 
       .direct-upload-url {
@@ -16,74 +19,53 @@
       }
 
       .container {
-        box-sizing: border-box;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        font-family: Arial;
-        height: 90vh;
+        flex-grow: 1;
       }
 
       header {
         margin-bottom: 100px;
+        max-width: 45vw;
       }
 
       header > h1 {
         font-size: 5vw;
         line-height: 6vw;
-        text-align: left;
-        max-width: 45vw;
-        z-index: 10;
-        position: relative;
+        margin: 0;
       }
 
       h2 {
         font-size: 3vw;
         line-height: 4vw;
-        text-align: left;
-        max-width: 45vw;
-        z-index: 10;
-        position: relative;
-      }
-
-      input {
-        max-width: 45vw;
-        margin-bottom: 50px;
-        z-index: 10;
-        position: relative;
       }
 
       main {
-        box-sizing: border-box;
         padding: 20px;
-        height: 100%;
-        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+      }
+
+      main > .info {
+        flex-grow: 1;
       }
 
       .button-container {
-        box-sizing: border-box;
         display: flex;
         flex-direction: column;
+        justify-content: flex-end;
       }
 
       .second-button {
-        align-self: flex-end;
         margin-top: 20px;
-        z-index: 1;
-        position: relative;
       }
 
       footer {
-        box-sizing: border-box;
-        width: 100%;
         padding: 20px;
-        z-index: 10;
-        position: relative;
       }
       
       mux-uploader {
-        align-self: flex-end;
-
         --button-border-radius: 40px;
       }
 
@@ -93,23 +75,23 @@
     </style>
   </head>
   <body>
-    <div class="container">
+    <mux-uploader-drop mux-uploader="uploader"class="container">
         <main>
+          <section class="info">
             <header>
               <h1>Add a video.</h1>
               <h1>Get a shareable link to stream it.</h1>
             </header>
             <h2>Enter your upload GCS url:</h2>
             <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
-            <div class="button-container">
-              <mux-uploader type="bar" status>
-                <mux-uploader-drop slot="dropzone" text="Upload to stream.new" fullscreen overlay></mux-uploader-drop>
-              </mux-uploader>
-              <button class="second-button">Some other sample button</button>
-            </div>
+          </section>
+          <div class="button-container">
+            <mux-uploader id="uploader" type="bar" status></mux-uploader>
+            <button class="second-button">Some other sample button</button>
+          </div>
         </main>
         <footer><a href="../">Browse Elements</a></footer>
-    </div>
+    </mux-uploader-drop>
 
     <script>
       const input = document.querySelector('input[type="text"]');
