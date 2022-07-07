@@ -185,9 +185,9 @@ template.innerHTML = `
   <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 </div>
 
-<input type="file" />
+<input id="hidden-file-input" type="file" />
 <slot name="upload-button"><button type="button">Upload video</button></slot>
-<slot name="custom-progress"><p class="upload-status" id="upload-status"></p></slot>
+<p class="upload-status" id="upload-status"></p>
 
 <div class="bar-type">
   <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="progress-bar" id="progress-bar" tabindex="0"></div>
@@ -222,7 +222,7 @@ const ariaDescription = 'Media upload progress bar';
 const ButtonPressedKeys = ['Enter', ' '];
 
 class MuxUploaderElement extends HTMLElement {
-  hiddenFileInput: HTMLInputElement | null | undefined;
+  protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
@@ -234,11 +234,14 @@ class MuxUploaderElement extends HTMLElement {
   constructor() {
     super();
 
+    // NOTE: Binding this so that we have a reference to remove the event listener
+    // but can still reference `this` in the method. (CJP)
+    this.handleFilePickerButtonClick = this.handleFilePickerButtonClick.bind(this);
+
     const shadow = this.attachShadow({ mode: 'open' });
     const uploaderHtml = template.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
 
-    this.hiddenFileInput = this.shadowRoot?.querySelector('input[type="file"]');
     // Since we have a "default slotted" element, we still need to initialize the slottable elements
     // (Note the difference in selectors and related code in 'slotchange' handler, below)
     this.filePickerButton = this.shadowRoot?.querySelector('slot[name=upload-button] > *');
@@ -270,10 +273,6 @@ class MuxUploaderElement extends HTMLElement {
         this.shadowRoot?.querySelector('slot[name=upload-button]') as HTMLSlotElement
       )?.assignedNodes()[0] as HTMLButtonElement;
     });
-
-    // NOTE: Binding this so that we have a reference to remove the event listener
-    // but can still reference `this` in the method. (CJP)
-    this.handleFilePickerButtonClick = this.handleFilePickerButtonClick.bind(this);
   }
 
   connectedCallback() {
@@ -302,12 +301,15 @@ class MuxUploaderElement extends HTMLElement {
     }
   }
 
-  handleFilePickerButtonClick() {
+  protected get hiddenFileInput() {
+    return this.shadowRoot?.querySelector('#hidden-file-input') as HTMLInputElement;
+  }
+
+  handleFilePickerButtonClick(e: MouseEvent) {
     // TO-DO: Allow user to reattempt uploading the same file after an error.
     // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
     // Source: https://stackoverflow.com/a/46689013
-
-    this.hiddenFileInput?.click();
+    this.hiddenFileInput.click();
   }
 
   get url() {
@@ -316,6 +318,15 @@ class MuxUploaderElement extends HTMLElement {
 
   set url(value: string) {
     this.setAttribute('url', value);
+  }
+
+  get formatProgress(): (percent: number) => string {
+    const defaultFormatProgress = (percent: number) => `${Math.floor(percent)}`;
+    return this._formatProgress ?? defaultFormatProgress;
+  }
+
+  set formatProgress(value: ((percent: number) => string) | null | undefined) {
+    this._formatProgress = value;
   }
 
   setDefaultType() {
@@ -380,7 +391,7 @@ class MuxUploaderElement extends HTMLElement {
   }
 
   setProgress(percent: number) {
-    if (this.uploadPercentage) this.uploadPercentage.innerHTML = `${Math.floor(percent)}%`;
+    if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
     this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
 
     switch (this.getAttribute('type')) {
