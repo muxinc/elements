@@ -441,7 +441,6 @@ class MuxUploaderElement extends HTMLElement {
 
     upload.on('progress', (progress) => {
       this.setProgress(progress.detail);
-      progress.constructor;
       this.dispatchEvent(new CustomEvent('progress', progress));
     });
 
