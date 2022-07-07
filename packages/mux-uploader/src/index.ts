@@ -1,6 +1,5 @@
 import '@mux/polyfills';
 import * as UpChunk from '@mux/upchunk';
-import './mux-uploader-drop';
 
 const styles = `
 :host {
@@ -176,8 +175,6 @@ template.innerHTML = `
   ${styles}
 </style>
 
-<p class="upload-instruction" id="upload-instruction">Drop file to upload</p>
-
 <div class="sr-only" id="sr-only" aria-live="polite"></div>
 
 <div class=text-container>
@@ -278,7 +275,8 @@ class MuxUploaderElement extends HTMLElement {
   connectedCallback() {
     this.setDefaultType();
     this.setupRetry();
-    this.setupDropHandler();
+    //@ts-ignore
+    this.addEventListener('file-ready', this.handleUpload);
   }
 
   disconnectedCallback() {
@@ -376,11 +374,6 @@ class MuxUploaderElement extends HTMLElement {
       }
       this.addEventListener('keyup', keyUpHandler);
     });
-  }
-
-  setupDropHandler() {
-    //@ts-ignore
-    this.addEventListener('file-ready', this.handleUpload);
   }
 
   resetState() {
