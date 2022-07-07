@@ -69,11 +69,11 @@ template.innerHTML = `
   */
 </style>
 
-<div class="overlay" id="overlay">
-  <h1 id="overlay-text"></h1>
-</div>
 <div class="dropzone" id="dropzone">
   <slot></slot>
+  <div class="overlay" id="overlay">
+    <h1 id="overlay-text"></h1>
+  </div>
 </div>
 `;
 
