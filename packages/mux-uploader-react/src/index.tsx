@@ -6,6 +6,7 @@ import type MuxUploaderElement from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
+import useObjectPropEffect from './useObjectPropEffect';
 
 export type MuxUploaderRefAttributes = MuxUploaderElement;
 
@@ -16,6 +17,7 @@ export type MuxUploaderProps = {
   status?: boolean;
   style?: CSSProperties;
   children?: React.ReactNode;
+  formatProgress?: (percent: number) => string;
   onError?: EventListener;
   onProgress?: EventListener;
   onSuccess?: EventListener;
@@ -48,7 +50,8 @@ const useUploader = (
   React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
   props: MuxUploaderProps
 ) => {
-  const { onError, onProgress, onSuccess, ...remainingProps } = props;
+  const { onError, onProgress, onSuccess, formatProgress, ...remainingProps } = props;
+  useObjectPropEffect('formatProgress', formatProgress, ref);
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('progress', ref, onProgress);
   useEventCallbackEffect('success', ref, onSuccess);

@@ -9,10 +9,8 @@ import { useCombinedRefs } from './useCombinedRefs';
 export type MuxUploaderDropRefAttributes = MuxUploaderDropElement;
 
 export type MuxUploaderDropProps = {
-  slot?: string;
-  fullscreen?: boolean;
   overlay?: boolean;
-  text?: string;
+  overlayText?: string;
   style?: CSSProperties;
   children?: React.ReactNode;
 };
@@ -23,32 +21,11 @@ const MuxUploaderDropInternal = React.forwardRef<MuxUploaderDropRefAttributes, M
   }
 );
 
-const useUploaderDrop = (
-  ref: // | ((instance: EventTarget | null) => void)
-  React.MutableRefObject<MuxUploaderDropElement | null> | null | undefined,
-  props: MuxUploaderDropProps
-) => {
-  const { fullscreen, overlay, text, ...remainingProps } = props;
-
-  return [remainingProps];
-};
-
 const MuxUploaderDrop = React.forwardRef<MuxUploaderDropRefAttributes, MuxUploaderDropProps>((props, ref) => {
-  const { fullscreen, overlay, text } = props;
-
   const innerUploaderDropRef = useRef<MuxUploaderDropElement>(null);
   const uploaderDropRef = useCombinedRefs(innerUploaderDropRef, ref);
-  const [remainingProps] = useUploaderDrop(innerUploaderDropRef, props);
 
-  return (
-    <MuxUploaderDropInternal
-      ref={uploaderDropRef as typeof innerUploaderDropRef}
-      fullscreen={fullscreen}
-      overlay={overlay}
-      text={text}
-      {...remainingProps}
-    />
-  );
+  return <MuxUploaderDropInternal ref={uploaderDropRef as typeof innerUploaderDropRef} {...props} />;
 });
 
 export default MuxUploaderDrop;
