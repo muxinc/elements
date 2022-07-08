@@ -36,11 +36,9 @@ template.innerHTML = `
   }
 </style>
 
-<div id="dropzone">
-  <slot></slot>
-  <div class="overlay" id="overlay">
-    <h1 id="overlay-text"></h1>
-  </div>
+<slot></slot>
+<div class="overlay" id="overlay">
+  <h1 id="overlay-text"></h1>
 </div>
 `;
 
