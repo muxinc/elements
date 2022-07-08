@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
@@ -16,6 +16,9 @@ export type MuxUploaderProps = {
   status?: boolean;
   style?: CSSProperties;
   children?: React.ReactNode;
+  onError?: EventListener;
+  onProgress?: EventListener;
+  onSuccess?: EventListener;
 };
 
 const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>(
@@ -24,33 +27,40 @@ const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUpload
   }
 );
 
+const useEventCallbackEffect = (
+  type: string,
+  ref: // | ((instance: EventTarget | null) => void)
+  React.MutableRefObject<EventTarget | null> | null | undefined,
+  callback: EventListener | undefined
+) => {
+  return useEffect(() => {
+    const eventTarget = ref?.current;
+    if (!eventTarget || !callback) return;
+    eventTarget.addEventListener(type, callback);
+    return () => {
+      eventTarget.removeEventListener(type, callback);
+    };
+  }, [ref?.current, callback]);
+};
+
 const useUploader = (
   ref: // | ((instance: EventTarget | null) => void)
   React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
   props: MuxUploaderProps
 ) => {
-  const { url, id, type, status, ...remainingProps } = props;
-
+  const { onError, onProgress, onSuccess, ...remainingProps } = props;
+  useEventCallbackEffect('error', ref, onError);
+  useEventCallbackEffect('progress', ref, onProgress);
+  useEventCallbackEffect('success', ref, onSuccess);
   return [remainingProps];
 };
 
 const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>((props, ref) => {
-  const { url, id, type, status } = props;
-
   const innerUploaderRef = useRef<MuxUploaderElement>(null);
   const uploaderRef = useCombinedRefs(innerUploaderRef, ref);
   const [remainingProps] = useUploader(innerUploaderRef, props);
 
-  return (
-    <MuxUploaderInternal
-      ref={uploaderRef as typeof innerUploaderRef}
-      url={url}
-      id={id}
-      type={type}
-      status={status}
-      {...remainingProps}
-    />
-  );
+  return <MuxUploaderInternal ref={uploaderRef as typeof innerUploaderRef} {...remainingProps} />;
 });
 
 export { MuxUploaderDrop };
