@@ -2,6 +2,11 @@ import Link from "next/link";
 import MuxUploader, { MuxUploaderDrop } from '@mux/mux-uploader-react';
 import { useState, ChangeEvent } from "react";
 
+
+const onError = console.log.bind(null, "error");
+const onProgress = console.log.bind(null, "progress");
+const onSuccess = console.log.bind(null, "success");
+
 function MuxUploaderPage() {
   const [url, setUrl] = useState("");
 
@@ -22,6 +27,9 @@ function MuxUploaderPage() {
             url={url}
             type="bar"
             status
+            onSuccess={onSuccess}
+            onError={onError}
+            onProgress={onProgress}
           />
       </div>
       <h3 className="title">
