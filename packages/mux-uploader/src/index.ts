@@ -1,4 +1,7 @@
 import '@mux/polyfills';
+// Still need to import this to ensure component registration occurs when using the main module.
+// Consider refactoring module structure to avoid this. (CJP)
+import './mux-uploader-drop';
 import * as UpChunk from '@mux/upchunk';
 
 const styles = `
