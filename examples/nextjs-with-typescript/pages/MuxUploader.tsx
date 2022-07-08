@@ -25,6 +25,8 @@ function MuxUploaderPage() {
           <MuxUploader
             id="uploader"
             url={url}
+            // Uncomment for example of custom progress formatting.
+            // formatProgress={(percent: number) => `${percent} percent uploaded`}
             type="bar"
             status
             onSuccess={onSuccess}
