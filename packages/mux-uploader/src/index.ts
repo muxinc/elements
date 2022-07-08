@@ -430,9 +430,7 @@ class MuxUploaderElement extends HTMLElement {
     this.progressBar?.focus();
 
     const upload = UpChunk.createUpload({
-      endpoint:
-        url ||
-        'https://storage.googleapis.com/video-storage-us-east1-uploads/B6vYEZ9utvayi7tJlcwjG4ckho8W5100QHse5OEIyOqg?Expires=1654714562&GoogleAccessId=direct-uploads-writer-prod%40mux-cloud.iam.gserviceaccount.com&Signature=ZQLdkP8u432oNZ5WtQwPB22qR%2B03BWd0DOdEFohak0dNG2fzJpE9RLCyAb8uJo3N8YH62UecxJs%2FefKFETicJd978Dldh3E4yTJQLWFR%2B%2FpCrYdS6EQRG7D08Vb9yz82jRJRgJ37cnJgNCzUFUx8AFX%2FG0o8BA3Wcm2AkdcLRWhvt2tj5wTzbxm8ZBflhYckJs7kNaiKEfIXk0UzNBPRJPGzyjzKUyyU1Keu0rERepH7BM8wJeGiw7KrD1TkqeMcA2NSpht4COKXYp3aNrryLGYfx%2B362U3KR0TaRalskKdqODbhBtTlLbFRALog3mGFq3CVJ2CG5Vztq6rXa00VRQ%3D%3D&upload_id=ADPycdsGqgIsU8tBAiu2k4Gt5hPa4QUaURD71neXpjQMfoQUeFGVDvE3qyAN7kzAVUcbSfK6tDhHwpSNiQMSvW41tPiTxw',
+      endpoint: url,
       file: evt.detail,
     });
 
