@@ -210,6 +210,8 @@ const TYPES = {
   RADIAL: 'radial',
 };
 
+const defaultFormatProgress = (percent: number) => `${Math.floor(percent)}%`;
+
 const getRadius = (el: MuxUploaderElement) => Number(el.svgCircle?.getAttribute('r'));
 
 const getCircumference = (el: MuxUploaderElement) => getRadius(el) * 2 * Math.PI;
@@ -319,7 +321,6 @@ class MuxUploaderElement extends HTMLElement {
   }
 
   get formatProgress(): (percent: number) => string {
-    const defaultFormatProgress = (percent: number) => `${Math.floor(percent)}`;
     return this._formatProgress ?? defaultFormatProgress;
   }
 
