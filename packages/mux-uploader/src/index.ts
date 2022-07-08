@@ -40,7 +40,6 @@ button {
   transition: all 0.2s ease;
   font-family: inherit;
   font-size: inherit;
-  z-index: 10;
   position: relative;
 }
 
@@ -78,7 +77,6 @@ button:active {
   color: #e22c3e;
   text-decoration-line: underline;
   cursor: pointer;
-  z-index: 10;
   position: relative;
 }
 
