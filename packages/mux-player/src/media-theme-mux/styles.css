@@ -36,7 +36,8 @@
 media-airplay-button[media-airplay-unavailable],
 media-cast-button[media-cast-unavailable],
 media-volume-range[media-volume-unavailable],
-media-airplay-button[media-airplay-unavailable] {
+media-airplay-button[media-airplay-unavailable],
+media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
   display: none;
 }
 

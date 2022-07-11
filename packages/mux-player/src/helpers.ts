@@ -65,30 +65,6 @@ export function toPropName(attrName: string) {
   return attrToPropNameMap[attrName] ?? camelCase(attrName);
 }
 
-let testMediaEl: HTMLMediaElement | undefined;
-export const getTestMediaEl = (nodeName = 'video') => {
-  if (testMediaEl) return testMediaEl;
-  if (typeof window !== 'undefined') {
-    testMediaEl = document.createElement(nodeName as 'video' | 'audio');
-  }
-  return testMediaEl;
-};
-
-export const hasVolumeSupportAsync = async (mediaEl: HTMLMediaElement | undefined = getTestMediaEl()) => {
-  if (!mediaEl) return false;
-  const prevVolume = mediaEl.volume;
-  mediaEl.volume = prevVolume / 2 + 0.1;
-  return new Promise<boolean>((resolve, reject) => {
-    setTimeout(() => {
-      resolve(mediaEl.volume !== prevVolume);
-    }, 0);
-  });
-};
-
-export function getCcSubTracks(el: MuxPlayerElement) {
-  return Array.from(el.media?.textTracks ?? []).filter(({ kind }) => kind === 'subtitles' || kind === 'captions');
-}
-
 export const getLiveTime = (el: MuxPlayerElement) => {
   const { media } = el;
   return (

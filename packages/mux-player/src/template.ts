@@ -28,7 +28,6 @@ export const content = (props: MuxTemplateProps) => html`
     class="size-${props.playerSize}"
     stream-type="${props.streamType}"
     player-size="${props.playerSize}"
-    has-captions="${props.hasCaptions}"
     default-hidden-captions="${props.defaultHiddenCaptions}"
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
