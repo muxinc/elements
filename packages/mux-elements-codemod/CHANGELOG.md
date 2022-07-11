@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.0...@mux/mux-elements-codemod@1.1.1) (2022-07-11)
+
+### Bug Fixes
+
+- do a null check for checking dependencies ([bf06ff9](https://github.com/muxinc/elements/commit/bf06ff9dae2727302d7ba7775fdab5decf214f65))
+
 # [1.1.0](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.0.1...@mux/mux-elements-codemod@1.1.0) (2022-07-06)
 
 ### Features
