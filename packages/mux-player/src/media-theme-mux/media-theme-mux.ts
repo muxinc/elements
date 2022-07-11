@@ -18,7 +18,6 @@ type ThemeMuxTemplateProps = {
   audio: boolean;
   playerSize: string;
   defaultHiddenCaptions: boolean;
-  hasCaptions: boolean;
   forwardSeekOffset: number;
   backwardSeekOffset: number;
 };
@@ -194,7 +193,7 @@ export const AudioLiveChrome = (_props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     <div class="mxp-spacer"></div>
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
@@ -213,7 +212,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
     ${MediaPipButton()}
@@ -250,7 +249,7 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <media-volume-range></media-volume-range>
     <div class="mxp-spacer"></div>
     <media-playback-rate-button></media-playback-rate-button>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
     ${MediaPipButton()}
@@ -267,7 +266,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
     <slot name="seek-to-live-button"></slot>
     <div class="mxp-spacer"></div>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
     ${MediaPipButton()}
@@ -295,7 +294,7 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
     <div class="mxp-spacer"></div>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
     ${MediaPipButton()}
@@ -309,7 +308,7 @@ export const DvrChromeExtraSmall = VodChromeExtraSmall;
 // prettier-ignore
 export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
     ${MediaPipButton()}
@@ -344,7 +343,7 @@ export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <media-volume-range></media-volume-range>
     <slot name="seek-to-live-button"></slot>
     <div class="mxp-spacer"></div>
-    ${props.hasCaptions ? MediaCaptionsButton(props) : html``}
+    ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     <media-cast-button></media-cast-button>
     ${MediaPipButton()}
@@ -359,7 +358,6 @@ function getProps(el: MediaThemeMux, state?: any): ThemeMuxTemplateProps {
     streamType: el.getAttribute('stream-type'),
     playerSize: el.getAttribute('player-size'),
     defaultHiddenCaptions: el.hasAttribute('default-hidden-captions'),
-    hasCaptions: el.hasAttribute('has-captions'),
     forwardSeekOffset: el.getAttribute('forward-seek-offset'),
     backwardSeekOffset: el.getAttribute('backward-seek-offset'),
     ...state,
@@ -373,7 +371,6 @@ class MediaThemeMux extends HTMLElement {
       'stream-type',
       'player-size',
       'default-hidden-captions',
-      'has-captions',
       'forward-seek-offset',
       'backward-seek-offset',
     ];

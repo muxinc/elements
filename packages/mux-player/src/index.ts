@@ -6,14 +6,7 @@ import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
 import { Metadata, StreamTypes } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
-import {
-  getCcSubTracks,
-  getPlayerVersion,
-  hasVolumeSupportAsync,
-  isInLiveWindow,
-  seekToLive,
-  toPropName,
-} from './helpers';
+import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName } from './helpers';
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
@@ -119,7 +112,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     defaultHiddenCaptions: el.defaultHiddenCaptions,
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     playerSize: getPlayerSize(el.mediaController ?? el),
-    hasCaptions: !!getCcSubTracks(el).length,
     // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
     // and to guarantee they'll all be set *before* the playback id is set, using attr values here (CJP)
     metadataVideoId: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_ID),
@@ -147,8 +139,6 @@ class MuxPlayerElement extends VideoApiElement {
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
-    supportsAirPlay: false,
-    supportsVolume: false,
     onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
     onInitFocusDialog: (e) => {
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
@@ -213,8 +203,6 @@ class MuxPlayerElement extends VideoApiElement {
 
     this.#setUpErrors();
     this.#setUpCaptionsButton();
-    this.#setUpAirplayButton();
-    this.#setUpVolumeRange();
     this.#monitorLiveWindow();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
@@ -490,22 +478,6 @@ class MuxPlayerElement extends VideoApiElement {
 
       toggleLines(selectedTrack, this.#userInactive);
     });
-  }
-
-  #setUpAirplayButton() {
-    if (!!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent) {
-      const onPlaybackTargetAvailability = (evt: any) => {
-        const supportsAirPlay = evt.availability === 'available';
-        this.#setState({ supportsAirPlay });
-      };
-
-      this.media?.addEventListener('webkitplaybacktargetavailabilitychanged', onPlaybackTargetAvailability);
-    }
-  }
-
-  async #setUpVolumeRange() {
-    const supportsVolume = await hasVolumeSupportAsync();
-    this.#setState({ supportsVolume });
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {

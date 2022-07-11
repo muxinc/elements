@@ -8,9 +8,6 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   audio: boolean;
   playerSize: string;
   showLoading: boolean;
-  hasCaptions: boolean;
-  supportsAirPlay: boolean;
-  supportsVolume: boolean;
   thumbnailTime: number;
   primaryColor: string;
   secondaryColor: string;
