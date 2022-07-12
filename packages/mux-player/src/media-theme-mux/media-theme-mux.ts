@@ -1,4 +1,4 @@
-import 'media-chrome';
+import { MediaTheme } from 'media-chrome';
 import { html, render } from '../html';
 import '../media-chrome/time-display';
 
@@ -14,26 +14,60 @@ const MediaChromeSizes = {
 };
 
 type ThemeMuxTemplateProps = {
-  streamType: string;
+  streamType: string | null;
   audio: boolean;
-  playerSize: string;
+  playerSize: string | null;
   defaultHiddenCaptions: boolean;
-  forwardSeekOffset: number;
-  backwardSeekOffset: number;
+  forwardSeekOffset: string | null;
+  backwardSeekOffset: string | null;
 };
 
-const template = (props: ThemeMuxTemplateProps) => html`
-  <style>
-    ${cssStr}
-  </style>
+export default class MediaThemeMux extends MediaTheme {
+  static get observedAttributes() {
+    return [
+      'audio',
+      'stream-type',
+      'player-size',
+      'default-hidden-captions',
+      'forward-seek-offset',
+      'backward-seek-offset',
+    ];
+  }
 
-  <media-controller audio="${props.audio || false}" class="size-${props.playerSize}">
-    <slot name="media" slot="media"></slot>
-    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
-    ${ChromeRenderer(props)}
-    <slot></slot>
-  </media-controller>
-`;
+  attributeChangedCallback() {
+    this.render();
+  }
+
+  render() {
+    const props = {
+      audio: this.hasAttribute('audio'),
+      streamType: this.getAttribute('stream-type'),
+      playerSize: this.getAttribute('player-size'),
+      defaultHiddenCaptions: this.hasAttribute('default-hidden-captions'),
+      forwardSeekOffset: this.getAttribute('forward-seek-offset'),
+      backwardSeekOffset: this.getAttribute('backward-seek-offset'),
+    };
+
+    render(
+      html`
+        <style>
+          ${cssStr}
+        </style>
+        <media-controller audio="${props.audio || false}" class="size-${props.playerSize}">
+          <slot name="media" slot="media"></slot>
+          <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+          ${ChromeRenderer(props)}
+          <slot></slot>
+        </media-controller>
+      `,
+      this.shadowRoot as Node
+    );
+  }
+}
+
+if (!customElements.get('media-theme-mux')) {
+  customElements.define('media-theme-mux', MediaThemeMux);
+}
 
 const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
   const { streamType, playerSize, audio } = props;
@@ -41,7 +75,7 @@ const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
     switch (streamType) {
       case StreamTypes.LIVE:
       case StreamTypes.LL_LIVE: {
-        return AudioLiveChrome(props);
+        return AudioLiveChrome();
       }
       case StreamTypes.DVR:
       case StreamTypes.LL_DVR: {
@@ -179,7 +213,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
   </media-control-bar>
 `;
 
-export const AudioLiveChrome = (_props: ThemeMuxTemplateProps) => html`
+export const AudioLiveChrome = () => html`
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-to-live-button"></slot>
@@ -351,45 +385,3 @@ export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <div class="mxp-padding-2"></div>
   </media-control-bar>
 `;
-
-function getProps(el: MediaThemeMux, state?: any): ThemeMuxTemplateProps {
-  return {
-    audio: el.hasAttribute('audio'),
-    streamType: el.getAttribute('stream-type'),
-    playerSize: el.getAttribute('player-size'),
-    defaultHiddenCaptions: el.hasAttribute('default-hidden-captions'),
-    forwardSeekOffset: el.getAttribute('forward-seek-offset'),
-    backwardSeekOffset: el.getAttribute('backward-seek-offset'),
-    ...state,
-  };
-}
-
-class MediaThemeMux extends HTMLElement {
-  static get observedAttributes() {
-    return [
-      'audio',
-      'stream-type',
-      'player-size',
-      'default-hidden-captions',
-      'forward-seek-offset',
-      'backward-seek-offset',
-    ];
-  }
-
-  constructor() {
-    super();
-
-    this.attachShadow({ mode: 'open' });
-    render(template(getProps(this)), this.shadowRoot as Node);
-  }
-
-  attributeChangedCallback() {
-    render(template(getProps(this)), this.shadowRoot as Node);
-  }
-}
-
-if (!customElements.get('media-theme-mux')) {
-  customElements.define('media-theme-mux', MediaThemeMux);
-}
-
-export default MediaThemeMux;
