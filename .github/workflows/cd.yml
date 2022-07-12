@@ -36,7 +36,16 @@ jobs:
         run: yarn create-release-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Get message'
+        id: 'deploy_message'
+        run: |
+          echo "::set-output name=commit_msg::$(git log -1 --format=%B)"
+          echo "::set-output name=commit_sha::$(git log -1 --format=%H)"
       - name: Slack Notify
         uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: ${{ steps.deploy_message.outputs.commit_msg }}
+          SLACK_USERNAME: Mux Elements
+          SLACK_ICON: https://avatars.githubusercontent.com/muxinc?size=48
+          SLACK_FOOTER: ''
