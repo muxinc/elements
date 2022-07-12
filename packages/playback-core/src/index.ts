@@ -4,14 +4,14 @@ import mux, { Options, ErrorEvent } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
-import { setupTracks } from './tracks';
+import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
 import { isKeyOf } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
-export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay };
+export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addTextTrack, removeTextTrack };
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 
