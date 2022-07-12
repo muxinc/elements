@@ -381,6 +381,8 @@ class MuxUploaderElement extends HTMLElement {
   resetState() {
     this.removeAttribute('upload-error');
     this.removeAttribute('upload-in-progress');
+    // Reset file to ensure change/input events will fire, even if selecting the same file (CJP).
+    this.hiddenFileInput.value = '';
     if (this.statusMessage) this.statusMessage.innerHTML = '';
     if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
   }
@@ -410,20 +412,18 @@ class MuxUploaderElement extends HTMLElement {
 
     if (!url) {
       const invalidUrlMessage = 'No url attribute specified -- cannot handleUpload';
-      if (this.statusMessage) this.statusMessage.innerHTML = invalidUrlMessage;
+      if (this.statusMessage) {
+        this.statusMessage.innerHTML = invalidUrlMessage;
+      }
+      this.setAttribute('upload-error', '');
       console.error(invalidUrlMessage);
-    } else {
-      if (this.statusMessage) this.statusMessage.innerHTML = '';
-    }
-
-    if (this.statusMessage) {
-      this.removeAttribute('upload-error');
-      this.statusMessage.innerHTML = '';
-    }
-
-    // Bail early if no url.
-    if (!url) {
+      // Bail early if no url.
       return;
+    } else {
+      this.removeAttribute('upload-error');
+      if (this.statusMessage) {
+        this.statusMessage.innerHTML = '';
+      }
     }
 
     this.setAttribute('upload-in-progress', '');
