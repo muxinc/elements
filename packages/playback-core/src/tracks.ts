@@ -1,5 +1,4 @@
 import Hls from 'hls.js';
-import type { MediaPlaylist } from 'hls.js';
 
 export function setupTracks(
   mediaEl: HTMLMediaElement,
@@ -12,7 +11,7 @@ export function setupTracks(
         return lang == baseTrackObj?.lang && name === trackObj.label && type.toLowerCase() === trackObj.kind;
       });
 
-      createTextTrack(
+      addTextTrack(
         mediaEl,
         trackObj.kind as TextTrackKind,
         trackObj.label,
@@ -73,11 +72,9 @@ export function setupTracks(
   hls.on(Hls.Events.DESTROYING, () => {
     mediaEl.textTracks.removeEventListener('change', changeHandler);
 
-    const trackEls = mediaEl.querySelectorAll('track');
+    // Use data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
+    const trackEls: NodeListOf<HTMLTrackElement> = mediaEl.querySelectorAll('track[data-removeondestroy]');
     trackEls.forEach((trackEl) => {
-      if (!(trackEl.id && ['subtitles', 'captions'].includes(trackEl.kind))) return;
-      if (!hls.subtitleTracks.some(({ type }, idx) => trackEl.id === `${type.toLowerCase()}${idx}`)) return;
-
       mediaEl.removeChild(trackEl);
     });
   });
@@ -109,7 +106,7 @@ export function setupTracks(
   hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
 }
 
-function createTextTrack(
+export function addTextTrack(
   mediaEl: HTMLMediaElement,
   kind: TextTrackKind,
   label: string,
@@ -127,6 +124,19 @@ function createTextTrack(
     trackEl.id = id;
   }
   trackEl.track.mode = 'disabled';
+  // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
+  trackEl.setAttribute('data-removeondestroy', '');
   mediaEl.appendChild(trackEl);
   return trackEl.track;
+}
+
+export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
+  const trackEl: HTMLTrackElement = Array.prototype.find.call(
+    mediaEl.querySelectorAll('track'),
+    (trackEl: HTMLTrackElement) => trackEl.track === track
+  );
+  if (!trackEl) {
+    return;
+  }
+  mediaEl.removeChild(trackEl);
 }

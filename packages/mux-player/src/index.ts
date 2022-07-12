@@ -4,7 +4,7 @@ import '@mux/playback-core';
 import { MediaController } from 'media-chrome';
 import MediaThemeMux from './media-theme-mux/media-theme-mux';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
-import { Metadata, StreamTypes } from '@mux/playback-core';
+import { Metadata, StreamTypes, addTextTrack, removeTextTrack } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName } from './helpers';
 import { template } from './template';
@@ -907,6 +907,18 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set storyboardToken(val) {
     this.setAttribute(PlayerAttributes.STORYBOARD_TOKEN, `${val}`);
+  }
+
+  addTextTrack(kind: TextTrackKind, label: string, lang?: string, id?: string) {
+    const mediaEl = this.media?.nativeEl;
+    if (!mediaEl) return;
+    return addTextTrack(mediaEl, kind, label, lang, id);
+  }
+
+  removeTextTrack(track: TextTrack) {
+    const mediaEl = this.media?.nativeEl;
+    if (!mediaEl) return;
+    return removeTextTrack(mediaEl, track);
   }
 }
 
