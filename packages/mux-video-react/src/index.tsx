@@ -21,7 +21,7 @@ export type Props = Omit<
 
 console.warn(`
 We have recently transitioned the package name from @mux-elements/<element name> to @mux/<element name>.
-Please update your imports or scripts. See #_#_INSERT_URL_HERE_#_# for more information.
+Please update your imports or scripts. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information.
 `);
 
 const playerSoftwareVersion = getPlayerVersion();
