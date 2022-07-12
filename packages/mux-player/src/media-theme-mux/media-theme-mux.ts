@@ -18,7 +18,6 @@ type ThemeMuxTemplateProps = {
   audio: boolean;
   playerSize: string | null;
   defaultHiddenCaptions: boolean;
-  hasCaptions: boolean;
   forwardSeekOffset: string | null;
   backwardSeekOffset: string | null;
 };
@@ -30,7 +29,6 @@ export default class MediaThemeMux extends MediaTheme {
       'stream-type',
       'player-size',
       'default-hidden-captions',
-      'has-captions',
       'forward-seek-offset',
       'backward-seek-offset',
     ];
@@ -46,7 +44,6 @@ export default class MediaThemeMux extends MediaTheme {
       streamType: this.getAttribute('stream-type'),
       playerSize: this.getAttribute('player-size'),
       defaultHiddenCaptions: this.hasAttribute('default-hidden-captions'),
-      hasCaptions: this.hasAttribute('has-captions'),
       forwardSeekOffset: this.getAttribute('forward-seek-offset'),
       backwardSeekOffset: this.getAttribute('backward-seek-offset'),
     };
