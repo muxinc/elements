@@ -21,13 +21,13 @@ jobs:
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
-      - run: npm deprecate @mux-elements/mux-audio "This package has moved to the @mux/mux-audio scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/mux-video "This package has moved to the @mux/mux-video scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/mux-player "This package has moved to the @mux/mux-player scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/mux-audio-react "This package has moved to the @mux/mux-audio-react scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/mux-video-react "This package has moved to the @mux/mux-video-react scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/mux-player-react "This package has moved to the @mux/mux-player-react scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/mux-uploader "This package has moved to the @mux/mux-uploader scope. See #_#_INSERT_URL_HERE_#_# for more information."
-      - run: npm deprecate @mux-elements/playback-core "This package has moved to the @mux/playback-core scope. See #_#_INSERT_URL_HERE_#_# for more information."
+      - run: npm deprecate @mux-elements/mux-audio "This package has moved to the @mux/mux-audio scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/mux-video "This package has moved to the @mux/mux-video scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/mux-player "This package has moved to the @mux/mux-player scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/mux-audio-react "This package has moved to the @mux/mux-audio-react scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/mux-video-react "This package has moved to the @mux/mux-video-react scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/mux-player-react "This package has moved to the @mux/mux-player-react scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/mux-uploader "This package has moved to the @mux/mux-uploader scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
+      - run: npm deprecate @mux-elements/playback-core "This package has moved to the @mux/playback-core scope. See https://www.mux.com/blog/mux-elements-are-getting-a-new-old-home-on-npm-mux for more information."
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
