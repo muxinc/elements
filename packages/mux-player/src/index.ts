@@ -924,6 +924,10 @@ class MuxPlayerElement extends VideoApiElement {
     if (!mediaEl) return;
     return removeTextTrack(mediaEl, track);
   }
+
+  get textTracks() {
+    return this.media?.textTracks;
+  }
 }
 
 export function getVideoAttribute(el: MuxPlayerElement, name: string) {
