@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.12](https://github.com/muxinc/elements/compare/@mux-elements/mux-audio-react@0.3.11...@mux-elements/mux-audio-react@0.3.12) (2022-07-13)
+
+### Bug Fixes
+
+- add scope deprecation warning ([11e35ab](https://github.com/muxinc/elements/commit/11e35ab26e5224d5e7bedcd72e1d4c7173d2ea89))
+
 ## [0.3.11](https://github.com/muxinc/elements/compare/@mux-elements/mux-audio-react@0.3.10...@mux-elements/mux-audio-react@0.3.11) (2022-06-23)
 
 **Note:** Version bump only for package @mux-elements/mux-audio-react
