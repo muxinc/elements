@@ -9,12 +9,23 @@
   --media-range-bar-color: var(--primary-color);
   --media-control-background: var(--secondary-color);
   --media-control-hover-background: var(--secondary-color);
-  --media-time-buffered-color: rgba(255, 255, 255, 0.7);
+  --media-time-buffered-color: rgba(255, 255, 255, 0.4);
   --media-range-track-background: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
+  --media-preview-thumbnail-border: 1px solid #fff;
+  --media-preview-thumbnail-border-radius: 0;
+  --media-preview-time-margin: 5px 0;
   display: inline-block;
   width: 100%;
   height: 100%;
+}
+
+:host(.two-tone) {
+  --mux-time-range-margin: 0px; /* px is needed in calc() */
+  --media-range-track-border-radius: 0;
+  --media-preview-thumbnail-border: 0;
+  --media-preview-thumbnail-border-radius: initial;
+  --media-preview-time-margin: initial;
 }
 
 :host([audio]) ::slotted([slot='media']) {
@@ -55,12 +66,12 @@ media-controller {
 }
 
 :host(:not([audio])) media-time-range {
-  padding: var(--mux-time-range-padding, 0 10px);
+  --media-range-padding-left: 0;
+  --media-range-padding-right: 0;
+  margin: 0 var(--mux-time-range-margin, 10px);
+  width: calc(100% - 2 * var(--mux-time-range-margin, 10px));
   z-index: 10;
-  width: 100%;
-  height: 22px;
-  --media-range-track-translate-y: 6px;
-  background: linear-gradient(180deg, transparent, transparent 15px, var(--media-control-background) 15px);
+  height: 4px;
 }
 
 media-control-bar {
