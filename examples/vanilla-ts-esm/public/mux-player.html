@@ -77,11 +77,11 @@
     <mux-player
       stream-type="on-demand"
       playback-id="026vljfeZ99KwUPRbl5YHVdCTSrBsPfxjkyM3PSlfWGw"
-      primary-color="coral"
     ></mux-player>
 
     <div class="buttons">
       <button class="load-src-btn">Load new video</button>
+      <button class="color-btn">Random colors</button>
       <button class="dialog-show-btn">Show error dialog</button>
       <button class="dialog-close-btn">Close dialog</button>
       <button class="cast-btn">Request Cast</button>
@@ -104,6 +104,26 @@
         .addEventListener("click", () => {
           const playbackIds = testPlaybackIds.filter((id) => id != player.playbackId);
           player.playbackId = playbackIds[Math.round(Math.random() * (playbackIds.length - 1))];
+        });
+      document
+        .querySelector(".color-btn")
+        .addEventListener("click", () => {
+          this.disabled = true;
+          fetch('https://unpkg.com/css-color-names@1.0.1/css-color-names.json')
+            .then((response) => response.json())
+            .then(colors => {
+              const colorNames = Object.keys(colors);
+              const hexCodes = Object.values(colors);
+              const randomIndex = Math.floor(Math.random() * hexCodes.length);
+              const randomColor = colorNames[randomIndex];
+              fetch(`https://www.thecolorapi.com/scheme?hex=${hexCodes[randomIndex].slice(1)}&mode=complement&count=2&format=json`)
+                .then((response) => response.json())
+                .then(json => {
+                  const complement = json.colors[0].hex.value;
+                  player.primaryColor = randomColor;
+                  player.secondaryColor = complement;
+                });
+            });
         });
       document
         .querySelector(".dialog-show-btn")
