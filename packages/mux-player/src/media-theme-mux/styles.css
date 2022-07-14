@@ -22,14 +22,23 @@
   height: 100%;
 }
 
-:host(.two-tone) {
+:host(.two-tone:not([audio])) {
   --mux-time-range-padding: 0px; /* px is needed in calc() */
-  --media-range-track-border-radius: 0;
   --media-preview-thumbnail-border: 0;
   --media-preview-thumbnail-border-radius: 2px 2px 0 0;
   --media-preview-time-border-radius: 0 0 2px 2px;
   --media-preview-time-margin: 0 0 8px;
   --media-preview-time-text-shadow: none;
+}
+
+:host([audio]) {
+  --media-preview-time-border-radius: 3px;
+  --media-preview-time-margin: 0 0 5px;
+  --media-preview-time-text-shadow: none;
+}
+
+:host(.two-tone:not([audio])) media-time-range {
+  --media-range-track-border-radius: 0;
 }
 
 :host([audio]) ::slotted([slot='media']) {
@@ -69,10 +78,13 @@ media-controller {
   height: 100%;
 }
 
+:host media-time-range {
+  color: var(--_primary-color);
+}
+
 :host(:not([audio])) media-time-range {
   --media-range-padding-left: var(--mux-time-range-padding, 10px);
   --media-range-padding-right: var(--mux-time-range-padding, 10px);
-  color: var(--_primary-color);
   width: 100%;
   z-index: 10;
   height: 10px;
