@@ -3,18 +3,20 @@
 }
 
 :host {
-  color: var(--primary-color);
-  --media-icon-color: var(--primary-color);
-  --media-range-thumb-background: var(--primary-color);
-  --media-range-bar-color: var(--primary-color);
+  --_primary-color: var(--primary-color, #fff);
+
+  --media-icon-color: var(--_primary-color);
+  --media-range-thumb-background: var(--_primary-color);
+  --media-range-bar-color: var(--_primary-color);
   --media-control-background: var(--secondary-color);
   --media-control-hover-background: var(--secondary-color);
   --media-time-buffered-color: rgba(255, 255, 255, 0.4);
   --media-range-track-background: rgba(255, 255, 255, 0.5);
   --media-range-track-border-radius: 3px;
   --media-preview-thumbnail-border: 1px solid #fff;
-  --media-preview-thumbnail-border-radius: 0;
+  --media-preview-thumbnail-border-radius: 2px;
   --media-preview-time-margin: 5px 0 2px;
+  color: var(--_primary-color);
   display: inline-block;
   width: 100%;
   height: 100%;
@@ -24,8 +26,10 @@
   --mux-time-range-padding: 0px; /* px is needed in calc() */
   --media-range-track-border-radius: 0;
   --media-preview-thumbnail-border: 0;
-  --media-preview-thumbnail-border-radius: initial;
-  --media-preview-time-margin: initial;
+  --media-preview-thumbnail-border-radius: 2px 2px 0 0;
+  --media-preview-time-border-radius: 0 0 2px 2px;
+  --media-preview-time-margin: 0 0 8px;
+  --media-preview-time-text-shadow: none;
 }
 
 :host([audio]) ::slotted([slot='media']) {
@@ -68,6 +72,7 @@ media-controller {
 :host(:not([audio])) media-time-range {
   --media-range-padding-left: var(--mux-time-range-padding, 10px);
   --media-range-padding-right: var(--mux-time-range-padding, 10px);
+  color: var(--_primary-color);
   width: 100%;
   z-index: 10;
   height: 10px;
