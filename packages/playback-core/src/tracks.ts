@@ -75,7 +75,7 @@ export function setupTracks(
     // Use data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
     const trackEls: NodeListOf<HTMLTrackElement> = mediaEl.querySelectorAll('track[data-removeondestroy]');
     trackEls.forEach((trackEl) => {
-      mediaEl.removeChild(trackEl);
+      trackEl.remove();
     });
   });
 
@@ -126,17 +126,14 @@ export function addTextTrack(
   trackEl.track.mode = 'disabled';
   // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
   trackEl.setAttribute('data-removeondestroy', '');
-  mediaEl.appendChild(trackEl);
+  mediaEl.append(trackEl);
   return trackEl.track;
 }
 
 export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
-  const trackEl: HTMLTrackElement = Array.prototype.find.call(
+  const trackEl: HTMLTrackElement | undefined = Array.prototype.find.call(
     mediaEl.querySelectorAll('track'),
     (trackEl: HTMLTrackElement) => trackEl.track === track
   );
-  if (!trackEl) {
-    return;
-  }
-  mediaEl.removeChild(trackEl);
+  trackEl?.remove();
 }
