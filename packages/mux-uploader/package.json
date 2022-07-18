@@ -28,7 +28,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "shx rm -rf dist/",
-    "test": "web-test-runner **/*test.js --port 8002 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
+    "test": "web-test-runner **/*test.js --port 8005 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-uploader/src/' coverage/lcov.info --silent",
     "dev:iife": "open-process | yarn build:iife --watch",
     "dev:esm": "open-process | yarn build:esm --watch",
