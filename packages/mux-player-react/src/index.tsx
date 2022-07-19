@@ -20,14 +20,12 @@ type VideoApiAttributes = {
   src: string | null;
   poster: string;
   playbackRate: number;
-  defaultPlaybackRate: number;
   playsInline: boolean;
   preload: string;
   crossOrigin: string;
   autoPlay: boolean | string;
   loop: boolean;
   muted: boolean;
-  defaultMuted: boolean;
   style: CSSProperties;
 };
 
