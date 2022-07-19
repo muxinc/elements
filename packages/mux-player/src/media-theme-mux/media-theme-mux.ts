@@ -185,6 +185,13 @@ const MediaFullscreenButton = () => html`
   ${icons.FullscreenExit()}
 </media-fullscreen-button>`;
 
+// prettier-ignore
+const MediaCastButton = () => html`
+<media-cast-button>
+  ${icons.CastEnter()}
+  ${icons.CastExit()}
+</media-cast-button>`;
+
 export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaPlayButton()} ${MediaSeekBackwardButton(props)} ${MediaSeekForwardButton(props)}
@@ -193,8 +200,7 @@ export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
     <media-playback-rate-button></media-playback-rate-button>
-    ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaAirplayButton()} ${MediaCastButton()}
   </media-control-bar>
 `;
 
@@ -208,8 +214,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
     <media-playback-rate-button></media-playback-rate-button>
-    ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaAirplayButton()} ${MediaCastButton()}
   </media-control-bar>
 `;
 
@@ -219,8 +224,7 @@ export const AudioLiveChrome = () => html`
     <slot name="seek-to-live-button"></slot>
     ${MediaMuteButton()}
     <media-volume-range></media-volume-range>
-    ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaAirplayButton()} ${MediaCastButton()}
   </media-control-bar>
 `;
 
@@ -230,7 +234,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaCaptionsButton(props)}
     <div class="mxp-spacer"></div>
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -248,7 +252,7 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -285,7 +289,7 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <media-playback-rate-button></media-playback-rate-button>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
     <div class="mxp-padding-2"></div>
@@ -302,7 +306,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
     <div class="mxp-spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -330,7 +334,7 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <div class="mxp-spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -344,7 +348,7 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome" style="justify-content: flex-end;">
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
@@ -379,7 +383,7 @@ export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <div class="mxp-spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
-    <media-cast-button></media-cast-button>
+    ${MediaCastButton()}
     ${MediaPipButton()}
     ${MediaFullscreenButton()}
     <div class="mxp-padding-2"></div>
