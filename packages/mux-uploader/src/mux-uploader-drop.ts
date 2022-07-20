@@ -57,11 +57,15 @@ class MuxUploaderDropElement extends HTMLElement {
   attributeChangedCallback(attributeName: string, oldValue: string | null, newValue: string | null) {
     if (attributeName === Attributes.OVERLAY_TEXT && oldValue !== newValue) {
       this.overlayText.innerHTML = newValue ?? '';
+    } else if (attributeName === 'active') {
+      if (this.getAttribute('overlay') && newValue != null) {
+        this._currentDragTarget = this;
+      }
     }
   }
 
   static get observedAttributes() {
-    return [Attributes.OVERLAY_TEXT, Attributes.MUX_UPLOADER];
+    return [Attributes.OVERLAY_TEXT, Attributes.MUX_UPLOADER, 'active'];
   }
 
   get muxUploader() {
@@ -69,42 +73,64 @@ class MuxUploaderDropElement extends HTMLElement {
     return uploaderId ? document.getElementById(uploaderId) : null;
   }
 
+  protected _currentDragTarget?: Node;
+
   setupDragEvents() {
-    this.addEventListener('dragenter', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-      this.setAttribute('active', '');
-    });
+    this.addEventListener(
+      'dragenter',
+      (evt) => {
+        this._currentDragTarget = evt.target as Node;
+        evt.preventDefault();
+        evt.stopPropagation();
+        this.setAttribute('active', '');
+      },
+      { capture: true }
+    );
 
-    this.addEventListener('dragleave', (evt) => {
-      this.removeAttribute('active');
-    });
+    this.addEventListener(
+      'dragleave',
+      (evt) => {
+        if (this._currentDragTarget === evt.target) {
+          this._currentDragTarget = undefined;
+          this.removeAttribute('active');
+        }
+      },
+      { capture: true }
+    );
 
-    this.addEventListener('dragover', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-    });
+    this.addEventListener(
+      'dragover',
+      (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+      },
+      { capture: true }
+    );
 
-    this.addEventListener('drop', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-      const { dataTransfer } = evt;
-      //@ts-ignore
-      const { files } = dataTransfer;
-      const file = files[0];
+    this.addEventListener(
+      'drop',
+      (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        const { dataTransfer } = evt;
+        //@ts-ignore
+        const { files } = dataTransfer;
+        const file = files[0];
 
-      const uploaderController = this.muxUploader ?? this;
+        const uploaderController = this.muxUploader ?? this;
 
-      uploaderController.dispatchEvent(
-        new CustomEvent('file-ready', {
-          composed: true,
-          bubbles: true,
-          detail: file,
-        })
-      );
+        uploaderController.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
 
-      this.removeAttribute('active');
-    });
+        this.removeAttribute('active');
+      },
+      { capture: true }
+    );
   }
 }
 
