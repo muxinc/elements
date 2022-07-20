@@ -76,61 +76,45 @@ class MuxUploaderDropElement extends HTMLElement {
   protected _currentDragTarget?: Node;
 
   setupDragEvents() {
-    this.addEventListener(
-      'dragenter',
-      (evt) => {
-        this._currentDragTarget = evt.target as Node;
-        evt.preventDefault();
-        evt.stopPropagation();
-        this.setAttribute('active', '');
-      },
-      { capture: true }
-    );
+    this.addEventListener('dragenter', (evt) => {
+      this._currentDragTarget = evt.target as Node;
+      evt.preventDefault();
+      evt.stopPropagation();
+      this.setAttribute('active', '');
+    });
 
-    this.addEventListener(
-      'dragleave',
-      (evt) => {
-        if (this._currentDragTarget === evt.target) {
-          this._currentDragTarget = undefined;
-          this.removeAttribute('active');
-        }
-      },
-      { capture: true }
-    );
-
-    this.addEventListener(
-      'dragover',
-      (evt) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-      },
-      { capture: true }
-    );
-
-    this.addEventListener(
-      'drop',
-      (evt) => {
-        evt.preventDefault();
-        evt.stopPropagation();
-        const { dataTransfer } = evt;
-        //@ts-ignore
-        const { files } = dataTransfer;
-        const file = files[0];
-
-        const uploaderController = this.muxUploader ?? this;
-
-        uploaderController.dispatchEvent(
-          new CustomEvent('file-ready', {
-            composed: true,
-            bubbles: true,
-            detail: file,
-          })
-        );
-
+    this.addEventListener('dragleave', (evt) => {
+      if (this._currentDragTarget === evt.target) {
+        this._currentDragTarget = undefined;
         this.removeAttribute('active');
-      },
-      { capture: true }
-    );
+      }
+    });
+
+    this.addEventListener('dragover', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+    });
+
+    this.addEventListener('drop', (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      const { dataTransfer } = evt;
+      //@ts-ignore
+      const { files } = dataTransfer;
+      const file = files[0];
+
+      const uploaderController = this.muxUploader ?? this;
+
+      uploaderController.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      );
+
+      this.removeAttribute('active');
+    });
   }
 }
 
