@@ -846,7 +846,15 @@ class MuxPlayerElement extends VideoApiElement {
    * Set the metadata object for Mux Data.
    */
   set metadata(val: Readonly<Metadata> | undefined) {
-    if (this.media) this.media.metadata = val;
+    if (!this.#isInit) {
+      this.#init();
+    }
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set metadata. metadata will not be set.');
+      return;
+    }
+    this.media.metadata = val;
   }
 
   /**
