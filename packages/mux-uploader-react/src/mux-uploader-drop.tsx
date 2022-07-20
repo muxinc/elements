@@ -11,7 +11,9 @@ export type MuxUploaderDropRefAttributes = MuxUploaderDropElement;
 export type MuxUploaderDropProps = {
   overlay?: boolean;
   overlayText?: string;
-  style?: CSSProperties;
+  style?: CSSProperties & {
+    ['--overlay-background-color']?: CSSProperties['backgroundColor'];
+  };
   children?: React.ReactNode;
 };
 
