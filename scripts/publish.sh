@@ -45,6 +45,12 @@ function release {
   git push --follow-tags
   npx conventional-github-releaser -p angular
   npm publish --access public
+  # `npm view name@x.x.x version` will return an empty string if not available
+  until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
+  do
+    echo "Waiting for publish to complete"
+    sleep 3
+  done
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna run` does this
   npx lerna-update-wizard --non-interactive --dependency $PKG_NAME@$VERSION ../..
@@ -64,6 +70,12 @@ function canary {
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
   npm --no-git-tag-version version $VERSION
   npm publish --tag canary --access public
+  # `npm view name@x.x.x version` will return an empty string if not available
+  until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
+  do
+    echo "Waiting for publish to complete"
+    sleep 3
+  done
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna run` does this
   npx lerna-update-wizard --non-interactive --dependency $PKG_NAME@$VERSION ../..
