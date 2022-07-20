@@ -13,10 +13,14 @@ const INITIAL_DEBUG = false;
 const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_METADATA = {
-  "video-id": "video-id-bc789",
-  "video-title": "Great Stuff",
-  "user-id": "user-id-6af7",
+
+const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
+  const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
+  const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
+  return {
+    video_id,
+    video_title,
+  };
 };
 
 const onLoadStart = console.log.bind(null, "loadstart");
@@ -42,7 +46,6 @@ function MuxPlayerPage() {
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
   const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
   const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
-  const [metadata, _setMetadata] = useState(INITIAL_METADATA);
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
@@ -74,7 +77,7 @@ function MuxPlayerPage() {
           ref={mediaElRef}
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
-          metadata={metadata}
+          metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
           startTime={startTime}
           thumbnailTime={thumbnailTime}
           playbackId={selectedAsset["playback-id"]}
