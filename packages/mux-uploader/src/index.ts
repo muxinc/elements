@@ -224,6 +224,7 @@ const ButtonPressedKeys = ['Enter', ' '];
 class MuxUploaderElement extends HTMLElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
+  protected _endpoint?: UpChunk.UpChunk['endpoint'];
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
@@ -321,6 +322,15 @@ class MuxUploaderElement extends HTMLElement {
     this.setAttribute('url', value);
   }
 
+  get endpoint(): UpChunk.UpChunk['endpoint'] {
+    return this.url ?? this._endpoint;
+  }
+
+  set endpoint(value: UpChunk.UpChunk['endpoint']) {
+    if (value === this.endpoint) return;
+    this._endpoint = value;
+  }
+
   get formatProgress(): (percent: number) => string {
     return this._formatProgress ?? defaultFormatProgress;
   }
@@ -408,16 +418,16 @@ class MuxUploaderElement extends HTMLElement {
   }
 
   handleUpload(evt: CustomEvent) {
-    const url = this.url;
+    const endpoint = this.endpoint;
 
-    if (!url) {
-      const invalidUrlMessage = 'No url attribute specified -- cannot handleUpload';
+    if (!endpoint) {
+      const invalidUrlMessage = 'No url or endpoint specified -- cannot handleUpload';
       if (this.statusMessage) {
         this.statusMessage.innerHTML = invalidUrlMessage;
       }
       this.setAttribute('upload-error', '');
       console.error(invalidUrlMessage);
-      // Bail early if no url.
+      // Bail early if no endpoint.
       return;
     } else {
       this.removeAttribute('upload-error');
@@ -430,7 +440,7 @@ class MuxUploaderElement extends HTMLElement {
     this.progressBar?.focus();
 
     const upload = UpChunk.createUpload({
-      endpoint: url,
+      endpoint,
       file: evt.detail,
     });
 
