@@ -29,6 +29,8 @@ export type MuxUploaderProps = {
   };
   children?: React.ReactNode;
   formatProgress?: (percent: number) => string;
+  onAttempt?: EventListener;
+  onChunkSuccess?: EventListener;
   onError?: EventListener;
   onProgress?: EventListener;
   onSuccess?: EventListener;
@@ -61,9 +63,12 @@ const useUploader = (
   React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
   props: MuxUploaderProps
 ) => {
-  const { onError, onProgress, onSuccess, formatProgress, endpoint, ...remainingProps } = props;
+  const { onAttempt, onChunkSuccess, onError, onProgress, onSuccess, formatProgress, endpoint, ...remainingProps } =
+    props;
   useObjectPropEffect('endpoint', endpoint, ref);
   useObjectPropEffect('formatProgress', formatProgress, ref);
+  useEventCallbackEffect('attempt', ref, onAttempt);
+  useEventCallbackEffect('chunkSuccess', ref, onChunkSuccess);
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('progress', ref, onProgress);
   useEventCallbackEffect('success', ref, onSuccess);
