@@ -221,10 +221,12 @@ const ariaDescription = 'Media upload progress bar';
 
 const ButtonPressedKeys = ['Enter', ' '];
 
+type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
+
 class MuxUploaderElement extends HTMLElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
-  protected _endpoint?: UpChunk.UpChunk['endpoint'];
+  protected _endpoint: Endpoint;
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
@@ -314,20 +316,17 @@ class MuxUploaderElement extends HTMLElement {
     this.hiddenFileInput.click();
   }
 
-  get url() {
-    return this.getAttribute('url') as string;
+  get endpoint(): Endpoint {
+    return this.getAttribute('endpoint') ?? this._endpoint;
   }
 
-  set url(value: string) {
-    this.setAttribute('url', value);
-  }
-
-  get endpoint(): UpChunk.UpChunk['endpoint'] {
-    return this.url ?? this._endpoint;
-  }
-
-  set endpoint(value: UpChunk.UpChunk['endpoint']) {
+  set endpoint(value: Endpoint) {
     if (value === this.endpoint) return;
+    if (typeof value === 'string') {
+      this.setAttribute('endpoint', value);
+    } else if (value == undefined) {
+      this.removeAttribute('endpoint');
+    }
     this._endpoint = value;
   }
 
