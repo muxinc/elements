@@ -11,9 +11,22 @@ import useObjectPropEffect from './useObjectPropEffect';
 export type MuxUploaderRefAttributes = MuxUploaderElement;
 
 export type MuxUploaderProps = {
+  endpoint?: string;
   type?: string;
   status?: boolean;
-  style?: CSSProperties;
+  style?: CSSProperties & {
+    ['--uploader-font-family']?: CSSProperties['fontFamily'];
+    ['--uploader-font-size']?: CSSProperties['fontSize'];
+    ['--uploader-background-color']?: CSSProperties['backgroundColor'];
+    ['--button-background-color']?: CSSProperties['backgroundColor'];
+    ['--button-border-radius']?: CSSProperties['borderRadius'];
+    ['--button-hover-text']?: CSSProperties['color'];
+    ['--button-hover-background']?: CSSProperties['background'];
+    ['--button-active-text']?: CSSProperties['color'];
+    ['--button-active-background']?: CSSProperties['background'];
+    ['--progress-bar-fill-color']?: CSSProperties['background'];
+    ['--progress-radial-fill-color']?: CSSProperties['stroke'];
+  };
   children?: React.ReactNode;
   formatProgress?: (percent: number) => string;
   onError?: EventListener;
