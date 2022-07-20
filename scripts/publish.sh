@@ -45,6 +45,9 @@ function release {
   git push --follow-tags
   npx conventional-github-releaser -p angular
   npm publish --access public
+  # update all workspaces from the workspace root (../..) with the new version
+  # make sure publish.sh is called in topological order, `lerna run` does this
+  npx lerna-update-wizard --non-interactive --dependency $PKG_NAME@$VERSION ../..
 };
 
 function canary {
@@ -61,6 +64,9 @@ function canary {
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
   npm --no-git-tag-version version $VERSION
   npm publish --tag canary --access public
+  # update all workspaces from the workspace root (../..) with the new version
+  # make sure publish.sh is called in topological order, `lerna run` does this
+  npx lerna-update-wizard --non-interactive --dependency $PKG_NAME@$VERSION ../..
 }
 
 main "$@"
