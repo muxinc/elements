@@ -1,6 +1,7 @@
 import { VideoEvents } from '@mux/mux-video';
 import type MuxVideoElement from '@mux/mux-video';
 import * as logger from './logger';
+import { toNumberOrUndefined } from './utils';
 
 export type CastOptions = {
   receiverApplicationId: string;
@@ -99,6 +100,7 @@ class VideoApiElement extends HTMLElement {
       case CustomVideoAttributes.MUTED: {
         if (this.media) {
           this.media.muted = newValue != null;
+          this.media.defaultMuted = newValue != null;
         }
         return;
       }
@@ -113,6 +115,7 @@ class VideoApiElement extends HTMLElement {
         const val = +newValue;
         if (this.media && !Number.isNaN(val)) {
           this.media.playbackRate = val;
+          this.media.defaultPlaybackRate = val;
         }
         return;
       }
@@ -217,6 +220,19 @@ class VideoApiElement extends HTMLElement {
     }
   }
 
+  get defaultPlaybackRate() {
+    return toNumberOrUndefined(this.getAttribute(CustomVideoAttributes.PLAYBACKRATE)) ?? 1;
+  }
+
+  set defaultPlaybackRate(val) {
+    if (val != null) {
+      this.setAttribute(CustomVideoAttributes.PLAYBACKRATE, `${val}`);
+    } else {
+      // Remove boolean attribute if false, 0, '', null, undefined.
+      this.removeAttribute(CustomVideoAttributes.PLAYBACKRATE);
+    }
+  }
+
   get crossOrigin() {
     return getVideoAttribute(this, AllowedVideoAttributes.CROSSORIGIN);
   }
@@ -252,10 +268,20 @@ class VideoApiElement extends HTMLElement {
   }
 
   get muted() {
-    return getVideoAttribute(this, AllowedVideoAttributes.MUTED) != null;
+    return this.media?.muted ?? false;
   }
 
   set muted(val) {
+    if (this.media) {
+      this.media.muted = Boolean(val);
+    }
+  }
+
+  get defaultMuted() {
+    return getVideoAttribute(this, AllowedVideoAttributes.MUTED) != null;
+  }
+
+  set defaultMuted(val) {
     if (val) {
       this.setAttribute(AllowedVideoAttributes.MUTED, '');
     } else {

@@ -283,17 +283,29 @@ describe('<mux-player>', () => {
     assert(muxVideo.muted, 'muxVideo.muted is true');
     assert(nativeVideo.muted, 'nativeVideo.muted is true');
 
+    assert(player.defaultMuted, 'player.defaultMuted is true');
+    assert(muxVideo.defaultMuted, 'muxVideo.defaultMuted is true');
+    assert(nativeVideo.defaultMuted, 'nativeVideo.defaultMuted is true');
+
     player.removeAttribute('muted');
 
     assert(!player.muted, 'player.muted is false');
     assert(!muxVideo.muted, 'muxVideo.muted is false');
     assert(!nativeVideo.muted, 'nativeVideo.muted is false');
 
+    assert(!player.defaultMuted, 'player.defaultMuted is false');
+    assert(!muxVideo.defaultMuted, 'muxVideo.defaultMuted is false');
+    assert(!nativeVideo.defaultMuted, 'nativeVideo.defaultMuted is false');
+
     player.setAttribute('muted', '');
 
     assert(player.muted, 'player.muted is true');
     assert(muxVideo.muted, 'muxVideo.muted is true');
     assert(nativeVideo.muted, 'nativeVideo.muted is true');
+
+    assert(player.defaultMuted, 'player.defaultMuted is true');
+    assert(muxVideo.defaultMuted, 'muxVideo.defaultMuted is true');
+    assert(nativeVideo.defaultMuted, 'nativeVideo.defaultMuted is true');
   });
 
   it('volume attribute behaves like expected', async function () {
@@ -340,6 +352,28 @@ describe('<mux-player>', () => {
     assert.equal(player.playbackRate, 0.7, 'player.playbackRate is 0.7');
     assert.equal(muxVideo.playbackRate, 0.7, 'muxVideo.playbackRate is 0.7');
     assert.equal(nativeVideo.playbackRate, 0.7, 'nativeVideo.playbackRate is 0.7');
+  });
+
+  it('defaultPlaybackRate property behaves like expected', async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+    ></mux-player>`);
+
+    assert.equal(player.defaultPlaybackRate, 1);
+
+    const muxVideo = player.media;
+    const nativeVideo = muxVideo.shadowRoot.querySelector('video');
+
+    assert.equal(player.defaultPlaybackRate, 1, 'player.defaultPlaybackRate is 1');
+    assert.equal(muxVideo.defaultPlaybackRate, 1, 'muxVideo.defaultPlaybackRate is 1');
+    assert.equal(nativeVideo.defaultPlaybackRate, 1, 'nativeVideo.defaultPlaybackRate is 1');
+
+    player.defaultPlaybackRate = 0.7;
+
+    assert.equal(player.defaultPlaybackRate, 0.7, 'player.defaultPlaybackRate is 0.7');
+    assert.equal(muxVideo.defaultPlaybackRate, 0.7, 'muxVideo.defaultPlaybackRate is 0.7');
+    assert.equal(nativeVideo.defaultPlaybackRate, 0.7, 'nativeVideo.defaultPlaybackRate is 0.7');
   });
 
   it("signing tokens generate correct asset URL's", async function () {
