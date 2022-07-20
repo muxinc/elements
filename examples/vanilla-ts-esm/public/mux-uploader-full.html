@@ -80,7 +80,7 @@
     </style>
   </head>
   <body>
-    <mux-uploader-drop mux-uploader="uploader" class="container">
+    <mux-uploader-drop mux-uploader="uploader" class="container" overlay overlay-text="We're awesome (and you are, too!)">
         <main>
           <section class="info">
             <header>
@@ -107,7 +107,9 @@
       // Uncomment for example of custom progress formatting.
       // muxUploader.formatProgress = (percent) => `THIS IS A WHOLE ${percent} UPLOADED`;
       input.addEventListener('change', () => {
-        muxUploader.url = input.value;
+        muxUploader.endpoint = input.value;
+        // You can also pass in a function that yields a promise that resolves to a URL.
+        // muxUploader.endpoint = (_file) => Promise.resolve(input.value);
       });
     </script>
   </body>
