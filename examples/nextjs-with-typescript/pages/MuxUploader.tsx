@@ -16,7 +16,7 @@ function MuxUploaderPage() {
   }
 
   return (
-    <MuxUploaderDrop style={{ display: "flex", flexFlow: "column", height: "100vh", width: "100vw" }} mux-uploader="uploader">
+    <MuxUploaderDrop style={{ display: "flex", flexFlow: "column", height: "100vh", width: "100vw" }} mux-uploader="uploader" overlay overlayText="Yadda yadda">
       <h1>MuxUploader with MuxUploaderDrop Demo</h1>
       <h2>Enter your upload GCS url:</h2>
       <input type="text" style={{ padding: "8px 12px", marginBottom: "20px", width: "400px" }} placeholder="https://storage.googleapis.com/..." onChange={handleChange} />
@@ -24,7 +24,7 @@ function MuxUploaderPage() {
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
           <MuxUploader
             id="uploader"
-            url={url}
+            endpoint={url}
             // Uncomment for example of custom progress formatting.
             // formatProgress={(percent: number) => `${percent} percent uploaded`}
             type="bar"

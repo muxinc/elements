@@ -25,7 +25,7 @@ function MuxUploaderPage() {
      
       <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
         <MuxUploader
-          url={url}
+          endpoint={url}
           type="bar"
           status
         />
