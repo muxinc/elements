@@ -91,7 +91,7 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 
 | Prop             | Description                                                                |
 | ---------------- | -------------------------------------------------------------------------- |
-| `onAttempt`      | Invokved immediately before a chunk upload is attempted.                   |
+| `onAttempt`      | Invoked immediately before a chunk upload is attempted.                    |
 | `onChunkSuccess` | Invoked when an indvidual chunk is successfully uploaded.                  |
 | `onError`        | Invoked when an error occurs in the chunked upload process.                |
 | `onProgress`     | Invoked whenever a chunk of the file has successfully completed uploading. |

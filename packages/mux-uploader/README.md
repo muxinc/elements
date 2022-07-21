@@ -130,7 +130,7 @@ This also means you can implement your own drag and drop (or other) components f
 
 | Event          | Description                                                              |
 | -------------- | ------------------------------------------------------------------------ |
-| `attenot`      | Fired immediately before a chunk upload is attempted.                    |
+| `attempt`      | Fired immediately before a chunk upload is attempted.                    |
 | `chunkSuccess` | Fired when an indvidual chunk is successfully uploaded.                  |
 | `error`        | Fired when an error occurs in the chunked upload process.                |
 | `progress`     | Fired whenever a chunk of the file has successfully completed uploading. |
