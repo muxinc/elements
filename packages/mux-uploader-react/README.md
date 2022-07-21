@@ -67,20 +67,20 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 
 #### `<MuxUploader>`
 
-| Property         | Type       | Description                                                                                                                                                                                                               | Default                                         |
-| ---------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `url`            | `string`   | The authenticated URL that your file will be uploaded to. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined`                                     |
-| `id`             | `string`   | An ID that allows `<MuxUploaderDrop>` to locate `<MuxUploader>`. Required if you use `<MuxUploaderDrop>`.                                                                                                                 | N/A                                             |
-| `type`           | `"bar"`    | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                  | "bar"                                           |
-| `status`         | `boolean`  | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                      | false                                           |
-| `formatProgress` | `function` | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered.                                                                                   | A function the yields a percent progress string |
+| Property         | Type       | Description                                                                                                                                                                                          | Default                                                                                                                                                                                                                                                                                                     |
+| ---------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `url`            | `string`   | `Promise`                                                                                                                                                                                            | Either a) the authenticated URL that your file will be uploaded to or b) an async function that yields a promise that resolves to that url. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined` |
+| `id`             | `string`   | An ID that allows `<MuxUploaderDrop>` to locate `<MuxUploader>`. Required if you use `<MuxUploaderDrop>`.                                                                                            | N/A                                                                                                                                                                                                                                                                                                         |
+| `type`           | `"bar"`    | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                             | "bar"                                                                                                                                                                                                                                                                                                       |
+| `status`         | `boolean`  | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute. | false                                                                                                                                                                                                                                                                                                       |
+| `formatProgress` | `function` | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered.                                                              | A function the yields a percent progress string                                                                                                                                                                                                                                                             |
 
 #### `<MuxUploaderDrop>`
 
 | Property      | Type      | Description                                                | Default |
 | ------------- | --------- | ---------------------------------------------------------- | ------- |
 | `overlay`     | `boolean` | Toggles fullscreen overlay on dragover.                    | false   |
-| `overlayText` | `boolean` | Optional text to display on dragover when `overlay` is on. | `''`    |
+| `overlayText` | `string`  | Optional text to display on dragover when `overlay` is on. | `''`    |
 | `muxUploader` | `string ` | Must match the `id` on `<MuxUploader>`. Required.          | N/A     |
 
 ### Callbacks
@@ -89,8 +89,10 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 
 `<MuxUploader>` has a handful of events to monitor uploading state.
 
-| Prop         | Description                                                                |
-| ------------ | -------------------------------------------------------------------------- |
-| `onError`    | Invoked when an error occurs in the chunked upload process.                |
-| `onProgress` | Invoked whenever a chunk of the file has successfully completed uploading. |
-| `onSuccess`  | Invoked when the entire file has successfully completed uploading.         |
+| Prop             | Description                                                                |
+| ---------------- | -------------------------------------------------------------------------- |
+| `onAttempt`      | Invokved immediately before a chunk upload is attempted.                   |
+| `onChunkSuccess` | Invoked when an indvidual chunk is successfully uploaded.                  |
+| `onError`        | Invoked when an error occurs in the chunked upload process.                |
+| `onProgress`     | Invoked whenever a chunk of the file has successfully completed uploading. |
+| `onSuccess`      | Invoked when the entire file has successfully completed uploading.         |
