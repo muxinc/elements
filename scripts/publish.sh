@@ -53,7 +53,7 @@ function release {
   done
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna run` does this
-  npx lerna-update-wizard --non-interactive --dependency $PKG_NAME@$VERSION ../..
+  npx lerna-update-wizard --non-interactive --lazy --dependency $PKG_NAME@$VERSION ../..
 };
 
 function canary {
@@ -78,7 +78,7 @@ function canary {
   done
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna run` does this
-  npx lerna-update-wizard --non-interactive --dependency $PKG_NAME@$VERSION ../..
+  npx lerna-update-wizard --non-interactive --lazy --dependency $PKG_NAME@$VERSION ../..
 }
 
 main "$@"
