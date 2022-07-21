@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.24](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.23...@mux/mux-player@0.1.0-beta.24) (2022-07-21)
+
+### Bug Fixes
+
+- add Mux flavor cast icon & fix xs size bug ([#299](https://github.com/muxinc/elements/issues/299)) ([8374ff1](https://github.com/muxinc/elements/commit/8374ff17e294cbe3ad899749ab0361b78ffe0274))
+- **mux-player:** Clean up how metadata is set from mux-player to underlying mux-video element. Force upgrades and init when setting metadata. ([d3b2347](https://github.com/muxinc/elements/commit/d3b2347b1d4d7ebbbd882879f69e9d082f12dd80))
+- upgrade MC to v0.8.0 and adjust time range styles ([#294](https://github.com/muxinc/elements/issues/294)) ([030fdc6](https://github.com/muxinc/elements/commit/030fdc649517a538fc89c5b3d9edca42e58634ef))
+- upgrade MC v0.8.1 ([#298](https://github.com/muxinc/elements/issues/298)) ([fc4a74c](https://github.com/muxinc/elements/commit/fc4a74cfaadf90ee8d4ed89751755d56e77df79e))
+
+### Features
+
+- add ability to choose a Media Theme via attribute ([#269](https://github.com/muxinc/elements/issues/269)) ([77d0386](https://github.com/muxinc/elements/commit/77d0386606d5ecccb7c322ce487c9287d16374fd))
+- add defaultMuted, defaultPlaybackRate props ([#252](https://github.com/muxinc/elements/issues/252)) ([1a72165](https://github.com/muxinc/elements/commit/1a7216545cba27b34bc743cf5dd6225d4dcae738))
+- **mux-player:** Add textTracks prop alongside add/remove tracks methods. ([c041a72](https://github.com/muxinc/elements/commit/c041a72ce414fc52fcd90e22cc7730ef2e349c31))
+- **playback-core, mux-player:** Add support to removeTextTrack. Remove all identified tracks on hls destroy. Add methods to mux-player. ([d090b06](https://github.com/muxinc/elements/commit/d090b060a8b8b3772e74762176af9881299bf894))
+
 # [0.1.0-beta.23](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.22...@mux/mux-player@0.1.0-beta.23) (2022-07-11)
 
 **Note:** Version bump only for package @mux/mux-player

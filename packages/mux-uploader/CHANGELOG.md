@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.3...@mux/mux-uploader@0.1.0-beta.4) (2022-07-21)
+
+### Bug Fixes
+
+- **mux-uploader, mux-uploader-react:** Add support for endpoint to react version. Clean up type defs, including css vars (drop component only). Remove unnecessary capture for DandD events. ([c12ded5](https://github.com/muxinc/elements/commit/c12ded5188a3d97d48dc335a98d8537b6fa57443))
+
+### Features
+
+- add defaultMuted, defaultPlaybackRate props ([#252](https://github.com/muxinc/elements/issues/252)) ([1a72165](https://github.com/muxinc/elements/commit/1a7216545cba27b34bc743cf5dd6225d4dcae738))
+- **mux-uploader, mux-uploader-react:** Reset state to allow users to re-select same file when retrying a failed upload. Add error messaging for when url is unset. ([94d000a](https://github.com/muxinc/elements/commit/94d000a396f9a10406bd6959e8aec3cb96c7e775))
+- **mux-uploader:** Add endpoint support for promise callback. ([fc7b381](https://github.com/muxinc/elements/commit/fc7b38171337401f6c0ef8be2fa4e741a0e7a3fd))
+- **mux-uploader:** Clean up mux-uploader-drop + overlay and active logic now that we support descendants. ([83777d2](https://github.com/muxinc/elements/commit/83777d24f1b024b7eba83c98c7a8eb20f9db59e6))
+- **mux-uploader:** Support endoing. ([86ae488](https://github.com/muxinc/elements/commit/86ae488dd22dbd1b7c773d3e13ce9cb99605d0f5))
+
 # [0.1.0-beta.3](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.2...@mux/mux-uploader@0.1.0-beta.3) (2022-07-11)
 
 ### Bug Fixes

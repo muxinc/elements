@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.2...@mux/mux-uploader-react@0.1.0-beta.4) (2022-07-21)
+
+### Bug Fixes
+
+- **mux-uploader, mux-uploader-react:** Add support for endpoint to react version. Clean up type defs, including css vars (drop component only). Remove unnecessary capture for DandD events. ([c12ded5](https://github.com/muxinc/elements/commit/c12ded5188a3d97d48dc335a98d8537b6fa57443))
+
 # 0.1.0-beta.2 (2022-07-11)
 
 ### Bug Fixes

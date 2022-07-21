@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.8.0...@mux/playback-core@0.9.0) (2022-07-21)
+
+### Features
+
+- **playback-core, mux-player:** Add support to removeTextTrack. Remove all identified tracks on hls destroy. Add methods to mux-player. ([d090b06](https://github.com/muxinc/elements/commit/d090b060a8b8b3772e74762176af9881299bf894))
+- **playback-core:** prefer remove() and append() for elements. ([90bbbcb](https://github.com/muxinc/elements/commit/90bbbcbccf74bc30be56ad8c84b3db1d00ab6665))
+
 # 0.8.0 (2022-07-05)
 
 ### Bug Fixes

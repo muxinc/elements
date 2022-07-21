@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.24](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.23...@mux/mux-player-react@0.1.0-beta.24) (2022-07-21)
+
+### Features
+
+- add defaultMuted, defaultPlaybackRate props ([#252](https://github.com/muxinc/elements/issues/252)) ([1a72165](https://github.com/muxinc/elements/commit/1a7216545cba27b34bc743cf5dd6225d4dcae738))
+
 # [0.1.0-beta.23](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.22...@mux/mux-player-react@0.1.0-beta.23) (2022-07-11)
 
 **Note:** Version bump only for package @mux/mux-player-react
