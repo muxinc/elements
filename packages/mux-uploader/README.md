@@ -118,9 +118,9 @@ This also means you can implement your own drag and drop (or other) components f
 
 #### `<mux-uploader>`
 
-| Attribute        | Type       | Description                                                                                                                             | Default                                         |
-| ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `formatProgress` | `function` | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered. | A function the yields a percent progress string |
+| Attribute        | Type       | Description                                                                                                                                                                                                                                                                                        | Default                                                          |
+| ---------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `formatProgress` | `function` | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered - whether you want to display only the number or a sentence with the number etc. i.e. `formatProgress={(percent: number) => `${percent} percent uploaded`}` | A function that yields only the percent as a string i.e. `"60%"` |
 
 ### Events
 
