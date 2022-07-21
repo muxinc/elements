@@ -97,21 +97,21 @@ This also means you can implement your own drag and drop (or other) components f
 
 #### `<mux-uploader>`
 
-| Attribute            | Type      | Description                                                                                                                                                                                                               | Default     |
-| -------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `url`                | `string`  | The authenticated URL that your file will be uploaded to. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined` |
-| `id`                 | `string`  | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required if you use `mux-uploader-drop`.                                                                                                                  | N/A         |
-| `type`               | `"bar"`   | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                  | "bar"       |
-| `upload-in-progress` | `boolean` | (Read-only) Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].                            | false       |
-| `upload-error`       | `boolean` | (Read-only) Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].                           | false       |
-| `status`             | `boolean` | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                      | false       |
+| Attribute            | Type      | Description                                                                                                                                                                                          | Default                                                                                                                                                                                                                                                                               |
+| -------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `endpoint`           | `string`  | `Promise`                                                                                                                                                                                            | Either a) the authenticated URL that your file will be uploaded to or b) an async function that yields a promise that resolves to that url. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url). Required. | `undefined` |
+| `id`                 | `string`  | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required if you use `mux-uploader-drop`.                                                                                             | N/A                                                                                                                                                                                                                                                                                   |
+| `type`               | `"bar"`   | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                             | "bar"                                                                                                                                                                                                                                                                                 |
+| `upload-in-progress` | `boolean` | (Read-only) Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].       | false                                                                                                                                                                                                                                                                                 |
+| `upload-error`       | `boolean` | (Read-only) Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].      | false                                                                                                                                                                                                                                                                                 |
+| `status`             | `boolean` | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute. | false                                                                                                                                                                                                                                                                                 |
 
 #### `<mux-uploader-drop>`
 
 | Attribute      | Type      | Description                                                | Default |
 | -------------- | --------- | ---------------------------------------------------------- | ------- |
 | `overlay`      | `boolean` | Toggles showing an overlay on dragover.                    | `false` |
-| `overlay-text` | `boolean` | Optional text to display on dragover when `overlay` is on. | `''`    |
+| `overlay-text` | `string`  | Optional text to display on dragover when `overlay` is on. | `''`    |
 | `mux-uploader` | `string ` | Must match the `id` on `MuxUploader`. Required.            | N/A     |
 
 ### Properties
@@ -128,11 +128,13 @@ This also means you can implement your own drag and drop (or other) components f
 
 `<mux-uploader>` has a handful of events to monitor uploading state.
 
-| Event      | Description                                                              |
-| ---------- | ------------------------------------------------------------------------ |
-| `error`    | Fired when an error occurs in the chunked upload process.                |
-| `progress` | Fired whenever a chunk of the file has successfully completed uploading. |
-| `success`  | Fired when the entire file has successfully completed uploading.         |
+| Event          | Description                                                              |
+| -------------- | ------------------------------------------------------------------------ |
+| `attenot`      | Fired immediately before a chunk upload is attempted.                    |
+| `chunkSuccess` | Fired when an indvidual chunk is successfully uploaded.                  |
+| `error`        | Fired when an error occurs in the chunked upload process.                |
+| `progress`     | Fired whenever a chunk of the file has successfully completed uploading. |
+| `success`      | Fired when the entire file has successfully completed uploading.         |
 
 ### Styling
 
