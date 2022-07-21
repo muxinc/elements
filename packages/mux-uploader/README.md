@@ -126,15 +126,15 @@ This also means you can implement your own drag and drop (or other) components f
 
 #### `<mux-uploader>`
 
-`<mux-uploader>` has a handful of events to monitor uploading state.
+`<mux-uploader>` has a handful of events - using [Upchunk](https://github.com/muxinc/upchunk/blob/master/README.md) under the hood - to monitor uploading state.
 
-| Event          | Description                                                              |
-| -------------- | ------------------------------------------------------------------------ |
-| `attempt`      | Fired immediately before a chunk upload is attempted.                    |
-| `chunkSuccess` | Fired when an indvidual chunk is successfully uploaded.                  |
-| `error`        | Fired when an error occurs in the chunked upload process.                |
-| `progress`     | Fired whenever a chunk of the file has successfully completed uploading. |
-| `success`      | Fired when the entire file has successfully completed uploading.         |
+| Event          | Description                                                                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `attempt`      | Fired immediately before a chunk upload is attempted.                                                                                                              |
+| `chunkSuccess` | Fired when an indvidual chunk is successfully uploaded. Sample response: `{ detail: { chunk: Integer, attempts: Integer, response: XhrResponse } }`                |
+| `error`        | Fired when an error occurs in the chunked upload process.                                                                                                          |
+| `progress`     | Fired continuously with incremental upload progress. This returns the current percentage of the file that's been uploaded. Sample response: `{ detail: [0..100] }` |
+| `success`      | Fired when the entire file has successfully completed uploading.                                                                                                   |
 
 ### Styling
 
