@@ -87,7 +87,7 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 
 #### `<MuxUploader>`
 
-`<MuxUploader>` has a handful of events to monitor uploading state.
+`<MuxUploader>` has a handful of a number of callbacks associated with events to handle uploading state.
 
 | Prop             | Description                                                                                                                                                          |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
