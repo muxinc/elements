@@ -11,6 +11,7 @@ import useObjectPropEffect from './useObjectPropEffect';
 export type MuxUploaderRefAttributes = MuxUploaderElement;
 
 export type MuxUploaderProps = {
+  id?: string;
   endpoint?: string;
   type?: string;
   status?: boolean;
@@ -34,7 +35,7 @@ export type MuxUploaderProps = {
   onError?: EventListener;
   onProgress?: EventListener;
   onSuccess?: EventListener;
-} & Partial<MuxUploaderRefAttributes>;
+};
 
 const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>(
   ({ children, ...props }, ref) => {
