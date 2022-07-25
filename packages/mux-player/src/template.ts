@@ -22,7 +22,7 @@ export const template = (props: MuxTemplateProps) => html`
 `;
 
 const flatCSSParts = Object.values(parts).flatMap((group) => group.split(' '));
-const forwardUniqueCSSParts = [...new Set(flatCSSParts)];
+const forwardUniqueCSSParts = [...new Set(flatCSSParts)].join(', ');
 
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
@@ -39,7 +39,7 @@ export const content = (props: MuxTemplateProps) => html`
     default-hidden-captions="${props.defaultHiddenCaptions}"
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
-    exportparts="${forwardUniqueCSSParts}"
+    exportparts="seek-live, ${forwardUniqueCSSParts}"
   >
     <mux-video
       slot="media"

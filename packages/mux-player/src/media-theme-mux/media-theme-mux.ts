@@ -23,7 +23,7 @@ type ThemeMuxTemplateProps = {
 };
 
 export const parts = {
-  backdrop: 'controls backdrop',
+  mediaChrome: 'layer media-layer poster-layer vertical-layer centered-layer',
   centerPlay: 'center play button',
   centerSeekBackward: 'center seek-backward button',
   centerSeekForward: 'center seek-forward button',
@@ -73,9 +73,12 @@ export default class MediaThemeMux extends MediaTheme {
         <style>
           ${cssStr}
         </style>
-        <media-controller audio="${props.audio || false}" class="size-${props.playerSize}">
+        <media-controller
+          audio="${props.audio || false}"
+          class="size-${props.playerSize}"
+          exportparts="${parts.mediaChrome.split(' ').join(', ')}"
+        >
           <slot name="media" slot="media"></slot>
-          <div slot="top-chrome" class="backdrop" part="${parts.backdrop}"></div>
           <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>
