@@ -87,11 +87,11 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 
 #### `<MuxUploader>`
 
-`<MuxUploader>` has a handful of events to monitor uploading state.
+`<MuxUploader>` has a handful of a number of callbacks associated with events to handle uploading state.
 
 | Prop             | Description                                                                                                                                                          |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `onAttempt`      | Invoked immediately before a chunk upload is attempted.                                                                                                              |
+| `onChunkAttempt` | Invoked immediately before a chunk upload is attempted.                                                                                                              |
 | `onChunkSuccess` | Invoked when an indvidual chunk is successfully uploaded. Sample response: `{ detail: { chunk: Integer, attempts: Integer, response: XhrResponse } }`                |
 | `onError`        | Invoked when an error occurs in the chunked upload process.                                                                                                          |
 | `onProgress`     | Invoked continuously with incremental upload progress. This returns the current percentage of the file that's been uploaded. Sample response: `{ detail: [0..100] }` |

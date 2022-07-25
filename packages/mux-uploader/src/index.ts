@@ -443,15 +443,15 @@ class MuxUploaderElement extends HTMLElement {
       file: evt.detail,
     });
 
-    upload.on('attempt', ({ detail }) => {
-      this.dispatchEvent(new CustomEvent('attempt', detail));
+    upload.on('attempt', (event) => {
+      this.dispatchEvent(new CustomEvent('chunkattempt', event));
     });
 
-    upload.on('chunkSuccess', ({ detail }) => {
-      this.dispatchEvent(new CustomEvent('chunkSuccess', detail));
+    upload.on('chunkSuccess', (event) => {
+      this.dispatchEvent(new CustomEvent('chunksuccess', event));
     });
 
-    upload.on('error', (err) => {
+    upload.on('error', (event) => {
       const errorMessage = 'An error has occurred';
 
       this.setAttribute('upload-error', '');
@@ -460,13 +460,13 @@ class MuxUploaderElement extends HTMLElement {
         this.statusMessage.innerHTML = errorMessage;
       }
 
-      console.error(err.detail.message);
-      this.dispatchEvent(new CustomEvent('error', err));
+      console.error(event.detail.message);
+      this.dispatchEvent(new CustomEvent('error', event));
     });
 
-    upload.on('progress', (progress) => {
-      this.setProgress(progress.detail);
-      this.dispatchEvent(new CustomEvent('progress', progress));
+    upload.on('progress', (event) => {
+      this.setProgress(event.detail);
+      this.dispatchEvent(new CustomEvent('progress', event));
     });
 
     upload.on('success', (event) => {
