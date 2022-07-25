@@ -22,6 +22,26 @@ type ThemeMuxTemplateProps = {
   backwardSeekOffset: string | null;
 };
 
+export const parts = {
+  backdrop: 'controls backdrop',
+  centerPlay: 'center play button',
+  centerSeekBackward: 'center seek-backward button',
+  centerSeekForward: 'center seek-forward button',
+  play: 'play button',
+  seekBackward: 'seek-backward button',
+  seekForward: 'seek-forward button',
+  mute: 'mute button',
+  captions: 'captions button',
+  airplay: 'airplay button',
+  pip: 'pip button',
+  fullscreen: 'fullscreen button',
+  cast: 'cast button',
+  playbackRate: 'playbackrate button',
+  volumeRange: 'volume range',
+  timeRange: 'time range',
+  timeDisplay: 'time display',
+};
+
 export default class MediaThemeMux extends MediaTheme {
   static get observedAttributes() {
     return [
@@ -55,6 +75,7 @@ export default class MediaThemeMux extends MediaTheme {
         </style>
         <media-controller audio="${props.audio || false}" class="size-${props.playerSize}">
           <slot name="media" slot="media"></slot>
+          <div slot="top-chrome" class="backdrop" part="${parts.backdrop}"></div>
           <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>
@@ -127,30 +148,32 @@ const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
 };
 
 // prettier-ignore
-const MediaPlayButton = () => html`
-  <media-play-button>
+const MediaPlayButton = ({ part = parts.play } = {}) => html`
+  <media-play-button part="${part}">
     ${icons.Play()}
     ${icons.Pause()}
   </media-play-button>
 `;
 
 // prettier-ignore
-const MediaSeekBackwardButton = (props: Partial<ThemeMuxTemplateProps>) => html`
-  <media-seek-backward-button seek-offset="${props.backwardSeekOffset}">
-    ${icons.SeekBackward({ value: props.backwardSeekOffset })}
+type SeekBackwardButtonProps = { backwardSeekOffset: string, part?: string };
+const MediaSeekBackwardButton = ({ backwardSeekOffset, part = parts.seekBackward }: SeekBackwardButtonProps) => html`
+  <media-seek-backward-button seek-offset="${backwardSeekOffset}" part="${part}">
+    ${icons.SeekBackward({ value: backwardSeekOffset })}
   </media-seek-backward-button>
 `;
 
 // prettier-ignore
-const MediaSeekForwardButton = (props: Partial<ThemeMuxTemplateProps>) => html`
-  <media-seek-forward-button seek-offset="${props.forwardSeekOffset}">
-    ${icons.SeekForward({ value: props.forwardSeekOffset })}
+type SeekForwardButtonProps = { forwardSeekOffset: string, part?: string };
+const MediaSeekForwardButton = ({ forwardSeekOffset, part = parts.seekForward }: SeekForwardButtonProps) => html`
+  <media-seek-forward-button seek-offset="${forwardSeekOffset}" part="${part}">
+    ${icons.SeekForward({ value: forwardSeekOffset })}
   </media-seek-forward-button>
 `;
 
 // prettier-ignore
 const MediaMuteButton = () => html`
-  <media-mute-button>
+  <media-mute-button part="${parts.mute}">
     ${icons.VolumeHigh()}
     ${icons.VolumeMedium()}
     ${icons.VolumeLow()}
@@ -160,71 +183,100 @@ const MediaMuteButton = () => html`
 
 // prettier-ignore
 const MediaCaptionsButton = (props: ThemeMuxTemplateProps) => html`
-<media-captions-button default-showing="${!props.defaultHiddenCaptions}" >
+<media-captions-button default-showing="${!props.defaultHiddenCaptions}" part="${parts.captions}">
   ${icons.CaptionsOff()}
   ${icons.CaptionsOn()}
 </media-captions-button>`;
 
 // prettier-ignore
 const MediaAirplayButton = () => html`
-<media-airplay-button>
+<media-airplay-button part="${parts.airplay}">
   ${icons.Airplay()}
 </media-airplay-button>`;
 
 // prettier-ignore
 const MediaPipButton = () => html`
-<media-pip-button>
+<media-pip-button part="${parts.pip}">
   ${icons.PipEnter()}
   ${icons.PipExit()}
 </media-pip-button>`;
 
 // prettier-ignore
 const MediaFullscreenButton = () => html`
-<media-fullscreen-button>
+<media-fullscreen-button part="${parts.fullscreen}">
   ${icons.FullscreenEnter()}
   ${icons.FullscreenExit()}
 </media-fullscreen-button>`;
 
 // prettier-ignore
 const MediaCastButton = () => html`
-<media-cast-button>
+<media-cast-button part="${parts.cast}">
   ${icons.CastEnter()}
   ${icons.CastExit()}
 </media-cast-button>`;
 
+// prettier-ignore
+const MediaPlaybackRateButton = () => html`
+<media-playback-rate-button part="${parts.playbackRate}">
+</media-playback-rate-button>`;
+
+// prettier-ignore
+const MediaVolumeRange = () => html`
+<media-volume-range part="${parts.volumeRange}">
+</media-volume-range>`;
+
+// prettier-ignore
+const MediaTimeRange = () => html`
+<media-time-range part="${parts.timeRange}">
+</media-time-range>`;
+
+// prettier-ignore
+const TimeDisplay = () => html`
+<mxp-time-display part="${parts.timeDisplay}">
+</mxp-time-display>`;
+
+// prettier-ignore
 export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
-    ${MediaPlayButton()} ${MediaSeekBackwardButton(props)} ${MediaSeekForwardButton(props)}
-    <mxp-time-display></mxp-time-display>
-    <media-time-range></media-time-range>
+    ${MediaPlayButton()}
+    ${MediaSeekBackwardButton(props as SeekBackwardButtonProps)}
+    ${MediaSeekForwardButton(props as SeekForwardButtonProps)}
+    ${TimeDisplay()}
+    ${MediaTimeRange()}
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
-    <media-playback-rate-button></media-playback-rate-button>
-    ${MediaAirplayButton()} ${MediaCastButton()}
+    ${MediaVolumeRange()}
+    ${MediaPlaybackRateButton()}
+    ${MediaAirplayButton()}
+    ${MediaCastButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-to-live-button"></slot>
-    ${MediaSeekBackwardButton(props)} ${MediaSeekForwardButton(props)}
-    <mxp-time-display></mxp-time-display>
-    <media-time-range></media-time-range>
+    ${MediaSeekBackwardButton(props as SeekBackwardButtonProps)}
+    ${MediaSeekForwardButton(props as SeekForwardButtonProps)}
+    ${TimeDisplay()}
+    ${MediaTimeRange()}
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
-    <media-playback-rate-button></media-playback-rate-button>
-    ${MediaAirplayButton()} ${MediaCastButton()}
+    ${MediaVolumeRange()}
+    ${MediaPlaybackRateButton()}
+    ${MediaAirplayButton()}
+    ${MediaCastButton()}
   </media-control-bar>
 `;
 
+// prettier-ignore
 export const AudioLiveChrome = () => html`
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-to-live-button"></slot>
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
-    ${MediaAirplayButton()} ${MediaCastButton()}
+    ${MediaVolumeRange()}
+    ${MediaAirplayButton()}
+    ${MediaCastButton()}
   </media-control-bar>
 `;
 
@@ -238,7 +290,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton({ part: parts.centerPlay })}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
@@ -256,17 +308,17 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaSeekBackwardButton(props)}
-    ${MediaPlayButton()}
-    ${MediaSeekForwardButton(props)}
+    ${MediaSeekBackwardButton({ ...props, part: parts.centerSeekBackward } as SeekBackwardButtonProps)}
+    ${MediaPlayButton({ part: parts.centerPlay })}
+    ${MediaSeekForwardButton({ ...props, part: parts.centerSeekForward } as SeekForwardButtonProps)}
   </div>
-  <media-time-range></media-time-range>
+  ${MediaTimeRange()}
   <media-control-bar>
-    <mxp-time-display></mxp-time-display>
+    ${TimeDisplay()}
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
+    ${MediaVolumeRange()}
     <div class="mxp-spacer"></div>
-    <media-playback-rate-button></media-playback-rate-button>
+    ${MediaPlaybackRateButton()}
     ${MediaFullscreenButton()}
     <div class="mxp-padding-2"></div>
   </media-control-bar>
@@ -275,18 +327,18 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton({ part: parts.centerPlay })}
   </div>
-  <media-time-range></media-time-range>
+  ${MediaTimeRange()}
   <media-control-bar>
     ${MediaPlayButton()}
-    ${MediaSeekBackwardButton(props)}
-    ${MediaSeekForwardButton(props)}
-    <mxp-time-display></mxp-time-display>
+    ${MediaSeekBackwardButton(props as SeekBackwardButtonProps)}
+    ${MediaSeekForwardButton(props as SeekForwardButtonProps)}
+    ${TimeDisplay()}
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
+    ${MediaVolumeRange()}
     <div class="mxp-spacer"></div>
-    <media-playback-rate-button></media-playback-rate-button>
+    ${MediaPlaybackRateButton()}
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
     ${MediaCastButton()}
@@ -310,11 +362,11 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton({ part: parts.centerPlay })}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
+    ${MediaVolumeRange()}
     <div class="mxp-spacer"></div>
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -326,11 +378,11 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <slot name="seek-to-live-button"></slot>
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton({ part: parts.centerPlay })}
   </div>
   <media-control-bar>
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
+    ${MediaVolumeRange()}
     <div class="mxp-spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
@@ -352,14 +404,14 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaPipButton()}
   </media-control-bar>
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaSeekBackwardButton(props)}
-    ${MediaPlayButton()}
-    ${MediaSeekForwardButton(props)}
+    ${MediaSeekBackwardButton({ ...props, part: parts.centerSeekBackward } as SeekBackwardButtonProps)}
+    ${MediaPlayButton({ part: parts.centerPlay })}
+    ${MediaSeekForwardButton({ ...props, part: parts.centerSeekForward } as SeekForwardButtonProps)}
   </div>
-  <media-time-range></media-time-range>
+  ${MediaTimeRange()}
   <media-control-bar>
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
+    ${MediaVolumeRange()}
     <slot name="seek-to-live-button"></slot>
     <div class="mxp-spacer"></div>
     ${MediaFullscreenButton()}
@@ -370,15 +422,15 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <div slot="centered-chrome" class="mxp-center-controls">
-    ${MediaPlayButton()}
+    ${MediaPlayButton({ part: parts.centerPlay })}
   </div>
-  <media-time-range></media-time-range>
+  ${MediaTimeRange()}
   <media-control-bar>
     ${MediaPlayButton()}
-    ${MediaSeekBackwardButton(props)}
-    ${MediaSeekForwardButton(props)}
+    ${MediaSeekBackwardButton(props as SeekBackwardButtonProps)}
+    ${MediaSeekForwardButton(props as SeekForwardButtonProps)}
     ${MediaMuteButton()}
-    <media-volume-range></media-volume-range>
+    ${MediaVolumeRange()}
     <slot name="seek-to-live-button"></slot>
     <div class="mxp-spacer"></div>
     ${MediaCaptionsButton(props)}

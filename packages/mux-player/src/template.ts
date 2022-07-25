@@ -1,4 +1,4 @@
-import './media-theme-mux/media-theme-mux';
+import { parts } from './media-theme-mux/media-theme-mux';
 import './dialog';
 import {
   castThemeName,
@@ -21,6 +21,9 @@ export const template = (props: MuxTemplateProps) => html`
   ${content(props)}
 `;
 
+const flatCSSParts = Object.values(parts).flatMap((group) => group.split(' '));
+const forwardUniqueCSSParts = [...new Set(flatCSSParts)];
+
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
     audio="${props.audio || false}"
@@ -36,6 +39,7 @@ export const content = (props: MuxTemplateProps) => html`
     default-hidden-captions="${props.defaultHiddenCaptions}"
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
+    exportparts="${forwardUniqueCSSParts}"
   >
     <mux-video
       slot="media"
@@ -102,6 +106,8 @@ export const content = (props: MuxTemplateProps) => html`
     </mux-video>
     <button
       slot="seek-to-live-button"
+      part="seek-live button"
+      class="mxp-seek-to-live-button"
       aria-disabled="${props.inLiveWindow}"
       onclick="${function (this: HTMLButtonElement, evt: Event) {
         props.onSeekToLive?.(evt);
@@ -110,7 +116,6 @@ export const content = (props: MuxTemplateProps) => html`
           (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
         }
       }}"
-      class="mxp-seek-to-live-button"
     >
       Live
     </button>
