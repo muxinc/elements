@@ -130,7 +130,7 @@ This also means you can implement your own drag and drop (or other) components f
 
 | Event          | Description                                                                                                                                                        |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `attempt`      | Fired immediately before a chunk upload is attempted.                                                                                                              |
+| `chunkattempt` | Fired immediately before a chunk upload is attempted.                                                                                                              |
 | `chunksuccess` | Fired when an indvidual chunk is successfully uploaded. Sample response: `{ detail: { chunk: Integer, attempts: Integer, response: XhrResponse } }`                |
 | `error`        | Fired when an error occurs in the chunked upload process.                                                                                                          |
 | `progress`     | Fired continuously with incremental upload progress. This returns the current percentage of the file that's been uploaded. Sample response: `{ detail: [0..100] }` |
