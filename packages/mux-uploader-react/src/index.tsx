@@ -76,8 +76,8 @@ const useUploader = (
   } = props;
   useObjectPropEffect('endpoint', endpoint, ref);
   useObjectPropEffect('formatProgress', formatProgress, ref);
-  useEventCallbackEffect('chunkAttempt', ref, onChunkAttempt);
-  useEventCallbackEffect('chunkSuccess', ref, onChunkSuccess);
+  useEventCallbackEffect('chunkattempt', ref, onChunkAttempt);
+  useEventCallbackEffect('chunksuccess', ref, onChunkSuccess);
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('progress', ref, onProgress);
   useEventCallbackEffect('success', ref, onSuccess);

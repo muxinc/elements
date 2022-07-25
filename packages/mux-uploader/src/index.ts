@@ -444,11 +444,11 @@ class MuxUploaderElement extends HTMLElement {
     });
 
     upload.on('attempt', (event) => {
-      this.dispatchEvent(new CustomEvent('chunkAttempt', event));
+      this.dispatchEvent(new CustomEvent('chunkattempt', event));
     });
 
     upload.on('chunkSuccess', (event) => {
-      this.dispatchEvent(new CustomEvent('chunkSuccess', event));
+      this.dispatchEvent(new CustomEvent('chunksuccess', event));
     });
 
     upload.on('error', (event) => {
