@@ -21,6 +21,8 @@ export type MuxUploaderProps = {
     ['--uploader-background-color']?: CSSProperties['backgroundColor'];
     ['--button-background-color']?: CSSProperties['backgroundColor'];
     ['--button-border-radius']?: CSSProperties['borderRadius'];
+    ['--button-border']?: CSSProperties['border'];
+    ['--button-padding']?: CSSProperties['padding'];
     ['--button-hover-text']?: CSSProperties['color'];
     ['--button-hover-background']?: CSSProperties['background'];
     ['--button-active-text']?: CSSProperties['color'];

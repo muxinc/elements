@@ -32,9 +32,9 @@ button {
   cursor: pointer;
   line-height: 16px;
   background: var(--button-background-color, #fff);
-  border: 1px solid #000000;
+  border: var(--button-border, 1px solid #000000);
   color: #000000;
-  padding: 16px 24px;
+  padding: var(--button-padding, 16px 24px);
   border-radius: var(--button-border-radius, 4px);
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
