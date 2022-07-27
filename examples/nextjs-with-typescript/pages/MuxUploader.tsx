@@ -3,7 +3,7 @@ import MuxUploader, { MuxUploaderDrop } from '@mux/mux-uploader-react';
 import { useState, ChangeEvent } from "react";
 
 
-const onUploadStart = console.log.bind(null, 'uploadstart');
+const onUploadStart = console.log.bind(null, 'uploadStart');
 const onChunkAttempt = console.log.bind(null, "chunkAttempt");
 const onChunkSuccess = console.log.bind(null, "chunkSuccess");
 const onError = console.log.bind(null, "error");
