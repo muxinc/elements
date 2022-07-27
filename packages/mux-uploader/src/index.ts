@@ -443,6 +443,8 @@ class MuxUploaderElement extends HTMLElement {
       file: evt.detail,
     });
 
+    this.dispatchEvent(new CustomEvent('uploadstart', { detail: upload }));
+
     upload.on('attempt', (event) => {
       this.dispatchEvent(new CustomEvent('chunkattempt', event));
     });

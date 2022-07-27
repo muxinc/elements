@@ -130,6 +130,7 @@ This also means you can implement your own drag and drop (or other) components f
 
 | Event          | Description                                                                                                                                                        |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `uploadstart`  | Fired when the upload begins.                                                                                                                                      |
 | `chunkattempt` | Fired immediately before a chunk upload is attempted.                                                                                                              |
 | `chunksuccess` | Fired when an indvidual chunk is successfully uploaded. Sample response: `{ detail: { chunk: Integer, attempts: Integer, response: XhrResponse } }`                |
 | `error`        | Fired when an error occurs in the chunked upload process.                                                                                                          |

@@ -30,6 +30,7 @@ export type MuxUploaderProps = {
   };
   children?: React.ReactNode;
   formatProgress?: (percent: number) => string;
+  onUploadStart?: EventListener;
   onChunkAttempt?: EventListener;
   onChunkSuccess?: EventListener;
   onError?: EventListener;
@@ -65,6 +66,7 @@ const useUploader = (
   props: MuxUploaderProps
 ) => {
   const {
+    onUploadStart,
     onChunkAttempt,
     onChunkSuccess,
     onError,
@@ -76,6 +78,7 @@ const useUploader = (
   } = props;
   useObjectPropEffect('endpoint', endpoint, ref);
   useObjectPropEffect('formatProgress', formatProgress, ref);
+  useEventCallbackEffect('uploadstart', ref, onUploadStart);
   useEventCallbackEffect('chunkattempt', ref, onChunkAttempt);
   useEventCallbackEffect('chunksuccess', ref, onChunkSuccess);
   useEventCallbackEffect('error', ref, onError);
