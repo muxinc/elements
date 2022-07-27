@@ -3,6 +3,7 @@ import MuxUploader, { MuxUploaderDrop } from '@mux/mux-uploader-react';
 import { useState, ChangeEvent } from "react";
 
 
+const onUploadStart = console.log.bind(null, 'uploadstart');
 const onChunkAttempt = console.log.bind(null, "chunkAttempt");
 const onChunkSuccess = console.log.bind(null, "chunkSuccess");
 const onError = console.log.bind(null, "error");
@@ -31,6 +32,7 @@ function MuxUploaderPage() {
             // formatProgress={(percent: number) => `${percent} percent uploaded`}
             type="bar"
             status
+            onUploadStart={onUploadStart}
             onChunkAttempt={onChunkAttempt}
             onChunkSuccess={onChunkSuccess}
             onSuccess={onSuccess}
