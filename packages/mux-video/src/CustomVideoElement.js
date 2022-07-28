@@ -66,7 +66,6 @@ template.innerHTML = `
 `;
 
 class CustomVideoElement extends HTMLElement {
-  #hasAttrCallback;
   #isInit;
 
   constructor() {
@@ -165,11 +164,8 @@ class CustomVideoElement extends HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    // Initialize the attributes right after construction when they become available.
-    if (!this.#hasAttrCallback && !this.isConnected) {
-      this.#hasAttrCallback = true;
-      this.#init();
-    }
+    // Initialize right after construction when the attributes become available.
+    this.#init();
 
     this.#forwardAttribute(attrName, oldValue, newValue);
   }
@@ -215,7 +211,9 @@ class CustomVideoElement extends HTMLElement {
     }
   }
 
-  connectedCallback() {}
+  connectedCallback() {
+    this.#init();
+  }
 }
 
 // Map all native element properties to the custom element

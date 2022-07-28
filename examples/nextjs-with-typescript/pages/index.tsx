@@ -47,6 +47,11 @@ function HomePage() {
         </li>
         <li>
           <h3>
+            <Link href="/mux-audio">Mux Audio (Web Component) Demo</Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
             <Link href="/mux-player">Mux Player (Web Component) Demo</Link>
           </h3>
         </li>
