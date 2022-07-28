@@ -148,9 +148,7 @@ Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-d
 
 ### Advanced: prefer-mse
 
-By default `<mux-video>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
-
-If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then pass in the `prefer-mse` attribute.
+Pass the `prefer-mse` attribute to prioritze the in-code [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) based engine (currently [hls.js](https://github.com/video-dev/hls.js/)) when MSE are supported by the browser.  (Without `prefer-mse`, the default behaviour for `<mux-video>` is to try the native playback via the underlying `<video/>` tag )
 
 ```html
 <mux-video
