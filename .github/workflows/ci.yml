@@ -7,15 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      # extract `engines.node` from package.json and save it to output
-      - name: Get Node.JS version from package.json
-        id: get-versions
-        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
-      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.get-versions.outputs.node }}
+          node-version: 16
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
@@ -30,15 +25,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      # extract `engines.node` from package.json and save it to output
-      - name: Get Node.JS version from package.json
-        id: get-versions
-        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
-      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.get-versions.outputs.node }}
+          node-version: 16
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn lint
@@ -47,15 +37,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      # extract `engines.node` from package.json and save it to output
-      - name: Get Node.JS version from package.json
-        id: get-versions
-        run: echo ::set-output name=node::$(jq -r .engines.node ./package.json)
-      - name: Use Node.js ${{ steps.get-versions.outputs.node }}
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.get-versions.outputs.node }}
+          node-version: 16
           cache: yarn
       # esbuild requires --ignore-scripts to NOT be added here.
       - run: yarn install --frozen-lockfile
