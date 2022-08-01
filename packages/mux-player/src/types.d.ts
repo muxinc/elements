@@ -1,11 +1,11 @@
 import type MuxVideoElement, { MediaError } from '@mux/mux-video';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
+  nohotkeys?: boolean;
   preferMse?: boolean;
 };
 
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
-  nohotkeys?: boolean;
   audio: boolean;
   theme?: string;
   playerSize: string;
