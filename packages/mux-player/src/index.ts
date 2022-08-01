@@ -72,6 +72,7 @@ const PlayerAttributes = {
   STORYBOARD_TOKEN: 'storyboard-token',
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
+  NOHOTKEYS: 'nohotkeys',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -87,6 +88,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
     loop: el.loop,
+    nohotkeys: el.hasAttribute(PlayerAttributes.NOHOTKEYS),
     muted: el.muted,
     paused: el.paused,
     playsInline: el.playsInline,
@@ -531,6 +533,10 @@ class MuxPlayerElement extends VideoApiElement {
             i18n(`The provided storyboard-token should have audience value 's' instead of '{aud}'.`).format({ aud })
           );
         }
+        break;
+      }
+      case PlayerAttributes.NOHOTKEYS: {
+        this.mediaController?.setAttribute(PlayerAttributes.NOHOTKEYS, newValue);
         break;
       }
       case MuxVideoAttributes.PLAYBACK_ID: {
