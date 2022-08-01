@@ -26,6 +26,7 @@ const forwardUniqueCSSParts = [...new Set(flatCSSParts)].join(', ');
 
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
+    nohotkeys="${props.nohotkeys || false}"
     audio="${props.audio || false}"
     style="${
       stylePropsToString({

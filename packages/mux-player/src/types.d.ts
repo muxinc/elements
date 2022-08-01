@@ -5,6 +5,7 @@ export type MuxPlayerProps = Partial<MuxVideoElement> & {
 };
 
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
+  nohotkeys?: boolean;
   audio: boolean;
   theme?: string;
   playerSize: string;
