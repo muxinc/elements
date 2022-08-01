@@ -5,7 +5,7 @@ import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
 import { Metadata, StreamTypes, addTextTrack, removeTextTrack } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
-import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName } from './helpers';
+import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
@@ -73,6 +73,7 @@ const PlayerAttributes = {
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
   NOHOTKEYS: 'nohotkeys',
+  CONTROLSLIST: 'controlslist',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -119,6 +120,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     metadataVideoId: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_ID),
     metadataVideoTitle: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_TITLE),
     metadataViewerUserId: el.getAttribute(MuxVideoAttributes.METADATA_VIEWER_USER_ID),
+    controlsList: el.controlsList,
     ...state,
   };
 }
@@ -138,6 +140,7 @@ class MuxPlayerElement extends VideoApiElement {
   #isInit = false;
   #tokens = {};
   #userInactive = true;
+  #controlsList = new AttributeTokenList(this, 'controlslist');
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
@@ -496,19 +499,10 @@ class MuxPlayerElement extends VideoApiElement {
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    const shouldClearState = [
-      MuxVideoAttributes.PLAYBACK_ID,
-      VideoAttributes.SRC,
-      PlayerAttributes.PLAYBACK_TOKEN,
-    ].includes(attrName);
-
-    if (shouldClearState && oldValue !== newValue) {
-      this.#state = { ...this.#state, ...initialState };
-    }
-
-    this.#render({ [toPropName(attrName)]: newValue });
-
     switch (attrName) {
+      case PlayerAttributes.CONTROLSLIST:
+        this.#controlsList.value = newValue;
+        break;
       case PlayerAttributes.THUMBNAIL_TIME: {
         if (newValue != null && this.tokens.thumbnail) {
           logger.warn(
@@ -568,6 +562,18 @@ class MuxPlayerElement extends VideoApiElement {
         break;
       }
     }
+
+    const shouldClearState = [
+      MuxVideoAttributes.PLAYBACK_ID,
+      VideoAttributes.SRC,
+      PlayerAttributes.PLAYBACK_TOKEN,
+    ].includes(attrName);
+
+    if (shouldClearState && oldValue !== newValue) {
+      this.#state = { ...this.#state, ...initialState };
+    }
+
+    this.#render({ [toPropName(attrName)]: newValue });
   }
 
   get hasPlayed() {
@@ -592,6 +598,10 @@ class MuxPlayerElement extends VideoApiElement {
 
   get mux() {
     return this.media?.mux;
+  }
+
+  get controlsList() {
+    return this.#controlsList;
   }
 
   /**
