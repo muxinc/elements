@@ -14,9 +14,19 @@ import { i18n, stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
+const controlsListStyles: Record<string, string> = {
+  noplay: `::part(play button) { display: none; }`,
+  nofullscreen: `::part(fullscreen button) { display: none; }`,
+  noplaybackrate: `::part(playbackrate button) { display: none; }`,
+};
+
 export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
+    ${[...props.controlsList]
+      .map((token) => controlsListStyles[token])
+      .filter(Boolean)
+      .join('\n')}
   </style>
   ${content(props)}
 `;
