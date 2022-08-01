@@ -251,6 +251,8 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     switch (attrName) {
       case 'src':
         const hadSrc = !!oldValue;
@@ -295,8 +297,6 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
       default:
         break;
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   disconnectedCallback() {

@@ -59,12 +59,43 @@ template.innerHTML = `
 `;
 
 class CustomAudioElement extends HTMLElement {
+  #isInit;
+
   constructor() {
     super();
-
     this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    // If the custom element is defined before the <custom-video> HTML is parsed
+    // no attributes will be available in the constructor (construction process).
+    // Wait until initializing attributes in the attributeChangedCallback.
+    // If this element is connected to the DOM, the attributes will be available.
+    if (this.isConnected) {
+      this.#init();
+    }
+  }
+
+  #init() {
+    if (this.#isInit) return;
+    this.#isInit = true;
+
+    this.shadowRoot.append(template.content.cloneNode(true));
     const nativeEl = (this.nativeEl = this.shadowRoot.querySelector('audio'));
+
+    // The audio events are dispatched on the CustomAudioElement instance.
+    // This makes it possible to add event listeners before the element is upgraded.
+    AudioEvents.forEach((type) => {
+      nativeEl.addEventListener(type, (evt) => {
+        this.dispatchEvent(new CustomEvent(evt.type, { detail: evt.detail }));
+      });
+    });
+
+    const slotEl = this.shadowRoot.querySelector('slot');
+    slotEl.addEventListener('slotchange', () => {
+      slotEl.assignedElements().forEach((el) => {
+        if (!['track', 'source'].includes(el.localName)) return;
+        nativeEl.append(el);
+      });
+    });
 
     // Initialize all the attribute properties
     // This is required before attributeChangedCallback is called after construction
@@ -81,21 +112,6 @@ class CustomAudioElement extends HTMLElement {
     if (nativeEl.defaultMuted) {
       nativeEl.muted = true;
     }
-
-    // The audio events are dispatched on the CustomAudioElement instance.
-    // This makes it possible to add event listeners before the element is upgraded.
-    AudioEvents.forEach((type) => {
-      nativeEl.addEventListener(type, (evt) => {
-        this.dispatchEvent(new CustomEvent(evt.type, { detail: evt.detail }));
-      });
-    });
-
-    const slotEl = this.shadowRoot.querySelector('slot');
-    slotEl.addEventListener('slotchange', () => {
-      slotEl.assignedElements().forEach((el) => {
-        nativeEl.appendChild(el);
-      });
-    });
   }
 
   // observedAttributes is required to trigger attributeChangedCallback
@@ -135,6 +151,9 @@ class CustomAudioElement extends HTMLElement {
   // We need to handle sub-class custom attributes differently from
   // attrs meant to be passed to the internal native el.
   attributeChangedCallback(attrName, oldValue, newValue) {
+    // Initialize right after construction when the attributes become available.
+    this.#init();
+
     this.forwardAttribute(attrName, oldValue, newValue);
   }
 
@@ -177,7 +196,9 @@ class CustomAudioElement extends HTMLElement {
     }
   }
 
-  connectedCallback() {}
+  connectedCallback() {
+    this.#init();
+  }
 }
 
 // Map all native element properties to the custom element

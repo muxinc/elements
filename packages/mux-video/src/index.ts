@@ -352,6 +352,8 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   // }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     switch (attrName) {
       case Attributes.PLAYER_SOFTWARE_NAME:
         this.playerSoftwareName = newValue ?? undefined;
@@ -406,8 +408,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       default:
         break;
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   disconnectedCallback() {
