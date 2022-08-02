@@ -535,10 +535,6 @@ class MuxPlayerElement extends VideoApiElement {
         }
         break;
       }
-      case PlayerAttributes.NOHOTKEYS: {
-        this.mediaController?.setAttribute(PlayerAttributes.NOHOTKEYS, newValue);
-        break;
-      }
       case MuxVideoAttributes.PLAYBACK_ID: {
         if (newValue.includes('?token')) {
           logger.error(
@@ -611,6 +607,17 @@ class MuxPlayerElement extends VideoApiElement {
       this.removeAttribute(PlayerAttributes.AUDIO);
     }
     this.setAttribute(PlayerAttributes.AUDIO, '');
+  }
+
+  get nohotkeys() {
+    return this.hasAttribute(PlayerAttributes.NOHOTKEYS);
+  }
+
+  set nohotkeys(val: boolean) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.NOHOTKEYS);
+    }
+    this.setAttribute(PlayerAttributes.NOHOTKEYS, '');
   }
 
   /**
