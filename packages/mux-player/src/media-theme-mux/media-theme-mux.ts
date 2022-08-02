@@ -15,6 +15,7 @@ const MediaChromeSizes = {
 
 type ThemeMuxTemplateProps = {
   streamType: string | null;
+  nohotkeys?: boolean;
   audio: boolean;
   playerSize: string | null;
   defaultHiddenCaptions: boolean;
@@ -46,6 +47,7 @@ export default class MediaThemeMux extends MediaTheme {
   static get observedAttributes() {
     return [
       'audio',
+      'nohotkeys',
       'stream-type',
       'player-size',
       'default-hidden-captions',
@@ -61,6 +63,7 @@ export default class MediaThemeMux extends MediaTheme {
   render() {
     const props = {
       audio: this.hasAttribute('audio'),
+      nohotkeys: this.hasAttribute('nohotkeys'),
       streamType: this.getAttribute('stream-type'),
       playerSize: this.getAttribute('player-size'),
       defaultHiddenCaptions: this.hasAttribute('default-hidden-captions'),
@@ -74,6 +77,7 @@ export default class MediaThemeMux extends MediaTheme {
           ${cssStr}
         </style>
         <media-controller
+          nohotkeys="${props.nohotkeys || false}"
           audio="${props.audio || false}"
           class="size-${props.playerSize}"
           exportparts="${parts.mediaChrome.split(' ').join(', ')}"
