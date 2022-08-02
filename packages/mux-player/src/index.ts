@@ -88,7 +88,9 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
     loop: el.loop,
-    nohotkeys: el.hasAttribute(PlayerAttributes.NOHOTKEYS),
+    // NOTE: Renaming internal prop due to state (sometimes derived from attributeChangedCallback attr values)
+    // overwriting prop value (type mismatch: string vs. boolean) (CJP)
+    noHotKeys: el.hasAttribute(PlayerAttributes.NOHOTKEYS),
     muted: el.muted,
     paused: el.paused,
     playsInline: el.playsInline,

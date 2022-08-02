@@ -30,6 +30,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   metadataVideoId: string;
   metadataVideoTitle: string;
   metadataViewerUserId: string;
+  noHotKeys: boolean;
 };
 
 export type DialogOptions = {
