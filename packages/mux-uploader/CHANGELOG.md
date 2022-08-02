@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.5](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.4...@mux/mux-uploader@0.1.0-beta.5) (2022-08-02)
+
+### Bug Fixes
+
+- **mux-uploader:** Fix attempt and chunkSuccess event details not being passed. Also make the data passed consistent by using event for all params. ([09d4cf8](https://github.com/muxinc/elements/commit/09d4cf8e22d8de919e175d039c5f0eb9a42b2591))
+- **mux-uploader:** Update event and event handler typedefs for greater accuracy of types. ([92f28a5](https://github.com/muxinc/elements/commit/92f28a5828ea3c046fa5a1aa711a038a7444f0dc))
+
+### Features
+
+- **mux-uploader:** Add CSS variables for button border and padding. ([359cd89](https://github.com/muxinc/elements/commit/359cd89472781fc41e33e95574c0d9c845b1d081))
+- **mux-uploader:** Add custom event for when upload starts. ([9fd1efc](https://github.com/muxinc/elements/commit/9fd1efc943bcb60efdb51b455d5b9642af86b920))
+- **mux-uploader:** Support Upchunk's attempt and chunkSuccess events. ([739a88e](https://github.com/muxinc/elements/commit/739a88e5eda697b8344ef14e3a20b1bef19e1a41))
+
 # [0.1.0-beta.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.3...@mux/mux-uploader@0.1.0-beta.4) (2022-07-21)
 
 ### Bug Fixes

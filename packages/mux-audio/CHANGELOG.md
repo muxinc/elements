@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.1...@mux/mux-audio@0.6.2) (2022-08-02)
+
+### Bug Fixes
+
+- CustomVideo.nativeEl being null in some cases ([#316](https://github.com/muxinc/elements/issues/316)) ([0563c30](https://github.com/muxinc/elements/commit/0563c3041cccd9b985a9093a8c7c7cc80433147c)), closes [#314](https://github.com/muxinc/elements/issues/314)
+
 ## [0.6.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.0...@mux/mux-audio@0.6.1) (2022-07-21)
 
 **Note:** Version bump only for package @mux/mux-audio

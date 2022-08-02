@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.25](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.24...@mux/mux-player-react@0.1.0-beta.25) (2022-08-02)
+
+### Features
+
+- types and docs for nohotkeys in mux-player-react ([a9f78d4](https://github.com/muxinc/elements/commit/a9f78d422d64bf661de59cad834aa1c819e88ff8))
+
 # [0.1.0-beta.24](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.23...@mux/mux-player-react@0.1.0-beta.24) (2022-07-21)
 
 ### Features

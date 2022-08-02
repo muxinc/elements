@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.5](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.4...@mux/mux-uploader-react@0.1.0-beta.5) (2022-08-02)
+
+### Bug Fixes
+
+- **mux-uploader-react:** Clean up typescript defs. ([8cfa013](https://github.com/muxinc/elements/commit/8cfa013c591c94654c7ffc314cef159bc3c0fff0))
+- **mux-uploader-react:** Update event and event handler typedefs for greater accuracy of types. ([5c601b8](https://github.com/muxinc/elements/commit/5c601b8b649a9ff20e046c4ac4aad657ffce4edf))
+
+### Features
+
+- **mux-uploader:** Add CSS variables for button border and padding. ([359cd89](https://github.com/muxinc/elements/commit/359cd89472781fc41e33e95574c0d9c845b1d081))
+- **mux-uploader:** Add custom event for when upload starts. ([9fd1efc](https://github.com/muxinc/elements/commit/9fd1efc943bcb60efdb51b455d5b9642af86b920))
+- **mux-uploader:** Support css vars for mux-uploader react component. ([8745784](https://github.com/muxinc/elements/commit/87457844f483d695d8f3bfd1da2fddaaa64a96fe))
+- **mux-uploader:** Support Upchunk's attempt and chunkSuccess events. ([739a88e](https://github.com/muxinc/elements/commit/739a88e5eda697b8344ef14e3a20b1bef19e1a41))
+
 # [0.1.0-beta.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.2...@mux/mux-uploader-react@0.1.0-beta.4) (2022-07-21)
 
 ### Bug Fixes

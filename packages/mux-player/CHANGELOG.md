@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.25](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.24...@mux/mux-player@0.1.0-beta.25) (2022-08-02)
+
+### Bug Fixes
+
+- move nohotkeys type to more appropriate place ([49f9c4e](https://github.com/muxinc/elements/commit/49f9c4e4d43f463aa4960a40c94e715d86c4304b))
+- **mux-player:** Account for attr vs. 'prop' naming overlap in state propogation. ([5c05af8](https://github.com/muxinc/elements/commit/5c05af8c257806662bc6402baba03b7090cbe699))
+
+### Features
+
+- add CSS parts for controls ([#310](https://github.com/muxinc/elements/issues/310)) ([e28c71e](https://github.com/muxinc/elements/commit/e28c71eed11423951dbac9faf2518ca7cbb2f9e2))
+- nohotkeys prop, only use the template ([4cde791](https://github.com/muxinc/elements/commit/4cde791a4664b11501ad48125bd5ed80e3970ff0))
+- support media-chrome keyboard shortcuts, use nohotkeys to turn off ([b8ed7f5](https://github.com/muxinc/elements/commit/b8ed7f5180aab60bb896842fb7037bce0069ad2c))
+- upgrade to media-chrome 0.9.0 ([f257e0d](https://github.com/muxinc/elements/commit/f257e0d6583de19d0f29859b512e12654f235f3a))
+
 # [0.1.0-beta.24](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.23...@mux/mux-player@0.1.0-beta.24) (2022-07-21)
 
 ### Bug Fixes
