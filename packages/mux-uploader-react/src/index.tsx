@@ -3,12 +3,17 @@ import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
 import type MuxUploaderElement from '@mux/mux-uploader';
+import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect from './useObjectPropEffect';
 
 export type MuxUploaderRefAttributes = MuxUploaderElement;
+
+interface GenericEventListener<T extends Event = CustomEvent> {
+  (evt: T): void;
+}
 
 export type MuxUploaderProps = {
   id?: string;
@@ -32,12 +37,12 @@ export type MuxUploaderProps = {
   };
   children?: React.ReactNode;
   formatProgress?: (percent: number) => string;
-  onUploadStart?: EventListener;
-  onChunkAttempt?: EventListener;
-  onChunkSuccess?: EventListener;
-  onError?: EventListener;
-  onProgress?: EventListener;
-  onSuccess?: EventListener;
+  onUploadStart?: GenericEventListener<MuxUploaderElementEventMap['uploadstart']>;
+  onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap['chunkattempt']>;
+  onChunkSuccess?: GenericEventListener<MuxUploaderElementEventMap['chunksuccess']>;
+  onError?: GenericEventListener<MuxUploaderElementEventMap['error']>;
+  onProgress?: GenericEventListener<MuxUploaderElementEventMap['progress']>;
+  onSuccess?: GenericEventListener<MuxUploaderElementEventMap['success']>;
 };
 
 const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>(
@@ -46,11 +51,11 @@ const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUpload
   }
 );
 
-const useEventCallbackEffect = (
-  type: string,
+const useEventCallbackEffect = <K extends keyof MuxUploaderElementEventMap>(
+  type: K,
   ref: // | ((instance: EventTarget | null) => void)
-  React.MutableRefObject<EventTarget | null> | null | undefined,
-  callback: EventListener | undefined
+  React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
+  callback: GenericEventListener<MuxUploaderElementEventMap[K]> | undefined
 ) => {
   return useEffect(() => {
     const eventTarget = ref?.current;
