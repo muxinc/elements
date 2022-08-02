@@ -17,7 +17,7 @@ interface GenericEventListener<T extends Event = CustomEvent> {
 
 export type MuxUploaderProps = {
   id?: string;
-  endpoint?: string;
+  endpoint?: MuxUploaderElement['endpoint'];
   type?: string;
   status?: boolean;
   style?: CSSProperties & {
@@ -43,7 +43,7 @@ export type MuxUploaderProps = {
   onError?: GenericEventListener<MuxUploaderElementEventMap['error']>;
   onProgress?: GenericEventListener<MuxUploaderElementEventMap['progress']>;
   onSuccess?: GenericEventListener<MuxUploaderElementEventMap['success']>;
-};
+} & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;
 
 const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>(
   ({ children, ...props }, ref) => {
