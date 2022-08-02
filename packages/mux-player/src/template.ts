@@ -15,7 +15,10 @@ import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
 const controlsListStyles: Record<string, string> = {
-  noplay: `::part(play button) { display: none; }`,
+  notop: `::part(top) { display: none; }`,
+  nobottom: `::part(bottom) { display: none; }`,
+  nocenter: `::part(center) { display: none; }`,
+  noplay: `::part(bottom play button) { display: none; }`,
   nofullscreen: `::part(fullscreen button) { display: none; }`,
   noplaybackrate: `::part(playbackrate button) { display: none; }`,
 };
