@@ -12,6 +12,7 @@ const INITIAL_THUMBNAIL_TIME = undefined;
 const INITIAL_DEBUG = false;
 const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
+const INITIAL_NOHOTKEYS = false;
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
@@ -49,6 +50,7 @@ function MuxPlayerPage() {
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
+  const [nohotkeys, setNohotkeys] = useState(INITIAL_NOHOTKEYS);
   const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
   const [thumbnailTime, _setThumbnailTime] = useState(INITIAL_THUMBNAIL_TIME);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
@@ -85,6 +87,7 @@ function MuxPlayerPage() {
           customDomain={selectedAsset["custom-domain"]}
           forwardSeekOffset={10}
           backwardSeekOffset={10}
+          nohotkeys={nohotkeys}
           // onPlayerReady={() => console.log("ready!")}
           debug={debug}
           muted={muted}
@@ -154,6 +157,15 @@ function MuxPlayerPage() {
             type="checkbox"
             onChange={() => setMuted(!muted)}
             checked={muted}
+          />
+        </div>
+        <div>
+          <label htmlFor="nohotkeys-control">No Hot Keys</label>
+          <input
+            id="nohotkeys-control"
+            type="checkbox"
+            onChange={() => setNohotkeys(!nohotkeys)}
+            checked={nohotkeys}
           />
         </div>
         <div>
