@@ -223,14 +223,28 @@ const ButtonPressedKeys = ['Enter', ' '];
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 
+type ErrorDetail = {
+  message: string;
+  chunkNumber?: number;
+  attempts?: number;
+};
+
 // NOTE: error and progress events are already determined on HTMLElement but have inconsistent types. Should consider renaming events (CJP)
 export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'error' | 'progress'> {
   uploadstart: CustomEvent<UpChunk.UpChunk>;
-  chunkattempt: CustomEvent;
-  chunksuccess: CustomEvent;
-  error: CustomEvent;
-  progress: CustomEvent;
-  success: CustomEvent;
+  chunkattempt: CustomEvent<{
+    chunkNumber: number;
+    chunkSize: number;
+  }>;
+  chunksuccess: CustomEvent<{
+    chunk: number;
+    attempts: number;
+    // Note: This should be more explicitly typed in Upchunk. (TD).
+    response: any;
+  }>;
+  error: CustomEvent<ErrorDetail>;
+  progress: CustomEvent<number>;
+  success: CustomEvent<undefined | null>;
 }
 
 interface MuxUploaderElement extends HTMLElement {
@@ -459,6 +473,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
       }
       this.setAttribute('upload-error', '');
       console.error(invalidUrlMessage);
+      this.dispatchEvent(new CustomEvent('error', { detail: { message: invalidUrlMessage } }));
       // Bail early if no endpoint.
       return;
     } else {
