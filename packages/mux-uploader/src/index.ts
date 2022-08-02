@@ -223,7 +223,40 @@ const ButtonPressedKeys = ['Enter', ' '];
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 
-class MuxUploaderElement extends HTMLElement {
+// NOTE: error and progress events are already determined on HTMLElement but have inconsistent types. Should consider renaming events (CJP)
+export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'error' | 'progress'> {
+  uploadstart: CustomEvent<UpChunk.UpChunk>;
+  chunkattempt: CustomEvent;
+  chunksuccess: CustomEvent;
+  error: CustomEvent;
+  progress: CustomEvent;
+  success: CustomEvent;
+}
+
+interface MuxUploaderElement extends HTMLElement {
+  addEventListener<K extends keyof MuxUploaderElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxUploaderElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof MuxUploaderElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxUploaderElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
+}
+
+class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
   protected _endpoint: Endpoint;
