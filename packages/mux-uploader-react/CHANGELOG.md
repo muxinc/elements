@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.5...@mux/mux-uploader-react@0.1.0-beta.6) (2022-08-03)
+
+### Features
+
+- **mux-uploader-react:** Handle endpoint and ref attrs. ([6306286](https://github.com/muxinc/elements/commit/6306286ec5f07ac3328976bdd44ff6fdd2e10dc9))
+
 # [0.1.0-beta.5](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.4...@mux/mux-uploader-react@0.1.0-beta.5) (2022-08-02)
 
 ### Bug Fixes

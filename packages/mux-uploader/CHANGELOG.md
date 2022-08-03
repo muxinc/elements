@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.5...@mux/mux-uploader@0.1.0-beta.6) (2022-08-03)
+
+### Features
+
+- **mux-uploader:** Upchunk event type defs. ([248e0e1](https://github.com/muxinc/elements/commit/248e0e1a9edf648113fd6bc7bdf6505c7df8cc4b))
+
 # [0.1.0-beta.5](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.4...@mux/mux-uploader@0.1.0-beta.5) (2022-08-02)
 
 ### Bug Fixes

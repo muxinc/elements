@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.26](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.25...@mux/mux-player@0.1.0-beta.26) (2022-08-03)
+
+### Bug Fixes
+
+- update stream-type values in warning log ([d995694](https://github.com/muxinc/elements/commit/d995694966d877097c63e23c7425097f5c50e259))
+
 # [0.1.0-beta.25](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.24...@mux/mux-player@0.1.0-beta.25) (2022-08-02)
 
 ### Bug Fixes
