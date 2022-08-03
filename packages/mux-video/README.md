@@ -89,7 +89,7 @@ Attributes:
 - `metadata-video-title`: This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
-- `stream-type`: Enum value: one of `"on-demand"`, `"live"` (HLS live stream), `"ll-live"` (low latency live). Not strictly required, but preffered so that `<mux-video />` can make optimizations based on the type of stream.
+- `stream-type`: Enum value: one of `"on-demand"`, `"live"` (HLS live stream), `"ll-live"` (low latency live). Not strictly required, but preferred so that `<mux-video />` can make optimizations based on the type of stream.
 - `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0.
 
 This is the bare bones of metadata that you should provide to the `<mux-video>` element.
@@ -148,7 +148,7 @@ Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-d
 
 ### Advanced: prefer-mse
 
-Pass the `prefer-mse` attribute to prioritze the in-code [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) based engine (currently [hls.js](https://github.com/video-dev/hls.js/)) when MSE are supported by the browser.  (Without `prefer-mse`, the default behaviour for `<mux-video>` is to try the native playback via the underlying `<video/>` tag )
+Pass the `prefer-mse` attribute to prioritze the in-code [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) based engine (currently [hls.js](https://github.com/video-dev/hls.js/)) when MSE are supported by the browser. (Without `prefer-mse`, the default behaviour for `<mux-video>` is to try the native playback via the underlying `<video/>` tag )
 
 ```html
 <mux-video
