@@ -553,7 +553,7 @@ class MuxPlayerElement extends VideoApiElement {
             file: 'invalid-stream-type.md',
             message: String(
               i18n(
-                `No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+                `No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
               )
             ),
           });
@@ -561,7 +561,7 @@ class MuxPlayerElement extends VideoApiElement {
           logger.devlog({
             file: 'invalid-stream-type.md',
             message: i18n(
-              `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\` or \`ll-live\``
+              `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
             ).format({ streamType: this.streamType }),
           });
         }
