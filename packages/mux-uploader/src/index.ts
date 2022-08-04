@@ -274,6 +274,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
   protected _endpoint: Endpoint;
+  protected _file: File | undefined;
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
@@ -377,6 +378,27 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
     this._endpoint = value;
   }
 
+  public get file(): File | undefined {
+    return this._file;
+  }
+
+  public set file(value: File | undefined) {
+    if (!value) {
+      this._file = value;
+      return;
+    }
+
+    if (value && this._file) {
+      const errorMsg = 'Upload already in progress. Cannot set file until upload is complete!';
+      console.error(errorMsg);
+      this.dispatchEvent(new CustomEvent('error', { detail: errorMsg }));
+      return;
+    }
+
+    // Just here for POC spike. Refactor to not expect an event. (CJP)
+    this.handleUpload(new CustomEvent('file-ready', { detail: value }));
+  }
+
   get formatProgress(): (percent: number) => string {
     return this._formatProgress ?? defaultFormatProgress;
   }
@@ -463,7 +485,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
     }
   }
 
-  handleUpload(evt: CustomEvent) {
+  handleUpload(evt: CustomEvent<File>) {
     const endpoint = this.endpoint;
 
     if (!endpoint) {
@@ -486,9 +508,11 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
     this.setAttribute('upload-in-progress', '');
     this.progressBar?.focus();
 
+    // Here for POC spike. Likely refactor so handleUpload or another method with its current "guts" just expect to be invoked with `file` (CJP)
+    this._file = evt.detail;
     const upload = UpChunk.createUpload({
       endpoint,
-      file: evt.detail,
+      file: this._file,
     });
 
     this.dispatchEvent(new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } }));
@@ -533,6 +557,9 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
       }
 
       console.info(successMessage);
+      // Whatever the refactor, make sure this gets reset to undefined before dispatching so implements can rely on
+      // it for predictable outer logic (e.g. multiple file uploads in serial). (CJP)
+      this.file = undefined;
       this.dispatchEvent(new CustomEvent('success', event));
     });
   }
