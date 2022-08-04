@@ -231,7 +231,7 @@ type ErrorDetail = {
 
 // NOTE: error and progress events are already determined on HTMLElement but have inconsistent types. Should consider renaming events (CJP)
 export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'error' | 'progress'> {
-  uploadstart: CustomEvent<UpChunk.UpChunk>;
+  uploadstart: CustomEvent<{ file: File; chunkSize: number }>;
   chunkattempt: CustomEvent<{
     chunkNumber: number;
     chunkSize: number;
@@ -491,7 +491,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
       file: evt.detail,
     });
 
-    this.dispatchEvent(new CustomEvent('uploadstart', { detail: upload }));
+    this.dispatchEvent(new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } }));
 
     upload.on('attempt', (event) => {
       this.dispatchEvent(new CustomEvent('chunkattempt', event));
