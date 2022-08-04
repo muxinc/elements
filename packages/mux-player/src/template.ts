@@ -15,12 +15,32 @@ import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
 const controlsListStyles: Record<string, string> = {
-  notop: `::part(top) { display: none; }`,
-  nobottom: `::part(bottom) { display: none; }`,
-  nocenter: `::part(center) { display: none; }`,
+  notop: `::part(top), [part~="top"] { display: none; }`,
+  nobottom: `::part(bottom), [part~="bottom"] { display: none; }`,
+  nocenter: `::part(center), [part~="center"] { display: none; }`,
+
+  nocenterplay: `::part(center play button) { display: none; }`,
+  nocenterseekbackward: `::part(center seek-backward button) { display: none; }`,
+  nocenterseekforward: `::part(center seek-forward button) { display: none; }`,
+
   noplay: `::part(bottom play button) { display: none; }`,
+  noseekbackward: `::part(bottom seek-backward button) { display: none; }`,
+  noseekforward: `::part(bottom seek-forward button) { display: none; }`,
+
+  nomute: `::part(mute button) { display: none; }`,
+  nocaptions: `::part(captions button) { display: none; }`,
+  noairplay: `::part(airplay button) { display: none; }`,
+  nopip: `::part(pip button) { display: none; }`,
+  nocast: `::part(cast button) { display: none; }`,
   nofullscreen: `::part(fullscreen button) { display: none; }`,
   noplaybackrate: `::part(playbackrate button) { display: none; }`,
+  novolumerange: `::part(volume range) { display: none; }`,
+  notimerange: `::part(time range) { display: none; }`,
+  notimedisplay: `::part(time display) { display: none; }`,
+  noremoteplayback: `::part(airplay button), ::part(cast button) { display: none; }`,
+
+  // the seek live button is in the light dom below, use attribute selector.
+  noseeklive: `[part*="seek-live button"] { display: none; }`,
 };
 
 export const template = (props: MuxTemplateProps) => html`
@@ -36,6 +56,11 @@ export const template = (props: MuxTemplateProps) => html`
 
 const flatCSSParts = Object.values(parts).flatMap((group) => group.split(' '));
 const forwardUniqueCSSParts = [...new Set(flatCSSParts)].join(', ');
+
+const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
+
+const isLiveOrDVR = (props: MuxTemplateProps) =>
+  [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
 
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
@@ -100,12 +125,10 @@ export const content = (props: MuxTemplateProps) => html`
           ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
           : false
       }"
-      cast-stream-type="${[StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any) ? 'live' : false}"
+      cast-stream-type="${isLive(props) ? 'live' : false}"
     >
       ${
-        props.playbackId &&
-        !props.audio &&
-        ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)
+        props.playbackId && !props.audio && !isLiveOrDVR(props)
           ? html`<track
               label="thumbnails"
               default
@@ -118,21 +141,24 @@ export const content = (props: MuxTemplateProps) => html`
           : html``
       }
     </mux-video>
-    <button
-      slot="seek-to-live-button"
-      part="seek-live button"
-      class="mxp-seek-to-live-button"
-      aria-disabled="${props.inLiveWindow}"
-      onclick="${function (this: HTMLButtonElement, evt: Event) {
-        props.onSeekToLive?.(evt);
-        if (props.paused) {
-          const playRequestEvt = new CustomEvent('mediaplayrequest', { composed: true, bubbles: true });
-          (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
-        }
-      }}"
-    >
-      Live
-    </button>
+    ${
+      isLiveOrDVR(props)
+        ? html`<button
+            slot="seek-live"
+            part="${isLive(props) ? 'top' : 'bottom'} seek-live button"
+            aria-disabled="${props.inLiveWindow}"
+            onclick="${function (this: HTMLButtonElement, evt: Event) {
+              props.onSeekToLive?.(evt);
+              if (props.paused) {
+                const playRequestEvt = new CustomEvent('mediaplayrequest', { composed: true, bubbles: true });
+                (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
+              }
+            }}"
+          >
+            Live
+          </button>`
+        : html``
+    }
     <mxp-dialog
       no-auto-hide
       open="${props.isDialogOpen}"
