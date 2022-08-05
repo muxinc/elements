@@ -161,6 +161,10 @@ export class AttributeTokenList {
     tokens.forEach((t) => {
       if (!this.contains(t)) this.#tokens.push(t);
     });
+    // if the attribute was removed don't try to add it again.
+    if (this.value === '' && !this.#el.hasAttribute(this.#attr)) {
+      return;
+    }
     this.#el.setAttribute(this.#attr, `${this.value}`);
   }
 
