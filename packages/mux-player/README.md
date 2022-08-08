@@ -117,15 +117,49 @@ Enable the [Google Cast](https://developers.google.com/cast) button in the contr
 <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 ```
 
+### CSS Parts
+
+Mux Player uses a [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
+to encapsulate its styles and behaviors.
+As a result, it's not possible to target its internals with the usual CSS selectors.
+Instead, some components expose **parts** that can be targeted with the [CSS part selector](https://developer.mozilla.org/en-US/docs/Web/CSS/::part)
+, or `::part()`.
+
+```html
+<style>
+  mux-player::part(center play button) {
+    display: none;
+  }
+</style>
+<mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>
+```
+
+Supported **parts**:
+`seek-live`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`,
+`top`, `center`, `bottom`, `play`, `button`, `seek-backward`, `seek-forward`, `mute`,
+`captions`, `airplay`, `pip`, `cast`, `fullscreen`, `playbackrate`, `volume`, `range`, `time`, `display`
+
+CSS parts allow you to style each part individually with a selector like `::part(center play button)`
+or target multiple elements if the part is assigned to multiple elements internally, usage `::part(button)`.
+Every CSS property can be declared in the selector, this makes it a very powerfull API.
+If you need a simple API to hide a few single control elements have a look at the [`controlslist`](#controlslist) attribute.
+
 ### controlslist
 
 Offers a way to hide the controls elements/buttons that are being shown by the player.  
 The `controlslist` attribute accepts a blocklist as a space separated string.
 
-The following tokens are currently supported:  
+Supported **tokens**:
 `notop`, `nobottom`, `nocenter`, `nocenterplay`, `nocenterseekbackward`, `nocenterseekforward`, `noplay`,
 `noseekbackward`, `noseekforward`, `nomute`, `nocaptions`, `noairplay`, `nopip`, `nocast`, `nofullscreen`,
 `noplaybackrate`, `novolumerange`, `notimerange`, `notimedisplay`, `noremoteplayback`, `noseeklive`
+
+```html
+<mux-player
+  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+  controlslist="nocenter nocaptions noremoteplayback"
+></mux-player>
+```
 
 ### prefer-mse
 
