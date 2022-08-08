@@ -19,14 +19,7 @@ function MuxVideoWCPage() {
   const mutedObj = muted ? { muted: "" } : {};
   const autoplayObj = autoplay ? { autoplay } : {};
   return (
-    <div
-      style={{
-        display: "flex",
-        flexFlow: "column",
-        height: "100%",
-        width: "100%",
-      }}
-    >
+    <div>
       <h1>mux-video Demo</h1>
       <div>
         <mux-video
@@ -44,7 +37,7 @@ function MuxVideoWCPage() {
           controls
         ></mux-video>
       </div>
-      <div>
+      <div className="options">
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
           <input

@@ -43,6 +43,8 @@ const controlsListStyles: Record<string, string> = {
   noseeklive: `[part*="seek-live button"] { display: none; }`,
 };
 
+export const ControlListTokens = Object.keys(controlsListStyles);
+
 export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}

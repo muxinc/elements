@@ -6,14 +6,14 @@ import MuxVideoElement, { MediaError } from '@mux/mux-video';
 import { Metadata, StreamTypes, addTextTrack, removeTextTrack } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
-import { template } from './template';
+import { template, ControlListTokens } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 
-export { MediaError };
+export { MediaError, ControlListTokens };
 export type Tokens = {
   playback?: string;
   thumbnail?: string;
