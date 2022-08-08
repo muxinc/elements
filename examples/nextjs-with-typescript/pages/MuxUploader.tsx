@@ -19,7 +19,7 @@ function MuxUploaderPage() {
   }
 
   return (
-    <MuxUploaderDrop style={{ display: "flex", flexFlow: "column", height: "100vh", width: "100vw" }} mux-uploader="uploader" overlay overlayText="You're doing great!">
+    <MuxUploaderDrop mux-uploader="uploader" overlay overlayText="You're doing great!">
       <h1>MuxUploader with MuxUploaderDrop Demo</h1>
       <h2>Enter your upload GCS url:</h2>
       <input type="text" style={{ padding: "8px 12px", marginBottom: "20px", width: "400px" }} placeholder="https://storage.googleapis.com/..." onChange={handleChange} />

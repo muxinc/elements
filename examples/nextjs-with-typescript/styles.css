@@ -1,0 +1,43 @@
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+}
+
+body > div {
+  max-width: 800px;
+  margin: 40px auto;
+}
+
+mux-player,
+mux-video,
+video {
+  width: 100%;
+  display: block;
+  line-height: 0;
+  margin-bottom: 1rem;
+  background: #000;
+  aspect-ratio: 16 / 9;
+}
+
+mux-audio,
+audio {
+  width: 100%;
+  display: block;
+  line-height: 0;
+  margin-bottom: 1rem;
+}
+
+.options > div {
+  padding: 5px 10px;
+  min-height: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.options > div input {
+  margin-left: 5px;
+}
+
+.options > div:nth-of-type(odd) {
+  background-color: #e9e9f9;
+}
