@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import Script from 'next/script';
-import MuxPlayer from "@mux/mux-player-react";
+import MuxPlayer, { ControlListTokens } from "@mux/mux-player-react";
 import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
@@ -14,6 +14,7 @@ const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
 const INITIAL_NOHOTKEYS = false;
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
+const INITIAL_CONTROLS_LIST = '';
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
@@ -56,26 +57,14 @@ function MuxPlayerPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
+  const [controlslist, setControlslist] = useState(INITIAL_CONTROLS_LIST);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexFlow: "column",
-        height: "100%",
-        width: "100%",
-      }}
-    >
+    <div>
       <h1>MuxPlayer Demo</h1>
       <div>
         <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
-          style={{
-            // set the max height of the player to be the viewport height
-            // minus the block height of the h1 so that the player
-            // will never go out of view
-            maxHeight: "calc(100vh - 6em)"
-          }}
           ref={mediaElRef}
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
@@ -88,6 +77,7 @@ function MuxPlayerPage() {
           forwardSeekOffset={10}
           backwardSeekOffset={10}
           nohotkeys={nohotkeys}
+          controlslist={controlslist}
           // onPlayerReady={() => console.log("ready!")}
           debug={debug}
           muted={muted}
@@ -113,7 +103,24 @@ function MuxPlayerPage() {
           // startTime={12}
         />
       </div>
-      <div>
+      <div className="options">
+        <div>
+          <select
+            onChange={({ target: { value } }) => {
+              setSelectedAsset(mediaAssets[value]);
+            }}
+          >
+            {mediaAssets.map((value, i) => {
+              const { description, error } = value;
+              const label = `${error ? "👎 " : ""}${description}`;
+              return (
+                <option key={i} value={i}>
+                  {label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <div>
           <label htmlFor="primarycolor-control">Primary Color </label>
           <input
@@ -185,21 +192,6 @@ function MuxPlayerPage() {
             defaultValue={envKey}
           />
         </div>
-        <select
-          onChange={({ target: { value } }) => {
-            setSelectedAsset(mediaAssets[value]);
-          }}
-        >
-          {mediaAssets.map((value, i) => {
-            const { description, error } = value;
-            const label = `${error ? "👎 " : ""}${description}`;
-            return (
-              <option key={i} value={i}>
-                {label}
-              </option>
-            );
-          })}
-        </select>
       </div>
       <h3 className="title">
         <Link href="/">

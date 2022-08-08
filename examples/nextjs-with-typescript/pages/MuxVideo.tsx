@@ -12,19 +12,11 @@ function MuxVideoPage() {
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexFlow: "column",
-        height: "100vh",
-        width: "100vw",
-      }}
-    >
+    <div>
       <h1>MuxVideo Demo</h1>
-      <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
+      <div>
         <MuxVideo
           ref={mediaElRef}
-          style={{ height: "100%", maxWidth: "100%" }}
           playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
           // metadata={{
           //   video_id: "video-id-12345",
@@ -44,7 +36,7 @@ function MuxVideoPage() {
           }}
         />
       </div>
-      <div>
+      <div className="options">
         <div>
           <label htmlFor="paused-control">Paused</label>
           <input

@@ -18,14 +18,7 @@ function MuxPlayerWCPage() {
   const mutedObj = muted ? { muted: "" } : {};
   const autoplayObj = autoplay ? { autoplay } : {};
   return (
-    <div
-      style={{
-        display: "flex",
-        flexFlow: "column",
-        height: "100%",
-        width: "100%",
-      }}
-    >
+    <div>
       <h1>mux-player Demo</h1>
       <div>
         <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
@@ -45,7 +38,7 @@ function MuxPlayerWCPage() {
           // startTime={12}
         ></mux-player>
       </div>
-      <div>
+      <div className="options">
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
           <input

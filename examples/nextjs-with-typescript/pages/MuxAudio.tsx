@@ -11,19 +11,11 @@ function MuxAudioPage() {
   const [muted, setMuted] = useState(INITIAL_MUTED);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexFlow: "column",
-        height: "100vh",
-        width: "100vw",
-      }}
-    >
+    <div>
       <h1>MuxAudio Demo</h1>
       <div style={{ flexGrow: 1, flexShrink: 1 }}>
         <MuxAudio
           ref={mediaElRef}
-          style={{ maxWidth: "100%" }}
           playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
           // metadata={{
           //   video_id: "video-id-12345",
@@ -37,7 +29,7 @@ function MuxAudioPage() {
           muted={muted}
         />
       </div>
-      <div>
+      <div className="options">
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
           <input
