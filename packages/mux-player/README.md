@@ -117,6 +117,16 @@ Enable the [Google Cast](https://developers.google.com/cast) button in the contr
 <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 ```
 
+### controlslist
+
+Offers a way to hide the controls elements/buttons that are being shown by the player.  
+The `controlslist` attribute accepts a blocklist as a space separated string.
+
+The following tokens are currently supported:  
+`notop`, `nobottom`, `nocenter`, `nocenterplay`, `nocenterseekbackward`, `nocenterseekforward`, `noplay`,
+`noseekbackward`, `noseekforward`, `nomute`, `nocaptions`, `noairplay`, `nopip`, `nocast`, `nofullscreen`,
+`noplaybackrate`, `novolumerange`, `notimerange`, `notimedisplay`, `noremoteplayback`, `noseeklive`
+
 ### prefer-mse
 
 By default `<mux-player>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
@@ -165,6 +175,7 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 | `beacon-collection-domain` | `string` (domain name)                                              | Assigns a custom domain to be used for Mux Data collection.                                                                                                                                                                                                                                                                                                                                      | N/A           |
 | `custom-domain`            | `string` (domain name)                                              | Assigns a custom domain to be used for Mux Video.                                                                                                                                                                                                                                                                                                                                                | N/A           |
 | `nohotkeys`                | `boolean`                                                           | Toggles keyboard shortcut (hot keys) support when focus in inside the player                                                                                                                                                                                                                                                                                                                     | `false`       |
+| `controlslist`             | `string`                                                            | Offers a way to hide the controls elements/buttons that are being shown by the player. For more, see the section on [`controlslist`](#controlslist)                                                                                                                                                                                                                                              | N/A           |
 
 ### Methods
 
@@ -201,6 +212,7 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 | `videoWidth` <sub><sup>Read only</sup></sub>  | Returns an unsigned integer value indicating the intrinsic width of the resource in CSS pixels, or 0 if no media is available yet.                                                                                                                                                                                  | `0`         |
 | `volume`                                      | Is a double indicating the audio volume, from 0.0 (silent) to 1.0 (loudest).                                                                                                                                                                                                                                        | `1`         |
 | `customDomain`                                | Is a `String` that assigns a custom domain to be used for Mux Video.                                                                                                                                                                                                                                                | `undefined` |
+| `controlsList`                                | Is a `DOMTokenList` similar to `classList` which offers a way to hide the controls elements/buttons that are being shown by the player. For more, see the section on [`controlslist`](#controlslist)                                                                                                                | `''`        |
 
 ### Events
 
