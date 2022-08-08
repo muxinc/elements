@@ -34,7 +34,7 @@ audio {
   align-items: center;
 }
 
-.options > div input {
+.options > div :is(input, select) {
   margin-left: 5px;
 }
 

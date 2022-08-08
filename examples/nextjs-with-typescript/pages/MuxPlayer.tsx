@@ -192,6 +192,23 @@ function MuxPlayerPage() {
             defaultValue={envKey}
           />
         </div>
+        <div>
+          <label htmlFor="controlslist-control">Controlslist </label>
+          <select
+            id="controlslist-control"
+            multiple
+            onChange={(event) => setControlslist(
+              Array.from(event.target.selectedOptions)
+                .map(({ value }) => value).join(' ')
+            )}
+          >
+            {ControlListTokens.map((token, i) => {
+              return (
+                <option key={i} value={token}>{token}</option>
+              )
+            })}
+          </select>
+        </div>
       </div>
       <h3 className="title">
         <Link href="/">
