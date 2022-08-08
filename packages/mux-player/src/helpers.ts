@@ -114,11 +114,11 @@ export const isInLiveWindow = (el: MuxPlayerElement) => {
 };
 
 export class AttributeTokenList {
-  #el: HTMLElement;
-  #attr: string;
+  #el?: HTMLElement;
+  #attr?: string;
   #tokens: string[] = [];
 
-  constructor(el: HTMLElement, attr: string) {
+  constructor(el?: HTMLElement, attr?: string) {
     this.#el = el;
     this.#attr = attr;
   }
@@ -139,6 +139,10 @@ export class AttributeTokenList {
     if (val === this.value) return;
     this.#tokens = [];
     this.add(...(val?.split(' ') ?? []));
+  }
+
+  toString() {
+    return this.value;
   }
 
   item(index: number) {
@@ -162,17 +166,17 @@ export class AttributeTokenList {
       if (!this.contains(t)) this.#tokens.push(t);
     });
     // if the attribute was removed don't try to add it again.
-    if (this.value === '' && !this.#el.hasAttribute(this.#attr)) {
+    if (this.value === '' && !this.#el?.hasAttribute(`${this.#attr}`)) {
       return;
     }
-    this.#el.setAttribute(this.#attr, `${this.value}`);
+    this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
 
   remove(...tokens: string[]) {
     tokens.forEach((t) => {
       this.#tokens.splice(this.#tokens.indexOf(t), 1);
     });
-    this.#el.setAttribute(this.#attr, `${this.value}`);
+    this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
 
   contains(token: string) {
