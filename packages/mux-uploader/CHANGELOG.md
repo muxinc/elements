@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.6...@mux/mux-uploader@0.1.0-beta.7) (2022-08-04)
+
+### Bug Fixes
+
+- **mux-uploader:** use narrower type def for uploadstart to avoid type mismatches in dist. ([a56cc06](https://github.com/muxinc/elements/commit/a56cc0609b1051513f5df3eb7e9cb21410fc7bb5))
+
 # [0.1.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.5...@mux/mux-uploader@0.1.0-beta.6) (2022-08-03)
 
 ### Features
