@@ -68,8 +68,12 @@ function canary {
   # default to local package version if no last version was found on NPM
   PRE_VERSION=$(npx semver ${LAST_VERSION:-$PKG_VERSION} -i prerelease --preid canary)
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
+  echo "Beginning canary release for $PKG_NAME@$VERSION"
   npm --no-git-tag-version version $VERSION
+  # npm run build
   npm publish --tag canary --access public
+  echo "canary release dist used for $PKG_NAME@$VERSION"
+  ls dist
   # `npm view name@x.x.x version` will return an empty string if not available
   until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
   do
@@ -79,6 +83,7 @@ function canary {
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna run` does this
   npx lerna-update-wizard --non-interactive --lazy --dependency $PKG_NAME@$VERSION ../..
+  echo "Ending canary release and lerna-update-wizard completed for $PKG_NAME@$VERSION"
 }
 
 main "$@"
