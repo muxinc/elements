@@ -6,9 +6,12 @@ import { useState, ChangeEvent } from "react";
 const onUploadStart = console.log.bind(null, 'uploadStart');
 const onChunkAttempt = console.log.bind(null, "chunkAttempt");
 const onChunkSuccess = console.log.bind(null, "chunkSuccess");
-const onError = console.log.bind(null, "error");
 const onProgress = console.log.bind(null, "progress");
 const onSuccess = console.log.bind(null, "success");
+
+const onUploadError = ({ detail }) => {
+  console.log(detail.message);
+}
 
 function MuxUploaderPage() {
   const [url, setUrl] = useState("");
@@ -36,7 +39,7 @@ function MuxUploaderPage() {
             onChunkAttempt={onChunkAttempt}
             onChunkSuccess={onChunkSuccess}
             onSuccess={onSuccess}
-            onError={onError}
+            onUploadError={onUploadError}
             onProgress={onProgress}
           />
       </div>
