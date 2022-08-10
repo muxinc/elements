@@ -40,7 +40,7 @@ export type MuxUploaderProps = {
   onUploadStart?: GenericEventListener<MuxUploaderElementEventMap['uploadstart']>;
   onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap['chunkattempt']>;
   onChunkSuccess?: GenericEventListener<MuxUploaderElementEventMap['chunksuccess']>;
-  onError?: GenericEventListener<MuxUploaderElementEventMap['error']>;
+  onUploadError?: GenericEventListener<MuxUploaderElementEventMap['uploaderror']>;
   onProgress?: GenericEventListener<MuxUploaderElementEventMap['progress']>;
   onSuccess?: GenericEventListener<MuxUploaderElementEventMap['success']>;
 } & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;
@@ -76,7 +76,7 @@ const useUploader = (
     onUploadStart,
     onChunkAttempt,
     onChunkSuccess,
-    onError,
+    onUploadError,
     onProgress,
     onSuccess,
     formatProgress,
@@ -88,7 +88,7 @@ const useUploader = (
   useEventCallbackEffect('uploadstart', ref, onUploadStart);
   useEventCallbackEffect('chunkattempt', ref, onChunkAttempt);
   useEventCallbackEffect('chunksuccess', ref, onChunkSuccess);
-  useEventCallbackEffect('error', ref, onError);
+  useEventCallbackEffect('uploaderror', ref, onUploadError);
   useEventCallbackEffect('progress', ref, onProgress);
   useEventCallbackEffect('success', ref, onSuccess);
   return [remainingProps];
