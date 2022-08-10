@@ -229,8 +229,8 @@ type ErrorDetail = {
   attempts?: number;
 };
 
-// NOTE: error and progress events are already determined on HTMLElement but have inconsistent types. Should consider renaming events (CJP)
-export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'error' | 'progress'> {
+// NOTE: Progress event is already determined on HTMLElement but have inconsistent types. Should consider renaming events (CJP)
+export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'progress'> {
   uploadstart: CustomEvent<{ file: File; chunkSize: number }>;
   chunkattempt: CustomEvent<{
     chunkNumber: number;
@@ -242,7 +242,7 @@ export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'e
     // Note: This should be more explicitly typed in Upchunk. (TD).
     response: any;
   }>;
-  error: CustomEvent<ErrorDetail>;
+  uploaderror: CustomEvent<ErrorDetail>;
   progress: CustomEvent<number>;
   success: CustomEvent<undefined | null>;
 }
@@ -473,7 +473,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
       }
       this.setAttribute('upload-error', '');
       console.error(invalidUrlMessage);
-      this.dispatchEvent(new CustomEvent('error', { detail: { message: invalidUrlMessage } }));
+      this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message: invalidUrlMessage } }));
       // Bail early if no endpoint.
       return;
     } else {
@@ -511,7 +511,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
       }
 
       console.error(event.detail.message);
-      this.dispatchEvent(new CustomEvent('error', event));
+      this.dispatchEvent(new CustomEvent('uploaderror', event));
     });
 
     upload.on('progress', (event) => {
