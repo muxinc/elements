@@ -70,7 +70,6 @@ function canary {
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
   echo "Beginning canary release for $PKG_NAME@$VERSION"
   npm --no-git-tag-version version $VERSION
-  # npm run build
   npm publish --tag canary --access public
   echo "canary release dist used for $PKG_NAME@$VERSION"
   ls dist
