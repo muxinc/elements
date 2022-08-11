@@ -74,6 +74,7 @@ const PlayerAttributes = {
   AUDIO: 'audio',
   NOHOTKEYS: 'nohotkeys',
   CONTROLSLIST: 'controlslist',
+  PLAYBACK_RATES: 'playbackrates',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -113,6 +114,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
+    playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     playerSize: getPlayerSize(el.mediaController ?? el),
     // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
@@ -672,6 +674,31 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set secondaryColor(val: string | undefined) {
     this.setAttribute(PlayerAttributes.SECONDARY_COLOR, `${val}`);
+  }
+
+  /**
+   * Get the playback rates applied to the playback rate control.
+   */
+  get playbackRates() {
+    if (!this.hasAttribute(PlayerAttributes.PLAYBACK_RATES)) return undefined;
+    // /NOTE: This is duplicating the code from Media Chrome's media-playback-rate-button (CJP)
+    return (this.getAttribute(PlayerAttributes.PLAYBACK_RATES) as string)
+      .trim()
+      .split(/\s*,?\s+/)
+      .map((str) => Number(str))
+      .filter((num) => !Number.isNaN(num))
+      .sort((a, b) => a - b);
+  }
+
+  /**
+   * Set the playback rates applied to the playback rate control.
+   */
+  set playbackRates(val: number[] | undefined) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.PLAYBACK_RATES);
+      return;
+    }
+    this.setAttribute(PlayerAttributes.PLAYBACK_RATES, val.join(' '));
   }
 
   /**

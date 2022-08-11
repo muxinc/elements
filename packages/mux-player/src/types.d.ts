@@ -18,6 +18,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   backwardSeekOffset: number;
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
+  playbackRates: string;
   onCloseErrorDialog: (evt: CustomEvent) => void;
   onInitFocusDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
