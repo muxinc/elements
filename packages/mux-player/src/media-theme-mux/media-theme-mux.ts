@@ -23,6 +23,7 @@ type ThemeMuxTemplateProps = {
   backwardSeekOffset: string | null;
   playbackRates: string | null;
   hideDuration: boolean;
+  defaultShowRemainingTime: boolean;
 };
 
 type ComponentProps = ThemeMuxTemplateProps & { part?: string };
@@ -59,6 +60,7 @@ export default class MediaThemeMux extends MediaTheme {
       'backward-seek-offset',
       'playbackrates',
       'hide-duration',
+      'default-show-remaining-time',
     ];
   }
 
@@ -67,7 +69,7 @@ export default class MediaThemeMux extends MediaTheme {
   }
 
   render() {
-    const props = {
+    const props: ThemeMuxTemplateProps = {
       audio: this.hasAttribute('audio'),
       nohotkeys: this.hasAttribute('nohotkeys'),
       streamType: this.getAttribute('stream-type'),
@@ -77,6 +79,7 @@ export default class MediaThemeMux extends MediaTheme {
       backwardSeekOffset: this.getAttribute('backward-seek-offset'),
       playbackRates: this.getAttribute('playbackrates'),
       hideDuration: this.hasAttribute('hide-duration'),
+      defaultShowRemainingTime: this.hasAttribute('default-show-remaining-time'),
     };
 
     render(
@@ -247,8 +250,8 @@ const MediaTimeRange = ({ part = parts.bottom } = {}) => html`
   </media-time-range>`;
 
 // prettier-ignore
-const TimeDisplay = ({ part = parts.bottom, hideDuration }: ComponentProps) => html`
-  <mxp-time-display part="${part} ${parts.timeDisplay}" hide-duration="${hideDuration}">
+const TimeDisplay = ({ part = parts.bottom, hideDuration, defaultShowRemainingTime }: ComponentProps) => html`
+  <mxp-time-display part="${part} ${parts.timeDisplay}" hide-duration="${hideDuration}" remaining="${defaultShowRemainingTime}">
   </mxp-time-display>`;
 
 // prettier-ignore

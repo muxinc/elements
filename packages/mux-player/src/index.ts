@@ -76,6 +76,7 @@ const PlayerAttributes = {
   CONTROLSLIST: 'controlslist',
   PLAYBACK_RATES: 'playbackrates',
   HIDE_DURATION: 'hide-duration',
+  DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -115,6 +116,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
+    defaultShowRemainingTime: el.defaultShowRemainingTime,
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     hideDuration: el.hideDuration,
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
@@ -676,6 +678,18 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set secondaryColor(val: string | undefined) {
     this.setAttribute(PlayerAttributes.SECONDARY_COLOR, `${val}`);
+  }
+
+  get defaultShowRemainingTime() {
+    return this.hasAttribute(PlayerAttributes.DEFAULT_SHOW_REMAINING_TIME);
+  }
+
+  set defaultShowRemainingTime(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.DEFAULT_SHOW_REMAINING_TIME);
+    } else {
+      this.setAttribute(PlayerAttributes.DEFAULT_SHOW_REMAINING_TIME, '');
+    }
   }
 
   get hideDuration() {
