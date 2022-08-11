@@ -6,7 +6,6 @@ const styles = `
     color: inherit;
   }
 `;
-
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
@@ -18,6 +17,9 @@ template.innerHTML = `
 const ButtonPressedKeys = ['Enter', ' '];
 
 class MxpTimeDisplay extends HTMLElement {
+  static get observedAttributes() {
+    return ['hide-duration'];
+  }
   static styles: string = styles;
   static template: HTMLTemplateElement = template;
   timeDisplayEl: HTMLElement | null | undefined;
@@ -59,6 +61,16 @@ class MxpTimeDisplay extends HTMLElement {
     });
 
     this.addEventListener('click', this.toggleTimeDisplay);
+  }
+
+  attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null) {
+    if (attrName === 'hide-duration') {
+      if (typeof newValue === 'string') {
+        this.timeDisplayEl?.removeAttribute('show-duration');
+      } else {
+        this.timeDisplayEl?.setAttribute('show-duration', '');
+      }
+    }
   }
 }
 

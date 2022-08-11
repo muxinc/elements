@@ -22,6 +22,7 @@ type ThemeMuxTemplateProps = {
   forwardSeekOffset: string | null;
   backwardSeekOffset: string | null;
   playbackRates: string | null;
+  hideDuration: boolean;
 };
 
 type ComponentProps = ThemeMuxTemplateProps & { part?: string };
@@ -57,6 +58,7 @@ export default class MediaThemeMux extends MediaTheme {
       'forward-seek-offset',
       'backward-seek-offset',
       'playbackrates',
+      'hide-duration',
     ];
   }
 
@@ -74,6 +76,7 @@ export default class MediaThemeMux extends MediaTheme {
       forwardSeekOffset: this.getAttribute('forward-seek-offset'),
       backwardSeekOffset: this.getAttribute('backward-seek-offset'),
       playbackRates: this.getAttribute('playbackrates'),
+      hideDuration: this.hasAttribute('hide-duration'),
     };
 
     render(
@@ -244,8 +247,8 @@ const MediaTimeRange = ({ part = parts.bottom } = {}) => html`
   </media-time-range>`;
 
 // prettier-ignore
-const TimeDisplay = ({ part = parts.bottom } = {}) => html`
-  <mxp-time-display part="${part} ${parts.timeDisplay}">
+const TimeDisplay = ({ part = parts.bottom, hideDuration }: ComponentProps) => html`
+  <mxp-time-display part="${part} ${parts.timeDisplay}" hide-duration="${hideDuration}">
   </mxp-time-display>`;
 
 // prettier-ignore
@@ -254,7 +257,7 @@ export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaPlayButton()}
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
-    ${TimeDisplay()}
+    ${TimeDisplay(props)}
     ${MediaTimeRange()}
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
@@ -271,7 +274,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
     <slot name="seek-live"></slot>
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
-    ${TimeDisplay()}
+    ${TimeDisplay(props)}
     ${MediaTimeRange()}
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
@@ -327,7 +330,7 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
   </div>
   ${MediaTimeRange()}
   <media-control-bar>
-    ${TimeDisplay()}
+    ${TimeDisplay(props)}
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
     <div class="mxp-spacer"></div>
@@ -347,7 +350,7 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     ${MediaPlayButton()}
     ${MediaSeekBackwardButton(props)}
     ${MediaSeekForwardButton(props)}
-    ${TimeDisplay()}
+    ${TimeDisplay(props)}
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
     <div class="mxp-spacer"></div>

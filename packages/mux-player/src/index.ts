@@ -75,6 +75,7 @@ const PlayerAttributes = {
   NOHOTKEYS: 'nohotkeys',
   CONTROLSLIST: 'controlslist',
   PLAYBACK_RATES: 'playbackrates',
+  HIDE_DURATION: 'hide-duration',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -115,6 +116,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
+    hideDuration: el.hideDuration,
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     playerSize: getPlayerSize(el.mediaController ?? el),
     // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
@@ -674,6 +676,18 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set secondaryColor(val: string | undefined) {
     this.setAttribute(PlayerAttributes.SECONDARY_COLOR, `${val}`);
+  }
+
+  get hideDuration() {
+    return this.hasAttribute(PlayerAttributes.HIDE_DURATION);
+  }
+
+  set hideDuration(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.HIDE_DURATION);
+    } else {
+      this.setAttribute(PlayerAttributes.HIDE_DURATION, '');
+    }
   }
 
   /**
