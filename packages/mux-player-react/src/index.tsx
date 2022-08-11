@@ -62,6 +62,8 @@ export type MuxPlayerProps = {
   primaryColor?: string;
   secondaryColor?: string;
   tertiaryColor?: string;
+  playbackRates?: number[];
+  hideDuration?: boolean;
   thumbnailTime?: number;
   tokens?: Tokens;
   onAbort?: EventListener;
@@ -145,8 +147,10 @@ const usePlayer = (
     tokens,
     paused,
     playbackId,
+    playbackRates,
     ...remainingProps
   } = props;
+  useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);
