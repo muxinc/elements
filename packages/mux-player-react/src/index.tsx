@@ -64,6 +64,7 @@ export type MuxPlayerProps = {
   tertiaryColor?: string;
   playbackRates?: number[];
   hideDuration?: boolean;
+  defaultShowRemainingTime?: boolean;
   thumbnailTime?: number;
   tokens?: Tokens;
   onAbort?: EventListener;
