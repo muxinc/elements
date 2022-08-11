@@ -82,6 +82,7 @@ export const content = (props: MuxTemplateProps) => html`
     backward-seek-offset="${props.backwardSeekOffset}"
     playbackrates="${props.playbackRates ?? false}"
     hide-duration="${props.hideDuration ?? false}"
+    default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     exportparts="seek-live, ${forwardUniqueCSSParts}"
   >
     <mux-video
