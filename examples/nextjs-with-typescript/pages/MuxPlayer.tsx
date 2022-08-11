@@ -14,6 +14,7 @@ const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
 const INITIAL_NOHOTKEYS = false;
 const INITIAL_HIDE_DURATION = false;
+const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
 const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 const INITIAL_CONTROLS_LIST = '';
@@ -55,6 +56,7 @@ function MuxPlayerPage() {
   const [debug, setDebug] = useState(INITIAL_DEBUG);
   const [nohotkeys, setNohotkeys] = useState(INITIAL_NOHOTKEYS);
   const [hideDuration, setHideDuration] = useState(INITIAL_HIDE_DURATION);
+  const [defaultShowRemainingTime, setDefaultShowRemainingTime] = useState(INITIAL_DEFAULT_SHOW_REMAINING_TIME);
   // What would be a reasonable UI for changing this? (CJP)
   const [playbackRates, _setPlaybackRates] = useState(INITIAL_PLAYBACK_RATES);
   const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
@@ -96,6 +98,7 @@ function MuxPlayerPage() {
           secondaryColor={secondaryColor}
           tertiaryColor="#b4004e"
           hideDuration={hideDuration}
+          defaultShowRemainingTime={defaultShowRemainingTime}
           playbackRates={playbackRates}
           onPlay={(evt: Event) => {
             onPlay(evt);
@@ -189,6 +192,15 @@ function MuxPlayerPage() {
             type="checkbox"
             onChange={() => setHideDuration(!hideDuration)}
             checked={hideDuration}
+          />
+        </div>
+        <div>
+          <label htmlFor="defaultshowremainingtime-control">Show Remaining Time by Default</label>
+          <input
+            id="defaultshowremainingtime-control"
+            type="checkbox"
+            onChange={() => setDefaultShowRemainingTime(!defaultShowRemainingTime)}
+            checked={defaultShowRemainingTime}
           />
         </div>
         <div>
