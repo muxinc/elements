@@ -59,11 +59,11 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 
 ```html
 <body>
-  <!-- Upload button by itself with default drag an drop scoped to the space it takes up. Displays upload progress in text as percentage.-->
+  <!-- Upload button by itself. Displays upload progress in text as percentage. Upload progress is displayed as a horizontal bar.-->
   <mux-uploader url="authenticated-url" type="bar" status></mux-uploader>
 
-  <!-- Upload button by itself with drag an drop disabled. Does not display text percentage.-->
-  <mux-uploader url="authenticated-url" type="bar" disable-drop></mux-uploader>
+  <!-- Upload button by itself. Does not display text percentage. Upload progress is displayed as a horizontal bar.-->
+  <mux-uploader url="authenticated-url" type="bar"></mux-uploader>
 
   <!-- Upload button with access to optional supplentary drag and drop features..-->
   <mux-uploader-drop mux-uploader="uploader" overlay overlay-text="Show this while dragging file over me">
@@ -162,7 +162,7 @@ This also means you can implement your own drag and drop (or other) components f
 | `--progress-bar-fill-color`    | `background`       | `#000000`           | background color for progress bar div                   |                                                                                                   |
 | `--progress-radial-fill-color` | `stroke`           | `black`             | stroke color for circle SVG (wip)                       |                                                                                                   |
 
-- `<mux-uploader-drop/>`
+#### `<mux-uploader-drop/>`
 
 | Name                         | CSS Property       | Default Value               | Description                         | Notes                                                  |
 | ---------------------------- | ------------------ | --------------------------- | ----------------------------------- | ------------------------------------------------------ |
