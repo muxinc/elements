@@ -178,23 +178,4 @@ Example:
 
 ### Callbacks
 
-`<MuxPlayer/>` has a number of callbacks associated with events for media loading, playback, and the player itself.
-
-| Prop               | Description                                                                                                                          |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `onLoadStart`      | Invoked when the media starts loading                                                                                                |
-| `onLoadedMetadata` | Invoked when the media's metadata has loaded                                                                                         |
-| `onProgress`       | Description                                                                                                                          |
-| `onDurationChange` | Invoked when the media's duration changes, generally either because live media is coming to an end or a new playback-id has been set |
-| `onVolumeChange`   | Invoked when the player's volume changes                                                                                             |
-| `onRateChange`     | Invoked when the player's playbackRate changes                                                                                       |
-| `onResize`         | Invoked when the player resizes                                                                                                      |
-| `onWaiting`        | Invoked when playback is waiting to load more media to play (rebuffering).                                                           |
-| `onPlay`           | Invoked when playback begins                                                                                                         |
-| `onPlaying`        | Invoked when playback is ready after e.g. a pause or temporary rebuffering                                                           |
-| `onPause`          | Invoked when playback is paused                                                                                                      |
-| `onTimeUpdate`     | Invoked when the media's currentTime changes, either from playback or seeking                                                        |
-| `onSeeking`        | Invoked when an attempt to seek forward or backward in the media begins                                                              |
-| `onSeeked`         | Invoked when an attempt to seek forward or backward in the media finishes                                                            |
-| `onEnded`          | Invoked when media playback reaches the end of the media                                                                             |
-| `onError`          | Invoked when an error occurs in playback or in the player                                                                            |
+`<MuxPlayer/>` has a number of callbacks associated with events for media loading, playback, and the player itself. For example, a callback for 'loadstart` event is`onLoadStart`. See [mux-player's document](https://github.com/muxinc/elements/blob/main/packages/mux-player/README.md#events) for detail of events.
