@@ -64,7 +64,12 @@ export type MuxPlayerProps = {
   tertiaryColor?: string;
   thumbnailTime?: number;
   tokens?: Tokens;
+  onAbort?: EventListener;
+  onCanPlay?: EventListener;
+  onCanPlayThrough?: EventListener;
+  onEmptied?: EventListener;
   onLoadStart?: EventListener;
+  onLoadedData?: EventListener;
   onLoadedMetadata?: EventListener;
   onProgress?: EventListener;
   onDurationChange?: EventListener;
@@ -78,6 +83,8 @@ export type MuxPlayerProps = {
   onPause?: EventListener;
   onSeeking?: EventListener;
   onSeeked?: EventListener;
+  onStalled?: EventListener;
+  onSuspend?: EventListener;
   onEnded?: EventListener;
   onError?: EventListener;
   onPlayerReady?: EventListener;
@@ -110,7 +117,12 @@ const usePlayer = (
   props: MuxPlayerProps
 ) => {
   const {
+    onAbort,
+    onCanPlay,
+    onCanPlayThrough,
+    onEmptied,
     onLoadStart,
+    onLoadedData,
     onLoadedMetadata,
     onProgress,
     onDurationChange,
@@ -124,6 +136,8 @@ const usePlayer = (
     onPause,
     onSeeking,
     onSeeked,
+    onStalled,
+    onSuspend,
     onEnded,
     onError,
     onPlayerReady,
@@ -155,7 +169,12 @@ const usePlayer = (
       return defaultHasChanged(playerEl, value, propName);
     }
   );
+  useEventCallbackEffect('abort', ref, onAbort);
+  useEventCallbackEffect('canplay', ref, onCanPlay);
+  useEventCallbackEffect('canplaythrough', ref, onCanPlayThrough);
+  useEventCallbackEffect('emptied', ref, onEmptied);
   useEventCallbackEffect('loadstart', ref, onLoadStart);
+  useEventCallbackEffect('loadeddata', ref, onLoadedData);
   useEventCallbackEffect('loadedmetadata', ref, onLoadedMetadata);
   useEventCallbackEffect('progress', ref, onProgress);
   useEventCallbackEffect('durationchange', ref, onDurationChange);
@@ -169,6 +188,8 @@ const usePlayer = (
   useEventCallbackEffect('pause', ref, onPause);
   useEventCallbackEffect('seeking', ref, onSeeking);
   useEventCallbackEffect('seeked', ref, onSeeked);
+  useEventCallbackEffect('stalled', ref, onStalled);
+  useEventCallbackEffect('suspend', ref, onSuspend);
   useEventCallbackEffect('ended', ref, onEnded);
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('playerready', ref, onPlayerReady);
