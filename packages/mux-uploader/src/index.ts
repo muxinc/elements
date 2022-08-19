@@ -222,6 +222,7 @@ const ariaDescription = 'Media upload progress bar';
 const ButtonPressedKeys = ['Enter', ' '];
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
+type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
 
 type ErrorDetail = {
   message: string;
@@ -238,7 +239,9 @@ export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'p
   }>;
   chunksuccess: CustomEvent<{
     chunk: number;
+    chunkSize: number;
     attempts: number;
+    timeInterval: number;
     // Note: This should be more explicitly typed in Upchunk. (TD).
     response: any;
   }>;
@@ -274,6 +277,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
   protected _endpoint: Endpoint;
+  protected _dynamicChunkSize: DynamicChunkSize;
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
@@ -377,6 +381,24 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
     this._endpoint = value;
   }
 
+  get dynamicChunkSize(): DynamicChunkSize {
+    // TODO: how do boolean attributes normally behave?
+    //       If `disabled="false"`, does that mean an input is disabled because it's "false"
+    //       or enabled because the attribute isn't undefined ?
+    return !!this.getAttribute('dynamic-chunk-size') ?? this._dynamicChunkSize;
+  }
+
+  set dynamicChunkSize(value: DynamicChunkSize) {
+    // TODO: continuing the question from up above. What's the idiomatic way to do boolean attributes? Is this correct?
+    if (value === this.dynamicChunkSize) return;
+    if (value) {
+      this.setAttribute('dynamic-chunk-size', '');
+    } else {
+      this.removeAttribute('dynamic-chunk-size');
+    }
+    this._dynamicChunkSize = value;
+  }
+
   get formatProgress(): (percent: number) => string {
     return this._formatProgress ?? defaultFormatProgress;
   }
@@ -465,6 +487,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
 
   handleUpload(evt: CustomEvent) {
     const endpoint = this.endpoint;
+    const dynamicChunkSize = this.dynamicChunkSize;
 
     if (!endpoint) {
       const invalidUrlMessage = 'No url or endpoint specified -- cannot handleUpload';
@@ -488,6 +511,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
 
     const upload = UpChunk.createUpload({
       endpoint,
+      dynamicChunkSize,
       file: evt.detail,
     });
 
