@@ -37,6 +37,7 @@ export type MuxUploaderProps = {
   };
   children?: React.ReactNode;
   formatProgress?: (percent: number) => string;
+  dynamicChunkSize?: boolean;
   onUploadStart?: GenericEventListener<MuxUploaderElementEventMap['uploadstart']>;
   onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap['chunkattempt']>;
   onChunkSuccess?: GenericEventListener<MuxUploaderElementEventMap['chunksuccess']>;

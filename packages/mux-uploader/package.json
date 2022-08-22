@@ -46,7 +46,7 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/upchunk": "^2.3.1"
+    "@mux/upchunk": "^2.6.0"
   },
   "devDependencies": {
     "@mux/open-process": "0.1.0",

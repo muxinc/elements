@@ -222,6 +222,7 @@ const ariaDescription = 'Media upload progress bar';
 const ButtonPressedKeys = ['Enter', ' '];
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
+type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
 
 type ErrorDetail = {
   message: string;
@@ -238,7 +239,9 @@ export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'p
   }>;
   chunksuccess: CustomEvent<{
     chunk: number;
+    chunkSize: number;
     attempts: number;
+    timeInterval: number;
     // Note: This should be more explicitly typed in Upchunk. (TD).
     response: any;
   }>;
@@ -377,6 +380,19 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
     this._endpoint = value;
   }
 
+  get dynamicChunkSize(): DynamicChunkSize {
+    return this.hasAttribute('dynamic-chunk-size');
+  }
+
+  set dynamicChunkSize(value: DynamicChunkSize) {
+    if (value === this.hasAttribute('dynamic-chunk-size')) return;
+    if (value) {
+      this.setAttribute('dynamic-chunk-size', '');
+    } else {
+      this.removeAttribute('dynamic-chunk-size');
+    }
+  }
+
   get formatProgress(): (percent: number) => string {
     return this._formatProgress ?? defaultFormatProgress;
   }
@@ -465,6 +481,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
 
   handleUpload(evt: CustomEvent) {
     const endpoint = this.endpoint;
+    const dynamicChunkSize = this.dynamicChunkSize;
 
     if (!endpoint) {
       const invalidUrlMessage = 'No url or endpoint specified -- cannot handleUpload';
@@ -488,6 +505,7 @@ class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
 
     const upload = UpChunk.createUpload({
       endpoint,
+      dynamicChunkSize,
       file: evt.detail,
     });
 

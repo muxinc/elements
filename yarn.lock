@@ -2221,10 +2221,10 @@
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-4.1.19.tgz#33f8c6c63a14a3acc50062df93eaa92f33a10a0a"
   integrity sha512-zDrdjvX2dwunW4HOGwpibLHvfnDRQOJ89bGnkQ7TXZ7H7JSehbg2Gf0zNbML+R/03QItZ7EI6QHloOJ2znFSdA==
 
-"@mux/upchunk@^2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-2.3.1.tgz#726e83b78622eac917dcc49e54571d1d0bf81785"
-  integrity sha512-Gq4SDpR8Zh6lHueN9rXyyXxxofJsjXVmugZh/QmAiICRhtr4pJ2xvYS4QsSOJfSrBtmvLbTOEnLJ1tyWujilMg==
+"@mux/upchunk@^2.6.0":
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-2.6.0.tgz#076b1186c3b859e44a3293514b28d8ef8162ee21"
+  integrity sha512-r7nMbgsjjVudjzhRwV8pfhamMrKyBvEXERSj3Fngy9EPwukXK6e1A5wMeFCvsL7mBGGLYQp9HmSDkhoiyq8phw==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
