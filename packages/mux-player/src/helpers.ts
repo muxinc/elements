@@ -113,7 +113,7 @@ export const isInLiveWindow = (el: MuxPlayerElement) => {
   return false;
 };
 
-export class AttributeTokenList {
+export class AttributeTokenList implements Iterable<string> {
   #el?: HTMLElement;
   #attr?: string;
   #tokens: string[] = [];
