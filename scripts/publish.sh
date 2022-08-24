@@ -60,7 +60,7 @@ function release {
 
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
-  DEPENDANT_PKGS=$(npx lerna ls --graph --all --toposort |
+  DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
     jq -r "to_entries[] | select(.value[] | contains(\"$PKG_NAME\")) | .key")
   scope=""
   for name in ${DEPENDANT_PKGS}; do
@@ -116,7 +116,7 @@ function canary {
 
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
-  DEPENDANT_PKGS=$(npx lerna ls --graph --all --toposort |
+  DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
     jq -r "to_entries[] | select(.value[] | contains(\"$PKG_NAME\")) | .key")
   scope=""
   for name in ${DEPENDANT_PKGS}; do
