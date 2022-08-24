@@ -5,6 +5,7 @@ import {
   getSrcFromPlaybackId,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
+  AttributeTokenList,
 } from './helpers';
 import { html, unsafeStatic } from './html';
 // @ts-ignore
@@ -84,7 +85,9 @@ export const content = (props: MuxTemplateProps) => html`
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
     playbackrates="${props.playbackRates ?? false}"
-    hide-duration="${[...props.controlsList].some((key) => key.search(/^no(top|bottom|center)?duration/) === 0)}"
+    hide-duration="${[...(props?.controlsList?.values() ?? [])].some(
+      (key) => key.search(/^no(top|bottom|center)?duration/) === 0
+    )}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     exportparts="seek-live, ${forwardUniqueCSSParts}"
   >
