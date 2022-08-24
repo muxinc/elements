@@ -16,6 +16,7 @@ const MediaChromeSizes = {
 type ThemeMuxTemplateProps = {
   streamType: string | null;
   nohotkeys?: boolean;
+  hotkeys: string | null;
   audio: boolean;
   playerSize: string | null;
   defaultHiddenCaptions: boolean;
@@ -61,7 +62,9 @@ export default class MediaThemeMux extends MediaTheme {
       defaultShowRemainingTime: this.hasAttribute('default-show-remaining-time'),
     };
 
-    if ([StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType)) {
+    if (
+      [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)
+    ) {
       props.hotkeys = props.hotkeys || '';
       props.hotkeys += ' noarrowleft noarrowright';
     }
