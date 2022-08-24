@@ -38,6 +38,9 @@ const controlsListStyles: Record<string, string> = {
   notimerange: `::part(time range) { display: none; }`,
   notimedisplay: `::part(time display) { display: none; }`,
   noremoteplayback: `::part(airplay button), ::part(cast button) { display: none; }`,
+  // The duration display isn't a "part", since it is controlled by an attribute in media-time-display
+  // Still adding here so it shows up as a valid/available controlsList value.
+  noduration: '',
 
   // the seek live button is in the light dom below, use attribute selector.
   noseeklive: `[part*="seek-live button"] { display: none; }`,
@@ -81,7 +84,9 @@ export const content = (props: MuxTemplateProps) => html`
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
     playbackrates="${props.playbackRates ?? false}"
-    hide-duration="${props.hideDuration ?? false}"
+    hide-duration="${[...props.controlsList.values()].some(
+      (key) => key.search(/no(top|bottom|center)?duration/) === 0
+    )}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     exportparts="seek-live, ${forwardUniqueCSSParts}"
   >
