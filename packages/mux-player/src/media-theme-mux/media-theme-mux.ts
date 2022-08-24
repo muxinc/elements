@@ -32,6 +32,7 @@ export default class MediaThemeMux extends MediaTheme {
     return [
       'audio',
       'nohotkeys',
+      'hotkeys',
       'stream-type',
       'player-size',
       'default-hidden-captions',
@@ -50,6 +51,7 @@ export default class MediaThemeMux extends MediaTheme {
     const props: ThemeMuxTemplateProps = {
       audio: this.hasAttribute('audio'),
       nohotkeys: this.hasAttribute('nohotkeys'),
+      hotkeys: this.getAttribute('hotkeys'),
       streamType: this.getAttribute('stream-type'),
       playerSize: this.getAttribute('player-size'),
       defaultHiddenCaptions: this.hasAttribute('default-hidden-captions'),
@@ -65,6 +67,7 @@ export default class MediaThemeMux extends MediaTheme {
           ${cssStr}
         </style>
         <media-controller
+          hotkeys="${props.hotkeys || false}"
           nohotkeys="${props.nohotkeys || false}"
           audio="${props.audio || false}"
           class="size-${props.playerSize}"

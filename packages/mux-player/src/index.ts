@@ -74,6 +74,7 @@ const PlayerAttributes = {
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
   NOHOTKEYS: 'nohotkeys',
+  HOTKEYS: 'hotkeys',
   PLAYBACK_RATES: 'playbackrates',
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
 };
@@ -94,6 +95,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // NOTE: Renaming internal prop due to state (sometimes derived from attributeChangedCallback attr values)
     // overwriting prop value (type mismatch: string vs. boolean) (CJP)
     noHotKeys: el.hasAttribute(PlayerAttributes.NOHOTKEYS),
+    hotKeys: el.getAttribute(PlayerAttributes.HOTKEYS),
     muted: el.muted,
     paused: el.paused,
     playsInline: el.playsInline,
@@ -143,6 +145,7 @@ class MuxPlayerElement extends VideoApiElement {
   #isInit = false;
   #tokens = {};
   #userInactive = true;
+  #hotKeys = new AttributeTokenList(this, 'hotkeys');
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
@@ -502,6 +505,9 @@ class MuxPlayerElement extends VideoApiElement {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     switch (attrName) {
+      case PlayerAttributes.HOTKEYS:
+        this.#hotKeys.value = newValue;
+        break;
       case PlayerAttributes.THUMBNAIL_TIME: {
         if (newValue != null && this.tokens.thumbnail) {
           logger.warn(
@@ -614,6 +620,10 @@ class MuxPlayerElement extends VideoApiElement {
       this.removeAttribute(PlayerAttributes.AUDIO);
     }
     this.setAttribute(PlayerAttributes.AUDIO, '');
+  }
+
+  get hotKeys() {
+    return this.#hotKeys;
   }
 
   get nohotkeys() {
