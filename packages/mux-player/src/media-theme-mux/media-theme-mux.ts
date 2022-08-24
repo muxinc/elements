@@ -61,6 +61,11 @@ export default class MediaThemeMux extends MediaTheme {
       defaultShowRemainingTime: this.hasAttribute('default-show-remaining-time'),
     };
 
+    if ([StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType)) {
+      props.hotkeys = props.hotkeys || '';
+      props.hotkeys += ' noarrowleft noarrowright';
+    }
+
     render(
       html`
         <style>
