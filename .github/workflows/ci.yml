@@ -16,10 +16,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
       - run: yarn install --frozen-lockfile
-      # build the packages for feature branches only
       - run: yarn build:packages
-        if: ${{ github.ref != 'refs/heads/main' }}
-      # on the main branch the `prepublishOnly` hook will trigger package builds
       - run: npm run publish-release -- canary
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
