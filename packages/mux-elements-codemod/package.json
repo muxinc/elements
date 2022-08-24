@@ -21,7 +21,6 @@
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "build": "npm-run-all --parallel build:types build:esm",
     "prebuild": "yarn clean",
-    "prepublishOnly": "yarn build",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },

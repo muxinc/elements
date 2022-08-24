@@ -23,6 +23,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Test
         run: yarn test
+      - name: Build
+        run: yarn build:packages
       - name: Publish
         run: yarn deploy --yes
         env:
