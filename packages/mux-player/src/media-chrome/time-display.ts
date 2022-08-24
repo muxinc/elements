@@ -65,14 +65,14 @@ class MxpTimeDisplay extends HTMLElement {
 
   attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null) {
     if (attrName === 'hide-duration') {
-      if (typeof newValue === 'string') {
+      if (newValue != null) {
         this.timeDisplayEl?.removeAttribute('show-duration');
       } else {
         this.timeDisplayEl?.setAttribute('show-duration', '');
       }
     }
     if (attrName === 'remaining') {
-      if (typeof newValue === 'string') {
+      if (newValue != null) {
         this.timeDisplayEl?.setAttribute('remaining', '');
       } else {
         this.timeDisplayEl?.removeAttribute('remaining');
