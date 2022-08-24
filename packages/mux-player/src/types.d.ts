@@ -19,7 +19,6 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
   playbackRates: string;
-  hideDuration: boolean;
   defaultShowRemainingTime: boolean;
   onCloseErrorDialog: (evt: CustomEvent) => void;
   onInitFocusDialog: (evt: CustomEvent) => void;
