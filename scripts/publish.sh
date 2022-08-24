@@ -44,16 +44,30 @@ function release {
   npm --force --allow-same-version version $VERSION -m "chore(release): %s"
   git push --follow-tags
   npx conventional-github-releaser -p angular
+
+  echo "Beginning release $PKG_NAME@$VERSION"
   npm publish --access public
+
+  echo "Release dist for $PKG_NAME@$VERSION"
+  ls dist
   # `npm view name@x.x.x version` will return an empty string if not available
   until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
   do
     echo "Waiting for publish to complete"
     sleep 3
   done
+
   # update all workspaces from the workspace root (../..) with the new version
-  # make sure publish.sh is called in topological order, `lerna run` does this
-  npx lerna-update-wizard --non-interactive --lazy --dependency $PKG_NAME@$VERSION ../..
+  # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
+  DEPENDANT_PKGS=$(npx lerna ls --graph --all --toposort |
+    jq -r "to_entries[] | select(.value[] | contains(\"$PKG_NAME\")) | .key")
+  scope=""
+  for name in ${DEPENDANT_PKGS}; do
+    scope+="--scope $name "
+  done
+  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION
+  yarn --cwd="../.." install
+  echo "Ending release $PKG_NAME@$VERSION"
 };
 
 function canary {
@@ -68,10 +82,12 @@ function canary {
   # default to local package version if no last version was found on NPM
   PRE_VERSION=$(npx semver ${LAST_VERSION:-$PKG_VERSION} -i prerelease --preid canary)
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
-  echo "Beginning canary release for $PKG_NAME@$VERSION"
+
+  echo "Beginning release $PKG_NAME@$VERSION"
   npm --no-git-tag-version version $VERSION
   npm publish --tag canary --access public
-  echo "canary release dist used for $PKG_NAME@$VERSION"
+
+  echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
   # `npm view name@x.x.x version` will return an empty string if not available
   until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
@@ -79,10 +95,18 @@ function canary {
     echo "Waiting for publish to complete"
     sleep 3
   done
+
   # update all workspaces from the workspace root (../..) with the new version
-  # make sure publish.sh is called in topological order, `lerna run` does this
-  npx lerna-update-wizard --non-interactive --lazy --dependency $PKG_NAME@$VERSION ../..
-  echo "Ending canary release and lerna-update-wizard completed for $PKG_NAME@$VERSION"
+  # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
+  DEPENDANT_PKGS=$(npx lerna ls --graph --all --toposort |
+    jq -r "to_entries[] | select(.value[] | contains(\"$PKG_NAME\")) | .key")
+  scope=""
+  for name in ${DEPENDANT_PKGS}; do
+    scope+="--scope $name "
+  done
+  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION
+  yarn --cwd="../.." install
+  echo "Ending release $PKG_NAME@$VERSION"
 }
 
 main "$@"
