@@ -50,6 +50,7 @@ function release {
 
   echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
+
   # `npm view name@x.x.x version` will return an empty string if not available
   until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
   do
@@ -73,12 +74,28 @@ function release {
 function canary {
   PKG_NAME=$(cat package.json | jq -r '.name')
   PKG_VERSION=$(cat package.json | jq -r '.version')
+
   # get last published version from NPM without alpha / beta, remove -SHA hash
+
+  # debug jq command at https://jqplay.org/s/Wwjv5hVUCL0
+  #
+  #   1. remove alpha or beta versions
+  #   2 & 3. convert to { version: 'x.x.x', dist: 'canary', build: x }
+  #   4. sort first by `version` then by `build` number
+  #   5. put back together to a string `x.x.x-canary.x`
+  #   6. pick the last item in the array
+
   LAST_VERSION=$(npm view $PKG_NAME versions --json |
-    jq -r '. - map(select(contains("alpha") or contains("beta"))) | last' |
-    sed -r 's/-[a-z0-9]{7}$//g')
-  # GH actions made this a `null` string, replace it with a null value
+    jq -r '. - map(select(contains("alpha") or contains("beta")))
+      | map(capture("(?<version>\\d+\\.\\d+\\.\\d+)(-(?<dist>[a-z]+))?(\\.(?<build>\\d+))?"))
+      | map(.build? |= (. // 0 | tonumber))
+      | sort_by(.version, .build)
+      | map(.version + "-" + (.dist // "latest") + "." + (.build|tostring))
+      | last')
+
+  # if json is empty GH actions made this a `null` string, replace it with a null value
   LAST_VERSION=$(echo $LAST_VERSION | sed "s/null//g")
+
   # default to local package version if no last version was found on NPM
   PRE_VERSION=$(npx semver ${LAST_VERSION:-$PKG_VERSION} -i prerelease --preid canary)
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
@@ -89,6 +106,7 @@ function canary {
 
   echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
+
   # `npm view name@x.x.x version` will return an empty string if not available
   until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
   do
