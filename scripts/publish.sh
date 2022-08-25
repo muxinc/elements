@@ -51,13 +51,6 @@ function release {
   echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
 
-  # `npm view name@x.x.x version` will return an empty string if not available
-  until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
-  do
-    echo "Waiting for publish to complete"
-    sleep 3
-  done
-
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
   DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
@@ -67,7 +60,7 @@ function release {
     scope+="--scope $name "
   done
   npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION
-  yarn --cwd="../.." install
+
   echo "Ending release $PKG_NAME@$VERSION"
 };
 
@@ -107,13 +100,6 @@ function canary {
   echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
 
-  # `npm view name@x.x.x version` will return an empty string if not available
-  until [ "$(npm view $PKG_NAME@$VERSION version)" != "" ];
-  do
-    echo "Waiting for publish to complete"
-    sleep 3
-  done
-
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
   DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
@@ -123,7 +109,7 @@ function canary {
     scope+="--scope $name "
   done
   npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION
-  yarn --cwd="../.." install
+
   echo "Ending release $PKG_NAME@$VERSION"
 }
 
