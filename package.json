@@ -38,7 +38,7 @@
     "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react,@mux/mux-uploader",
     "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-player,@mux/mux-player-react,@mux/mux-uploader",
     "create-release-notes": "lerna run create-release-notes --scope @mux/*",
-    "publish-release": "lerna run publish-release --npm-client=npm --scope @mux/* --"
+    "publish-release": "lerna run publish-release --scope @mux/* --"
   },
   "dependencies": {}
 }

@@ -37,16 +37,17 @@ function processCommandLineArgs {
 
 function release {
   BUMP=$(npx -p conventional-changelog-angular -p conventional-recommended-bump -c 'conventional-recommended-bump -p angular')
-  VERSION=$(npm --no-git-tag-version version ${1:-$BUMP})
+  VERSION=$(yarn version --no-git-tag-version --new-version ${1:-$BUMP})
+
   npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
   git add CHANGELOG.md
   git commit -m "docs(CHANGELOG): $VERSION"
-  npm --force --allow-same-version version $VERSION -m "chore(release): %s"
+  yarn version --force --allow-same-version --new-version $VERSION --message "chore(release): %s"
   git push --follow-tags
   npx conventional-github-releaser -p angular
 
   echo "Beginning release $PKG_NAME@$VERSION"
-  npm publish --access public
+  yarn publish --access public --non-interactive
 
   echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
@@ -94,8 +95,8 @@ function canary {
   VERSION=$PRE_VERSION-$(git rev-parse --short HEAD)
 
   echo "Beginning release $PKG_NAME@$VERSION"
-  npm --no-git-tag-version version $VERSION
-  npm publish --tag canary --access public
+  yarn version --no-git-tag-version --new-version $VERSION
+  yarn publish --tag canary --access public --non-interactive
 
   echo "Release dist for $PKG_NAME@$VERSION"
   ls dist
