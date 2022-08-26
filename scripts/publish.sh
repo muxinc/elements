@@ -62,14 +62,43 @@ function release {
   VERSION=$(yarn version --no-git-tag-version --new-version ${relase_type:-$BUMP} --json | jq -r 'select(.data | startswith("New version")).data | split(": ")[1]')
 
   npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
-  git add CHANGELOG.md
-  git commit -m "docs(CHANGELOG): $VERSION"
+
+  if "$dry_run"; then
+    echo
+    echo "In non-dry-run, will run the following commands"
+    echo "git add CHANGELOG.md"
+    echo git commit -m "docs(CHANGELOG): $VERSION"
+    echo
+  else
+    git add CHANGELOG.md
+    git commit -m "docs(CHANGELOG): $VERSION"
+  fi
+
+  if "$dry_run"; then
+    echo "Running the following command" "yarn version --force --allow-same-version --new-version $VERSION --message \"chore(release): %s\""
+  fi
   yarn version --force --allow-same-version --new-version $VERSION --message "chore(release): %s"
-  git push --follow-tags
-  npx conventional-github-releaser -p angular
+
+  if "$dry_run"; then
+    echo
+    echo "In non-dry-run, will run the following commands"
+    echo "    git push --follow-tags"
+    echo "    npx conventional-github-releaser -p angular"
+    echo
+  else
+    git push --follow-tags
+    npx conventional-github-releaser -p angular
+  fi
 
   echo "Beginning release $PKG_NAME@$VERSION"
-  yarn publish --access public --non-interactive
+  if "$dry_run"; then
+    echo
+    echo "    In non-dry-run, will run the following commands"
+    echo "    yarn publish --access public --non-interactive"
+    echo
+  else
+    yarn publish --access public --non-interactive
+  fi
 
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
