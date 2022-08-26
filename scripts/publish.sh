@@ -59,7 +59,7 @@ function processCommandLineArgs {
 function release {
   BUMP=$(npx -p conventional-changelog-angular -p conventional-recommended-bump -c 'conventional-recommended-bump -p angular')
   # jq to get version from yarn https://jqplay.org/s/LqIS_qy2MBx
-  VERSION=$(yarn version --no-git-tag-version --new-version ${relase_type:-$BUMP} --json | jq -r 'select(.data | startswith("New version")).data | split(": ")[1]')
+  VERSION=$(yarn version --no-git-tag-version --new-version ${release_type:-$BUMP} --json | jq -r 'select(.data | startswith("New version")).data | split(": ")[1]')
 
   npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
 
