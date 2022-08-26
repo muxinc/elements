@@ -66,8 +66,8 @@ function release {
   if "$dry_run"; then
     echo
     echo "In non-dry-run, will run the following commands"
-    echo "git add CHANGELOG.md"
-    echo git commit -m "docs(CHANGELOG): $VERSION"
+    echo "  git add CHANGELOG.md"
+    echo "  git commit -m \"docs(CHANGELOG): $VERSION\""
     echo
   else
     git add CHANGELOG.md
