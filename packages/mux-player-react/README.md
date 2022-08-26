@@ -103,6 +103,70 @@ Enable the [Google Cast](https://developers.google.com/cast) button in the contr
 <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 ```
 
+### Hiding controls
+
+By default, Mux Player will show all the controls associated with the current player size and stream type.
+
+To hide certain controls, use CSS variables like this:  
+`--play-button` will control the display of the play button. Set it to `none` to hide it completely.
+
+```css
+mux-player {
+  --play-button: none;
+}
+```
+
+CSS vars can also be passed inline
+
+```jsx
+<MuxPlayer style={{ '--play-button': 'none' }}></MuxPlayer>
+```
+
+#### Controls sections
+
+It's possible to target specific sections of the player by prefixing the CSS vars.  
+The following sections are available:
+
+- `top` the top control bar that shows on the small player size
+- `center` the center controls that show the seek forward/backward button and play button
+- `bottom` the bottom control bar
+
+```jsx
+<MuxPlayer style={{ '--center-controls': 'none', '--top-captions-button': 'none' }}></MuxPlayer>
+```
+
+#### Available CSS variables
+
+The below CSS selector shows all available CSS vars for hiding, each one can be prefixed with a section.
+
+```css
+mux-player {
+  /* Hide all controls at once */
+  --controls: none;
+
+  /* Target all sections by excluding the section prefix */
+  --play-button: none;
+  --seek-live-button: none;
+  --seek-backward-button: none;
+  --seek-forward-button: none;
+  --mute-button: none;
+  --captions-button: none;
+  --airplay-button: none;
+  --pip-button: none;
+  --fullscreen-button: none;
+  --cast-button: none;
+  --playback-rate-button: none;
+  --volume-range: none;
+  --time-range: none;
+  --time-display: none;
+  --duration-display: none;
+
+  /* Target a specific section by prefixing the CSS var with (top|center|bottom) */
+  --center-controls: none;
+  --bottom-play-button: none;
+}
+```
+
 ### CSS Parts
 
 Mux Player uses a [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
@@ -132,24 +196,6 @@ Supported **parts**:
 CSS parts allow you to style each part individually with a selector like `::part(center play button)`
 or target multiple elements if the part is assigned to multiple elements internally, usage `::part(button)`.
 Every CSS property can be declared in the selector, this makes it a very powerfull API.
-If you need a simple API to hide a few single control elements have a look at the [`controlslist`](#controlslist) attribute.
-
-### controlslist
-
-Offers a way to hide the controls elements/buttons that are being shown by the player.  
-The `controlslist` attribute accepts a blocklist as a space separated string.
-
-Supported **tokens**:
-`notop`, `nobottom`, `nocenter`, `nocenterplay`, `nocenterseekbackward`, `nocenterseekforward`, `noplay`,
-`noseekbackward`, `noseekforward`, `nomute`, `nocaptions`, `noairplay`, `nopip`, `nocast`, `nofullscreen`,
-`noplaybackrate`, `novolumerange`, `notimerange`, `notimedisplay`, `noremoteplayback`, `noseeklive`, `noduration`
-
-```jsx
-<MuxPlayer
-  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  controlslist="nocenter nocaptions noremoteplayback"
-></MuxPlayer>
-```
 
 ### Tokens
 
@@ -225,7 +271,6 @@ Example:
 | `poster`                   | `string` (URL)                                                     | Assigns a poster image URL. Will use the automatically generated poster based on your playback-id by default.                                                                                                                                                                                                                                                                                    | Derived       |
 | `beaconCollectionDomain`   | `string` (Domain name)                                             | Assigns a custom domain to be used for Mux Data collection.                                                                                                                                                                                                                                                                                                                                      | N/A           |
 | `customDomain`             | `string` (Domain name)                                             | Assigns a custom domain to be used for Mux Video. Will use the standard `mux.com` domain with your playback-id for poster, video, and thumbnail URLs by default.                                                                                                                                                                                                                                 | N/A           |
-| `controlslist`             | `string`                                                           | Offers a way to hide the controls elements/buttons that are being shown by the player. For more, see the section on [`controlslist`](#controlslist)                                                                                                                                                                                                                                              | N/A           |
 
 ### Callbacks
 

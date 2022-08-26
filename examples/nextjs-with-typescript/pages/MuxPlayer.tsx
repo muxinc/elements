@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import Script from 'next/script';
-import MuxPlayer, { ControlListTokens } from "@mux/mux-player-react";
+import MuxPlayer from "@mux/mux-player-react";
 import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
@@ -16,7 +16,7 @@ const INITIAL_NOHOTKEYS = false;
 const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
 const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_CONTROLS_LIST = '';
+const INITIAL_SELECTED_CSS_VARS = {};
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
@@ -62,7 +62,7 @@ function MuxPlayerPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
-  const [controlslist, setControlslist] = useState(INITIAL_CONTROLS_LIST);
+  const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
 
   return (
     <div>
@@ -71,6 +71,7 @@ function MuxPlayerPage() {
         <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
           ref={mediaElRef}
+          style={selectedCssVars}
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
@@ -82,7 +83,6 @@ function MuxPlayerPage() {
           forwardSeekOffset={10}
           backwardSeekOffset={10}
           nohotkeys={nohotkeys}
-          controlslist={controlslist}
           // onPlayerReady={() => console.log("ready!")}
           debug={debug}
           muted={muted}
@@ -209,20 +209,52 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
-          <label htmlFor="controlslist-control">Controlslist </label>
+          <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
           <select
-            id="controlslist-control"
+            id="controlsvars-control"
             multiple
-            onChange={(event) => setControlslist(
-              Array.from(event.target.selectedOptions)
-                .map(({ value }) => value).join(' ')
+            onChange={(event) => setSelectedCssVars(
+              Object.fromEntries(Array.from(event.target.selectedOptions)
+                .map(({ value }) => [value, 'none']))
             )}
           >
-            {ControlListTokens.map((token, i) => {
-              return (
-                <option key={i} value={token}>{token}</option>
-              )
-            })}
+            <option value="--controls">--controls</option>
+            <option value="--top-controls">--top-controls</option>
+            <option value="--center-controls">--center-controls</option>
+            <option value="--bottom-controls">--bottom-controls</option>
+            <option value="--duration-display">--duration-display</option>
+            <option value="--bottom-duration-display">--bottom-duration-display</option>
+            <option value="--play-button">--play-button</option>
+            <option value="--center-play-button">--center-play-button</option>
+            <option value="--bottom-play-button">--bottom-play-button</option>
+            <option value="--time-range">--time-range</option>
+            <option value="--bottom-time-range">--bottom-time-range</option>
+            <option value="--seek-backward-button">--seek-backward-button</option>
+            <option value="--bottom-seek-backward-button">--bottom-seek-backward-button</option>
+            <option value="--seek-forward-button">--seek-forward-button</option>
+            <option value="--bottom-seek-forward-button">--bottom-seek-forward-button</option>
+            <option value="--time-display">--time-display</option>
+            <option value="--bottom-time-display">--bottom-time-display</option>
+            <option value="--mute-button">--mute-button</option>
+            <option value="--bottom-mute-button">--bottom-mute-button</option>
+            <option value="--volume-range">--volume-range</option>
+            <option value="--bottom-volume-range">--bottom-volume-range</option>
+            <option value="--playback-rate-button">--playback-rate-button</option>
+            <option value="--bottom-playback-rate-button">--bottom-playback-rate-button</option>
+            <option value="--captions-button">--captions-button</option>
+            <option value="--top-captions-button">--top-captions-button</option>
+            <option value="--bottom-captions-button">--bottom-captions-button</option>
+            <option value="--airplay-button">--airplay-button</option>
+            <option value="--top-airplay-button">--top-airplay-button</option>
+            <option value="--bottom-airplay-button">--bottom-airplay-button</option>
+            <option value="--cast-button">--cast-button</option>
+            <option value="--top-cast-button">--top-cast-button</option>
+            <option value="--bottom-cast-button">--bottom-cast-button</option>
+            <option value="--pip-button">--pip-button</option>
+            <option value="--top-pip-button">--top-pip-button</option>
+            <option value="--bottom-pip-button">--bottom-pip-button</option>
+            <option value="--fullscreen-button">--fullscreen-button</option>
+            <option value="--bottom-fullscreen-button">--bottom-fullscreen-button</option>
           </select>
         </div>
       </div>

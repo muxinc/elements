@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import type { StreamTypes } from '@mux/playback-core';
-import { MediaError, ControlListTokens } from '@mux/mux-player';
+import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens } from '@mux/mux-player';
 import { toNativeProps } from './common/utils';
@@ -10,7 +10,7 @@ import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
 
-export { MediaError, ControlListTokens };
+export { MediaError };
 
 type ValueOf<T> = T[keyof T];
 
@@ -49,7 +49,6 @@ type MuxMediaPropTypes = {
 };
 
 export type MuxPlayerProps = {
-  controlslist?: string;
   nohotkeys?: boolean;
   defaultHiddenCaptions?: boolean;
   playerSoftwareVersion?: string;

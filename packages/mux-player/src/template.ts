@@ -1,11 +1,10 @@
-import { parts } from './media-theme-mux/media-theme-mux';
+import './media-theme-mux/media-theme-mux';
 import './dialog';
 import {
   castThemeName,
   getSrcFromPlaybackId,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
-  AttributeTokenList,
 } from './helpers';
 import { html, unsafeStatic } from './html';
 // @ts-ignore
@@ -15,53 +14,12 @@ import { i18n, stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
-const controlsListStyles: Record<string, string> = {
-  notop: `::part(top), [part~="top"] { display: none; }`,
-  nobottom: `::part(bottom), [part~="bottom"] { display: none; }`,
-  nocenter: `::part(center), [part~="center"] { display: none; }`,
-
-  nocenterplay: `::part(center play button) { display: none; }`,
-  nocenterseekbackward: `::part(center seek-backward button) { display: none; }`,
-  nocenterseekforward: `::part(center seek-forward button) { display: none; }`,
-
-  noplay: `::part(bottom play button) { display: none; }`,
-  noseekbackward: `::part(bottom seek-backward button) { display: none; }`,
-  noseekforward: `::part(bottom seek-forward button) { display: none; }`,
-
-  nomute: `::part(mute button) { display: none; }`,
-  nocaptions: `::part(captions button) { display: none; }`,
-  noairplay: `::part(airplay button) { display: none; }`,
-  nopip: `::part(pip button) { display: none; }`,
-  nocast: `::part(cast button) { display: none; }`,
-  nofullscreen: `::part(fullscreen button) { display: none; }`,
-  noplaybackrate: `::part(playbackrate button) { display: none; }`,
-  novolumerange: `::part(volume range) { display: none; }`,
-  notimerange: `::part(time range) { display: none; }`,
-  notimedisplay: `::part(time display) { display: none; }`,
-  noremoteplayback: `::part(airplay button), ::part(cast button) { display: none; }`,
-  // The duration display isn't a "part", since it is controlled by an attribute in media-time-display
-  // Still adding here so it shows up as a valid/available controlsList value.
-  noduration: '',
-
-  // the seek live button is in the light dom below, use attribute selector.
-  noseeklive: `[part*="seek-live button"] { display: none; }`,
-};
-
-export const ControlListTokens = Object.keys(controlsListStyles);
-
 export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
-    ${[...props.controlsList]
-      .map((token) => controlsListStyles[token])
-      .filter(Boolean)
-      .join('\n')}
   </style>
   ${content(props)}
 `;
-
-const flatCSSParts = Object.values(parts).flatMap((group) => group.split(' '));
-const forwardUniqueCSSParts = [...new Set(flatCSSParts)].join(', ');
 
 const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
 
@@ -85,11 +43,8 @@ export const content = (props: MuxTemplateProps) => html`
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
     playbackrates="${props.playbackRates ?? false}"
-    hide-duration="${[...(props?.controlsList?.values() ?? [])].some(
-      (key) => key.search(/^no(top|bottom|center)?duration/) === 0
-    )}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
-    exportparts="seek-live, ${forwardUniqueCSSParts}"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"

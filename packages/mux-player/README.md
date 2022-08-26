@@ -117,6 +117,70 @@ Enable the [Google Cast](https://developers.google.com/cast) button in the contr
 <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 ```
 
+### Hiding controls
+
+By default, Mux Player will show all the controls associated with the current player size and stream type.
+
+To hide certain controls, use CSS variables like this:  
+`--play-button` will control the display of the play button. Set it to `none` to hide it completely.
+
+```css
+mux-player {
+  --play-button: none;
+}
+```
+
+CSS vars can also be passed inline
+
+```html
+<mux-player style="--play-button: none;"></mux-player>
+```
+
+#### Controls sections
+
+It's possible to target specific sections of the player by prefixing the CSS vars.  
+The following sections are available:
+
+- `top` the top control bar that shows on the small player size
+- `center` the center controls that show the seek forward/backward button and play button
+- `bottom` the bottom control bar
+
+```html
+<mux-player style="--center-controls: none; --top-captions-button: none;"></mux-player>
+```
+
+#### Available CSS variables
+
+The below CSS selector shows all available CSS vars for hiding, each one can be prefixed with a section.
+
+```css
+mux-player {
+  /* Hide all controls at once */
+  --controls: none;
+
+  /* Target all sections by excluding the section prefix */
+  --play-button: none;
+  --seek-live-button: none;
+  --seek-backward-button: none;
+  --seek-forward-button: none;
+  --mute-button: none;
+  --captions-button: none;
+  --airplay-button: none;
+  --pip-button: none;
+  --fullscreen-button: none;
+  --cast-button: none;
+  --playback-rate-button: none;
+  --volume-range: none;
+  --time-range: none;
+  --time-display: none;
+  --duration-display: none;
+
+  /* Target a specific section by prefixing the CSS var with (top|center|bottom) */
+  --center-controls: none;
+  --bottom-play-button: none;
+}
+```
+
 ### CSS Parts
 
 Mux Player uses a [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)
@@ -137,29 +201,11 @@ Instead, some components expose **parts** that can be targeted with the [CSS par
 Supported **parts**:
 `seek-live`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`,
 `top`, `center`, `bottom`, `play`, `button`, `seek-backward`, `seek-forward`, `mute`,
-`captions`, `airplay`, `pip`, `cast`, `fullscreen`, `playbackrate`, `volume`, `range`, `time`, `display`
+`captions`, `airplay`, `pip`, `cast`, `fullscreen`, `playback-rate`, `volume`, `range`, `time`, `display`
 
 CSS parts allow you to style each part individually with a selector like `::part(center play button)`
 or target multiple elements if the part is assigned to multiple elements internally, usage `::part(button)`.
-Every CSS property can be declared in the selector, this makes it a very powerfull API.
-If you need a simple API to hide a few single control elements have a look at the [`controlslist`](#controlslist) attribute.
-
-### controlslist
-
-Offers a way to hide the controls elements/buttons that are being shown by the player.  
-The `controlslist` attribute accepts a blocklist as a space separated string.
-
-Supported **tokens**:
-`notop`, `nobottom`, `nocenter`, `nocenterplay`, `nocenterseekbackward`, `nocenterseekforward`, `noplay`,
-`noseekbackward`, `noseekforward`, `nomute`, `nocaptions`, `noairplay`, `nopip`, `nocast`, `nofullscreen`,
-`noplaybackrate`, `novolumerange`, `notimerange`, `notimedisplay`, `noremoteplayback`, `noseeklive`, `noduration`
-
-```html
-<mux-player
-  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  controlslist="nocenter nocaptions noremoteplayback"
-></mux-player>
-```
+Every CSS property can be declared in the selector, this makes it a very powerful API.
 
 ### prefer-mse
 
@@ -211,7 +257,6 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 | `beacon-collection-domain`    | `string` (domain name)                                              | Assigns a custom domain to be used for Mux Data collection.                                                                                                                                                                                                                                                                                                                                      | N/A           |
 | `custom-domain`               | `string` (domain name)                                              | Assigns a custom domain to be used for Mux Video.                                                                                                                                                                                                                                                                                                                                                | N/A           |
 | `nohotkeys`                   | `boolean`                                                           | Toggles keyboard shortcut (hot keys) support when focus in inside the player                                                                                                                                                                                                                                                                                                                     | `false`       |
-| `controlslist`                | `string`                                                            | Offers a way to hide the controls elements/buttons that are being shown by the player. For more, see the section on [`controlslist`](#controlslist)                                                                                                                                                                                                                                              | N/A           |
 
 ### Methods
 
@@ -251,7 +296,6 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 | `videoWidth` <sub><sup>Read only</sup></sub>  | Returns an unsigned integer value indicating the intrinsic width of the resource in CSS pixels, or 0 if no media is available yet.                                                                                                                                                                                  | `0`         |
 | `volume`                                      | Is a double indicating the audio volume, from 0.0 (silent) to 1.0 (loudest).                                                                                                                                                                                                                                        | `1`         |
 | `customDomain`                                | Is a `String` that assigns a custom domain to be used for Mux Video.                                                                                                                                                                                                                                                | `undefined` |
-| `controlsList`                                | Is a read-only `DOMTokenList` similar to `classList` which offers a way to hide the controls elements/buttons that are being shown by the player. For more, see the section on [`controlslist`](#controlslist)                                                                                                      | `''`        |
 
 ### Events
 
