@@ -65,26 +65,27 @@ class MxpTimeDisplay extends HTMLElement {
 
     // Temporary fix until CSS vars are available in the time-display Media Chrome
     // component to target each time variant: current, remaining, duration.
-    this.#displayInterval = setInterval(() => {
-      if (getComputedStyle(this).getPropertyValue('--media-duration-display').trim() === 'none') {
-        this.timeDisplayEl?.removeAttribute('show-duration');
-      } else {
-        this.timeDisplayEl?.setAttribute('show-duration', '');
-      }
-    }, 200);
+    this.#displayInterval = setInterval(this.#toggleDuration.bind(this), 200);
+    requestAnimationFrame(() => this.#toggleDuration());
   }
 
   disconnectedCallback() {
     clearInterval(this.#displayInterval);
   }
 
+  #toggleDuration() {
+    const isDurationDisplayNone = getComputedStyle(this).getPropertyValue('--media-duration-display').trim() === 'none';
+
+    if (isDurationDisplayNone || this.getAttribute('hide-duration') != null) {
+      this.timeDisplayEl?.removeAttribute('show-duration');
+    } else {
+      this.timeDisplayEl?.setAttribute('show-duration', '');
+    }
+  }
+
   attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null) {
     if (attrName === 'hide-duration') {
-      if (newValue != null) {
-        this.timeDisplayEl?.removeAttribute('show-duration');
-      } else {
-        this.timeDisplayEl?.setAttribute('show-duration', '');
-      }
+      this.#toggleDuration();
     }
     if (attrName === 'remaining') {
       if (newValue != null) {
