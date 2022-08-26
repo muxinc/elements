@@ -49,9 +49,6 @@ function release {
   echo "Beginning release $PKG_NAME@$VERSION"
   yarn publish --access public --non-interactive
 
-  echo "Release dist for $PKG_NAME@$VERSION"
-  ls dist
-
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
   DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
@@ -60,7 +57,7 @@ function release {
   for name in ${DEPENDANT_PKGS}; do
     scope+="--scope $name "
   done
-  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION
+  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
 
   echo "Ending release $PKG_NAME@$VERSION"
 };
@@ -98,9 +95,6 @@ function canary {
   yarn version --no-git-tag-version --new-version $VERSION
   yarn publish --tag canary --access public --non-interactive
 
-  echo "Release dist for $PKG_NAME@$VERSION"
-  ls dist
-
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
   DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
@@ -109,7 +103,7 @@ function canary {
   for name in ${DEPENDANT_PKGS}; do
     scope+="--scope $name "
   done
-  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION
+  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
 
   echo "Ending release $PKG_NAME@$VERSION"
 }
