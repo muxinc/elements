@@ -73,7 +73,6 @@ const PlayerAttributes = {
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
   NOHOTKEYS: 'nohotkeys',
-  CONTROLSLIST: 'controlslist',
   PLAYBACK_RATES: 'playbackrates',
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
 };
