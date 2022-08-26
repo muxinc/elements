@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Script from 'next/script';
 import MuxPlayer from "@mux/mux-player-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
 const INITIAL_PRIMARY_COLOR = undefined;
@@ -16,7 +16,8 @@ const INITIAL_NOHOTKEYS = false;
 const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
 const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_CONTROLS_LIST = '';
+const INITIAL_CONTROLS_CSS_VARS = [];
+const INITIAL_SELECTED_CSS_VARS = {};
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
@@ -62,7 +63,12 @@ function MuxPlayerPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
-  const [controlslist, setControlslist] = useState(INITIAL_CONTROLS_LIST);
+  const [controlsCssVars, setControlsCssVars] = useState(INITIAL_CONTROLS_CSS_VARS);
+  const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
+
+  useMutationObserver(mediaElRef.current?.theme.shadowRoot, useCallback(() => {
+    setControlsCssVars(getAvailableControlsCssVars(mediaElRef.current?.theme?.shadowRoot));
+  }, [setControlsCssVars]));
 
   return (
     <div>
@@ -71,11 +77,7 @@ function MuxPlayerPage() {
         <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
           ref={mediaElRef}
-          style={{
-            '--top-controls': 'none',
-            '--center-play-button': 'none',
-            '--seek-backward-button': 'none',
-          } as React.CSSProperties}
+          style={selectedCssVars}
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
@@ -87,7 +89,6 @@ function MuxPlayerPage() {
           forwardSeekOffset={10}
           backwardSeekOffset={10}
           nohotkeys={nohotkeys}
-          controlslist={controlslist}
           // onPlayerReady={() => console.log("ready!")}
           debug={debug}
           muted={muted}
@@ -214,16 +215,16 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
-          <label htmlFor="controlslist-control">Controlslist </label>
+          <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
           <select
-            id="controlslist-control"
+            id="controlsvars-control"
             multiple
-            onChange={(event) => setControlslist(
-              Array.from(event.target.selectedOptions)
-                .map(({ value }) => value).join(' ')
+            onChange={(event) => setSelectedCssVars(
+              Object.fromEntries(Array.from(event.target.selectedOptions)
+                .map(({ value }) => [value, 'none']))
             )}
           >
-            {[].map((token, i) => {
+            {controlsCssVars.map((token, i) => {
               return (
                 <option key={i} value={token}>{token}</option>
               )
@@ -238,6 +239,43 @@ function MuxPlayerPage() {
       </h3>
     </div>
   );
+}
+
+function getAvailableControlsCssVars(node) {
+  const cssVars: Record<string, any> = {
+    '--controls': 'none',
+    '--top-controls': 'none',
+    '--center-controls': 'none',
+    '--bottom-controls': 'none',
+  };
+  for (const element of node.querySelectorAll('*')) {
+    if (!element.localName.includes('-')) continue;
+    const matches = element.localName.match(/^([^-]+)-(.*)-(button|range|display)$/);
+    if (!matches) continue;
+    const section = element.closest('[slot="top-chrome"]') ? 'top'
+      : element.closest('[slot="centered-chrome"]') ? 'center' : 'bottom';
+    cssVars[`--${matches[2]}-${matches[3]}`] = 'none';
+    cssVars[`--${section}-${matches[2]}-${matches[3]}`] = 'none';
+  }
+  return Object.keys(cssVars);
+}
+
+const DEFAULT_OPTIONS = {
+  config: { attributes: true, childList: true, subtree: true },
+};
+function useMutationObserver(targetEl, cb, options = DEFAULT_OPTIONS) {
+  const [observer, setObserver] = useState(null);
+
+  useEffect(() => {
+    const obs = new MutationObserver(cb);
+    setObserver(obs);
+  }, [cb, options, setObserver]);
+
+  useEffect(() => {
+    const { config } = options;
+    observer?.observe(targetEl, config);
+    return () => observer?.disconnect();
+  }, [observer, targetEl, options]);
 }
 
 export default MuxPlayerPage;
