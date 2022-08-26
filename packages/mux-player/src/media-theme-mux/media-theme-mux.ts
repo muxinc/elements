@@ -22,7 +22,6 @@ type ThemeMuxTemplateProps = {
   forwardSeekOffset: string | null;
   backwardSeekOffset: string | null;
   playbackRates: string | null;
-  hideDuration: boolean;
   defaultShowRemainingTime: boolean;
 };
 
@@ -39,7 +38,6 @@ export default class MediaThemeMux extends MediaTheme {
       'forward-seek-offset',
       'backward-seek-offset',
       'playbackrates',
-      'hide-duration',
       'default-show-remaining-time',
     ];
   }
@@ -58,7 +56,6 @@ export default class MediaThemeMux extends MediaTheme {
       forwardSeekOffset: this.getAttribute('forward-seek-offset'),
       backwardSeekOffset: this.getAttribute('backward-seek-offset'),
       playbackRates: this.getAttribute('playbackrates'),
-      hideDuration: this.hasAttribute('hide-duration'),
       defaultShowRemainingTime: this.hasAttribute('default-show-remaining-time'),
     };
 
@@ -239,8 +236,8 @@ const MediaTimeRange = () => html`
   </media-time-range>`;
 
 // prettier-ignore
-const TimeDisplay = ({ hideDuration, defaultShowRemainingTime }: ComponentProps) => html`
-  <mxp-time-display hide-duration="${hideDuration}" remaining="${defaultShowRemainingTime}">
+const TimeDisplay = ({ defaultShowRemainingTime }: ComponentProps) => html`
+  <mxp-time-display remaining="${defaultShowRemainingTime}">
   </mxp-time-display>`;
 
 // prettier-ignore

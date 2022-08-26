@@ -23,6 +23,7 @@ class MxpTimeDisplay extends HTMLElement {
   static styles: string = styles;
   static template: HTMLTemplateElement = template;
   timeDisplayEl: HTMLElement | null | undefined;
+  #displayInterval: any;
 
   constructor() {
     super();
@@ -61,6 +62,20 @@ class MxpTimeDisplay extends HTMLElement {
     });
 
     this.addEventListener('click', this.toggleTimeDisplay);
+
+    // Temporary fix until CSS vars are available in the time-display Media Chrome
+    // component to target each time variant: current, remaining, duration.
+    this.#displayInterval = setInterval(() => {
+      if (getComputedStyle(this).getPropertyValue('--media-duration-display').trim() === 'none') {
+        this.timeDisplayEl?.removeAttribute('show-duration');
+      } else {
+        this.timeDisplayEl?.setAttribute('show-duration', '');
+      }
+    }, 200);
+  }
+
+  disconnectedCallback() {
+    clearInterval(this.#displayInterval);
   }
 
   attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null) {

@@ -53,6 +53,7 @@ a {
   --media-volume-range: var(--volume-range, var(--top-volume-range));
   --media-time-range: var(--time-range, var(--top-time-range));
   --media-time-display: var(--time-display, var(--top-time-display));
+  --media-duration-display: var(--duration-display, var(--top-duration-display));
 }
 
 ::part(center),
@@ -72,6 +73,7 @@ a {
   --media-volume-range: var(--volume-range, var(--center-volume-range));
   --media-time-range: var(--time-range, var(--center-time-range));
   --media-time-display: var(--time-display, var(--center-time-display));
+  --media-duration-display: var(--duration-display, var(--center-duration-display));
 }
 
 ::part(bottom),
@@ -91,6 +93,7 @@ a {
   --media-volume-range: var(--volume-range, var(--bottom-volume-range));
   --media-time-range: var(--time-range, var(--bottom-time-range));
   --media-time-display: var(--time-display, var(--bottom-time-display));
+  --media-duration-display: var(--duration-display, var(--bottom-duration-display));
 }
 
 [part*='seek-live button'] {

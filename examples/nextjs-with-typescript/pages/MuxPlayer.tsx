@@ -247,6 +247,8 @@ function getAvailableControlsCssVars(node) {
     '--top-controls': 'none',
     '--center-controls': 'none',
     '--bottom-controls': 'none',
+    '--duration-display': 'none',
+    '--bottom-duration-display': 'none',
   };
   for (const element of node.querySelectorAll('*')) {
     if (!element.localName.includes('-')) continue;

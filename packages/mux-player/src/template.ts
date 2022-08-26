@@ -43,9 +43,6 @@ export const content = (props: MuxTemplateProps) => html`
     forward-seek-offset="${props.forwardSeekOffset}"
     backward-seek-offset="${props.backwardSeekOffset}"
     playbackrates="${props.playbackRates ?? false}"
-    hide-duration="${[...(props?.controlsList?.values() ?? [])].some(
-      (key) => key.search(/^no(top|bottom|center)?duration/) === 0
-    )}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >

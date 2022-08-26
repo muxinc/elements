@@ -62,6 +62,7 @@ const MuxVideoAttributes = {
 };
 
 const PlayerAttributes = {
+  STYLE: 'style',
   DEFAULT_HIDDEN_CAPTIONS: 'default-hidden-captions',
   PRIMARY_COLOR: 'primary-color',
   SECONDARY_COLOR: 'secondary-color',
