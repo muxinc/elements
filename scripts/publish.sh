@@ -13,7 +13,9 @@ release_type=
 function main {
   processCommandLineArgs "$@"
   if "$dry_run"; then
+    echo
     echo "Running in dry-run move. This will run things locally but never push to the remote"
+    echo
   fi
   if "$canary_run"; then
     canary "$0"
@@ -55,7 +57,7 @@ function processCommandLineArgs {
 
 function release {
   BUMP=$(npx -p conventional-changelog-angular -p conventional-recommended-bump -c 'conventional-recommended-bump -p angular')
-  VERSION=$(yarn version --no-git-tag-version --new-version ${relase_type:-$BUMP})
+  VERSION=$(yarn version --no-git-tag-version --new-version ${relase_type:-$BUMP} --json | jq 'select(.data | startswith("New version")).data | split(": ")[1]')
 
   npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
   git add CHANGELOG.md
