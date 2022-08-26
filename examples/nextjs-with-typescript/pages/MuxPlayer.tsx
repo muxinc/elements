@@ -17,6 +17,7 @@ const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
 const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 const INITIAL_SELECTED_CSS_VARS = {};
+const INITIAL_HOTKEYS = '';
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
@@ -63,6 +64,7 @@ function MuxPlayerPage() {
   const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
+  const [hotkeys, setHotkeys] = useState(INITIAL_HOTKEYS);
 
   return (
     <div>
@@ -83,6 +85,7 @@ function MuxPlayerPage() {
           forwardSeekOffset={10}
           backwardSeekOffset={10}
           nohotkeys={nohotkeys}
+          hotkeys={hotkeys}
           // onPlayerReady={() => console.log("ready!")}
           debug={debug}
           muted={muted}
@@ -255,6 +258,23 @@ function MuxPlayerPage() {
             <option value="--bottom-pip-button">--bottom-pip-button</option>
             <option value="--fullscreen-button">--fullscreen-button</option>
             <option value="--bottom-fullscreen-button">--bottom-fullscreen-button</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="hotkeys-control">hotkeys </label>
+          <select
+            id="hotkeys-control"
+            multiple
+            onChange={(event) => setHotkeys(
+              Array.from(event.target.selectedOptions)
+                .map(({ value }) => value).join(' ')
+            )}
+          >
+            {['nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright'].map((token, i) => {
+              return (
+                <option key={i} value={token}>{token}</option>
+              )
+            })}
           </select>
         </div>
       </div>
