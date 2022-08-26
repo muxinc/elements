@@ -76,8 +76,12 @@ function release {
 
   if "$dry_run"; then
     echo "Running the following command" "yarn version --force --allow-same-version --new-version $VERSION --message \"chore(release): %s\""
+    echo "Running the same command with --no-git-tag-version"
+    echo
+    yarn version --force --allow-same-version --new-version $VERSION --message "chore(release): %s" --no-git-tag-version
+  else
+    yarn version --force --allow-same-version --new-version $VERSION --message "chore(release): %s"
   fi
-  yarn version --force --allow-same-version --new-version $VERSION --message "chore(release): %s"
 
   if "$dry_run"; then
     echo
