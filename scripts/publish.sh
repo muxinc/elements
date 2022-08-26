@@ -93,7 +93,7 @@ function release {
   echo "Beginning release $PKG_NAME@$VERSION"
   if "$dry_run"; then
     echo
-    echo "    In non-dry-run, will run the following commands"
+    echo "In non-dry-run, will run the following commands"
     echo "    yarn publish --access public --non-interactive"
     echo
   else
@@ -108,13 +108,16 @@ function release {
   for name in ${DEPENDANT_PKGS}; do
     scope+="--scope $name "
   done
+
+  if "$dry_run"; then
+    echo "Running the following command" npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+  fi
   npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
 
   echo "Ending release $PKG_NAME@$VERSION"
 };
 
 function canary {
-  PKG_NAME=$(cat package.json | jq -r '.name')
   PKG_VERSION=$(cat package.json | jq -r '.version')
 
   # get last published version from NPM without alpha / beta, remove -SHA hash
@@ -144,7 +147,14 @@ function canary {
 
   echo "Beginning release $PKG_NAME@$VERSION"
   yarn version --no-git-tag-version --new-version $VERSION
-  yarn publish --tag canary --access public --non-interactive
+  if "$dry_run"; then
+    echo
+    echo "In non-dry-run, will run the following commands"
+    echo "    yarn publish --tag canary --access public --non-interactive"
+    echo
+  else
+    yarn publish --tag canary --access public --non-interactive
+  fi
 
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
@@ -154,6 +164,10 @@ function canary {
   for name in ${DEPENDANT_PKGS}; do
     scope+="--scope $name "
   done
+
+  if "$dry_run"; then
+    echo "Running the following command" npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+  fi
   npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
 
   echo "Ending release $PKG_NAME@$VERSION"
