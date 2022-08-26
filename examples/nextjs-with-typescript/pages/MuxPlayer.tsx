@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import Script from 'next/script';
-import MuxPlayer, { ControlListTokens } from "@mux/mux-player-react";
+import MuxPlayer from "@mux/mux-player-react";
 import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
@@ -71,6 +71,11 @@ function MuxPlayerPage() {
         <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
           ref={mediaElRef}
+          style={{
+            '--top-controls': 'none',
+            '--center-play-button': 'none',
+            '--seek-backward-button': 'none',
+          } as React.CSSProperties}
           // style={{ aspectRatio: "16 / 9" }}
           // envKey={envKey}
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
@@ -218,7 +223,7 @@ function MuxPlayerPage() {
                 .map(({ value }) => value).join(' ')
             )}
           >
-            {ControlListTokens.map((token, i) => {
+            {[].map((token, i) => {
               return (
                 <option key={i} value={token}>{token}</option>
               )

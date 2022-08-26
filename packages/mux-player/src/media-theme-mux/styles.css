@@ -114,7 +114,7 @@ media-control-bar :is([role='button'], [role='switch'], button) {
   padding: 4.4% 3.2%;
 }
 
-.mxp-spacer {
+.spacer {
   flex-grow: 1;
   height: 100%;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
@@ -122,7 +122,7 @@ media-control-bar :is([role='button'], [role='switch'], button) {
 
 /* Add a small space on the right to have the play button and
  * fullscreen button aligned in relation to the progress bar. */
-.size-large .mxp-padding-2 {
+.size-large .padding-2 {
   width: 2px;
   height: 100%;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
@@ -137,7 +137,7 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   transition: background-color 0.25s;
 }
 
-.mxp-center-controls {
+.center-controls {
   --media-button-icon-width: 100%;
   --media-button-icon-height: auto;
   pointer-events: none;
@@ -148,15 +148,15 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   justify-content: center;
 }
 
-.mxp-center-controls media-play-button {
+.center-controls media-play-button {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
   width: max(27px, min(9%, 90px));
 }
 
-.mxp-center-controls media-seek-backward-button,
-.mxp-center-controls media-seek-forward-button {
+.center-controls media-seek-backward-button,
+.center-controls media-seek-forward-button {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;

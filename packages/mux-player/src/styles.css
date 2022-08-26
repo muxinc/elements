@@ -13,11 +13,6 @@ a {
   text-decoration: underline;
 }
 
-media-controller {
-  width: 100%;
-  height: 100%;
-}
-
 [part~='seek-live'] {
   height: 44px;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
@@ -39,4 +34,107 @@ media-controller {
 
 [part~='seek-live'][aria-disabled]::before {
   color: #fb3c4d;
+}
+
+::part(top),
+[part~='top'] {
+  --media-controls: var(--controls, var(--top-controls));
+  --media-play-button: var(--play-button, var(--top-play-button));
+  --media-seek-live-button: var(--seek-live-button, var(--top-seek-live-button));
+  --media-seek-backward-button: var(--seek-backward-button, var(--top-seek-backward-button));
+  --media-seek-forward-button: var(--seek-forward-button, var(--top-seek-forward-button));
+  --media-mute-button: var(--mute-button, var(--top-mute-button));
+  --media-captions-button: var(--captions-button, var(--top-captions-button));
+  --media-airplay-button: var(--airplay-button, var(--top-airplay-button));
+  --media-pip-button: var(--pip-button, var(--top-pip-button));
+  --media-fullscreen-button: var(--fullscreen-button, var(--top-fullscreen-button));
+  --media-cast-button: var(--cast-button, var(--top-cast-button));
+  --media-playback-rate-button: var(--playback-rate-button, var(--top-playback-rate-button));
+  --media-volume-range: var(--volume-range, var(--top-volume-range));
+  --media-time-range: var(--time-range, var(--top-time-range));
+  --media-time-display: var(--time-display, var(--top-time-display));
+}
+
+::part(center),
+[part~='center'] {
+  --media-controls: var(--controls, var(--center-controls));
+  --media-play-button: var(--play-button, var(--center-play-button));
+  --media-seek-live-button: var(--seek-live-button, var(--center-seek-live-button));
+  --media-seek-backward-button: var(--seek-backward-button, var(--center-seek-backward-button));
+  --media-seek-forward-button: var(--seek-forward-button, var(--center-seek-forward-button));
+  --media-mute-button: var(--mute-button, var(--center-mute-button));
+  --media-captions-button: var(--captions-button, var(--center-captions-button));
+  --media-airplay-button: var(--airplay-button, var(--center-airplay-button));
+  --media-pip-button: var(--pip-button, var(--center-pip-button));
+  --media-fullscreen-button: var(--fullscreen-button, var(--center-fullscreen-button));
+  --media-cast-button: var(--cast-button, var(--center-cast-button));
+  --media-playback-rate-button: var(--playback-rate-button, var(--center-playback-rate-button));
+  --media-volume-range: var(--volume-range, var(--center-volume-range));
+  --media-time-range: var(--time-range, var(--center-time-range));
+  --media-time-display: var(--time-display, var(--center-time-display));
+}
+
+::part(bottom),
+[part~='bottom'] {
+  --media-controls: var(--controls, var(--bottom-controls));
+  --media-play-button: var(--play-button, var(--bottom-play-button));
+  --media-seek-live-button: var(--seek-live-button, var(--bottom-seek-live-button));
+  --media-seek-backward-button: var(--seek-backward-button, var(--bottom-seek-backward-button));
+  --media-seek-forward-button: var(--seek-forward-button, var(--bottom-seek-forward-button));
+  --media-mute-button: var(--mute-button, var(--bottom-mute-button));
+  --media-captions-button: var(--captions-button, var(--bottom-captions-button));
+  --media-airplay-button: var(--airplay-button, var(--bottom-airplay-button));
+  --media-pip-button: var(--pip-button, var(--bottom-pip-button));
+  --media-fullscreen-button: var(--fullscreen-button, var(--bottom-fullscreen-button));
+  --media-cast-button: var(--cast-button, var(--bottom-cast-button));
+  --media-playback-rate-button: var(--playback-rate-button, var(--bottom-playback-rate-button));
+  --media-volume-range: var(--volume-range, var(--bottom-volume-range));
+  --media-time-range: var(--time-range, var(--bottom-time-range));
+  --media-time-display: var(--time-display, var(--bottom-time-display));
+}
+
+[part*='seek-live button'] {
+  display: var(--media-controls, var(--media-seek-live-button));
+}
+
+/** Once we implement these CSS vars in Media Chrome below selectors can be deleted! */
+
+::part(play button) {
+  display: var(--media-controls, var(--media-play-button));
+}
+::part(seek-backward button) {
+  display: var(--media-controls, var(--media-seek-backward-button));
+}
+::part(seek-forward button) {
+  display: var(--media-controls, var(--media-seek-forward-button));
+}
+::part(mute button) {
+  display: var(--media-controls, var(--media-mute-button));
+}
+::part(captions button) {
+  display: var(--media-controls, var(--media-captions-button));
+}
+::part(airplay button) {
+  display: var(--media-controls, var(--media-airplay-button));
+}
+::part(pip button) {
+  display: var(--media-controls, var(--media-pip-button));
+}
+::part(fullscreen button) {
+  display: var(--media-controls, var(--media-fullscreen-button));
+}
+::part(cast button) {
+  display: var(--media-controls, var(--media-cast-button));
+}
+::part(playback-rate button) {
+  display: var(--media-controls, var(--media-playback-rate-button));
+}
+::part(volume range) {
+  display: var(--media-controls, var(--media-volume-range));
+}
+::part(time range) {
+  display: var(--media-controls, var(--media-time-range));
+}
+::part(time display) {
+  display: var(--media-controls, var(--media-time-display));
 }
