@@ -105,7 +105,7 @@ Enable the [Google Cast](https://developers.google.com/cast) button in the contr
 
 ### Hiding controls
 
-By default, Mux Player will show all the controls available:
+By default, Mux Player will show all the controls associated with the current player size and stream type.
 
 To hide certain controls, use CSS variables like this:  
 `--play-button` will control the display of the play button. Set it to `none` to hide it completely.
