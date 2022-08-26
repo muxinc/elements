@@ -622,7 +622,7 @@ class MuxPlayerElement extends VideoApiElement {
     this.setAttribute(PlayerAttributes.AUDIO, '');
   }
 
-  get hotKeys() {
+  get hotkeys() {
     return this.#hotKeys;
   }
 
