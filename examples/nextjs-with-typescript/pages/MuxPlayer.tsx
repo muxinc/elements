@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Script from 'next/script';
 import MuxPlayer from "@mux/mux-player-react";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
 const INITIAL_PRIMARY_COLOR = undefined;
@@ -16,7 +16,6 @@ const INITIAL_NOHOTKEYS = false;
 const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
 const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_CONTROLS_CSS_VARS = [];
 const INITIAL_SELECTED_CSS_VARS = {};
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
@@ -63,12 +62,7 @@ function MuxPlayerPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
-  const [controlsCssVars, setControlsCssVars] = useState(INITIAL_CONTROLS_CSS_VARS);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
-
-  useMutationObserver(mediaElRef.current?.theme.shadowRoot, useCallback(() => {
-    setControlsCssVars(getAvailableControlsCssVars(mediaElRef.current?.theme?.shadowRoot));
-  }, [setControlsCssVars]));
 
   return (
     <div>
@@ -224,11 +218,43 @@ function MuxPlayerPage() {
                 .map(({ value }) => [value, 'none']))
             )}
           >
-            {controlsCssVars.map((token, i) => {
-              return (
-                <option key={i} value={token}>{token}</option>
-              )
-            })}
+            <option value="--controls">--controls</option>
+            <option value="--top-controls">--top-controls</option>
+            <option value="--center-controls">--center-controls</option>
+            <option value="--bottom-controls">--bottom-controls</option>
+            <option value="--duration-display">--duration-display</option>
+            <option value="--bottom-duration-display">--bottom-duration-display</option>
+            <option value="--play-button">--play-button</option>
+            <option value="--center-play-button">--center-play-button</option>
+            <option value="--bottom-play-button">--bottom-play-button</option>
+            <option value="--time-range">--time-range</option>
+            <option value="--bottom-time-range">--bottom-time-range</option>
+            <option value="--seek-backward-button">--seek-backward-button</option>
+            <option value="--bottom-seek-backward-button">--bottom-seek-backward-button</option>
+            <option value="--seek-forward-button">--seek-forward-button</option>
+            <option value="--bottom-seek-forward-button">--bottom-seek-forward-button</option>
+            <option value="--time-display">--time-display</option>
+            <option value="--bottom-time-display">--bottom-time-display</option>
+            <option value="--mute-button">--mute-button</option>
+            <option value="--bottom-mute-button">--bottom-mute-button</option>
+            <option value="--volume-range">--volume-range</option>
+            <option value="--bottom-volume-range">--bottom-volume-range</option>
+            <option value="--playback-rate-button">--playback-rate-button</option>
+            <option value="--bottom-playback-rate-button">--bottom-playback-rate-button</option>
+            <option value="--captions-button">--captions-button</option>
+            <option value="--top-captions-button">--top-captions-button</option>
+            <option value="--bottom-captions-button">--bottom-captions-button</option>
+            <option value="--airplay-button">--airplay-button</option>
+            <option value="--top-airplay-button">--top-airplay-button</option>
+            <option value="--bottom-airplay-button">--bottom-airplay-button</option>
+            <option value="--cast-button">--cast-button</option>
+            <option value="--top-cast-button">--top-cast-button</option>
+            <option value="--bottom-cast-button">--bottom-cast-button</option>
+            <option value="--pip-button">--pip-button</option>
+            <option value="--top-pip-button">--top-pip-button</option>
+            <option value="--bottom-pip-button">--bottom-pip-button</option>
+            <option value="--fullscreen-button">--fullscreen-button</option>
+            <option value="--bottom-fullscreen-button">--bottom-fullscreen-button</option>
           </select>
         </div>
       </div>
@@ -239,45 +265,6 @@ function MuxPlayerPage() {
       </h3>
     </div>
   );
-}
-
-function getAvailableControlsCssVars(node) {
-  const cssVars: Record<string, any> = {
-    '--controls': 'none',
-    '--top-controls': 'none',
-    '--center-controls': 'none',
-    '--bottom-controls': 'none',
-    '--duration-display': 'none',
-    '--bottom-duration-display': 'none',
-  };
-  for (const element of node.querySelectorAll('*')) {
-    if (!element.localName.includes('-')) continue;
-    const matches = element.localName.match(/^([^-]+)-(.*)-(button|range|display)$/);
-    if (!matches) continue;
-    const section = element.closest('[slot="top-chrome"]') ? 'top'
-      : element.closest('[slot="centered-chrome"]') ? 'center' : 'bottom';
-    cssVars[`--${matches[2]}-${matches[3]}`] = 'none';
-    cssVars[`--${section}-${matches[2]}-${matches[3]}`] = 'none';
-  }
-  return Object.keys(cssVars);
-}
-
-const DEFAULT_OPTIONS = {
-  config: { attributes: true, childList: true, subtree: true },
-};
-function useMutationObserver(targetEl, cb, options = DEFAULT_OPTIONS) {
-  const [observer, setObserver] = useState(null);
-
-  useEffect(() => {
-    const obs = new MutationObserver(cb);
-    setObserver(obs);
-  }, [cb, options, setObserver]);
-
-  useEffect(() => {
-    const { config } = options;
-    observer?.observe(targetEl, config);
-    return () => observer?.disconnect();
-  }, [observer, targetEl, options]);
 }
 
 export default MuxPlayerPage;
