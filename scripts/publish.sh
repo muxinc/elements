@@ -9,12 +9,13 @@
 dry_run=false
 canary_run=false
 release_type=
+PKG_NAME=$(cat package.json | jq -r '.name')
 
 function main {
   processCommandLineArgs "$@"
   if "$dry_run"; then
     echo
-    echo "Running in dry-run move. This will run things locally but never push to the remote"
+    echo "Running publish on $PKG_NAME in dry-run move. This will run things locally but never push to the remote"
     echo
   fi
   if "$canary_run"; then
