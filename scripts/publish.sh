@@ -6,9 +6,20 @@
 # release with optional argument `patch`/`minor`/`major`/`canary`/`<version>`
 # defaults to conventional-recommended-bump
 
+dry_run=false
+canary_run=false
+release_type=
+
 function main {
   processCommandLineArgs "$@"
-  release "$@"
+  if "$dry_run"; then
+    echo "Running in dry-run move. This will run things locally but never push to the remote"
+  fi
+  if "$canary_run"; then
+    canary "$0"
+  else
+    release "$@"
+  fi
 }
 
 function processCommandLineArgs {
@@ -16,8 +27,7 @@ function processCommandLineArgs {
   do
     case $arg in
       canary)
-        canary
-        exit 0
+        canary_run=true
         ;;
       --help|help)
         echo "Commands:"
@@ -27,7 +37,15 @@ function processCommandLineArgs {
         echo "  $0 minor      Publish a minor release."
         echo "  $0 major      Publish a major release."
         echo "  $0 <version>  Publish a release with a specific version."
+        echo
+        echo "  $0 --dry-run  Run the release as a dry-run."
         exit 0
+        ;;
+      --dry-run|n)
+        dry_run=true
+        ;;
+      patch|minor|major)
+        release_type=$arg
         ;;
       *)
         ;;
@@ -37,7 +55,7 @@ function processCommandLineArgs {
 
 function release {
   BUMP=$(npx -p conventional-changelog-angular -p conventional-recommended-bump -c 'conventional-recommended-bump -p angular')
-  VERSION=$(yarn version --no-git-tag-version --new-version ${1:-$BUMP})
+  VERSION=$(yarn version --no-git-tag-version --new-version ${relase_type:-$BUMP})
 
   npx conventional-changelog-cli -p angular -i CHANGELOG.md -s
   git add CHANGELOG.md
