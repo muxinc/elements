@@ -7,7 +7,7 @@ const minify = (html) => html.trim().replace(/>\s+</g, '><');
 describe('<mux-player> template render', () => {
   const div = document.createElement('div');
 
-  const exportParts = `seek-live, layer, media-layer, poster-layer, vertical-layer, centered-layer, top, center, bottom, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, cast, fullscreen, playbackrate, volume, range, time, display`;
+  const exportParts = `top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display`;
 
   it('default template without props', function () {
     render(content({}), div);
