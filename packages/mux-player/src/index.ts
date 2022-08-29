@@ -5,7 +5,7 @@ import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
 import { Metadata, StreamTypes, addTextTrack, removeTextTrack } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
-import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName } from './helpers';
+import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';

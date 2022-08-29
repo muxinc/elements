@@ -1,4 +1,5 @@
 import type MuxVideoElement, { MediaError } from '@mux/mux-video';
+import type { AttributeTokenList } from './helpers';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   nohotkeys?: boolean;
