@@ -24,6 +24,7 @@ type ThemeMuxTemplateProps = {
   backwardSeekOffset: string | null;
   playbackRates: string | null;
   defaultShowRemainingTime: boolean;
+  poster: string | null;
 };
 
 type ComponentProps = ThemeMuxTemplateProps & { part?: string };
@@ -41,6 +42,7 @@ export default class MediaThemeMux extends MediaTheme {
       'backward-seek-offset',
       'playbackrates',
       'default-show-remaining-time',
+      'poster',
     ];
   }
 
@@ -60,6 +62,7 @@ export default class MediaThemeMux extends MediaTheme {
       backwardSeekOffset: this.getAttribute('backward-seek-offset'),
       playbackRates: this.getAttribute('playbackrates'),
       defaultShowRemainingTime: this.hasAttribute('default-show-remaining-time'),
+      poster: this.getAttribute('poster'),
     };
 
     if (
@@ -82,6 +85,7 @@ export default class MediaThemeMux extends MediaTheme {
           exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer"
         >
           <slot name="media" slot="media"></slot>
+          <media-poster-image slot="poster" src="${props.poster}"></media-poster-image>
           <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>
