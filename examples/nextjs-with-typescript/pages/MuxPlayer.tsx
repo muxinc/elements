@@ -7,6 +7,7 @@ import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
 const INITIAL_PRIMARY_COLOR = undefined;
 const INITIAL_SECONDARY_COLOR = undefined;
+const INITIAL_CONTROLS_BACKDROP_COLOR = undefined;
 const INITIAL_START_TIME = undefined;
 const INITIAL_THUMBNAIL_TIME = undefined;
 const INITIAL_DEBUG = false;
@@ -64,6 +65,7 @@ function MuxPlayerPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
+  const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
   const [hotkeys, setHotkeys] = useState(INITIAL_HOTKEYS);
   const [title, setTitle] = useState(INITIAL_TITLE);
@@ -75,7 +77,10 @@ function MuxPlayerPage() {
         <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
           ref={mediaElRef}
-          style={selectedCssVars}
+          style={{
+            ...selectedCssVars,
+            '--controls-backdrop-color': controlsBackdropColor
+            }}
           envKey={envKey || undefined}
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
           title={title}
@@ -275,6 +280,15 @@ function MuxPlayerPage() {
             <option value="--top-seek-live-button">--top-seek-live-button</option>
             <option value="--bottom-seek-live-button">--bottom-seek-live-button</option>
           </select>
+        </div>
+        <div>
+          <label htmlFor="controls-backdrop-color">Controls Backdrop Color</label>
+          <input
+            id="controls-backdrop-color"
+            type="color"
+            onChange={(event) => setControlsBackdropColor(event.target.value)}
+            value={controlsBackdropColor}
+          />
         </div>
         <div>
           <label htmlFor="hotkeys-control">hotkeys </label>
