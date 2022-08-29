@@ -145,7 +145,7 @@ class MuxPlayerElement extends VideoApiElement {
   #isInit = false;
   #tokens = {};
   #userInactive = true;
-  #hotKeys = new AttributeTokenList(this, 'hotkeys');
+  #hotkeys = new AttributeTokenList(this, 'hotkeys');
   #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
@@ -506,7 +506,7 @@ class MuxPlayerElement extends VideoApiElement {
 
     switch (attrName) {
       case PlayerAttributes.HOTKEYS:
-        this.#hotKeys.value = newValue;
+        this.#hotkeys.value = newValue;
         break;
       case PlayerAttributes.THUMBNAIL_TIME: {
         if (newValue != null && this.tokens.thumbnail) {
@@ -623,7 +623,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get hotkeys() {
-    return this.#hotKeys;
+    return this.#hotkeys;
   }
 
   get nohotkeys() {
