@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "preserveWatchOutput": true,
     "jsx": "react",
     "rootDir": "src",
     "outDir": "dist",
