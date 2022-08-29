@@ -46,6 +46,17 @@ export const content = (props: MuxTemplateProps) => html`
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
     hotkeys="${props.hotKeys || false}"
+    poster="${
+      !!props.poster
+        ? props.poster
+        : props.playbackId && !props.audio
+        ? getPosterURLFromPlaybackId(props.playbackId, {
+            domain: props.customDomain,
+            thumbnailTime: props.thumbnailTime ?? props.startTime,
+            token: props.tokens.thumbnail,
+          })
+        : false
+    }"
   >
     <mux-video
       slot="media"
