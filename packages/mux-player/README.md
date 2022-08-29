@@ -207,6 +207,29 @@ CSS parts allow you to style each part individually with a selector like `::part
 or target multiple elements if the part is assigned to multiple elements internally, usage `::part(button)`.
 Every CSS property can be declared in the selector, this makes it a very powerful API.
 
+### hotkeys
+
+Offers a way to turn off keyboard shortcuts that should not be enabled.
+The `hotkeys` attribute accepts a blocklist as a space separated string.
+
+Supported **tokens**:
+`nof`, `nok`, `nom`, `noarrowleft`, `noarrowright`, `nospace`
+
+```html
+<mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe" hotkeys="noarrowleft noarrowright"></mux-player>
+```
+
+#### Default hotkeys
+
+| Key   | Behavior          |
+| ----- | ----------------- |
+| Space | Toggle Playback   |
+| `k`   | Toggle Playback   |
+| `m`   | Toggle mute       |
+| `f`   | Toggle fullscreen |
+| ⬅     | Seek back 10s     |
+| ➡     | Seek forward 10s  |
+
 ### prefer-mse
 
 By default `<mux-player>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
@@ -257,6 +280,7 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 | `beacon-collection-domain`    | `string` (domain name)                                              | Assigns a custom domain to be used for Mux Data collection.                                                                                                                                                                                                                                                                                                                                      | N/A           |
 | `custom-domain`               | `string` (domain name)                                              | Assigns a custom domain to be used for Mux Video.                                                                                                                                                                                                                                                                                                                                                | N/A           |
 | `nohotkeys`                   | `boolean`                                                           | Toggles keyboard shortcut (hot keys) support when focus in inside the player                                                                                                                                                                                                                                                                                                                     | `false`       |
+| `hotkeys`                     | `string`                                                            | Offers a way to disable certain keyboard shortcuts. For more, see the section on [`hotkeys`](#hotkeys)                                                                                                                                                                                                                                                                                           | N/A           |
 
 ### Methods
 
@@ -281,6 +305,7 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
 | `ended` <sub><sup>Read only</sup></sub>       | Returns a `Boolean` that indicates whether the media element has finished playing.                                                                                                                                                                                                                                  | `false`     |
 | `loop`                                        | A `Boolean` that reflects the `loop` HTML attribute, which indicates whether the media element should start over when it reaches the end.                                                                                                                                                                           | `false`     |
 | `nohotkeys`                                   | A `Boolean` that reflects the `nohotkeys` HTML attribute, which indicates whether Mux Player accepts keboard shortcuts.                                                                                                                                                                                             | `false`     |
+| `hotkeys`                                     | Is a read-only `DOMTokenList` similar to `classList` which offers a way to turn off keyboard shortcuts. For more, see the section on [`hotkeys`](#hotkeys)                                                                                                                                                          | `''`        |
 | `metadata`                                    | The metadata property can be used to set the Mux Data metadata properties in an easy way. Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-data-actionable-with-metadata) to view an exhaustive list of available values.                                                             | `{}`        |
 | `muted`                                       | Is a `Boolean` that determines whether audio is muted. `true` if the audio is muted and `false` otherwise.                                                                                                                                                                                                          | `false`     |
 | `paused` <sub><sup>Read only</sup></sub>      | Returns a `Boolean` that indicates whether the media element is paused.                                                                                                                                                                                                                                             | `true`      |

@@ -1,7 +1,9 @@
 import type MuxVideoElement, { MediaError } from '@mux/mux-video';
+import type { AttributeTokenList } from './helpers';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   nohotkeys?: boolean;
+  hotkeys?: AttributeTokenList;
   preferMse?: boolean;
 };
 
@@ -33,6 +35,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   metadataVideoTitle: string;
   metadataViewerUserId: string;
   noHotKeys: boolean;
+  hotKeys: AttributeTokenList;
 };
 
 export type DialogOptions = {

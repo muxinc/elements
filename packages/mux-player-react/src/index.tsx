@@ -49,6 +49,7 @@ type MuxMediaPropTypes = {
 };
 
 export type MuxPlayerProps = {
+  hotkeys?: string;
   nohotkeys?: boolean;
   defaultHiddenCaptions?: boolean;
   playerSoftwareVersion?: string;
