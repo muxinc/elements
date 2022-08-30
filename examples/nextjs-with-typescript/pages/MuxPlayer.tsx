@@ -271,6 +271,9 @@ function MuxPlayerPage() {
             <option value="--bottom-pip-button">--bottom-pip-button</option>
             <option value="--fullscreen-button">--fullscreen-button</option>
             <option value="--bottom-fullscreen-button">--bottom-fullscreen-button</option>
+            <option value="--seek-live-button">--seek-live-button</option>
+            <option value="--top-seek-live-button">--top-seek-live-button</option>
+            <option value="--bottom-seek-live-button">--bottom-seek-live-button</option>
           </select>
         </div>
         <div>
