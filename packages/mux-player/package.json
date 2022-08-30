@@ -51,13 +51,13 @@
   },
   "dependencies": {
     "@github/template-parts": "^0.5.3",
-    "@mux/polyfills": "0.1.0",
     "@mux/mux-video": "0.8.4",
     "@mux/playback-core": "0.9.0",
     "media-chrome": "0.10.0"
   },
   "devDependencies": {
     "@mux/open-process": "0.1.0",
+    "@mux/polyfills": "0.1.0",
     "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.14.0",

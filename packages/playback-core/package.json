@@ -46,12 +46,12 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/polyfills": "0.1.0",
     "hls.js": "1.1.5",
     "mux-embed": "^4.7.0"
   },
   "devDependencies": {
     "@mux/open-process": "0.1.0",
+    "@mux/polyfills": "0.1.0",
     "downlevel-dts": "^0.9.0",
     "esbuild": "^0.13.13",
     "npm-run-all": "^4.1.5",
