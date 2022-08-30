@@ -103,6 +103,7 @@ export default class MediaThemeMux extends MediaTheme {
 
       const matches = element.localName.match(/^([^-]+)-(.*)-(button|range|display)$/);
       if (!matches) return;
+      // eslint-disable-next-line prefer-const
       let [, , namePart, typePart] = matches;
 
       // NOTE: Since this code/implementation will be replaced for any parts support,
