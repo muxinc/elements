@@ -105,6 +105,8 @@ export default class MediaThemeMux extends MediaTheme {
       if (!matches) return;
       let [, , namePart, typePart] = matches;
 
+      // NOTE: Since this code/implementation will be replaced for any parts support,
+      // relying on an ad hoc solution for title display (CJP)
       if (namePart === 'text') {
         if (element.classList.contains('title-display')) {
           namePart = 'title';
