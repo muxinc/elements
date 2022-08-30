@@ -200,6 +200,11 @@ media-time-display {
   color: inherit;
 }
 
+.title-display {
+  font-size: 16px;
+}
+
 :host([audio]) .title-display {
   flex-grow: 1;
+  font-size: 21px;
 }
