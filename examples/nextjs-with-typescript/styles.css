@@ -8,8 +8,8 @@ body > div {
   margin: 40px auto;
 }
 
-mux-player,
-mux-video,
+mux-player:not([audio]),
+mux-video:not([audio]),
 video {
   width: 100%;
   display: block;
@@ -19,6 +19,8 @@ video {
   aspect-ratio: 16 / 9;
 }
 
+mux-player,
+mux-video,
 mux-audio,
 audio {
   width: 100%;
