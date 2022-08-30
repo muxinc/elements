@@ -199,3 +199,7 @@ media-time-display {
 :is(media-time-display, media-text-display, media-playback-rate-button) {
   color: inherit;
 }
+
+:host([audio]) .title-display {
+  flex-grow: 1;
+}

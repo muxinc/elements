@@ -36,6 +36,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   metadataViewerUserId: string;
   noHotKeys: boolean;
   hotKeys: AttributeTokenList;
+  title: string;
 };
 
 export type DialogOptions = {
