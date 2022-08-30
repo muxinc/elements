@@ -1,7 +1,7 @@
 class EventTarget {
   addEventListener() {}
   removeEventListener() {}
-  dispatchEvent(_event: Event) {
+  dispatchEvent(_event) {
     return true;
   }
 }
@@ -17,12 +17,12 @@ class HTMLElement extends EventTarget {}
 class HTMLVideoElement extends EventTarget {}
 
 const customElements = {
-  get(_name: string) {
+  get(_name) {
     return undefined;
   },
-  define(_name: string, _constructor: HTMLElement, _options: any) {},
-  upgrade(_root: Node) {},
-  whenDefined(_name: string) {
+  define(_name, _constructor, _options) {},
+  upgrade(_root) {},
+  whenDefined(_name) {
     return Promise.resolve(HTMLElement);
   },
 };
@@ -32,14 +32,14 @@ class CustomEvent {
   get detail() {
     return this.#detail;
   }
-  constructor(typeArg: string, eventInitDict: any = {}) {
+  constructor(typeArg, eventInitDict = {}) {
     // super(typeArg, eventInitDict);
     this.#detail = eventInitDict?.detail;
   }
   initCustomEvent() {}
 }
 
-function createElement(_tagName: string, _options: any) {
+function createElement(_tagName, _options) {
   return new HTMLElement();
 }
 
@@ -56,7 +56,7 @@ const globalThisShim = {
 };
 
 const isServer = typeof window === 'undefined' || typeof globalThis.customElements === 'undefined';
-const GlobalThis = (isServer ? globalThisShim : globalThis) as typeof globalThis;
-const Document = (isServer ? globalThisShim.document : globalThis.document) as Document;
+const GlobalThis = isServer ? globalThisShim : globalThis;
+const Document = isServer ? globalThisShim.document : globalThis.document;
 
 export { GlobalThis as globalThis, Document as document };

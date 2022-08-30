@@ -1,4 +1,4 @@
-import { globalThis, document } from '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';

@@ -1,4 +1,4 @@
-import { globalThis, document } from '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
 import 'castable-video';
 
 /**

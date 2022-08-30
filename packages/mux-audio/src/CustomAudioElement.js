@@ -1,4 +1,4 @@
-import { globalThis, document } from '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
 /**
  * Custom Audio Element
  * The goal is to create an element that works just like the audio element

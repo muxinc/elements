@@ -1,4 +1,4 @@
-import { globalThis } from '@mux/polyfills';
+import { globalThis } from 'shared-polyfills';
 import {
   initialize,
   setupAutoplay,

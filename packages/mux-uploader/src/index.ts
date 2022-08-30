@@ -1,4 +1,4 @@
-import { globalThis, document } from '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
 // Still need to import this to ensure component registration occurs when using the main module.
 // Consider refactoring module structure to avoid this. (CJP)
 import './mux-uploader-drop';

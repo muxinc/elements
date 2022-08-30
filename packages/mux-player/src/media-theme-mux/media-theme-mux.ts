@@ -1,4 +1,4 @@
-import { globalThis } from '@mux/polyfills';
+import { globalThis } from 'shared-polyfills';
 import { MediaTheme } from 'media-chrome';
 import { html, render } from '../html';
 import '../media-chrome/time-display';

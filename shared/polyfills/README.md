@@ -17,5 +17,5 @@ globalThis.document.createElement;
 ## Usage
 
 ```
-import { globalThis, document } from '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
 ```

@@ -52,7 +52,6 @@
   },
   "devDependencies": {
     "@mux/open-process": "0.1.0",
-    "@mux/polyfills": "0.1.0",
     "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@web/dev-server-esbuild": "^0.2.16",
@@ -62,6 +61,7 @@
     "esbuild": "^0.13.13",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
+    "shared-polyfills": "0.1.0",
     "shx": "^0.3.4",
     "typescript": "^4.5.2"
   }

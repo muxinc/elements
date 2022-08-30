@@ -1,4 +1,4 @@
-import { globalThis, document } from '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
 
 /* Inspired by HTMLDialogElement &
    https://github.com/GoogleChrome/dialog-polyfill/blob/master/index.js */

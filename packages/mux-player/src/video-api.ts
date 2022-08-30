@@ -1,4 +1,4 @@
-import { globalThis } from '@mux/polyfills';
+import { globalThis } from 'shared-polyfills';
 import { VideoEvents } from '@mux/mux-video';
 import type MuxVideoElement from '@mux/mux-video';
 import * as logger from './logger';
