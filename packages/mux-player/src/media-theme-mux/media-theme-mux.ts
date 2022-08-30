@@ -89,6 +89,7 @@ export default class MediaThemeMux extends MediaTheme {
           exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer"
         >
           <slot name="media" slot="media"></slot>
+          <media-poster-image slot="poster" src="${props.poster}"></media-poster-image>
           <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>
