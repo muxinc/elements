@@ -15,6 +15,7 @@ const INITIAL_AUTOPLAY = false;
 const INITIAL_NOHOTKEYS = false;
 const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
 const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
+const INITIAL_TITLE = '';
 const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 const INITIAL_SELECTED_CSS_VARS = {};
 const INITIAL_HOTKEYS = '';
@@ -65,6 +66,7 @@ function MuxPlayerPage() {
   const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
   const [hotkeys, setHotkeys] = useState(INITIAL_HOTKEYS);
+  const [title, setTitle] = useState(INITIAL_TITLE);
 
   return (
     <div>
@@ -74,9 +76,9 @@ function MuxPlayerPage() {
         <MuxPlayer
           ref={mediaElRef}
           style={selectedCssVars}
-          // style={{ aspectRatio: "16 / 9" }}
-          // envKey={envKey}
+          envKey={envKey || undefined}
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
+          title={title}
           startTime={startTime}
           thumbnailTime={thumbnailTime}
           playbackId={selectedAsset["playback-id"]}
@@ -195,6 +197,14 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
+          <label htmlFor="title-control">Title</label>
+          <input
+            id="title-control"
+            onChange={({ currentTarget }) => setTitle(currentTarget.value)}
+            defaultValue={title}
+          />
+        </div>
+        <div>
           <label htmlFor="debug-control">Debug</label>
           <input
             id="debug-control"
@@ -237,6 +247,9 @@ function MuxPlayerPage() {
             <option value="--seek-forward-button">--seek-forward-button</option>
             <option value="--bottom-seek-forward-button">--bottom-seek-forward-button</option>
             <option value="--time-display">--time-display</option>
+            <option value="--title-display">--title-display</option>
+            <option value="--bottom-title-display">--bottom-title-display</option>
+            <option value="--top-title-display">--top-title-display</option>
             <option value="--bottom-time-display">--bottom-time-display</option>
             <option value="--mute-button">--mute-button</option>
             <option value="--bottom-mute-button">--bottom-mute-button</option>
