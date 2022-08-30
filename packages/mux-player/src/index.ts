@@ -76,6 +76,7 @@ const PlayerAttributes = {
   HOTKEYS: 'hotkeys',
   PLAYBACK_RATES: 'playbackrates',
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
+  TITLE: 'title',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -125,6 +126,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     metadataVideoId: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_ID),
     metadataVideoTitle: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_TITLE),
     metadataViewerUserId: el.getAttribute(MuxVideoAttributes.METADATA_VIEWER_USER_ID),
+    title: el.getAttribute(PlayerAttributes.TITLE),
     ...state,
   };
 }
@@ -648,6 +650,21 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set thumbnailTime(val: number | undefined) {
     this.setAttribute(PlayerAttributes.THUMBNAIL_TIME, `${val}`);
+  }
+
+  get title() {
+    return this.getAttribute(PlayerAttributes.TITLE) ?? '';
+  }
+
+  set title(val: string) {
+    if (val === this.title) return;
+    if (!!val) {
+      this.removeAttribute('title');
+    } else {
+      this.setAttribute(PlayerAttributes.TITLE, val);
+    }
+    // Calling super.title for tooltip usage
+    super.title = val;
   }
 
   /**
