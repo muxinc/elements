@@ -1,4 +1,4 @@
-import '@mux/polyfills';
+import { globalThis, document } from '@mux/polyfills';
 // Still need to import this to ensure component registration occurs when using the main module.
 // Consider refactoring module structure to avoid this. (CJP)
 import './mux-uploader-drop';
@@ -273,7 +273,7 @@ interface MuxUploaderElement extends HTMLElement {
   ): void;
 }
 
-class MuxUploaderElement extends HTMLElement implements MuxUploaderElement {
+class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
   protected _endpoint: Endpoint;

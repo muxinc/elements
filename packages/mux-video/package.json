@@ -48,11 +48,11 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/playback-core": "0.9.0"
+    "@mux/playback-core": "0.9.0",
+    "@mux/polyfills": "0.1.0"
   },
   "devDependencies": {
     "@mux/open-process": "0.1.0",
-    "@mux/polyfills": "0.1.0",
     "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@web/dev-server-esbuild": "^0.2.16",

@@ -616,13 +616,15 @@ const CastableVideoMixin = (superclass) =>
     }
   };
 
-const CastableVideoElement = CastableVideoMixin(HTMLVideoElement);
+if (globalThis.HTMLVideoElement && globalThis.customElements) {
+  const CastableVideoElement = CastableVideoMixin(HTMLVideoElement);
 
-if (!customElements.get('castable-video')) {
-  customElements.define('castable-video', CastableVideoElement, {
-    extends: 'video',
-  });
-  globalThis.CastableVideoElement = CastableVideoElement;
+  if (!globalThis.customElements.get('castable-video')) {
+    globalThis.customElements.define('castable-video', CastableVideoElement, {
+      extends: 'video',
+    });
+    globalThis.CastableVideoElement = CastableVideoElement;
+  }
+
+  CastableVideoElement.initCast();
 }
-
-CastableVideoElement.initCast();

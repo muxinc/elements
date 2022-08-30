@@ -1,3 +1,4 @@
+import { globalThis, document } from '@mux/polyfills';
 import MediaDialog from './media-chrome/dialog';
 
 const template = document.createElement('template');

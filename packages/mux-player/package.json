@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@github/template-parts": "^0.5.3",
+    "@mux/polyfills": "0.1.0",
     "@mux/mux-video": "0.8.4",
     "@mux/playback-core": "0.9.0",
     "media-chrome": "0.10.0"

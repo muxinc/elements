@@ -1,3 +1,4 @@
+import { globalThis } from '@mux/polyfills';
 import {
   initialize,
   setupAutoplay,

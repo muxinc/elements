@@ -1,3 +1,5 @@
+import { globalThis, document } from '@mux/polyfills';
+
 /* Inspired by HTMLDialogElement &
    https://github.com/GoogleChrome/dialog-polyfill/blob/master/index.js */
 
@@ -72,7 +74,7 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaDialog extends HTMLElement {
+class MediaDialog extends globalThis.HTMLElement {
   static styles: string = styles;
   static template: HTMLTemplateElement = template;
   static observedAttributes = ['open'];

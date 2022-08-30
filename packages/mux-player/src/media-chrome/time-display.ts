@@ -1,3 +1,5 @@
+import { globalThis, document } from '@mux/polyfills';
+
 const styles = `
   :host {
     cursor: pointer;
@@ -16,7 +18,7 @@ template.innerHTML = `
 
 const ButtonPressedKeys = ['Enter', ' '];
 
-class MxpTimeDisplay extends HTMLElement {
+class MxpTimeDisplay extends globalThis.HTMLElement {
   static get observedAttributes() {
     return ['hide-duration', 'remaining'];
   }

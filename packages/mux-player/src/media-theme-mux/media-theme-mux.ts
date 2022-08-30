@@ -1,3 +1,4 @@
+import { globalThis } from '@mux/polyfills';
 import { MediaTheme } from 'media-chrome';
 import { html, render } from '../html';
 import '../media-chrome/time-display';
@@ -111,8 +112,8 @@ export default class MediaThemeMux extends MediaTheme {
   }
 }
 
-if (!customElements.get('media-theme-mux')) {
-  customElements.define('media-theme-mux', MediaThemeMux);
+if (!globalThis.customElements.get('media-theme-mux')) {
+  globalThis.customElements.define('media-theme-mux', MediaThemeMux);
 }
 
 const ChromeRenderer = (props: ThemeMuxTemplateProps) => {

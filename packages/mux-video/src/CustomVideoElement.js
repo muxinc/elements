@@ -1,3 +1,4 @@
+import { globalThis, document } from '@mux/polyfills';
 import 'castable-video';
 
 /**
@@ -65,7 +66,7 @@ template.innerHTML = `
 <slot></slot>
 `;
 
-class CustomVideoElement extends HTMLElement {
+class CustomVideoElement extends globalThis.HTMLElement {
   #isInit;
 
   constructor() {
@@ -238,7 +239,7 @@ const deprecatedProps = ['webkitDisplayingFullscreen', 'webkitSupportsFullscreen
 // i.e. VideoElement and MediaElement
 for (
   let proto = Object.getPrototypeOf(nativeElTest);
-  proto && proto !== HTMLElement.prototype;
+  proto && proto !== globalThis.HTMLElement.prototype;
   proto = Object.getPrototypeOf(proto)
 ) {
   Object.getOwnPropertyNames(proto).forEach((key) => {

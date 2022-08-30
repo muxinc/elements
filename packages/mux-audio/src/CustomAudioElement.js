@@ -1,3 +1,4 @@
+import { globalThis, document } from '@mux/polyfills';
 /**
  * Custom Audio Element
  * The goal is to create an element that works just like the audio element
@@ -58,7 +59,7 @@ template.innerHTML = `
 <slot></slot>
 `;
 
-class CustomAudioElement extends HTMLElement {
+class CustomAudioElement extends globalThis.HTMLElement {
   #isInit;
 
   constructor() {
@@ -223,7 +224,7 @@ const deprecatedProps = ['webkitDisplayingFullscreen', 'webkitSupportsFullscreen
 // i.e. AudioElement and MediaElement
 for (
   let proto = Object.getPrototypeOf(nativeElTest);
-  proto && proto !== HTMLElement.prototype;
+  proto && proto !== globalThis.HTMLElement.prototype;
   proto = Object.getPrototypeOf(proto)
 ) {
   Object.keys(proto).forEach((key) => {
