@@ -399,7 +399,6 @@ export const LiveChromeExtraSmall = VodChromeExtraSmall;
 // prettier-ignore
 export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    <slot name="seek-live"></slot>
     ${props.title ? TitleDisplay(props) : ''}
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
@@ -413,6 +412,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
+    <slot name="seek-live"></slot>
     <div class="spacer"></div>
     ${MediaFullscreenButton()}
   </media-control-bar>
@@ -421,7 +421,6 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    <slot name="seek-live"></slot>
     ${props.title ? TitleDisplay(props) : ''}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
@@ -430,6 +429,7 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar>
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
+    <slot name="seek-live"></slot>
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
