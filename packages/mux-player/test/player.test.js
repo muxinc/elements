@@ -12,6 +12,7 @@ describe('<mux-player>', () => {
       stream-type="on-demand"
       prefer-mse
       muted
+      title="A title"
     ></mux-player>`);
 
     assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe', 'playback-id is reflected');
@@ -20,6 +21,7 @@ describe('<mux-player>', () => {
     assert.equal(player.streamType, 'on-demand', 'stream-type is on-demand');
     assert.equal(player.preferMse, true, 'prefer-mse is on');
     assert.equal(player.debug, false, 'debug is off');
+    assert.equal(player.title, 'A title', 'title is set');
   });
 
   it('has a video like API', async function () {
