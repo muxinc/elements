@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.8](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.7...@mux/mux-uploader@0.1.0-beta.8) (2022-08-31)
+
+### Bug Fixes
+
+- **mux-uploader:** Rename error event. ([fff5f3e](https://github.com/muxinc/elements/commit/fff5f3e577749eebcc22c72b25cbe433e4f8ed2d))
+- polyfills mutating global ([#355](https://github.com/muxinc/elements/issues/355)) ([71d18a4](https://github.com/muxinc/elements/commit/71d18a427f0171bb214a0df7c1425d3d1bddc47a))
+
 # [0.1.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader@0.1.0-beta.6...@mux/mux-uploader@0.1.0-beta.7) (2022-08-04)
 
 ### Bug Fixes

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.27](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.26...@mux/mux-player-react@0.1.0-beta.27) (2022-08-31)
+
+### Features
+
+- Add hotkeys blocklist and turn off hotkey seeking when any live ([#341](https://github.com/muxinc/elements/issues/341)) ([ce76b1b](https://github.com/muxinc/elements/commit/ce76b1b5955179c929c91de97c06a2839990c509)), closes [#336](https://github.com/muxinc/elements/issues/336)
+- **mux-player-react:** Add defaultShowRemainingTime to mux-player-react. ([7a58731](https://github.com/muxinc/elements/commit/7a58731ba6d6965942f0e3d487821dd464ce422c))
+- **mux-player-react:** add missing event listeners ([03cac1a](https://github.com/muxinc/elements/commit/03cac1abeb4215ea89f03f899b9132ab18486699))
+- **mux-player-react:** Add support for hideDuration and playbackRates. ([58ababc](https://github.com/muxinc/elements/commit/58ababc79c1391fda311b82c42180404d01850bb))
+- **mux-player-react:** Add title type for MuxPlayer (react). ([22c80fe](https://github.com/muxinc/elements/commit/22c80fecd7c856b234a1fa2a65e7efd2b4e98f0b))
+- **mux-player, mux-player-react:** make hide-duration a controlsList value. ([cb3b2f2](https://github.com/muxinc/elements/commit/cb3b2f27b804878e5a223893cc6fc75dac0a4572))
+- use CSS vars to toggle off elements ([#349](https://github.com/muxinc/elements/issues/349)) ([69128d6](https://github.com/muxinc/elements/commit/69128d62ee1a9e5139d8fab3b5faf56e494dfa8b))
+
 # [0.1.0-beta.26](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.25...@mux/mux-player-react@0.1.0-beta.26) (2022-08-03)
 
 **Note:** Version bump only for package @mux/mux-player-react

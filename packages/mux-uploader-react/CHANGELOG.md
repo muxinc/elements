@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.8](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.7...@mux/mux-uploader-react@0.1.0-beta.8) (2022-08-31)
+
+### Bug Fixes
+
+- **mux-uploader-react:** Rename error event. ([cb74ca2](https://github.com/muxinc/elements/commit/cb74ca2528aa051b2f0a10ad5715aaad69cf1ecf))
+
 # [0.1.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.6...@mux/mux-uploader-react@0.1.0-beta.7) (2022-08-04)
 
 **Note:** Version bump only for package @mux/mux-uploader-react

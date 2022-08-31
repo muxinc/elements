@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.9.0...@mux/playback-core@0.10.0) (2022-08-31)
+
+### Bug Fixes
+
+- polyfills mutating global ([#355](https://github.com/muxinc/elements/issues/355)) ([71d18a4](https://github.com/muxinc/elements/commit/71d18a427f0171bb214a0df7c1425d3d1bddc47a))
+
+### Features
+
+- **playback-core:** Always prefer mse on android. ([05855a4](https://github.com/muxinc/elements/commit/05855a43cb9f87602203fab896e6e6876d7a1b12))
+
 # [0.9.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.8.0...@mux/playback-core@0.9.0) (2022-07-21)
 
 ### Features

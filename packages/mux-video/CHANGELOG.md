@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.5](https://github.com/muxinc/elements/compare/@mux/mux-video@0.8.4...@mux/mux-video@0.8.5) (2022-08-31)
+
+### Bug Fixes
+
+- polyfills mutating global ([#355](https://github.com/muxinc/elements/issues/355)) ([71d18a4](https://github.com/muxinc/elements/commit/71d18a427f0171bb214a0df7c1425d3d1bddc47a))
+
 ## [0.8.4](https://github.com/muxinc/elements/compare/@mux/mux-video@0.8.3...@mux/mux-video@0.8.4) (2022-08-03)
 
 **Note:** Version bump only for package @mux/mux-video

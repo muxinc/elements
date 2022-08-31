@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.2...@mux/mux-audio@0.6.3) (2022-08-31)
+
+### Bug Fixes
+
+- polyfills mutating global ([#355](https://github.com/muxinc/elements/issues/355)) ([71d18a4](https://github.com/muxinc/elements/commit/71d18a427f0171bb214a0df7c1425d3d1bddc47a))
+
 ## [0.6.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.1...@mux/mux-audio@0.6.2) (2022-08-02)
 
 ### Bug Fixes

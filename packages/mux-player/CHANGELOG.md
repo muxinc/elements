@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.27](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.26...@mux/mux-player@0.1.0-beta.27) (2022-08-31)
+
+### Bug Fixes
+
+- add rest of block controlslist attr values ([e19a88f](https://github.com/muxinc/elements/commit/e19a88f877d3344e60b0f1e4a3bf225d5f767ac5))
+- add top and bottom parts to elements ([66072f6](https://github.com/muxinc/elements/commit/66072f6c4695af03f24e21b4eaa982bdd8907855))
+- AttributeTokenList attribute bug on removal ([48bc25e](https://github.com/muxinc/elements/commit/48bc25ec237ed9f11cf39f51643cb502431cab21))
+- **mux-player:** Add font sizes to title for different permutations. ([33374fa](https://github.com/muxinc/elements/commit/33374fa15213656df28116ca9768f2ab4501cb7c))
+- **mux-player:** Extra type safety, because tests are confused. ([391c61e](https://github.com/muxinc/elements/commit/391c61e08fe102d136bf7a23c1068edc3bc4f1e8))
+- **mux-player:** Re-add poster to theme template (lost in rebase merge). ([2b7d84c](https://github.com/muxinc/elements/commit/2b7d84c630b5835415dcdd5abe0dd1d3414a9e24))
+- **mux-player:** Update live indicator position per new designs. ([3e7faa6](https://github.com/muxinc/elements/commit/3e7faa604d4d4a902ffb4242f0618c261ebb0ee5))
+- **mux-player:** Use css vars in theme to hide unavailable controls. ([43b2e82](https://github.com/muxinc/elements/commit/43b2e820cca464086abc9fdfa1f70b2e555c1cbc))
+- **mux-player:** Use css vars in theme to hide unavailable controls. ([4be4c1f](https://github.com/muxinc/elements/commit/4be4c1fb29730892e00fecebce7cce30b0ff3895))
+- polyfills mutating global ([#355](https://github.com/muxinc/elements/issues/355)) ([71d18a4](https://github.com/muxinc/elements/commit/71d18a427f0171bb214a0df7c1425d3d1bddc47a))
+
+### Features
+
+- add foundation of controlsList logic ([c8e39b3](https://github.com/muxinc/elements/commit/c8e39b3d81e54445c3b9b25bb30ec99ab8b35c18))
+- Add hotkeys blocklist and turn off hotkey seeking when any live ([#341](https://github.com/muxinc/elements/issues/341)) ([ce76b1b](https://github.com/muxinc/elements/commit/ce76b1b5955179c929c91de97c06a2839990c509)), closes [#336](https://github.com/muxinc/elements/issues/336)
+- **mux-player, mux-player-react:** make hide-duration a controlsList value. ([cb3b2f2](https://github.com/muxinc/elements/commit/cb3b2f27b804878e5a223893cc6fc75dac0a4572))
+- **mux-player:** Add delimiter for live + title case. ([8881274](https://github.com/muxinc/elements/commit/8881274dfe4d29fc7304ceacf7de3fb855802956))
+- **mux-player:** Add Media Chrome poster to player theme. ([29ed915](https://github.com/muxinc/elements/commit/29ed915a5afcbaf55e05763d1fc422694d27fb22))
+- **mux-player:** Add support for configurable playbackrates. Update types to use a generic component type. ([6b7b608](https://github.com/muxinc/elements/commit/6b7b6085ce9132e01b4b86cd92435adbb43efa84))
+- **mux-player:** Add support for hiding the duration display. ([bba5063](https://github.com/muxinc/elements/commit/bba506347a9e50d2fd47b38b2e46e1e6684cce51))
+- **mux-player:** Add support for showing remaining time by default. ([7e24c97](https://github.com/muxinc/elements/commit/7e24c97e4b1174fcee9ff425e1b601dd7821fb02))
+- **mux-player:** Add title UI to Mux Player. ([2fb5ff2](https://github.com/muxinc/elements/commit/2fb5ff2f261037815c1aa874f3848ee9107a6e2b))
+- use CSS vars to toggle off elements ([#349](https://github.com/muxinc/elements/issues/349)) ([69128d6](https://github.com/muxinc/elements/commit/69128d62ee1a9e5139d8fab3b5faf56e494dfa8b))
+
 # [0.1.0-beta.26](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.25...@mux/mux-player@0.1.0-beta.26) (2022-08-03)
 
 ### Bug Fixes
