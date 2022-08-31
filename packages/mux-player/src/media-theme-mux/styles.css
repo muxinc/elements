@@ -204,12 +204,6 @@ media-time-display {
   font-size: 16px;
 }
 
-:host([stream-type*='live']:not([audio])) .title-display::before {
-  font-size: 16px;
-  content: '|';
-  display: var(--media-seek-live-button);
-}
-
 :host([audio]) .title-display {
   flex-grow: 1;
   font-size: 21px;
