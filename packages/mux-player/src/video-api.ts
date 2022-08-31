@@ -1,3 +1,4 @@
+import { globalThis } from 'shared-polyfills';
 import { VideoEvents } from '@mux/mux-video';
 import type MuxVideoElement from '@mux/mux-video';
 import * as logger from './logger';
@@ -56,7 +57,7 @@ export function initVideoApi(el: VideoApiElement) {
   });
 }
 
-class VideoApiElement extends HTMLElement {
+class VideoApiElement extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
   }

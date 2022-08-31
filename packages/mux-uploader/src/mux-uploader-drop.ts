@@ -1,4 +1,5 @@
-import '@mux/polyfills';
+import { globalThis, document } from 'shared-polyfills';
+
 const template = document.createElement('template');
 
 /** @todo: Currently removing all styles. Follow up on overlay styling (CJP) */
@@ -39,7 +40,7 @@ const Attributes = {
   OVERLAY_TEXT: 'overlay-text',
 };
 
-class MuxUploaderDropElement extends HTMLElement {
+class MuxUploaderDropElement extends globalThis.HTMLElement {
   overlayText: HTMLElement;
 
   constructor() {

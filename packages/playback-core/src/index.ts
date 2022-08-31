@@ -1,4 +1,3 @@
-import '@mux/polyfills';
 import mux, { Options, ErrorEvent } from 'mux-embed';
 
 import Hls, { HlsConfig } from 'hls.js';

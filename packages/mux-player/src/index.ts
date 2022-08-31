@@ -1,5 +1,4 @@
-// import playback-core here to make sure that the polyfill is loaded
-import '@mux/playback-core';
+import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
@@ -187,7 +186,7 @@ class MuxPlayerElement extends VideoApiElement {
     // even before they are connected to the main document.
     try {
       customElements.upgrade(this.theme as Node);
-      if (!(this.theme instanceof HTMLElement)) throw '';
+      if (!(this.theme instanceof globalThis.HTMLElement)) throw '';
     } catch (error) {
       logger.error(`<${this.theme?.localName}> failed to upgrade!`);
     }
