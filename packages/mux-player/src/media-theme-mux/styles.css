@@ -57,24 +57,20 @@
   width: 100%;
 }
 
+media-airplay-button[media-airplay-unavailable],
+media-cast-button[media-cast-unavailable],
+media-volume-range[media-volume-unavailable],
+media-airplay-button[media-airplay-unavailable],
 media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
-  --captions-button: none;
+  display: none;
 }
 
 media-volume-range[media-volume-unavailable] {
-  --volume-range: none;
-}
-
-media-airplay-button[media-airplay-unavailable] {
-  --airplay-button: none;
-}
-
-media-cast-button[media-cast-unavailable] {
-  --cast-button: none;
+  display: none;
 }
 
 media-pip-button[media-pip-unavailable] {
-  --pip-button: none;
+  display: none;
 }
 
 media-controller {
