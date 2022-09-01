@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video-react",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A custom mux video element for React that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",

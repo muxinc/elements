@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.28](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.27...@mux/mux-player-react@0.1.0-beta.28) (2022-09-01)
+
+### Bug Fixes
+
+- cjs main entrypoint for React pkgs ([#360](https://github.com/muxinc/elements/issues/360)) ([473875f](https://github.com/muxinc/elements/commit/473875f4869a6ab9b04b44a90cc52b620a15ac83))
+
 # [0.1.0-beta.27](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.26...@mux/mux-player-react@0.1.0-beta.27) (2022-08-31)
 
 ### Features

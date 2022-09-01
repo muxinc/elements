@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-beta.9](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.8...@mux/mux-uploader-react@0.1.0-beta.9) (2022-09-01)
+
+### Bug Fixes
+
+- cjs main entrypoint for React pkgs ([#360](https://github.com/muxinc/elements/issues/360)) ([473875f](https://github.com/muxinc/elements/commit/473875f4869a6ab9b04b44a90cc52b620a15ac83))
+
 # [0.1.0-beta.8](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@0.1.0-beta.7...@mux/mux-uploader-react@0.1.0-beta.8) (2022-08-31)
 
 ### Bug Fixes
