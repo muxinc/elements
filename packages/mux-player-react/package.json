@@ -2,7 +2,7 @@
   "name": "@mux/mux-player-react",
   "version": "0.1.0-beta.27",
   "description": "An open source Mux player for React that Just Works™",
-  "main": "dist/index.js",
+  "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "exports": {
     "import": "./dist/index.mjs",

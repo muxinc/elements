@@ -2,7 +2,7 @@
   "name": "@mux/mux-video-react",
   "version": "0.5.2",
   "description": "A custom mux video element for React that Just Works™",
-  "main": "dist/index.js",
+  "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "exports": {
     "import": "./dist/index.mjs",
