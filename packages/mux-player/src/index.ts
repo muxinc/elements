@@ -3,6 +3,7 @@ import { globalThis, document } from 'shared-polyfills';
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
 import { Metadata, StreamTypes, addTextTrack, removeTextTrack } from '@mux/playback-core';
+import { type PlaybackEngine } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
 import { template } from './template';
@@ -593,12 +594,12 @@ class MuxPlayerElement extends VideoApiElement {
   /**
    * @deprecated please use ._hls instead
    */
-  get hls() {
+  get hls(): PlaybackEngine | undefined {
     logger.warn('<mux-player>.hls is deprecated, please use ._hls instead');
     return this._hls;
   }
 
-  get _hls() {
+  get _hls(): PlaybackEngine | undefined {
     return this.media?._hls;
   }
 
