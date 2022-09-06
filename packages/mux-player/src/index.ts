@@ -2,8 +2,7 @@ import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import MuxVideoElement, { MediaError } from '@mux/mux-video';
-import { Metadata, StreamTypes, addTextTrack, removeTextTrack } from '@mux/playback-core';
-import { type PlaybackEngine } from '@mux/playback-core';
+import { Metadata, StreamTypes, PlaybackEngine, addTextTrack, removeTextTrack } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
 import { template } from './template';
