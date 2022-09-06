@@ -48,7 +48,7 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
   return (
     <div>
       <h1>Simple MuxUploader and Mux Uploader Drop Examples</h1>
-      {/* Roudned upload button by itself. Displays upload progress in text as percentage. */}
+      {/* Rounded upload button by itself. Displays upload progress in text as percentage. */}
       <MuxUploader url="authenticated-url" type="bar" status style={{ '--button-border-radius': '40px' }}></MuxUploader>
 
       {/* Upload button by itself. Does not display text percentage. */}
