@@ -4,7 +4,7 @@ import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { isKeyOf } from './util';
+import { isKeyOf, inSeekableRange } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
 export type ValueOf<T> = T[keyof T];
@@ -344,15 +344,24 @@ export const loadMedia = (
   const { src } = props;
   if (mediaEl && canUseNative && shouldUseNative) {
     if (typeof src === 'string') {
-      const { startTime } = props;
-      mediaEl.setAttribute('src', src);
-      if (startTime) {
-        const setStartTimeOnLoad = ({ target }: HTMLMediaElementEventMap['loadedmetadata']) => {
-          (target as HTMLMediaElement).currentTime = startTime;
-          (target as HTMLMediaElement).removeEventListener('loadedmetadata', setStartTimeOnLoad);
-        };
+      mediaEl.src = src;
 
-        mediaEl.addEventListener('loadedmetadata', setStartTimeOnLoad);
+      const { startTime } = props;
+      if (startTime) {
+        const seekInSeekableRange = () => {
+          mediaEl.removeEventListener('durationchange', seekInSeekableRange);
+
+          if (inSeekableRange(mediaEl.seekable, mediaEl.duration, startTime)) {
+            // Setting preload to `none` from `auto` was required on iOS to fix a bug
+            // that caused no `timeupdate` events to fire after seeking ¯\_(ツ)_/¯
+            if (mediaEl.preload === 'auto') {
+              mediaEl.preload = 'none';
+            }
+            mediaEl.currentTime = startTime;
+          }
+        };
+        // seekable is set to the range of the entire video once durationchange fires
+        mediaEl.addEventListener('durationchange', seekInSeekableRange);
       }
     } else {
       mediaEl.removeAttribute('src');
