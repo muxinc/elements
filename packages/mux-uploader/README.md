@@ -243,6 +243,27 @@ You can implement your own drag and drop completely separate from `<mux-uploader
 </script>
 ```
 
+## Handling events
+
+When the upload is complete, you'll see 100% on the progress bar and the `success` event will fire.
+
+If an error happens during the upload, `uploaderror` will fire.
+
+```html
+<mux-uploader endpoint="authenticated-url" status></mux-uploader>
+
+<script>
+  const muxUploader = document.querySelector('mux-uploader');
+  muxUploader.addEventListener('success', function () {
+    /* Handle upload success */
+  });
+
+    muxUploader.addEventListener('uploaderror', function () {
+    /* Handle upload error */
+  });
+<script>
+```
+
 ### Attributes
 
 #### `<mux-uploader>`
@@ -251,7 +272,6 @@ You can implement your own drag and drop completely separate from `<mux-uploader
 | -------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `endpoint`           | `string \| Promise` | Either a) the authenticated URL that your file will be uploaded to or b) an async function that yields a promise that resolves to that url. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url). Required. | `undefined` |
 | `id`                 | `string`            | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required if you use `mux-uploader-drop`.                                                                                                                                                                              | N/A         |
-| `type`               | `"bar"`             | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                                                                              | "bar"       |
 | `upload-in-progress` | `boolean`           | (Read-only) Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].                                                                                        | false       |
 | `upload-error`       | `boolean`           | (Read-only) Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].                                                                                       | false       |
 | `status`             | `boolean`           | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                                                                                  | false       |
