@@ -80,7 +80,11 @@ export function toParams(obj: Record<string, any>) {
 }
 
 export function parseJwt(token: string) {
-  const base64Url = token.split('.')[1];
+  const base64Url = (token ?? '').split('.')[1];
+
+  // exit early on invalid value
+  if (!base64Url) return {};
+
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const jsonPayload = decodeURIComponent(
     atob(base64)
