@@ -14,7 +14,6 @@
     "mux-embed": "^4.7.0"
   },
   "devDependencies": {
-    "@mux/open-process": "0.1.0",
-    "esbuild": "^0.13.13"
+    "esbuild": "^0.15.7"
   }
 }

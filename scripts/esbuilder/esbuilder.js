@@ -44,7 +44,7 @@ const options = {
   target: 'es2019',
   minify: args.minify,
   format: args.format,
-  watch: args.watch,
+  watch: !!args.watch,
   outExtension: args.outExtension,
   metafile: true,
   plugins: [i18nPlugin],

@@ -28,10 +28,10 @@
   "license": "MIT",
   "scripts": {
     "clean": "shx rm -rf dist/",
-    "dev:cjs": "open-process | yarn build:cjs --watch",
-    "dev:esm": "open-process | yarn build:esm --watch",
-    "dev:esm-module": "open-process | yarn build:esm-module --watch",
-    "dev:iife": "open-process | yarn build:iife --watch",
+    "dev:cjs": "yarn build:cjs --watch=forever",
+    "dev:esm": "yarn build:esm --watch=forever",
+    "dev:esm-module": "yarn build:esm-module --watch=forever",
+    "dev:iife": "yarn build:iife --watch=forever",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:iife dev:esm-module",
     "build:esm": "esbuild --metafile=./dist/esm.json src/index.ts --target=es2019 --bundle --sourcemap --format=esm --outdir=dist --out-extension:.js=.mjs --external:mux-embed --external:hls.js",
@@ -50,9 +50,8 @@
     "mux-embed": "^4.7.0"
   },
   "devDependencies": {
-    "@mux/open-process": "0.1.0",
     "downlevel-dts": "^0.9.0",
-    "esbuild": "^0.13.13",
+    "esbuild": "^0.15.7",
     "npm-run-all": "^4.1.5",
     "shared-polyfills": "0.1.0",
     "shx": "^0.3.4",
