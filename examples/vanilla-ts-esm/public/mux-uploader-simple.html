@@ -14,6 +14,12 @@
         background: #99f6e4;
         cursor: pointer;
       }
+      mux-uploader {
+        --progress-bar-fill-color: #7e22ce;
+        font-family: monospace;
+        font-size: 22px;
+        text-align: center;
+      }
       mux-uploader-drop {
         display: block;
         padding: 40px;
@@ -25,12 +31,22 @@
     </style>
   </head>
   <body>
+    <h2>Enter your upload GCS url:</h2>
+    <div>
+      <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+    </div>
+
     <div style="margin-top: 40px; width: 400px;">
-      <mux-uploader
-        status
-        endpoint="https://storage.googleapis.com/video-storage-us-east4-uploads/maISlrHJtnSFZSRURW005uXg02Y97WHsaK?Expires=1662586527&GoogleAccessId=direct-uploads-writer-prod%40mux-cloud.iam.gserviceaccount.com&Signature=f%2BJz8L%2FrRpizY61XVGnUZ%2BJGmmdchkWt0ZiVV2q0FpM3KzaSvU36LGbUX1npNQsfN8Dp9STHwlZPqOZsFgbLpfXLLumg4Mp9QIxKEibKQfxUlgchC5A9whhxb5oLQeKHntDfrpWVGzqVL4G4jibkr6zML6vbTnyjQj0usKoFOiEuzfrqOqTvQm3EWyoMOZU5Fp6XrmIzfpBO%2Fww6kb2aWhjGoA%2FZe6QbhK0edAPSf%2Fu1StAqGtV7mMpy0jKCeBpUskIQ3Je8BUFF5jxj3ezOd7v9bU2rIzZAL7Pcm%2F2X5NQjrsjFIdbpqGO2MYsiGFcP5LYXgMObPxXOmCsVATHNzw%3D%3D&upload_id=ADPycdulKF23KpeeEa8_ep0YaIF2TMaAeDMat1Gyy3WfXIULoR9QMPWvxtfvhImLKcpHpyCd8I6rnb-wTm44ahnYIMrgBw"
-      >
-      </mux-uploader>
+      <mux-uploader-drop mux-uploader="my-uploader">
+        <mux-uploader
+          id="my-uploader"
+          status
+        >
+          <button class="btn" type="button" slot="upload-button">
+            Pick a file
+          </button>
+        </mux-uploader>
+      </mux-uploader-drop>
     </div>
 
     <script>
