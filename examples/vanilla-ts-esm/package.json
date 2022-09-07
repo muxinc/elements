@@ -14,7 +14,7 @@
     "deploy": "gh-pages --dist public --dest ./examples/mux-elements/"
   },
   "devDependencies": {
-    "esbuild": "^0.14.2",
+    "esbuild": "^0.15.7",
     "gh-pages": "^3.2.3",
     "typescript": "^4.5.2"
   },
