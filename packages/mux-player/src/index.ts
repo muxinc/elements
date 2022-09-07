@@ -538,7 +538,7 @@ class MuxPlayerElement extends VideoApiElement {
         break;
       }
       case MuxVideoAttributes.PLAYBACK_ID: {
-        if (newValue.includes('?token')) {
+        if (newValue?.includes('?token')) {
           logger.error(
             i18n(
               'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.'
