@@ -49,14 +49,14 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
     <div>
       <h1>Simple MuxUploader and Mux Uploader Drop Examples</h1>
       {/* Rounded upload button by itself. Displays upload progress in text as percentage. */}
-      <MuxUploader url="authenticated-url" type="bar" status style={{ '--button-border-radius': '40px' }}></MuxUploader>
+      <MuxUploader endpoint="authenticated-url" type="bar" status style={{ '--button-border-radius': '40px' }}></MuxUploader>
 
       {/* Upload button by itself. Does not display text percentage. */}
-      <MuxUploader url="authenticated-url" type="bar"></MuxUploader>
+      <MuxUploader endpoint="authenticated-url" type="bar"></MuxUploader>
 
       {/* Upload button with access to optional supplentary drag and drop features. */}
       <MuxUploaderDrop mux-uploader="uploader">
-        <MuxUploader url="authenticated-url" id="uploader"></MuxUploader>
+        <MuxUploader endpoint="authenticated-url" id="uploader"></MuxUploader>
       </MuxUploaderDrop>
     </div>
   );
