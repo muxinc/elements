@@ -57,9 +57,9 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 
 # Usage
 
-In these examples `"authenticated-url"` is the `url` property in the response returned from [creating a Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload). Creating a direct upload happens server-side directly to the Mux API.
+In these examples, you will replace the value of the `endppint` property with the the response returned from [creating a Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload). Creating a direct upload happens server-side directly to the Mux API.
 
-The `url` for a Direct Upload looks like `"https://storage.googleapis.com/video..."`.
+The URL for a Direct Upload looks like `"https://storage.googleapis.com/video..."`.
 
 ## Quickstart
 
@@ -70,7 +70,7 @@ This will show:
 - With the `status` attribute, the upload progress will also show the status of the upload (by default is a number percentage).
 
 ```html
-<mux-uploader endpoint="authenticated-url" status></mux-uploader>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status></mux-uploader>
 ```
 
 ![mux uploader with defaults](./screenshots/default-everything.gif)
