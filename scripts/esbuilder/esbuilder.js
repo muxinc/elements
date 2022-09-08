@@ -39,7 +39,8 @@ const esmScriptModule = args.format === 'esm-module';
 
 const options = {
   entryPoints: [process.argv[2]],
-  outdir: args.outdir ?? 'dist',
+  outfile: args.outfile,
+  outdir: args.outfile ? undefined : args.outdir ?? 'dist',
   bundle: true,
   target: 'es2019',
   minify: args.minify,
@@ -65,16 +66,8 @@ if (options.format === 'esm') {
   options.external.push('@github/template-parts', 'media-chrome');
 }
 
-if (options.format === 'iife') {
-  delete options.outdir;
-  options.outfile = 'dist/mux-player.js';
-}
-
 if (esmScriptModule) {
   delete options.external;
-  delete options.outdir;
-
-  options.outfile = 'dist/mux-player.mjs';
   options.format = 'esm';
 }
 
