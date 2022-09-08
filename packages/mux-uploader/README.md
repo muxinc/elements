@@ -57,7 +57,7 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 
 # Usage
 
-In these examples, you will replace the value of the `endppint` property with the the response returned from [creating a Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload). Creating a direct upload happens server-side directly to the Mux API.
+In these examples, you will replace the value of the `endpoint` property with the the response returned from [creating a Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload). Creating a direct upload happens server-side directly to the Mux API.
 
 The URL for a Direct Upload looks like `"https://storage.googleapis.com/video..."`.
 
@@ -100,7 +100,7 @@ This is really handy if, for example, you already have a `.btn` class that style
 </style>
 
 <!-- slot="upload-button" is doing the magic here -->
-<mux-uploader endpoint="authenticated-url" status>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
   <button class="btn" type="button" slot="upload-button">Pick a file</button>
 </mux-uploader>
 ```
@@ -118,7 +118,7 @@ By default, the progress bar color is black with a gray background, you can cust
   }
 </style>
 
-<mux-uploader endpoint="authenticated-url" status>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
   <button class="btn" type="button" slot="upload-button">Pick a file</button>
 </mux-uploader>
 ```
@@ -139,7 +139,7 @@ By default the status text shows a percentage. If you want to center the status 
   }
 </style>
 
-<mux-uploader endpoint="authenticated-url" status>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
   <button class="btn" type="button" slot="upload-button">Pick a file</button>
 </mux-uploader>
 ```
@@ -214,7 +214,7 @@ Here's a full example of a custom button, customized progress text and drag and 
 </style>
 
 <mux-uploader-drop mux-uploader="my-uploader">
-  <mux-uploader id="my-uploader" status endpoint="authenticated-url">
+  <mux-uploader id="my-uploader" status endpoint="https://my-authenticated-url/storage?your-url-params">
     <button class="btn" type="button" slot="upload-button">Pick a file</button>
   </mux-uploader>
 </mux-uploader-drop>
@@ -250,7 +250,7 @@ When the upload is complete, you'll see 100% on the progress bar and the `succes
 If an error happens during the upload, `uploaderror` will fire.
 
 ```html
-<mux-uploader endpoint="authenticated-url" status></mux-uploader>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status></mux-uploader>
 
 <script>
   const muxUploader = document.querySelector('mux-uploader');
