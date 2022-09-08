@@ -349,7 +349,7 @@ export const loadMedia = (
       if (props.startTime) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
         // seekable is set to the range of the entire video once durationchange fires
-        mediaEl.addEventListener('durationchange', seekInSeekableRange);
+        mediaEl.addEventListener('durationchange', seekInSeekableRange, { once: true });
       }
     } else {
       mediaEl.removeAttribute('src');
@@ -437,8 +437,6 @@ export const loadMedia = (
 
 function seekInSeekableRange(event: Event) {
   const mediaEl = event.target as HTMLMediaElement;
-  mediaEl.removeEventListener('durationchange', seekInSeekableRange);
-
   const startTime = muxMediaState.get(mediaEl)?.startTime;
   if (!startTime) return;
 
