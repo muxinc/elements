@@ -337,7 +337,7 @@ export const loadMedia = (
   // NOTE: Native HLS playback on Android for LL-HLS has been flaky, so we're prefering
   // MSE for those conditions for now. (CJP)
   const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-  const defaultPreferMse = isAndroid && streamType === StreamTypes.LL_LIVE;
+  const defaultPreferMse = isAndroid;
 
   // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
   const shouldUseNative = !hlsType || (canUseNative && !((preferMse || defaultPreferMse) && hlsSupported));
