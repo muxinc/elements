@@ -45,7 +45,12 @@ const options = {
   target: 'es2019',
   minify: args.minify,
   format: args.format,
-  watch: !!args.watch,
+  watch: !!args.watch && {
+    onRebuild(error, result) {
+      if (error) console.error('[watch] build failed:', error);
+      else console.log('[watch] build finished');
+    },
+  },
   outExtension: args.outExtension,
   metafile: true,
   plugins: [i18nPlugin],
@@ -81,6 +86,8 @@ build(options).then(
 
     // write-out the metafile
     fs.writeFileSync(`./dist/${name}.json`, JSON.stringify(result.metafile));
+
+    if (!!args.watch) console.log('[watch] build finished, watching for changes...');
   },
   () => process.exit(1)
 );
