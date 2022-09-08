@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Basic &lt;mux-uploader/&gt; example</title>
+    <script type="module" src="./dist/mux-uploader.js"></script>
+    <style>
+      .btn {
+        padding: 6px 8px;
+        border: 1px solid #0d9488;
+        border-radius: 5px;
+        font-size: 24px;
+        color: #134e4a;
+        background: #99f6e4;
+        cursor: pointer;
+      }
+      mux-uploader {
+        --progress-bar-fill-color: #7e22ce;
+        font-family: monospace;
+        font-size: 22px;
+        text-align: center;
+      }
+      mux-uploader-drop {
+        display: block;
+        padding: 40px;
+        background: #fef9c3;
+      }
+      mux-uploader-drop[active] {
+        background: red;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Enter your upload GCS url:</h2>
+    <div>
+      <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+    </div>
+
+    <div style="margin-top: 40px; width: 400px;">
+      <mux-uploader-drop mux-uploader="my-uploader">
+        <mux-uploader
+          id="my-uploader"
+          status
+        >
+          <button class="btn" type="button" slot="upload-button">
+            Pick a file
+          </button>
+        </mux-uploader>
+      </mux-uploader-drop>
+    </div>
+
+    <script>
+      const input = document.querySelector('input[type="text"]');
+      const muxUploader = document.querySelector('mux-uploader');
+      // Uncomment for example of custom progress formatting.
+      // muxUploader.formatProgress = (percent) => `THIS IS A WHOLE ${percent} UPLOADED`;
+      input.addEventListener('change', () => {
+        muxUploader.endpoint = input.value;
+        // You can also pass in a function that yields a promise that resolves to a URL.
+        // muxUploader.endpoint = (_file) => Promise.resolve(input.value);
+      });
+    </script>
+  </body>
+</html>

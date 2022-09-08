@@ -55,28 +55,178 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 <script type="module" src="https://unpkg.com/@mux/mux-uploader/dist/mux-uploader.mjs"></script>
 ```
 
-## Usage
+# Usage
+
+In these examples, you will replace the value of the `endpoint` property with the the response returned from [creating a Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload). Creating a direct upload happens server-side directly to the Mux API.
+
+The URL for a Direct Upload looks like `"https://storage.googleapis.com/video..."`.
+
+## Quickstart
+
+This will show:
+
+- An upload button
+- When a file is selected a progress bar will shows the upload progress
+- With the `status` attribute, the upload progress will also show the status of the upload (by default is a number percentage).
 
 ```html
-<body>
-  <!-- Upload button by itself with default drag an drop scoped to the space it takes up. Displays upload progress in text as percentage.-->
-  <mux-uploader url="authenticated-url" type="bar" status></mux-uploader>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status></mux-uploader>
+```
 
-  <!-- Upload button by itself with drag an drop disabled. Does not display text percentage.-->
-  <mux-uploader url="authenticated-url" type="bar" disable-drop></mux-uploader>
+![mux uploader with defaults](./screenshots/default-everything.gif)
 
-  <!-- Upload button with access to optional supplentary drag and drop features..-->
-  <mux-uploader-drop mux-uploader="uploader" overlay overlay-text="Show this while dragging file over me">
-    <mux-uploader id="uploader" url="authenticated-url"></mux-uploader>
-    <div>Other stuff you want in the mux-uploader-drop drop zone container</div>
-  </mux-uploader-drop>
-</body>
+## Customizing
+
+The default uploader looks nice out of the box, but it probably isn't exactly the look you're going for in your application.
+
+### Using your own button
+
+You can use your own button with the `slot="upload-button"` attribute.
+
+This is really handy if, for example, you already have a `.btn` class that styles buttons in your application.
+
+```html
+<style>
+  .btn {
+    /* your styles for .btn */
+    padding: 6px 8px;
+    border: 1px solid #0d9488;
+    border-radius: 5px;
+    font-size: 24px;
+    color: #134e4a;
+    background: #99f6e4;
+    cursor: pointer;
+  }
+</style>
+
+<!-- slot="upload-button" is doing the magic here -->
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
+  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+</mux-uploader>
+```
+
+![mux uploader with custom button](./screenshots/custom-button.gif)
+
+### Customizing the progress bar
+
+By default, the progress bar color is black with a gray background, you can customize that with css vars. For example, if you want to make the progress bar purple, you can do this:
+
+```html
+<style>
+  mux-uploader {
+    --progress-bar-fill-color: #7e22ce;
+  }
+</style>
+
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
+  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+</mux-uploader>
+```
+
+![mux uploader with custom progress bar](./screenshots/custom-progress-bar.gif)
+
+### Customizing the status text
+
+By default the status text shows a percentage. If you want to center the status text and increase the font size, you can do that by applying styles to the `mux-uploader` component itself.
+
+```html
+<style>
+  mux-uploader {
+    --progress-bar-fill-color: #7e22ce;
+    font-size: 22px;
+    font-family: monospace;
+    text-align: center;
+  }
+</style>
+
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
+  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+</mux-uploader>
+```
+
+![mux uploader with custom status text](./screenshots/custom-status-text.gif)
+
+## Fetching the upload URL async
+
+In the examples above, the `endpoint` attribute is an authenticated URL for a Mux [Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload).
+
+At the time you render the `<mux-uploader>`, you may not have the direct upload URL yet, so it helps to fetch that async from your server after a user selects a file.
+
+```html
+<mux-uploader status></mux-uploader>
+
+<script>
+  const muxUploader = document.querySelector('mux-uploader');
+  /*
+    Endpoint should be a function that returns a promise and resolves
+    with a string for the upload URL.
+  */
+  muxUploader.endpoint = function () {
+    /*
+      In this example, the server endpoint will return the upload URL
+      in the response body "https://storage.googleapis.com/video..."
+    */
+    return fetch('/your-server/api/create-upload').then((resp) => {
+      return resp.text();
+    });
+  };
+</script>
 ```
 
 ## Drag and Drop
 
-`<mux-uploader-drop>` is available for drag and drop functionality. It works like a `<div>` or other "container" element in the sense that you can style it and populate it with whatever children you see fit (including but not necessarily a `<mux-uploader>`). Similar to `<input>` and `<label>` relationships, you associate a `<mux-uploader-drop>` with its corresponding `<mux-uploader>` via `id` using the `mux-uploader` attribute (See example above). When a file is dropped, this will dispatch a custom `file-ready` event to the corresponding `<mux-uploader>` with the relevant file.
-This also means you can implement your own drag and drop (or other) components for specific use cases, so long as you dispatch a custom `file-ready` event when you need to upload. `<mux-uploader>` will handle the upload upon receiving the event.
+`<mux-uploader-drop>` is available for drag and drop functionality. It works like a `<div>` or other "container" element in the sense that you can style it and populate it with whatever children you see fit (including but not necessarily a `<mux-uploader>`).
+
+Similar to `<input>` and `<label>` relationships, you associate a `<mux-uploader-drop>` with its corresponding `<mux-uploader>` via `id` using the `mux-uploader` attribute.
+
+The `<mux-uploader-drop>` component will get the `active` attribute when the drag is active, this allows you to write some CSS to style it for your application.
+
+Here's a full example of a custom button, customized progress text and drag and drop functionality that changes the background when the drag is active
+
+```html
+<style>
+  /* This .btn class styles buttons in my application */
+  .btn {
+    padding: 6px 8px;
+    border: 1px solid #0d9488;
+    border-radius: 5px;
+    font-size: 24px;
+    color: #134e4a;
+    background: #99f6e4;
+    cursor: pointer;
+  }
+  /* Customize progress bar color & status text position & sizing */
+  mux-uploader {
+    --progress-bar-fill-color: #7e22ce;
+    font-family: monospace;
+    font-size: 22px;
+    text-align: center;
+  }
+  /* Customize drop area background color & active background color */
+  mux-uploader-drop {
+    display: block;
+    padding: 40px;
+    background: #fef9c3;
+  }
+  mux-uploader-drop[active] {
+    background: #ffe4e6;
+  }
+</style>
+
+<mux-uploader-drop mux-uploader="my-uploader">
+  <mux-uploader id="my-uploader" status endpoint="https://my-authenticated-url/storage?your-url-params">
+    <button class="btn" type="button" slot="upload-button">Pick a file</button>
+  </mux-uploader>
+</mux-uploader-drop>
+```
+
+![mux uploader with custom drop area](./screenshots/custom-drop-bg.gif)
+
+**Technical details about drop areas:**
+
+When a file is dropped, this will dispatch a custom `file-ready` event to the corresponding `<mux-uploader>` with the relevant file.
+
+You can implement your own drag and drop completely separate from `<mux-uploader>` and as long as you dispatch a custom `file-ready` with the file in the `detail` property then `<mux-uploader>` will handle the upload upon receiving the event.
 
 ```html
 <script>
@@ -93,6 +243,27 @@ This also means you can implement your own drag and drop (or other) components f
 </script>
 ```
 
+## Handling events
+
+When the upload is complete, you'll see 100% on the progress bar and the `success` event will fire.
+
+If an error happens during the upload, `uploaderror` will fire.
+
+```html
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status></mux-uploader>
+
+<script>
+  const muxUploader = document.querySelector('mux-uploader');
+  muxUploader.addEventListener('success', function () {
+    /* Handle upload success */
+  });
+
+    muxUploader.addEventListener('uploaderror', function () {
+    /* Handle upload error */
+  });
+<script>
+```
+
 ### Attributes
 
 #### `<mux-uploader>`
@@ -101,7 +272,6 @@ This also means you can implement your own drag and drop (or other) components f
 | -------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `endpoint`           | `string \| Promise` | Either a) the authenticated URL that your file will be uploaded to or b) an async function that yields a promise that resolves to that url. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url). Required. | `undefined` |
 | `id`                 | `string`            | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required if you use `mux-uploader-drop`.                                                                                                                                                                              | N/A         |
-| `type`               | `"bar"`             | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                                                                              | "bar"       |
 | `upload-in-progress` | `boolean`           | (Read-only) Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].                                                                                        | false       |
 | `upload-error`       | `boolean`           | (Read-only) Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].                                                                                       | false       |
 | `status`             | `boolean`           | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                                                                                  | false       |
@@ -162,7 +332,7 @@ This also means you can implement your own drag and drop (or other) components f
 | `--progress-bar-fill-color`    | `background`       | `#000000`           | background color for progress bar div                   |                                                                                                   |
 | `--progress-radial-fill-color` | `stroke`           | `black`             | stroke color for circle SVG (wip)                       |                                                                                                   |
 
-- `<mux-uploader-drop/>`
+#### `<mux-uploader-drop/>`
 
 | Name                         | CSS Property       | Default Value               | Description                         | Notes                                                  |
 | ---------------------------- | ------------------ | --------------------------- | ----------------------------------- | ------------------------------------------------------ |

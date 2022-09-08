@@ -48,20 +48,22 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
   return (
     <div>
       <h1>Simple MuxUploader and Mux Uploader Drop Examples</h1>
-      {/* Upload button by itself. Displays upload progress in text as percentage. */}
-      <MuxUploader url="authenticated-url" type="bar" status></MuxUploader>
+      {/* Rounded upload button by itself. Displays upload progress in text as percentage. */}
+      <MuxUploader endpoint="authenticated-url" type="bar" status style={{ '--button-border-radius': '40px' }}></MuxUploader>
 
       {/* Upload button by itself. Does not display text percentage. */}
-      <MuxUploader url="authenticated-url" type="bar"></MuxUploader>
+      <MuxUploader endpoint="authenticated-url" type="bar"></MuxUploader>
 
       {/* Upload button with access to optional supplentary drag and drop features. */}
       <MuxUploaderDrop mux-uploader="uploader">
-        <MuxUploader url="authenticated-url" id="uploader"></MuxUploader>
+        <MuxUploader endpoint="authenticated-url" id="uploader"></MuxUploader>
       </MuxUploaderDrop>
     </div>
   );
 };
 ```
+
+For a more complex implementation out in the wild, check out [stream.new](https://github.com/muxinc/stream.new/blob/main/pages/index.tsx#L152).
 
 ### Props
 
@@ -98,3 +100,31 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
 | `onUploadError`  | Invoked when an error occurs in the chunked upload process.                                                                                                          |
 | `onProgress`     | Invoked continuously with incremental upload progress. This returns the current percentage of the file that's been uploaded. Sample response: `{ detail: [0..100] }` |
 | `onSuccess`      | Invoked when the entire file has successfully completed uploading.                                                                                                   |
+
+### Styling
+
+`<MuxUploader>` and `<MuxUploaderDrop>` can be styled with standard CSS, but also includes these CSS variables for "under the hood" inline-styling.
+
+#### `<MuxUploader>`
+
+| Name                           | CSS Property       | Default Value       | Description                                             | Notes                                                                                             |
+| ------------------------------ | ------------------ | ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `--uploader-font-family`       | `font-family`      | `Arial`             | font family of the component                            | Applies to other elements as well: upload status and error status                                 |
+| `--uploader-font-size`         | `font-size`        | `16px`              | font size for text within the component                 | Also applies to `<MuxUploaderDrop>` i.e. overlay text c                                           |
+| `--uploader-background-color`  | `background-color` | `inherit`           | background color of area surrounding the upload         |                                                                                                   |
+| `--button-background-color`    | `background`       | `#fff`              | background color of upload button                       |                                                                                                   |
+| `--button-border-radius`       | `border-radius`    | `4px`               | border radius of the upload button                      |                                                                                                   |
+| `--button-border`              | `border`           | `1px solid #000000` | border of the upload button                             |                                                                                                   |
+| `--button-padding`             | `padding`          | `16px 24px`         | padding of the upload button                            |                                                                                                   |
+| `--button-hover-text`          | `color`            | `#fff`              | text color of upload button on button hover             |                                                                                                   |
+| `--button-hover-background`    | `background`       | `#404040`           | background color of upload button on button hover       |                                                                                                   |
+| `--button-active-text`         | `color`            | `#fff`              | color of upload button text when button is active       |                                                                                                   |
+| `--button-active-background`   | `background`       | `#000000`           | background color of upload button when button is active | Applied via `:active` [pseudo selector](https://developer.mozilla.org/en-US/docs/Web/CSS/:active) |
+| `--progress-bar-fill-color`    | `background`       | `#000000`           | background color for progress bar div                   |                                                                                                   |
+| `--progress-radial-fill-color` | `stroke`           | `black`             | stroke color for circle SVG (wip)                       |                                                                                                   |
+
+#### `<MuxUploader/>`
+
+| Name                         | CSS Property       | Default Value               | Description                         |
+| ---------------------------- | ------------------ | --------------------------- | ----------------------------------- |
+| `--overlay-background-color` | `background-color` | `rgba(226, 253, 255, 0.95)` | background color of the overlay div |
