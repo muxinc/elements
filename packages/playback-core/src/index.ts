@@ -164,7 +164,7 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
-let muxMediaState: WeakMap<HTMLMediaElement, { error?: MediaError }> = new WeakMap();
+let muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
@@ -182,6 +182,7 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
   if (mediaEl) {
     mediaEl.removeEventListener('error', handleNativeError);
     mediaEl.removeEventListener('error', handleInternalError);
+    mediaEl.removeEventListener('durationchange', seekInSeekableRange);
     muxMediaState.delete(mediaEl);
   }
 };
@@ -344,22 +345,9 @@ export const loadMedia = (
   const { src } = props;
   if (mediaEl && canUseNative && shouldUseNative) {
     if (typeof src === 'string') {
-      mediaEl.src = src;
-
-      const { startTime } = props;
-      if (startTime) {
-        const seekInSeekableRange = () => {
-          mediaEl.removeEventListener('durationchange', seekInSeekableRange);
-
-          if (inSeekableRange(mediaEl.seekable, mediaEl.duration, startTime)) {
-            // Setting preload to `none` from `auto` was required on iOS to fix a bug
-            // that caused no `timeupdate` events to fire after seeking ¯\_(ツ)_/¯
-            if (mediaEl.preload === 'auto') {
-              mediaEl.preload = 'none';
-            }
-            mediaEl.currentTime = startTime;
-          }
-        };
+      mediaEl.setAttribute('src', src);
+      if (props.startTime) {
+        (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
         // seekable is set to the range of the entire video once durationchange fires
         mediaEl.addEventListener('durationchange', seekInSeekableRange);
       }
@@ -447,6 +435,29 @@ export const loadMedia = (
   }
 };
 
+function seekInSeekableRange(event: Event) {
+  const mediaEl = event.target as HTMLMediaElement;
+  mediaEl.removeEventListener('durationchange', seekInSeekableRange);
+
+  const startTime = muxMediaState.get(mediaEl)?.startTime;
+  if (!startTime) return;
+
+  if (inSeekableRange(mediaEl.seekable, mediaEl.duration, startTime)) {
+    // Setting preload to `none` from `auto` was required on iOS to fix a bug
+    // that caused no `timeupdate` events to fire after seeking ¯\_(ツ)_/¯
+    const wasAuto = mediaEl.preload === 'auto';
+    if (wasAuto) {
+      mediaEl.preload = 'none';
+    }
+
+    mediaEl.currentTime = startTime;
+
+    if (wasAuto) {
+      mediaEl.preload = 'auto';
+    }
+  }
+}
+
 async function handleNativeError(event: Event) {
   // Return if the event was created or modified by a script or dispatched
   // via EventTarget.dispatchEvent() preventing an infinite loop.
@@ -489,8 +500,7 @@ function handleInternalError(event: Event) {
   // Prevent tracking non-fatal errors in Mux data.
   if (!error || !error.fatal) return;
 
-  const state = muxMediaState.get(mediaEl);
-  if (state) state.error = error;
+  (muxMediaState.get(mediaEl) ?? {}).error = error;
 
   // Only pass valid mux-embed props: player_error_code, player_error_message
   mediaEl.mux?.emit('error', {
