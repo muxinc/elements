@@ -39,8 +39,8 @@
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:esm-module dev:iife",
     "build:esm": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
-    "build:esm-module": "esbuilder src/index.ts --format=esm-module --out-extension:.js=.mjs",
-    "build:iife": "esbuilder src/index.ts --format=iife --out-extension:.js=.js",
+    "build:esm-module": "esbuilder src/index.ts --format=esm-module --outfile=dist/mux-player.mjs",
+    "build:iife": "esbuilder src/index.ts --format=iife --outfile=dist/mux-player.js",
     "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
@@ -56,6 +56,7 @@
     "media-chrome": "0.10.0"
   },
   "devDependencies": {
+    "@mux/esbuilder": "0.1.0",
     "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.14.0",
@@ -64,7 +65,6 @@
     "@web/dev-server-import-maps": "^0.0.6",
     "@web/test-runner": "^0.13.26",
     "downlevel-dts": "^0.9.0",
-    "esbuild": "^0.15.7",
     "eslint": "^7.11.0",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",

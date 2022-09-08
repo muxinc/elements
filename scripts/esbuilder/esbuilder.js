@@ -39,12 +39,18 @@ const esmScriptModule = args.format === 'esm-module';
 
 const options = {
   entryPoints: [process.argv[2]],
-  outdir: args.outdir ?? 'dist',
+  outfile: args.outfile,
+  outdir: args.outfile ? undefined : args.outdir ?? 'dist',
   bundle: true,
   target: 'es2019',
   minify: args.minify,
   format: args.format,
-  watch: !!args.watch,
+  watch: !!args.watch && {
+    onRebuild(error, result) {
+      if (error) console.error('[watch] build failed:', error);
+      else console.log('[watch] build finished');
+    },
+  },
   outExtension: args.outExtension,
   metafile: true,
   plugins: [i18nPlugin],
@@ -65,16 +71,8 @@ if (options.format === 'esm') {
   options.external.push('@github/template-parts', 'media-chrome');
 }
 
-if (options.format === 'iife') {
-  delete options.outdir;
-  options.outfile = 'dist/mux-player.js';
-}
-
 if (esmScriptModule) {
   delete options.external;
-  delete options.outdir;
-
-  options.outfile = 'dist/mux-player.mjs';
   options.format = 'esm';
 }
 
@@ -88,6 +86,8 @@ build(options).then(
 
     // write-out the metafile
     fs.writeFileSync(`./dist/${name}.json`, JSON.stringify(result.metafile));
+
+    if (!!args.watch) console.log('[watch] build finished, watching for changes...');
   },
   () => process.exit(1)
 );
