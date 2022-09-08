@@ -274,7 +274,7 @@ const TitleDisplay = ({ title }: ComponentProps) => html`
 
 // prettier-ignore
 export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
-  <media-control-bar>${props.title ? TitleDisplay(props) : ''}</media-control-bar>
+  <media-control-bar>${props.title ? TitleDisplay(props) : html``}</media-control-bar>
   <media-control-bar>
     ${MediaPlayButton()}
     ${MediaSeekBackwardButton(props)}
@@ -291,7 +291,7 @@ export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
 
 // prettier-ignore
 export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
-  <media-control-bar>${props.title ? TitleDisplay(props) : ''}</media-control-bar>
+  <media-control-bar>${props.title ? TitleDisplay(props) : html``}</media-control-bar>
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-live"></slot>
@@ -309,7 +309,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
 
 // prettier-ignore
 export const AudioLiveChrome = (props: ThemeMuxTemplateProps) => html`
-  <media-control-bar>${props.title ? TitleDisplay(props) : ''}</media-control-bar>
+  <media-control-bar>${props.title ? TitleDisplay(props) : html``}</media-control-bar>
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-live"></slot>
@@ -342,7 +342,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.title ? TitleDisplay(props) : ''}
+    ${props.title ? TitleDisplay(props) : html``}
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
@@ -369,7 +369,7 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.title ? TitleDisplay(props) : ''}
+    ${props.title ? TitleDisplay(props) : html``}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
     ${MediaPlayButton()}
@@ -399,7 +399,7 @@ export const LiveChromeExtraSmall = VodChromeExtraSmall;
 // prettier-ignore
 export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.title ? TitleDisplay(props) : ''}
+    ${props.title ? TitleDisplay(props) : html``}
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
@@ -421,7 +421,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.title ? TitleDisplay(props) : ''}
+    ${props.title ? TitleDisplay(props) : html``}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
     ${MediaPlayButton()}
@@ -445,7 +445,7 @@ export const DvrChromeExtraSmall = VodChromeExtraSmall;
 // prettier-ignore
 export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.title ? TitleDisplay(props) : ''}
+    ${props.title ? TitleDisplay(props) : html``}
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton()}
@@ -471,7 +471,7 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
 // prettier-ignore
 export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
   <media-control-bar slot="top-chrome">
-    ${props.title ? TitleDisplay(props) : ''}
+    ${props.title ? TitleDisplay(props) : html``}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
     ${MediaPlayButton()}
