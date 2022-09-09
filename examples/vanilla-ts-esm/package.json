@@ -19,9 +19,12 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "@mux/assets": ">=0.1.0",
     "@mux/mux-audio": ">=0.3.0",
     "@mux/mux-player": ">=0.1.0-beta.0",
     "@mux/mux-uploader": ">=0.1.0-beta.0",
-    "@mux/mux-video": ">=0.3.0"
+    "@mux/mux-video": ">=0.3.0",
+    "@mux/playback-core": "^0.10.0",
+    "hls.js": "1.1.5"
   }
 }

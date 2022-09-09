@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Basic usage of hls.js in a custom element example (memory leak)</title>
+    <script type="module" src="./dist/test-component.js" ></script>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .media {
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <test-component class="media"></test-component>
+    <div>
+    <select id="assets-select"></select>
+    </div>
+    <a href="../">Browse Elements</a>
+  </body>
+</html>

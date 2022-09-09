@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Basic &lt;mux-video/&gt; example</title>
-    <script type="module" src="./dist/mux-video.js" ></script>
+    <title>Basic usage of playback-core outside of a custom element example</title>
+    <script type="module" src="./dist/playback-core.js" ></script>
     <style>
       body {
         display: flex;
@@ -11,25 +11,13 @@
         align-items: flex-start;
       }
 
-      mux-video {
+      .media {
         height: 200px;
       }
-
-      /* mux-video {
-        width: 100%;
-        max-width: 800px;
-        margin: 40px auto;
-        display: block;
-      } */
     </style>
   </head>
   <body>
-    <mux-video
-      controls
-      autoplay
-      muted
-    >
-    </mux-video>
+    <video class="media" id="video" muted controls></video>
     <div>
       <select id="assets-select"></select>
     </div>
