@@ -1,42 +1,105 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
+import Script from 'next/script';
+import MuxVideo from "@mux/mux-player-react";
 import { useRef, useState } from "react";
-import MuxVideo from "@mux/mux-video-react";
+import mediaAssetsJSON from "@mux/assets/media-assets.json";
 
-const INITIAL_AUTOPLAY = false;
+const INITIAL_START_TIME = undefined;
+const INITIAL_DEBUG = false;
 const INITIAL_MUTED = false;
+const INITIAL_AUTOPLAY = false;
+const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
+
+const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
+  const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
+  const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
+  return {
+    video_id,
+    video_title,
+  };
+};
+
+const onLoadStart = console.log.bind(null, "loadstart");
+const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
+const onProgress = console.log.bind(null, "progress");
+const onDurationChange = console.log.bind(null, "durationchange");
+const onVolumeChange = console.log.bind(null, "volumechange");
+const onRateChange = console.log.bind(null, "ratechange");
+const onResize = console.log.bind(null, "resize");
+const onWaiting = console.log.bind(null, "waiting");
+const onPlay = console.log.bind(null, "play");
+const onPlaying = console.log.bind(null, "playing");
+const onTimeUpdate = console.log.bind(null, "timeupdate");
+const onPause = console.log.bind(null, "pause");
+const onSeeking = console.log.bind(null, "seeking");
+const onSeeked = console.log.bind(null, "seeked");
+const onEnded = console.log.bind(null, "ended");
+const onError = console.log.bind(null, "error");
+const onPlayerReady = console.log.bind(null, "playerready");
 
 function MuxVideoPage() {
   const mediaElRef = useRef(null);
-  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
+  const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
+  const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
+  const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
   const [paused, setPaused] = useState<boolean | undefined>(true);
+  const [muted, setMuted] = useState(INITIAL_MUTED);
+  const [debug, setDebug] = useState(INITIAL_DEBUG);
+  const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
+  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
 
   return (
     <div>
-      <h1>MuxVideo Demo</h1>
+      <h1>MuxPlayer Demo</h1>
       <div>
+        <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxVideo
           ref={mediaElRef}
-          playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-          // metadata={{
-          //   video_id: "video-id-12345",
-          //   video_title: "Mad Max: Fury Road Trailer",
-          //   viewer_user_id: "user-id-6789",
-          // }}
-          // envKey="mux-data-env-key"
-          streamType="on-demand"
-          controls
-          autoPlay={autoplay}
+          envKey={envKey || undefined}
+          metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
+          startTime={startTime}
+          playbackId={selectedAsset["playback-id"]}
+          tokens={selectedAsset["tokens"]}
+          customDomain={selectedAsset["custom-domain"]}
+          // onPlayerReady={() => console.log("ready!")}
+          debug={debug}
           muted={muted}
-          onPlay={() => {
+          paused={paused}
+          autoPlay={autoplay}
+          streamType={
+            selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
+          }
+          onPlay={(evt: Event) => {
+            onPlay(evt);
             setPaused(false);
           }}
-          onPause={() => {
+          onPause={(evt: Event) => {
+            onPause(evt);
             setPaused(true);
           }}
+          onSeeking={onSeeking}
+          onSeeked={onSeeked}
         />
       </div>
       <div className="options">
+        <div>
+          <select
+            onChange={({ target: { value } }) => {
+              setSelectedAsset(mediaAssets[value]);
+            }}
+          >
+            {mediaAssets.map((value, i) => {
+              const { description, error } = value;
+              const label = `${error ? "👎 " : ""}${description}`;
+              return (
+                <option key={i} value={i}>
+                  {label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
         <div>
           <label htmlFor="paused-control">Paused</label>
           <input
@@ -62,6 +125,23 @@ function MuxVideoPage() {
             type="checkbox"
             onChange={() => setMuted(!muted)}
             checked={muted}
+          />
+        </div>
+        <div>
+          <label htmlFor="debug-control">Debug</label>
+          <input
+            id="debug-control"
+            type="checkbox"
+            onChange={() => setDebug(!debug)}
+            checked={debug}
+          />
+        </div>
+        <div>
+          <label htmlFor="env-key-control">Env Key (Mux Data)</label>
+          <input
+            id="env-key-control"
+            onBlur={({ currentTarget }) => setEnvKey(currentTarget.value)}
+            defaultValue={envKey}
           />
         </div>
       </div>
