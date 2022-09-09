@@ -1,4 +1,5 @@
 import Hls from 'hls.js';
+import { addEventListenerWithTeardown } from './util';
 
 type PlaybackEngine = Hls;
 
@@ -43,13 +44,17 @@ export const setupAutoplay = (
 
   const updateHasPlayed = () => {
     // hasPlayed
-    mediaEl.addEventListener(
-      'playing',
-      () => {
-        hasPlayed = true;
-      },
-      { once: true }
-    );
+
+    if (!hasPlayed) {
+      addEventListenerWithTeardown(
+        mediaEl,
+        'playing',
+        () => {
+          hasPlayed = true;
+        },
+        { once: true }
+      );
+    }
   };
 
   updateHasPlayed();
@@ -57,9 +62,10 @@ export const setupAutoplay = (
   // on `loadstart`
   // hasPlayed should default to false
   // we should try and autoplay
-  mediaEl.addEventListener(
+  addEventListenerWithTeardown(
+    mediaEl,
     'loadstart',
-    () => {
+    () => () => {
       hasPlayed = false;
       updateHasPlayed();
       handleAutoplay(mediaEl, autoplay);
@@ -68,8 +74,9 @@ export const setupAutoplay = (
   );
 
   // on `loadedmetadata` we can check whether we're live in the case of native playback
-  mediaEl.addEventListener(
-    'loadedmetadata',
+  addEventListenerWithTeardown(
+    mediaEl,
+    'loadstart',
     () => {
       // only update isLive here if we're using native playback
       if (!hls) {
@@ -105,17 +112,20 @@ export const setupAutoplay = (
         }
       }
     };
-    mediaEl.addEventListener(
-      'play',
-      () => {
-        if (hls && mediaEl.preload === 'metadata') {
-          hls.once(Hls.Events.LEVEL_UPDATED, handleSeek);
-        } else if (hls) {
-          handleSeek();
-        }
-      },
-      { once: true }
-    );
+    if (hls) {
+      addEventListenerWithTeardown(
+        mediaEl,
+        'play',
+        () => {
+          if (mediaEl.preload === 'metadata') {
+            hls.once(Hls.Events.LEVEL_UPDATED, handleSeek);
+          } else {
+            handleSeek();
+          }
+        },
+        { once: true }
+      );
+    }
   }
 
   // this method allows us to update the value of autoplay
