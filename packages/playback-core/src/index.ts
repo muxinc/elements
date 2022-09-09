@@ -12,7 +12,12 @@ export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
 export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addTextTrack, removeTextTrack };
 
+const userAgentStr = globalThis?.navigator?.userAgent ?? '';
+const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
+
 const MUX_VIDEO_DOMAIN = 'mux.com';
+const HLS_SUPPORTED = Hls.isSupported?.();
+const DEFAULT_PREFER_MSE = isAndroid;
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
@@ -196,17 +201,12 @@ export const setupHls = (
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
 
   const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
-  const hlsSupported = Hls.isSupported();
-  // NOTE: Native HLS playback on Android can be flaky, so we're just always prefering MSE. (CJP)
-  const userAgentStr = window?.navigator?.userAgent ?? '';
-  const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-  const defaultPreferMse = isAndroid;
 
   // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
-  const shouldUseNative = !hlsType || (canUseNative && !((preferMse || defaultPreferMse) && hlsSupported));
+  const shouldUseNative = !hlsType || (canUseNative && !((preferMse || DEFAULT_PREFER_MSE) && HLS_SUPPORTED));
 
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
-  if (hlsType && !shouldUseNative && hlsSupported) {
+  if (hlsType && !shouldUseNative && HLS_SUPPORTED) {
     const defaultConfig = {
       backBufferLength: 30,
       renderTextTracksNatively: false,
@@ -332,15 +332,9 @@ export const loadMedia = (
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
 
   const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
-  const hlsSupported = Hls.isSupported();
-  const userAgentStr = window?.navigator?.userAgent ?? '';
-  // NOTE: Native HLS playback on Android for LL-HLS has been flaky, so we're prefering
-  // MSE for those conditions for now. (CJP)
-  const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-  const defaultPreferMse = isAndroid;
 
   // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
-  const shouldUseNative = !hlsType || (canUseNative && !((preferMse || defaultPreferMse) && hlsSupported));
+  const shouldUseNative = !hlsType || (canUseNative && !((preferMse || DEFAULT_PREFER_MSE) && HLS_SUPPORTED));
 
   const { src } = props;
   if (mediaEl && canUseNative && shouldUseNative) {
