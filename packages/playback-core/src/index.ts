@@ -295,6 +295,9 @@ export const setupMux = (
         ...(env_key ? { env_key } : {}),
         // Metadata fields
         player_software_name,
+        // NOTE: Adding this because there appears to be some instability on whether
+        // player_software_name or player_software "wins" for Mux Data (CJP)
+        player_software: player_software_name,
         player_software_version,
         player_init_time,
         // Use any metadata passed in programmatically (which may override the defaults above)
