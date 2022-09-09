@@ -84,7 +84,7 @@ Attributes:
 - `playback-id`: This is the playback ID for your Mux Asset or Mux Live Stream. The playback-id is the variable you may have used before to construct a `.m3u8` hls url like this:`https://stream.mux.com/{PLAYBACK_ID}.m3u8`. [Mux Docs](https://docs.mux.com/guides/video/play-your-videos#1-get-your-playback-id)
 - `env-key`: This is the environment key for Mux Data. Note that this is different than your API Key. Get your env key from the "Mux Data" part of the Mux Dashboard. If undefined and you are playing a Mux Video asset, the environment will be inferred.
 
-<img src="../../images/env-key.png" alt="Mux Data dashboard env key"></img>
+<img src="../../shared/images/env-key.png" alt="Mux Data dashboard env key"></img>
 
 - `metadata-video-title`: This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
