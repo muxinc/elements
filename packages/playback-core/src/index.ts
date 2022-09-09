@@ -4,7 +4,7 @@ import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes, setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { isKeyOf, inSeekableRange } from './util';
+import { isKeyOf, inSeekableRange, addEventListenerWithTeardown } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
 
 export type ValueOf<T> = T[keyof T];
@@ -182,9 +182,11 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
   }
   if (mediaEl?.mux && !mediaEl.mux.deleted) {
     mediaEl.mux.destroy();
-    mediaEl.mux;
+    delete mediaEl.mux;
   }
   if (mediaEl) {
+    mediaEl.removeAttribute('src');
+    mediaEl.load();
     mediaEl.removeEventListener('error', handleNativeError);
     mediaEl.removeEventListener('error', handleInternalError);
     mediaEl.removeEventListener('durationchange', seekInSeekableRange);
@@ -397,7 +399,7 @@ export const loadMedia = (
     switch (mediaEl.preload) {
       case 'none':
         // when preload is none, load the source on first play
-        mediaEl.addEventListener('play', () => hls.loadSource(src), { once: true });
+        addEventListenerWithTeardown(mediaEl, 'play', () => hls.loadSource(src), { once: true });
         break;
 
       case 'metadata':
@@ -408,7 +410,8 @@ export const loadMedia = (
         hls.config.maxBufferLength = 1;
         hls.config.maxBufferSize = 1;
         // and once a user has player, allow for it to load data as normal
-        mediaEl.addEventListener(
+        addEventListenerWithTeardown(
+          mediaEl,
           'play',
           () => {
             hls.config.maxBufferLength = originalLength;
@@ -416,9 +419,9 @@ export const loadMedia = (
           },
           { once: true }
         );
+
         hls.loadSource(src);
         break;
-
       default:
         // load source immediately for any other preload value
         hls.loadSource(src);
