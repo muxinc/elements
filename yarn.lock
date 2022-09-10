@@ -7971,10 +7971,10 @@ history@^5.2.0:
   dependencies:
     "@babel/runtime" "^7.7.6"
 
-hls.js@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.2.1.tgz#09b0207c60fcb3340a88e8d3d1523799fe5fbedf"
-  integrity sha512-+m/5+ikSpmQQvb6FmVWZUZfzvTJMn/QVfiCGP1Oq9WW4RKrAvxlExkhhbcVGgGqLNPFk1kdFkVQur//wKu3JVw==
+hls.js@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.2.2.tgz#b5ecf5e09e515a4465da015768e6857820ef9b6f"
+  integrity sha512-T+plugLYzBG+QCGEdL6qxyXZAc54zisJaR0o3KsZQ8j/HveLeE+ouHd5sJOHvE9hvEyF3OffVP5EvDWnczdwXg==
 
 hoopy@^0.1.4:
   version "0.1.4"
