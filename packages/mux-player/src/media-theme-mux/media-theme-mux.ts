@@ -86,7 +86,7 @@ export default class MediaThemeMux extends MediaTheme {
           nohotkeys="${props.nohotkeys || false}"
           audio="${props.audio || false}"
           class="size-${props.playerSize}"
-          exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer"
+          exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
         >
           <slot name="media" slot="media"></slot>
           <media-poster-image slot="poster" src="${props.poster}"></media-poster-image>
