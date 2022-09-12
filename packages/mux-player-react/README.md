@@ -189,7 +189,7 @@ Instead, some components expose **parts** that can be targeted with the [CSS par
 ```
 
 Supported **parts**:
-`seek-live`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`,
+`seek-live`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`, `gesture-layer`,
 `top`, `center`, `bottom`, `play`, `button`, `seek-backward`, `seek-forward`, `mute`,
 `captions`, `airplay`, `pip`, `cast`, `fullscreen`, `playbackrate`, `volume`, `range`, `time`, `display`
 
