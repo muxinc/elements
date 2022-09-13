@@ -79,6 +79,7 @@ export const content = (props: MuxTemplateProps) => html`
       env-key="${props.envKey ?? false}"
       stream-type="${props.streamType ?? false}"
       custom-domain="${props.customDomain ?? false}"
+      exportparts="video: video"
       src="${
         !!props.src
           ? props.src
