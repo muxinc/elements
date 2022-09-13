@@ -619,6 +619,7 @@ class MuxPlayerElement extends VideoApiElement {
   set audio(val: boolean) {
     if (!val) {
       this.removeAttribute(PlayerAttributes.AUDIO);
+      return;
     }
     this.setAttribute(PlayerAttributes.AUDIO, '');
   }
@@ -634,6 +635,7 @@ class MuxPlayerElement extends VideoApiElement {
   set nohotkeys(val: boolean) {
     if (!val) {
       this.removeAttribute(PlayerAttributes.NOHOTKEYS);
+      return;
     }
     this.setAttribute(PlayerAttributes.NOHOTKEYS, '');
   }
