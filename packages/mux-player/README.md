@@ -198,6 +198,18 @@ Instead, some components expose **parts** that can be targeted with the [CSS par
 <mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>
 ```
 
+### Controls Backdrop Color
+
+We expose a CSS variable to set the controls backdrop color.
+
+```css
+mux-player {
+  --controls-backdrop-color: rgb(0 0 0 / 0%);
+}
+```
+
+Turning this off completely as implications on the accessibility of the controls as they may not meet [the contrast ratio requirements for WCAG 2.1](https://www.w3.org/TR/WCAG/#contrast-minimum) without it.
+
 Supported **parts**:
 `seek-live`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`, `gesture-layer`,
 `top`, `center`, `bottom`, `play`, `button`, `seek-backward`, `seek-forward`, `mute`,
