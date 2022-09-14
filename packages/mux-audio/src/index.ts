@@ -249,6 +249,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   unload() {
     teardown(this.nativeEl, this.__hls);
     this.__hls = undefined;
+    this.__updateAutoplay = undefined;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {

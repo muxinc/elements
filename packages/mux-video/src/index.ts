@@ -339,6 +339,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   unload() {
     teardown(this.nativeEl, this.__hls);
     this.__hls = undefined;
+    this.__updateAutoplay = undefined;
   }
 
   // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
