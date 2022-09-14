@@ -79,7 +79,7 @@ function MuxPlayerPage() {
           ref={mediaElRef}
           style={{
             ...selectedCssVars,
-            '--controls-backdrop-color': controlsBackdropColor
+            ...(controlsBackdropColor && {'--controls-backdrop-color': controlsBackdropColor} as typeof selectedCssVars)
             }}
           envKey={envKey || undefined}
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
