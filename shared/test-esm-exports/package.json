@@ -10,7 +10,7 @@
     "build": "esbuild ./hls.mjs ./mux-embed.mjs --bundle --outdir=dist --out-extension:.js=.js --format=esm"
   },
   "dependencies": {
-    "hls.js": "1.2.2",
+    "hls.js": "1.2.3",
     "mux-embed": "^4.7.0"
   },
   "devDependencies": {
