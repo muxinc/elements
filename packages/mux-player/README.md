@@ -208,7 +208,7 @@ mux-player {
 }
 ```
 
-Turning this off completely as implications on the accessibility of the controls as they may not meet [the contrast ratio requirements for WCAG 2.1](https://www.w3.org/TR/WCAG/#contrast-minimum) without it.
+Turning this off completely has implications on the accessibility of the controls as they may not meet [the contrast ratio requirements for WCAG 2.1](https://www.w3.org/TR/WCAG/#contrast-minimum) without it.
 
 Supported **parts**:
 `seek-live`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`, `gesture-layer`,
