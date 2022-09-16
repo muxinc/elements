@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.29...@mux/mux-player-react@1.0.0-beta.0) (2022-09-16)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
 # [0.1.0-beta.29](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.28...@mux/mux-player-react@0.1.0-beta.29) (2022-09-16)
 
 ### Bug Fixes
