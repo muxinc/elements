@@ -1,13 +1,10 @@
-<svg aria-hidden="true" viewBox="0 0 16 18" slot="forward">
-  <path
-    d="M7.25 3.42h4.07L9.18 1.28A.75.75 0 0 1 10.24.22l3.54 3.53a.77.77 0 0 1 0 1.07l-3.54 3.53a.75.75 0 0 1-1.06 0 .75.75 0 0 1 0-1.06l2.37-2.37h-4.3A5.75 5.75 0 0 0 5 16a.75.75 0 0 1-.29 1.44.72.72 0 0 1-.29-.06A7.25 7.25 0 0 1 7.25 3.42Z"
-  />
+<svg aria-hidden="true" viewBox="0 0 22 24" slot="forward">
+  <path d="M11 6V3l5.61 4L11 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 11 6Z"/>
   <text
     class="value"
-    transform="translate(6.5 17.8)"
+    transform="translate(10 21)"
     style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
   >
     {{value}}
   </text>
-  <path style="fill: none" d="M0 0h16v18H0z" />
 </svg>

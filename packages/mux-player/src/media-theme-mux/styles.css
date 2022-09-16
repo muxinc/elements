@@ -104,12 +104,9 @@ media-controller {
   );
 }
 
-media-control-bar {
-  --media-button-icon-width: 18px;
-}
-
 media-control-bar :is([role='button'], [role='switch'], button) {
-  height: 44px;
+  line-height: 0;
+  --media-control-padding: 10px 7px;
 }
 
 .size-extra-small media-control-bar [role='button'],
@@ -156,7 +153,7 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
-  width: max(27px, min(9%, 90px));
+  width: max(30px, min(11%, 100px));
 }
 
 .center-controls media-seek-backward-button,
@@ -164,7 +161,7 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
-  margin: 0 10%;
+  margin: 0 4%;
   width: min(7%, 70px);
 }
 
@@ -200,8 +197,9 @@ media-time-display {
   white-space: nowrap;
 }
 
-:is(media-time-display, media-text-display, media-playback-rate-button) {
+:is(media-time-display, media-text-display, media-playback-rate-button[role='button']) {
   color: inherit;
+  line-height: 24px;
 }
 
 .title-display {
