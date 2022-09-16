@@ -39,7 +39,5 @@
 	metadata-video-title="Svelte Kit: Episode 2"
 	metadata-viewer-user-id="user-id-sveltekit007"
 	stream-type="on-demand"
-	poster="www.google.com"
-	placeholder="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAASACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAUBAwQC/8QAHRAAAgIDAAMAAAAAAAAAAAAAAAECAwQSIREiMf/EABUBAQEAAAAAAAAAAAAAAAAAAAME/8QAGREAAwEBAQAAAAAAAAAAAAAAAAEDMRFR/9oADAMBAAIRAxEAPwBS4pEa7Geq2cn7GuLXgvT8ImuaUWYqkui/JpVT4M7bWlwWZNjm+g1wafTbEtiACoBnM/gvyQAOuCz0/9k="
 />
 <a sveltekit:prefetch href="/">Browse Elements</a>
