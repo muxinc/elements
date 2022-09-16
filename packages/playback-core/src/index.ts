@@ -191,6 +191,7 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
     mediaEl.removeEventListener('error', handleInternalError);
     mediaEl.removeEventListener('durationchange', seekInSeekableRange);
     muxMediaState.delete(mediaEl);
+    mediaEl.dispatchEvent(new Event('teardown'));
   }
 };
 
