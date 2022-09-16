@@ -7,13 +7,14 @@ type addEventListenerWithTeardown = <K extends keyof HTMLMediaElementEventMap>(
   options?: boolean | AddEventListenerOptions
 ) => void;
 
-// Adds an event listener to a media element that will be removed when an 'emptied' event is dispatched.
-// This correlates to changing the `src` of the HTMLMediaElement and is further ensured via playback-core's
-// `teardown()` method.
+// Adds an event listener to a media element that will be removed when an 'teardown' event is dispatched.
+// Using this instead of 'emptied' as that can fire on initial load based on prior state of the media element
+// Will be fired as a result of (directly or indirectly) invoking playback-core's `teardown()` function.
 export const addEventListenerWithTeardown: addEventListenerWithTeardown = (mediaEl, type, listener, options) => {
   mediaEl.addEventListener(type, listener, options);
+  // NOTE: Using custom teardown
   mediaEl.addEventListener(
-    'emptied',
+    'teardown',
     () => {
       mediaEl.removeEventListener(type, listener);
     },

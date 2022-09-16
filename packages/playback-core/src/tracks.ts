@@ -70,7 +70,8 @@ export function setupTracks(
     }
   });
 
-  addEventListenerWithTeardown(mediaEl, 'emptied', () => {
+  // NOTE: Since this is only relevant for hls, using destroying event (CJP).
+  hls.once(Hls.Events.DESTROYING, () => {
     mediaEl.textTracks.removeEventListener('change', changeHandler);
     // Use data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
     const trackEls: NodeListOf<HTMLTrackElement> = mediaEl.querySelectorAll('track[data-removeondestroy]');
