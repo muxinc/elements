@@ -27,4 +27,6 @@ export const useCombinedRefs: useCombinedRefs = (...refs) => {
   return targetRef;
 };
 
-export default useCombinedRefs;
+// TS assumed default export was interface def instead of function value (CJP)
+const defaultUseCombinedRefs = useCombinedRefs;
+export default defaultUseCombinedRefs;
