@@ -1,4 +1,4 @@
-import useCombinedRefs from './use-combined-refs';
+import { useCombinedRefs } from './use-combined-refs';
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -64,7 +64,10 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     };
     const nextPlaybackEngineRef = initialize(propsWithState, mediaElRef.current, playbackEngineRef.current);
     playbackEngineRef.current = nextPlaybackEngineRef;
-    setUpdateAutoplay(() => setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current));
+    setUpdateAutoplay(() => {
+      if (!mediaElRef.current) return;
+      setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current);
+    });
   }, [src]);
 
   useEffect(() => {
@@ -72,7 +75,8 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
   }, [autoPlay]);
 
   return (
-    <video ref={mediaElRef} {...restProps}>
+    /** @TODO Fix types relationships (CJP) */
+    <video ref={mediaElRef as typeof innerMediaElRef} {...restProps}>
       {children}
     </video>
   );
