@@ -85,6 +85,7 @@ function MuxPlayerPage() {
           metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
           title={title}
           startTime={startTime}
+          thumbnailTime={thumbnailTime}
           playbackId={selectedAsset["playback-id"]}
           tokens={selectedAsset["tokens"]}
           customDomain={selectedAsset["custom-domain"]}
