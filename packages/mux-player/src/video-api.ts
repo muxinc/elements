@@ -57,7 +57,31 @@ export function initVideoApi(el: VideoApiElement) {
   });
 }
 
-class VideoApiElement extends globalThis.HTMLElement {
+/** @TODO Consider making VideoApiElement compliant with/extensible from HTMLVideoElement (CJP) */
+interface VideoApiElement extends HTMLElement {
+  addEventListener<K extends keyof HTMLVideoElementEventMap>(
+    type: K,
+    listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof HTMLVideoElementEventMap>(
+    type: K,
+    listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
+}
+
+class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
   static get observedAttributes() {
     return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
   }
