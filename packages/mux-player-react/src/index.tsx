@@ -214,12 +214,6 @@ const MuxPlayer = React.forwardRef<
   MuxPlayerRefAttributes,
   Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>
 >((props, ref) => {
-  const {
-    /** @TODO Remove these once defaults are added to mux-player (CJP) */
-    forwardSeekOffset = 10,
-    backwardSeekOffset = 10,
-  } = props;
-
   const innerPlayerRef = useRef<MuxPlayerElement>(null);
   const playerRef = useCombinedRefs(innerPlayerRef, ref);
   const [remainingProps] = usePlayer(innerPlayerRef, props);
@@ -230,8 +224,6 @@ const MuxPlayer = React.forwardRef<
       ref={playerRef as typeof innerPlayerRef}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}
-      forwardSeekOffset={forwardSeekOffset}
-      backwardSeekOffset={backwardSeekOffset}
       {...remainingProps}
     />
   );
