@@ -87,6 +87,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // it's used if/when it's been explicitly set "from the outside"
     // (See template.ts for additional context) (CJP)
     poster: el.getAttribute('poster'),
+    placeholder: el.getAttribute('placeholder'),
     theme: el.getAttribute('theme'),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,

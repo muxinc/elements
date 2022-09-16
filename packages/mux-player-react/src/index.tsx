@@ -24,6 +24,7 @@ type VideoApiAttributes = {
   paused: boolean;
   src: string | null;
   poster: string;
+  placeholder: string;
   playbackRate: number;
   playsInline: boolean;
   preload: string;
