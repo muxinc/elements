@@ -1,34 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
 import Script from 'next/script';
-import MuxPlayer from "@mux/mux-player-react";
-import { useRef, useState } from "react";
+import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
-
-const INITIAL_PRIMARY_COLOR = undefined;
-const INITIAL_SECONDARY_COLOR = undefined;
-const INITIAL_CONTROLS_BACKDROP_COLOR = undefined;
-const INITIAL_START_TIME = undefined;
-const INITIAL_THUMBNAIL_TIME = undefined;
-const INITIAL_DEBUG = false;
-const INITIAL_MUTED = false;
-const INITIAL_AUTOPLAY = false;
-const INITIAL_NOHOTKEYS = false;
-const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
-const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
-const INITIAL_TITLE = '';
-const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_SELECTED_CSS_VARS = {};
-const INITIAL_HOTKEYS = '';
-
-const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
-  const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
-  const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
-  return {
-    video_id,
-    video_title,
-  };
-};
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -48,27 +23,124 @@ const onEnded = console.log.bind(null, "ended");
 const onError = console.log.bind(null, "error");
 const onPlayerReady = console.log.bind(null, "playerready");
 
+const INITIAL_PRIMARY_COLOR = undefined;
+const INITIAL_SECONDARY_COLOR = undefined;
+const INITIAL_CONTROLS_BACKDROP_COLOR = undefined;
+const INITIAL_START_TIME = undefined;
+const INITIAL_THUMBNAIL_TIME = undefined;
+const INITIAL_DEBUG = false;
+const INITIAL_MUTED = false;
+const INITIAL_AUTOPLAY = false;
+const INITIAL_NOHOTKEYS = false;
+const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
+// const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
+const INITIAL_PLAYBACK_RATES = undefined;
+const INITIAL_TITLE = undefined;
+// const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
+const INITIAL_ENV_KEY = undefined;
+const INITIAL_SELECTED_CSS_VARS = {};
+const INITIAL_HOTKEYS = undefined;
+const INITIAL_FORWARD_SEEK_OFFSET = undefined;
+const INITIAL_BACKWARD_SEEK_OFFSET = undefined;
+
+const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
+  const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
+  const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
+  return {
+    video_id,
+    video_title,
+  };
+};
+
+const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
+  const { 
+    'playback-id': playbackId,
+    // 'stream-type': streamType,
+    tokens,
+    'custom-domain': customDomain,
+    audio,
+    description: title,
+  } = mediaAsset;
+  // NOTE: Inferred type is "string" from JSON (CJP)
+  const streamType = mediaAsset['stream-type'] as MuxPlayerProps["streamType"];
+  const metadata = toMetadataFromMediaAsset(mediaAsset, mediaAssets);
+
+  return {
+    playbackId,
+    streamType,
+    audio,
+    tokens,
+    customDomain,
+    metadata,
+    title,
+  };
+};
+
+const ActionTypes = {
+  UPDATE: 'UPDATE',
+};
+
+const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
+  muted: INITIAL_MUTED,
+  debug: INITIAL_DEBUG,
+  autoPlay: INITIAL_AUTOPLAY,
+  startTime: INITIAL_START_TIME,
+  paused: true,
+  nohotkeys: INITIAL_NOHOTKEYS,
+  hotkeys: INITIAL_HOTKEYS,
+  defaultShowRemainingTime: INITIAL_DEFAULT_SHOW_REMAINING_TIME,
+  primaryColor: INITIAL_PRIMARY_COLOR,
+  secondaryColor: INITIAL_SECONDARY_COLOR,
+  thumbnailTime: INITIAL_THUMBNAIL_TIME,
+  title: INITIAL_TITLE,
+  envKey: INITIAL_ENV_KEY,
+  playbackRates: INITIAL_PLAYBACK_RATES,
+  forwardSeekOffset: INITIAL_FORWARD_SEEK_OFFSET,
+  backwardSeekOffset: INITIAL_BACKWARD_SEEK_OFFSET,
+});
+
+const reducer = (state = DEFAULT_INITIAL_STATE, action) => {
+  const { type, value } = action;
+  switch (type) {
+    case ActionTypes.UPDATE: {
+      return {
+        ...state,
+        ...value,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const toInitialState = (selectedAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON) => {
+  if (!selectedAsset) return DEFAULT_INITIAL_STATE;
+  return { 
+    ...DEFAULT_INITIAL_STATE,
+    ...toPlayerPropsFromJSON(selectedAsset, mediaAssets)
+  };
+};
+
+const updateProps = (value: Partial<MuxPlayerProps>) => {
+  return {
+    type: ActionTypes.UPDATE,
+    value,
+  };
+}
+
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
   const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
-  const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
-  const [paused, setPaused] = useState<boolean | undefined>(true);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
-  const [debug, setDebug] = useState(INITIAL_DEBUG);
-  const [nohotkeys, setNohotkeys] = useState(INITIAL_NOHOTKEYS);
-  const [defaultShowRemainingTime, setDefaultShowRemainingTime] = useState(INITIAL_DEFAULT_SHOW_REMAINING_TIME);
+  const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets));
+  useEffect(() => {
+    dispatch(updateProps(toPlayerPropsFromJSON(selectedAsset, mediaAssets)))
+  }, [selectedAsset, mediaAssets])
+  // console.log('state', state);
   // What would be a reasonable UI for changing this? (CJP)
-  const [playbackRates, _setPlaybackRates] = useState(INITIAL_PLAYBACK_RATES);
-  const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
-  const [thumbnailTime, _setThumbnailTime] = useState(INITIAL_THUMBNAIL_TIME);
-  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
-  const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
-  const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
   const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
-  const [hotkeys, setHotkeys] = useState(INITIAL_HOTKEYS);
-  const [title, setTitle] = useState(INITIAL_TITLE);
 
   return (
     <div>
@@ -81,43 +153,39 @@ function MuxPlayerPage() {
             ...selectedCssVars,
             ...(controlsBackdropColor && {'--controls-backdrop-color': controlsBackdropColor} as typeof selectedCssVars)
             }}
-          envKey={envKey || undefined}
-          metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
-          title={title}
-          startTime={startTime}
-          thumbnailTime={thumbnailTime}
-          playbackId={selectedAsset["playback-id"]}
-          tokens={selectedAsset["tokens"]}
-          customDomain={selectedAsset["custom-domain"]}
-          forwardSeekOffset={10}
-          backwardSeekOffset={10}
-          nohotkeys={nohotkeys}
-          hotkeys={hotkeys}
+          envKey={state.envKey}
+          metadata={state.metadata}
+          title={state.title}
+          startTime={state.startTime}
+          thumbnailTime={state.thumbnailTime}
+          playbackId={state.playbackId}
+          tokens={state.tokens}
+          customDomain={state.customDomain}
+          forwardSeekOffset={state.forwardSeekOffset}
+          backwardSeekOffset={state.backwardSeekOffset}
+          nohotkeys={state.nohotkeys}
+          hotkeys={state.hotkeys}
           // onPlayerReady={() => console.log("ready!")}
-          debug={debug}
-          muted={muted}
-          paused={paused}
-          autoPlay={autoplay}
-          streamType={
-            selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
-          }
-          audio={selectedAsset["audio"] ?? false}
-          primaryColor={primaryColor}
-          secondaryColor={secondaryColor}
-          tertiaryColor="#b4004e"
-          defaultShowRemainingTime={defaultShowRemainingTime}
-          playbackRates={playbackRates}
+          debug={state.debug}
+          muted={state.muted}
+          paused={state.paused}
+          autoPlay={state.autoPlay}
+          streamType={state.streamType}
+          audio={state.audio}
+          primaryColor={state.primaryColor}
+          secondaryColor={state.secondaryColor}
+          defaultShowRemainingTime={state.defaultShowRemainingTime}
+          playbackRates={state.playbackRates}
           onPlay={(evt: Event) => {
             onPlay(evt);
-            setPaused(false);
+            dispatch(updateProps({ paused: false }));
           }}
           onPause={(evt: Event) => {
             onPause(evt);
-            setPaused(true);
+            dispatch(updateProps({ paused: true }));
           }}
           onSeeking={onSeeking}
           onSeeked={onSeeked}
-          // startTime={12}
         />
       </div>
       <div className="options">
@@ -143,8 +211,8 @@ function MuxPlayerPage() {
           <input
             id="primarycolor-control"
             type="color"
-            onChange={(event) => setPrimaryColor(event.target.value)}
-            value={primaryColor}
+            onChange={({ target: { value }}) => dispatch(updateProps({ primaryColor: value ? value : undefined }))}
+            value={state.primaryColor}
           />
         </div>
         <div>
@@ -152,8 +220,8 @@ function MuxPlayerPage() {
           <input
             id="secondarycolor-control"
             type="color"
-            onChange={(event) => setSecondaryColor(event.target.value)}
-            value={secondaryColor}
+            onChange={({ target: { value }}) => dispatch(updateProps({ secondaryColor: value ? value : undefined }))}
+            value={state.secondaryColor}
           />
         </div>
         <div>
@@ -161,8 +229,8 @@ function MuxPlayerPage() {
           <input
             id="paused-control"
             type="checkbox"
-            onChange={() => setPaused(!paused)}
-            checked={paused}
+            onChange={() => dispatch(updateProps({ paused: !state.paused }))}
+            checked={state.paused}
           />
         </div>
         <div>
@@ -170,8 +238,8 @@ function MuxPlayerPage() {
           <input
             id="autoplay-control"
             type="checkbox"
-            onChange={() => setAutoplay(!autoplay ? "muted" : false)}
-            checked={!!autoplay}
+            onChange={() => dispatch(updateProps({ autoPlay: state.autoPlay ? "muted" : false }))}
+            checked={!!state.autoPlay}
           />
         </div>
         <div>
@@ -179,8 +247,8 @@ function MuxPlayerPage() {
           <input
             id="muted-control"
             type="checkbox"
-            onChange={() => setMuted(!muted)}
-            checked={muted}
+            onChange={() => dispatch(updateProps({ muted: !state.muted }))}
+            checked={state.muted}
           />
         </div>
         <div>
@@ -188,8 +256,8 @@ function MuxPlayerPage() {
           <input
             id="nohotkeys-control"
             type="checkbox"
-            onChange={() => setNohotkeys(!nohotkeys)}
-            checked={nohotkeys}
+            onChange={() => dispatch(updateProps({ nohotkeys: !state.nohotkeys }))}
+            checked={state.nohotkeys}
           />
         </div>
         <div>
@@ -197,16 +265,38 @@ function MuxPlayerPage() {
           <input
             id="defaultshowremainingtime-control"
             type="checkbox"
-            onChange={() => setDefaultShowRemainingTime(!defaultShowRemainingTime)}
-            checked={defaultShowRemainingTime}
+            onChange={() => dispatch(updateProps({ defaultShowRemainingTime: !state.defaultShowRemainingTime }))}
+            checked={state.defaultShowRemainingTime}
           />
         </div>
         <div>
           <label htmlFor="title-control">Title</label>
           <input
             id="title-control"
-            onChange={({ currentTarget }) => setTitle(currentTarget.value)}
-            defaultValue={title}
+            onChange={({ target: { value } }) => dispatch(updateProps({ title: value ? value : undefined }))}
+            defaultValue={state.title}
+          />
+        </div>
+        <div>
+          <label htmlFor="forwardseekoffset-control">Forward Seek Offset</label>
+          <input
+            id="forwardseekoffset-control"
+            type="number"
+            min={1}
+            max={99}
+            onChange={({ target: { value } }) => dispatch(updateProps({ forwardSeekOffset: value ? +value : undefined }))}
+            defaultValue={state.forwardSeekOffset}
+          />
+        </div>
+        <div>
+          <label htmlFor="backwardseekoffset-control">Backward Seek Offset</label>
+          <input
+            id="backwardseekoffset-control"
+            type="number"
+            min={1}
+            max={99}
+            onChange={({ target: { value } }) => dispatch(updateProps({ backwardSeekOffset: value ? +value : undefined }))}
+            defaultValue={state.backwardSeekOffset}
           />
         </div>
         <div>
@@ -214,16 +304,16 @@ function MuxPlayerPage() {
           <input
             id="debug-control"
             type="checkbox"
-            onChange={() => setDebug(!debug)}
-            checked={debug}
+            onChange={() => dispatch(updateProps({ debug: !state.debug }))}
+            checked={state.debug}
           />
         </div>
         <div>
           <label htmlFor="env-key-control">Env Key (Mux Data)</label>
           <input
             id="env-key-control"
-            onBlur={({ currentTarget }) => setEnvKey(currentTarget.value)}
-            defaultValue={envKey}
+            onChange={({ target: { value } }) => dispatch(updateProps({ envKey: value ? value : undefined }))}
+            defaultValue={state.envKey}
           />
         </div>
         <div>
@@ -295,10 +385,12 @@ function MuxPlayerPage() {
           <select
             id="hotkeys-control"
             multiple
-            onChange={(event) => setHotkeys(
-              Array.from(event.target.selectedOptions)
-                .map(({ value }) => value).join(' ')
-            )}
+            onChange={({ target: { selectedOptions } }) => {
+              const hotkeys = selectedOptions 
+                ? Array.from(selectedOptions, ({ value }) => value).join(' ') 
+                : undefined;
+              dispatch(updateProps({ hotkeys }))}
+            }
           >
             {['nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright'].map((token, i) => {
               return (
