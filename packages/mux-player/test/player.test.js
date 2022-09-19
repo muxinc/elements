@@ -426,6 +426,49 @@ describe('<mux-player> playbackId transitions', () => {
     );
   });
 
+  it('unloads the current playbackId', async function () {
+    const player = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
+
+    player.removeAttribute('playback-id');
+    assert.equal(player.src, null);
+  });
+
+  it('loads the new src', async function () {
+    const player = await fixture(`<mux-player
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8?redundant_streams=true"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8?redundant_streams=true');
+
+    player.src = 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8?redundant_streams=true';
+
+    assert.equal(
+      player.src,
+      'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8?redundant_streams=true'
+    );
+  });
+
+  it('unloads the current src', async function () {
+    const player = await fixture(`<mux-player
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8?redundant_streams=true"
+      stream-type="on-demand"
+      muted
+    ></mux-player>`);
+
+    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8?redundant_streams=true');
+
+    player.removeAttribute('src');
+    assert.equal(player.src, null);
+  });
+
   it('loads the new playbackId and clears dialog state', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"

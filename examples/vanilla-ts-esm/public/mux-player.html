@@ -97,6 +97,7 @@
 
     <div class="buttons">
       <button class="load-src-btn">Load new video</button>
+      <button class="unload-src-btn">Unload</button>
       <button class="color-btn">Random colors</button>
       <button class="dialog-show-btn">Show error dialog</button>
       <button class="dialog-close-btn">Close dialog</button>
@@ -120,6 +121,11 @@
         .addEventListener("click", () => {
           const playbackIds = testPlaybackIds.filter((id) => id != player.playbackId);
           player.playbackId = playbackIds[Math.round(Math.random() * (playbackIds.length - 1))];
+        });
+      document
+        .querySelector(".unload-src-btn")
+        .addEventListener("click", () => {
+          player.removeAttribute('playback-id');
         });
       document
         .querySelector(".color-btn")
