@@ -46,6 +46,7 @@ const MuxVideoAttributes = {
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
+  SRC: 'src',
   METADATA_URL: 'metadata-url',
   PREFER_MSE: 'prefer-mse',
   PLAYER_SOFTWARE_VERSION: 'player-software-version',
@@ -83,6 +84,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
+    playbackId: el.playbackId,
     // NOTE: Always use the externally set poster attribute here to guarantee
     // it's used if/when it's been explicitly set "from the outside"
     // (See template.ts for additional context) (CJP)
@@ -100,7 +102,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     paused: el.paused,
     playsInline: el.playsInline,
     preload: el.preload,
-    playbackId: el.playbackId,
     envKey: el.envKey,
     debug: el.debug,
     tokens: el.tokens,
@@ -819,6 +820,18 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set playbackId(val: string | undefined) {
     this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, `${val}`);
+  }
+
+  get src() {
+    // Only get the internal video.src if a playbackId is present.
+    if (this.playbackId) {
+      return getVideoAttribute(this, MuxVideoAttributes.SRC);
+    }
+    return this.getAttribute(MuxVideoAttributes.SRC);
+  }
+
+  set src(val) {
+    this.setAttribute(MuxVideoAttributes.SRC, `${val}`);
   }
 
   /**
