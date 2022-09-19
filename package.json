@@ -24,6 +24,10 @@
     "scripts/*",
     "shared/*"
   ],
+  "nohoist": [
+    "examples/svelte-kit/vite/**",
+    "examples/vue-with-typescript/vite/**"
+  ],
   "scripts": {
     "clean": "turbo run clean --parallel --filter @mux/*",
     "format": "prettier --write .",
