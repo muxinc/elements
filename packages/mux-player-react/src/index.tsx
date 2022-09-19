@@ -68,7 +68,6 @@ export type MuxPlayerProps = {
   metadataViewerUserId?: string;
   primaryColor?: string;
   secondaryColor?: string;
-  tertiaryColor?: string;
   playbackRates?: number[];
   defaultShowRemainingTime?: boolean;
   thumbnailTime?: number;
