@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.28...@mux/mux-player-react@1.0.0-beta.0) (2022-09-16)
+
+### Bug Fixes
+
+- **mux-player-react:** explicitly add className to typescript types for mux-player-react (different impl from MuxVideo and MuxAudio). ([84ca6cb](https://github.com/muxinc/elements/commit/84ca6cb69a2634dade58cece3b17ae72060c79b1))
+
+### Features
+
+- export gesture-layer as a part ([89e90ee](https://github.com/muxinc/elements/commit/89e90ee3268da23c8071fc9cd2f21efc534f1849)), closes [#379](https://github.com/muxinc/elements/issues/379)
+
 # [0.1.0-beta.28](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.27...@mux/mux-player-react@0.1.0-beta.28) (2022-09-01)
 
 ### Bug Fixes

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.6](https://github.com/muxinc/elements/compare/@mux/mux-video@0.8.5...@mux/mux-video@0.8.6) (2022-09-16)
+
+### Bug Fixes
+
+- mux-video & mux-audio memory leak ([#387](https://github.com/muxinc/elements/issues/387)) ([4a0d921](https://github.com/muxinc/elements/commit/4a0d921c49a3bf730ad86a77e46a085c44ef91ea))
+- update PlaybackEngine types ([1873781](https://github.com/muxinc/elements/commit/187378165a83e70d62bd5ba954b4986d0ae50738))
+
 ## [0.8.5](https://github.com/muxinc/elements/compare/@mux/mux-video@0.8.4...@mux/mux-video@0.8.5) (2022-08-31)
 
 ### Bug Fixes

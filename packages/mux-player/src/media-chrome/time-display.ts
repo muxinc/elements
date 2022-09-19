@@ -79,9 +79,13 @@ class MxpTimeDisplay extends globalThis.HTMLElement {
     const isDurationDisplayNone = getComputedStyle(this).getPropertyValue('--media-duration-display').trim() === 'none';
 
     if (isDurationDisplayNone || this.getAttribute('hide-duration') != null) {
-      this.timeDisplayEl?.removeAttribute('show-duration');
+      if (this.timeDisplayEl?.hasAttribute('show-duration')) {
+        this.timeDisplayEl?.removeAttribute('show-duration');
+      }
     } else {
-      this.timeDisplayEl?.setAttribute('show-duration', '');
+      if (!this.timeDisplayEl?.hasAttribute('show-duration')) {
+        this.timeDisplayEl?.setAttribute('show-duration', '');
+      }
     }
   }
 

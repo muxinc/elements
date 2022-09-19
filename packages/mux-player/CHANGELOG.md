@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.0](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.27...@mux/mux-player@1.0.0-beta.0) (2022-09-16)
+
+### Bug Fixes
+
+- Add exportparts to mux-player so we can style nested video ([#392](https://github.com/muxinc/elements/issues/392)) ([db107c1](https://github.com/muxinc/elements/commit/db107c136b926af871dfb21d009f426fdd6c0736))
+- audio and nohotkeys props not being removed when set to false ([#383](https://github.com/muxinc/elements/issues/383)) ([671b9a9](https://github.com/muxinc/elements/commit/671b9a9b80b6876c7d1c9c8589a62eea033755a5))
+- don't throw an error when removing tokens or playback id ([71db6b8](https://github.com/muxinc/elements/commit/71db6b8816036eba8f0601e7a76c282e1bba019b))
+- template parts issue ([#371](https://github.com/muxinc/elements/issues/371)) ([6c5a124](https://github.com/muxinc/elements/commit/6c5a1243bce50fc8ee9ab841cae3fa35243ee686))
+- types for testing ([8fe0851](https://github.com/muxinc/elements/commit/8fe0851c13261f558c5c551bd542ccfdcdd81fac))
+- update PlaybackEngine types ([1873781](https://github.com/muxinc/elements/commit/187378165a83e70d62bd5ba954b4986d0ae50738))
+- update to media-chrome 0.10.2 ([#377](https://github.com/muxinc/elements/issues/377)) ([15d148e](https://github.com/muxinc/elements/commit/15d148e82431352415a4ae701d30ce271c3521d7))
+- update to media-chrome 0.10.4 ([#391](https://github.com/muxinc/elements/issues/391)) ([885b1d4](https://github.com/muxinc/elements/commit/885b1d431b46ca05f8e9430cbf546d0e531afeed))
+- vertical alignment of UI controls ([#394](https://github.com/muxinc/elements/issues/394)) ([add2d56](https://github.com/muxinc/elements/commit/add2d569f93bcddf48b44d6460c1cfcad58a717f))
+
+### Features
+
+- add --controls-backdrop-color CSS var to allow changing the backdrop color ([#353](https://github.com/muxinc/elements/issues/353)) ([1ba84a2](https://github.com/muxinc/elements/commit/1ba84a2b7d209c1a3b45bd934a8d67044712a1a9))
+- export gesture-layer as a part ([89e90ee](https://github.com/muxinc/elements/commit/89e90ee3268da23c8071fc9cd2f21efc534f1849)), closes [#379](https://github.com/muxinc/elements/issues/379)
+
 # [0.1.0-beta.27](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.26...@mux/mux-player@0.1.0-beta.27) (2022-08-31)
 
 ### Bug Fixes
