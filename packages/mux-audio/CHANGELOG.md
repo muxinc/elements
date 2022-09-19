@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.4](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.3...@mux/mux-audio@0.6.4) (2022-09-16)
+
+### Bug Fixes
+
+- mux-video & mux-audio memory leak ([#387](https://github.com/muxinc/elements/issues/387)) ([4a0d921](https://github.com/muxinc/elements/commit/4a0d921c49a3bf730ad86a77e46a085c44ef91ea))
+- update PlaybackEngine types ([1873781](https://github.com/muxinc/elements/commit/187378165a83e70d62bd5ba954b4986d0ae50738))
+
 ## [0.6.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.2...@mux/mux-audio@0.6.3) (2022-08-31)
 
 ### Bug Fixes

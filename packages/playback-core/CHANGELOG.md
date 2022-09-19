@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.10.0...@mux/playback-core@0.11.0) (2022-09-16)
+
+### Bug Fixes
+
+- **playback-core:** Make sure event handlers and other references are cleaned up to avoid memory leaks. ([def9853](https://github.com/muxinc/elements/commit/def9853483aa45fdc1f958dfb9ff9b690b30f8eb))
+- **playback-core:** Set both player_software (old key) and player_software_name (new key) in mux data options to sidestep inconsistencies in Mux Data views. ([fbeb5a9](https://github.com/muxinc/elements/commit/fbeb5a9c817fba550ad0662b92a5578db7421fe6))
+- **playback-core:** Use custom teardown event type instead of emptied due to pre-emptive emptied. ([ce8fba8](https://github.com/muxinc/elements/commit/ce8fba810210578fb74615502cf5205222586584))
+- startTime on iOS when preload=auto ([#368](https://github.com/muxinc/elements/issues/368)) ([0f511d4](https://github.com/muxinc/elements/commit/0f511d43474454b683dd7e041bdc3a99937a936e))
+- update to hls.js 1.2.3 ([#386](https://github.com/muxinc/elements/issues/386)) ([a0acfd5](https://github.com/muxinc/elements/commit/a0acfd5ed1fa04390f616ea194fb3972ffe81716))
+- update to hls.js@1.2.1 ([08ed065](https://github.com/muxinc/elements/commit/08ed0652961d140d0db6907f1855847917ee1cd2))
+- update to hls.js@1.2.2 ([b10ee22](https://github.com/muxinc/elements/commit/b10ee221bb9f00e53b6ab25c2e9b57de8e2ae791))
+
+### Features
+
+- always prefer MSE on android ([ad43416](https://github.com/muxinc/elements/commit/ad43416077c27b15a8ccda5279d08babdde6a90d)), closes [#325](https://github.com/muxinc/elements/issues/325)
+
 # [0.10.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.9.0...@mux/playback-core@0.10.0) (2022-08-31)
 
 ### Bug Fixes
