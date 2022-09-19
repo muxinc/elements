@@ -219,14 +219,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     }
   }
 
-  get src() {
-    return getVideoAttribute(this, AllowedVideoAttributes.SRC);
-  }
-
-  set src(val) {
-    this.setAttribute(AllowedVideoAttributes.SRC, `${val}`);
-  }
-
   get poster() {
     return getVideoAttribute(this, AllowedVideoAttributes.POSTER) ?? '';
   }
