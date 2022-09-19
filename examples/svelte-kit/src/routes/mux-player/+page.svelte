@@ -40,4 +40,4 @@
 	metadata-viewer-user-id="user-id-sveltekit007"
 	stream-type="on-demand"
 />
-<a sveltekit:prefetch href="/">Browse Elements</a>
+<a data-sveltekit-prefetch href="/">Browse Elements</a>

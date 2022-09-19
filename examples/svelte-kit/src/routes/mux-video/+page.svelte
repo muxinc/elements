@@ -27,4 +27,4 @@ stream-type="vod"
 controls
 muted
 ></mux-video>
-<a sveltekit:prefetch href="/">Browse Elements</a>
+<a data-sveltekit-prefetch href="/">Browse Elements</a>

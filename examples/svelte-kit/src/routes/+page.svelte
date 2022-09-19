@@ -10,13 +10,13 @@
 	<h1>Browse Mux Elements</h1>
 	<ul>
 		<li>
-			<a sveltekit:prefetch href="/mux-video">Mux Video Demo</a>
+			<a data-sveltekit-prefetch href="/mux-video">Mux Video Demo</a>
 		</li>
 		<li>
-			<a sveltekit:prefetch href="/mux-audio">Mux Audio Demo</a>
+			<a data-sveltekit-prefetch href="/mux-audio">Mux Audio Demo</a>
 		</li>
 		<li>
-			<a sveltekit:prefetch href="/mux-player">Mux Player Demo</a>
+			<a data-sveltekit-prefetch href="/mux-player">Mux Player Demo</a>
 		</li>
 	</ul>
 </section>

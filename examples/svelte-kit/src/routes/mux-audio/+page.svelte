@@ -29,4 +29,4 @@ muted
 controls
 >
 </mux-audio>
-<a sveltekit:prefetch href="/">Browse Elements</a>
+<a data-sveltekit-prefetch href="/">Browse Elements</a>
