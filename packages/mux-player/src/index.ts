@@ -77,6 +77,7 @@ const PlayerAttributes = {
   PLAYBACK_RATES: 'playbackrates',
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
   TITLE: 'title',
+  PLACEHOLDER: 'placeholder',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -668,6 +669,14 @@ class MuxPlayerElement extends VideoApiElement {
     }
     // Calling super.title for tooltip usage
     super.title = val;
+  }
+
+  get placeholder() {
+    return getVideoAttribute(this, PlayerAttributes.PLACEHOLDER) ?? '';
+  }
+
+  set placeholder(val) {
+    this.setAttribute(PlayerAttributes.PLACEHOLDER, `${val}`);
   }
 
   /**

@@ -30,7 +30,6 @@ const AllowedVideoAttributes = {
 const CustomVideoAttributes = {
   VOLUME: 'volume',
   PLAYBACKRATE: 'playbackrate',
-  PLACEHOLDER: 'placeholder',
   // This muted attribute also reflects to the muted property while the muted
   // attribute on a native video element reflects only to video.defaultMuted.
   MUTED: 'muted',
@@ -234,14 +233,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
   set poster(val) {
     this.setAttribute(AllowedVideoAttributes.POSTER, `${val}`);
-  }
-
-  get placeholder() {
-    return getVideoAttribute(this, CustomVideoAttributes.PLACEHOLDER) ?? '';
-  }
-
-  set placeholder(val) {
-    this.setAttribute(CustomVideoAttributes.PLACEHOLDER, `${val}`);
   }
 
   get playbackRate() {
