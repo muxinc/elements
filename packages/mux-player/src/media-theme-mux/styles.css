@@ -45,6 +45,10 @@
   height: 0px;
 }
 
+:host([audio]) :is(media-poster-image, media-loading-indicator) {
+  display: none;
+}
+
 :host([audio]) media-controller {
   background: transparent;
 }
