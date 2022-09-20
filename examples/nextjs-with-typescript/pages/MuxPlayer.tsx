@@ -34,6 +34,7 @@ const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
 const INITIAL_NOHOTKEYS = false;
 const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
+const INITIAL_DEFAULT_HIDDEN_CAPTIONS = undefined;
 // const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_PLAYBACK_RATES = undefined;
 const INITIAL_TITLE = undefined;
@@ -43,6 +44,9 @@ const INITIAL_SELECTED_CSS_VARS = {};
 const INITIAL_HOTKEYS = undefined;
 const INITIAL_FORWARD_SEEK_OFFSET = undefined;
 const INITIAL_BACKWARD_SEEK_OFFSET = undefined;
+const INITIAL_VOLUME = undefined;
+const INITIAL_LOOP = undefined;
+const INITIAL_CROSS_ORIGIN = undefined;
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
@@ -98,6 +102,9 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   playbackRates: INITIAL_PLAYBACK_RATES,
   forwardSeekOffset: INITIAL_FORWARD_SEEK_OFFSET,
   backwardSeekOffset: INITIAL_BACKWARD_SEEK_OFFSET,
+  volume: INITIAL_VOLUME,
+  loop: INITIAL_LOOP,
+  crossOrigin: INITIAL_CROSS_ORIGIN,
 });
 
 const reducer = (state = DEFAULT_INITIAL_STATE, action) => {
@@ -164,11 +171,14 @@ function MuxPlayerPage() {
           customDomain={state.customDomain}
           forwardSeekOffset={state.forwardSeekOffset}
           backwardSeekOffset={state.backwardSeekOffset}
+          crossOrigin={state.crossOrigin}
           nohotkeys={state.nohotkeys}
           hotkeys={state.hotkeys}
           // onPlayerReady={() => console.log("ready!")}
           debug={state.debug}
+          loop={state.loop}
           muted={state.muted}
+          volume={state.volume}
           paused={state.paused}
           autoPlay={state.autoPlay}
           streamType={state.streamType}
@@ -176,6 +186,7 @@ function MuxPlayerPage() {
           primaryColor={state.primaryColor}
           secondaryColor={state.secondaryColor}
           defaultShowRemainingTime={state.defaultShowRemainingTime}
+          defaultHiddenCaptions={state.defaultHiddenCaptions}
           playbackRates={state.playbackRates}
           onPlay={(evt: Event) => {
             onPlay(evt);
@@ -186,7 +197,8 @@ function MuxPlayerPage() {
             dispatch(updateProps({ paused: true }));
           }}
           onVolumeChange={(event) => {
-            dispatch(updateProps({ muted: (event.target as MuxPlayerElement).muted }));
+            const muxPlayerEl = event.target as MuxPlayerElement
+            dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
           }}
           onSeeking={onSeeking}
           onSeeked={onSeeked}
@@ -216,7 +228,7 @@ function MuxPlayerPage() {
             id="primarycolor-control"
             type="color"
             onChange={({ target: { value }}) => dispatch(updateProps({ primaryColor: value ? value : undefined }))}
-            value={state.primaryColor}
+            value={state.primaryColor ?? '#000000'}
           />
         </div>
         <div>
@@ -225,7 +237,7 @@ function MuxPlayerPage() {
             id="secondarycolor-control"
             type="color"
             onChange={({ target: { value }}) => dispatch(updateProps({ secondaryColor: value ? value : undefined }))}
-            value={state.secondaryColor}
+            value={state.secondaryColor ?? '#000000'}
           />
         </div>
         <div>
@@ -274,6 +286,15 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
+          <label htmlFor="defaulthiddencaptions-control">Hide Captions by Default</label>
+          <input
+            id="defaulthiddencaptions-control"
+            type="checkbox"
+            onChange={() => dispatch(updateProps({ defaultHiddenCaptions: !state.defaultHiddenCaptions }))}
+            checked={state.defaultHiddenCaptions ?? ''}
+          />
+        </div>
+        <div>
           <label htmlFor="title-control">Title</label>
           <input
             id="title-control"
@@ -304,12 +325,33 @@ function MuxPlayerPage() {
           />
         </div>
         <div>
+          <label htmlFor="volume-control">Volume</label>
+          <input
+            id="volume-control"
+            type="number"
+            min={0}
+            max={1}
+            step={0.05}
+            onChange={({ target: { value } }) => dispatch(updateProps({ volume: value ? +value : undefined }))}
+            defaultValue={state.volume}
+          />
+        </div>
+        <div>
           <label htmlFor="debug-control">Debug</label>
           <input
             id="debug-control"
             type="checkbox"
             onChange={() => dispatch(updateProps({ debug: !state.debug }))}
-            checked={state.debug}
+            checked={state.debug ?? ''}
+          />
+        </div>
+        <div>
+          <label htmlFor="loop-control">Loop</label>
+          <input
+            id="loop-control"
+            type="checkbox"
+            onChange={() => dispatch(updateProps({ loop: !state.loop }))}
+            checked={state.loop ?? ''}
           />
         </div>
         <div>
@@ -381,7 +423,7 @@ function MuxPlayerPage() {
             id="controls-backdrop-color"
             type="color"
             onChange={(event) => setControlsBackdropColor(event.target.value)}
-            value={controlsBackdropColor}
+            value={controlsBackdropColor ?? '#000000'}
           />
         </div>
         <div>
