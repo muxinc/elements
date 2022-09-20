@@ -90,11 +90,11 @@ const MuxVideoExample = () => {
 
 In addition, any props that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoPlay` are available and should work the same as they do when using a video element in react. One sidenote about `autoPlay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
 
-### Advanced: preferMse
+### Advanced: preferPlayback
 
 By default `<MuxVideo/>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player as long as the browser supports [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
 
-If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then simply set the `preferMse` prop.
+If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then simply set the `preferPlayback` prop to `mse`.
 
 ```jsx
 <MuxVideo
@@ -104,7 +104,7 @@ If you prefer to use the in-code MSE-based engine (currently hls.js) whenever po
     video_title: 'Super Interesting Video',
     viewer_user_id: 'user-id-bc-789',
   }}
-  preferMse
+  preferPlayback="mse"
   controls
 />
 ```

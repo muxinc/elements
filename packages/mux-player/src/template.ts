@@ -70,6 +70,7 @@ export const content = (props: MuxTemplateProps) => html`
       preload="${props.preload ?? false}"
       debug="${props.debug ?? false}"
       prefer-mse="${props.preferMse ?? false}"
+      prefer-playback="${props.preferPlayback ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"
       metadata-video-id="${props.metadataVideoId ?? false}"
       metadata-video-title="${props.metadataVideoTitle ?? false}"

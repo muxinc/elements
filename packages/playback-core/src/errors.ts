@@ -1,11 +1,11 @@
 export class MediaError extends Error {
-  static MEDIA_ERR_ABORTED: number = 1;
-  static MEDIA_ERR_NETWORK: number = 2;
-  static MEDIA_ERR_DECODE: number = 3;
-  static MEDIA_ERR_SRC_NOT_SUPPORTED: number = 4;
-  static MEDIA_ERR_ENCRYPTED: number = 5;
+  static MEDIA_ERR_ABORTED = 1;
+  static MEDIA_ERR_NETWORK = 2;
+  static MEDIA_ERR_DECODE = 3;
+  static MEDIA_ERR_SRC_NOT_SUPPORTED = 4;
+  static MEDIA_ERR_ENCRYPTED = 5;
   // @see https://docs.mux.com/guides/data/monitor-html5-video-element#customize-error-tracking-behavior
-  static MEDIA_ERR_CUSTOM: number = 100;
+  static MEDIA_ERR_CUSTOM = 100;
 
   static defaultMessages: Record<number, string> = {
     1: 'You aborted the media playback',

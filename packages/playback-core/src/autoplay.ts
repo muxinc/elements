@@ -154,7 +154,7 @@ export const handleAutoplay = (mediaEl: HTMLMediaElement, autoplay: Autoplay) =>
     // if it fails, mute and try playing again
     // if that fails, restore muted state and don't try playing again
     case AutoplayTypes.ANY:
-      mediaEl.play().catch((error: Error) => {
+      mediaEl.play().catch(() => {
         mediaEl.muted = true;
         mediaEl.play().catch(restoreMuted);
       });
@@ -170,7 +170,7 @@ export const handleAutoplay = (mediaEl: HTMLMediaElement, autoplay: Autoplay) =>
 
     // Default or if autoplay is a boolean attribute:
     // Try playing the video and catch the failed autoplay warning
-    default:
+    default: // eslint-disable-next-line
       mediaEl.play().catch(() => {});
       break;
   }

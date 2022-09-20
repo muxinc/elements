@@ -1,5 +1,4 @@
 import Hls from 'hls.js';
-import { addEventListenerWithTeardown } from './util';
 
 export function setupTracks(
   mediaEl: HTMLMediaElement,
@@ -51,7 +50,7 @@ export function setupTracks(
 
   mediaEl.textTracks.addEventListener('change', changeHandler);
 
-  hls.on(Hls.Events.CUES_PARSED, (_type, { track, type, cues }) => {
+  hls.on(Hls.Events.CUES_PARSED, (_type, { track, cues }) => {
     const textTrack = mediaEl.textTracks.getTrackById(track);
     if (!textTrack) return;
 
@@ -132,9 +131,9 @@ export function addTextTrack(
 }
 
 export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
-  const trackEl: HTMLTrackElement | undefined = Array.prototype.find.call(
+  const trackElement: HTMLTrackElement | undefined = Array.prototype.find.call(
     mediaEl.querySelectorAll('track'),
     (trackEl: HTMLTrackElement) => trackEl.track === track
   );
-  trackEl?.remove();
+  trackElement?.remove();
 }

@@ -217,11 +217,11 @@ Example:
 />
 ```
 
-### preferMse
+### preferPlayback
 
 By default `<MuxPlayer/>` will try to use native playback via the underlying `<video/>` tag whenever possible. However, it can also instead use an in-code player as long as the browser supports [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API). This includes MSE in Mac OS Safari.
 
-If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then simply set the `preferMse` prop.
+If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then simply set the `preferPlayback` prop to `mse`.
 
 Example:
 
@@ -233,7 +233,7 @@ Example:
     video_title: 'Super Interesting Video',
     viewer_user_id: 'user-id-bc-789',
   }}
-  preferMse
+  preferPlayback="mse"
 />
 ```
 
@@ -250,7 +250,7 @@ Example:
 | `debug`                    | `boolean`                                                          | Enables debug mode for the underlying playback engine (currently hls.js) and mux-embed, providing additional information in the console.                                                                                                                                                                                                                                                         | `false`       |
 | `startTime`                | `number` (seconds)                                                 | Specify where in the media's timeline you want playback to start.                                                                                                                                                                                                                                                                                                                                | `0`           |
 | `thumbnailTime`            | `number` (seconds)                                                 | Offset for the poster image you want to show before loading media. If no `thumbnailTime` is specified, `startTime` will be used by default. NOTE: This feature currently cannot be used with `tokens.thumbnail`.                                                                                                                                                                                 | `0`           |
-| `preferMse`                | `boolean`                                                          | Use the underlying playback engine (currently hls.js), even if native playback is supported (e.g. in Safari). For more, see the section on [`preferMse`](#preferMse)                                                                                                                                                                                                                             | `false`       |
+| `preferPlayback`           | `"mse" \| "native" \| undefined`                                   | Set the preference for the playback type; `mse` (currently hls.js), or `native` playback if it is supported (e.g. in Safari). For more, see the section on [`preferPlayback`](#preferPlayback)                                                                                                                                                                                                   | `native`      |
 | `defaultHiddenCaptions`    | `boolean`                                                          | Hide captions by default instead of showing them on initial load (when available)                                                                                                                                                                                                                                                                                                                | `false`       |
 | `defaultShowRemainingTime` | `boolean`                                                          | Show remaining playback time (instead of current playback time) by default                                                                                                                                                                                                                                                                                                                       | `false`       |
 | `forwardSeekOffset`        | `number` (seconds)                                                 | Offset applied to the forward seek button                                                                                                                                                                                                                                                                                                                                                        | `10`          |

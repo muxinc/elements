@@ -10,7 +10,7 @@ describe('<mux-player>', () => {
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
       start-time="0"
       stream-type="on-demand"
-      prefer-mse
+      prefer-playback="mse"
       muted
       title="A title"
     ></mux-player>`);
@@ -19,7 +19,7 @@ describe('<mux-player>', () => {
     assert.equal(player.envKey, 'ilc02s65tkrc2mk69b7q2qdkf', 'env-key is reflected');
     assert.equal(player.startTime, 0, 'startTime is set to 0');
     assert.equal(player.streamType, 'on-demand', 'stream-type is on-demand');
-    assert.equal(player.preferMse, true, 'prefer-mse is on');
+    assert.equal(player.preferPlayback, 'mse', 'prefer mse is on');
     assert.equal(player.debug, false, 'debug is off');
     assert.equal(player.title, 'A title', 'title is set');
   });
