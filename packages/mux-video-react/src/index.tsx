@@ -64,7 +64,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     };
     const nextPlaybackEngineRef = initialize(propsWithState, mediaElRef.current, playbackEngineRef.current);
     playbackEngineRef.current = nextPlaybackEngineRef;
-    setUpdateAutoplay(() => {
+    setUpdateAutoplay(() => () => {
       if (!mediaElRef.current) return;
       setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current);
     });
