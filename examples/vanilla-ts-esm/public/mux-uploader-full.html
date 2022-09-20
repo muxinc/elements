@@ -2,12 +2,13 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Basic &lt;mux-uploader/&gt; example</title>
+    <title>&lt;mux-uploader&gt; full-page example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script type="module" src="./dist/mux-uploader.js"></script>
     <style>
       body {
-        font-family: Arial;
         margin: 0;
+        padding: 0;
         background: #f8f8f8;
         width: 100vw;
         height: 100vh;
@@ -82,24 +83,24 @@
   </head>
   <body>
     <mux-uploader-drop mux-uploader="uploader" class="container" overlay overlay-text="We're awesome (and you are, too!)">
-        <main>
-          <section class="info">
-            <header>
-              <h1>Add a video.</h1>
-              <h1>Get a shareable link to stream it.</h1>
-            </header>
-            <h2>Enter your upload GCS url:</h2>
-            <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
-          </section>
-          <div class="button-container">
-            <mux-uploader id="uploader" type="bar" status>
-              <!-- Uncomment for examples of customization via slots -->
-              <!-- <button slot="upload-button">I AM A SUPER CUSTOM BUTTON</button> -->
-            </mux-uploader>
-            <button class="second-button">Some other sample button</button>
-          </div>
-        </main>
-        <footer><a href="../">Browse Elements</a></footer>
+      <main>
+        <section class="info">
+          <header>
+            <h1>Add a video.</h1>
+            <h1>Get a shareable link to stream it.</h1>
+          </header>
+          <h2>Enter your upload GCS url:</h2>
+          <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+        </section>
+        <div class="button-container">
+          <mux-uploader id="uploader" type="bar" status>
+            <!-- Uncomment for examples of customization via slots -->
+            <!-- <button slot="upload-button">I AM A SUPER CUSTOM BUTTON</button> -->
+          </mux-uploader>
+          <button class="second-button">Some other sample button</button>
+        </div>
+      </main>
+      <footer><a href="../">Browse Elements</a></footer>
     </mux-uploader-drop>
 
     <script>
