@@ -210,7 +210,7 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
  * Returns true if we should use native playback. e.g. progressive files (mp3, mp4, webm) or native HLS on Safari.
  * We should use native playback for hls media sources if we
  *
- *   a) can use native playback
+ *   a) can use native playback (excluding Android, it's MSE by default)
  *   b) not prefer to use MSE/hls.js if it's supported
  */
 function useNative(
@@ -225,9 +225,10 @@ function useNative(
   const { preferPlayback } = props;
 
   const preferMse = preferPlayback ? preferPlayback === PlaybackTypes.MSE : props.preferMse;
+  const preferNative = preferPlayback === PlaybackTypes.NATIVE;
   const forceMse = MSE_SUPPORTED && (preferMse || DEFAULT_PREFER_MSE);
 
-  return canUseNative && !forceMse;
+  return canUseNative && (preferNative || !forceMse);
 }
 
 export const setupHls = (
