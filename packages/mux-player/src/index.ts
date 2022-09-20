@@ -78,6 +78,7 @@ const PlayerAttributes = {
   PLAYBACK_RATES: 'playbackrates',
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
   TITLE: 'title',
+  PLACEHOLDER: 'placeholder',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -89,6 +90,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // it's used if/when it's been explicitly set "from the outside"
     // (See template.ts for additional context) (CJP)
     poster: el.getAttribute('poster'),
+    placeholder: el.getAttribute('placeholder'),
     theme: el.getAttribute('theme'),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,
@@ -668,6 +670,14 @@ class MuxPlayerElement extends VideoApiElement {
     }
     // Calling super.title for tooltip usage
     super.title = val;
+  }
+
+  get placeholder() {
+    return getVideoAttribute(this, PlayerAttributes.PLACEHOLDER) ?? '';
+  }
+
+  set placeholder(val) {
+    this.setAttribute(PlayerAttributes.PLACEHOLDER, `${val}`);
   }
 
   /**

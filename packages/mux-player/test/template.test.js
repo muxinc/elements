@@ -14,7 +14,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-" stream-type="" player-size="" default-hidden-captions="" forward-seek-offset="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme-mux class="size-" stream-type="" player-size="" default-hidden-captions="" forward-seek-offset="" placeholder="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><p></p></mxp-dialog></media-theme-mux>`
       )
     );
   });
@@ -34,7 +34,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-extra-small" stream-type="live" player-size="extra-small" default-hidden-captions="" forward-seek-offset="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><button slot="seek-live" part="top seek-live button" aria-disabled="">\n            Live\n          </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme-mux class="size-extra-small" stream-type="live" player-size="extra-small" default-hidden-captions="" forward-seek-offset="" placeholder="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><button slot="seek-live" part="top seek-live button" aria-disabled="">\n            Live\n          </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
       )
     );
   });
@@ -52,7 +52,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" default-hidden-captions="" forward-seek-offset="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" default-hidden-captions="" forward-seek-offset="" placeholder="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><p></p></mxp-dialog></media-theme-mux>`
       )
     );
   });
@@ -73,7 +73,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" default-hidden-captions="" forward-seek-offset="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" default-hidden-captions="" forward-seek-offset="" placeholder="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
       )
     );
   });

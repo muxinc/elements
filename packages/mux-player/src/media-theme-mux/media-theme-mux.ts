@@ -26,6 +26,7 @@ type ThemeMuxTemplateProps = {
   playbackRates: string | null;
   defaultShowRemainingTime: boolean;
   poster: string | null;
+  placeholder: string | null;
   title: string | null;
 };
 
@@ -45,6 +46,7 @@ export default class MediaThemeMux extends MediaTheme {
       'playbackrates',
       'default-show-remaining-time',
       'poster',
+      'placeholder',
       'title',
     ];
   }
@@ -66,6 +68,7 @@ export default class MediaThemeMux extends MediaTheme {
       playbackRates: this.getAttribute('playbackrates'),
       defaultShowRemainingTime: this.hasAttribute('default-show-remaining-time'),
       poster: this.getAttribute('poster'),
+      placeholder: this.getAttribute('placeholder'),
       title: this.getAttribute('title'),
     };
 
@@ -89,7 +92,7 @@ export default class MediaThemeMux extends MediaTheme {
           exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
         >
           <slot name="media" slot="media"></slot>
-          <media-poster-image slot="poster" src="${props.poster}"></media-poster-image>
+          <media-poster-image slot="poster" src="${props.poster}" placeholder-src="${props.placeholder}"></media-poster-image>
           <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>

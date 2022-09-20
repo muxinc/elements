@@ -57,6 +57,7 @@ export const content = (props: MuxTemplateProps) => html`
           })
         : false
     }"
+    placeholder="${props.placeholder}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
