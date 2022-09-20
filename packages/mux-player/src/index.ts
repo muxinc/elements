@@ -387,10 +387,8 @@ class MuxPlayerElement extends VideoApiElement {
 
     // Any Safari
     const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
-    const isIphone = /.*iPhone.*/.test(navigator.userAgent);
 
-    // ignore iphones
-    if (isIphone) return;
+    if (isSafari) return;
 
     let selectedTrack: TextTrack;
     const cuesmap = new WeakMap();
