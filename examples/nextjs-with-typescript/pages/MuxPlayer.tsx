@@ -4,6 +4,7 @@ import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
+import MuxPlayerElement from "@mux/mux-player/*";
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -183,6 +184,9 @@ function MuxPlayerPage() {
           onPause={(evt: Event) => {
             onPause(evt);
             dispatch(updateProps({ paused: true }));
+          }}
+          onVolumeChange={(event) => {
+            dispatch(updateProps({ muted: (event.target as MuxPlayerElement).muted }));
           }}
           onSeeking={onSeeking}
           onSeeked={onSeeked}
