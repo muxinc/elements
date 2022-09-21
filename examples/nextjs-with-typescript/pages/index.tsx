@@ -35,6 +35,13 @@ function HomePage() {
         </li>
         <li>
           <h3>
+            <Link href="/MuxPlayerIframe">
+              <a>Mux Player Demo (Loaded inside an iframe with fullscreen disabled)</a>
+            </Link>
+          </h3>
+        </li>
+        <li>
+          <h3>
             <Link href="/MuxUploader">
               <a>Mux Uploader with Mux Uploader Drop Demo</a>
             </Link>
