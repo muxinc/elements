@@ -6,6 +6,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import type MuxPlayerElement from "@mux/mux-player";
 import { Fragment } from "react";
+import { useRouter } from "next/router";
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -115,7 +116,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   streamType: undefined,
 });
 
-const reducer = (state, action) => {
+const reducer = (state: Partial<MuxPlayerProps>, action): Partial<MuxPlayerProps> => {
   const { type, value } = action;
   switch (type) {
     case ActionTypes.UPDATE: {
@@ -352,24 +353,34 @@ const MuxPlayerCodeRenderer = ({ state }: { state: Partial<MuxPlayerProps>}) => 
     navigator.clipboard?.writeText(codeStr); 
   };
   return (
-    <>
-      <button onClick={copyToClipboard}>Copy code</button>
+    <div style={{ backgroundColor: 'lightgrey', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
       <pre>
         {codeStr}
       </pre>
-    </>
+      <button onClick={copyToClipboard}>Copy code</button>
+    </div>
   );
 };
 
 function MuxPlayerPage() {
+  const router = useRouter();
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
   const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
   const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets));
   useEffect(() => {
     dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(selectedAsset, mediaAssets)))
-  }, [selectedAsset, mediaAssets])
-  console.log('state', state);
+  }, [selectedAsset, mediaAssets]);
+  useEffect(() => {
+    const searchParamsObj = Object.fromEntries(
+      Object.entries(state)
+      .filter(([, value]) => value != undefined)
+      .map(([k, v]) => [k, JSON.stringify(v)])
+    );
+    router.replace({ 
+      query: { ...router.query, ...searchParamsObj }
+    })
+  }, [state]);
   // What would be a reasonable UI for changing this? (CJP)
   const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
