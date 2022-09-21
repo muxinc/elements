@@ -30,11 +30,11 @@ const INITIAL_SECONDARY_COLOR = undefined;
 const INITIAL_CONTROLS_BACKDROP_COLOR = undefined;
 const INITIAL_START_TIME = undefined;
 const INITIAL_THUMBNAIL_TIME = undefined;
-const INITIAL_DEBUG = false;
-const INITIAL_MUTED = false;
-const INITIAL_AUTOPLAY = false;
-const INITIAL_NOHOTKEYS = false;
-const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
+const INITIAL_DEBUG = undefined;
+const INITIAL_MUTED = undefined;
+const INITIAL_AUTOPLAY = undefined;
+const INITIAL_NOHOTKEYS = undefined;
+const INITIAL_DEFAULT_SHOW_REMAINING_TIME = undefined;
 const INITIAL_DEFAULT_HIDDEN_CAPTIONS = undefined;
 // const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
 const INITIAL_PLAYBACK_RATES = undefined;
@@ -58,7 +58,7 @@ const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAs
   };
 };
 
-const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
+const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON) => {
   const { 
     'playback-id': playbackId,
     // 'stream-type': streamType,
@@ -66,10 +66,10 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0], mediaAsset
     'custom-domain': customDomain,
     audio,
     description: title,
-  } = mediaAsset;
+  } = mediaAsset ?? {};
   // NOTE: Inferred type is "string" from JSON (CJP)
-  const streamType = mediaAsset['stream-type'] as MuxPlayerProps["streamType"];
-  const metadata = toMetadataFromMediaAsset(mediaAsset, mediaAssets);
+  const streamType = mediaAsset?.['stream-type'] as MuxPlayerProps["streamType"];
+  const metadata = mediaAsset ? toMetadataFromMediaAsset(mediaAsset, mediaAssets) : undefined;
 
   return {
     playbackId,
@@ -95,6 +95,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   nohotkeys: INITIAL_NOHOTKEYS,
   hotkeys: INITIAL_HOTKEYS,
   defaultShowRemainingTime: INITIAL_DEFAULT_SHOW_REMAINING_TIME,
+  defaultHiddenCaptions: INITIAL_DEFAULT_HIDDEN_CAPTIONS,
   primaryColor: INITIAL_PRIMARY_COLOR,
   secondaryColor: INITIAL_SECONDARY_COLOR,
   thumbnailTime: INITIAL_THUMBNAIL_TIME,
@@ -106,9 +107,13 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   volume: INITIAL_VOLUME,
   loop: INITIAL_LOOP,
   crossOrigin: INITIAL_CROSS_ORIGIN,
+  customDomain: undefined,
+  tokens: undefined,
+  playbackId: undefined,
+  streamType: undefined,
 });
 
-const reducer = (state = DEFAULT_INITIAL_STATE, action) => {
+const reducer = (state, action) => {
   const { type, value } = action;
   switch (type) {
     case ActionTypes.UPDATE: {
@@ -131,7 +136,7 @@ const toInitialState = (selectedAsset: typeof mediaAssetsJSON[0] | undefined, me
   };
 };
 
-const updateProps = (value: Partial<MuxPlayerProps>) => {
+const updateProps = <T extends any = any>(value: Partial<T>) => {
   return {
     type: ActionTypes.UPDATE,
     value,
@@ -195,7 +200,8 @@ const TextRenderer = ({
   value, 
   label, 
   onChange,
-}: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; }) => {
+  placeholder,
+}: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; placeholder?: string }) => {
   const labelStr = label ?? toWordsFromCamel(name);
   return (
     <div>
@@ -205,6 +211,29 @@ const TextRenderer = ({
         type="text"
         onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
         value={value ?? ''}
+        placeholder={placeholder}
+      />
+    </div>
+  );
+};
+
+const URLRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange,
+  placeholder,
+}: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; placeholder?: string }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>{labelStr} (<code>{name}</code>)</label>
+      <input
+        id={`${name}-control`}
+        type="url"
+        onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
+        value={value ?? ''}
+        placeholder={placeholder}
       />
     </div>
   );
@@ -247,7 +276,7 @@ const EnumRenderer = ({
           type="radio"
           onChange={() => onChange({ [name]: undefined })}
           value=""
-          checked={!value}
+          checked={value == undefined}
         />
         <label htmlFor={`${name}-none-control`}>None</label>
         {values.map((enumValue, i) => {
@@ -268,20 +297,57 @@ const EnumRenderer = ({
   );
 };
 
+const EnumMultiSelectRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange,
+  values,
+}: { name: string; value: any[] | undefined; label?: string; onChange: (obj: any) => void; values: any[] }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>{labelStr} (<code>{name}</code>)</label>
+          <select
+            id={`${name}-control`}
+            multiple
+            onChange={({ target: { selectedOptions } }) => {
+              const currentValues = selectedOptions?.length 
+                ? Array.from(selectedOptions, ({ value }) => values.find(enumValue => enumValue.toString() === value))
+                : undefined;
+              onChange({ [name]: currentValues });
+            }}
+          >
+            {values.map((enumValue) => {
+              return (
+                <option 
+                  key={`${name}-${enumValue}-option`} 
+                  value={enumValue}
+                  selected={value?.includes(enumValue)}
+                >
+                  {`${enumValue}`}
+                </option>
+              )
+            })}
+          </select>
+    </div>
+  );
+};
+
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
   const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
   const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets));
   useEffect(() => {
-    dispatch(updateProps(toPlayerPropsFromJSON(selectedAsset, mediaAssets)))
+    dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(selectedAsset, mediaAssets)))
   }, [selectedAsset, mediaAssets])
-  // console.log('state', state);
+  console.log('state', state);
   // What would be a reasonable UI for changing this? (CJP)
   const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
 
-  const genericOnChange = (obj) => dispatch(updateProps(obj));
+  const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
 
   return (
     <div>
@@ -339,11 +405,17 @@ function MuxPlayerPage() {
       </div>
       <div className="options">
         <div>
+          <label htmlFor="assets-control">Select from one of our example assets</label>
           <select
+            id="assets-control"
             onChange={({ target: { value } }) => {
               setSelectedAsset(mediaAssets[value]);
             }}
+            value={mediaAssets.indexOf(selectedAsset)}
           >
+            <option value="-1">
+              None
+            </option>
             {mediaAssets.map((value, i) => {
               const { description, error } = value;
               const label = `${error ? "👎 " : ""}${description}`;
@@ -355,12 +427,25 @@ function MuxPlayerPage() {
             })}
           </select>
         </div>
+        <div><h2>Manual Config</h2></div>
+        <TextRenderer 
+          value={state.playbackId} 
+          name="playbackId" 
+          onChange={genericOnChange}
+        />
         <EnumRenderer 
           value={state.streamType} 
           name="streamType" 
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
         />
+        <TextRenderer
+          value={state.envKey}
+          name="envKey"
+          label="Env Key (Mux Data)"
+          onChange={genericOnChange}
+        />
+        <URLRenderer value={state.customDomain} name="customDomain" onChange={genericOnChange} placeholder="my.customdomain.com"/>
         <ColorRenderer
           value={state.primaryColor}
           name="primaryColor"
@@ -430,6 +515,18 @@ function MuxPlayerPage() {
           max={1}
           step={0.05}
         />
+        <NumberRenderer
+          value={state.startTime}
+          name="startTime"
+          onChange={genericOnChange}
+          min={0}
+        />
+        <NumberRenderer
+          value={state.thumbnailTime}
+          name="thumbnailTime"
+          onChange={genericOnChange}
+          min={0}
+        />
         <BooleanRenderer 
           value={state.debug} 
           name="debug"
@@ -440,11 +537,18 @@ function MuxPlayerPage() {
           name="loop"
           onChange={genericOnChange}
         />
-        <TextRenderer
-          value={state.envKey}
-          name="envKey"
-          label="Env Key (Mux Data)"
+        <EnumRenderer 
+          value={state.crossOrigin} 
+          name="crossOrigin" 
           onChange={genericOnChange}
+          values={['anonymous', 'use-credentials']}
+        />
+        {/** @TODO Is this sufficient for a UI or do we want a "fancier" one that allows adding/removing dynamic items from a list (CJP) */}
+        <EnumMultiSelectRenderer
+          value={state.playbackRates} 
+          name="playbackRates" 
+          onChange={genericOnChange}
+          values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
         />
         <div>
           <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
@@ -510,25 +614,14 @@ function MuxPlayerPage() {
             value={controlsBackdropColor ?? '#000000'}
           />
         </div>
-        <div>
-          <label htmlFor="hotkeys-control">hotkeys </label>
-          <select
-            id="hotkeys-control"
-            multiple
-            onChange={({ target: { selectedOptions } }) => {
-              const hotkeys = selectedOptions 
-                ? Array.from(selectedOptions, ({ value }) => value).join(' ') 
-                : undefined;
-              dispatch(updateProps({ hotkeys }))}
-            }
-          >
-            {['nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright'].map((token, i) => {
-              return (
-                <option key={i} value={token}>{token}</option>
-              )
-            })}
-          </select>
-        </div>
+        <EnumMultiSelectRenderer 
+          value={state.hotkeys?.split(' ')} 
+          name='hotkeys' 
+          onChange={({ hotkeys }) => {
+            genericOnChange({ hotkeys: hotkeys.join(' ') });
+          }} 
+          values={['nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
+        />
       </div>
       <h3 className="title">
         <Link href="/">
