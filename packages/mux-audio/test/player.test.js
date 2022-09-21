@@ -7,16 +7,16 @@ describe('<mux-audio>', () => {
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
       start-time="0"
-      stream-type="vod"
-      prefer-mse
+      stream-type="on-demand"
+      prefer-playback="mse"
       muted
     ></mux-audio>`);
 
     assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe', 'playback-id is reflected');
     assert.equal(player.envKey, 'ilc02s65tkrc2mk69b7q2qdkf', 'env-key is reflected');
     assert.equal(player.startTime, 0, 'startTime is set to 0');
-    assert.equal(player.streamType, 'vod', 'stream-type is vod');
-    assert.equal(player.preferMse, true, 'prefer-mse is on');
+    assert.equal(player.streamType, 'on-demand', 'stream-type is vod');
+    assert.equal(player.preferPlayback, 'mse', 'prefer-playback is mse');
     assert.equal(player.debug, false, 'debug is off');
   });
 

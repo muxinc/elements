@@ -1,8 +1,16 @@
 import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
-import MuxVideoElement, { MediaError } from '@mux/mux-video';
-import { Metadata, StreamTypes, PlaybackEngine, addTextTrack, removeTextTrack } from '@mux/playback-core';
+import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
+import {
+  ValueOf,
+  Metadata,
+  StreamTypes,
+  PlaybackTypes,
+  PlaybackEngine,
+  addTextTrack,
+  removeTextTrack,
+} from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
 import { template } from './template';
@@ -40,25 +48,6 @@ function getPlayerSize(el: Element) {
 
 const VideoAttributes = {
   SRC: 'src',
-};
-
-const MuxVideoAttributes = {
-  ENV_KEY: 'env-key',
-  DEBUG: 'debug',
-  PLAYBACK_ID: 'playback-id',
-  SRC: 'src',
-  METADATA_URL: 'metadata-url',
-  PREFER_MSE: 'prefer-mse',
-  PLAYER_SOFTWARE_VERSION: 'player-software-version',
-  PLAYER_SOFTWARE_NAME: 'player-software-name',
-  METADATA_VIDEO_ID: 'metadata-video-id',
-  METADATA_VIDEO_TITLE: 'metadata-video-title',
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
-  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
-  CUSTOM_DOMAIN: 'custom-domain',
-  TYPE: 'type',
-  STREAM_TYPE: 'stream-type',
-  START_TIME: 'start-time',
 };
 
 const PlayerAttributes = {
@@ -112,7 +101,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
-    preferMse: el.preferMse,
+    preferPlayback: el.preferPlayback,
     audio: el.audio,
     streamType: el.streamType,
     primaryColor: el.primaryColor,
@@ -835,13 +824,13 @@ class MuxPlayerElement extends VideoApiElement {
   get src() {
     // Only get the internal video.src if a playbackId is present.
     if (this.playbackId) {
-      return getVideoAttribute(this, MuxVideoAttributes.SRC);
+      return getVideoAttribute(this, VideoAttributes.SRC);
     }
-    return this.getAttribute(MuxVideoAttributes.SRC);
+    return this.getAttribute(VideoAttributes.SRC);
   }
 
   set src(val) {
-    this.setAttribute(MuxVideoAttributes.SRC, `${val}`);
+    this.setAttribute(VideoAttributes.SRC, `${val}`);
   }
 
   /**
@@ -925,21 +914,19 @@ class MuxPlayerElement extends VideoApiElement {
     this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
   }
 
-  /**
-   * Get the preference flag for using media source.
-   */
-  get preferMse() {
-    return getVideoAttribute(this, MuxVideoAttributes.PREFER_MSE) != null;
+  get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
+    const val = this.getAttribute(MuxVideoAttributes.PREFER_PLAYBACK);
+    if (val === PlaybackTypes.MSE || val === PlaybackTypes.NATIVE) return val;
+    return undefined;
   }
 
-  /**
-   * Set the preference flag for using media source.
-   */
-  set preferMse(val) {
-    if (val) {
-      this.setAttribute(MuxVideoAttributes.PREFER_MSE, '');
+  set preferPlayback(val: ValueOf<PlaybackTypes> | undefined) {
+    if (val === this.preferPlayback) return;
+
+    if (val === PlaybackTypes.MSE || val === PlaybackTypes.NATIVE) {
+      this.setAttribute(MuxVideoAttributes.PREFER_PLAYBACK, val);
     } else {
-      this.removeAttribute(MuxVideoAttributes.PREFER_MSE);
+      this.removeAttribute(MuxVideoAttributes.PREFER_PLAYBACK);
     }
   }
 
