@@ -46,7 +46,6 @@ type MuxMediaPropTypes = {
   beaconCollectionDomain: string;
   customDomain: string;
   playbackId: string;
-  preferMse: boolean;
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;

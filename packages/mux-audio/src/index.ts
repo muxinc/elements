@@ -28,7 +28,6 @@ type AttributeNames = {
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   PLAYBACK_ID: 'playback-id';
-  PREFER_MSE: 'prefer-mse';
   PREFER_PLAYBACK: 'prefer-playback';
   TYPE: 'type';
   STREAM_TYPE: 'stream-type';
@@ -40,7 +39,6 @@ const Attributes: AttributeNames = {
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
   METADATA_URL: 'metadata-url',
-  PREFER_MSE: 'prefer-mse',
   PREFER_PLAYBACK: 'prefer-playback',
   METADATA_VIDEO_ID: 'metadata-video-id',
   METADATA_VIDEO_TITLE: 'metadata-video-title',
@@ -211,20 +209,6 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
       this.setAttribute(Attributes.STREAM_TYPE, val);
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
-    }
-  }
-
-  get preferMse(): boolean {
-    return this.getAttribute(Attributes.PREFER_MSE) != null;
-  }
-
-  set preferMse(val: boolean) {
-    if (val === this.preferMse) return;
-
-    if (val) {
-      this.setAttribute(Attributes.PREFER_MSE, '');
-    } else {
-      this.removeAttribute(Attributes.PREFER_MSE);
     }
   }
 

@@ -101,7 +101,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
-    preferMse: el.preferMse,
     preferPlayback: el.preferPlayback,
     audio: el.audio,
     streamType: el.streamType,
@@ -913,26 +912,6 @@ class MuxPlayerElement extends VideoApiElement {
    */
   set startTime(val) {
     this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
-  }
-
-  /**
-   * Get the preference flag for using media source.
-   */
-  get preferMse() {
-    return getVideoAttribute(this, MuxVideoAttributes.PREFER_MSE) != null;
-  }
-
-  /**
-   * Set the preference flag for using media source.
-   */
-  set preferMse(val) {
-    if (val === this.preferMse) return;
-
-    if (val) {
-      this.setAttribute(MuxVideoAttributes.PREFER_MSE, '');
-    } else {
-      this.removeAttribute(MuxVideoAttributes.PREFER_MSE);
-    }
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {

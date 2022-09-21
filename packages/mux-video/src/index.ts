@@ -32,7 +32,6 @@ type AttributeNames = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   CUSTOM_DOMAIN: 'custom-domain';
   PLAYBACK_ID: 'playback-id';
-  PREFER_MSE: 'prefer-mse';
   PREFER_PLAYBACK: 'prefer-playback';
   TYPE: 'type';
   STREAM_TYPE: 'stream-type';
@@ -44,7 +43,6 @@ export const Attributes: AttributeNames = {
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
   METADATA_URL: 'metadata-url',
-  PREFER_MSE: 'prefer-mse',
   PREFER_PLAYBACK: 'prefer-playback',
   PLAYER_SOFTWARE_VERSION: 'player-software-version',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
@@ -297,20 +295,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       this.setAttribute(Attributes.STREAM_TYPE, val);
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
-    }
-  }
-
-  get preferMse(): boolean {
-    return this.getAttribute(Attributes.PREFER_MSE) != null;
-  }
-
-  set preferMse(val: boolean) {
-    if (val === this.preferMse) return;
-
-    if (val) {
-      this.setAttribute(Attributes.PREFER_MSE, '');
-    } else {
-      this.removeAttribute(Attributes.PREFER_MSE);
     }
   }
 

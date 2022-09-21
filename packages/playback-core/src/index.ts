@@ -98,7 +98,6 @@ export type MuxMediaPropTypes = {
   errorTranslator: Options['errorTranslator'];
   playbackId: string;
   playerInitTime: Options['data']['player_init_time'];
-  preferMse: boolean;
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
@@ -214,7 +213,7 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
  *   b) not prefer to use MSE/hls.js if it's supported
  */
 function useNative(
-  props: Partial<Pick<MuxMediaProps, 'preferMse' | 'preferPlayback' | 'type'>>,
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'type'>>,
   mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
 ) {
   const type = getType(props);
@@ -224,7 +223,7 @@ function useNative(
   const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
   const { preferPlayback } = props;
 
-  const preferMse = preferPlayback ? preferPlayback === PlaybackTypes.MSE : props.preferMse;
+  const preferMse = preferPlayback === PlaybackTypes.MSE;
   const preferNative = preferPlayback === PlaybackTypes.NATIVE;
   const forceMse = MSE_SUPPORTED && (preferMse || DEFAULT_PREFER_MSE);
 
@@ -232,17 +231,13 @@ function useNative(
 }
 
 export const setupHls = (
-  props: Partial<Pick<MuxMediaProps, 'debug' | 'preferMse' | 'streamType' | 'type' | 'startTime'>>,
+  props: Partial<Pick<MuxMediaProps, 'debug' | 'streamType' | 'type' | 'startTime'>>,
   mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
 ) => {
   const { debug, streamType, startTime: startPosition = -1 } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
-
-  if (props.preferMse) {
-    console.warn('preferMse is deprecated, please use preferPlayback="mse" instead');
-  }
 
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
   if (hlsType && !shouldUseNative && MSE_SUPPORTED) {
@@ -347,9 +342,7 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<
-    Pick<MuxMediaProps, 'preferMse' | 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>
-  >,
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
