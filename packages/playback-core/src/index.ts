@@ -16,7 +16,7 @@ const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
-const HLS_SUPPORTED = Hls.isSupported?.();
+const MSE_SUPPORTED = Hls.isSupported?.();
 const DEFAULT_PREFER_MSE = isAndroid;
 
 export const generatePlayerInitTime = () => {
@@ -39,6 +39,16 @@ export const StreamTypes: StreamTypes = {
   LL_LIVE: 'll-live',
   DVR: 'live:dvr',
   LL_DVR: 'll-live:dvr',
+};
+
+export type PlaybackTypes = {
+  MSE: 'mse';
+  NATIVE: 'native';
+};
+
+export const PlaybackTypes: PlaybackTypes = {
+  MSE: 'mse',
+  NATIVE: 'native',
 };
 
 export type ExtensionMimeTypeMap = {
@@ -88,7 +98,7 @@ export type MuxMediaPropTypes = {
   errorTranslator: Options['errorTranslator'];
   playbackId: string;
   playerInitTime: Options['data']['player_init_time'];
-  preferMse: boolean;
+  preferPlayback: ValueOf<PlaybackTypes> | undefined;
   type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig['startPosition'];
@@ -169,7 +179,7 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
-let muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
+const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
@@ -195,21 +205,42 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'det
   }
 };
 
-export const setupHls = (
-  props: Partial<Pick<MuxMediaProps, 'debug' | 'preferMse' | 'streamType' | 'type' | 'src' | 'startTime'>>,
+/**
+ * Returns true if we should use native playback. e.g. progressive files (mp3, mp4, webm) or native HLS on Safari.
+ * We should use native playback for hls media sources if we
+ *
+ *   a) can use native playback (excluding Android, it's MSE by default)
+ *   b) not prefer to use MSE/hls.js if it's supported
+ */
+function useNative(
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'type'>>,
   mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
-) => {
-  const { debug, preferMse, streamType, startTime: startPosition = -1 } = props;
+) {
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
+  if (!hlsType) return true;
 
   const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
+  const { preferPlayback } = props;
 
-  // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
-  const shouldUseNative = !hlsType || (canUseNative && !((preferMse || DEFAULT_PREFER_MSE) && HLS_SUPPORTED));
+  const preferMse = preferPlayback === PlaybackTypes.MSE;
+  const preferNative = preferPlayback === PlaybackTypes.NATIVE;
+  const forceMse = MSE_SUPPORTED && (preferMse || DEFAULT_PREFER_MSE);
+
+  return canUseNative && (preferNative || !forceMse);
+}
+
+export const setupHls = (
+  props: Partial<Pick<MuxMediaProps, 'debug' | 'streamType' | 'type' | 'startTime'>>,
+  mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
+) => {
+  const { debug, streamType, startTime: startPosition = -1 } = props;
+  const type = getType(props);
+  const hlsType = type === ExtensionMimeTypeMap.M3U8;
+  const shouldUseNative = useNative(props, mediaEl);
 
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
-  if (hlsType && !shouldUseNative && HLS_SUPPORTED) {
+  if (hlsType && !shouldUseNative && MSE_SUPPORTED) {
     const defaultConfig = {
       backBufferLength: 30,
       renderTextTracksNatively: false,
@@ -311,7 +342,7 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferMse' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<
     Hls,
@@ -333,17 +364,9 @@ export const loadMedia = (
     console.warn('attempting to load media before mediaEl exists');
     return;
   }
-  const { preferMse, streamType } = props;
-  const type = getType(props);
-  const hlsType = type === ExtensionMimeTypeMap.M3U8;
-
-  const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
-
-  // We should use native playback for hls media sources if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
-  const shouldUseNative = !hlsType || (canUseNative && !((preferMse || DEFAULT_PREFER_MSE) && HLS_SUPPORTED));
-
+  const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
-  if (mediaEl && canUseNative && shouldUseNative) {
+  if (mediaEl && shouldUseNative) {
     if (typeof src === 'string') {
       mediaEl.setAttribute('src', src);
       if (props.startTime) {
@@ -403,7 +426,7 @@ export const loadMedia = (
         addEventListenerWithTeardown(mediaEl, 'play', () => hls.loadSource(src), { once: true });
         break;
 
-      case 'metadata':
+      case 'metadata': {
         const originalLength = hls.config.maxBufferLength;
         const originalSize = hls.config.maxBufferSize;
 
@@ -423,6 +446,7 @@ export const loadMedia = (
 
         hls.loadSource(src);
         break;
+      }
       default:
         // load source immediately for any other preload value
         hls.loadSource(src);

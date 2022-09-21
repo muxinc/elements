@@ -163,14 +163,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     return this.shadowRoot?.querySelector('mux-video');
   }
 
-  /**
-   * @deprecated please use .media instead
-   */
-  get video(): MuxVideoElementExt | null | undefined {
-    logger.warn('<mux-player>.video is deprecated, please use .media instead');
-    return this.media;
-  }
-
   get paused() {
     return this.media?.paused ?? true;
   }
