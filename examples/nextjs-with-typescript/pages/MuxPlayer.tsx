@@ -4,7 +4,8 @@ import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
-import MuxPlayerElement from "@mux/mux-player/*";
+import type MuxPlayerElement from "@mux/mux-player";
+import { Fragment } from "react";
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -135,7 +136,137 @@ const updateProps = (value: Partial<MuxPlayerProps>) => {
     type: ActionTypes.UPDATE,
     value,
   };
-}
+};
+
+const toWordsFromCamel = (string: string) => {
+  const first = string[0].toUpperCase();
+  const rest = string.slice(1);
+  return `${first}${rest.replace(/[A-Z]/g, (match) => ` ${match}`)}`
+};
+
+const BooleanRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange 
+}: { name: string, value: boolean | undefined, label?: string, onChange: (obj: any) => void }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>{labelStr} (<code>{name}</code>)</label>
+      <input
+        id={`${name}-control`}
+        type="checkbox"
+        onChange={() => onChange({ [name]: !value })}
+        checked={value ?? false}
+      />
+    </div>
+  );
+};
+
+const NumberRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange,
+  min,
+  max,
+  step,
+}: { name: string; value: number | undefined; label?: string; onChange: (obj: any) => void; min?: number; max?: number; step?: number }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>{labelStr} (<code>{name}</code>)</label>
+      <input
+        id={`${name}-control`}
+        type="number"
+        min={min}
+        max={max}
+        step={step}
+        onChange={({ target: { value } }) => onChange({ [name]: value ? +value : undefined })}
+        value={value ?? ''}
+      />
+    </div>
+  );
+};
+
+const TextRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange,
+}: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>{labelStr} (<code>{name}</code>)</label>
+      <input
+        id={`${name}-control`}
+        type="text"
+        onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
+        value={value ?? ''}
+      />
+    </div>
+  );
+};
+
+const ColorRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange,
+}: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>{labelStr} (<code>{name}</code>)</label>
+      <input
+        id={`${name}-control`}
+        type="color"
+        onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
+        value={value ?? '#000000'}
+      />
+    </div>
+  );
+};
+
+const EnumRenderer = ({ 
+  name, 
+  value, 
+  label, 
+  onChange,
+  values,
+}: { name: string; value: any | undefined; label?: string; onChange: (obj: any) => void; values: any[] }) => {
+  const labelStr = label ?? toWordsFromCamel(name);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+      <label>{labelStr} (<code>{name}</code>)</label>
+      <div>
+        <input
+          id={`${name}-none-control`}
+          type="radio"
+          onChange={() => onChange({ [name]: undefined })}
+          value=""
+          checked={!value}
+        />
+        <label htmlFor={`${name}-none-control`}>None</label>
+        {values.map((enumValue, i) => {
+          return (<Fragment key={`${name}-${enumValue}`}>
+            <input
+              id={`${name}-${enumValue}-control`}
+              type="radio"
+              onChange={() => onChange({ [name]: values[i] })}
+              value={enumValue}
+              checked={value === enumValue}
+            />
+            <label htmlFor={`${name}-${enumValue}-control`}><code>{JSON.stringify(enumValue)}</code></label>
+            </Fragment>
+          )
+        })}
+      </div>
+    </div>
+  );
+};
 
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
@@ -149,6 +280,8 @@ function MuxPlayerPage() {
   // What would be a reasonable UI for changing this? (CJP)
   const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
+
+  const genericOnChange = (obj) => dispatch(updateProps(obj));
 
   return (
     <div>
@@ -222,146 +355,97 @@ function MuxPlayerPage() {
             })}
           </select>
         </div>
-        <div>
-          <label htmlFor="primarycolor-control">Primary Color </label>
-          <input
-            id="primarycolor-control"
-            type="color"
-            onChange={({ target: { value }}) => dispatch(updateProps({ primaryColor: value ? value : undefined }))}
-            value={state.primaryColor ?? '#000000'}
-          />
-        </div>
-        <div>
-          <label htmlFor="secondarycolor-control">Secondary Color </label>
-          <input
-            id="secondarycolor-control"
-            type="color"
-            onChange={({ target: { value }}) => dispatch(updateProps({ secondaryColor: value ? value : undefined }))}
-            value={state.secondaryColor ?? '#000000'}
-          />
-        </div>
-        <div>
-          <label htmlFor="paused-control">Paused</label>
-          <input
-            id="paused-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ paused: !state.paused }))}
-            checked={state.paused}
-          />
-        </div>
-        <div>
-          <label htmlFor="autoplay-control">Muted Autoplay</label>
-          <input
-            id="autoplay-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ autoPlay: state.autoPlay ? "muted" : false }))}
-            checked={!!state.autoPlay}
-          />
-        </div>
-        <div>
-          <label htmlFor="muted-control">Muted</label>
-          <input
-            id="muted-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ muted: !state.muted }))}
-            checked={state.muted}
-          />
-        </div>
-        <div>
-          <label htmlFor="nohotkeys-control">No Hot Keys</label>
-          <input
-            id="nohotkeys-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ nohotkeys: !state.nohotkeys }))}
-            checked={state.nohotkeys}
-          />
-        </div>
-        <div>
-          <label htmlFor="defaultshowremainingtime-control">Show Remaining Time by Default</label>
-          <input
-            id="defaultshowremainingtime-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ defaultShowRemainingTime: !state.defaultShowRemainingTime }))}
-            checked={state.defaultShowRemainingTime}
-          />
-        </div>
-        <div>
-          <label htmlFor="defaulthiddencaptions-control">Hide Captions by Default</label>
-          <input
-            id="defaulthiddencaptions-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ defaultHiddenCaptions: !state.defaultHiddenCaptions }))}
-            checked={state.defaultHiddenCaptions ?? ''}
-          />
-        </div>
-        <div>
-          <label htmlFor="title-control">Title</label>
-          <input
-            id="title-control"
-            onChange={({ target: { value } }) => dispatch(updateProps({ title: value ? value : undefined }))}
-            defaultValue={state.title}
-          />
-        </div>
-        <div>
-          <label htmlFor="forwardseekoffset-control">Forward Seek Offset</label>
-          <input
-            id="forwardseekoffset-control"
-            type="number"
-            min={1}
-            max={99}
-            onChange={({ target: { value } }) => dispatch(updateProps({ forwardSeekOffset: value ? +value : undefined }))}
-            defaultValue={state.forwardSeekOffset}
-          />
-        </div>
-        <div>
-          <label htmlFor="backwardseekoffset-control">Backward Seek Offset</label>
-          <input
-            id="backwardseekoffset-control"
-            type="number"
-            min={1}
-            max={99}
-            onChange={({ target: { value } }) => dispatch(updateProps({ backwardSeekOffset: value ? +value : undefined }))}
-            defaultValue={state.backwardSeekOffset}
-          />
-        </div>
-        <div>
-          <label htmlFor="volume-control">Volume</label>
-          <input
-            id="volume-control"
-            type="number"
-            min={0}
-            max={1}
-            step={0.05}
-            onChange={({ target: { value } }) => dispatch(updateProps({ volume: value ? +value : undefined }))}
-            defaultValue={state.volume}
-          />
-        </div>
-        <div>
-          <label htmlFor="debug-control">Debug</label>
-          <input
-            id="debug-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ debug: !state.debug }))}
-            checked={state.debug ?? ''}
-          />
-        </div>
-        <div>
-          <label htmlFor="loop-control">Loop</label>
-          <input
-            id="loop-control"
-            type="checkbox"
-            onChange={() => dispatch(updateProps({ loop: !state.loop }))}
-            checked={state.loop ?? ''}
-          />
-        </div>
-        <div>
-          <label htmlFor="env-key-control">Env Key (Mux Data)</label>
-          <input
-            id="env-key-control"
-            onChange={({ target: { value } }) => dispatch(updateProps({ envKey: value ? value : undefined }))}
-            defaultValue={state.envKey}
-          />
-        </div>
+        <EnumRenderer 
+          value={state.streamType} 
+          name="streamType" 
+          onChange={genericOnChange}
+          values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
+        />
+        <ColorRenderer
+          value={state.primaryColor}
+          name="primaryColor"
+          onChange={genericOnChange}
+        />
+        <ColorRenderer
+          value={state.secondaryColor}
+          name="secondaryColor"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer 
+          value={state.paused} 
+          name="paused"
+          onChange={genericOnChange}
+        />
+        <EnumRenderer 
+          value={state.autoPlay} 
+          name="autoPlay" 
+          onChange={genericOnChange} 
+          values={[true, false, 'any', 'muted']}
+        />
+        <BooleanRenderer 
+          value={state.muted} 
+          name="muted"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer 
+          value={state.nohotkeys} 
+          name="nohotkeys"
+          label="No Hot Keys"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer 
+          value={state.defaultShowRemainingTime} 
+          name="defaultShowRemainingTime"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer 
+          value={state.defaultHiddenCaptions} 
+          name="defaultHiddenCaptions"
+          onChange={genericOnChange}
+        />
+        <TextRenderer
+          value={state.title}
+          name="title"
+          onChange={genericOnChange}
+        />
+        <NumberRenderer
+          value={state.forwardSeekOffset}
+          name="forwardSeekOffset"
+          onChange={genericOnChange}
+          min={1}
+          max={99}
+        />
+        <NumberRenderer
+          value={state.backwardSeekOffset}
+          name="backwardSeekOffset"
+          onChange={genericOnChange}
+          min={1}
+          max={99}
+        />
+        <NumberRenderer
+          value={state.volume}
+          name="volume"
+          onChange={genericOnChange}
+          min={0}
+          max={1}
+          step={0.05}
+        />
+        <BooleanRenderer 
+          value={state.debug} 
+          name="debug"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer 
+          value={state.loop} 
+          name="loop"
+          onChange={genericOnChange}
+        />
+        <TextRenderer
+          value={state.envKey}
+          name="envKey"
+          label="Env Key (Mux Data)"
+          onChange={genericOnChange}
+        />
         <div>
           <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
           <select
