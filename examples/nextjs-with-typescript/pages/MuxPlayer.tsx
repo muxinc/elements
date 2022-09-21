@@ -334,6 +334,26 @@ const EnumMultiSelectRenderer = ({
   );
 };
 
+const toValueString = (value: any) => {
+  if (['boolean', 'number', 'string'].includes(typeof value)) return `${JSON.stringify(value)}`;
+  if (Array.isArray(value)) return `[${value.map(toValueString).join(', ')}]`;
+  if (typeof value === 'object') return `{ ${Object.entries(value).map(([key, entryValue]) => `${key}: ${toValueString(entryValue)}`).join(', ')} }`;
+  return value;
+};
+
+const MuxPlayerCodeRenderer = ({ state }: { state: Partial<MuxPlayerProps>}) => {
+  return (
+    <pre>
+      {'<MuxPlayer\n'}
+      {Object.entries(state)
+        .filter(([,value]) => value != undefined)
+        .map(([key, value]) => `  ${key}={${toValueString(value)}}`)
+        .join('\n')}
+      {'\n/>'}
+    </pre>
+  )
+}
+
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
@@ -404,6 +424,7 @@ function MuxPlayerPage() {
         />
       </div>
       <div className="options">
+        <MuxPlayerCodeRenderer state={state}/>
         <div>
           <label htmlFor="assets-control">Select from one of our example assets</label>
           <select
