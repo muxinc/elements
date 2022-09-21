@@ -6,12 +6,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <script type="module" src="./dist/mux-uploader.js"></script>
     <style>
+      :root {
+        --links: rgb(223, 40, 104);
+      }
+
       body {
         margin: 0;
         padding: 0;
-        background: #f8f8f8;
         width: 100vw;
         height: 100vh;
+      }
+
+      @media (prefers-color-scheme:dark) {
+        body {
+          background: var(--background-alt);
+        }
       }
 
       .direct-upload-url {

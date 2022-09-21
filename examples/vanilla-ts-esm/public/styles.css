@@ -1,3 +1,7 @@
+:root {
+  --links: rgb(223, 40, 104);
+}
+
 body {
   padding: 0 1rem;
 }
@@ -44,7 +48,7 @@ nav ul {
 }
 
 nav li a {
-  color: #383838;
+  color: var(--text-main);
   font-family: monospace;
   font-size: 16px;
   display: block;
@@ -56,7 +60,7 @@ li a.video {
 }
 
 li a.audio {
-  background: rgba(251, 80, 29, .05);
+  background: rgba(251, 80, 29, .08);
 }
 
 li a.player {
@@ -65,4 +69,13 @@ li a.player {
 
 li a.uploader {
   background: rgba(150, 32, 216, .1);
+}
+
+@media (prefers-color-scheme:dark) {
+  body {
+    background: var(--background-alt);
+  }
+  .github-logo {
+    filter: invert(1) saturate(0);
+  }
 }
