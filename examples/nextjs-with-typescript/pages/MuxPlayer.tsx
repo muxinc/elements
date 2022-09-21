@@ -342,17 +342,22 @@ const toValueString = (value: any) => {
 };
 
 const MuxPlayerCodeRenderer = ({ state }: { state: Partial<MuxPlayerProps>}) => {
+  const codeStr = `<MuxPlayer\n${Object.entries(state)
+    .filter(([,value]) => value != undefined)
+    .map(([key, value]) => `  ${key}={${toValueString(value)}}`)
+    .join('\n')}\n/>`;
+  const copyToClipboard = () => { 
+    navigator.clipboard?.writeText(codeStr); 
+  };
   return (
-    <pre>
-      {'<MuxPlayer\n'}
-      {Object.entries(state)
-        .filter(([,value]) => value != undefined)
-        .map(([key, value]) => `  ${key}={${toValueString(value)}}`)
-        .join('\n')}
-      {'\n/>'}
-    </pre>
-  )
-}
+    <>
+      <button onClick={copyToClipboard}>Copy code</button>
+      <pre>
+        {codeStr}
+      </pre>
+    </>
+  );
+};
 
 function MuxPlayerPage() {
   const mediaElRef = useRef(null);
@@ -643,6 +648,7 @@ function MuxPlayerPage() {
         <EnumMultiSelectRenderer 
           value={state.hotkeys?.split(' ')} 
           name='hotkeys' 
+          label="Hot Keys"
           onChange={({ hotkeys }) => {
             genericOnChange({ hotkeys: hotkeys.join(' ') });
           }} 
