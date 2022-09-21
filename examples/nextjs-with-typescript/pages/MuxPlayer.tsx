@@ -7,7 +7,8 @@ import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import type MuxPlayerElement from "@mux/mux-player";
 import { Fragment } from "react";
 import { useRouter } from "next/router";
-import { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import type { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import type { GetServerSideProps } from "next";
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -390,7 +391,14 @@ const UrlPathRenderer = ({
   );
 };
 
-function MuxPlayerPage() {
+type Props = { location: Pick<Location, 'origin' | 'pathname'> };
+export const getServerSideProps: GetServerSideProps<Props> = async context => {
+  const { origin, pathname }: Pick<Location, 'origin' | 'pathname'> = new URL(context.req.headers.referer);
+  const location = { origin, pathname };
+  return ({ props: { location } })
+};
+
+function MuxPlayerPage({ location }) {
   const router = useRouter();
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
@@ -464,7 +472,7 @@ function MuxPlayerPage() {
         <MuxPlayerCodeRenderer state={state}/>
         <UrlPathRenderer 
           state={state} 
-          location={typeof window !== 'undefined' ? window.location : undefined}
+          location={typeof window !== 'undefined' ? window.location : location}
         />
         <div>
           <label htmlFor="assets-control">Select from one of our example assets</label>
