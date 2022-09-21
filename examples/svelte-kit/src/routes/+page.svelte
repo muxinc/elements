@@ -6,31 +6,10 @@
 	<title>Browse Mux Elements</title>
 </svelte:head>
 
-<section>
-	<h1>Browse Mux Elements</h1>
+<nav>
 	<ul>
-		<li>
-			<a data-sveltekit-prefetch href="/mux-video">Mux Video Demo</a>
-		</li>
-		<li>
-			<a data-sveltekit-prefetch href="/mux-audio">Mux Audio Demo</a>
-		</li>
-		<li>
-			<a data-sveltekit-prefetch href="/mux-player">Mux Player Demo</a>
-		</li>
+		<li><a data-sveltekit-prefetch href="./mux-video" class="video">&lt;mux-video&gt;</a></li>
+		<li><a data-sveltekit-prefetch href="./mux-audio" class="audio">&lt;mux-audio&gt;</a></li>
+		<li><a data-sveltekit-prefetch href="./mux-player" class="player">&lt;mux-player&gt;</a></li>
 	</ul>
-</section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
-
-	h1 {
-		width: 100%;
-	}
-</style>
+</nav>

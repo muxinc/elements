@@ -18,15 +18,22 @@
 	});
 </script>
 
+<svelte:head>
+	<style>
+		mux-audio {
+			width: 100%;
+			margin: 1rem 0 2rem;
+		}
+	</style>
+</svelte:head>
+
 <mux-audio
-playback-id="vDpm5ygrRJgfIEPNIc02IJR4Trf3z00AiP"
-metadata-video-id="episode-id-12345"
-metadata-video-title="Podcast: SvelteKit 3"
-metadata-viewer-user-id="user-id-sveltekit-001"
-env-key="5e67cqdt7hgc9vkla7p0qch7q"
-autoplay
-muted
-controls
->
-</mux-audio>
+	playback-id="vDpm5ygrRJgfIEPNIc02IJR4Trf3z00AiP"
+	metadata-video-id="episode-id-12345"
+	metadata-video-title="Podcast: Episode 3"
+	metadata-viewer-user-id="user-id-6789"
+	muted
+	controls
+></mux-audio>
+
 <a data-sveltekit-prefetch href="/">Browse Elements</a>

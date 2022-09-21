@@ -17,14 +17,28 @@
 		await import('@mux/mux-video');
 	});
 </script>
+
+<svelte:head>
+	<style>
+		mux-video {
+			display: block;
+			width: 100%;
+			aspect-ratio: 16 / 9;
+			margin: 1rem 0 2rem;
+		}
+	</style>
+</svelte:head>
+
 <mux-video
-playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
-env-key="5e67cqdt7hgc9vkla7p0qch7q"
-metadata-video-id="video-id-sveltekit-001"
-metadata-video-title="SvelteKit: Episode 2"
-metadata-viewer-user-id="user-id-sveltekit-001"
-stream-type="vod"
-controls
-muted
+	playback-id="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
+	preload="auto"
+	start-time="4.6"
+	metadata-video-id="video-id-12345"
+	metadata-video-title="Star Wars: Episode 3"
+	metadata-viewer-user-id="user-id-6789"
+	stream-type="on-demand"
+	controls
+	muted
 ></mux-video>
+
 <a data-sveltekit-prefetch href="/">Browse Elements</a>

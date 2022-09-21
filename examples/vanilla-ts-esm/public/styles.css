@@ -39,6 +39,10 @@ h1 {
   font-size: 18px;
 }
 
+h1 a {
+  color: var(--text-main);
+}
+
 nav ul {
   list-style: none;
   padding: 0;
