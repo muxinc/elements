@@ -392,8 +392,21 @@ const UrlPathRenderer = ({
 };
 
 type Props = { location?: Pick<Location, 'origin' | 'pathname'> };
+
+const getUrl = ({ req, resolvedUrl }) => {
+  const { headers } = req;
+  const refererUrl = headers.referer && new URL(headers.referer);
+  const baseUrlHost = headers.host.toLowerCase();
+  const refererHost = refererUrl?.host?.toLowerCase();
+
+  if (refererHost === baseUrlHost && headers["sec-fetch-site"] === "same-origin") return new URL(refererUrl?.origin ?? './');
+  const startsLocal = baseUrlHost.startsWith('localhost') || baseUrlHost.startsWith('127.') || baseUrlHost.startsWith('192.');
+  const protocol = startsLocal ? 'http:' : 'https:';
+  return new URL(`${protocol}//${baseUrlHost}${resolvedUrl}`);
+};
+
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
-  const { origin, pathname }: Pick<Location, 'origin' | 'pathname'> = new URL(context.req.headers.referer);
+  const { origin, pathname }: Pick<Location, 'origin' | 'pathname'> = getUrl(context);
   const location = { origin, pathname };
   return ({ props: { location } })
 };
