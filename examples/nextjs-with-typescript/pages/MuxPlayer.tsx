@@ -7,6 +7,7 @@ import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import type MuxPlayerElement from "@mux/mux-player";
 import { Fragment } from "react";
 import { useRouter } from "next/router";
+import { NextParsedUrlQuery } from "next/dist/server/request-meta";
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -93,7 +94,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   debug: INITIAL_DEBUG,
   autoPlay: INITIAL_AUTOPLAY,
   startTime: INITIAL_START_TIME,
-  paused: true,
+  paused: undefined,
   nohotkeys: INITIAL_NOHOTKEYS,
   hotkeys: INITIAL_HOTKEYS,
   defaultShowRemainingTime: INITIAL_DEFAULT_SHOW_REMAINING_TIME,
@@ -131,12 +132,15 @@ const reducer = (state: Partial<MuxPlayerProps>, action): Partial<MuxPlayerProps
   }
 };
 
-const toInitialState = (selectedAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON) => {
-  if (!selectedAsset) return DEFAULT_INITIAL_STATE;
-  return { 
+const toInitialState = (selectedAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON, query: NextParsedUrlQuery) => {
+  const queryState = Object.fromEntries(Object.entries(query).map(([k, v]) => [k, JSON.parse(v as string)]));
+  const selectedAssetState = toPlayerPropsFromJSON(selectedAsset, mediaAssets);
+  const initialState = { 
     ...DEFAULT_INITIAL_STATE,
-    ...toPlayerPropsFromJSON(selectedAsset, mediaAssets)
+    ...selectedAssetState,
+    ...queryState,
   };
+  return initialState;
 };
 
 const updateProps = <T extends any = any>(value: Partial<T>) => {
@@ -344,11 +348,12 @@ const toValueString = (value: any) => {
   return value;
 };
 
-const MuxPlayerCodeRenderer = ({ state }: { state: Partial<MuxPlayerProps>}) => {
-  const codeStr = `<MuxPlayer\n${Object.entries(state)
-    .filter(([,value]) => value != undefined)
-    .map(([key, value]) => `  ${key}={${toValueString(value)}}`)
-    .join('\n')}\n/>`;
+const MuxPlayerCodeRenderer = ({ state, component = 'MuxPlayer' }: { state: Partial<MuxPlayerProps>; component?: string; }) => {
+  const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
+  const propsStr = stateEntries.length 
+    ? `\n${stateEntries.map(([key, value]) => `  ${key}={${toValueString(value)}}`).join('\n')}\n`
+    : '';
+  const codeStr = `<${component}${propsStr}/>`;
   const copyToClipboard = () => { 
     navigator.clipboard?.writeText(codeStr); 
   };
@@ -362,29 +367,41 @@ const MuxPlayerCodeRenderer = ({ state }: { state: Partial<MuxPlayerProps>}) => 
   );
 };
 
+const UrlPathRenderer = ({ 
+  state, 
+  location: { origin, pathname } = {
+    origin: '',
+    pathname: './'
+  },
+}: { state: Partial<MuxPlayerProps>; location?: Pick<Location, 'origin' | 'pathname'>; }) => {
+  const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
+  const urlSearchParamsStr = stateEntries.length
+    ? `?${new URLSearchParams(Object.fromEntries(stateEntries.map(([k, v]) => [k, JSON.stringify(v)]))).toString()}`
+    : ''
+  const urlStr = `${origin}${pathname}${urlSearchParamsStr}`;
+  const copyToClipboard = () => { 
+    navigator.clipboard?.writeText(urlStr); 
+  };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+      <a href={urlStr} target="_blank">{urlStr}</a>
+      <button onClick={copyToClipboard}>Copy URL</button>
+    </div>
+  );
+};
+
 function MuxPlayerPage() {
   const router = useRouter();
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
-  const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
-  const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets));
+  const [selectedAsset, setSelectedAsset] = useState(undefined);
+  const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets, router.query));
   useEffect(() => {
-    dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(selectedAsset, mediaAssets)))
-  }, [selectedAsset, mediaAssets]);
-  useEffect(() => {
-    const searchParamsObj = Object.fromEntries(
-      Object.entries(state)
-      .filter(([, value]) => value != undefined)
-      .map(([k, v]) => [k, JSON.stringify(v)])
-    );
-    router.replace({ 
-      query: { ...router.query, ...searchParamsObj }
-    })
-  }, [state]);
-  // What would be a reasonable UI for changing this? (CJP)
+    if (!router.isReady) return;
+    dispatch(updateProps(toInitialState(selectedAsset, mediaAssets, router.query)))
+  }, [router.query, router.isReady]);
   const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
   const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
-
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
 
   return (
@@ -429,15 +446,15 @@ function MuxPlayerPage() {
           playbackRates={state.playbackRates}
           onPlay={(evt: Event) => {
             onPlay(evt);
-            dispatch(updateProps({ paused: false }));
+            // dispatch(updateProps({ paused: false }));
           }}
           onPause={(evt: Event) => {
             onPause(evt);
-            dispatch(updateProps({ paused: true }));
+            // dispatch(updateProps({ paused: true }));
           }}
           onVolumeChange={(event) => {
             const muxPlayerEl = event.target as MuxPlayerElement
-            dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
+            // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
           }}
           onSeeking={onSeeking}
           onSeeked={onSeeked}
@@ -445,12 +462,17 @@ function MuxPlayerPage() {
       </div>
       <div className="options">
         <MuxPlayerCodeRenderer state={state}/>
+        <UrlPathRenderer 
+          state={state} 
+          location={typeof window !== 'undefined' ? window.location : undefined}
+        />
         <div>
           <label htmlFor="assets-control">Select from one of our example assets</label>
           <select
             id="assets-control"
             onChange={({ target: { value } }) => {
               setSelectedAsset(mediaAssets[value]);
+              dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(mediaAssets[value], mediaAssets)));
             }}
             value={mediaAssets.indexOf(selectedAsset)}
           >
@@ -490,8 +512,20 @@ function MuxPlayerPage() {
           name="envKey"
           label="Env Key (Mux Data)"
           onChange={genericOnChange}
+          placeholder={`Inferred from playbackId`}
         />
-        <URLRenderer value={state.customDomain} name="customDomain" onChange={genericOnChange} placeholder="my.customdomain.com"/>
+        <URLRenderer 
+          value={state.customDomain} 
+          name="customDomain" 
+          onChange={genericOnChange} 
+          placeholder="my.customdomain.com"
+        />
+        <URLRenderer 
+          value={state.poster} 
+          name="poster" 
+          onChange={genericOnChange} 
+          placeholder={`Inferred from playbackId`}
+        />
         <TextRenderer
           value={state.title}
           name="title"
