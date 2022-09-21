@@ -69,6 +69,10 @@ media-airplay-button[media-airplay-unavailable] {
   --airplay-button: none;
 }
 
+media-fullscreen-button[media-fullscreen-unavailable] {
+  --fullscreen-button: none;
+}
+
 media-cast-button[media-cast-unavailable] {
   --cast-button: none;
 }
