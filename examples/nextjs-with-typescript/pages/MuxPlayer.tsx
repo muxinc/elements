@@ -460,6 +460,11 @@ function MuxPlayerPage() {
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
         />
+        <BooleanRenderer 
+          value={state.audio} 
+          name="audio"
+          onChange={genericOnChange}
+        />
         <TextRenderer
           value={state.envKey}
           name="envKey"
@@ -467,14 +472,9 @@ function MuxPlayerPage() {
           onChange={genericOnChange}
         />
         <URLRenderer value={state.customDomain} name="customDomain" onChange={genericOnChange} placeholder="my.customdomain.com"/>
-        <ColorRenderer
-          value={state.primaryColor}
-          name="primaryColor"
-          onChange={genericOnChange}
-        />
-        <ColorRenderer
-          value={state.secondaryColor}
-          name="secondaryColor"
+        <TextRenderer
+          value={state.title}
+          name="title"
           onChange={genericOnChange}
         />
         <BooleanRenderer 
@@ -507,11 +507,6 @@ function MuxPlayerPage() {
         <BooleanRenderer 
           value={state.defaultHiddenCaptions} 
           name="defaultHiddenCaptions"
-          onChange={genericOnChange}
-        />
-        <TextRenderer
-          value={state.title}
-          name="title"
           onChange={genericOnChange}
         />
         <NumberRenderer
@@ -570,6 +565,16 @@ function MuxPlayerPage() {
           name="playbackRates" 
           onChange={genericOnChange}
           values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
+        />
+        <ColorRenderer
+          value={state.primaryColor}
+          name="primaryColor"
+          onChange={genericOnChange}
+        />
+        <ColorRenderer
+          value={state.secondaryColor}
+          name="secondaryColor"
+          onChange={genericOnChange}
         />
         <div>
           <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
