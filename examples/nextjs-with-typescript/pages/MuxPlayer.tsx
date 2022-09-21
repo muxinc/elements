@@ -391,14 +391,14 @@ const UrlPathRenderer = ({
   );
 };
 
-type Props = { location: Pick<Location, 'origin' | 'pathname'> };
+type Props = { location?: Pick<Location, 'origin' | 'pathname'> };
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
   const { origin, pathname }: Pick<Location, 'origin' | 'pathname'> = new URL(context.req.headers.referer);
   const location = { origin, pathname };
   return ({ props: { location } })
 };
 
-function MuxPlayerPage({ location }) {
+function MuxPlayerPage({ location }: Props) {
   const router = useRouter();
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
