@@ -48,6 +48,7 @@ const INITIAL_BACKWARD_SEEK_OFFSET = undefined;
 const INITIAL_VOLUME = undefined;
 const INITIAL_LOOP = undefined;
 const INITIAL_CROSS_ORIGIN = undefined;
+const INITIAL_PLAYBACK_RATE = undefined;
 
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
@@ -102,6 +103,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   title: INITIAL_TITLE,
   envKey: INITIAL_ENV_KEY,
   playbackRates: INITIAL_PLAYBACK_RATES,
+  playbackRate: INITIAL_PLAYBACK_RATE,
   forwardSeekOffset: INITIAL_FORWARD_SEEK_OFFSET,
   backwardSeekOffset: INITIAL_BACKWARD_SEEK_OFFSET,
   volume: INITIAL_VOLUME,
@@ -411,6 +413,8 @@ function MuxPlayerPage() {
           secondaryColor={state.secondaryColor}
           defaultShowRemainingTime={state.defaultShowRemainingTime}
           defaultHiddenCaptions={state.defaultHiddenCaptions}
+          /** @TODO This doesn't appear to work? (CJP) */
+          // playbackRate={state.playbackRate}
           playbackRates={state.playbackRates}
           onPlay={(evt: Event) => {
             onPlay(evt);
@@ -564,6 +568,15 @@ function MuxPlayerPage() {
           onChange={genericOnChange}
           values={['anonymous', 'use-credentials']}
         />
+        {/** @TODO This doesn't appear to work? (CJP) */}
+        {/* <NumberRenderer
+          value={state.playbackRate}
+          name="playbackRate"
+          onChange={genericOnChange}
+          min={0}
+          max={3}
+          step={0.25}
+        /> */}
         {/** @TODO Is this sufficient for a UI or do we want a "fancier" one that allows adding/removing dynamic items from a list (CJP) */}
         <EnumMultiSelectRenderer
           value={state.playbackRates} 
