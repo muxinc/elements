@@ -14,9 +14,7 @@ function MuxVideoPage() {
       </style>
 
       <MuxVideo
-        playbackId="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
-        preload="auto"
-        startTime={4.6}
+        playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
         metadata={{
           video_id: "video-id-12345",
           video_title: "Star Wars: Episode 3",

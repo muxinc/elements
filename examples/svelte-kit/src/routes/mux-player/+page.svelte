@@ -36,8 +36,7 @@
 
 <mux-player
 	stream-type="on-demand"
-	playback-id="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
-	start-time="4.6"
+	playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
 ></mux-player>
 
 <a data-sveltekit-prefetch href="/">Browse Elements</a>

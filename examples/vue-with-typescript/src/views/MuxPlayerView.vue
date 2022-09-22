@@ -19,8 +19,7 @@ mux-player:not([audio]) {
 <template>
   <mux-player
     stream-type="on-demand"
-    playback-id="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
-    start-time="4.6"
+    playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
   ></mux-player>
 
   <RouterLink to="/">Browse Elements</RouterLink>

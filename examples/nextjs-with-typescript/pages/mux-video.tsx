@@ -8,7 +8,7 @@ import { useState } from "react";
 const INITIAL_DEBUG = false;
 const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
-const INITIAL_PLAYBACK_ID = "a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M";
+const INITIAL_PLAYBACK_ID = "23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I";
 
 function MuxVideoWCPage() {
   // const mediaElRef = useRef(null);
