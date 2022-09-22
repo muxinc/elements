@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from 'next/head';
 import { useRef, useState } from "react";
 import MuxVideo from "@mux/mux-video-react";
 
@@ -12,30 +13,33 @@ function MuxVideoPage() {
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
   return (
-    <div>
-      <h1>MuxVideo Demo</h1>
-      <div>
-        <MuxVideo
-          ref={mediaElRef}
-          playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-          // metadata={{
-          //   video_id: "video-id-12345",
-          //   video_title: "Mad Max: Fury Road Trailer",
-          //   viewer_user_id: "user-id-6789",
-          // }}
-          // envKey="mux-data-env-key"
-          streamType="on-demand"
-          controls
-          autoPlay={autoplay}
-          muted={muted}
-          onPlay={() => {
-            setPaused(false);
-          }}
-          onPause={() => {
-            setPaused(true);
-          }}
-        />
-      </div>
+    <>
+      <Head>
+        <title>&lt;MuxVideo/&gt; Demo</title>
+      </Head>
+
+      <MuxVideo
+        ref={mediaElRef}
+        playbackId="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
+        startTime={4.6}
+        // metadata={{
+        //   video_id: "video-id-12345",
+        //   video_title: "Mad Max: Fury Road Trailer",
+        //   viewer_user_id: "user-id-6789",
+        // }}
+        // envKey="mux-data-env-key"
+        streamType="on-demand"
+        controls
+        autoPlay={autoplay}
+        muted={muted}
+        onPlay={() => {
+          setPaused(false);
+        }}
+        onPause={() => {
+          setPaused(true);
+        }}
+      />
+
       <div className="options">
         <div>
           <label htmlFor="paused-control">Paused</label>
@@ -65,12 +69,10 @@ function MuxVideoPage() {
           />
         </div>
       </div>
-      <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/"><a>Browse Elements</a></Link>
+    </>
   );
 }
 

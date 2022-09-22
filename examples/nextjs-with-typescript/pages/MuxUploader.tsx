@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Head from 'next/head';
 import MuxUploader, { MuxUploaderDrop } from '@mux/mux-uploader-react';
 import { useState, ChangeEvent } from "react";
-
 
 const onUploadStart = console.log.bind(null, 'uploadStart');
 const onChunkAttempt = console.log.bind(null, "chunkAttempt");
@@ -22,33 +22,38 @@ function MuxUploaderPage() {
   }
 
   return (
-    <MuxUploaderDrop mux-uploader="uploader" overlay overlayText="You're doing great!">
-      <h1>MuxUploader with MuxUploaderDrop Demo</h1>
-      <h2>Enter your upload GCS url:</h2>
-      <input type="text" style={{ padding: "8px 12px", marginBottom: "20px", width: "400px" }} placeholder="https://storage.googleapis.com/..." onChange={handleChange} />
-     
-      <div style={{ flexGrow: 1, flexShrink: 1, height: "400px" }}>
-          <MuxUploader
-            id="uploader"
-            endpoint={url}
-            // Uncomment for example of custom progress formatting.
-            // formatProgress={(percent: number) => `${percent} percent uploaded`}
-            type="bar"
-            status
-            onUploadStart={onUploadStart}
-            onChunkAttempt={onChunkAttempt}
-            onChunkSuccess={onChunkSuccess}
-            onSuccess={onSuccess}
-            onUploadError={onUploadError}
-            onProgress={onProgress}
-          />
-      </div>
-      <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
-      </h3>
-    </MuxUploaderDrop>
+    <>
+      <Head>
+        <title>&lt;MuxUploader/&gt; Demo</title>
+      </Head>
+      <MuxUploaderDrop mux-uploader="uploader" overlay overlayText="You're doing great!">
+        <h2>Enter your upload GCS url:</h2>
+
+        <input type="text" style={{
+          marginBottom: "20px",
+          width: "min(100%, 400px)",
+          boxSizing: "border-box"
+        }} placeholder="https://storage.googleapis.com/..." onChange={handleChange} />
+
+        <MuxUploader
+          style={{ display: "block", height: "200px" }}
+          id="uploader"
+          endpoint={url}
+          // Uncomment for example of custom progress formatting.
+          // formatProgress={(percent: number) => `${percent} percent uploaded`}
+          type="bar"
+          status
+          onUploadStart={onUploadStart}
+          onChunkAttempt={onChunkAttempt}
+          onChunkSuccess={onChunkSuccess}
+          onSuccess={onSuccess}
+          onUploadError={onUploadError}
+          onProgress={onProgress}
+        />
+      </MuxUploaderDrop>
+
+      <Link href="/"><a>Browse Elements</a></Link>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from 'next/head';
 import { useRef, useState } from "react";
 import MuxAudio from "@mux/mux-audio-react";
 
@@ -11,24 +12,26 @@ function MuxAudioPage() {
   const [muted, setMuted] = useState(INITIAL_MUTED);
 
   return (
-    <div>
-      <h1>MuxAudio Demo</h1>
-      <div style={{ flexGrow: 1, flexShrink: 1 }}>
-        <MuxAudio
-          ref={mediaElRef}
-          playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-          // metadata={{
-          //   video_id: "video-id-12345",
-          //   video_title: "Mad Max: Fury Road Trailer",
-          //   viewer_user_id: "user-id-6789",
-          // }}
-          // envKey="mux-data-env-key"
-          streamType="on-demand"
-          controls
-          autoPlay={autoplay}
-          muted={muted}
-        />
-      </div>
+    <>
+      <Head>
+        <title>&lt;MuxAudio/&gt; Demo</title>
+      </Head>
+
+      <MuxAudio
+        ref={mediaElRef}
+        playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+        // metadata={{
+        //   video_id: "video-id-12345",
+        //   video_title: "Mad Max: Fury Road Trailer",
+        //   viewer_user_id: "user-id-6789",
+        // }}
+        // envKey="mux-data-env-key"
+        streamType="on-demand"
+        controls
+        autoPlay={autoplay}
+        muted={muted}
+      />
+
       <div className="options">
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
@@ -49,12 +52,10 @@ function MuxAudioPage() {
           />
         </div>
       </div>
-      <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/"><a>Browse Elements</a></Link>
+    </>
   );
 }
 
