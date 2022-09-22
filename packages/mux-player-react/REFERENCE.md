@@ -40,8 +40,8 @@
 
 # CSS Variables
 
-See [mux-player's reference](https://github.com/muxinc/elements/blob/main/packages/mux-player/REFERENCE.md#css-variables) for a list of all available CSS variables.
+See [mux-player's reference](../mux-player/REFERENCE.md#css-variables) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-player's reference](https://github.com/muxinc/elements/blob/main/packages/mux-player/REFERENCE.md#css-parts) for a list of all available CSS parts.
+See [mux-player's reference](../mux-player/REFERENCE.md#css-parts) for a list of all available CSS parts.
