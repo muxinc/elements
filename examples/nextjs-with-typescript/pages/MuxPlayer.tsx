@@ -27,30 +27,6 @@ const onEnded = console.log.bind(null, "ended");
 const onError = console.log.bind(null, "error");
 const onPlayerReady = console.log.bind(null, "playerready");
 
-const INITIAL_PRIMARY_COLOR = undefined;
-const INITIAL_SECONDARY_COLOR = undefined;
-const INITIAL_CONTROLS_BACKDROP_COLOR = undefined;
-const INITIAL_START_TIME = undefined;
-const INITIAL_THUMBNAIL_TIME = undefined;
-const INITIAL_DEBUG = undefined;
-const INITIAL_MUTED = undefined;
-const INITIAL_AUTOPLAY = undefined;
-const INITIAL_NOHOTKEYS = undefined;
-const INITIAL_DEFAULT_SHOW_REMAINING_TIME = undefined;
-const INITIAL_DEFAULT_HIDDEN_CAPTIONS = undefined;
-// const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
-const INITIAL_PLAYBACK_RATES = undefined;
-const INITIAL_TITLE = undefined;
-// const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_ENV_KEY = undefined;
-const INITIAL_HOTKEYS = undefined;
-const INITIAL_FORWARD_SEEK_OFFSET = undefined;
-const INITIAL_BACKWARD_SEEK_OFFSET = undefined;
-const INITIAL_VOLUME = undefined;
-const INITIAL_LOOP = undefined;
-const INITIAL_CROSS_ORIGIN = undefined;
-const INITIAL_PLAYBACK_RATE = undefined;
-
 const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
   const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
   const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
@@ -91,27 +67,27 @@ const ActionTypes = {
 };
 
 const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
-  muted: INITIAL_MUTED,
-  debug: INITIAL_DEBUG,
-  autoPlay: INITIAL_AUTOPLAY,
-  startTime: INITIAL_START_TIME,
+  muted: undefined,
+  debug: undefined,
+  autoPlay: undefined,
+  startTime: undefined,
   paused: undefined,
-  nohotkeys: INITIAL_NOHOTKEYS,
-  hotkeys: INITIAL_HOTKEYS,
-  defaultShowRemainingTime: INITIAL_DEFAULT_SHOW_REMAINING_TIME,
-  defaultHiddenCaptions: INITIAL_DEFAULT_HIDDEN_CAPTIONS,
-  primaryColor: INITIAL_PRIMARY_COLOR,
-  secondaryColor: INITIAL_SECONDARY_COLOR,
-  thumbnailTime: INITIAL_THUMBNAIL_TIME,
-  title: INITIAL_TITLE,
-  envKey: INITIAL_ENV_KEY,
-  playbackRates: INITIAL_PLAYBACK_RATES,
-  playbackRate: INITIAL_PLAYBACK_RATE,
-  forwardSeekOffset: INITIAL_FORWARD_SEEK_OFFSET,
-  backwardSeekOffset: INITIAL_BACKWARD_SEEK_OFFSET,
-  volume: INITIAL_VOLUME,
-  loop: INITIAL_LOOP,
-  crossOrigin: INITIAL_CROSS_ORIGIN,
+  nohotkeys: undefined,
+  hotkeys: undefined,
+  defaultShowRemainingTime: undefined,
+  defaultHiddenCaptions: undefined,
+  primaryColor: undefined,
+  secondaryColor: undefined,
+  thumbnailTime: undefined,
+  title: undefined,
+  envKey: undefined,
+  playbackRates: undefined,
+  playbackRate: undefined,
+  forwardSeekOffset: undefined,
+  backwardSeekOffset: undefined,
+  volume: undefined,
+  loop: undefined,
+  crossOrigin: undefined,
   customDomain: undefined,
   tokens: undefined,
   playbackId: undefined,
