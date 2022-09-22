@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Suspense from './BrowserOnlySuspense';
 import { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
 
@@ -66,6 +66,8 @@ const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerS
             background: 'var(--media-control-background, rgba(20, 20, 30, 0.5))',
           }}
         />
+        {/* TODO: can we add mux-player to JSX.IntrinsicElements */}
+        {/* @ts-ignore */}
       </mux-player>
     </>
   );
