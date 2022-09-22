@@ -8,6 +8,8 @@ const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerS
   const { style, ...rest } = props;
   return (
     <>
+      {/* TODO: can we add mux-player to JSX.IntrinsicElements */}
+      {/* @ts-ignore */}
       <mux-player
         data-mux-player-react-placeholder
         style={{
