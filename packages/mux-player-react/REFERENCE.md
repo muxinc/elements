@@ -36,7 +36,7 @@
 
 # Callbacks
 
-`<MuxPlayer/>` has a number of callbacks associated with events for media loading, playback, and the player itself. For example, a callback for 'loadstart` event is`onLoadStart`. See [mux-player's reference](https://github.com/muxinc/elements/blob/main/packages/mux-player/REFERENCE.md#events) for a list of events.
+`<MuxPlayer/>` has a number of callbacks associated with events for media loading, playback, and the player itself. For example, a callback for 'loadstart` event is`onLoadStart`. See [mux-player's reference](../mux-player/REFERENCE.md#events) for a list of events.
 
 # CSS Variables
 
