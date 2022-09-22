@@ -44,7 +44,6 @@ const INITIAL_PLAYBACK_RATES = undefined;
 const INITIAL_TITLE = undefined;
 // const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
 const INITIAL_ENV_KEY = undefined;
-const INITIAL_SELECTED_CSS_VARS = {};
 const INITIAL_HOTKEYS = undefined;
 const INITIAL_FORWARD_SEEK_OFFSET = undefined;
 const INITIAL_BACKWARD_SEEK_OFFSET = undefined;
@@ -70,6 +69,7 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     'custom-domain': customDomain,
     audio,
     description: title,
+    placeholder,
   } = mediaAsset ?? {};
   // NOTE: Inferred type is "string" from JSON (CJP)
   const streamType = mediaAsset?.['stream-type'] as MuxPlayerProps["streamType"];
@@ -83,6 +83,7 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     customDomain,
     metadata,
     title,
+    placeholder,
   };
 };
 
@@ -118,7 +119,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   streamType: undefined,
 });
 
-const reducer = (state: Partial<MuxPlayerProps>, action): Partial<MuxPlayerProps> => {
+const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
   const { type, value } = action;
   switch (type) {
     case ActionTypes.UPDATE: {
@@ -319,6 +320,7 @@ const EnumMultiSelectRenderer = ({
           <select
             id={`${name}-control`}
             multiple
+            size={values.length}
             onChange={({ target: { selectedOptions } }) => {
               const currentValues = selectedOptions?.length 
                 ? Array.from(selectedOptions, ({ value }) => values.find(enumValue => enumValue.toString() === value))
@@ -405,6 +407,81 @@ const getUrl = ({ req, resolvedUrl }) => {
   return new URL(`${protocol}//${baseUrlHost}${resolvedUrl}`);
 };
 
+const SMALL_BREAKPOINT = 700;
+const XSMALL_BREAKPOINT = 300;
+const MediaChromeSizes = {
+  LG: 'large',
+  SM: 'small',
+  XS: 'extra-small',
+};
+
+const PlayerSizeWidths = {
+  [MediaChromeSizes.LG]: 800,
+  [MediaChromeSizes.SM]: 600,
+  [MediaChromeSizes.XS]: 250,
+};
+
+function getPlayerSize(width) {
+  if (width == undefined) return undefined;
+  return width < XSMALL_BREAKPOINT
+    ? MediaChromeSizes.XS
+    : width < SMALL_BREAKPOINT
+    ? MediaChromeSizes.SM
+    : MediaChromeSizes.LG;
+}
+
+const ControlCustomizationCSSVars = [
+  "--controls",
+  "--top-controls",
+  "--center-controls",
+  "--bottom-controls",
+  "--duration-display",
+  "--bottom-duration-display",
+  "--play-button",
+  "--center-play-button",
+  "--bottom-play-button",
+  "--time-range",
+  "--bottom-time-range",
+  "--seek-backward-button",
+  "--bottom-seek-backward-button",
+  "--seek-forward-button",
+  "--bottom-seek-forward-button",
+  "--time-display",
+  "--title-display",
+  "--bottom-title-display",
+  "--top-title-display",
+  "--bottom-time-display",
+  "--mute-button",
+  "--bottom-mute-button",
+  "--volume-range",
+  "--bottom-volume-range",
+  "--playback-rate-button",
+  "--bottom-playback-rate-button",
+  "--captions-button",
+  "--top-captions-button",
+  "--bottom-captions-button",
+  "--airplay-button",
+  "--top-airplay-button",
+  "--bottom-airplay-button",
+  "--cast-button",
+  "--top-cast-button",
+  "--bottom-cast-button",
+  "--pip-button",
+  "--top-pip-button",
+  "--bottom-pip-button",
+  "--fullscreen-button",
+  "--bottom-fullscreen-button",
+  "--seek-live-button",
+  "--top-seek-live-button",
+  "--bottom-seek-live-button",
+];
+
+const getControlCustomizationCSSVars = (state) => {
+  return Object.entries(state)
+    .filter(([k, v]) => ControlCustomizationCSSVars.includes(k) && !!v)
+    .map(([k]) => k);
+};
+
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
   const { origin, pathname }: Pick<Location, 'origin' | 'pathname'> = getUrl(context);
   const location = { origin, pathname };
@@ -421,10 +498,11 @@ function MuxPlayerPage({ location }: Props) {
     if (!router.isReady) return;
     dispatch(updateProps(toInitialState(selectedAsset, mediaAssets, router.query)))
   }, [router.query, router.isReady]);
-  const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
-  const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
+  const [stylesState, dispatchStyles] = useReducer(reducer, {});
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
+  const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
+  console.log('stylesState', stylesState);
   return (
     <div>
       <h1>MuxPlayer Demo</h1>
@@ -432,15 +510,14 @@ function MuxPlayerPage({ location }: Props) {
         <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
         <MuxPlayer
           ref={mediaElRef}
-          style={{
-            ...selectedCssVars,
-            ...(controlsBackdropColor && {'--controls-backdrop-color': controlsBackdropColor} as typeof selectedCssVars)
-            }}
+          style={stylesState}
           envKey={state.envKey}
           metadata={state.metadata}
           title={state.title}
           startTime={state.startTime}
           thumbnailTime={state.thumbnailTime}
+          poster={state.poster}
+          placeholder={state.placeholder}
           playbackId={state.playbackId}
           tokens={state.tokens}
           customDomain={state.customDomain}
@@ -474,7 +551,7 @@ function MuxPlayerPage({ location }: Props) {
             // dispatch(updateProps({ paused: true }));
           }}
           onVolumeChange={(event) => {
-            const muxPlayerEl = event.target as MuxPlayerElement
+            // const muxPlayerEl = event.target as MuxPlayerElement
             // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
           }}
           onSeeking={onSeeking}
@@ -523,6 +600,16 @@ function MuxPlayerPage({ location }: Props) {
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
         />
+        <EnumRenderer 
+          value={getPlayerSize(stylesState.width)} 
+          name="width"
+          label="Width Cutoffs for Responsive Player Chrome/UI"
+          onChange={({ width: playerSize }) => {
+            const width = PlayerSizeWidths[playerSize?.split(' ')[0]];
+            dispatchStyles(updateProps({ width }));
+          }}
+          values={['extra-small', 'small', 'large']}
+        />
         <BooleanRenderer 
           value={state.audio} 
           name="audio"
@@ -546,6 +633,12 @@ function MuxPlayerPage({ location }: Props) {
           name="poster" 
           onChange={genericOnChange} 
           placeholder={`Inferred from playbackId`}
+        />
+        <TextRenderer
+          value={state.placeholder}
+          name="placeholder"
+          label="Placeholder Image"
+          onChange={genericOnChange}
         />
         <TextRenderer
           value={state.title}
@@ -660,70 +753,26 @@ function MuxPlayerPage({ location }: Props) {
           name="secondaryColor"
           onChange={genericOnChange}
         />
-        <div>
-          <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
-          <select
-            id="controlsvars-control"
-            multiple
-            onChange={(event) => setSelectedCssVars(
-              Object.fromEntries(Array.from(event.target.selectedOptions)
-                .map(({ value }) => [value, 'none']))
-            )}
-          >
-            <option value="--controls">--controls</option>
-            <option value="--top-controls">--top-controls</option>
-            <option value="--center-controls">--center-controls</option>
-            <option value="--bottom-controls">--bottom-controls</option>
-            <option value="--duration-display">--duration-display</option>
-            <option value="--bottom-duration-display">--bottom-duration-display</option>
-            <option value="--play-button">--play-button</option>
-            <option value="--center-play-button">--center-play-button</option>
-            <option value="--bottom-play-button">--bottom-play-button</option>
-            <option value="--time-range">--time-range</option>
-            <option value="--bottom-time-range">--bottom-time-range</option>
-            <option value="--seek-backward-button">--seek-backward-button</option>
-            <option value="--bottom-seek-backward-button">--bottom-seek-backward-button</option>
-            <option value="--seek-forward-button">--seek-forward-button</option>
-            <option value="--bottom-seek-forward-button">--bottom-seek-forward-button</option>
-            <option value="--time-display">--time-display</option>
-            <option value="--title-display">--title-display</option>
-            <option value="--bottom-title-display">--bottom-title-display</option>
-            <option value="--top-title-display">--top-title-display</option>
-            <option value="--bottom-time-display">--bottom-time-display</option>
-            <option value="--mute-button">--mute-button</option>
-            <option value="--bottom-mute-button">--bottom-mute-button</option>
-            <option value="--volume-range">--volume-range</option>
-            <option value="--bottom-volume-range">--bottom-volume-range</option>
-            <option value="--playback-rate-button">--playback-rate-button</option>
-            <option value="--bottom-playback-rate-button">--bottom-playback-rate-button</option>
-            <option value="--captions-button">--captions-button</option>
-            <option value="--top-captions-button">--top-captions-button</option>
-            <option value="--bottom-captions-button">--bottom-captions-button</option>
-            <option value="--airplay-button">--airplay-button</option>
-            <option value="--top-airplay-button">--top-airplay-button</option>
-            <option value="--bottom-airplay-button">--bottom-airplay-button</option>
-            <option value="--cast-button">--cast-button</option>
-            <option value="--top-cast-button">--top-cast-button</option>
-            <option value="--bottom-cast-button">--bottom-cast-button</option>
-            <option value="--pip-button">--pip-button</option>
-            <option value="--top-pip-button">--top-pip-button</option>
-            <option value="--bottom-pip-button">--bottom-pip-button</option>
-            <option value="--fullscreen-button">--fullscreen-button</option>
-            <option value="--bottom-fullscreen-button">--bottom-fullscreen-button</option>
-            <option value="--seek-live-button">--seek-live-button</option>
-            <option value="--top-seek-live-button">--top-seek-live-button</option>
-            <option value="--bottom-seek-live-button">--bottom-seek-live-button</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="controls-backdrop-color">Controls Backdrop Color</label>
-          <input
-            id="controls-backdrop-color"
-            type="color"
-            onChange={(event) => setControlsBackdropColor(event.target.value)}
-            value={controlsBackdropColor ?? '#000000'}
-          />
-        </div>
+        <EnumMultiSelectRenderer 
+          value={getControlCustomizationCSSVars(stylesState)} 
+          name='--controls' 
+          label="Display Controls CSS vars (Hiding usage)"
+          onChange={({ ['--controls']: cssVars }) => {
+            const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
+              curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
+              return curCSSVars;
+            }, {});
+            console.log('nextCSSVars', nextCSSVars);
+            genericOnStyleChange(nextCSSVars);
+          }} 
+          values={ControlCustomizationCSSVars}
+        />
+        <ColorRenderer
+          value={stylesState['--controls-backdrop-color']}
+          name="--controls-backdrop-color"
+          label="Controls Backdrop Color"
+          onChange={genericOnStyleChange}
+        />
         <EnumMultiSelectRenderer 
           value={state.hotkeys?.split(' ')} 
           name='hotkeys' 
