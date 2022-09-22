@@ -162,20 +162,25 @@ export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => 
 };
 
 export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
-  if ([StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(streamType as any)) {
+  // for regular live videos, set backBufferLength to 8
+  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
     const liveConfig = {
-      backBufferLength: 12,
+      backBufferLength: 8,
     };
-
-    if (streamType === StreamTypes.LL_LIVE) {
-      return {
-        ...liveConfig,
-        maxFragLookUpTolerance: 0.001,
-      };
-    }
 
     return liveConfig;
   }
+
+  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
+  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
+    const liveConfig = {
+      backBufferLength: 4,
+      maxFragLookUpTolerance: 0.001,
+    };
+
+    return liveConfig;
+  }
+
   return {};
 };
 

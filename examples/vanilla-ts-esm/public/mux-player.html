@@ -2,25 +2,19 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Basic &lt;mux-player/&gt; example</title>
+    <title>&lt;mux-player&gt; example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
     <script
       defer
       src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
     ></script>
     <script type="module" src="./dist/mux-player.js"></script>
     <style>
-      body {
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
       mux-player {
-        width: 100%;
-        max-width: 800px;
-        margin: 40px auto;
         display: block;
+        width: 100%;
+        margin: 1rem 0 2rem;
         background-color: #000;
         line-height: 0;
       }
@@ -28,150 +22,27 @@
       mux-player:not([audio]) {
         aspect-ratio: 16 / 9;
       }
-
-      /*
-      mux-player::part(play button) {
-        display: none;
-      }
-
-      mux-player::part(button),
-      mux-player::part(range),
-      mux-player::part(display) {
-        display: none;
-      }
-
-      mux-player::part(vertical-layer) {
-        background-color: transparent;
-      }*/
-
-      .buttons {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
-
-      @media (max-width: 300px) {
-        .buttons {
-          display: inline-block;
-        }
-      }
-
-      .buttons button {
-        margin: 5px;
-      }
     </style>
   </head>
   <body>
-    <!-- Test attributes
-      style="aspect-ratio: 16 / 10"
-      primary-color="#5c6ac4"
-      secondary-color="#ecc94b"
-      playback-id="xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE"
-      playback-id="x00Y6AhtNCs01UIW02FhPY4H6hZHkQLuiLoD1tTMj00zuxE" // audio-only playback id
-      playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
-      playback-id="ddelbUriZy02iIgTZx5YLp6fy5eGKzZO7"
-      custom-domain="media.heymux.com"
-      poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
-      src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
-      audio
-      muted
-      volume="0.4"
-      playbackrate="2"
-      forward-seek-offset="10"
-      backward-seek-offset="10"
-      start-time="10"
-      thumbnail-time="10"
-      metadata-video-id="video-id-example"
-      metadata-video-title="Video Title Example"
-      metadata-viewer-user-id="user-id-example"
-      secondary-color="rgba(0, 255, 100, 0.3)"
-     -->
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
 
     <mux-player
       stream-type="on-demand"
-      playback-id="026vljfeZ99KwUPRbl5YHVdCTSrBsPfxjkyM3PSlfWGw"
-      start-time="10"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
     ></mux-player>
-
-    <div class="buttons">
-      <button class="load-src-btn">Load new video</button>
-      <button class="unload-src-btn">Unload</button>
-      <button class="color-btn">Random colors</button>
-      <button class="dialog-show-btn">Show error dialog</button>
-      <button class="dialog-close-btn">Close dialog</button>
-      <button class="cast-btn">Request Cast</button>
-      <button class="stop-cast-btn">Stop Cast</button>
-    </div>
-    <br />
-
-    <script>
-      let player = document.querySelector("mux-player");
-
-      const testPlaybackIds = [
-        'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE',
-        'g65IqSFtWdpGR100c2W8VUHrfIVWTNRen',
-        '026vljfeZ99KwUPRbl5YHVdCTSrBsPfxjkyM3PSlfWGw',
-        'TPsqaPkOFCKQHVGQ00Khp0256fLo4FAsEHjCTeWi02JyrM',
-      ];
-
-      document
-        .querySelector(".load-src-btn")
-        .addEventListener("click", () => {
-          const playbackIds = testPlaybackIds.filter((id) => id != player.playbackId);
-          player.playbackId = playbackIds[Math.round(Math.random() * (playbackIds.length - 1))];
-        });
-      document
-        .querySelector(".unload-src-btn")
-        .addEventListener("click", () => {
-          player.removeAttribute('playback-id');
-        });
-      document
-        .querySelector(".color-btn")
-        .addEventListener("click", () => {
-          this.disabled = true;
-          fetch('https://unpkg.com/css-color-names@1.0.1/css-color-names.json')
-            .then((response) => response.json())
-            .then(colors => {
-              const colorNames = Object.keys(colors);
-              const hexCodes = Object.values(colors);
-              const randomIndex = Math.floor(Math.random() * hexCodes.length);
-              const randomColor = colorNames[randomIndex];
-              fetch(`https://www.thecolorapi.com/scheme?hex=${hexCodes[randomIndex].slice(1)}&mode=complement&count=2&format=json`)
-                .then((response) => response.json())
-                .then(json => {
-                  const complement = json.colors[0].hex.value;
-                  player.primaryColor = randomColor;
-                  player.secondaryColor = complement;
-                });
-            });
-        });
-      document
-        .querySelector(".dialog-show-btn")
-        .addEventListener("click", () => {
-          player.dispatchEvent(
-            new CustomEvent("error", {
-              detail: { code: MediaError.MEDIA_ERR_NETWORK },
-            })
-          );
-        });
-      document
-        .querySelector(".dialog-close-btn")
-        .addEventListener("click", () => {
-          player.shadowRoot.querySelector("mxp-dialog").close();
-        });
-      document
-        .querySelector(".cast-btn")
-        .addEventListener("click", () => {
-          player.requestCast();
-        });
-      document
-        .querySelector(".stop-cast-btn")
-        .addEventListener("click", () => {
-          window.CastableVideoElement.exitCast();
-        });
-    </script>
 
     <a href="../">Browse Elements</a>
   </body>

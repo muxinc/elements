@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Link from "next/link";
+import Head from 'next/head';
 import "@mux/mux-audio";
 import { useState } from "react";
 
@@ -19,24 +20,26 @@ function MuxAudioWCPage() {
   const mutedObj = muted ? { muted: "" } : {};
   const autoplayObj = autoplay ? { autoplay } : {};
   return (
-    <div>
-      <h1>mux-audio Demo</h1>
-      <div>
-        <mux-audio
-          // style={{ aspectRatio: "16 / 9" }}
-          playback-id={playbackId}
-          // onPlayerReady={() => console.log("ready!")}
-          {...debugObj}
-          {...mutedObj}
-          {...autoplayObj}
-          // stream-type="live"
-          // primary-color="#ec407a"
-          // secondary-color="#64b5f6"
-          // tertiary-color="#b4004e"
-          // startTime={12}
-          controls
-        ></mux-audio>
-      </div>
+    <>
+      <Head>
+        <title>&lt;mux-audio&gt; Demo</title>
+      </Head>
+
+      <mux-audio
+        // style={{ aspectRatio: "16 / 9" }}
+        playback-id={playbackId}
+        // onPlayerReady={() => console.log("ready!")}
+        {...debugObj}
+        {...mutedObj}
+        {...autoplayObj}
+        // stream-type="live"
+        // primary-color="#ec407a"
+        // secondary-color="#64b5f6"
+        // tertiary-color="#b4004e"
+        // startTime={12}
+        controls
+      ></mux-audio>
+
       <div className="options">
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
@@ -74,10 +77,10 @@ function MuxAudioWCPage() {
           />
         </div>
       </div>
-      <h3 className="title">
-        <Link href="/">Browse Elements</Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/">Browse Elements</Link>
+    </>
   );
 }
 

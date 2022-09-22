@@ -2,23 +2,24 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Basic &lt;mux-uploader/&gt; example</title>
+    <title>&lt;mux-uploader&gt; simple example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
     <script type="module" src="./dist/mux-uploader.js"></script>
     <style>
+      .direct-upload-url {
+        width: 100%;
+        box-sizing: border-box;
+      }
       .btn {
-        padding: 6px 8px;
         border: 1px solid #0d9488;
-        border-radius: 5px;
-        font-size: 24px;
         color: #134e4a;
         background: #99f6e4;
-        cursor: pointer;
       }
       mux-uploader {
         --progress-bar-fill-color: #7e22ce;
         font-family: monospace;
         font-size: 22px;
-        text-align: center;
       }
       mux-uploader-drop {
         display: block;
@@ -31,12 +32,26 @@
     </style>
   </head>
   <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
     <h2>Enter your upload GCS url:</h2>
     <div>
       <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
     </div>
 
-    <div style="margin-top: 40px; width: 400px;">
+    <div style="margin: 40px 0;">
       <mux-uploader-drop mux-uploader="my-uploader">
         <mux-uploader
           id="my-uploader"
@@ -48,6 +63,8 @@
         </mux-uploader>
       </mux-uploader-drop>
     </div>
+
+    <a href="../">Browse Elements</a>
 
     <script>
       const input = document.querySelector('input[type="text"]');

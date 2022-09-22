@@ -92,7 +92,11 @@ export default class MediaThemeMux extends MediaTheme {
           exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
         >
           <slot name="media" slot="media"></slot>
-          <media-poster-image slot="poster" src="${props.poster}" placeholder-src="${props.placeholder}"></media-poster-image>
+          <media-poster-image
+            slot="poster"
+            src="${props.poster}"
+            placeholder-src="${props.placeholder}"
+          ></media-poster-image>
           <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>
@@ -277,7 +281,7 @@ const TitleDisplay = ({ title }: ComponentProps) => html`
 
 // prettier-ignore
 export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
-  <media-control-bar>${props.title ? TitleDisplay(props) : html``}</media-control-bar>
+  ${props.title ? `<media-control-bar>${TitleDisplay(props)}</media-control-bar>` : html``}
   <media-control-bar>
     ${MediaPlayButton()}
     ${MediaSeekBackwardButton(props)}
@@ -294,7 +298,7 @@ export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
 
 // prettier-ignore
 export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
-  <media-control-bar>${props.title ? TitleDisplay(props) : html``}</media-control-bar>
+  ${props.title ? `<media-control-bar>${TitleDisplay(props)}</media-control-bar>` : html``}
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-live"></slot>
@@ -312,7 +316,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
 
 // prettier-ignore
 export const AudioLiveChrome = (props: ThemeMuxTemplateProps) => html`
-  <media-control-bar>${props.title ? TitleDisplay(props) : html``}</media-control-bar>
+  ${props.title ? `<media-control-bar>${TitleDisplay(props)}</media-control-bar>` : html``}
   <media-control-bar>
     ${MediaPlayButton()}
     <slot name="seek-live"></slot>

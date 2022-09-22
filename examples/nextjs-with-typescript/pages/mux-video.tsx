@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Link from "next/link";
+import Head from 'next/head';
 import "@mux/mux-video";
 import { useState } from "react";
 
@@ -7,7 +8,7 @@ import { useState } from "react";
 const INITIAL_DEBUG = false;
 const INITIAL_MUTED = false;
 const INITIAL_AUTOPLAY = false;
-const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
+const INITIAL_PLAYBACK_ID = "23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I";
 
 function MuxVideoWCPage() {
   // const mediaElRef = useRef(null);
@@ -19,24 +20,27 @@ function MuxVideoWCPage() {
   const mutedObj = muted ? { muted: "" } : {};
   const autoplayObj = autoplay ? { autoplay } : {};
   return (
-    <div>
-      <h1>mux-video Demo</h1>
-      <div>
-        <mux-video
-          // style={{ aspectRatio: "16 / 9" }}
-          playback-id={playbackId}
-          // onPlayerReady={() => console.log("ready!")}
-          {...debugObj}
-          {...mutedObj}
-          {...autoplayObj}
-          // stream-type="live"
-          // primary-color="#ec407a"
-          // secondary-color="#64b5f6"
-          // tertiary-color="#b4004e"
-          // startTime={12}
-          controls
-        ></mux-video>
-      </div>
+    <>
+      <Head>
+        <title>&lt;mux-video&gt; Demo</title>
+      </Head>
+
+      <mux-video
+        // style={{ aspectRatio: "16 / 9" }}
+        playback-id={playbackId}
+        start-time="4.6"
+        // onPlayerReady={() => console.log("ready!")}
+        {...debugObj}
+        {...mutedObj}
+        {...autoplayObj}
+        // stream-type="live"
+        // primary-color="#ec407a"
+        // secondary-color="#64b5f6"
+        // tertiary-color="#b4004e"
+        // startTime={12}
+        controls
+      ></mux-video>
+
       <div className="options">
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
@@ -74,10 +78,10 @@ function MuxVideoWCPage() {
           />
         </div>
       </div>
-      <h3 className="title">
-        <Link href="/">Browse Elements</Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/">Browse Elements</Link>
+    </>
   );
 }
 
