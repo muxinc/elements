@@ -7,9 +7,21 @@
 
 # Introduction
 
-`<MuxPlayer />` is a Mux-flavored React video player component, built on top of our [mux-player web componnent](../mux-player/README.md) and [Media Chrome](https://media-chrome.org).
+`<MuxPlayer />` is a Mux-flavored React video player component, built on top of our [mux-player web componnent](../mux-player) and [Media Chrome](https://media-chrome.org).
 
-Published on npm as [`@mux/mux-player-react`](https://www.npmjs.com/package/@mux/mux-player-react)
+# Installation
+
+```shell
+npm install @mux/mux-player-react
+```
+
+or
+
+```shell
+yarn add @mux/mux-player-react
+```
+
+# Usage
 
 ```jsx
 <MuxPlayer

@@ -9,9 +9,21 @@
 
 `<mux-player>` is the official Mux-flavored video player web component.
 
-The player UI is built on [Media Chrome](https://media-chrome.org) and [`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video) drives the core video logic used to play Mux Video content.
+The player UI is built on [Media Chrome](https://media-chrome.org) and [`<mux-video>`](../mux-video) drives the core video logic used to play Mux Video content.
 
-Published on npm as [`@mux/mux-player`](https://www.npmjs.com/package/@mux/mux-player)
+# Installation
+
+```shell
+npm install @mux/mux-player-react
+```
+
+or
+
+```shell
+yarn add @mux/mux-player-react
+```
+
+# Usage
 
 ```html
 <mux-player
