@@ -13,10 +13,6 @@ header {
 	justify-content: space-between;
 }
 
-footer {
-	margin-top: 2rem;
-}
-
 .left-header,
 .right-header {
 	display: flex;
@@ -41,10 +37,6 @@ h1 {
 	font-weight: bold;
 	letter-spacing: 0.2em;
 	font-size: 18px;
-}
-
-h1 a {
-	color: var(--text-main);
 }
 
 nav ul {

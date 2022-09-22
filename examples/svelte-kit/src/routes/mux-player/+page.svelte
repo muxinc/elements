@@ -18,26 +18,25 @@
 	});
 </script>
 
-<!-- Test attributes
-      style="aspect-ratio: 16 / 10"
-      primary-color="#5c6ac4"
-      secondary-color="#ecc94b"
-      playback-id="xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE"
-      poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
-      src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
-      muted
-      volume="0.4"
-      playbackrate="2"
-      forward-seek-offset="10"
-      backward-seek-offset="10"
-     -->
+<svelte:head>
+	<style>
+		mux-player {
+			display: block;
+			width: 100%;
+			margin: 1rem 0 2rem;
+			background-color: #000;
+			line-height: 0;
+		}
+
+		mux-player:not([audio]) {
+			aspect-ratio: 16 / 9;
+		}
+	</style>
+</svelte:head>
 
 <mux-player
-	playback-id="g65IqSFtWdpGR100c2W8VUHrfIVWTNRen"
-	env-key="5e67cqdt7hgc9vkla7p0qch7q"
-	metadata-video-id="video-id-54321"
-	metadata-video-title="Svelte Kit: Episode 2"
-	metadata-viewer-user-id="user-id-sveltekit007"
 	stream-type="on-demand"
-/>
+	playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+></mux-player>
+
 <a data-sveltekit-prefetch href="/">Browse Elements</a>
