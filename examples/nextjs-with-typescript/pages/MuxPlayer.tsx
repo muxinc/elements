@@ -37,7 +37,7 @@ const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAs
 };
 
 const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON) => {
-  const { 
+  const {
     'playback-id': playbackId,
     // 'stream-type': streamType,
     tokens,
@@ -113,7 +113,7 @@ const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: st
 const toInitialState = (selectedAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON, query: NextParsedUrlQuery) => {
   const queryState = Object.fromEntries(Object.entries(query).map(([k, v]) => [k, JSON.parse(v as string)]));
   const selectedAssetState = toPlayerPropsFromJSON(selectedAsset, mediaAssets);
-  const initialState = { 
+  const initialState = {
     ...DEFAULT_INITIAL_STATE,
     ...selectedAssetState,
     ...queryState,
@@ -137,25 +137,25 @@ const toValueString = (value: any) => {
 
 const MuxPlayerCodeRenderer = ({ state, component = 'MuxPlayer' }: { state: Partial<MuxPlayerProps>; component?: string; }) => {
   const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
-  const propsStr = stateEntries.length 
+  const propsStr = stateEntries.length
     ? `\n${stateEntries.map(([key, value]) => `  ${key}={${toValueString(value)}}`).join('\n')}\n`
     : '';
   const codeStr = `<${component}${propsStr}/>`;
-  const copyToClipboard = () => { 
-    navigator.clipboard?.writeText(codeStr); 
+  const copyToClipboard = () => {
+    navigator.clipboard?.writeText(codeStr);
   };
   return (
-    <div style={{ backgroundColor: 'lightgrey', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <div className="code-renderer" style={{}}>
       <pre>
-        {codeStr}
+        <code>{codeStr}</code>
       </pre>
       <button onClick={copyToClipboard}>Copy code</button>
     </div>
   );
 };
 
-const UrlPathRenderer = ({ 
-  state, 
+const UrlPathRenderer = ({
+  state,
   location: { origin, pathname } = {
     origin: '',
     pathname: './'
@@ -166,11 +166,11 @@ const UrlPathRenderer = ({
     ? `?${new URLSearchParams(Object.fromEntries(stateEntries.map(([k, v]) => [k, JSON.stringify(v)]))).toString()}`
     : ''
   const urlStr = `${origin}${pathname}${urlSearchParamsStr}`;
-  const copyToClipboard = () => { 
-    navigator.clipboard?.writeText(urlStr); 
+  const copyToClipboard = () => {
+    navigator.clipboard?.writeText(urlStr);
   };
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <div className="url-renderer">
       <a href={urlStr} target="_blank">{urlStr}</a>
       <button onClick={copyToClipboard}>Copy URL</button>
     </div>
@@ -344,8 +344,8 @@ function MuxPlayerPage({ location }: Props) {
       </div>
       <div className="options">
         <MuxPlayerCodeRenderer state={state}/>
-        <UrlPathRenderer 
-          state={state} 
+        <UrlPathRenderer
+          state={state}
           location={typeof window !== 'undefined' ? window.location : location}
         />
         <div>
@@ -373,19 +373,19 @@ function MuxPlayerPage({ location }: Props) {
           </select>
         </div>
         <div><h2>Manual Config</h2></div>
-        <TextRenderer 
-          value={state.playbackId} 
-          name="playbackId" 
+        <TextRenderer
+          value={state.playbackId}
+          name="playbackId"
           onChange={genericOnChange}
         />
-        <EnumRenderer 
-          value={state.streamType} 
-          name="streamType" 
+        <EnumRenderer
+          value={state.streamType}
+          name="streamType"
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
         />
-        <EnumRenderer 
-          value={getPlayerSize(stylesState.width)} 
+        <EnumRenderer
+          value={getPlayerSize(stylesState.width)}
           name="width"
           label="Width Cutoffs for Responsive Player Chrome/UI"
           onChange={({ width: playerSize }) => {
@@ -394,8 +394,8 @@ function MuxPlayerPage({ location }: Props) {
           }}
           values={['extra-small', 'small', 'large']}
         />
-        <BooleanRenderer 
-          value={state.audio} 
+        <BooleanRenderer
+          value={state.audio}
           name="audio"
           onChange={genericOnChange}
         />
@@ -406,16 +406,16 @@ function MuxPlayerPage({ location }: Props) {
           onChange={genericOnChange}
           placeholder={`Inferred from playbackId`}
         />
-        <URLRenderer 
-          value={state.customDomain} 
-          name="customDomain" 
-          onChange={genericOnChange} 
+        <URLRenderer
+          value={state.customDomain}
+          name="customDomain"
+          onChange={genericOnChange}
           placeholder="my.customdomain.com"
         />
-        <URLRenderer 
-          value={state.poster} 
-          name="poster" 
-          onChange={genericOnChange} 
+        <URLRenderer
+          value={state.poster}
+          name="poster"
+          onChange={genericOnChange}
           placeholder={`Inferred from playbackId`}
         />
         <TextRenderer
@@ -429,35 +429,35 @@ function MuxPlayerPage({ location }: Props) {
           name="title"
           onChange={genericOnChange}
         />
-        <BooleanRenderer 
-          value={state.paused} 
+        <BooleanRenderer
+          value={state.paused}
           name="paused"
           onChange={genericOnChange}
         />
-        <EnumRenderer 
-          value={state.autoPlay} 
-          name="autoPlay" 
-          onChange={genericOnChange} 
+        <EnumRenderer
+          value={state.autoPlay}
+          name="autoPlay"
+          onChange={genericOnChange}
           values={[true, false, 'any', 'muted']}
         />
-        <BooleanRenderer 
-          value={state.muted} 
+        <BooleanRenderer
+          value={state.muted}
           name="muted"
           onChange={genericOnChange}
         />
-        <BooleanRenderer 
-          value={state.nohotkeys} 
+        <BooleanRenderer
+          value={state.nohotkeys}
           name="nohotkeys"
           label="No Hot Keys"
           onChange={genericOnChange}
         />
-        <BooleanRenderer 
-          value={state.defaultShowRemainingTime} 
+        <BooleanRenderer
+          value={state.defaultShowRemainingTime}
           name="defaultShowRemainingTime"
           onChange={genericOnChange}
         />
-        <BooleanRenderer 
-          value={state.defaultHiddenCaptions} 
+        <BooleanRenderer
+          value={state.defaultHiddenCaptions}
           name="defaultHiddenCaptions"
           onChange={genericOnChange}
         />
@@ -503,19 +503,19 @@ function MuxPlayerPage({ location }: Props) {
           onChange={genericOnChange}
           min={0}
         />
-        <BooleanRenderer 
-          value={state.debug} 
+        <BooleanRenderer
+          value={state.debug}
           name="debug"
           onChange={genericOnChange}
         />
-        <BooleanRenderer 
-          value={state.loop} 
+        <BooleanRenderer
+          value={state.loop}
           name="loop"
           onChange={genericOnChange}
         />
-        <EnumRenderer 
-          value={state.crossOrigin} 
-          name="crossOrigin" 
+        <EnumRenderer
+          value={state.crossOrigin}
+          name="crossOrigin"
           onChange={genericOnChange}
           values={['anonymous', 'use-credentials']}
         />
@@ -530,8 +530,8 @@ function MuxPlayerPage({ location }: Props) {
         /> */}
         {/** @TODO Is this sufficient for a UI or do we want a "fancier" one that allows adding/removing dynamic items from a list (CJP) */}
         <EnumMultiSelectRenderer
-          value={state.playbackRates} 
-          name="playbackRates" 
+          value={state.playbackRates}
+          name="playbackRates"
           onChange={genericOnChange}
           values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
         />
@@ -545,9 +545,9 @@ function MuxPlayerPage({ location }: Props) {
           name="secondaryColor"
           onChange={genericOnChange}
         />
-        <EnumMultiSelectRenderer 
-          value={getControlCustomizationCSSVars(stylesState)} 
-          name='--controls' 
+        <EnumMultiSelectRenderer
+          value={getControlCustomizationCSSVars(stylesState)}
+          name='--controls'
           label="Display Controls CSS vars (Hiding usage)"
           onChange={({ ['--controls']: cssVars }) => {
             const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
@@ -555,7 +555,7 @@ function MuxPlayerPage({ location }: Props) {
               return curCSSVars;
             }, {});
             genericOnStyleChange(nextCSSVars);
-          }} 
+          }}
           values={ControlCustomizationCSSVars}
         />
         <ColorRenderer
@@ -564,13 +564,13 @@ function MuxPlayerPage({ location }: Props) {
           label="Controls Backdrop Color"
           onChange={genericOnStyleChange}
         />
-        <EnumMultiSelectRenderer 
-          value={state.hotkeys?.split(' ')} 
-          name='hotkeys' 
+        <EnumMultiSelectRenderer
+          value={state.hotkeys?.split(' ')}
+          name='hotkeys'
           label="Hot Keys"
           onChange={({ hotkeys }) => {
             genericOnChange({ hotkeys: hotkeys.join(' ') });
-          }} 
+          }}
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
         />
       </div>
