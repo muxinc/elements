@@ -145,9 +145,9 @@ const MuxPlayerCodeRenderer = ({ state, component = 'MuxPlayer' }: { state: Part
     navigator.clipboard?.writeText(codeStr);
   };
   return (
-    <div style={{ backgroundColor: 'lightgrey', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <div className="code-renderer" style={{}}>
       <pre>
-        {codeStr}
+        <code>{codeStr}</code>
       </pre>
       <button onClick={copyToClipboard}>Copy code</button>
     </div>
