@@ -255,8 +255,8 @@ const MediaFullscreenButton = (props: ComponentProps) => html`
   </media-fullscreen-button>`;
 
 // prettier-ignore
-const MediaCastButton = () => html`
-  <media-cast-button>
+const MediaCastButton = (props: ComponentProps) => html`
+  <media-cast-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
     ${icons.CastEnter()}
     ${icons.CastExit()}
   </media-cast-button>`;
@@ -298,7 +298,7 @@ export const AudioVodChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaVolumeRange()}
     ${MediaPlaybackRateButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
   </media-control-bar>
 `;
 
@@ -316,7 +316,7 @@ export const AudioDvrChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaVolumeRange()}
     ${MediaPlaybackRateButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
   </media-control-bar>
 `;
 
@@ -329,7 +329,7 @@ export const AudioLiveChrome = (props: ThemeMuxTemplateProps) => html`
     ${MediaMuteButton()}
     ${MediaVolumeRange()}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
   </media-control-bar>
 `;
 
@@ -339,7 +339,7 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaCaptionsButton(props)}
     <div class="spacer"></div>
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
@@ -359,7 +359,7 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
@@ -399,7 +399,7 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     ${MediaPlaybackRateButton(props)}
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
     <div class="padding-2"></div>
@@ -416,7 +416,7 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
@@ -446,7 +446,7 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
   </media-control-bar>
@@ -462,7 +462,7 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
   </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
@@ -500,7 +500,7 @@ export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
     <div class="spacer"></div>
     ${MediaCaptionsButton(props)}
     ${MediaAirplayButton(props)}
-    ${MediaCastButton()}
+    ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
     <div class="padding-2"></div>
