@@ -119,6 +119,12 @@ audio {
   background-color: #e9e9f9;
 }
 
+@media (prefers-color-scheme: dark) {
+  .options > div:nth-of-type(odd) {
+    background-color: #3b3b3b;
+  }
+}
+
 div.code-renderer {
   background-color: lightgrey;
   display: flex;
@@ -131,8 +137,14 @@ div.code-renderer {
   overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  .options > div:nth-of-type(odd) {
-    background-color: #3b3b3b;
-  }
+div.url-renderer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.url-renderer a {
+  padding-block: 5px;
+  width: 100%;
+  overflow: scroll;
+  max-height: 100px;
 }

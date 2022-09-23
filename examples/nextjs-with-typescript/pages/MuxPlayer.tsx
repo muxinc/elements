@@ -170,7 +170,7 @@ const UrlPathRenderer = ({
     navigator.clipboard?.writeText(urlStr);
   };
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+    <div className="url-renderer">
       <a href={urlStr} target="_blank">{urlStr}</a>
       <button onClick={copyToClipboard}>Copy URL</button>
     </div>
