@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from "next/head";
 import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import { useEffect, useReducer, useRef, useState } from "react";
@@ -287,61 +288,63 @@ function MuxPlayerPage({ location }: Props) {
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
   return (
-    <div>
-      <h1>MuxPlayer Demo</h1>
-      <div>
-        <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
-        <MuxPlayer
-          ref={mediaElRef}
-          style={stylesState}
-          envKey={state.envKey}
-          metadata={state.metadata}
-          title={state.title}
-          startTime={state.startTime}
-          currentTime={state.currentTime}
-          thumbnailTime={state.thumbnailTime}
-          poster={state.poster}
-          placeholder={state.placeholder}
-          playbackId={state.playbackId}
-          tokens={state.tokens}
-          customDomain={state.customDomain}
-          forwardSeekOffset={state.forwardSeekOffset}
-          backwardSeekOffset={state.backwardSeekOffset}
-          crossOrigin={state.crossOrigin}
-          nohotkeys={state.nohotkeys}
-          hotkeys={state.hotkeys}
-          // onPlayerReady={() => console.log("ready!")}
-          debug={state.debug}
-          loop={state.loop}
-          muted={state.muted}
-          volume={state.volume}
-          paused={state.paused}
-          autoPlay={state.autoPlay}
-          streamType={state.streamType}
-          audio={state.audio}
-          primaryColor={state.primaryColor}
-          secondaryColor={state.secondaryColor}
-          defaultShowRemainingTime={state.defaultShowRemainingTime}
-          defaultHiddenCaptions={state.defaultHiddenCaptions}
-          /** @TODO This doesn't appear to work? (CJP) */
-          // playbackRate={state.playbackRate}
-          playbackRates={state.playbackRates}
-          onPlay={(evt: Event) => {
-            onPlay(evt);
-            // dispatch(updateProps({ paused: false }));
-          }}
-          onPause={(evt: Event) => {
-            onPause(evt);
-            // dispatch(updateProps({ paused: true }));
-          }}
-          onVolumeChange={(event) => {
-            // const muxPlayerEl = event.target as MuxPlayerElement
-            // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
-          }}
-          onSeeking={onSeeking}
-          onSeeked={onSeeked}
-        />
-      </div>
+    <>
+      <Head>
+        <title>&lt;MuxPlayer/&gt; Demo</title>
+      </Head>
+
+      <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
+      <MuxPlayer
+        ref={mediaElRef}
+        style={stylesState}
+        envKey={state.envKey}
+        metadata={state.metadata}
+        title={state.title}
+        startTime={state.startTime}
+        currentTime={state.currentTime}
+        thumbnailTime={state.thumbnailTime}
+        poster={state.poster}
+        placeholder={state.placeholder}
+        playbackId={state.playbackId}
+        tokens={state.tokens}
+        customDomain={state.customDomain}
+        forwardSeekOffset={state.forwardSeekOffset}
+        backwardSeekOffset={state.backwardSeekOffset}
+        crossOrigin={state.crossOrigin}
+        nohotkeys={state.nohotkeys}
+        hotkeys={state.hotkeys}
+        // onPlayerReady={() => console.log("ready!")}
+        debug={state.debug}
+        loop={state.loop}
+        muted={state.muted}
+        volume={state.volume}
+        paused={state.paused}
+        autoPlay={state.autoPlay}
+        streamType={state.streamType}
+        audio={state.audio}
+        primaryColor={state.primaryColor}
+        secondaryColor={state.secondaryColor}
+        defaultShowRemainingTime={state.defaultShowRemainingTime}
+        defaultHiddenCaptions={state.defaultHiddenCaptions}
+        /** @TODO This doesn't appear to work? (CJP) */
+        // playbackRate={state.playbackRate}
+        playbackRates={state.playbackRates}
+        onPlay={(evt: Event) => {
+          onPlay(evt);
+          // dispatch(updateProps({ paused: false }));
+        }}
+        onPause={(evt: Event) => {
+          onPause(evt);
+          // dispatch(updateProps({ paused: true }));
+        }}
+        onVolumeChange={(event) => {
+          // const muxPlayerEl = event.target as MuxPlayerElement
+          // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
+        }}
+        onSeeking={onSeeking}
+        onSeeked={onSeeked}
+      />
+
       <div className="options">
         <MuxPlayerCodeRenderer state={state}/>
         <UrlPathRenderer
@@ -574,12 +577,10 @@ function MuxPlayerPage({ location }: Props) {
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
         />
       </div>
-      <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/"><a>Browse Elements</a></Link>
+    </>
   );
 }
 
