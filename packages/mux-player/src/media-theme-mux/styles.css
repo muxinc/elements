@@ -61,6 +61,12 @@
   width: 100%;
 }
 
+[disabled],
+[aria-disabled='true'] {
+  opacity: 60%;
+  cursor: not-allowed;
+}
+
 media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
   --captions-button: none;
 }
