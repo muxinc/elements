@@ -58,7 +58,7 @@ export default class MediaThemeMux extends MediaTheme {
 
   render() {
     const props: ThemeMuxTemplateProps = {
-      hasSrc: this.hasAttribute('src'),
+      hasSrc: this.hasAttribute('has-src'),
       audio: this.hasAttribute('audio'),
       nohotkeys: this.hasAttribute('nohotkeys'),
       hotkeys: this.getAttribute('hotkeys'),

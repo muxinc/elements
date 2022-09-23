@@ -28,11 +28,11 @@ const isLiveOrDVR = (props: MuxTemplateProps) =>
 
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
-    src="${
+    has-src="${
       !!props.src
-        ? props.src
+        ? !!props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
+        ? !!getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
         : false
     }"
     nohotkeys="${props.noHotKeys ?? false}"
