@@ -198,7 +198,7 @@ const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
 };
 
 // prettier-ignore
-const MediaPlayButton = (props) => html`
+const MediaPlayButton = (props: ComponentProps) => html`
   <media-play-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
     ${icons.Play()}
     ${icons.Pause()}
@@ -234,20 +234,20 @@ const MediaCaptionsButton = ({ defaultHiddenCaptions }: CaptionsButtonProps) => 
   </media-captions-button>`;
 
 // prettier-ignore
-const MediaAirplayButton = (props) => html`
+const MediaAirplayButton = (props: ComponentProps) => html`
   <media-airplay-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
     ${icons.Airplay()}
   </media-airplay-button>`;
 
 // prettier-ignore
-const MediaPipButton = (props) => html`
+const MediaPipButton = (props: ComponentProps) => html`
   <media-pip-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
     ${icons.PipEnter()}
     ${icons.PipExit()}
   </media-pip-button>`;
 
 // prettier-ignore
-const MediaFullscreenButton = (props) => html`
+const MediaFullscreenButton = (props: ComponentProps) => html`
   <media-fullscreen-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
     ${icons.FullscreenEnter()}
     ${icons.FullscreenExit()}
@@ -271,7 +271,7 @@ const MediaVolumeRange = () => html`
   </media-volume-range>`;
 
 // prettier-ignore
-const MediaTimeRange = (props) => html`
+const MediaTimeRange = (props: ComponentProps) => html`
   <media-time-range disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
   </media-time-range>`;
 
