@@ -15,7 +15,7 @@ const MediaChromeSizes = {
 };
 
 type ThemeMuxTemplateProps = {
-  src?: string | null;
+  hasSrc: boolean;
   streamType: string | null;
   nohotkeys?: boolean;
   hotkeys: string | null;
