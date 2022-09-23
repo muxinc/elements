@@ -26,6 +26,10 @@ const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerS
           // user-implemented styles
           ...style,
         }}
+        // we pass the rest of the props to mux-player too.
+        // There is a possibility that mux-player imports before Suspense has had the opportunity
+        // to replace this placeholder with MuxPlayerReact.
+        // In that case, we want this placeholder to look as much like the incoming player as possible.
         {...rest}
       >
         {/* Spinner */}
