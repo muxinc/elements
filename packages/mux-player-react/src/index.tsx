@@ -155,6 +155,7 @@ const usePlayer = (
     paused,
     playbackId,
     playbackRates,
+    currentTime,
     ...remainingProps
   } = props;
   useObjectPropEffect('playbackRates', playbackRates, ref);
@@ -180,6 +181,9 @@ const usePlayer = (
       return defaultHasChanged(playerEl, value, propName);
     }
   );
+  // NOTE: Somewhere in the codebase, `currentTime` is getting cast to a number, resulting in `NaN` + an error.
+  // This is a bandaid solution for now. (CJP)
+  useObjectPropEffect('currentTime', currentTime ?? 0, ref);
   useEventCallbackEffect('abort', ref, onAbort);
   useEventCallbackEffect('canplay', ref, onCanPlay);
   useEventCallbackEffect('canplaythrough', ref, onCanPlayThrough);
