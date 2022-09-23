@@ -71,6 +71,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   debug: undefined,
   autoPlay: undefined,
   startTime: undefined,
+  currentTime: undefined,
   paused: undefined,
   nohotkeys: undefined,
   hotkeys: undefined,
@@ -285,7 +286,6 @@ function MuxPlayerPage({ location }: Props) {
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
-  console.log('stylesState', stylesState);
   return (
     <div>
       <h1>MuxPlayer Demo</h1>
@@ -298,6 +298,7 @@ function MuxPlayerPage({ location }: Props) {
           metadata={state.metadata}
           title={state.title}
           startTime={state.startTime}
+          currentTime={state.currentTime}
           thumbnailTime={state.thumbnailTime}
           poster={state.poster}
           placeholder={state.placeholder}
@@ -489,6 +490,14 @@ function MuxPlayerPage({ location }: Props) {
           min={0}
         />
         <NumberRenderer
+          value={state.currentTime}
+          name="currentTime"
+          onChange={genericOnChange}
+          min={0}
+          /** @TODO solve `undefined` error cases (CJP) */
+          // max={mediaElRef.current?.duration}
+        />
+        <NumberRenderer
           value={state.thumbnailTime}
           name="thumbnailTime"
           onChange={genericOnChange}
@@ -545,7 +554,6 @@ function MuxPlayerPage({ location }: Props) {
               curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
               return curCSSVars;
             }, {});
-            console.log('nextCSSVars', nextCSSVars);
             genericOnStyleChange(nextCSSVars);
           }} 
           values={ControlCustomizationCSSVars}
