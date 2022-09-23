@@ -206,14 +206,14 @@ const MediaPlayButton = (props: ComponentProps) => html`
   </media-play-button>`;
 
 // prettier-ignore
-const MediaSeekBackwardButton = ({ backwardSeekOffset, src }: ComponentProps) => html`
-  <media-seek-backward-button seek-offset="${backwardSeekOffset}" disabled="${!src}" aria-disabled="${src ? false : 'true'}">
+const MediaSeekBackwardButton = ({ backwardSeekOffset, hasSrc }: ComponentProps) => html`
+  <media-seek-backward-button seek-offset="${backwardSeekOffset}" disabled="${!hasSrc}" aria-disabled="${hasSrc ? false : 'true'}">
     ${icons.SeekBackward({ value: backwardSeekOffset })}
   </media-seek-backward-button>`;
 
 // prettier-ignore
-const MediaSeekForwardButton = ({ forwardSeekOffset, src }: ComponentProps) => html`
-  <media-seek-forward-button seek-offset="${forwardSeekOffset}" disabled="${!src}" aria-disabled="${src ? false : 'true'}">
+const MediaSeekForwardButton = ({ forwardSeekOffset, hasSrc }: ComponentProps) => html`
+  <media-seek-forward-button seek-offset="${forwardSeekOffset}" disabled="${!hasSrc}" aria-disabled="${hasSrc ? false : 'true'}">
     ${icons.SeekForward({ value: forwardSeekOffset })}
   </media-seek-forward-button>`;
 
@@ -277,8 +277,8 @@ const MediaTimeRange = (props: ComponentProps) => html`
   </media-time-range>`;
 
 // prettier-ignore
-const TimeDisplay = ({ defaultShowRemainingTime, src }: ComponentProps) => html`
-  <mxp-time-display remaining="${defaultShowRemainingTime}" disabled="${!src}" aria-disabled="${src ? false : 'true'}">
+const TimeDisplay = ({ defaultShowRemainingTime, hasSrc }: ComponentProps) => html`
+  <mxp-time-display remaining="${defaultShowRemainingTime}" disabled="${!hasSrc}" aria-disabled="${hasSrc ? false : 'true'}">
   </mxp-time-display>`;
 
 // prettier-ignore
