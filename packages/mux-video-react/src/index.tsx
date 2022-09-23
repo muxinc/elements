@@ -7,6 +7,7 @@ import {
   setupAutoplay,
   MuxMediaProps,
   StreamTypes,
+  PlaybackTypes,
   toMuxVideoURL,
   PlaybackEngine,
   generatePlayerInitTime,
@@ -28,7 +29,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     debug,
     beaconCollectionDomain,
     playbackId,
-    preferMse,
+    preferPlayback,
     type,
     streamType,
     startTime,
@@ -64,7 +65,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     };
     const nextPlaybackEngineRef = initialize(propsWithState, mediaElRef.current, playbackEngineRef.current);
     playbackEngineRef.current = nextPlaybackEngineRef;
-    setUpdateAutoplay(() => {
+    setUpdateAutoplay(() => () => {
       if (!mediaElRef.current) return;
       setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current);
     });
@@ -91,7 +92,7 @@ MuxVideo.propTypes = {
   beaconCollectionDomain: PropTypes.string,
   playbackId: PropTypes.string,
   playerInitTime: PropTypes.number,
-  preferMse: PropTypes.bool,
+  preferPlayback: PropTypes.oneOf(Object.values(PlaybackTypes)),
   type: PropTypes.oneOf(allMediaTypes),
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   startTime: PropTypes.number,

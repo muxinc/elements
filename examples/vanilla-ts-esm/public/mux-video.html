@@ -2,35 +2,44 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Basic &lt;mux-video/&gt; example</title>
+    <title>&lt;mux-video&gt; example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
     <script type="module" src="./dist/mux-video.js"></script>
     <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
       mux-video {
-        width: 100%;
-        max-width: 800px;
-        margin: 40px auto;
         display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        margin: 1rem 0 2rem;
       }
     </style>
   </head>
   <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
     <mux-video
-      playback-id="gZh02tKCI015W6k2XdYSh4srGnksYvsoT1uHsYOlv4Blo"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
       metadata-video-id="video-id-12345"
       metadata-video-title="Star Wars: Episode 3"
       metadata-viewer-user-id="user-id-6789"
       stream-type="on-demand"
       controls
-      autoplay
       muted
-    >
-    </mux-video>
+    ></mux-video>
+
     <a href="../">Browse Elements</a>
   </body>
 </html>

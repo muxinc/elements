@@ -1,5 +1,6 @@
 :host {
   display: inline-block;
+  width: 100%;
 }
 
 /* Hide custom elements that are not defined yet */

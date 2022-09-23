@@ -2,61 +2,19 @@ import Link from "next/link";
 
 function HomePage() {
   return (
-    <div>
-      <h1>Browse Mux Elements</h1>
+    <nav>
       <ul>
-        <li>
-          <h3>
-            <Link href="/MuxVideo">
-              <a>Mux Video Demo</a>
-            </Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/MuxAudio">
-              <a>Mux Audio Demo</a>
-            </Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/MuxPlayer">
-              <a>Mux Player Demo</a>
-            </Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/MuxPlayerDynamic">
-              <a>Mux Player Demo (Dynamically Loaded)</a>
-            </Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/MuxUploader">
-              <a>Mux Uploader with Mux Uploader Drop Demo</a>
-            </Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/mux-video">Mux Video (Web Component) Demo</Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/mux-audio">Mux Audio (Web Component) Demo</Link>
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <Link href="/mux-player">Mux Player (Web Component) Demo</Link>
-          </h3>
-        </li>
+        <li><Link href="/MuxVideo"><a className="video">&lt;MuxVideo&gt;</a></Link></li>
+        <li><Link href="/MuxAudio"><a className="audio">&lt;MuxAudio&gt;</a></Link></li>
+        <li><Link href="/MuxPlayer"><a className="player">&lt;MuxPlayer&gt;</a></Link></li>
+        <li><Link href="/MuxPlayerDynamic"><a className="player">&lt;MuxPlayer&gt; (dynamic)</a></Link></li>
+        <li><Link href="/MuxPlayerIframe"><a className="player">&lt;MuxPlayer&gt; (w/o fullscreen)</a></Link></li>
+        <li><Link href="/MuxUploader"><a className="uploader">&lt;MuxUploader&gt;</a></Link></li>
+        <li><Link href="/mux-video"><a className="video">&lt;mux-video&gt; (Web Component)</a></Link></li>
+        <li><Link href="/mux-audio"><a className="audio">&lt;mux-audio&gt; (Web Component)</a></Link></li>
+        <li><Link href="/mux-player"><a className="player">&lt;mux-player&gt; (Web Component)</a></Link></li>
       </ul>
-    </div>
+    </nav>
   );
 }
 

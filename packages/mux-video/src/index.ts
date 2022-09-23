@@ -5,6 +5,7 @@ import {
   generatePlayerInitTime,
   MuxMediaProps,
   StreamTypes,
+  PlaybackTypes,
   ValueOf,
   toMuxVideoURL,
   teardown,
@@ -31,18 +32,18 @@ type AttributeNames = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   CUSTOM_DOMAIN: 'custom-domain';
   PLAYBACK_ID: 'playback-id';
-  PREFER_MSE: 'prefer-mse';
+  PREFER_PLAYBACK: 'prefer-playback';
   TYPE: 'type';
   STREAM_TYPE: 'stream-type';
   START_TIME: 'start-time';
 };
 
-const Attributes: AttributeNames = {
+export const Attributes: AttributeNames = {
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
   METADATA_URL: 'metadata-url',
-  PREFER_MSE: 'prefer-mse',
+  PREFER_PLAYBACK: 'prefer-playback',
   PLAYER_SOFTWARE_VERSION: 'player-software-version',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
   METADATA_VIDEO_ID: 'metadata-video-id',
@@ -97,14 +98,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   set playerSoftwareVersion(value: string | undefined) {
     this.__playerSoftwareVersion = value;
-  }
-
-  /**
-   * @deprecated please use ._hls instead
-   */
-  get hls(): PlaybackEngine | undefined {
-    console.warn('<mux-video>.hls is deprecated, please use ._hls instead');
-    return this._hls;
   }
 
   get _hls(): PlaybackEngine | undefined {
@@ -297,16 +290,19 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  /** @TODO Followup: naming convention: all lower (common per HTMLElement props) vs. camel (common per JS convention) (CJP) */
-  get preferMse(): boolean {
-    return this.getAttribute(Attributes.PREFER_MSE) != null;
+  get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
+    const val = this.getAttribute(Attributes.PREFER_PLAYBACK);
+    if (val === PlaybackTypes.MSE || val === PlaybackTypes.NATIVE) return val;
+    return undefined;
   }
 
-  set preferMse(val: boolean) {
-    if (val) {
-      this.setAttribute(Attributes.PREFER_MSE, '');
+  set preferPlayback(val: ValueOf<PlaybackTypes> | undefined) {
+    if (val === this.preferPlayback) return;
+
+    if (val === PlaybackTypes.MSE || val === PlaybackTypes.NATIVE) {
+      this.setAttribute(Attributes.PREFER_PLAYBACK, val);
     } else {
-      this.removeAttribute(Attributes.PREFER_MSE);
+      this.removeAttribute(Attributes.PREFER_PLAYBACK);
     }
   }
 

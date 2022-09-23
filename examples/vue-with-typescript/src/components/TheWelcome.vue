@@ -1,14 +1,9 @@
-<script setup lang="ts">
-import WelcomeItem from "./WelcomeItem.vue";
-import IconPlay from "./icons/IconPlay.vue";
-</script>
-
 <template>
-  <WelcomeItem>
-    <template #icon>
-      <IconPlay />
-    </template>
-    <template #heading>Check Out Open Elements!</template>
-    Choose one of the Open Elements to Preview
-  </WelcomeItem>
+  <nav>
+    <ul>
+      <li><RouterLink to="./mux-video" class="video">&lt;mux-video&gt;</RouterLink></li>
+      <li><RouterLink to="./mux-audio" class="audio">&lt;mux-audio&gt;</RouterLink></li>
+      <li><RouterLink to="./mux-player" class="player">&lt;mux-player&gt;</RouterLink></li>
+    </ul>
+  </nav>
 </template>

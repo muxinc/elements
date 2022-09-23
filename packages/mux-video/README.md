@@ -146,16 +146,20 @@ When `metadata-url` is specified then `<mux-video>` will asychronously fetch the
 
 Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-data-actionable-with-metadata) to view an exhaustive list of available values.
 
-### Advanced: prefer-mse
+### Advanced: prefer-playback
 
-Pass the `prefer-mse` attribute to prioritze the in-code [Media Source Extensions](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API) based engine (currently [hls.js](https://github.com/video-dev/hls.js/)) when MSE are supported by the browser. (Without `prefer-mse`, the default behaviour for `<mux-video>` is to try the native playback via the underlying `<video/>` tag )
+By default `<mux-video>` will try to use native playback via the underlying `<video>` tag whenever possible.
+However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API).
+This includes MSE in Mac OS Safari.
+
+If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then set the `prefer-playback` attribute to `mse`.
 
 ```html
 <mux-video
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
-  prefer-mse
+  prefer-playback="mse"
   controls
 >
 </mux-video>
@@ -170,7 +174,7 @@ By default `<mux-video>` will try to figure out the type of media you're trying 
   src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
-  prefer-mse
+  prefer-playback="mse"
   controls
 >
 </mux-video>
@@ -184,7 +188,7 @@ Sometimes, however, your `src` URL may not have an identifiable extension. In th
   type="application/vnd.apple.mpegurl"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
-  prefer-mse
+  prefer-playback="mse"
   controls
 >
 </mux-video>
@@ -198,7 +202,7 @@ Or, for convenience, we also support the shorthand `type="hls`:
   type="hls"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
-  prefer-mse
+  prefer-playback="mse"
   controls
 >
 </mux-video>
