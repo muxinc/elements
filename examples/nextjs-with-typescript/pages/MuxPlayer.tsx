@@ -563,7 +563,7 @@ function MuxPlayerPage({ location }: Props) {
           onChange={({ hotkeys }) => {
             genericOnChange({ hotkeys: hotkeys.join(' ') });
           }} 
-          values={['nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
+          values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
         />
       </div>
       <h3 className="title">
