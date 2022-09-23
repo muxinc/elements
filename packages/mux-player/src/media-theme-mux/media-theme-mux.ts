@@ -58,7 +58,7 @@ export default class MediaThemeMux extends MediaTheme {
 
   render() {
     const props: ThemeMuxTemplateProps = {
-      src: this.getAttribute('src'),
+      hasSrc: this.hasAttribute('src'),
       audio: this.hasAttribute('audio'),
       nohotkeys: this.hasAttribute('nohotkeys'),
       hotkeys: this.getAttribute('hotkeys'),
@@ -74,7 +74,8 @@ export default class MediaThemeMux extends MediaTheme {
       title: this.getAttribute('title'),
     };
 
-    props.nohotkeys = props.src == null ? true : props.nohotkeys;
+    // if we don't have a src, we want to disable all hotkeys
+    props.nohotkeys = props.hasSrc ? props.nohotkeys : true;
 
     if (
       [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)
@@ -89,7 +90,7 @@ export default class MediaThemeMux extends MediaTheme {
           ${cssStr}
         </style>
         <media-controller
-          gestures-disabled="${props.src == null}"
+          gestures-disabled="${!props.hasSrc}"
           hotkeys="${props.hotkeys || false}"
           nohotkeys="${props.nohotkeys || false}"
           audio="${props.audio || false}"
@@ -199,7 +200,7 @@ const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
 
 // prettier-ignore
 const MediaPlayButton = (props: ComponentProps) => html`
-  <media-play-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
+  <media-play-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
     ${icons.Play()}
     ${icons.Pause()}
   </media-play-button>`;
@@ -235,20 +236,20 @@ const MediaCaptionsButton = ({ defaultHiddenCaptions }: CaptionsButtonProps) => 
 
 // prettier-ignore
 const MediaAirplayButton = (props: ComponentProps) => html`
-  <media-airplay-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
+  <media-airplay-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
     ${icons.Airplay()}
   </media-airplay-button>`;
 
 // prettier-ignore
 const MediaPipButton = (props: ComponentProps) => html`
-  <media-pip-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
+  <media-pip-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
     ${icons.PipEnter()}
     ${icons.PipExit()}
   </media-pip-button>`;
 
 // prettier-ignore
 const MediaFullscreenButton = (props: ComponentProps) => html`
-  <media-fullscreen-button disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
+  <media-fullscreen-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
     ${icons.FullscreenEnter()}
     ${icons.FullscreenExit()}
   </media-fullscreen-button>`;
@@ -272,7 +273,7 @@ const MediaVolumeRange = () => html`
 
 // prettier-ignore
 const MediaTimeRange = (props: ComponentProps) => html`
-  <media-time-range disabled="${!props.src}" aria-disabled="${props.src ? false : 'true'}">
+  <media-time-range disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
   </media-time-range>`;
 
 // prettier-ignore
