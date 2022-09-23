@@ -74,6 +74,8 @@ export default class MediaThemeMux extends MediaTheme {
       title: this.getAttribute('title'),
     };
 
+    props.nohotkeys = props.src == null ? true : props.nohotkeys;
+
     if (
       [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any)
     ) {
@@ -87,6 +89,7 @@ export default class MediaThemeMux extends MediaTheme {
           ${cssStr}
         </style>
         <media-controller
+          gestures-disabled="${props.src == null}"
           hotkeys="${props.hotkeys || false}"
           nohotkeys="${props.nohotkeys || false}"
           audio="${props.audio || false}"
