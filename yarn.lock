@@ -10450,10 +10450,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@0.10.4:
-  version "0.10.4"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.10.4.tgz#9609f6ced92211bcce77080eed03ef6ca85abf2e"
-  integrity sha512-ATJAZOw7Sv1dR/wp0vMFZ3HiL+fIcov54qQmXW1/lEBup/+Zl/FE7KiKo7aDDbvjOzOy8FvM8Lu42GCF2/LUqg==
+media-chrome@0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.11.1.tgz#03b27c42493083b11b0d4c0f6298719c46bb54b3"
+  integrity sha512-XLoOssPAAi3Se82puUnDDFdrVh4Vl8bU1Qn5rnikvJOZenqAk+M5AEZh4Pe5IOMebg75kDZl/FEaj7bYSQ7GZg==
 
 media-typer@0.3.0:
   version "0.3.0"

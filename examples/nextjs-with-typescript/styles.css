@@ -87,7 +87,6 @@ li a.uploader {
 mux-player:not([audio]),
 mux-video:not([audio]),
 video {
-  width: 100%;
   display: block;
   line-height: 0;
   margin-bottom: 1rem;
