@@ -1,5 +1,6 @@
 // @ts-nocheck
 import Link from "next/link";
+import Head from "next/head";
 import "@mux/mux-player";
 import { useState } from "react";
 
@@ -18,8 +19,11 @@ function MuxPlayerWCPage() {
   const mutedObj = muted ? { muted: "" } : {};
   const autoplayObj = autoplay ? { autoplay } : {};
   return (
-    <div>
-      <h1>mux-player Demo</h1>
+    <>
+      <Head>
+        <title>&lt;mux-player&gt; Demo</title>
+      </Head>
+
       <div>
         <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
         <mux-player
@@ -75,10 +79,10 @@ function MuxPlayerWCPage() {
           />
         </div>
       </div>
-      <h3 className="title">
-        <Link href="/">Browse Elements</Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/">Browse Elements</Link>
+    </>
   );
 }
 
