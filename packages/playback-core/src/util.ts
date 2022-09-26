@@ -1,6 +1,4 @@
-import { ValueOf, StreamTypes, ExtensionMimeTypeMap, MimeTypeShorthandMap, MuxMediaProps } from './types';
-
-type KeyTypes = string | number | symbol;
+import { isKeyOf, ValueOf, StreamTypes, ExtensionMimeTypeMap, MimeTypeShorthandMap, MuxMediaProps } from './types';
 
 type addEventListenerWithTeardown = <K extends keyof HTMLMediaElementEventMap>(
   mediaEl: HTMLMediaElement,
@@ -22,11 +20,6 @@ export const addEventListenerWithTeardown: addEventListenerWithTeardown = (media
     },
     { once: true }
   );
-};
-
-// Type Guard to determine if a given key is actually a key of some object of type T
-export const isKeyOf = <T = any>(k: KeyTypes, o: T): k is keyof T => {
-  return k in o;
 };
 
 export function inSeekableRange(seekable: TimeRanges, duration: number, time: number) {

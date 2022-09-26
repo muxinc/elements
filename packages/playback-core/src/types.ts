@@ -2,6 +2,13 @@ import { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes } from './autoplay';
 
+type KeyTypes = string | number | symbol;
+
+// Type Guard to determine if a given key is actually a key of some object of type T
+export const isKeyOf = <T = any>(k: KeyTypes, o: T): k is keyof T => {
+  return k in o;
+};
+
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
