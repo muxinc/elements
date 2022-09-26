@@ -2,6 +2,8 @@ import { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes } from './autoplay';
 
+export type { Autoplay, UpdateAutoplay } from './autoplay';
+
 type KeyTypes = string | number | symbol;
 
 // Type Guard to determine if a given key is actually a key of some object of type T

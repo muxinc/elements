@@ -4,7 +4,6 @@ import { setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
 import { inSeekableRange, addEventListenerWithTeardown, toPlaybackIdParts, getType } from './util';
-import type { Autoplay, UpdateAutoplay } from './autoplay';
 import {
   ValueOf,
   StreamTypes,
@@ -14,7 +13,7 @@ import {
   MuxMediaPropsInternal,
 } from './types';
 
-export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addTextTrack, removeTextTrack };
+export { mux, Hls, MediaError, setupAutoplay, addTextTrack, removeTextTrack };
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
