@@ -3,17 +3,9 @@ import Hls from 'hls.js';
 import { setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { isKeyOf, inSeekableRange, addEventListenerWithTeardown } from './util';
+import { inSeekableRange, addEventListenerWithTeardown, toPlaybackIdParts, getType, getStreamTypeConfig } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
-import {
-  ValueOf,
-  StreamTypes,
-  PlaybackTypes,
-  ExtensionMimeTypeMap,
-  MimeTypeShorthandMap,
-  MuxMediaProps,
-  MuxMediaPropsInternal,
-} from './types';
+import { PlaybackTypes, ExtensionMimeTypeMap, MuxMediaProps, MuxMediaPropsInternal } from './types';
 
 export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addTextTrack, removeTextTrack };
 export * from './types';
@@ -29,80 +21,26 @@ export const generatePlayerInitTime = () => {
   return mux.utils.now();
 };
 
-export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, string?] => {
-  const qIndex = playbackIdWithOptionalParams.indexOf('?');
-  if (qIndex < 0) return [playbackIdWithOptionalParams];
-  const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
-  const queryPart = playbackIdWithOptionalParams.slice(qIndex);
-  return [idPart, queryPart];
-};
-
 export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
 };
 
-export const inferMimeTypeFromURL = (url: string) => {
-  let pathname = '';
-  try {
-    pathname = new URL(url).pathname;
-  } catch (e) {
-    console.error('invalid url');
-  }
-
-  const extDelimIdx = pathname.lastIndexOf('.');
-  if (extDelimIdx < 0) return '';
-
-  const ext = pathname.slice(extDelimIdx + 1);
-  const upperExt = ext.toUpperCase();
-
-  return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
-};
-
-export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => {
-  const type = props.type;
-
-  if (type) {
-    const upperType = type.toUpperCase();
-
-    return isKeyOf(upperType, MimeTypeShorthandMap) ? MimeTypeShorthandMap[upperType] : type;
-  }
-
-  const { src } = props;
-
-  if (!src) return '';
-
-  return inferMimeTypeFromURL(src);
-};
-
-export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
-  // for regular live videos, set backBufferLength to 8
-  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 8,
-    };
-
-    return liveConfig;
-  }
-
-  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
-  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 4,
-      maxFragLookUpTolerance: 0.001,
-    };
-
-    return liveConfig;
-  }
-
-  return {};
-};
-
 const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
+};
+
+export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
+  // Automatically tear down previously initialized mux data & hls instance if it exists.
+  teardown(mediaEl, hls);
+  muxMediaState.set(mediaEl as HTMLMediaElement, {});
+  const nextHlsInstance = setupHls(props, mediaEl);
+  setupMux(props, mediaEl, nextHlsInstance);
+  loadMedia(props, mediaEl, nextHlsInstance);
+  return nextHlsInstance;
 };
 
 export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'detachMedia' | 'destroy'>) => {
@@ -451,13 +389,3 @@ function handleInternalError(event: Event) {
     player_error_message: error.message,
   });
 }
-
-export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
-  // Automatically tear down previously initialized mux data & hls instance if it exists.
-  teardown(mediaEl, hls);
-  muxMediaState.set(mediaEl as HTMLMediaElement, {});
-  const nextHlsInstance = setupHls(props, mediaEl);
-  setupMux(props, mediaEl, nextHlsInstance);
-  loadMedia(props, mediaEl, nextHlsInstance);
-  return nextHlsInstance;
-};
