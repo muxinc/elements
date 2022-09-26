@@ -1,4 +1,4 @@
-import { isKeyOf, ValueOf, StreamTypes, ExtensionMimeTypeMap, MimeTypeShorthandMap, MuxMediaProps } from './types';
+import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, MuxMediaProps } from './types';
 
 type addEventListenerWithTeardown = <K extends keyof HTMLMediaElementEventMap>(
   mediaEl: HTMLMediaElement,
@@ -70,27 +70,4 @@ export const inferMimeTypeFromURL = (url: string) => {
   const upperExt = ext.toUpperCase();
 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
-};
-
-export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
-  // for regular live videos, set backBufferLength to 8
-  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 8,
-    };
-
-    return liveConfig;
-  }
-
-  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
-  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 4,
-      maxFragLookUpTolerance: 0.001,
-    };
-
-    return liveConfig;
-  }
-
-  return {};
 };

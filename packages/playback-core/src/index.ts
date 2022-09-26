@@ -3,15 +3,23 @@ import Hls from 'hls.js';
 import { setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { inSeekableRange, addEventListenerWithTeardown, toPlaybackIdParts, getType, getStreamTypeConfig } from './util';
+import { inSeekableRange, addEventListenerWithTeardown, toPlaybackIdParts, getType } from './util';
 import type { Autoplay, UpdateAutoplay } from './autoplay';
-import { PlaybackTypes, ExtensionMimeTypeMap, MuxMediaProps, MuxMediaPropsInternal } from './types';
+import {
+  ValueOf,
+  StreamTypes,
+  PlaybackTypes,
+  ExtensionMimeTypeMap,
+  MuxMediaProps,
+  MuxMediaPropsInternal,
+} from './types';
 
 export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addTextTrack, removeTextTrack };
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
+const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -26,8 +34,6 @@ export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN }
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
 };
-
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
@@ -117,6 +123,29 @@ export const setupHls = (
     return hls;
   }
   return undefined;
+};
+
+export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
+  // for regular live videos, set backBufferLength to 8
+  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
+    const liveConfig = {
+      backBufferLength: 8,
+    };
+
+    return liveConfig;
+  }
+
+  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
+  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
+    const liveConfig = {
+      backBufferLength: 4,
+      maxFragLookUpTolerance: 0.001,
+    };
+
+    return liveConfig;
+  }
+
+  return {};
 };
 
 export const isMuxVideoSrc = ({
