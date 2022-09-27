@@ -71,6 +71,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   muted: undefined,
   debug: undefined,
   autoPlay: undefined,
+  preload: undefined,
   startTime: undefined,
   currentTime: undefined,
   paused: undefined,
@@ -320,6 +321,7 @@ function MuxPlayerPage({ location }: Props) {
         volume={state.volume}
         paused={state.paused}
         autoPlay={state.autoPlay}
+        preload={state.preload}
         streamType={state.streamType}
         audio={state.audio}
         primaryColor={state.primaryColor}
@@ -442,6 +444,12 @@ function MuxPlayerPage({ location }: Props) {
           name="autoPlay"
           onChange={genericOnChange}
           values={[true, false, 'any', 'muted']}
+        />
+        <EnumRenderer
+          value={state.preload}
+          name="preload"
+          onChange={genericOnChange}
+          values={['none', 'metadata', 'auto']}
         />
         <BooleanRenderer
           value={state.muted}

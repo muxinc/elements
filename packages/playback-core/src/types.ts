@@ -3,6 +3,7 @@ import Hls, { HlsConfig } from 'hls.js';
 import { AutoplayTypes } from './autoplay';
 
 export type { Autoplay, UpdateAutoplay } from './autoplay';
+export type { Preload, UpdatePreload } from './preload';
 
 type KeyTypes = string | number | symbol;
 

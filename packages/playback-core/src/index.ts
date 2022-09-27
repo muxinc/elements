@@ -1,9 +1,8 @@
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from 'hls.js';
-import { setupAutoplay } from './autoplay';
 import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { inSeekableRange, addEventListenerWithTeardown, toPlaybackIdParts, getType } from './util';
+import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
   StreamTypes,
   PlaybackTypes,
@@ -13,7 +12,9 @@ import {
   type MuxMediaPropsInternal,
 } from './types';
 
-export { mux, Hls, MediaError, setupAutoplay, addTextTrack, removeTextTrack };
+export { mux, Hls, MediaError, addTextTrack, removeTextTrack };
+export { setupAutoplay } from './autoplay';
+export { setupPreload } from './preload';
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
@@ -305,38 +306,6 @@ export const loadMedia = (
     mediaEl.addEventListener('error', handleInternalError);
 
     setupTracks(mediaEl, hls);
-
-    switch (mediaEl.preload) {
-      case 'none':
-        // when preload is none, load the source on first play
-        addEventListenerWithTeardown(mediaEl, 'play', () => hls.loadSource(src), { once: true });
-        break;
-
-      case 'metadata': {
-        const originalLength = hls.config.maxBufferLength;
-        const originalSize = hls.config.maxBufferSize;
-
-        // load the least amount of data possible
-        hls.config.maxBufferLength = 1;
-        hls.config.maxBufferSize = 1;
-        // and once a user has player, allow for it to load data as normal
-        addEventListenerWithTeardown(
-          mediaEl,
-          'play',
-          () => {
-            hls.config.maxBufferLength = originalLength;
-            hls.config.maxBufferSize = originalSize;
-          },
-          { once: true }
-        );
-
-        hls.loadSource(src);
-        break;
-      }
-      default:
-        // load source immediately for any other preload value
-        hls.loadSource(src);
-    }
 
     hls.attachMedia(mediaEl);
   } else {
