@@ -13,13 +13,21 @@ a {
   font-size: 0.9em;
   text-decoration: underline;
 }
-
 [part~='seek-live'] {
   height: 44px;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
   color: white;
   border: none;
   cursor: pointer;
+}
+
+[part~='seek-live'][disabled][aria-disabled='true'] {
+  opacity: 60%;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+[part~='seek-live'][disabled][aria-disabled='true']:before {
+  color: rgb(118, 118, 118);
 }
 
 [part~='seek-live'][aria-disabled] {
