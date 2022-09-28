@@ -19,7 +19,7 @@ describe('<mux-player> template render', () => {
     );
   });
 
-  it('template live extra-small w/o src, not live', function () {
+  it('template live extra-small w/o src, not in live window', function () {
     render(
       content({
         inLiveWindow: false,
