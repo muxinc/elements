@@ -50,8 +50,7 @@
     },
     "parser": "@typescript-eslint/parser",
     "plugins": [
-      "@typescript-eslint",
-      "@mux/i18n"
+      "@typescript-eslint"
     ],
     "extends": [
       "eslint:recommended",
@@ -67,7 +66,6 @@
     "rules": {
       "no-shadow": "error",
       "no-extra-boolean-cast": 0,
-      "@mux/i18n/no-substitutions": "error",
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-explicit-any": 0
     }
