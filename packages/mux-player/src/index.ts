@@ -75,6 +75,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
     playbackId: el.playbackId,
+    hasSrc: !!el.playbackId || !!el.src,
     // NOTE: Always use the externally set poster attribute here to guarantee
     // it's used if/when it's been explicitly set "from the outside"
     // (See template.ts for additional context) (CJP)
