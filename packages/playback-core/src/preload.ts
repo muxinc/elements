@@ -23,6 +23,8 @@ export const setupPreload = (
   }
 
   let hasLoadedSource = false;
+  let hasPlayFired = false;
+
   const originalLength = hls.config.maxBufferLength;
   const originalSize = hls.config.maxBufferSize;
 
@@ -32,7 +34,7 @@ export const setupPreload = (
     updatePreload(val);
 
     const newPreload = val ?? mediaEl.preload;
-    if (newPreload === 'none') return;
+    if (hasPlayFired || newPreload === 'none') return;
     if (newPreload === 'metadata') {
       // load the least amount of data possible
       hls.config.maxBufferLength = 1;
@@ -56,17 +58,14 @@ export const setupPreload = (
     mediaEl,
     'play',
     () => {
-      switch (preload) {
-        case 'none':
-          // when preload is none, load the source on first play
-          safeLoadSource();
-          break;
-        case 'metadata':
-          // once a user has played, allow for it to load data as normal
-          hls.config.maxBufferLength = originalLength;
-          hls.config.maxBufferSize = originalSize;
-          break;
-      }
+      hasPlayFired = true;
+
+      // once a user has played, allow for it to load data as normal
+      hls.config.maxBufferLength = originalLength;
+      hls.config.maxBufferSize = originalSize;
+
+      // load the source on first play if needed
+      safeLoadSource();
     },
     { once: true }
   );
