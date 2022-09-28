@@ -1,6 +1,8 @@
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from 'hls.js';
 import { MediaError } from './errors';
+import { setupAutoplay } from './autoplay';
+import { setupPreload } from './preload';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
@@ -8,13 +10,12 @@ import {
   PlaybackTypes,
   ExtensionMimeTypeMap,
   type ValueOf,
+  type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
 } from './types';
 
 export { mux, Hls, MediaError, addTextTrack, removeTextTrack };
-export { setupAutoplay } from './autoplay';
-export { setupPreload } from './preload';
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
@@ -39,17 +40,31 @@ export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
 };
 
-export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
+export const initialize = (
+  props: Partial<MuxMediaPropsInternal>,
+  mediaEl?: HTMLMediaElement | null,
+  core?: PlaybackCore
+) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
-  teardown(mediaEl, hls);
+  teardown(mediaEl, core);
+
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
-  return nextHlsInstance;
+
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+
+  return {
+    engine: nextHlsInstance,
+    setAutoplay,
+    setPreload,
+  };
 };
 
-export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'detachMedia' | 'destroy'>) => {
+export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore) => {
+  const hls = core?.engine;
   if (hls) {
     hls.detachMedia();
     hls.destroy();

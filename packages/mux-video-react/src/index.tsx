@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 import {
   allMediaTypes,
   initialize,
-  setupAutoplay,
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
   toMuxVideoURL,
-  PlaybackEngine,
   generatePlayerInitTime,
 } from '@mux/playback-core';
+import type { PlaybackCore } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 
 export type Props = Omit<
@@ -36,22 +35,18 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     src: outerSrc,
     children,
     autoPlay,
+    preload,
     ...restProps
   } = props;
 
   const [playerInitTime] = useState(generatePlayerInitTime());
-
   const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
-
-  const playbackEngineRef = useRef<PlaybackEngine | undefined>(undefined);
+  const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
   const innerMediaElRef = useRef<HTMLVideoElement>(null);
-  const [updateAutoplay, setUpdateAutoplay] = useState(() => (x: any) => {});
-
   const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
 
   useEffect(() => {
-    const src = toMuxVideoURL(playbackId) ?? outerSrc;
-    setSrc(src);
+    setSrc(toMuxVideoURL(playbackId) ?? outerSrc);
   }, [outerSrc, playbackId]);
 
   useEffect(() => {
@@ -63,17 +58,16 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
       playerSoftwareVersion,
       autoplay: autoPlay,
     };
-    const nextPlaybackEngineRef = initialize(propsWithState, mediaElRef.current, playbackEngineRef.current);
-    playbackEngineRef.current = nextPlaybackEngineRef;
-    setUpdateAutoplay(() => () => {
-      if (!mediaElRef.current) return;
-      setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current);
-    });
+    playbackCoreRef.current = initialize(propsWithState, mediaElRef.current, playbackCoreRef.current);
   }, [src]);
 
   useEffect(() => {
-    updateAutoplay(autoPlay);
+    playbackCoreRef.current?.setAutoplay(autoPlay);
   }, [autoPlay]);
+
+  useEffect(() => {
+    playbackCoreRef.current?.setPreload(preload);
+  }, [preload]);
 
   return (
     /** @TODO Fix types relationships (CJP) */

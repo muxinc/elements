@@ -1,32 +1,39 @@
-import Hls from 'hls.js';
 import { addEventListenerWithTeardown } from './util';
-
-type PlaybackEngine = Pick<Hls, 'loadSource' | 'config'>;
-
-// the empty string is a synonym of the auto value
-export type Preload = '' | 'none' | 'metadata' | 'auto';
-export type UpdatePreload = (newPreload: Preload) => void;
+import { PlaybackEngine } from './types';
 
 export const setupPreload = (
-  mediaEl: HTMLMediaElement,
-  preload: Preload,
-  src: string,
-  hls: PlaybackEngine | undefined
+  { preload, src }: Partial<HTMLMediaElement>,
+  mediaEl?: HTMLMediaElement | null,
+  hls?: PlaybackEngine
 ) => {
-  // if we're not using hls.js (MSE) return early
-  if (!hls) return () => undefined;
+  if (!mediaEl) return () => undefined;
+
+  const updatePreload = (val?: HTMLMediaElement['preload']) => {
+    if (val && ['', 'none', 'metadata', 'auto'].includes(val)) {
+      mediaEl.setAttribute('preload', val);
+    } else {
+      mediaEl.removeAttribute('preload');
+    }
+  };
+
+  // handle native without hls.js (MSE)
+  if (!hls) {
+    updatePreload(preload);
+    return updatePreload;
+  }
 
   let hasLoadedSource = false;
   const originalLength = hls.config.maxBufferLength;
   const originalSize = hls.config.maxBufferSize;
 
-  const updatePreload = (newPreload: Preload) => {
-    // update the `preload` value that is used in the `play` listener!
-    preload = newPreload;
+  const updateHlsPreload = (val?: HTMLMediaElement['preload']) => {
+    // even if it doesn't have an effect on a <video> w/ MSE
+    // still update the `preload` attribute.
+    updatePreload(val);
 
-    if (preload === 'none') return;
-
-    if (preload === 'metadata') {
+    const newPreload = val ?? mediaEl.preload;
+    if (newPreload === 'none') return;
+    if (newPreload === 'metadata') {
       // load the least amount of data possible
       hls.config.maxBufferLength = 1;
       hls.config.maxBufferSize = 1;
@@ -39,7 +46,7 @@ export const setupPreload = (
   };
 
   const safeLoadSource = () => {
-    if (!hasLoadedSource) {
+    if (!hasLoadedSource && src) {
       hasLoadedSource = true;
       hls.loadSource(src);
     }
@@ -64,7 +71,7 @@ export const setupPreload = (
     { once: true }
   );
 
-  updatePreload(preload);
+  updateHlsPreload(preload);
 
-  return updatePreload;
+  return updateHlsPreload;
 };

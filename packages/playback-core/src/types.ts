@@ -1,9 +1,5 @@
 import { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
-import { AutoplayTypes } from './autoplay';
-
-export type { Autoplay, UpdateAutoplay } from './autoplay';
-export type { Preload, UpdatePreload } from './preload';
 
 type KeyTypes = string | number | symbol;
 
@@ -15,6 +11,25 @@ export const isKeyOf = <T = any>(k: KeyTypes, o: T): k is keyof T => {
 export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
+
+export type PlaybackCore = {
+  engine?: PlaybackEngine;
+  setAutoplay: (autoplay?: Autoplay) => void;
+  setPreload: (preload?: HTMLMediaElement['preload']) => void;
+};
+
+// TODO add INVIEW_MUTED, INVIEW_ANY
+export type AutoplayTypes = {
+  ANY: 'any';
+  MUTED: 'muted';
+};
+
+export const AutoplayTypes: AutoplayTypes = {
+  ANY: 'any',
+  MUTED: 'muted',
+};
+
+export type Autoplay = boolean | ValueOf<AutoplayTypes>;
 
 export type StreamTypes = {
   VOD: 'on-demand';
@@ -95,11 +110,11 @@ export type MuxMediaPropTypes = {
   type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
   startTime: HlsConfig['startPosition'];
-  autoPlay: boolean | ValueOf<AutoplayTypes>;
-  autoplay: boolean | ValueOf<AutoplayTypes>;
+  autoPlay?: Autoplay;
+  autoplay?: Autoplay;
 };
 
-export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src'>>;
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload'>>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
