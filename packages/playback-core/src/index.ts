@@ -5,12 +5,12 @@ import { MediaError } from './errors';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
 import { inSeekableRange, addEventListenerWithTeardown, toPlaybackIdParts, getType } from './util';
 import {
-  ValueOf,
   StreamTypes,
   PlaybackTypes,
   ExtensionMimeTypeMap,
-  MuxMediaProps,
-  MuxMediaPropsInternal,
+  type ValueOf,
+  type MuxMediaProps,
+  type MuxMediaPropsInternal,
 } from './types';
 
 export { mux, Hls, MediaError, setupAutoplay, addTextTrack, removeTextTrack };
