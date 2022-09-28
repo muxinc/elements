@@ -1,4 +1,4 @@
-import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, MuxMediaProps } from './types';
+import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, type MuxMediaProps } from './types';
 
 type addEventListenerWithTeardown = <K extends keyof HTMLMediaElementEventMap>(
   mediaEl: HTMLMediaElement,
