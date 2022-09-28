@@ -33,8 +33,6 @@ export const content = (props: MuxTemplateProps) => {
     ? !!getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
     : false;
 
-  console.log(props.inLiveWindow, hasSrc);
-
   return html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
     has-src="${hasSrc}"

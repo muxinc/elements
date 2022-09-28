@@ -19,9 +19,10 @@ describe('<mux-player> template render', () => {
     );
   });
 
-  it('template live extra-small', function () {
+  it('template live extra-small w/o src, not live', function () {
     render(
       content({
+        inLiveWindow: false,
         playerSize: 'extra-small',
         streamType: 'live',
         dialog: {
@@ -34,7 +35,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-extra-small" stream-type="live" player-size="extra-small" default-hidden-captions="" forward-seek-offset="" placeholder="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><button slot="seek-live" part="top seek-live button" aria-disabled="">\n            Live\n          </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme-mux class="size-extra-small" stream-type="live" player-size="extra-small" default-hidden-captions="" forward-seek-offset="" placeholder="" backward-seek-offset="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" player-software-name="" player-software-version="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><button aria-disabled="true" disabled="" slot="seek-live" part="top seek-live button">\n            Live\n          </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
       )
     );
   });
