@@ -26,16 +26,9 @@ const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LI
 const isLiveOrDVR = (props: MuxTemplateProps) =>
   [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
 
-export const content = (props: MuxTemplateProps) => {
-  const hasSrc = !!props.src
-    ? !!props.src
-    : props.playbackId
-    ? !!getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
-    : false;
-
-  return html`
+export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
-    has-src="${hasSrc}"
+    has-src="${props.hasSrc}"
     nohotkeys="${props.noHotKeys ?? false}"
     audio="${props.audio || false}"
     style="${
@@ -133,10 +126,10 @@ export const content = (props: MuxTemplateProps) => {
     ${
       isLiveOrDVR(props)
         ? html`<button
-            disabled="${!hasSrc}"
+            disabled="${!props.hasSrc}"
             slot="seek-live"
             part="${isLive(props) ? 'top' : 'bottom'} seek-live button"
-            aria-disabled="${props.inLiveWindow || !hasSrc ? 'true' : false}"
+            aria-disabled="${props.inLiveWindow || !props.hasSrc ? 'true' : false}"
             onclick="${function (this: HTMLButtonElement, evt: Event) {
               props.onSeekToLive?.(evt);
               if (props.paused) {
@@ -173,4 +166,3 @@ export const content = (props: MuxTemplateProps) => {
     </mxp-dialog>
   </${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}>
 `;
-};
