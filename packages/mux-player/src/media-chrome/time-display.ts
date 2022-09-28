@@ -89,17 +89,11 @@ class MxpTimeDisplay extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     if (attrName === 'hide-duration') {
       this.#toggleDuration();
     }
-    if (attrName === 'remaining') {
-      if (newValue != null) {
-        this.timeDisplayEl?.setAttribute('remaining', '');
-      } else {
-        this.timeDisplayEl?.removeAttribute('remaining');
-      }
-    } else if (attrName === 'disabled' || (attrName === 'aria-disabled' && _oldValue !== newValue)) {
+    if (['remaining', 'disabled', 'aria-disabled'].includes(attrName) && oldValue !== newValue) {
       if (newValue == null) {
         this.timeDisplayEl?.removeAttribute(attrName);
       } else {
