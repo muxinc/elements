@@ -94,6 +94,11 @@ class MediaDialog extends globalThis.HTMLElement {
     focus(this);
   }
 
+  conditionalFocus() {
+    const target = findFocusableElementWithin(this.shadowRoot);
+    target.focus();
+  }
+
   close() {
     // If already closed, don't re-emit value (circular due to attributeChangedCallback()) (CJP)
     if (!this.hasAttribute('open')) return;

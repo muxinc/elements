@@ -216,6 +216,51 @@ class MuxPlayerElement extends VideoApiElement {
     this.#monitorLiveWindow();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
+
+    this.#simpleFocusTrap();
+  }
+
+  #keydownHandler = (e) => {
+    if (e.key !== 'Tab' || !this.#state.isDialogOpen) return;
+
+    const tab = !e.shiftKey;
+    const sTab = e.shiftKey;
+
+    const isFocusedElementInPlayer = containsComposedNode(this, e.target);
+    const focusableElementsString =
+      'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable], mux-player';
+
+    const focusableEls = Array.from(document.querySelectorAll(focusableElementsString));
+    const currentIndex = focusableEls.findIndex((el) => el === e.target);
+
+    const dialog = this.shadowRoot?.querySelector('mxp-dialog');
+
+    if (tab) {
+      const nextEl = focusableEls[currentIndex + 1];
+
+      if (isFocusedElementInPlayer) {
+        nextEl.focus();
+        e.preventDefault();
+      } else if (nextEl === this) {
+        dialog.conditionalFocus();
+        e.preventDefault();
+      }
+    } else if (sTab) {
+      const prevEl = focusableEls[currentIndex - 1];
+
+      if (isFocusedElementInPlayer) {
+        prevEl.focus();
+        e.preventDefault();
+      } else if (prevEl === this) {
+        dialog.conditionalFocus();
+        e.preventDefault();
+      }
+    }
+  };
+
+  #simpleFocusTrap() {
+    console.log('???');
+    document.addEventListener('keydown', this.#keydownHandler);
   }
 
   get theme(): Element | null | undefined {
@@ -232,6 +277,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   disconnectedCallback() {
+    document.removeEventListener('keydown', this.#keydownHandler);
     this.#deinitResizing();
   }
 
