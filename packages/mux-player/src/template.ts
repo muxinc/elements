@@ -129,7 +129,7 @@ export const content = (props: MuxTemplateProps) => html`
             slot="seek-live"
             part="${isLive(props) ? 'top' : 'bottom'} seek-live button"
             disabled="${props.inLiveWindow || !props.hasSrc}"
-            aria-disabled="${props.inLiveWindow || !props.hasSrc ? 'true' : false}"
+            aria-disabled="${(props.inLiveWindow || !props.hasSrc) && 'true'}"
             in-live-window="${props.inLiveWindow}"
             onclick="${function (this: HTMLButtonElement, evt: Event) {
               props.onSeekToLive?.(evt);

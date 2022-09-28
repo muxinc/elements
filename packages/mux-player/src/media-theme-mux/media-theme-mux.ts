@@ -200,20 +200,20 @@ const ChromeRenderer = (props: ThemeMuxTemplateProps) => {
 
 // prettier-ignore
 const MediaPlayButton = (props: ComponentProps) => html`
-  <media-play-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
+  <media-play-button disabled="${!props.hasSrc}" aria-disabled="${!props.hasSrc && 'true'}">
     ${icons.Play()}
     ${icons.Pause()}
   </media-play-button>`;
 
 // prettier-ignore
 const MediaSeekBackwardButton = ({ backwardSeekOffset, hasSrc }: ComponentProps) => html`
-  <media-seek-backward-button seek-offset="${backwardSeekOffset}" disabled="${!hasSrc}" aria-disabled="${hasSrc ? false : 'true'}">
+  <media-seek-backward-button seek-offset="${backwardSeekOffset}" disabled="${!hasSrc}" aria-disabled="${!hasSrc && 'true'}">
     ${icons.SeekBackward({ value: backwardSeekOffset })}
   </media-seek-backward-button>`;
 
 // prettier-ignore
 const MediaSeekForwardButton = ({ forwardSeekOffset, hasSrc }: ComponentProps) => html`
-  <media-seek-forward-button seek-offset="${forwardSeekOffset}" disabled="${!hasSrc}" aria-disabled="${hasSrc ? false : 'true'}">
+  <media-seek-forward-button seek-offset="${forwardSeekOffset}" disabled="${!hasSrc}" aria-disabled="${!hasSrc && 'true'}">
     ${icons.SeekForward({ value: forwardSeekOffset })}
   </media-seek-forward-button>`;
 
@@ -236,27 +236,27 @@ const MediaCaptionsButton = ({ defaultHiddenCaptions }: CaptionsButtonProps) => 
 
 // prettier-ignore
 const MediaAirplayButton = (props: ComponentProps) => html`
-  <media-airplay-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
+  <media-airplay-button disabled="${!props.hasSrc}" aria-disabled="${!props.hasSrc && 'true'}">
     ${icons.Airplay()}
   </media-airplay-button>`;
 
 // prettier-ignore
 const MediaPipButton = (props: ComponentProps) => html`
-  <media-pip-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
+  <media-pip-button disabled="${!props.hasSrc}" aria-disabled="${!props.hasSrc && 'true'}">
     ${icons.PipEnter()}
     ${icons.PipExit()}
   </media-pip-button>`;
 
 // prettier-ignore
 const MediaFullscreenButton = (props: ComponentProps) => html`
-  <media-fullscreen-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
+  <media-fullscreen-button disabled="${!props.hasSrc}" aria-disabled="${!props.hasSrc && 'true'}">
     ${icons.FullscreenEnter()}
     ${icons.FullscreenExit()}
   </media-fullscreen-button>`;
 
 // prettier-ignore
 const MediaCastButton = (props: ComponentProps) => html`
-  <media-cast-button disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
+  <media-cast-button disabled="${!props.hasSrc}" aria-disabled="${!props.hasSrc && 'true'}">
     ${icons.CastEnter()}
     ${icons.CastExit()}
   </media-cast-button>`;
@@ -273,12 +273,12 @@ const MediaVolumeRange = () => html`
 
 // prettier-ignore
 const MediaTimeRange = (props: ComponentProps) => html`
-  <media-time-range disabled="${!props.hasSrc}" aria-disabled="${props.hasSrc ? false : 'true'}">
+  <media-time-range disabled="${!props.hasSrc}" aria-disabled="${!props.hasSrc && 'true'}">
   </media-time-range>`;
 
 // prettier-ignore
 const TimeDisplay = ({ defaultShowRemainingTime, hasSrc }: ComponentProps) => html`
-  <mxp-time-display remaining="${defaultShowRemainingTime}" disabled="${!hasSrc}" aria-disabled="${hasSrc ? false : 'true'}">
+  <mxp-time-display remaining="${defaultShowRemainingTime}" disabled="${!hasSrc}" aria-disabled="${!hasSrc && 'true'}">
   </mxp-time-display>`;
 
 // prettier-ignore
