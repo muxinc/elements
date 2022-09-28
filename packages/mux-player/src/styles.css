@@ -21,28 +21,22 @@ a {
   cursor: pointer;
 }
 
-[part~='seek-live'][disabled][aria-disabled='true'] {
-  opacity: 60%;
-  cursor: not-allowed;
-  pointer-events: auto;
-}
-[part~='seek-live'][disabled][aria-disabled='true']:before {
-  color: rgb(118, 118, 118);
-}
-
-[part~='seek-live'][aria-disabled] {
-  cursor: default;
-  pointer-events: none;
-}
-
 [part~='seek-live']::before {
   content: '● ';
   color: rgb(118, 118, 118);
   padding-right: 5px;
 }
-
-[part~='seek-live'][aria-disabled]::before {
+[part~='seek-live'][in-live-window]::before {
   color: #fb3c4d;
+}
+
+[part~='seek-live'][disabled] {
+  opacity: 60%;
+  cursor: not-allowed;
+}
+[part~='seek-live'][in-live-window] {
+  opacity: 100%;
+  cursor: unset;
 }
 
 ::part(top),
