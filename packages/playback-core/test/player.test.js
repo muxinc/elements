@@ -1,5 +1,5 @@
 import { assert, aTimeout } from '@open-wc/testing';
-import { initialize, teardown } from '../src/index.ts';
+import { initialize, teardown, MediaError, getError } from '../src/index.ts';
 
 describe('playback core', () => {
   it('initialize w/ default preferPlayback', async function () {
@@ -25,6 +25,28 @@ describe('playback core', () => {
     teardown(video, core);
 
     assert(!video.hasAttribute('src'), 'src is removed on teardown');
+  });
+
+  it('handle error', async function () {
+    const video = document.createElement('video');
+    initialize(
+      {
+        src: 'https://mux.com/', // not working src url
+      },
+      video
+    );
+    // error event must be attached after initialize(), otherwise the
+    // native error will not be stopped propagating in playback core.
+    await new Promise((resolve) => video.addEventListener('error', resolve));
+
+    assert.equal(video.error.code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
+    assert.equal(video.error.message, '');
+
+    assert.equal(getError(video).code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
+    assert.equal(
+      getError(video).message,
+      'An unsupported error occurred. The server or network failed, or your browser does not support this format.'
+    );
   });
 
   it('setAutoplay("any")', async function () {

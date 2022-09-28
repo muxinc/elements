@@ -368,9 +368,11 @@ async function handleNativeError(event: Event) {
 
   if (mediaEl.src && (code !== MediaError.MEDIA_ERR_DECODE || code !== undefined)) {
     // Attempt to get the response code from the video src url.
-    const { status } = await fetch(mediaEl.src as RequestInfo);
-    // Use the same hls.js data structure.
-    error.data = { response: { code: status } };
+    try {
+      const { status } = await fetch(mediaEl.src as RequestInfo);
+      // Use the same hls.js data structure.
+      error.data = { response: { code: status } };
+    } catch {}
   }
 
   mediaEl.dispatchEvent(
