@@ -46,11 +46,9 @@ export const initialize = (
 
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
-  loadMedia(props, mediaEl, nextHlsInstance);
-
   const getError = setupErrors(mediaEl, nextHlsInstance);
-  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   setupStartTime(props as Pick<MuxMediaProps, 'startTime'>, mediaEl, nextHlsInstance);
   setupTracks(mediaEl, nextHlsInstance);
 
@@ -110,9 +108,15 @@ export const setupHls = (
 ) => {
   const { debug, streamType, startTime: startPosition = -1 } = props;
   const type = getType(props);
+  const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
+  if (!canUseNative && !MSE_SUPPORTED) {
+    console.error(
+      "It looks like the video you're trying to play will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
+    );
+  }
+
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
-
   // 1. if we are trying to play an hls media source create hls if we should be using it "under the hood"
   if (hlsType && !shouldUseNative && MSE_SUPPORTED) {
     const defaultConfig = {
@@ -235,32 +239,5 @@ export const setupMux = (
         ...metadata,
       },
     });
-  }
-};
-
-export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'streamType'>>,
-  mediaEl?: HTMLMediaElement | null,
-  hls?: Pick<Hls, 'attachMedia'>
-) => {
-  if (!mediaEl) {
-    console.warn('attempting to load media before mediaEl exists');
-    return;
-  }
-  const shouldUseNative = useNative(props, mediaEl);
-  const { src } = props;
-  if (mediaEl && shouldUseNative) {
-    if (typeof src === 'string') {
-      mediaEl.setAttribute('src', src);
-    } else {
-      mediaEl.removeAttribute('src');
-    }
-  } else if (hls) {
-    // loading of the source is done in setupPreload()
-    hls.attachMedia(mediaEl);
-  } else {
-    console.error(
-      "It looks like the video you're trying to play will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
-    );
   }
 };

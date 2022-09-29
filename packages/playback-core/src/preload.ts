@@ -6,7 +6,10 @@ export const setupPreload = (
   mediaEl?: HTMLMediaElement | null,
   hls?: PlaybackEngine
 ) => {
-  if (!mediaEl) return () => undefined;
+  if (!mediaEl) {
+    console.warn('attempting to load media before mediaEl exists');
+    return () => undefined;
+  }
 
   const updatePreload = (val?: HTMLMediaElement['preload']) => {
     if (val != null && ['', 'none', 'metadata', 'auto'].includes(val)) {
@@ -18,6 +21,11 @@ export const setupPreload = (
 
   // handle native without hls.js (MSE)
   if (!hls) {
+    if (typeof src === 'string') {
+      mediaEl.setAttribute('src', src);
+    } else {
+      mediaEl.removeAttribute('src');
+    }
     updatePreload(preload);
     return updatePreload;
   }
@@ -71,6 +79,7 @@ export const setupPreload = (
   );
 
   updateHlsPreload(preload);
+  hls.attachMedia(mediaEl);
 
   return updateHlsPreload;
 };
