@@ -1,19 +1,26 @@
-import mux, { Options, ErrorEvent } from 'mux-embed';
-
-import Hls, { HlsConfig } from 'hls.js';
-import { AutoplayTypes, setupAutoplay } from './autoplay';
+import mux, { ErrorEvent } from 'mux-embed';
+import Hls from 'hls.js';
 import { MediaError } from './errors';
+import { setupAutoplay } from './autoplay';
+import { setupPreload } from './preload';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { isKeyOf, inSeekableRange, addEventListenerWithTeardown } from './util';
-import type { Autoplay, UpdateAutoplay } from './autoplay';
+import { inSeekableRange, toPlaybackIdParts, getType } from './util';
+import {
+  StreamTypes,
+  PlaybackTypes,
+  ExtensionMimeTypeMap,
+  type ValueOf,
+  type PlaybackCore,
+  type MuxMediaProps,
+  type MuxMediaPropsInternal,
+} from './types';
 
-export type ValueOf<T> = T[keyof T];
-export type Metadata = Partial<Options['data']>;
-export type PlaybackEngine = Hls;
-export { mux, Hls, MediaError, Autoplay, UpdateAutoplay, setupAutoplay, addTextTrack, removeTextTrack };
+export { mux, Hls, MediaError, addTextTrack, removeTextTrack };
+export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
+const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -23,174 +30,41 @@ export const generatePlayerInitTime = () => {
   return mux.utils.now();
 };
 
-export type StreamTypes = {
-  VOD: 'on-demand';
-  ON_DEMAND: 'on-demand';
-  LIVE: 'live';
-  LL_LIVE: 'll-live';
-  DVR: 'live:dvr';
-  LL_DVR: 'll-live:dvr';
-};
-
-export const StreamTypes: StreamTypes = {
-  VOD: 'on-demand',
-  ON_DEMAND: 'on-demand',
-  LIVE: 'live',
-  LL_LIVE: 'll-live',
-  DVR: 'live:dvr',
-  LL_DVR: 'll-live:dvr',
-};
-
-export type PlaybackTypes = {
-  MSE: 'mse';
-  NATIVE: 'native';
-};
-
-export const PlaybackTypes: PlaybackTypes = {
-  MSE: 'mse',
-  NATIVE: 'native',
-};
-
-export type ExtensionMimeTypeMap = {
-  M3U8: 'application/vnd.apple.mpegurl';
-  MP4: 'video/mp4';
-};
-
-export const ExtensionMimeTypeMap: ExtensionMimeTypeMap = {
-  M3U8: 'application/vnd.apple.mpegurl',
-  MP4: 'video/mp4',
-};
-
-export type MimeTypeShorthandMap = {
-  HLS: ExtensionMimeTypeMap['M3U8'];
-};
-
-export const MimeTypeShorthandMap: MimeTypeShorthandMap = {
-  HLS: ExtensionMimeTypeMap.M3U8,
-};
-
-export const shorthandKeys = Object.keys(MimeTypeShorthandMap);
-
-export type MediaTypes =
-  | ValueOf<ExtensionMimeTypeMap>
-  | keyof MimeTypeShorthandMap
-  /** @TODO Figure out a way to "downgrade" derived types below to early TS syntax (e.g. 3.4) instead of explicit versions here (CJP) */
-  | 'hls';
-// | `${Lowercase<keyof MimeTypeShorthandMap>}`
-// | `${Uppercase<keyof MimeTypeShorthandMap>}`;
-
-export const allMediaTypes = [
-  ...(Object.values(ExtensionMimeTypeMap) as ValueOf<ExtensionMimeTypeMap>[]),
-  /** @TODO Figure out a way to "downgrade" derived types below to early TS syntax (e.g. 3.4) instead of explicit versions here (CJP) */
-  'hls',
-  'HLS',
-  // ...(shorthandKeys as (keyof MimeTypeShorthandMap)[]),
-  // ...(shorthandKeys.map((k) => k.toUpperCase()) as `${Uppercase<keyof MimeTypeShorthandMap>}`[]),
-  // ...(shorthandKeys.map((k) => k.toLowerCase()) as `${Lowercase<keyof MimeTypeShorthandMap>}`[]),
-] as MediaTypes[];
-
-export type MuxMediaPropTypes = {
-  envKey: Options['data']['env_key'];
-  debug: Options['debug'] & Hls['config']['debug'];
-  metadata: Partial<Options['data']>;
-  customDomain: string;
-  beaconCollectionDomain: Options['beaconCollectionDomain'];
-  errorTranslator: Options['errorTranslator'];
-  playbackId: string;
-  playerInitTime: Options['data']['player_init_time'];
-  preferPlayback: ValueOf<PlaybackTypes> | undefined;
-  type: MediaTypes;
-  streamType: ValueOf<StreamTypes>;
-  startTime: HlsConfig['startPosition'];
-  autoPlay: boolean | ValueOf<AutoplayTypes>;
-  autoplay: boolean | ValueOf<AutoplayTypes>;
-};
-
-export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src'>>;
-
-export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
-export type MuxMediaPropsInternal = MuxMediaProps & {
-  playerSoftwareName: Options['data']['player_software_name'];
-  playerSoftwareVersion: Options['data']['player_software_version'];
-};
-
-export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, string?] => {
-  const qIndex = playbackIdWithOptionalParams.indexOf('?');
-  if (qIndex < 0) return [playbackIdWithOptionalParams];
-  const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
-  const queryPart = playbackIdWithOptionalParams.slice(qIndex);
-  return [idPart, queryPart];
-};
-
 export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
 };
 
-export const inferMimeTypeFromURL = (url: string) => {
-  let pathname = '';
-  try {
-    pathname = new URL(url).pathname;
-  } catch (e) {
-    console.error('invalid url');
-  }
-
-  const extDelimIdx = pathname.lastIndexOf('.');
-  if (extDelimIdx < 0) return '';
-
-  const ext = pathname.slice(extDelimIdx + 1);
-  const upperExt = ext.toUpperCase();
-
-  return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
-};
-
-export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => {
-  const type = props.type;
-
-  if (type) {
-    const upperType = type.toUpperCase();
-
-    return isKeyOf(upperType, MimeTypeShorthandMap) ? MimeTypeShorthandMap[upperType] : type;
-  }
-
-  const { src } = props;
-
-  if (!src) return '';
-
-  return inferMimeTypeFromURL(src);
-};
-
-export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
-  // for regular live videos, set backBufferLength to 8
-  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 8,
-    };
-
-    return liveConfig;
-  }
-
-  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
-  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 4,
-      maxFragLookUpTolerance: 0.001,
-    };
-
-    return liveConfig;
-  }
-
-  return {};
-};
-
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
-
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
 };
 
-export const teardown = (mediaEl?: HTMLMediaElement | null, hls?: Pick<Hls, 'detachMedia' | 'destroy'>) => {
+export const initialize = (
+  props: Partial<MuxMediaPropsInternal>,
+  mediaEl?: HTMLMediaElement | null,
+  core?: PlaybackCore
+) => {
+  // Automatically tear down previously initialized mux data & hls instance if it exists.
+  teardown(mediaEl, core);
+
+  muxMediaState.set(mediaEl as HTMLMediaElement, {});
+  const nextHlsInstance = setupHls(props, mediaEl);
+  setupMux(props, mediaEl, nextHlsInstance);
+  loadMedia(props, mediaEl, nextHlsInstance);
+
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+
+  return {
+    engine: nextHlsInstance,
+    setAutoplay,
+    setPreload,
+  };
+};
+
+export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore) => {
+  const hls = core?.engine;
   if (hls) {
     hls.detachMedia();
     hls.destroy();
@@ -264,6 +138,29 @@ export const setupHls = (
     return hls;
   }
   return undefined;
+};
+
+export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
+  // for regular live videos, set backBufferLength to 8
+  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
+    const liveConfig = {
+      backBufferLength: 8,
+    };
+
+    return liveConfig;
+  }
+
+  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
+  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
+    const liveConfig = {
+      backBufferLength: 4,
+      maxFragLookUpTolerance: 0.001,
+    };
+
+    return liveConfig;
+  }
+
+  return {};
 };
 
 export const isMuxVideoSrc = ({
@@ -425,38 +322,6 @@ export const loadMedia = (
 
     setupTracks(mediaEl, hls);
 
-    switch (mediaEl.preload) {
-      case 'none':
-        // when preload is none, load the source on first play
-        addEventListenerWithTeardown(mediaEl, 'play', () => hls.loadSource(src), { once: true });
-        break;
-
-      case 'metadata': {
-        const originalLength = hls.config.maxBufferLength;
-        const originalSize = hls.config.maxBufferSize;
-
-        // load the least amount of data possible
-        hls.config.maxBufferLength = 1;
-        hls.config.maxBufferSize = 1;
-        // and once a user has player, allow for it to load data as normal
-        addEventListenerWithTeardown(
-          mediaEl,
-          'play',
-          () => {
-            hls.config.maxBufferLength = originalLength;
-            hls.config.maxBufferSize = originalSize;
-          },
-          { once: true }
-        );
-
-        hls.loadSource(src);
-        break;
-      }
-      default:
-        // load source immediately for any other preload value
-        hls.loadSource(src);
-    }
-
     hls.attachMedia(mediaEl);
   } else {
     console.error(
@@ -503,9 +368,11 @@ async function handleNativeError(event: Event) {
 
   if (mediaEl.src && (code !== MediaError.MEDIA_ERR_DECODE || code !== undefined)) {
     // Attempt to get the response code from the video src url.
-    const { status } = await fetch(mediaEl.src as RequestInfo);
-    // Use the same hls.js data structure.
-    error.data = { response: { code: status } };
+    try {
+      const { status } = await fetch(mediaEl.src as RequestInfo);
+      // Use the same hls.js data structure.
+      error.data = { response: { code: status } };
+    } catch {}
   }
 
   mediaEl.dispatchEvent(
@@ -536,13 +403,3 @@ function handleInternalError(event: Event) {
     player_error_message: error.message,
   });
 }
-
-export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl?: HTMLMediaElement | null, hls?: Hls) => {
-  // Automatically tear down previously initialized mux data & hls instance if it exists.
-  teardown(mediaEl, hls);
-  muxMediaState.set(mediaEl as HTMLMediaElement, {});
-  const nextHlsInstance = setupHls(props, mediaEl);
-  setupMux(props, mediaEl, nextHlsInstance);
-  loadMedia(props, mediaEl, nextHlsInstance);
-  return nextHlsInstance;
-};

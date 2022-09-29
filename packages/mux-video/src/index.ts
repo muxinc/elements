@@ -1,7 +1,6 @@
 import { globalThis } from 'shared-polyfills';
 import {
   initialize,
-  setupAutoplay,
   generatePlayerInitTime,
   MuxMediaProps,
   StreamTypes,
@@ -10,11 +9,10 @@ import {
   toMuxVideoURL,
   teardown,
   Metadata,
-  mux,
   MediaError,
   getError,
 } from '@mux/playback-core';
-import type { PlaybackEngine, Autoplay, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
@@ -66,14 +64,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
 
-  // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
-  protected __hls?: PlaybackEngine;
+  protected __core?: PlaybackCore;
   protected __playerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
   protected __playerSoftwareVersion?: string;
   protected __playerSoftwareName?: string;
-  protected __updateAutoplay?: UpdateAutoplay;
-  protected __errorTranslator?: Function;
+  protected __errorTranslator?: (errorEvent: any) => any;
 
   constructor() {
     super();
@@ -100,8 +96,9 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     this.__playerSoftwareVersion = value;
   }
 
+  // Keeping this named "_hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
   get _hls(): PlaybackEngine | undefined {
-    return this.__hls;
+    return this.__core?.engine;
   }
 
   get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
@@ -113,11 +110,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return getError(this.nativeEl) ?? null;
   }
 
-  get errorTranslator() {
+  get errorTranslator(): ((errorEvent: any) => any) | undefined {
     return this.__errorTranslator;
   }
 
-  set errorTranslator(value: Function | undefined) {
+  set errorTranslator(value: ((errorEvent: any) => any) | undefined) {
     this.__errorTranslator = value;
   }
 
@@ -177,6 +174,25 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       this.setAttribute('autoplay', typeof val === 'string' ? val : '');
     } else {
       this.removeAttribute('autoplay');
+    }
+  }
+
+  get preload() {
+    const val = this.getAttribute('preload') as HTMLMediaElement['preload'];
+    if (val === '') return 'auto';
+    if (['none', 'metadata', 'auto'].includes(val)) return val;
+    return super.preload;
+  }
+
+  set preload(val) {
+    // don't cause an infinite loop
+    // check the attribute because an empty string maps to the `auto` prop
+    if (val == this.getAttribute('preload')) return;
+
+    if (['', 'none', 'metadata', 'auto'].includes(val)) {
+      this.setAttribute('preload', val);
+    } else {
+      this.removeAttribute('preload');
     }
   }
 
@@ -326,16 +342,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   load() {
-    const nextHlsInstance = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__hls);
-    this.__hls = nextHlsInstance;
-    const updateAutoplay = setupAutoplay(this.nativeEl, this.autoplay, nextHlsInstance);
-    this.__updateAutoplay = updateAutoplay;
+    this.__core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__core);
   }
 
   unload() {
-    teardown(this.nativeEl, this.__hls);
-    this.__hls = undefined;
-    this.__updateAutoplay = undefined;
+    teardown(this.nativeEl, this.__core);
+    this.__core = undefined;
   }
 
   // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
@@ -359,7 +371,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       case Attributes.PLAYER_SOFTWARE_VERSION:
         this.playerSoftwareVersion = newValue ?? undefined;
         break;
-      case 'src':
+      case 'src': {
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
@@ -372,18 +384,25 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           this.load();
         }
         break;
+      }
       case 'autoplay':
         if (newValue === oldValue) {
           break;
         }
         /** In case newValue is an empty string or null, use this.autoplay which translates to booleans (WL) */
-        this.__updateAutoplay?.(this.autoplay);
+        this.__core?.setAutoplay(this.autoplay);
+        break;
+      case 'preload':
+        if (newValue === oldValue) {
+          break;
+        }
+        this.__core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue ?? undefined, { domain: this.customDomain }) as string;
         break;
-      case Attributes.DEBUG:
+      case Attributes.DEBUG: {
         const debug = this.debug;
         if (!!this.mux) {
           /** @TODO Link to docs for a more detailed discussion (CJP) */
@@ -395,6 +414,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           this._hls.config.debug = debug;
         }
         break;
+      }
       case Attributes.METADATA_URL:
         if (newValue) {
           fetch(newValue)
@@ -415,7 +435,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
 type MuxVideoElementType = typeof MuxVideoElement;
 declare global {
-  var MuxVideoElement: MuxVideoElementType;
+  var MuxVideoElement: MuxVideoElementType; // eslint-disable-line
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */

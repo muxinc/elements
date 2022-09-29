@@ -29,6 +29,8 @@
   "scripts": {
     "clean": "shx rm -rf dist/",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "test": "web-test-runner **/*test.js --port 8004 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
+    "posttest": "replace 'SF:src/' 'SF:packages/playback-core/src/' coverage/lcov.info --silent",
     "dev:cjs": "yarn build:cjs --watch=forever",
     "dev:esm": "yarn build:esm --watch=forever",
     "dev:esm-module": "yarn build:esm-module --watch=forever",
@@ -51,7 +53,12 @@
     "mux-embed": "^4.7.0"
   },
   "devDependencies": {
+    "@mux/test-esm-exports": "0.1.0",
+    "@open-wc/testing": "^3.0.3",
     "@typescript-eslint/parser": "^5.38.0",
+    "@web/dev-server-esbuild": "^0.3.2",
+    "@web/dev-server-import-maps": "^0.0.6",
+    "@web/test-runner": "^0.13.26",
     "downlevel-dts": "^0.9.0",
     "esbuild": "^0.15.7",
     "eslint": "^8.23.1",
@@ -69,8 +76,7 @@
     },
     "parser": "@typescript-eslint/parser",
     "plugins": [
-      "@typescript-eslint",
-      "@mux/i18n"
+      "@typescript-eslint"
     ],
     "extends": [
       "eslint:recommended",
@@ -86,7 +92,7 @@
     "rules": {
       "no-shadow": "error",
       "no-extra-boolean-cast": 0,
-      "@mux/i18n/no-substitutions": "error",
+      "no-empty": 0,
       "@typescript-eslint/ban-ts-comment": 0,
       "@typescript-eslint/no-explicit-any": 0
     }

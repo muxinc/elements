@@ -1,7 +1,7 @@
 import { globalThis } from 'shared-polyfills';
 import {
   initialize,
-  setupAutoplay,
+  generatePlayerInitTime,
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
@@ -9,11 +9,9 @@ import {
   toMuxVideoURL,
   teardown,
   Metadata,
-  mux,
-  generatePlayerInitTime,
   MediaError,
 } from '@mux/playback-core';
-import type { PlaybackEngine, UpdateAutoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomAudioElement, { AudioEvents } from './CustomAudioElement';
@@ -59,11 +57,9 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     return [...AttributeNameValues, ...(CustomAudioElement.observedAttributes ?? [])];
   }
 
-  // Keeping this named "__hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
-  protected __hls?: PlaybackEngine;
+  protected __core?: PlaybackCore;
   protected __playerInitTime: number;
   protected __metadata: Readonly<Metadata> = {};
-  protected __updateAutoplay?: UpdateAutoplay;
 
   constructor() {
     super();
@@ -82,8 +78,9 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     return playerSoftwareVersion;
   }
 
+  // Keeping this named "_hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
   get _hls(): PlaybackEngine | undefined {
-    return this.__hls;
+    return this.__core?.engine;
   }
 
   get mux(): Readonly<HTMLAudioElement['mux']> | undefined {
@@ -106,6 +103,25 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
       this.removeAttribute('src');
     } else {
       this.setAttribute('src', val);
+    }
+  }
+
+  get preload() {
+    const val = this.getAttribute('preload') as HTMLMediaElement['preload'];
+    if (val === '') return 'auto';
+    if (['none', 'metadata', 'auto'].includes(val)) return val;
+    return super.preload;
+  }
+
+  set preload(val) {
+    // don't cause an infinite loop
+    // check the attribute because an empty string maps to the `auto` prop
+    if (val == this.getAttribute('preload')) return;
+
+    if (['', 'none', 'metadata', 'auto'].includes(val)) {
+      this.setAttribute('preload', val);
+    } else {
+      this.removeAttribute('preload');
     }
   }
 
@@ -236,23 +252,19 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   }
 
   load() {
-    const nextHlsInstance = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__hls);
-    this.__hls = nextHlsInstance;
-    const updateAutoplay = setupAutoplay(this.nativeEl, this.autoplay, nextHlsInstance);
-    this.__updateAutoplay = updateAutoplay;
+    this.__core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__core);
   }
 
   unload() {
-    teardown(this.nativeEl, this.__hls);
-    this.__hls = undefined;
-    this.__updateAutoplay = undefined;
+    teardown(this.nativeEl, this.__core);
+    this.__core = undefined;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     switch (attrName) {
-      case 'src':
+      case 'src': {
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
@@ -265,14 +277,25 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
           this.load();
         }
         break;
+      }
       case 'autoplay':
-        this.__updateAutoplay?.(newValue);
+        if (newValue === oldValue) {
+          break;
+        }
+        /** In case newValue is an empty string or null, use this.autoplay which translates to booleans (WL) */
+        this.__core?.setAutoplay(this.autoplay);
+        break;
+      case 'preload':
+        if (newValue === oldValue) {
+          break;
+        }
+        this.__core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue ?? undefined) as string;
         break;
-      case Attributes.DEBUG:
+      case Attributes.DEBUG: {
         const debug = this.debug;
         if (!!this.mux) {
           /** @TODO Link to docs for a more detailed discussion (CJP) */
@@ -284,6 +307,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
           this._hls.config.debug = debug;
         }
         break;
+      }
       case Attributes.METADATA_URL:
         if (newValue) {
           fetch(newValue)
@@ -304,7 +328,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
 
 type MuxAudioElementType = typeof MuxAudioElement;
 declare global {
-  var MuxAudioElement: MuxAudioElementType;
+  var MuxAudioElement: MuxAudioElementType; // eslint-disable-line
 }
 
 if (!globalThis.customElements.get('mux-audio')) {

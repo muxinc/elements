@@ -4,16 +4,13 @@ import PropTypes from 'prop-types';
 import {
   allMediaTypes,
   initialize,
-  type Autoplay,
-  type UpdateAutoplay,
-  setupAutoplay,
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
   toMuxVideoURL,
-  PlaybackEngine,
   generatePlayerInitTime,
 } from '@mux/playback-core';
+import type { PlaybackCore } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 
 export type Props = Omit<
@@ -38,23 +35,18 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
     src: outerSrc,
     children,
     autoPlay,
+    preload,
     ...restProps
   } = props;
 
   const [playerInitTime] = useState(generatePlayerInitTime());
-
   const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
-
-  const playbackEngineRef = useRef<PlaybackEngine | undefined>(undefined);
+  const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
   const innerMediaElRef = useRef<HTMLAudioElement>(null);
-
   const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
-  const updateAutoplayRef = useRef<UpdateAutoplay | undefined>(undefined);
-  const [updateAutoplay, setUpdateAutoplay] = useState(() => (x: any) => {});
 
   useEffect(() => {
-    const src = toMuxVideoURL(playbackId) ?? outerSrc;
-    setSrc(src);
+    setSrc(toMuxVideoURL(playbackId) ?? outerSrc);
   }, [outerSrc, playbackId]);
 
   useEffect(() => {
@@ -66,17 +58,16 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
       playerSoftwareVersion,
       autoplay: autoPlay,
     };
-    const nextPlaybackEngineRef = initialize(propsWithState, mediaElRef.current, playbackEngineRef.current);
-    playbackEngineRef.current = nextPlaybackEngineRef;
-    setUpdateAutoplay(() => {
-      if (!mediaElRef.current) return;
-      setupAutoplay(mediaElRef.current, autoPlay, playbackEngineRef.current);
-    });
+    playbackCoreRef.current = initialize(propsWithState, mediaElRef.current, playbackCoreRef.current);
   }, [src]);
 
   useEffect(() => {
-    updateAutoplay(autoPlay);
+    playbackCoreRef.current?.setAutoplay(autoPlay);
   }, [autoPlay]);
+
+  useEffect(() => {
+    playbackCoreRef.current?.setPreload(preload);
+  }, [preload]);
 
   return (
     /** @TODO Fix types relationships (CJP) */
