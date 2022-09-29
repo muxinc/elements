@@ -379,7 +379,8 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   get preload() {
-    return (getVideoAttribute(this, AllowedVideoAttributes.PRELOAD) ?? '') as HTMLVideoElement['preload'];
+    // the browser has a default preload that is only available via the native media.preload
+    return (this.media ? this.media.preload : this.getAttribute('preload')) as HTMLVideoElement['preload'];
   }
 
   set preload(val) {
