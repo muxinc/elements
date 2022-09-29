@@ -185,9 +185,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   set preload(val) {
-    if (val === this.preload) return;
+    // dont' cause an infinite loop
+    // check the attribute because an empty string maps to the `auto` prop
+    if (val == this.getAttribute('preload')) return;
 
-    if (val && ['', 'none', 'metadata', 'auto'].includes(val)) {
+    if (val != null && ['', 'none', 'metadata', 'auto'].includes(val)) {
       this.setAttribute('preload', val);
     } else {
       this.removeAttribute('preload');
@@ -394,7 +396,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         if (newValue === oldValue) {
           break;
         }
-        this.__core?.setPreload(this.preload);
+        this.__core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */

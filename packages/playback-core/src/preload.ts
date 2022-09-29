@@ -9,7 +9,7 @@ export const setupPreload = (
   if (!mediaEl) return () => undefined;
 
   const updatePreload = (val?: HTMLMediaElement['preload']) => {
-    if (val && ['', 'none', 'metadata', 'auto'].includes(val)) {
+    if (val != null && ['', 'none', 'metadata', 'auto'].includes(val)) {
       mediaEl.setAttribute('preload', val);
     } else {
       mediaEl.removeAttribute('preload');
