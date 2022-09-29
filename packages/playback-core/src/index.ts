@@ -3,8 +3,9 @@ import Hls from 'hls.js';
 import { setupErrors, MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
+import { setupStartTime } from './start-time';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
-import { inSeekableRange, toPlaybackIdParts, getType } from './util';
+import { toPlaybackIdParts, getType } from './util';
 import {
   StreamTypes,
   PlaybackTypes,
@@ -20,7 +21,6 @@ export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -44,7 +44,6 @@ export const initialize = (
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
 
-  muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
@@ -52,6 +51,7 @@ export const initialize = (
   const getError = setupErrors(mediaEl, nextHlsInstance);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+  setupStartTime(props as Pick<MuxMediaProps, 'startTime'>, mediaEl, nextHlsInstance);
   setupTracks(mediaEl, nextHlsInstance);
 
   return {
@@ -75,8 +75,6 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
   if (mediaEl) {
     mediaEl.removeAttribute('src');
     mediaEl.load();
-    mediaEl.removeEventListener('durationchange', seekInSeekableRange);
-    muxMediaState.delete(mediaEl);
     mediaEl.dispatchEvent(new Event('teardown'));
   }
 };
@@ -241,7 +239,7 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'streamType'>>,
   mediaEl?: HTMLMediaElement | null,
   hls?: Pick<Hls, 'attachMedia'>
 ) => {
@@ -254,11 +252,6 @@ export const loadMedia = (
   if (mediaEl && shouldUseNative) {
     if (typeof src === 'string') {
       mediaEl.setAttribute('src', src);
-      if (props.startTime) {
-        (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
-        // seekable is set to the range of the entire video once durationchange fires
-        mediaEl.addEventListener('durationchange', seekInSeekableRange, { once: true });
-      }
     } else {
       mediaEl.removeAttribute('src');
     }
@@ -271,24 +264,3 @@ export const loadMedia = (
     );
   }
 };
-
-function seekInSeekableRange(event: Event) {
-  const mediaEl = event.target as HTMLMediaElement;
-  const startTime = muxMediaState.get(mediaEl)?.startTime;
-  if (!startTime) return;
-
-  if (inSeekableRange(mediaEl.seekable, mediaEl.duration, startTime)) {
-    // Setting preload to `none` from `auto` was required on iOS to fix a bug
-    // that caused no `timeupdate` events to fire after seeking ¯\_(ツ)_/¯
-    const wasAuto = mediaEl.preload === 'auto';
-    if (wasAuto) {
-      mediaEl.preload = 'none';
-    }
-
-    mediaEl.currentTime = startTime;
-
-    if (wasAuto) {
-      mediaEl.preload = 'auto';
-    }
-  }
-}
