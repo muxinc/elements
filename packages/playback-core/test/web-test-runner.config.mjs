@@ -9,7 +9,7 @@ export default {
         importMap: {
           imports: {
             // see shared/test-esm-exports/README.md for more information on this configuration
-            '/test/': '/packages/mux-video/test/',
+            '/test/': '/packages/playback-core/test/',
             'hls.js': '/node_modules/@mux/test-esm-exports/dist/hls.js',
             'mux-embed': '/node_modules/@mux/test-esm-exports/dist/mux-embed.js',
           },

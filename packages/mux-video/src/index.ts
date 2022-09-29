@@ -180,16 +180,16 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   get preload() {
     const val = this.getAttribute('preload') as HTMLMediaElement['preload'];
     if (val === '') return 'auto';
-    if (val && ['none', 'metadata', 'auto'].includes(val)) return val;
+    if (['none', 'metadata', 'auto'].includes(val)) return val;
     return super.preload;
   }
 
   set preload(val) {
-    // dont' cause an infinite loop
+    // don't cause an infinite loop
     // check the attribute because an empty string maps to the `auto` prop
     if (val == this.getAttribute('preload')) return;
 
-    if (val != null && ['', 'none', 'metadata', 'auto'].includes(val)) {
+    if (['', 'none', 'metadata', 'auto'].includes(val)) {
       this.setAttribute('preload', val);
     } else {
       this.removeAttribute('preload');
