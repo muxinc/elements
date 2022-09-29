@@ -10,7 +10,6 @@ import {
   teardown,
   Metadata,
   MediaError,
-  getError,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -107,7 +106,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   // @ts-ignore
   get error(): MediaError | null {
-    return getError(this.nativeEl) ?? null;
+    return this.__core?.getError() ?? null;
   }
 
   get errorTranslator(): ((errorEvent: any) => any) | undefined {

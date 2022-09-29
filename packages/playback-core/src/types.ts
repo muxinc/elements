@@ -1,5 +1,6 @@
 import { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
+import { MediaError } from './errors';
 
 type KeyTypes = string | number | symbol;
 
@@ -16,6 +17,7 @@ export type PlaybackCore = {
   engine?: PlaybackEngine;
   setAutoplay: (autoplay?: Autoplay) => void;
   setPreload: (preload?: HTMLMediaElement['preload']) => void;
+  getError(): MediaError | null;
 };
 
 // TODO add INVIEW_MUTED, INVIEW_ANY

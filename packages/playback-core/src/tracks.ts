@@ -1,9 +1,12 @@
 import Hls from 'hls.js';
 
 export function setupTracks(
-  mediaEl: HTMLMediaElement,
-  hls: Pick<Hls, 'on' | 'once' | 'subtitleTracks' | 'subtitleTrack'>
+  mediaEl?: HTMLMediaElement | null,
+  hls?: Pick<Hls, 'on' | 'once' | 'subtitleTracks' | 'subtitleTrack'>
 ) {
+  // return early for non hls.js (MSE)
+  if (!mediaEl || !hls) return;
+
   hls.on(Hls.Events.NON_NATIVE_TEXT_TRACKS_FOUND, (_type, { tracks }) => {
     tracks.forEach((trackObj) => {
       const baseTrackObj = trackObj.subtitleTrack ?? trackObj.closedCaptions;

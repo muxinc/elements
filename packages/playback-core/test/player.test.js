@@ -1,5 +1,5 @@
 import { assert, aTimeout } from '@open-wc/testing';
-import { initialize, teardown, MediaError, getError } from '../src/index.ts';
+import { initialize, teardown, MediaError } from '../src/index.ts';
 
 describe('playback core', () => {
   it('initialize w/ default preferPlayback', async function () {
@@ -29,7 +29,7 @@ describe('playback core', () => {
 
   it('handle error', async function () {
     const video = document.createElement('video');
-    initialize(
+    const core = initialize(
       {
         src: 'https://mux.com/', // not working src url
       },
@@ -42,9 +42,9 @@ describe('playback core', () => {
     assert.equal(video.error.code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
     assert.equal(video.error.message, '');
 
-    assert.equal(getError(video).code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
+    assert.equal(core.getError().code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
     assert.equal(
-      getError(video).message,
+      core.getError().message,
       'An unsupported error occurred. The server or network failed, or your browser does not support this format.'
     );
   });

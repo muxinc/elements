@@ -1,6 +1,6 @@
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from 'hls.js';
-import { MediaError } from './errors';
+import { setupErrors, MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
 import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
@@ -36,10 +36,6 @@ export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN }
   return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
 };
 
-export const getError = (mediaEl: HTMLMediaElement) => {
-  return muxMediaState.get(mediaEl)?.error;
-};
-
 export const initialize = (
   props: Partial<MuxMediaPropsInternal>,
   mediaEl?: HTMLMediaElement | null,
@@ -53,11 +49,14 @@ export const initialize = (
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
 
+  const getError = setupErrors(mediaEl, nextHlsInstance);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+  setupTracks(mediaEl, nextHlsInstance);
 
   return {
     engine: nextHlsInstance,
+    getError,
     setAutoplay,
     setPreload,
   };
@@ -76,8 +75,6 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
   if (mediaEl) {
     mediaEl.removeAttribute('src');
     mediaEl.load();
-    mediaEl.removeEventListener('error', handleNativeError);
-    mediaEl.removeEventListener('error', handleInternalError);
     mediaEl.removeEventListener('durationchange', seekInSeekableRange);
     muxMediaState.delete(mediaEl);
     mediaEl.dispatchEvent(new Event('teardown'));
@@ -246,21 +243,7 @@ export const setupMux = (
 export const loadMedia = (
   props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
   mediaEl?: HTMLMediaElement | null,
-  hls?: Pick<
-    Hls,
-    | 'config'
-    | 'on'
-    | 'once'
-    | 'startLoad'
-    | 'stopLoad'
-    | 'recoverMediaError'
-    | 'destroy'
-    | 'loadSource'
-    | 'attachMedia'
-    | 'liveSyncPosition'
-    | 'subtitleTracks'
-    | 'subtitleTrack'
-  >
+  hls?: Pick<Hls, 'attachMedia'>
 ) => {
   if (!mediaEl) {
     console.warn('attempting to load media before mediaEl exists');
@@ -279,49 +262,8 @@ export const loadMedia = (
     } else {
       mediaEl.removeAttribute('src');
     }
-
-    mediaEl.addEventListener('error', handleNativeError);
-    mediaEl.addEventListener('error', handleInternalError);
-  } else if (hls && src) {
-    hls.on(Hls.Events.ERROR, (_event, data) => {
-      // if (data.fatal) {
-      //   switch (data.type) {
-      //     case Hls.ErrorTypes.NETWORK_ERROR:
-      //       // try to recover network error
-      //       console.error("fatal network error encountered, try to recover");
-      //       hls.startLoad();
-      //       break;
-      //     case Hls.ErrorTypes.MEDIA_ERROR:
-      //       console.error("fatal media error encountered, try to recover");
-      //       hls.recoverMediaError();
-      //       break;
-      //     default:
-      //       // cannot recover
-      //       console.error(
-      //         "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
-      //       );
-      //       hls.destroy();
-      //       break;
-      //   }
-      // }
-
-      const errorCodeMap: Record<string, number> = {
-        [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-        [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-      };
-      const error = new MediaError('', errorCodeMap[data.type]);
-      error.fatal = data.fatal;
-      error.data = data;
-      mediaEl.dispatchEvent(
-        new CustomEvent('error', {
-          detail: error,
-        })
-      );
-    });
-    mediaEl.addEventListener('error', handleInternalError);
-
-    setupTracks(mediaEl, hls);
-
+  } else if (hls) {
+    // loading of the source is done in setupPreload()
     hls.attachMedia(mediaEl);
   } else {
     console.error(
@@ -349,57 +291,4 @@ function seekInSeekableRange(event: Event) {
       mediaEl.preload = 'auto';
     }
   }
-}
-
-async function handleNativeError(event: Event) {
-  // Return if the event was created or modified by a script or dispatched
-  // via EventTarget.dispatchEvent() preventing an infinite loop.
-  if (!event.isTrusted) return;
-
-  // Stop immediate propagation of the native error event, re-dispatch below!
-  event.stopImmediatePropagation();
-
-  const mediaEl = event.target as HTMLMediaElement;
-  // Safari sometimes throws an error event with a null error.
-  if (!mediaEl?.error) return;
-
-  const { message, code } = mediaEl.error;
-  const error = new MediaError(message, code);
-
-  if (mediaEl.src && (code !== MediaError.MEDIA_ERR_DECODE || code !== undefined)) {
-    // Attempt to get the response code from the video src url.
-    try {
-      const { status } = await fetch(mediaEl.src as RequestInfo);
-      // Use the same hls.js data structure.
-      error.data = { response: { code: status } };
-    } catch {}
-  }
-
-  mediaEl.dispatchEvent(
-    new CustomEvent('error', {
-      detail: error,
-    })
-  );
-}
-
-/**
- * Use a event listener instead of a function call when dispatching the Custom error
- * event so consumers are still able to disable or intercept this error event.
- * @param {Event} event
- */
-function handleInternalError(event: Event) {
-  if (!(event instanceof CustomEvent) || !(event.detail instanceof MediaError)) return;
-
-  const mediaEl = event.target as HTMLMediaElement;
-  const error = event.detail;
-  // Prevent tracking non-fatal errors in Mux data.
-  if (!error || !error.fatal) return;
-
-  (muxMediaState.get(mediaEl) ?? {}).error = error;
-
-  // Only pass valid mux-embed props: player_error_code, player_error_message
-  mediaEl.mux?.emit('error', {
-    player_error_code: error.code,
-    player_error_message: error.message,
-  });
 }
