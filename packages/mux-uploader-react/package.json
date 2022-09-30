@@ -35,7 +35,7 @@
     "build:esm": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:prop-types",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel build:types 'build:cjs -- --minify' 'build:esm -- --minify'",
+    "build": "npm-run-all --parallel build:types 'build:cjs --minify' 'build:esm --minify'",
     "prebuild": "yarn clean",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
