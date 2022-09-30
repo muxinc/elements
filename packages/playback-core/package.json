@@ -43,8 +43,7 @@
     "build:iife": "esbuild --metafile=./dist/iife.json src/index.ts --target=es2019 --bundle --sourcemap --format=iife --outfile=./dist/playback-core.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4 --to=3.4",
-    "build": "npm-run-all --parallel build:types 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
-    "prebuild": "yarn clean",
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
