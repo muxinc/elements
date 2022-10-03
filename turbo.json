@@ -15,7 +15,7 @@
     },
     "dev": {
       "cache": false,
-      "dependsOn": ["clean", "build:types", "^build"]
+      "dependsOn": ["build:types", "^build"]
     },
     "build:types": {
       "outputs": ["dist/types/**/*", "dist/types-ts3.4/**/*"],
@@ -23,11 +23,11 @@
     },
     "build:packages": {
       "outputs": ["dist/**/*"],
-      "dependsOn": ["clean", "build:types", "^build"]
+      "dependsOn": ["^build"]
     },
     "build": {
       "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*"],
-      "dependsOn": ["clean", "build:types", "^build"]
+      "dependsOn": ["build:types", "^build"]
     }
   }
 }

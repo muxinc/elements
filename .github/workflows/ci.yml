@@ -21,6 +21,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn clean
       - run: yarn build:packages
       - run: npm run publish-release -- canary
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -50,6 +51,7 @@ jobs:
           cache: yarn
       # esbuild requires --ignore-scripts to NOT be added here.
       - run: yarn install --frozen-lockfile
+      - run: yarn clean
       - run: yarn test
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
