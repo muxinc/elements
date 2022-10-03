@@ -201,9 +201,10 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
     ></mux-player>`);
     const muxVideo = player.media;
+    const defaultPreload = document.createElement('video').preload;
 
-    assert.equal(player.preload, 'metadata', "Chrome's player default preload is metadata");
-    assert.equal(muxVideo.preload, 'metadata', "Chrome's muxVideo default preload is metadata");
+    assert.equal(player.preload, defaultPreload, `player default preload is ${defaultPreload}`);
+    assert.equal(muxVideo.preload, defaultPreload, `muxVideo default preload is ${defaultPreload}`);
 
     player.setAttribute('preload', '');
     assert.equal(player.preload, 'auto', 'player preload="" maps to auto');
@@ -211,8 +212,8 @@ describe('<mux-player>', () => {
 
     player.preload = null;
     assert(!muxVideo.hasAttribute('preload'), `has preload attr removed`);
-    assert.equal(player.preload, 'metadata', "Chrome's player default preload is metadata");
-    assert.equal(muxVideo.preload, 'metadata', "Chrome's muxVideo default preload is metadata");
+    assert.equal(player.preload, defaultPreload, `player default preload is ${defaultPreload}`);
+    assert.equal(muxVideo.preload, defaultPreload, `muxVideo default preload is ${defaultPreload}`);
   });
 
   it('poster is forwarded to the media element', async function () {
