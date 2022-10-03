@@ -44,8 +44,7 @@
     "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
-    "prebuild": "yarn clean",
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
