@@ -479,7 +479,7 @@ class MuxPlayerElement extends VideoApiElement {
       const chromeWorkaround = () => {
         toggleLines(selectedTrack, this.#userInactive, true);
         if (!this.paused) {
-          rAF = window.requestAnimationFrame(chromeWorkaround);
+          window.requestAnimationFrame(chromeWorkaround);
         }
       };
       mc?.media?.addEventListener('playing', () => {
