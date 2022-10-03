@@ -21,8 +21,12 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install
         run: yarn install --frozen-lockfile
+      - name: Clean
+        run: yarn clean
       - name: Test
         run: yarn test
+      - name: Clean
+        run: yarn clean
       - name: Build
         run: yarn build:packages
       - name: Publish
