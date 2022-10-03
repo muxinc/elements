@@ -9,7 +9,7 @@ import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
 const MuxPlayerIndex = React.lazy(() => import('./index'));
 
 interface FallbackProps extends Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'> {
-  onIntersection: () => void;
+  onIntersection?: () => void;
 }
 const Fallback = (props: FallbackProps) => {
   const { style, onIntersection, ...rest } = props;
@@ -18,7 +18,7 @@ const Fallback = (props: FallbackProps) => {
   const isIntersecting = useIsIntersecting(intersectionRef);
 
   useEffect(() => {
-    if (isIntersecting) {
+    if (isIntersecting && onIntersection) {
       onIntersection();
     }
   }, [isIntersecting, onIntersection]);
