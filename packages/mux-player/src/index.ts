@@ -644,9 +644,9 @@ class MuxPlayerElement extends VideoApiElement {
   set title(val: string) {
     if (val === this.title) return;
     if (!!val) {
-      this.removeAttribute('title');
-    } else {
       this.setAttribute(PlayerAttributes.TITLE, val);
+    } else {
+      this.removeAttribute('title');
     }
     // Calling super.title for tooltip usage
     super.title = val;
