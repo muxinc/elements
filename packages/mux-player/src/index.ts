@@ -786,6 +786,9 @@ class MuxPlayerElement extends VideoApiElement {
    * Set the beacon collection domain. Used by Mux Data.
    */
   set beaconCollectionDomain(val: string | undefined) {
+    // don't cause an infinite loop
+    if (val === this.beaconCollectionDomain) return;
+
     if (val) {
       this.setAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
@@ -840,6 +843,9 @@ class MuxPlayerElement extends VideoApiElement {
    * Set Mux asset custom domain.
    */
   set customDomain(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.customDomain) return;
+
     if (val) {
       this.setAttribute(MuxVideoAttributes.CUSTOM_DOMAIN, val);
     } else {
@@ -914,6 +920,8 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   set preferPlayback(val: ValueOf<PlaybackTypes> | undefined) {
+    if (val === this.preferPlayback) return;
+
     if (val === PlaybackTypes.MSE || val === PlaybackTypes.NATIVE) {
       this.setAttribute(MuxVideoAttributes.PREFER_PLAYBACK, val);
     } else {
