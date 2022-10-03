@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import type { StreamTypes } from '@mux/playback-core';
+import type { StreamTypes, PlaybackTypes } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens } from '@mux/mux-player';
@@ -45,7 +45,7 @@ type MuxMediaPropTypes = {
   beaconCollectionDomain: string;
   customDomain: string;
   playbackId: string;
-  preferMse: boolean;
+  preferPlayback: ValueOf<PlaybackTypes> | undefined;
   streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;
   children: never[];

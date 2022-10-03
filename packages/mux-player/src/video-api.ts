@@ -35,6 +35,28 @@ const CustomVideoAttributes = {
   MUTED: 'muted',
 };
 
+const emptyTimeRanges: TimeRanges = Object.freeze({
+  length: 0,
+  start(index: number) {
+    const unsignedIdx = index >>> 0;
+    if (unsignedIdx >= this.length) {
+      throw new DOMException(
+        `Failed to execute 'start' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
+      );
+    }
+    return 0;
+  },
+  end(index: number) {
+    const unsignedIdx = index >>> 0;
+    if (unsignedIdx >= this.length) {
+      throw new DOMException(
+        `Failed to execute 'end' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
+      );
+    }
+    return 0;
+  },
+});
+
 const AllowedVideoEvents = VideoEvents.filter((type) => type !== 'error');
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes);
 const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
@@ -57,8 +79,52 @@ export function initVideoApi(el: VideoApiElement) {
   });
 }
 
-/** @TODO Consider making VideoApiElement compliant with/extensible from HTMLVideoElement (CJP) */
-interface VideoApiElement extends HTMLElement {
+// NOTE: Some of these are defined in MuxPlayerElement. We may want to apply a
+// `Pick<>` on these to also enforce consistency (CJP).
+type PartialHTMLVideoElement = Omit<
+  HTMLVideoElement,
+  | 'disablePictureInPicture'
+  | 'height'
+  | 'width'
+  | 'error'
+  | 'seeking'
+  | 'onenterpictureinpicture'
+  | 'onleavepictureinpicture'
+  | 'load'
+  | 'cancelVideoFrameCallback'
+  | 'getVideoPlaybackQuality'
+  | 'requestPictureInPicture'
+  | 'requestVideoFrameCallback'
+  | 'controls'
+  | 'currentSrc'
+  | 'disableRemotePlayback'
+  | 'mediaKeys'
+  | 'networkState'
+  | 'onencrypted'
+  | 'onwaitingforkey'
+  | 'played'
+  | 'remote'
+  | 'seekable'
+  | 'srcObject'
+  | 'textTracks'
+  | 'addTextTrack'
+  | 'canPlayType'
+  | 'fastSeek'
+  | 'setMediaKeys'
+  | 'HAVE_CURRENT_DATA'
+  | 'HAVE_ENOUGH_DATA'
+  | 'HAVE_FUTURE_DATA'
+  | 'HAVE_METADATA'
+  | 'HAVE_NOTHING'
+  | 'NETWORK_EMPTY'
+  | 'NETWORK_IDLE'
+  | 'NETWORK_LOADING'
+  | 'NETWORK_NO_SOURCE'
+  | 'src'
+  | 'mux' // NOTE: Because of our global types extension of HTMLMediaElement, `mux` is a property that also needs to be omitted (CJP)
+>;
+
+interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
   addEventListener<K extends keyof HTMLVideoElementEventMap>(
     type: K,
     listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
@@ -148,7 +214,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   play() {
-    return this.media?.play();
+    return this.media?.play() ?? Promise.reject();
   }
 
   pause() {
@@ -161,14 +227,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
   get media(): MuxVideoElementExt | null | undefined {
     return this.shadowRoot?.querySelector('mux-video');
-  }
-
-  /**
-   * @deprecated please use .media instead
-   */
-  get video(): MuxVideoElementExt | null | undefined {
-    logger.warn('<mux-player>.video is deprecated, please use .media instead');
-    return this.media;
   }
 
   get paused() {
@@ -184,7 +242,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   get buffered() {
-    return this.media?.buffered;
+    return this.media?.buffered ?? emptyTimeRanges;
   }
 
   get readyState() {
@@ -192,11 +250,11 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   get videoWidth() {
-    return this.media?.videoWidth;
+    return this.media?.videoWidth ?? 0;
   }
 
   get videoHeight() {
-    return this.media?.videoHeight;
+    return this.media?.videoHeight ?? 0;
   }
 
   get currentTime() {
@@ -321,7 +379,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   get preload() {
-    return getVideoAttribute(this, AllowedVideoAttributes.PRELOAD);
+    return (getVideoAttribute(this, AllowedVideoAttributes.PRELOAD) ?? '') as HTMLVideoElement['preload'];
   }
 
   set preload(val) {
