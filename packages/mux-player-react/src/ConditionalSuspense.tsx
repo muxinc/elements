@@ -1,16 +1,12 @@
 import React, { Suspense } from 'react';
 
-import useIsBrowser from './useIsBrowser';
-
 type Props = {
   fallback: React.ReactChild | React.ReactFragment | React.ReactPortal | null;
+  condition: boolean;
   children: React.ReactNode;
 };
-// Suspense isn't available on the server in React 17,
-const BrowserOnlySuspense = ({ fallback, children, ...rest }: Props) => {
-  const isBrowser = useIsBrowser();
-
-  return isBrowser ? (
+const ConditionalSuspense = ({ condition, fallback, children, ...rest }: Props) => {
+  return condition ? (
     <Suspense fallback={fallback} {...rest}>
       {children}
     </Suspense>
@@ -19,4 +15,4 @@ const BrowserOnlySuspense = ({ fallback, children, ...rest }: Props) => {
   );
 };
 
-export default BrowserOnlySuspense;
+export default ConditionalSuspense;

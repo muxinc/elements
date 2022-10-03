@@ -1,16 +1,35 @@
-import React from 'react';
-import Suspense from './BrowserOnlySuspense';
-import { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
+import React, { useEffect, useState } from 'react';
+
+import Spinner from './Spinner';
+import ConditionalSuspense from './ConditionalSuspense';
+import useIsBrowser from './useIsBrowser';
+import useIsIntersecting from './useIsIntersecting';
+
+import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
 
 const MuxPlayerIndex = React.lazy(() => import('./index'));
 
-const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>) => {
-  const { style, ...rest } = props;
+interface FallbackProps extends Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'> {
+  onIntersection: () => void;
+}
+const Fallback = (props: FallbackProps) => {
+  const { style, onIntersection, ...rest } = props;
+
+  const intersectionRef = React.useRef<HTMLElement>(null);
+  const isIntersecting = useIsIntersecting(intersectionRef);
+
+  useEffect(() => {
+    if (isIntersecting) {
+      onIntersection();
+    }
+  }, [isIntersecting, onIntersection]);
+
   return (
     <>
       {/* TODO: can we add mux-player to JSX.IntrinsicElements */}
       {/* @ts-ignore */}
       <mux-player
+        ref={intersectionRef}
         data-mux-player-react-placeholder
         style={{
           // default mux-player styling
@@ -32,10 +51,9 @@ const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerS
         // In that case, we want this placeholder to look as much like the incoming player as possible.
         {...rest}
       >
-        {/* Spinner */}
-        <svg
+        {/* Loading Spinner SVG */}
+        <Spinner
           aria-hidden="true"
-          viewBox="0 0 100 100"
           style={{
             position: 'absolute',
             top: '50%',
@@ -44,23 +62,7 @@ const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerS
             height: '100px',
             transform: 'translate(-50%,-50%)',
           }}
-          fill="transparent"
-        >
-          <path d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
-            {/* after half a second, animate fill to appear */}
-            <animate attributeName="fill" dur="0.1s" from="transparent" to="#fff" begin="0.5s" fill="freeze" />
-            {/* spin! */}
-            <animateTransform
-              attributeName="transform"
-              attributeType="XML"
-              type="rotate"
-              dur="1s"
-              from="0 50 50"
-              to="360 50 50"
-              repeatCount="indefinite"
-            />
-          </path>
-        </svg>
+        />
         {/* Overlay */}
         <div
           // TODO: this color isn't quite right. how does mux player get its dark backdrop?
@@ -77,14 +79,26 @@ const Fallback = (props: Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerS
   );
 };
 
-const MuxPlayer = React.forwardRef<
-  MuxPlayerRefAttributes,
-  Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>
->((props, ref) => {
+interface MuxPlayerLazyProps extends Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'> {
+  loading?: 'page' | 'viewport';
+}
+
+const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((props, ref) => {
+  const { loading = 'viewport', ...rest } = props;
+
+  // We load mux player once two conditions are met:
+  // 1. We're in a browser (react.lazy doesn't work on the server in react 17)
+  const isBrowser = useIsBrowser();
+  // 2. The player has entered the viewport, according to the fallback (if enabled).
+  const [isIntersecting, setIsIntersecting] = useState(() => (loading === 'viewport' ? false : true));
+
   return (
-    <Suspense fallback={<Fallback {...props} />}>
-      <MuxPlayerIndex {...props} ref={ref} />
-    </Suspense>
+    <ConditionalSuspense
+      condition={isBrowser && isIntersecting}
+      fallback={<Fallback onIntersection={() => setIsIntersecting(true)} {...rest} />}
+    >
+      <MuxPlayerIndex {...rest} ref={ref} />
+    </ConditionalSuspense>
   );
 });
 
