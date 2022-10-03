@@ -379,14 +379,15 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   get preload() {
-    return (getVideoAttribute(this, AllowedVideoAttributes.PRELOAD) ?? '') as HTMLVideoElement['preload'];
+    // The browser has a default preload that is only available via the native `media.preload`.
+    return (this.media ? this.media.preload : this.getAttribute('preload')) as HTMLVideoElement['preload'];
   }
 
   set preload(val) {
-    if (val) {
+    // An empty string is a valid value and is an alias for the `auto` value.
+    if (['', 'none', 'metadata', 'auto'].includes(val)) {
       this.setAttribute(AllowedVideoAttributes.PRELOAD, val);
     } else {
-      // Remove boolean attribute if false, 0, '', null, undefined.
       this.removeAttribute(AllowedVideoAttributes.PRELOAD);
     }
   }
