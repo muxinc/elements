@@ -474,9 +474,16 @@ class MuxPlayerElement extends VideoApiElement {
     // update the selected track as necessary
     mc?.media?.textTracks.addEventListener('change', selectTrack);
     mc?.media?.textTracks.addEventListener('addtrack', selectTrack);
+
     if (navigator.userAgent.includes('Chrome/')) {
-      mc?.media?.addEventListener('timeupdate', () => {
+      const chromeWorkaround = () => {
         toggleLines(selectedTrack, this.#userInactive, true);
+        if (!this.paused) {
+          rAF = window.requestAnimationFrame(chromeWorkaround);
+        }
+      };
+      mc?.media?.addEventListener('playing', () => {
+        chromeWorkaround();
       });
     }
 
