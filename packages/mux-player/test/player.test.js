@@ -469,6 +469,32 @@ describe('<mux-player> playbackId transitions', () => {
     assert.equal(player.src, null);
   });
 
+  it('src can be reset with empty string property', async function () {
+    const player = await fixture(`<mux-player
+      src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+    ></mux-player>`);
+    const muxVideo = player.media;
+
+    player.src = '';
+    assert.equal(player.src, null, `player has null src property`);
+    assert(!player.hasAttribute('src'), `player has no src attribute`);
+    assert.equal(muxVideo.src, null, `muxVideo has null src property`);
+    assert(!muxVideo.hasAttribute('src'), `muxVideo has no src attribute`);
+  });
+
+  it('src can be reset with nil property', async function () {
+    const player = await fixture(`<mux-player
+      src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+    ></mux-player>`);
+    const muxVideo = player.media;
+
+    player.src = null;
+    assert.equal(player.src, null, `player has empty string src property`);
+    assert(!player.hasAttribute('src'), `player has no src attribute`);
+    assert.equal(muxVideo.src, null, `muxVideo has empty string src property`);
+    assert(!muxVideo.hasAttribute('src'), `muxVideo has no src attribute`);
+  });
+
   it('loads the new playbackId and clears dialog state', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
@@ -514,7 +540,7 @@ describe('<mux-player> playbackId transitions', () => {
   });
 });
 
-describe('seek to live behaviors', function () {
+describe('<mux-player> seek to live behaviors', function () {
   this.timeout(12000);
 
   it('should not have a seek to live button if the stream-type is not live/ll-live', async function () {

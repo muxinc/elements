@@ -808,20 +808,28 @@ class MuxPlayerElement extends VideoApiElement {
   /**
    * Set Mux asset playback id.
    */
-  set playbackId(val: string | undefined) {
-    this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, `${val}`);
+  set playbackId(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.PLAYBACK_ID);
+    }
   }
 
   get src() {
     // Only get the internal video.src if a playbackId is present.
     if (this.playbackId) {
-      return getVideoAttribute(this, VideoAttributes.SRC);
+      return getVideoAttribute(this, VideoAttributes.SRC) ?? undefined;
     }
-    return this.getAttribute(VideoAttributes.SRC);
+    return this.getAttribute(VideoAttributes.SRC) ?? undefined;
   }
 
   set src(val) {
-    this.setAttribute(VideoAttributes.SRC, `${val}`);
+    if (val) {
+      this.setAttribute(VideoAttributes.SRC, val);
+    } else {
+      this.removeAttribute(VideoAttributes.SRC);
+    }
   }
 
   /**
