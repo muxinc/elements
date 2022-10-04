@@ -265,18 +265,22 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #monitorLiveWindow() {
-    this.mediaController?.addEventListener('mediaplayrequest', (event) => {
-      if (
-        (event.target as Element)?.localName === 'media-play-button' &&
-        this.streamType &&
-        [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any)
-      ) {
-        // playback core should handle the seek to live on first play
-        if (this.hasPlayed) {
-          seekToLive(this);
+    this.addEventListener(
+      'mediaplayrequest',
+      (event) => {
+        if (
+          (event.composedPath()[0] as Element)?.localName === 'media-play-button' &&
+          this.streamType &&
+          [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any)
+        ) {
+          // playback core should handle the seek to live on first play
+          if (this.hasPlayed) {
+            seekToLive(this);
+          }
         }
-      }
-    });
+      },
+      { capture: true }
+    );
 
     const updateLiveWindow = () => {
       const nextInLiveWindow = isInLiveWindow(this);
@@ -288,10 +292,10 @@ class MuxPlayerElement extends VideoApiElement {
         );
       }
     };
-    this.media?.addEventListener('progress', updateLiveWindow);
-    this.media?.addEventListener('waiting', updateLiveWindow);
-    this.media?.addEventListener('timeupdate', updateLiveWindow);
-    this.media?.addEventListener('emptied', updateLiveWindow);
+    this.addEventListener('progress', updateLiveWindow);
+    this.addEventListener('waiting', updateLiveWindow);
+    this.addEventListener('timeupdate', updateLiveWindow);
+    this.addEventListener('emptied', updateLiveWindow);
   }
 
   #setUpErrors() {
