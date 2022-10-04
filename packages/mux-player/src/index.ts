@@ -765,6 +765,17 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
+   * Set the default hidden captions flag.
+   */
+  set defaultHiddenCaptions(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
+    } else {
+      this.setAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS, '');
+    }
+  }
+
+  /**
    * Get the player software name. Used by Mux Data.
    */
   get playerSoftwareName() {
