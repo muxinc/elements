@@ -40,7 +40,7 @@
     "prepare": "husky install",
     "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits",
     "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope @mux/*",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-graduate=@mux/mux-player,@mux/mux-player-react",
+    "version:update": "lerna version --exact --no-private --conventional-commits",
     "create-release-notes": "lerna run create-release-notes --scope @mux/*",
     "publish-release": "lerna run publish-release --scope @mux/* --"
   },
