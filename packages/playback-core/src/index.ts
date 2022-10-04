@@ -171,7 +171,10 @@ export const isMuxVideoSrc = ({
   if (!!playbackId) return true;
   // having no playback id and no src string should never actually happen, but could
   if (typeof src !== 'string') return false;
-  const hostname = new URL(src).hostname.toLocaleLowerCase();
+  // Include base for relative paths
+  const base = window?.location.href;
+  const hostname = new URL(src, base).hostname.toLocaleLowerCase();
+
   return hostname.includes(MUX_VIDEO_DOMAIN) || (!!customDomain && hostname.includes(customDomain.toLocaleLowerCase()));
 };
 
