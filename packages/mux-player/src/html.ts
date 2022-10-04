@@ -138,6 +138,7 @@ export class TemplateResult {
       if (element instanceof NodeTemplatePart) {
         element.replace(...instance.children);
       } else {
+        element.textContent = '';
         element.appendChild(instance);
       }
       return;
