@@ -396,7 +396,7 @@ class MuxPlayerElement extends VideoApiElement {
     };
 
     // toggles activeCues for a particular track depending on whether the user is active or not
-    const toggleLines = (track: TextTrack, userInactive: boolean) => {
+    const toggleLines = (track: TextTrack, userInactive: boolean, force = false) => {
       if (shouldSkipLineToggle()) {
         return;
       }
@@ -430,7 +430,7 @@ class MuxPlayerElement extends VideoApiElement {
           // if the line is already set to -4, we don't want to update it again
           // this can happen in the same tick on chrome and safari which fire a cuechange
           // event when the line property is changed to a different value.
-          if (cue.line === setTo) {
+          if (cue.line === setTo && !force) {
             return;
           }
 
@@ -439,7 +439,7 @@ class MuxPlayerElement extends VideoApiElement {
           }
 
           // we have to set line to 0 first due to a chrome bug https://crbug.com/1308892
-          cue.line = 0;
+          cue.line = setTo - 1;
           cue.line = setTo;
         } else {
           setTimeout(() => {
@@ -474,6 +474,18 @@ class MuxPlayerElement extends VideoApiElement {
     // update the selected track as necessary
     mc?.media?.textTracks.addEventListener('change', selectTrack);
     mc?.media?.textTracks.addEventListener('addtrack', selectTrack);
+
+    if (navigator.userAgent.includes('Chrome/')) {
+      const chromeWorkaround = () => {
+        toggleLines(selectedTrack, this.#userInactive, true);
+        if (!this.paused) {
+          window.requestAnimationFrame(chromeWorkaround);
+        }
+      };
+      mc?.media?.addEventListener('playing', () => {
+        chromeWorkaround();
+      });
+    }
 
     mc?.addEventListener('userinactivechange', () => {
       const newUserInactive = mc?.hasAttribute('user-inactive');
