@@ -55,6 +55,37 @@ export default class MediaThemeMux extends MediaTheme {
     ];
   }
 
+  constructor() {
+    super();
+
+    this.#setupCSSProperties();
+  }
+
+  #setupCSSProperties() {
+    // registerProperty will throw if the prop has already been registered
+    // and there's currently no way to check ahead of time
+    try {
+      window?.CSS?.registerProperty({
+        name: '--primary-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'white',
+      });
+      window?.CSS?.registerProperty({
+        name: '--secondary-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'transparent',
+      });
+      window?.CSS?.registerProperty({
+        name: '--controls-backdrop-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'rgba(0, 0, 0, 0.6)',
+      });
+    } catch (e) {}
+  }
+
   attributeChangedCallback() {
     this.render();
   }
