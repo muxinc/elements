@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.0.0-beta.0...@mux/mux-player@1.0.0) (2022-10-05)
+
+### Bug Fixes
+
+- chrome caption positioning workaround with a timer ([#438](https://github.com/muxinc/elements/issues/438)) ([5f3d921](https://github.com/muxinc/elements/commit/5f3d9210df3d109da752664878e7be0c15e50cfc))
+- disable all controls when the dialog is open ([09579cb](https://github.com/muxinc/elements/commit/09579cb32becab5b225cdb4e7e4ab29da460d277))
+- hide fullscreen button when fullscreen is unavailable ([#410](https://github.com/muxinc/elements/issues/410)) ([e1446a7](https://github.com/muxinc/elements/commit/e1446a77594a0872c776359d730da0103d21a209))
+- ignore Safari for captions movement. ([#404](https://github.com/muxinc/elements/issues/404)) ([bbf1e00](https://github.com/muxinc/elements/commit/bbf1e0073773113742f9853be803834c590d78c3))
+- mux-player audio height bugs ([75139a1](https://github.com/muxinc/elements/commit/75139a145ffe70547c7a664ad4191ce43cd41bbe))
+- **mux-player:** Add missing setter for defaultHiddenCaptions prop. ([4d047cd](https://github.com/muxinc/elements/commit/4d047cd822137d76725803913ccd1e77aa19f89a))
+- **mux-player:** Clean up crossOrigin and playsInline usage while respecting defaults/availability. ([457672f](https://github.com/muxinc/elements/commit/457672f3fd317043093b7bb6a13da2568013e597))
+- **mux-player:** Start making VideoApiElement conform to HTMLVideoElement interface. ([bbcf8e3](https://github.com/muxinc/elements/commit/bbcf8e3db083873c1d677e02bf7efe6ec8c14353))
+- playback-id or src nil value ([#430](https://github.com/muxinc/elements/issues/430)) ([8133d8a](https://github.com/muxinc/elements/commit/8133d8ad26fd769c6882260b62828743794e4a60))
+- preload property in mux-player ([#435](https://github.com/muxinc/elements/issues/435)) ([1920ab8](https://github.com/muxinc/elements/commit/1920ab8bbdf878f31d409e9fad222f9d3ea91e11))
+- src unloading ([#400](https://github.com/muxinc/elements/issues/400)) ([ef4d97e](https://github.com/muxinc/elements/commit/ef4d97e2ee0273e85af7c2c2911f685deaf62d9e))
+- swap title property setting ([1cd50e9](https://github.com/muxinc/elements/commit/1cd50e9061b304456d8b878d28e901293df4f351))
+- update to media-chrome 0.11.0 ([#415](https://github.com/muxinc/elements/issues/415)) ([54d3dbc](https://github.com/muxinc/elements/commit/54d3dbcb7e90c1b60621186251df3d6da594bc25))
+- update to media-chrome 0.11.1 ([#417](https://github.com/muxinc/elements/issues/417)) ([1271fb4](https://github.com/muxinc/elements/commit/1271fb4149a4749adab261dc84533a05d12a7348))
+- use CSS.registerProperty on vars to declare them as colors ([#441](https://github.com/muxinc/elements/issues/441)) ([1d0da91](https://github.com/muxinc/elements/commit/1d0da916d0906a296118b1b8fdc9c0dc0e0081e8))
+
+### Features
+
+- add `prefer-playback` attribute ([#402](https://github.com/muxinc/elements/issues/402)) ([8da36d6](https://github.com/muxinc/elements/commit/8da36d6b597ddbc4ae006873fee13a971b7ec2f3))
+- default width: 100% in shadowDOM lets see if this has any bad side-effects ([#413](https://github.com/muxinc/elements/issues/413)) ([2062709](https://github.com/muxinc/elements/commit/2062709684459f34e6159fb0ac23b7fd7b513c53))
+- disable some controls when there isn't a playback-id ([#416](https://github.com/muxinc/elements/issues/416)) ([630df7c](https://github.com/muxinc/elements/commit/630df7c104c6e0a994b3f1e93e3c150063589c74))
+- remove deprecated .hls and .video props ([#408](https://github.com/muxinc/elements/issues/408)) ([2bd4861](https://github.com/muxinc/elements/commit/2bd48618d1b59d054e470ce9011c5c2f4904f8b6))
+
+### BREAKING CHANGES
+
+- remove deprecated .hls and .video props.
+
 # [1.0.0-beta.0](https://github.com/muxinc/elements/compare/@mux/mux-player@0.1.0-beta.27...@mux/mux-player@1.0.0-beta.0) (2022-09-16)
 
 ### Bug Fixes

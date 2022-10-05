@@ -28,7 +28,6 @@ function MuxVideoWCPage() {
       <mux-video
         // style={{ aspectRatio: "16 / 9" }}
         playback-id={playbackId}
-        start-time="4.6"
         // onPlayerReady={() => console.log("ready!")}
         {...debugObj}
         {...mutedObj}

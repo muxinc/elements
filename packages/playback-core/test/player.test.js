@@ -1,7 +1,9 @@
 import { assert, aTimeout } from '@open-wc/testing';
 import { initialize, teardown, MediaError, getError } from '../src/index.ts';
 
-describe('playback core', () => {
+describe('playback core', function () {
+  this.timeout(10000);
+
   it('initialize w/ default preferPlayback', async function () {
     const video = document.createElement('video');
     const core = initialize(
@@ -50,8 +52,6 @@ describe('playback core', () => {
   });
 
   it('setAutoplay("any")', async function () {
-    this.timeout(10000);
-
     const video = document.createElement('video');
     const core = initialize(
       {
@@ -62,14 +62,12 @@ describe('playback core', () => {
     );
 
     core.setAutoplay('any');
-    await new Promise((resolve) => video.addEventListener('playing', resolve));
 
+    await new Promise((resolve) => video.addEventListener('playing', resolve));
     assert(!video.paused, 'is playing after core.setAutoplay("any")');
   });
 
   it('setAutoplay("muted")', async function () {
-    this.timeout(10000);
-
     const video = document.createElement('video');
     const core = initialize(
       {
@@ -80,16 +78,16 @@ describe('playback core', () => {
     );
 
     core.setAutoplay('muted');
-    await new Promise((resolve) => video.addEventListener('playing', resolve));
-
-    assert(!video.paused, 'is playing after core.setAutoplay("muted")');
     assert(video.muted, 'video is muted for autoplaying');
+
+    await new Promise((resolve) => video.addEventListener('playing', resolve));
+    assert(!video.paused, 'is playing after core.setAutoplay("muted")');
   });
 
-  it('preload="none"', async function () {
-    this.timeout(10000);
-
+  it('preload="none" will not start loading data', async function () {
     const video = document.createElement('video');
+    const loadStarted = new Promise((resolve) => video.addEventListener('loadstart', resolve));
+
     initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -99,22 +97,32 @@ describe('playback core', () => {
     );
 
     assert.equal(video.preload, 'none', 'preload is none');
-    await aTimeout(3000);
-    assert.equal(video.buffered.length, 0, 'no buffer loaded');
+    await loadStarted;
+    await aTimeout(1000);
+    assert.equal(video.readyState, HTMLMediaElement.HAVE_NOTHING, 'no data is loaded');
+  });
 
+  it('from preload="none" will play', async function () {
+    const video = document.createElement('video');
     video.muted = true;
+
+    initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+        preload: 'none',
+      },
+      video
+    );
+
     try {
       await video.play();
     } catch (error) {
       console.warn(error);
     }
-
     assert(!video.paused, 'is playing after play()');
   });
 
-  it('preload="auto"', async function () {
-    this.timeout(10000);
-
+  it('preload="auto" will start loading data', async function () {
     const video = document.createElement('video');
     initialize(
       {
@@ -127,20 +135,9 @@ describe('playback core', () => {
     assert.equal(video.preload, 'auto', 'preload is auto');
     await new Promise((resolve) => video.addEventListener('progress', resolve));
     assert.equal(video.buffered.length, 1, 'some buffer loaded');
-
-    video.muted = true;
-    try {
-      await video.play();
-    } catch (error) {
-      console.warn(error);
-    }
-
-    assert(!video.paused, 'is playing after play()');
   });
 
   it('preload="none" to preload="metadata"', async function () {
-    this.timeout(10000);
-
     const video = document.createElement('video');
     const core = initialize(
       {

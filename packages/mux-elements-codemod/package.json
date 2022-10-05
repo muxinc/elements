@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-elements-codemod",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "A codemod to transform @mux-elments scope imports into @mux scope imports",
   "bin": "./dist/index.mjs",
   "type": "module",

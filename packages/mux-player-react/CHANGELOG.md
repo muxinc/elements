@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.0.0-beta.0...@mux/mux-player-react@1.0.0) (2022-10-05)
+
+### Bug Fixes
+
+- **mux-player-react:** Make currentTime prop work. ([65b098d](https://github.com/muxinc/elements/commit/65b098da731d53e93d42c3cb3882d287847ac043))
+- **mux-player-react:** remove vestigial tertiaryColor from types. ([73a5155](https://github.com/muxinc/elements/commit/73a5155549a1c0fa44f8c95c9bf329ffd4543788))
+
+### Features
+
+- add `prefer-playback` attribute ([#402](https://github.com/muxinc/elements/issues/402)) ([8da36d6](https://github.com/muxinc/elements/commit/8da36d6b597ddbc4ae006873fee13a971b7ec2f3))
+
 # [1.0.0-beta.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@0.1.0-beta.28...@mux/mux-player-react@1.0.0-beta.0) (2022-09-16)
 
 ### Bug Fixes

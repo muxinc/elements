@@ -92,7 +92,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     hotKeys: el.getAttribute(PlayerAttributes.HOTKEYS),
     muted: el.muted,
     paused: el.paused,
-    playsInline: el.playsInline,
+    // NOTE: Currently unsupported due to "default true attribute" problem
+    // playsInline: el.playsInline,
     preload: el.preload,
     envKey: el.envKey,
     debug: el.debug,
@@ -201,15 +202,6 @@ class MuxPlayerElement extends VideoApiElement {
     }
 
     initVideoApi(this);
-
-    /**
-     * @todo determine sensible defaults for preloading buffer
-     * @see https://github.com/muxinc/elements/issues/51
-     */
-    // if (this.media?._hls) {
-    //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   this.media._hls.config.maxMaxBufferLength = 2;
-    // }
 
     this.#setUpErrors();
     this.#setUpCaptionsButton();
@@ -771,6 +763,17 @@ class MuxPlayerElement extends VideoApiElement {
    */
   get defaultHiddenCaptions() {
     return this.hasAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
+  }
+
+  /**
+   * Set the default hidden captions flag.
+   */
+  set defaultHiddenCaptions(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
+    } else {
+      this.setAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS, '');
+    }
   }
 
   /**
