@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.11.0...@mux/playback-core@0.12.0) (2022-10-05)
+
+### Bug Fixes
+
+- fetch error bug / add error test ([9246a2a](https://github.com/muxinc/elements/commit/9246a2a0dae2b80863bb4c5c8595c120919e7bdb))
+- move getStreamTypeConfig to index ([89f29ed](https://github.com/muxinc/elements/commit/89f29edd759cd7cafae8d6e1ae01fa9bbde6d53c))
+- move not exported utils to util file ([81f2ab2](https://github.com/muxinc/elements/commit/81f2ab27941ed6a56a5d1b8f982c04932c194812))
+- move types to separate file ([313cdee](https://github.com/muxinc/elements/commit/313cdeeec7b376de4fed12476d7170ed25f8245a))
+- preload bugs, add more tests ([bcfc23d](https://github.com/muxinc/elements/commit/bcfc23d0415d6bc5ffd1f65a8704f1ae40d251b9))
+- preload for mux-audio, add tests ([e795fe0](https://github.com/muxinc/elements/commit/e795fe047af1feac832786aa03d8f419e57881b5))
+- preload playback core change ([15313ea](https://github.com/muxinc/elements/commit/15313eaad81f748b5853a0fdaabfe141963f885e))
+- preload property in mux-player ([#435](https://github.com/muxinc/elements/issues/435)) ([1920ab8](https://github.com/muxinc/elements/commit/1920ab8bbdf878f31d409e9fad222f9d3ea91e11))
+- subsequent preload changes ([bd49465](https://github.com/muxinc/elements/commit/bd494653192c205eed043292427946848e1824f5))
+- tweak hls.js config for improved memory management and QoE ([#411](https://github.com/muxinc/elements/issues/411)) ([44454a7](https://github.com/muxinc/elements/commit/44454a74c80c9c9a1be0b33b21ae05adeaffa0ad))
+
+- BREAKING CHANGE: fix setting preload after play ([5723cdd](https://github.com/muxinc/elements/commit/5723cdd851f4b0a5400b1bcb2a8885b6e277f4ac))
+
+### Features
+
+- add `prefer-playback` attribute ([#402](https://github.com/muxinc/elements/issues/402)) ([8da36d6](https://github.com/muxinc/elements/commit/8da36d6b597ddbc4ae006873fee13a971b7ec2f3))
+
+### BREAKING CHANGES
+
+- for the playback-core pkg because setupAutoplay is removed
+
 # [0.11.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.10.0...@mux/playback-core@0.11.0) (2022-09-16)
 
 ### Bug Fixes

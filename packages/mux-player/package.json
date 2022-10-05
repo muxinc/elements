@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0",
   "description": "An open source Mux player web component that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
@@ -50,8 +50,8 @@
   },
   "dependencies": {
     "@github/template-parts": "^0.5.3",
-    "@mux/mux-video": "0.8.6",
-    "@mux/playback-core": "0.11.0",
+    "@mux/mux-video": "0.9.0",
+    "@mux/playback-core": "0.12.0",
     "media-chrome": "0.12.0"
   },
   "devDependencies": {

@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.4.3...@mux/mux-audio-react@0.5.0) (2022-10-05)
+
+### Bug Fixes
+
+- preload playback core change ([15313ea](https://github.com/muxinc/elements/commit/15313eaad81f748b5853a0fdaabfe141963f885e))
+
+### Features
+
+- add `prefer-playback` attribute ([#402](https://github.com/muxinc/elements/issues/402)) ([8da36d6](https://github.com/muxinc/elements/commit/8da36d6b597ddbc4ae006873fee13a971b7ec2f3))
+
 ## [0.4.3](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.4.2...@mux/mux-audio-react@0.4.3) (2022-09-16)
 
 **Note:** Version bump only for package @mux/mux-audio-react
