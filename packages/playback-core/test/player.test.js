@@ -151,7 +151,7 @@ describe('playback core', function () {
 
     core.setPreload('metadata');
     assert.equal(video.preload, 'metadata', 'preload is metadata');
-    await new Promise((resolve) => video.addEventListener('progress', resolve));
+    await new Promise((resolve) => video.addEventListener('loadedmetadata', resolve));
     assert.equal(video.buffered.length, 1, 'some buffer loaded');
 
     video.muted = true;
