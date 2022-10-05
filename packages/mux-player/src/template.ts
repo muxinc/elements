@@ -64,7 +64,7 @@ export const content = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
-      crossorigin
+      crossorigin="${props.crossOrigin ?? ''}"
       playsinline
       autoplay="${props.autoplay ?? false}"
       muted="${props.muted ?? false}"

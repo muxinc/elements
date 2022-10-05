@@ -58,7 +58,9 @@ const emptyTimeRanges: TimeRanges = Object.freeze({
 });
 
 const AllowedVideoEvents = VideoEvents.filter((type) => type !== 'error');
-const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes);
+const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes).filter(
+  (name) => ![AllowedVideoAttributes.PLAYSINLINE].includes(name)
+);
 const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
 
 /**
@@ -370,12 +372,13 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   }
 
   set playsInline(val) {
-    if (val) {
-      this.setAttribute(AllowedVideoAttributes.PLAYSINLINE, '');
-    } else {
-      // Remove boolean attribute if false, 0, '', null, undefined.
-      this.removeAttribute(AllowedVideoAttributes.PLAYSINLINE);
-    }
+    logger.error('playsInline is set to true by default and is not currently supported as a setter.');
+    // if (val) {
+    //   this.setAttribute(AllowedVideoAttributes.PLAYSINLINE, '');
+    // } else {
+    //   // Remove boolean attribute if false, 0, '', null, undefined.
+    //   this.removeAttribute(AllowedVideoAttributes.PLAYSINLINE);
+    // }
   }
 
   get preload() {

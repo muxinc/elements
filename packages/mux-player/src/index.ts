@@ -92,7 +92,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     hotKeys: el.getAttribute(PlayerAttributes.HOTKEYS),
     muted: el.muted,
     paused: el.paused,
-    playsInline: el.playsInline,
+    // NOTE: Currently unsupported due to "default true attribute" problem
+    // playsInline: el.playsInline,
     preload: el.preload,
     envKey: el.envKey,
     debug: el.debug,
