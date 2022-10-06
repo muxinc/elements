@@ -223,6 +223,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
     ></mux-player>`);
     const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
 
