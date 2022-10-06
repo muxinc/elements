@@ -48,18 +48,8 @@ export const content = (props: MuxTemplateProps) => html`
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     title="${props.title ?? false}"
     hotkeys="${props.hotKeys || false}"
-    poster="${
-      !!props.poster
-        ? props.poster
-        : props.playbackId && !props.audio
-        ? getPosterURLFromPlaybackId(props.playbackId, {
-            domain: props.customDomain,
-            thumbnailTime: props.thumbnailTime ?? props.startTime,
-            token: props.tokens.thumbnail,
-          })
-        : false
-    }"
-    placeholder="${props.placeholder}"
+    poster="${props.poster === '' ? false : props.poster ?? false}"
+    placeholder="${props.placeholder ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
@@ -87,17 +77,6 @@ export const content = (props: MuxTemplateProps) => html`
           ? props.src
           : props.playbackId
           ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
-          : false
-      }"
-      poster="${
-        !!props.poster
-          ? props.poster
-          : props.playbackId && !props.audio
-          ? getPosterURLFromPlaybackId(props.playbackId, {
-              domain: props.customDomain,
-              thumbnailTime: props.thumbnailTime ?? props.startTime,
-              token: props.tokens.thumbnail,
-            })
           : false
       }"
       cast-src="${
