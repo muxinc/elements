@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "A custom mux audio element for the browser that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
@@ -28,6 +28,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "shx rm -rf dist/",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-audio/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
@@ -42,22 +43,24 @@
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-audio.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "postbuild:types": "shx cp -r \"src/**/*.d.ts\" dist/types && downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
-    "prebuild": "yarn clean",
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/playback-core": "0.11.0"
+    "@mux/playback-core": "0.12.0"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
-    "@web/dev-server-esbuild": "^0.2.16",
+    "@typescript-eslint/eslint-plugin": "^5.38.1",
+    "@typescript-eslint/parser": "^5.38.1",
+    "@web/dev-server-esbuild": "^0.3.2",
     "@web/dev-server-import-maps": "^0.0.6",
     "@web/test-runner": "^0.13.26",
     "downlevel-dts": "^0.9.0",
     "esbuild": "^0.15.7",
+    "eslint": "^8.24.0",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
     "shared-polyfills": "0.1.0",

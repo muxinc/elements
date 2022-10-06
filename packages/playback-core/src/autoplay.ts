@@ -1,23 +1,6 @@
 import Hls from 'hls.js';
 import { addEventListenerWithTeardown } from './util';
-
-type PlaybackEngine = Hls;
-
-// TODO add INVIEW_MUTED, INVIEW_ANY
-export type AutoplayTypes = {
-  ANY: 'any';
-  MUTED: 'muted';
-};
-
-export const AutoplayTypes: AutoplayTypes = {
-  ANY: 'any',
-  MUTED: 'muted',
-};
-
-type ValueOf<T> = T[keyof T];
-type Maybe<T> = T | null | undefined;
-export type Autoplay = boolean | ValueOf<AutoplayTypes>;
-export type UpdateAutoplay = (newAutoplay: Maybe<string | boolean>) => void;
+import { ValueOf, Autoplay, AutoplayTypes, PlaybackEngine } from './types';
 
 const AutoplayTypeValues = Object.values(AutoplayTypes);
 export const isAutoplayValue = (value: unknown): value is Autoplay => {
@@ -34,10 +17,12 @@ export const isAutoplayValue = (value: unknown): value is Autoplay => {
 // This returns a method UpdateAutoplay, that allows the user to change
 // the value of the autoplay attribute and it will react appropriately.
 export const setupAutoplay = (
-  mediaEl: HTMLMediaElement,
-  maybeAutoplay: Maybe<string | boolean>,
-  hls: PlaybackEngine | undefined
+  { autoplay: maybeAutoplay }: { autoplay?: Autoplay },
+  mediaEl?: HTMLMediaElement | null,
+  hls?: PlaybackEngine
 ) => {
+  if (!mediaEl) return () => undefined;
+
   let hasPlayed = false;
   let isLive = false;
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
@@ -130,7 +115,7 @@ export const setupAutoplay = (
 
   // this method allows us to update the value of autoplay
   // and try autoplaying appropriately.
-  const updateAutoplay: UpdateAutoplay = (newAutoplay) => {
+  const updateAutoplay = (newAutoplay?: Autoplay) => {
     if (!hasPlayed) {
       autoplay = isAutoplayValue(newAutoplay) ? newAutoplay : !!newAutoplay;
       handleAutoplay(mediaEl, autoplay);

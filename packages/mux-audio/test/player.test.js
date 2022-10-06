@@ -57,4 +57,38 @@ describe('<mux-audio>', () => {
       volumechange: true,
     });
   });
+
+  it('preload is forwarded to the native el', async function () {
+    const player = await fixture(`<mux-audio
+      src="https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8"
+    ></mux-audio>`);
+
+    assert.equal(player.preload, 'metadata', 'browser default preload is metadata');
+
+    player.setAttribute('preload', '');
+    assert.equal(player.preload, 'auto', 'preload="" attribute maps to the auto state');
+    assert.equal(player.nativeEl.preload, 'auto', 'native preload="" attribute maps to the auto state');
+
+    player.preload = null;
+    assert.equal(player.preload, 'metadata', 'browser default preload is metadata');
+    assert.equal(player.nativeEl.preload, 'metadata', 'native browser default preload is metadata');
+
+    player.preload = 'auto';
+    assert.equal(player.getAttribute('preload'), 'auto', 'preload attr is auto');
+    assert.equal(player.nativeEl.getAttribute('preload'), 'auto', 'native preload attr is auto');
+  });
+
+  it('can use preload="none"', async function () {
+    this.timeout(10000);
+
+    const player = await fixture(`<mux-audio
+      src="https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8"
+      preload="none"
+      muted
+    ></mux-audio>`);
+
+    assert.equal(player.preload, 'none', 'preload is none');
+    await aTimeout(3000);
+    assert.equal(player.buffered.length, 0, 'no buffer loaded');
+  });
 });

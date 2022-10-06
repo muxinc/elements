@@ -2,20 +2,32 @@
   "$schema": "https://turborepo.org/schema.json",
   "baseBranch": "origin/main",
   "pipeline": {
-    "clean": {},
     "i18n": {},
+    "clean": {
+      "cache": false
+    },
     "lint": {
       "outputs": []
     },
-    "dev": {
-      "cache": false
-    },
     "test": {
-      "outputs": ["coverage/**/*"]
+      "outputs": ["coverage/**/*"],
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "dependsOn": ["build:types", "^build"]
+    },
+    "build:types": {
+      "outputs": ["dist/types/**/*", "dist/types-ts3.4/**/*"],
+      "dependsOn": ["^build:types"]
+    },
+    "build:packages": {
+      "outputs": ["dist/**/*"],
+      "dependsOn": ["^build"]
     },
     "build": {
       "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*"],
-      "dependsOn": ["^build"]
+      "dependsOn": ["build:types", "^build"]
     }
   }
 }

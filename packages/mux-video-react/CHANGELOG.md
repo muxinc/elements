@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.5.4...@mux/mux-video-react@0.6.0) (2022-10-05)
+
+### Bug Fixes
+
+- allow autoplay to change in mux-video-react, fixes [#396](https://github.com/muxinc/elements/issues/396) ([bf4ceb0](https://github.com/muxinc/elements/commit/bf4ceb051b7f656145826a460652820fce36c1d6))
+- preload playback core change ([15313ea](https://github.com/muxinc/elements/commit/15313eaad81f748b5853a0fdaabfe141963f885e))
+
+### Features
+
+- add `prefer-playback` attribute ([#402](https://github.com/muxinc/elements/issues/402)) ([8da36d6](https://github.com/muxinc/elements/commit/8da36d6b597ddbc4ae006873fee13a971b7ec2f3))
+
 ## [0.5.4](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.5.3...@mux/mux-video-react@0.5.4) (2022-09-16)
 
 **Note:** Version bump only for package @mux/mux-video-react

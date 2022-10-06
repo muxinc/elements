@@ -20,7 +20,7 @@ const ButtonPressedKeys = ['Enter', ' '];
 
 class MxpTimeDisplay extends globalThis.HTMLElement {
   static get observedAttributes() {
-    return ['hide-duration', 'remaining'];
+    return ['hide-duration', 'remaining', 'disabled', 'aria-disabled'];
   }
   static styles: string = styles;
   static template: HTMLTemplateElement = template;
@@ -89,15 +89,15 @@ class MxpTimeDisplay extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     if (attrName === 'hide-duration') {
       this.#toggleDuration();
     }
-    if (attrName === 'remaining') {
-      if (newValue != null) {
-        this.timeDisplayEl?.setAttribute('remaining', '');
+    if (['remaining', 'disabled', 'aria-disabled'].includes(attrName) && oldValue !== newValue) {
+      if (newValue == null) {
+        this.timeDisplayEl?.removeAttribute(attrName);
       } else {
-        this.timeDisplayEl?.removeAttribute('remaining');
+        this.timeDisplayEl?.setAttribute(attrName, newValue);
       }
     }
   }

@@ -1,4 +1,4 @@
-type KeyTypes = string | number | symbol;
+import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, type MuxMediaProps } from './types';
 
 type addEventListenerWithTeardown = <K extends keyof HTMLMediaElementEventMap>(
   mediaEl: HTMLMediaElement,
@@ -22,11 +22,6 @@ export const addEventListenerWithTeardown: addEventListenerWithTeardown = (media
   );
 };
 
-// Type Guard to determine if a given key is actually a key of some object of type T
-export const isKeyOf = <T = any>(k: KeyTypes, o: T): k is keyof T => {
-  return k in o;
-};
-
 export function inSeekableRange(seekable: TimeRanges, duration: number, time: number) {
   if (duration && time > duration) {
     time = duration;
@@ -38,3 +33,41 @@ export function inSeekableRange(seekable: TimeRanges, duration: number, time: nu
   }
   return false;
 }
+
+export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, string?] => {
+  const qIndex = playbackIdWithOptionalParams.indexOf('?');
+  if (qIndex < 0) return [playbackIdWithOptionalParams];
+  const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
+  const queryPart = playbackIdWithOptionalParams.slice(qIndex);
+  return [idPart, queryPart];
+};
+
+export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => {
+  const type = props.type;
+  if (type) {
+    const upperType = type.toUpperCase();
+    return isKeyOf(upperType, MimeTypeShorthandMap) ? MimeTypeShorthandMap[upperType] : type;
+  }
+
+  const { src } = props;
+  if (!src) return '';
+
+  return inferMimeTypeFromURL(src);
+};
+
+export const inferMimeTypeFromURL = (url: string) => {
+  let pathname = '';
+  try {
+    pathname = new URL(url).pathname;
+  } catch (e) {
+    console.error('invalid url');
+  }
+
+  const extDelimIdx = pathname.lastIndexOf('.');
+  if (extDelimIdx < 0) return '';
+
+  const ext = pathname.slice(extDelimIdx + 1);
+  const upperExt = ext.toUpperCase();
+
+  return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
+};

@@ -75,6 +75,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
     playbackId: el.playbackId,
+    hasSrc: !!el.playbackId || !!el.src,
     // NOTE: Always use the externally set poster attribute here to guarantee
     // it's used if/when it's been explicitly set "from the outside"
     // (See template.ts for additional context) (CJP)
@@ -91,7 +92,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     hotKeys: el.getAttribute(PlayerAttributes.HOTKEYS),
     muted: el.muted,
     paused: el.paused,
-    playsInline: el.playsInline,
+    // NOTE: Currently unsupported due to "default true attribute" problem
+    // playsInline: el.playsInline,
     preload: el.preload,
     envKey: el.envKey,
     debug: el.debug,
@@ -200,15 +202,6 @@ class MuxPlayerElement extends VideoApiElement {
     }
 
     initVideoApi(this);
-
-    /**
-     * @todo determine sensible defaults for preloading buffer
-     * @see https://github.com/muxinc/elements/issues/51
-     */
-    // if (this.media?._hls) {
-    //   // Temporarily here to load less segments on page load, remove later!!!!
-    //   this.media._hls.config.maxMaxBufferLength = 2;
-    // }
 
     this.#setUpErrors();
     this.#setUpCaptionsButton();
@@ -395,7 +388,7 @@ class MuxPlayerElement extends VideoApiElement {
     };
 
     // toggles activeCues for a particular track depending on whether the user is active or not
-    const toggleLines = (track: TextTrack, userInactive: boolean) => {
+    const toggleLines = (track: TextTrack, userInactive: boolean, force = false) => {
       if (shouldSkipLineToggle()) {
         return;
       }
@@ -429,7 +422,7 @@ class MuxPlayerElement extends VideoApiElement {
           // if the line is already set to -4, we don't want to update it again
           // this can happen in the same tick on chrome and safari which fire a cuechange
           // event when the line property is changed to a different value.
-          if (cue.line === setTo) {
+          if (cue.line === setTo && !force) {
             return;
           }
 
@@ -438,7 +431,7 @@ class MuxPlayerElement extends VideoApiElement {
           }
 
           // we have to set line to 0 first due to a chrome bug https://crbug.com/1308892
-          cue.line = 0;
+          cue.line = setTo - 1;
           cue.line = setTo;
         } else {
           setTimeout(() => {
@@ -473,6 +466,18 @@ class MuxPlayerElement extends VideoApiElement {
     // update the selected track as necessary
     mc?.media?.textTracks.addEventListener('change', selectTrack);
     mc?.media?.textTracks.addEventListener('addtrack', selectTrack);
+
+    if (navigator.userAgent.includes('Chrome/')) {
+      const chromeWorkaround = () => {
+        toggleLines(selectedTrack, this.#userInactive, true);
+        if (!this.paused) {
+          window.requestAnimationFrame(chromeWorkaround);
+        }
+      };
+      mc?.media?.addEventListener('playing', () => {
+        chromeWorkaround();
+      });
+    }
 
     mc?.addEventListener('userinactivechange', () => {
       const newUserInactive = mc?.hasAttribute('user-inactive');
@@ -643,9 +648,9 @@ class MuxPlayerElement extends VideoApiElement {
   set title(val: string) {
     if (val === this.title) return;
     if (!!val) {
-      this.removeAttribute('title');
-    } else {
       this.setAttribute(PlayerAttributes.TITLE, val);
+    } else {
+      this.removeAttribute('title');
     }
     // Calling super.title for tooltip usage
     super.title = val;
@@ -761,6 +766,17 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
+   * Set the default hidden captions flag.
+   */
+  set defaultHiddenCaptions(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
+    } else {
+      this.setAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS, '');
+    }
+  }
+
+  /**
    * Get the player software name. Used by Mux Data.
    */
   get playerSoftwareName() {
@@ -807,20 +823,28 @@ class MuxPlayerElement extends VideoApiElement {
   /**
    * Set Mux asset playback id.
    */
-  set playbackId(val: string | undefined) {
-    this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, `${val}`);
+  set playbackId(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.PLAYBACK_ID);
+    }
   }
 
   get src() {
     // Only get the internal video.src if a playbackId is present.
     if (this.playbackId) {
-      return getVideoAttribute(this, VideoAttributes.SRC);
+      return getVideoAttribute(this, VideoAttributes.SRC) ?? undefined;
     }
-    return this.getAttribute(VideoAttributes.SRC);
+    return this.getAttribute(VideoAttributes.SRC) ?? undefined;
   }
 
   set src(val) {
-    this.setAttribute(VideoAttributes.SRC, `${val}`);
+    if (val) {
+      this.setAttribute(VideoAttributes.SRC, val);
+    } else {
+      this.removeAttribute(VideoAttributes.SRC);
+    }
   }
 
   /**

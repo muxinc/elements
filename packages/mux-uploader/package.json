@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "An uploader elements to be used with Mux Direct Uploads",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -39,9 +39,8 @@
     "build:cjs": "esbuild src/index.ts --target=es2019 --external:@mux/upchunk --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle  --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-uploader.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "postbuild:types": "copyfiles -u 1 \"src/**/*.d.ts\" dist/types && downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel build:types 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'",
-    "prebuild": "yarn clean",
+    "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },

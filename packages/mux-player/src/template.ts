@@ -28,6 +28,8 @@ const isLiveOrDVR = (props: MuxTemplateProps) =>
 
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
+    has-src="${props.hasSrc}"
+    has-open-dialog="${props.isDialogOpen}"
     nohotkeys="${props.noHotKeys ?? false}"
     audio="${props.audio || false}"
     style="${
@@ -62,7 +64,7 @@ export const content = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
-      crossorigin
+      crossorigin="${props.crossOrigin ?? ''}"
       playsinline
       autoplay="${props.autoplay ?? false}"
       muted="${props.muted ?? false}"
@@ -127,7 +129,9 @@ export const content = (props: MuxTemplateProps) => html`
         ? html`<button
             slot="seek-live"
             part="${isLive(props) ? 'top' : 'bottom'} seek-live button"
-            aria-disabled="${props.inLiveWindow}"
+            disabled="${props.inLiveWindow || !props.hasSrc || props.isDialogOpen}"
+            aria-disabled="${(props.inLiveWindow || !props.hasSrc || props.isDialogOpen) && 'true'}"
+            in-live-window="${props.inLiveWindow}"
             onclick="${function (this: HTMLButtonElement, evt: Event) {
               props.onSeekToLive?.(evt);
               if (props.paused) {

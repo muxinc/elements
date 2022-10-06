@@ -1,34 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Link from "next/link";
+import Head from "next/head";
 import Script from 'next/script';
-import MuxPlayer from "@mux/mux-player-react";
-import { useRef, useState } from "react";
+import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
-
-const INITIAL_PRIMARY_COLOR = undefined;
-const INITIAL_SECONDARY_COLOR = undefined;
-const INITIAL_CONTROLS_BACKDROP_COLOR = undefined;
-const INITIAL_START_TIME = undefined;
-const INITIAL_THUMBNAIL_TIME = undefined;
-const INITIAL_DEBUG = false;
-const INITIAL_MUTED = false;
-const INITIAL_AUTOPLAY = false;
-const INITIAL_NOHOTKEYS = false;
-const INITIAL_DEFAULT_SHOW_REMAINING_TIME = true;
-const INITIAL_PLAYBACK_RATES = [0.25, 0.5, 1, 1.5, 2, 3];
-const INITIAL_TITLE = '';
-const INITIAL_ENV_KEY = "5e67cqdt7hgc9vkla7p0qch7q";
-const INITIAL_SELECTED_CSS_VARS = {};
-const INITIAL_HOTKEYS = '';
-
-const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
-  const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
-  const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
-  return {
-    video_id,
-    video_title,
-  };
-};
+import type MuxPlayerElement from "@mux/mux-player";
+import { useRouter } from "next/router";
+import type { NextParsedUrlQuery } from "next/dist/server/request-meta";
+import type { GetServerSideProps } from "next";
+import { BooleanRenderer, ColorRenderer, EnumMultiSelectRenderer, EnumRenderer, NumberRenderer, TextRenderer, URLRenderer } from "../components/renderers";
 
 const onLoadStart = console.log.bind(null, "loadstart");
 const onLoadedMetadata = console.log.bind(null, "loadedmetadata");
@@ -48,85 +28,344 @@ const onEnded = console.log.bind(null, "ended");
 const onError = console.log.bind(null, "error");
 const onPlayerReady = console.log.bind(null, "playerready");
 
-function MuxPlayerPage() {
+const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAssets: typeof mediaAssetsJSON) => {
+  const video_id = `videoId${mediaAssets.indexOf(mediaAsset) ?? -1}`;
+  const video_title = `Title: ${mediaAsset.description ?? 'Some Video'}`;
+  return {
+    video_id,
+    video_title,
+  };
+};
+
+const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON) => {
+  const {
+    'playback-id': playbackId,
+    // 'stream-type': streamType,
+    tokens,
+    'custom-domain': customDomain,
+    audio,
+    description: title,
+    placeholder,
+  } = mediaAsset ?? {};
+  // NOTE: Inferred type is "string" from JSON (CJP)
+  const streamType = mediaAsset?.['stream-type'] as MuxPlayerProps["streamType"];
+  const metadata = mediaAsset ? toMetadataFromMediaAsset(mediaAsset, mediaAssets) : undefined;
+
+  return {
+    playbackId,
+    streamType,
+    audio,
+    tokens,
+    customDomain,
+    metadata,
+    title,
+    placeholder,
+  };
+};
+
+const ActionTypes = {
+  UPDATE: 'UPDATE',
+};
+
+const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
+  muted: undefined,
+  debug: undefined,
+  autoPlay: undefined,
+  preload: undefined,
+  startTime: undefined,
+  currentTime: undefined,
+  paused: undefined,
+  nohotkeys: undefined,
+  hotkeys: undefined,
+  defaultShowRemainingTime: undefined,
+  defaultHiddenCaptions: undefined,
+  primaryColor: undefined,
+  secondaryColor: undefined,
+  thumbnailTime: undefined,
+  title: undefined,
+  envKey: undefined,
+  playbackRates: undefined,
+  playbackRate: undefined,
+  forwardSeekOffset: undefined,
+  backwardSeekOffset: undefined,
+  volume: undefined,
+  loop: undefined,
+  crossOrigin: undefined,
+  customDomain: undefined,
+  tokens: undefined,
+  playbackId: undefined,
+  streamType: undefined,
+});
+
+const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
+  const { type, value } = action;
+  switch (type) {
+    case ActionTypes.UPDATE: {
+      return {
+        ...state,
+        ...value,
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+};
+
+const toInitialState = (selectedAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON, query: NextParsedUrlQuery) => {
+  const queryState = Object.fromEntries(Object.entries(query).map(([k, v]) => [k, JSON.parse(v as string)]));
+  const selectedAssetState = toPlayerPropsFromJSON(selectedAsset, mediaAssets);
+  const initialState = {
+    ...DEFAULT_INITIAL_STATE,
+    ...selectedAssetState,
+    ...queryState,
+  };
+  return initialState;
+};
+
+const updateProps = <T extends any = any>(value: Partial<T>) => {
+  return {
+    type: ActionTypes.UPDATE,
+    value,
+  };
+};
+
+const toValueString = (value: any) => {
+  if (['boolean', 'number', 'string'].includes(typeof value)) return `${JSON.stringify(value)}`;
+  if (Array.isArray(value)) return `[${value.map(toValueString).join(', ')}]`;
+  if (typeof value === 'object') return `{ ${Object.entries(value).map(([key, entryValue]) => `${key}: ${toValueString(entryValue)}`).join(', ')} }`;
+  return value;
+};
+
+const MuxPlayerCodeRenderer = ({ state, component = 'MuxPlayer' }: { state: Partial<MuxPlayerProps>; component?: string; }) => {
+  const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
+  const propsStr = stateEntries.length
+    ? `\n${stateEntries.map(([key, value]) => `  ${key}={${toValueString(value)}}`).join('\n')}\n`
+    : '';
+  const codeStr = `<${component}${propsStr}/>`;
+  const copyToClipboard = () => {
+    navigator.clipboard?.writeText(codeStr);
+  };
+  return (
+    <div className="code-renderer" style={{}}>
+      <pre>
+        <code>{codeStr}</code>
+      </pre>
+      <button onClick={copyToClipboard}>Copy code</button>
+    </div>
+  );
+};
+
+const UrlPathRenderer = ({
+  state,
+  location: { origin, pathname } = {
+    origin: '',
+    pathname: './'
+  },
+}: { state: Partial<MuxPlayerProps>; location?: Pick<Location, 'origin' | 'pathname'>; }) => {
+  const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
+  const urlSearchParamsStr = stateEntries.length
+    ? `?${new URLSearchParams(Object.fromEntries(stateEntries.map(([k, v]) => [k, JSON.stringify(v)]))).toString()}`
+    : ''
+  const urlStr = `${origin}${pathname}${urlSearchParamsStr}`;
+  const copyToClipboard = () => {
+    navigator.clipboard?.writeText(urlStr);
+  };
+  return (
+    <div className="url-renderer">
+      <a href={urlStr} target="_blank">{urlStr}</a>
+      <button onClick={copyToClipboard}>Copy URL</button>
+    </div>
+  );
+};
+
+type Props = { location?: Pick<Location, 'origin' | 'pathname'> };
+
+const getUrl = ({ req, resolvedUrl }) => {
+  const { headers } = req;
+  const refererUrl = headers.referer && new URL(headers.referer);
+  const baseUrlHost = headers.host.toLowerCase();
+  const refererHost = refererUrl?.host?.toLowerCase();
+
+  if (refererHost === baseUrlHost && headers["sec-fetch-site"] === "same-origin") return new URL(refererUrl?.origin ?? './');
+  const startsLocal = baseUrlHost.startsWith('localhost') || baseUrlHost.startsWith('127.') || baseUrlHost.startsWith('192.');
+  const protocol = startsLocal ? 'http:' : 'https:';
+  return new URL(`${protocol}//${baseUrlHost}${resolvedUrl}`);
+};
+
+const SMALL_BREAKPOINT = 700;
+const XSMALL_BREAKPOINT = 300;
+const MediaChromeSizes = {
+  LG: 'large',
+  SM: 'small',
+  XS: 'extra-small',
+};
+
+const PlayerSizeWidths = {
+  [MediaChromeSizes.LG]: 800,
+  [MediaChromeSizes.SM]: 600,
+  [MediaChromeSizes.XS]: 250,
+};
+
+function getPlayerSize(width) {
+  if (width == undefined) return undefined;
+  return width < XSMALL_BREAKPOINT
+    ? MediaChromeSizes.XS
+    : width < SMALL_BREAKPOINT
+    ? MediaChromeSizes.SM
+    : MediaChromeSizes.LG;
+}
+
+const ControlCustomizationCSSVars = [
+  "--controls",
+  "--top-controls",
+  "--center-controls",
+  "--bottom-controls",
+  "--duration-display",
+  "--bottom-duration-display",
+  "--play-button",
+  "--center-play-button",
+  "--bottom-play-button",
+  "--time-range",
+  "--bottom-time-range",
+  "--seek-backward-button",
+  "--bottom-seek-backward-button",
+  "--seek-forward-button",
+  "--bottom-seek-forward-button",
+  "--time-display",
+  "--title-display",
+  "--bottom-title-display",
+  "--top-title-display",
+  "--bottom-time-display",
+  "--mute-button",
+  "--bottom-mute-button",
+  "--volume-range",
+  "--bottom-volume-range",
+  "--playback-rate-button",
+  "--bottom-playback-rate-button",
+  "--captions-button",
+  "--top-captions-button",
+  "--bottom-captions-button",
+  "--airplay-button",
+  "--top-airplay-button",
+  "--bottom-airplay-button",
+  "--cast-button",
+  "--top-cast-button",
+  "--bottom-cast-button",
+  "--pip-button",
+  "--top-pip-button",
+  "--bottom-pip-button",
+  "--fullscreen-button",
+  "--bottom-fullscreen-button",
+  "--seek-live-button",
+  "--top-seek-live-button",
+  "--bottom-seek-live-button",
+];
+
+const getControlCustomizationCSSVars = (state) => {
+  return Object.entries(state)
+    .filter(([k, v]) => ControlCustomizationCSSVars.includes(k) && !!v)
+    .map(([k]) => k);
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async context => {
+  const { origin, pathname }: Pick<Location, 'origin' | 'pathname'> = getUrl(context);
+  const location = { origin, pathname };
+  return ({ props: { location } })
+};
+
+function MuxPlayerPage({ location }: Props) {
+  const router = useRouter();
   const mediaElRef = useRef(null);
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
-  const [selectedAsset, setSelectedAsset] = useState(mediaAssets[0]);
-  const [envKey, setEnvKey] = useState(INITIAL_ENV_KEY);
-  const [paused, setPaused] = useState<boolean | undefined>(true);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
-  const [debug, setDebug] = useState(INITIAL_DEBUG);
-  const [nohotkeys, setNohotkeys] = useState(INITIAL_NOHOTKEYS);
-  const [defaultShowRemainingTime, setDefaultShowRemainingTime] = useState(INITIAL_DEFAULT_SHOW_REMAINING_TIME);
-  // What would be a reasonable UI for changing this? (CJP)
-  const [playbackRates, _setPlaybackRates] = useState(INITIAL_PLAYBACK_RATES);
-  const [startTime, _setStartTime] = useState(INITIAL_START_TIME);
-  const [thumbnailTime, _setThumbnailTime] = useState(INITIAL_THUMBNAIL_TIME);
-  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
-  const [primaryColor, setPrimaryColor] = useState<string|undefined>(INITIAL_PRIMARY_COLOR);
-  const [secondaryColor, setSecondaryColor] = useState<string|undefined>(INITIAL_SECONDARY_COLOR);
-  const [controlsBackdropColor, setControlsBackdropColor] = useState<string|undefined>(INITIAL_CONTROLS_BACKDROP_COLOR);
-  const [selectedCssVars, setSelectedCssVars] = useState(INITIAL_SELECTED_CSS_VARS);
-  const [hotkeys, setHotkeys] = useState(INITIAL_HOTKEYS);
-  const [title, setTitle] = useState(INITIAL_TITLE);
+  const [selectedAsset, setSelectedAsset] = useState(undefined);
+  const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets, router.query));
+  useEffect(() => {
+    if (!router.isReady) return;
+    dispatch(updateProps(toInitialState(selectedAsset, mediaAssets, router.query)))
+  }, [router.query, router.isReady]);
+  const [stylesState, dispatchStyles] = useReducer(reducer, {});
+  const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
+  const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
   return (
-    <div>
-      <h1>MuxPlayer Demo</h1>
-      <div>
-        <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
-        <MuxPlayer
-          ref={mediaElRef}
-          style={{
-            ...selectedCssVars,
-            ...(controlsBackdropColor && {'--controls-backdrop-color': controlsBackdropColor} as typeof selectedCssVars)
-            }}
-          envKey={envKey || undefined}
-          metadata={toMetadataFromMediaAsset(selectedAsset, mediaAssets)}
-          title={title}
-          startTime={startTime}
-          thumbnailTime={thumbnailTime}
-          playbackId={selectedAsset["playback-id"]}
-          tokens={selectedAsset["tokens"]}
-          customDomain={selectedAsset["custom-domain"]}
-          forwardSeekOffset={10}
-          backwardSeekOffset={10}
-          nohotkeys={nohotkeys}
-          hotkeys={hotkeys}
-          // onPlayerReady={() => console.log("ready!")}
-          debug={debug}
-          muted={muted}
-          paused={paused}
-          autoPlay={autoplay}
-          streamType={
-            selectedAsset["stream-type"] as "live" | "ll-live" | "on-demand"
-          }
-          audio={selectedAsset["audio"] ?? false}
-          primaryColor={primaryColor}
-          secondaryColor={secondaryColor}
-          tertiaryColor="#b4004e"
-          defaultShowRemainingTime={defaultShowRemainingTime}
-          playbackRates={playbackRates}
-          onPlay={(evt: Event) => {
-            onPlay(evt);
-            setPaused(false);
-          }}
-          onPause={(evt: Event) => {
-            onPause(evt);
-            setPaused(true);
-          }}
-          onSeeking={onSeeking}
-          onSeeked={onSeeked}
-          // startTime={12}
-        />
-      </div>
+    <>
+      <Head>
+        <title>&lt;MuxPlayer/&gt; Demo</title>
+      </Head>
+
+      <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
+      <MuxPlayer
+        ref={mediaElRef}
+        style={stylesState}
+        envKey={state.envKey}
+        metadata={state.metadata}
+        title={state.title}
+        startTime={state.startTime}
+        currentTime={state.currentTime}
+        thumbnailTime={state.thumbnailTime}
+        poster={state.poster}
+        placeholder={state.placeholder}
+        playbackId={state.playbackId}
+        tokens={state.tokens}
+        customDomain={state.customDomain}
+        forwardSeekOffset={state.forwardSeekOffset}
+        backwardSeekOffset={state.backwardSeekOffset}
+        crossOrigin={state.crossOrigin}
+        nohotkeys={state.nohotkeys}
+        hotkeys={state.hotkeys}
+        // onPlayerReady={() => console.log("ready!")}
+        debug={state.debug}
+        loop={state.loop}
+        muted={state.muted}
+        volume={state.volume}
+        paused={state.paused}
+        autoPlay={state.autoPlay}
+        preload={state.preload}
+        streamType={state.streamType}
+        audio={state.audio}
+        primaryColor={state.primaryColor}
+        secondaryColor={state.secondaryColor}
+        defaultShowRemainingTime={state.defaultShowRemainingTime}
+        defaultHiddenCaptions={state.defaultHiddenCaptions}
+        /** @TODO This doesn't appear to work? (CJP) */
+        // playbackRate={state.playbackRate}
+        playbackRates={state.playbackRates}
+        onPlay={(evt: Event) => {
+          onPlay(evt);
+          // dispatch(updateProps({ paused: false }));
+        }}
+        onPause={(evt: Event) => {
+          onPause(evt);
+          // dispatch(updateProps({ paused: true }));
+        }}
+        onVolumeChange={(event) => {
+          // const muxPlayerEl = event.target as MuxPlayerElement
+          // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
+        }}
+        onSeeking={onSeeking}
+        onSeeked={onSeeked}
+      />
+
       <div className="options">
+        <MuxPlayerCodeRenderer state={state}/>
+        <UrlPathRenderer
+          state={state}
+          location={typeof window !== 'undefined' ? window.location : location}
+        />
         <div>
+          <label htmlFor="assets-control">Select from one of our example assets</label>
           <select
+            id="assets-control"
             onChange={({ target: { value } }) => {
               setSelectedAsset(mediaAssets[value]);
+              dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(mediaAssets[value], mediaAssets)));
             }}
+            value={mediaAssets.indexOf(selectedAsset)}
           >
+            <option value="-1">
+              None
+            </option>
             {mediaAssets.map((value, i) => {
               const { description, error } = value;
               const label = `${error ? "👎 " : ""}${description}`;
@@ -138,182 +377,218 @@ function MuxPlayerPage() {
             })}
           </select>
         </div>
-        <div>
-          <label htmlFor="primarycolor-control">Primary Color </label>
-          <input
-            id="primarycolor-control"
-            type="color"
-            onChange={(event) => setPrimaryColor(event.target.value)}
-            value={primaryColor}
-          />
-        </div>
-        <div>
-          <label htmlFor="secondarycolor-control">Secondary Color </label>
-          <input
-            id="secondarycolor-control"
-            type="color"
-            onChange={(event) => setSecondaryColor(event.target.value)}
-            value={secondaryColor}
-          />
-        </div>
-        <div>
-          <label htmlFor="paused-control">Paused</label>
-          <input
-            id="paused-control"
-            type="checkbox"
-            onChange={() => setPaused(!paused)}
-            checked={paused}
-          />
-        </div>
-        <div>
-          <label htmlFor="autoplay-control">Muted Autoplay</label>
-          <input
-            id="autoplay-control"
-            type="checkbox"
-            onChange={() => setAutoplay(!autoplay ? "muted" : false)}
-            checked={!!autoplay}
-          />
-        </div>
-        <div>
-          <label htmlFor="muted-control">Muted</label>
-          <input
-            id="muted-control"
-            type="checkbox"
-            onChange={() => setMuted(!muted)}
-            checked={muted}
-          />
-        </div>
-        <div>
-          <label htmlFor="nohotkeys-control">No Hot Keys</label>
-          <input
-            id="nohotkeys-control"
-            type="checkbox"
-            onChange={() => setNohotkeys(!nohotkeys)}
-            checked={nohotkeys}
-          />
-        </div>
-        <div>
-          <label htmlFor="defaultshowremainingtime-control">Show Remaining Time by Default</label>
-          <input
-            id="defaultshowremainingtime-control"
-            type="checkbox"
-            onChange={() => setDefaultShowRemainingTime(!defaultShowRemainingTime)}
-            checked={defaultShowRemainingTime}
-          />
-        </div>
-        <div>
-          <label htmlFor="title-control">Title</label>
-          <input
-            id="title-control"
-            onChange={({ currentTarget }) => setTitle(currentTarget.value)}
-            defaultValue={title}
-          />
-        </div>
-        <div>
-          <label htmlFor="debug-control">Debug</label>
-          <input
-            id="debug-control"
-            type="checkbox"
-            onChange={() => setDebug(!debug)}
-            checked={debug}
-          />
-        </div>
-        <div>
-          <label htmlFor="env-key-control">Env Key (Mux Data)</label>
-          <input
-            id="env-key-control"
-            onBlur={({ currentTarget }) => setEnvKey(currentTarget.value)}
-            defaultValue={envKey}
-          />
-        </div>
-        <div>
-          <label htmlFor="controlsvars-control">Hide controls CSS vars </label>
-          <select
-            id="controlsvars-control"
-            multiple
-            onChange={(event) => setSelectedCssVars(
-              Object.fromEntries(Array.from(event.target.selectedOptions)
-                .map(({ value }) => [value, 'none']))
-            )}
-          >
-            <option value="--controls">--controls</option>
-            <option value="--top-controls">--top-controls</option>
-            <option value="--center-controls">--center-controls</option>
-            <option value="--bottom-controls">--bottom-controls</option>
-            <option value="--duration-display">--duration-display</option>
-            <option value="--bottom-duration-display">--bottom-duration-display</option>
-            <option value="--play-button">--play-button</option>
-            <option value="--center-play-button">--center-play-button</option>
-            <option value="--bottom-play-button">--bottom-play-button</option>
-            <option value="--time-range">--time-range</option>
-            <option value="--bottom-time-range">--bottom-time-range</option>
-            <option value="--seek-backward-button">--seek-backward-button</option>
-            <option value="--bottom-seek-backward-button">--bottom-seek-backward-button</option>
-            <option value="--seek-forward-button">--seek-forward-button</option>
-            <option value="--bottom-seek-forward-button">--bottom-seek-forward-button</option>
-            <option value="--time-display">--time-display</option>
-            <option value="--title-display">--title-display</option>
-            <option value="--bottom-title-display">--bottom-title-display</option>
-            <option value="--top-title-display">--top-title-display</option>
-            <option value="--bottom-time-display">--bottom-time-display</option>
-            <option value="--mute-button">--mute-button</option>
-            <option value="--bottom-mute-button">--bottom-mute-button</option>
-            <option value="--volume-range">--volume-range</option>
-            <option value="--bottom-volume-range">--bottom-volume-range</option>
-            <option value="--playback-rate-button">--playback-rate-button</option>
-            <option value="--bottom-playback-rate-button">--bottom-playback-rate-button</option>
-            <option value="--captions-button">--captions-button</option>
-            <option value="--top-captions-button">--top-captions-button</option>
-            <option value="--bottom-captions-button">--bottom-captions-button</option>
-            <option value="--airplay-button">--airplay-button</option>
-            <option value="--top-airplay-button">--top-airplay-button</option>
-            <option value="--bottom-airplay-button">--bottom-airplay-button</option>
-            <option value="--cast-button">--cast-button</option>
-            <option value="--top-cast-button">--top-cast-button</option>
-            <option value="--bottom-cast-button">--bottom-cast-button</option>
-            <option value="--pip-button">--pip-button</option>
-            <option value="--top-pip-button">--top-pip-button</option>
-            <option value="--bottom-pip-button">--bottom-pip-button</option>
-            <option value="--fullscreen-button">--fullscreen-button</option>
-            <option value="--bottom-fullscreen-button">--bottom-fullscreen-button</option>
-            <option value="--seek-live-button">--seek-live-button</option>
-            <option value="--top-seek-live-button">--top-seek-live-button</option>
-            <option value="--bottom-seek-live-button">--bottom-seek-live-button</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="controls-backdrop-color">Controls Backdrop Color</label>
-          <input
-            id="controls-backdrop-color"
-            type="color"
-            onChange={(event) => setControlsBackdropColor(event.target.value)}
-            value={controlsBackdropColor}
-          />
-        </div>
-        <div>
-          <label htmlFor="hotkeys-control">hotkeys </label>
-          <select
-            id="hotkeys-control"
-            multiple
-            onChange={(event) => setHotkeys(
-              Array.from(event.target.selectedOptions)
-                .map(({ value }) => value).join(' ')
-            )}
-          >
-            {['nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright'].map((token, i) => {
-              return (
-                <option key={i} value={token}>{token}</option>
-              )
-            })}
-          </select>
-        </div>
+        <div><h2>Manual Config</h2></div>
+        <TextRenderer
+          value={state.playbackId}
+          name="playbackId"
+          onChange={genericOnChange}
+        />
+        <EnumRenderer
+          value={state.streamType}
+          name="streamType"
+          onChange={genericOnChange}
+          values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
+        />
+        <EnumRenderer
+          value={getPlayerSize(stylesState.width)}
+          name="width"
+          label="Width Cutoffs for Responsive Player Chrome/UI"
+          onChange={({ width: playerSize }) => {
+            const width = PlayerSizeWidths[playerSize?.split(' ')[0]];
+            dispatchStyles(updateProps({ width }));
+          }}
+          values={['extra-small', 'small', 'large']}
+        />
+        <BooleanRenderer
+          value={state.audio}
+          name="audio"
+          onChange={genericOnChange}
+        />
+        <TextRenderer
+          value={state.envKey}
+          name="envKey"
+          label="Env Key (Mux Data)"
+          onChange={genericOnChange}
+          placeholder={`Inferred from playbackId`}
+        />
+        <URLRenderer
+          value={state.customDomain}
+          name="customDomain"
+          onChange={genericOnChange}
+          placeholder="my.customdomain.com"
+        />
+        <URLRenderer
+          value={state.poster}
+          name="poster"
+          onChange={genericOnChange}
+          placeholder={`Inferred from playbackId`}
+        />
+        <TextRenderer
+          value={state.placeholder}
+          name="placeholder"
+          label="Placeholder Image"
+          onChange={genericOnChange}
+        />
+        <TextRenderer
+          value={state.title}
+          name="title"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer
+          value={state.paused}
+          name="paused"
+          onChange={genericOnChange}
+        />
+        <EnumRenderer
+          value={state.autoPlay}
+          name="autoPlay"
+          onChange={genericOnChange}
+          values={[true, false, 'any', 'muted']}
+        />
+        <EnumRenderer
+          value={state.preload}
+          name="preload"
+          onChange={genericOnChange}
+          values={['none', 'metadata', 'auto']}
+        />
+        <BooleanRenderer
+          value={state.muted}
+          name="muted"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer
+          value={state.nohotkeys}
+          name="nohotkeys"
+          label="No Hot Keys"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer
+          value={state.defaultShowRemainingTime}
+          name="defaultShowRemainingTime"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer
+          value={state.defaultHiddenCaptions}
+          name="defaultHiddenCaptions"
+          onChange={genericOnChange}
+        />
+        <NumberRenderer
+          value={state.forwardSeekOffset}
+          name="forwardSeekOffset"
+          onChange={genericOnChange}
+          min={1}
+          max={99}
+        />
+        <NumberRenderer
+          value={state.backwardSeekOffset}
+          name="backwardSeekOffset"
+          onChange={genericOnChange}
+          min={1}
+          max={99}
+        />
+        <NumberRenderer
+          value={state.volume}
+          name="volume"
+          onChange={genericOnChange}
+          min={0}
+          max={1}
+          step={0.05}
+        />
+        <NumberRenderer
+          value={state.startTime}
+          name="startTime"
+          onChange={genericOnChange}
+          min={0}
+        />
+        <NumberRenderer
+          value={state.currentTime}
+          name="currentTime"
+          onChange={genericOnChange}
+          min={0}
+          /** @TODO solve `undefined` error cases (CJP) */
+          // max={mediaElRef.current?.duration}
+        />
+        <NumberRenderer
+          value={state.thumbnailTime}
+          name="thumbnailTime"
+          onChange={genericOnChange}
+          min={0}
+        />
+        <BooleanRenderer
+          value={state.debug}
+          name="debug"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer
+          value={state.loop}
+          name="loop"
+          onChange={genericOnChange}
+        />
+        <EnumRenderer
+          value={state.crossOrigin}
+          name="crossOrigin"
+          onChange={genericOnChange}
+          values={['anonymous', 'use-credentials']}
+        />
+        {/** @TODO This doesn't appear to work? (CJP) */}
+        {/* <NumberRenderer
+          value={state.playbackRate}
+          name="playbackRate"
+          onChange={genericOnChange}
+          min={0}
+          max={3}
+          step={0.25}
+        /> */}
+        {/** @TODO Is this sufficient for a UI or do we want a "fancier" one that allows adding/removing dynamic items from a list (CJP) */}
+        <EnumMultiSelectRenderer
+          value={state.playbackRates}
+          name="playbackRates"
+          onChange={genericOnChange}
+          values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
+        />
+        <ColorRenderer
+          value={state.primaryColor}
+          name="primaryColor"
+          onChange={genericOnChange}
+        />
+        <ColorRenderer
+          value={state.secondaryColor}
+          name="secondaryColor"
+          onChange={genericOnChange}
+        />
+        <EnumMultiSelectRenderer
+          value={getControlCustomizationCSSVars(stylesState)}
+          name='--controls'
+          label="Display Controls CSS vars (Hiding usage)"
+          onChange={({ ['--controls']: cssVars }) => {
+            const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
+              curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
+              return curCSSVars;
+            }, {});
+            genericOnStyleChange(nextCSSVars);
+          }}
+          values={ControlCustomizationCSSVars}
+        />
+        <ColorRenderer
+          value={stylesState['--controls-backdrop-color']}
+          name="--controls-backdrop-color"
+          label="Controls Backdrop Color"
+          onChange={genericOnStyleChange}
+        />
+        <EnumMultiSelectRenderer
+          value={state.hotkeys?.split(' ')}
+          name='hotkeys'
+          label="Hot Keys"
+          onChange={({ hotkeys }) => {
+            genericOnChange({ hotkeys: hotkeys.join(' ') });
+          }}
+          values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
+        />
       </div>
-      <h3 className="title">
-        <Link href="/">
-          <a>Browse Elements</a>
-        </Link>
-      </h3>
-    </div>
+
+      <br/>
+      <Link href="/"><a>Browse Elements</a></Link>
+    </>
   );
 }
 

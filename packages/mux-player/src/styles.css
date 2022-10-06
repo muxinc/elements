@@ -13,7 +13,6 @@ a {
   font-size: 0.9em;
   text-decoration: underline;
 }
-
 [part~='seek-live'] {
   height: 44px;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
@@ -22,19 +21,22 @@ a {
   cursor: pointer;
 }
 
-[part~='seek-live'][aria-disabled] {
-  cursor: default;
-  pointer-events: none;
-}
-
 [part~='seek-live']::before {
   content: '● ';
   color: rgb(118, 118, 118);
   padding-right: 5px;
 }
-
-[part~='seek-live'][aria-disabled]::before {
+[part~='seek-live'][in-live-window]::before {
   color: #fb3c4d;
+}
+
+[part~='seek-live'][disabled] {
+  opacity: 60%;
+  cursor: not-allowed;
+}
+[part~='seek-live'][in-live-window] {
+  opacity: 100%;
+  cursor: unset;
 }
 
 ::part(top),
