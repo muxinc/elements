@@ -59,7 +59,7 @@ const Wrapper = ({ onIntersection, placeholder, style, className, children }: Wr
   );
 };
 
-interface MuxPlayerLazyProps extends Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'> {
+interface MuxPlayerLazyProps extends MuxPlayerProps {
   loading?: 'page' | 'viewport';
 }
 const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((props, ref) => {
