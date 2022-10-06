@@ -677,14 +677,14 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
-   * Get the thumbnailTime offset used for the poster image.
+   * Gets the boolean indicator this is an audio player.
    */
   get audio() {
     return this.hasAttribute(PlayerAttributes.AUDIO);
   }
 
   /**
-   * Set the thumbnailTime offset used for the poster image.
+   * Sets the boolean indicator this is an audio player.
    */
   set audio(val: boolean) {
     if (!val) {
@@ -724,12 +724,19 @@ class MuxPlayerElement extends VideoApiElement {
     this.setAttribute(PlayerAttributes.THUMBNAIL_TIME, `${val}`);
   }
 
+  /**
+   * Get the title shown in the player.
+   */
   get title() {
     return this.getAttribute(PlayerAttributes.TITLE) ?? '';
   }
 
+  /**
+   * Set the title shown in the player.
+   */
   set title(val: string) {
     if (val === this.title) return;
+
     if (!!val) {
       this.setAttribute(PlayerAttributes.TITLE, val);
     } else {
@@ -739,10 +746,16 @@ class MuxPlayerElement extends VideoApiElement {
     super.title = val;
   }
 
+  /**
+   * Gets the data URL of a placeholder image shown before the thumbnail is loaded.
+   */
   get placeholder() {
     return getVideoAttribute(this, PlayerAttributes.PLACEHOLDER) ?? '';
   }
 
+  /**
+   * Sets the data URL of a placeholder image shown before the thumbnail is loaded.
+   */
   set placeholder(val) {
     this.setAttribute(PlayerAttributes.PLACEHOLDER, `${val}`);
   }
