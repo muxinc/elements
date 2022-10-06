@@ -138,6 +138,7 @@ export default class MediaThemeMux extends MediaTheme {
           <slot name="media" slot="media"></slot>
           <media-poster-image
             slot="poster"
+            part="poster"
             src="${props.poster ?? false}"
             placeholder-src="${props.placeholder ?? false}"
           ></media-poster-image>

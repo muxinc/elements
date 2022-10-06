@@ -1,11 +1,6 @@
 import './media-theme-mux/media-theme-mux';
 import './dialog';
-import {
-  castThemeName,
-  getSrcFromPlaybackId,
-  getPosterURLFromPlaybackId,
-  getStoryboardURLFromPlaybackId,
-} from './helpers';
+import { castThemeName, getSrcFromPlaybackId, getStoryboardURLFromPlaybackId } from './helpers';
 import { html, unsafeStatic } from './html';
 // @ts-ignore
 import cssStr from './styles.css';
@@ -50,7 +45,7 @@ export const content = (props: MuxTemplateProps) => html`
     hotkeys="${props.hotKeys || false}"
     poster="${props.poster === '' ? false : props.poster ?? false}"
     placeholder="${props.placeholder ?? false}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"
