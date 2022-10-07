@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
+import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-player>', () => {
@@ -435,6 +435,54 @@ describe('<mux-player>', () => {
       storyboardTrack.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/storyboard.vtt?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3NzcsImF1ZCI6InMiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.aVd0dsOJUVeQko3BWd9YEhL41Eytf_ZfaBeNzHSSUqU_gREa_jJEVTlRfuiE4g71cKJLSiVTKP7f-F7Txh6DlL8E2SkonfIPB2H0f_3DQxYLso2E8qI4zuJkyxKORbQFLAEB_vSE-2lMbrHXfdpQhv6SrVyu6di9ku0LpFpoyz-_7fVJICr8nhlsqOGt66AYcaa99TXoZ582FWzBaePmWw-WWKYsLvtNjLS9UoxbdVaBRwNylohvhh-i1Y9dNilyNooJ7O8Cj4GuMjeh1pCj0BOrGagxrWrswm3HjUVNUqFq5JCWnJCxgjjwiV4RLZg_4z7gkBXyX7H2-i1dKA3Cpw'
     );
+  });
+
+  describe('buffered behaviors', function () {
+    it('should have an empty TimeRanges value by default', async function () {
+      const playerEl = await fixture('<mux-player></mux-player>');
+      assert(playerEl.buffered instanceof TimeRanges, 'should be an instanceof TimeRanges');
+      assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
+    });
+
+    it('should have something in the buffer if canplay', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture('<mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>');
+      await oneEvent(playerEl, 'canplay');
+      assert(playerEl.buffered.length >= 1, 'should have a length of at least 1');
+    });
+
+    it('should clear the buffer when the media is unset', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture('<mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>');
+      await oneEvent(playerEl, 'canplay');
+      playerEl.playbackId = undefined;
+      await oneEvent(playerEl, 'emptied');
+      assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
+    });
+  });
+
+  describe('seekable behaviors', function () {
+    it('should have an empty TimeRanges value by default', async function () {
+      const playerEl = await fixture('<mux-player></mux-player>');
+      assert(playerEl.seekable instanceof TimeRanges, 'should be an instanceof TimeRanges');
+      assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
+    });
+
+    it('should have a length of exactly 1 if canplay', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture('<mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>');
+      await oneEvent(playerEl, 'canplay');
+      assert(playerEl.seekable.length >= 1, 'should have a length of at least 1');
+    });
+
+    it('should clear the seekable range when the media is unset', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture('<mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>');
+      await oneEvent(playerEl, 'canplay');
+      playerEl.playbackId = undefined;
+      await oneEvent(playerEl, 'emptied');
+      assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
+    });
   });
 });
 
