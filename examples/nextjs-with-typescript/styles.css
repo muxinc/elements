@@ -108,6 +108,7 @@ audio {
 .options {
   overflow: auto;
   max-height: calc(100vh - calc(var(--player-height, 450px) + 201px));
+  min-height: 400px;
 }
 
 .options > div {
