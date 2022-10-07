@@ -148,7 +148,7 @@ media-controller::part(vertical-layer) {
 }
 
 media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
-  background-color: var(--controls-backdrop-color, rgba(0, 0, 0, 0.6));
+  background-color: var(--controls-backdrop-color, var(--controls, rgba(0, 0, 0, 0.6)));
   transition: background-color 0.25s;
 }
 
