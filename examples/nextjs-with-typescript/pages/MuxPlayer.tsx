@@ -206,6 +206,11 @@ const PlayerSizeWidths = {
   [MediaChromeSizes.SM]: 600,
   [MediaChromeSizes.XS]: 250,
 };
+const PlayerSizeHeights = {
+  [MediaChromeSizes.LG]: 450,
+  [MediaChromeSizes.SM]: 338,
+  [MediaChromeSizes.XS]: 141,
+};
 
 function getPlayerSize(width) {
   if (width == undefined) return undefined;
@@ -288,6 +293,15 @@ function MuxPlayerPage({ location }: Props) {
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
+  const [optionStyles, optionsDispatchStyles] = useReducer(reducer, {
+    '--player-height': '450px'
+  });
+  const optionsGenericOnStyleChange = (obj) => optionsDispatchStyles(updateProps(obj));
+  useEffect(() => {
+    const height = mediaElRef.current.offsetHeight;
+    optionsGenericOnStyleChange({'--player-height': height + 'px'});
+  }, [mediaElRef]);
+
   return (
     <>
       <Head>
@@ -347,7 +361,7 @@ function MuxPlayerPage({ location }: Props) {
         onSeeked={onSeeked}
       />
 
-      <div className="options">
+      <div className="options" style={optionStyles}>
         <MuxPlayerCodeRenderer state={state}/>
         <UrlPathRenderer
           state={state}
@@ -395,7 +409,13 @@ function MuxPlayerPage({ location }: Props) {
           label="Width Cutoffs for Responsive Player Chrome/UI"
           onChange={({ width: playerSize }) => {
             const width = PlayerSizeWidths[playerSize?.split(' ')[0]];
+            const height = PlayerSizeHeights[playerSize?.split(' ')[0]];
             dispatchStyles(updateProps({ width }));
+            if (height) {
+              optionsGenericOnStyleChange({'--player-height': height + 'px'});
+            } else {
+              optionsGenericOnStyleChange({'--player-height': ''});
+            }
           }}
           values={['extra-small', 'small', 'large']}
         />
