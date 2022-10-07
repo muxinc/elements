@@ -104,7 +104,6 @@ type PartialHTMLVideoElement = Omit<
   | 'onwaitingforkey'
   | 'played'
   | 'remote'
-  | 'seekable'
   | 'srcObject'
   | 'textTracks'
   | 'addTextTrack'
@@ -244,6 +243,10 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
   get buffered() {
     return this.media?.buffered ?? emptyTimeRanges;
+  }
+
+  get seekable() {
+    return this.media?.seekable ?? emptyTimeRanges;
   }
 
   get readyState() {
