@@ -5,3 +5,4 @@ node_modules
 examples
 *.sublime-*
 *.vscode*
+*.md
