@@ -106,7 +106,7 @@ audio {
 }
 
 .options {
-  overflow: scroll;
+  overflow: auto;
   max-height: calc(100vh - calc(var(--player-height, 450px) + 201px));
 }
 
