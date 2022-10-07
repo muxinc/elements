@@ -179,20 +179,6 @@ const UrlPathRenderer = ({
   );
 };
 
-type Props = { location?: Pick<Location, 'origin' | 'pathname'> };
-
-const getUrl = ({ req, resolvedUrl }) => {
-  const { headers } = req;
-  const refererUrl = headers.referer && new URL(headers.referer);
-  const baseUrlHost = headers.host.toLowerCase();
-  const refererHost = refererUrl?.host?.toLowerCase();
-
-  if (refererHost === baseUrlHost && headers["sec-fetch-site"] === "same-origin") return new URL(refererUrl?.origin ?? './');
-  const startsLocal = baseUrlHost.startsWith('localhost') || baseUrlHost.startsWith('127.') || baseUrlHost.startsWith('192.');
-  const protocol = startsLocal ? 'http:' : 'https:';
-  return new URL(`${protocol}//${baseUrlHost}${resolvedUrl}`);
-};
-
 const SMALL_BREAKPOINT = 700;
 const XSMALL_BREAKPOINT = 300;
 const MediaChromeSizes = {
@@ -271,6 +257,24 @@ const getControlCustomizationCSSVars = (state) => {
   return Object.entries(state)
     .filter(([k, v]) => ControlCustomizationCSSVars.includes(k) && !!v)
     .map(([k]) => k);
+};
+
+type Props = { location?: Pick<Location, 'origin' | 'pathname'> };
+
+const getUrl = ({ req, resolvedUrl }) => {
+  const { headers } = req;
+  const refererUrl = headers.referer && new URL(headers.referer);
+  const baseUrlHost = headers.host.toLowerCase();
+  const refererHost = refererUrl?.host?.toLowerCase();
+
+
+  if (refererHost === baseUrlHost && headers["sec-fetch-site"] === "same-origin") {
+    return new URL(refererUrl?.origin ? refererUrl.origin + resolvedUrl : './');
+  }
+
+  const startsLocal = baseUrlHost.startsWith('localhost') || baseUrlHost.startsWith('127.') || baseUrlHost.startsWith('192.');
+  const protocol = startsLocal ? 'http:' : 'https:';
+  return new URL(`${protocol}//${baseUrlHost}${resolvedUrl}`);
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async context => {
