@@ -111,29 +111,12 @@ describe('<mux-player>', () => {
     assert.equal(muxVideo.muted, true, `has muted enabled`);
   });
 
-  // it("playsinline is forwarded to the media element", async function () {
-  //   const player = await fixture(`<mux-player
-  //     playsinline
-  //   ></mux-player>`);
-  //   const muxVideo = player.media;
-
-  //   assert.equal(player.playsInline, true);
-  //   assert.equal(muxVideo.playsInline, true);
-
-  //   player.removeAttribute("playsinline");
-  //   assert(
-  //     !muxVideo.hasAttribute("playsinline"),
-  //     `has playsinline attr removed`
-  //   );
-
-  //   player.setAttribute("playsinline", "");
-  //   assert.equal(
-  //     muxVideo.getAttribute("playsinline"),
-  //     "",
-  //     `has playsinline attr added`
-  //   );
-  //   assert.equal(muxVideo.playsInline, true, `has playsInline enabled`);
-  // });
+  it('playsinline property always returns true', async function () {
+    const player = await fixture(`<mux-player
+      playsinline
+    ></mux-player>`);
+    assert(player.playsInline);
+  });
 
   it('loop is forwarded to the media element', async function () {
     const player = await fixture(`<mux-player
@@ -152,33 +135,22 @@ describe('<mux-player>', () => {
     assert.equal(muxVideo.loop, true, `has loop enabled`);
   });
 
-  // it("crossorigin is forwarded to the media element", async function () {
-  //   const player = await fixture(`<mux-player
-  //     crossorigin="anonymous"
-  //   ></mux-player>`);
-  //   const muxVideo = player.media;
+  it('crossorigin is forwarded to the media element but enabled by default', async function () {
+    const player = await fixture(`<mux-player
+      crossorigin="anonymous"
+    ></mux-player>`);
+    const muxVideo = player.media;
 
-  //   assert.equal(player.crossOrigin, "anonymous");
-  //   assert.equal(muxVideo.crossOrigin, "anonymous");
+    assert.equal(player.crossOrigin, 'anonymous');
+    assert.equal(muxVideo.crossOrigin, 'anonymous');
 
-  //   player.removeAttribute("crossorigin");
-  //   assert(
-  //     !muxVideo.hasAttribute("crossorigin"),
-  //     `has crossorigin attr removed`
-  //   );
+    player.removeAttribute('crossorigin');
+    assert(muxVideo.hasAttribute('crossorigin'), `still has crossorigin attr`);
 
-  //   player.setAttribute("crossorigin", "use-credentials");
-  //   assert.equal(
-  //     muxVideo.getAttribute("crossorigin"),
-  //     "use-credentials",
-  //     `has crossorigin attr added`
-  //   );
-  //   assert.equal(
-  //     muxVideo.crossOrigin,
-  //     "use-credentials",
-  //     `has crossorigin enabled`
-  //   );
-  // });
+    player.setAttribute('crossorigin', 'use-credentials');
+    assert.equal(muxVideo.getAttribute('crossorigin'), 'use-credentials', `has crossorigin attr added`);
+    assert.equal(muxVideo.crossOrigin, 'use-credentials', `has crossorigin enabled`);
+  });
 
   it('preload is forwarded to the media element', async function () {
     const player = await fixture(`<mux-player
@@ -216,37 +188,75 @@ describe('<mux-player>', () => {
     assert.equal(muxVideo.preload, defaultPreload, `muxVideo default preload is ${defaultPreload}`);
   });
 
-  it('poster is forwarded to the media element', async function () {
+  it('poster is forwarded to the media-poster-image element', async function () {
     const player = await fixture(`<mux-player
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
     ></mux-player>`);
-    const muxVideo = player.media;
+    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
-      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0'
+      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0',
+      'player.poster does not equal in-html defined poster attribute'
     );
     assert.equal(
-      muxVideo.poster,
-      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0'
+      mediaPosterImage.getAttribute('src'),
+      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0',
+      'mediaPosterImage src attribute does not equal in-html defined poster attribute'
     );
 
     player.removeAttribute('poster');
-    assert(!muxVideo.hasAttribute('poster'), `has poster attr removed`);
+    assert(!mediaPosterImage.hasAttribute('src'), `has src attr removed`);
 
     player.setAttribute(
       'poster',
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1'
     );
     assert.equal(
-      muxVideo.getAttribute('poster'),
+      mediaPosterImage.getAttribute('src'),
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1',
       `has poster attr added`
     );
+  });
+
+  it('poster can be unset with an empty string', async function () {
+    const player = await fixture(`<mux-player
+      poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+    ></mux-player>`);
+    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+
     assert.equal(
-      muxVideo.poster,
+      player.poster,
+      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0',
+      'does not equal in-html defined poster attribute'
+    );
+
+    player.removeAttribute('poster');
+    assert.equal(
+      player.poster,
+      'https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg',
+      'uses the derived poster if no poster attribute is present'
+    );
+
+    player.poster = '';
+    assert.equal(player.poster, '');
+    assert(!mediaPosterImage.hasAttribute('src'), 'media-poster-image does have a poster attribute');
+
+    player.setAttribute(
+      'poster',
+      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1'
+    );
+    assert.equal(
+      player.poster,
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1',
-      `has poster enabled`
+      'does not equal poster set with setAttribute()'
+    );
+    assert.equal(
+      mediaPosterImage.getAttribute('src'),
+      'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1',
+      `has poster attr added`
     );
   });
 
@@ -408,6 +418,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
+    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(
@@ -416,7 +427,7 @@ describe('<mux-player>', () => {
     );
 
     assert.equal(
-      muxVideo.getAttribute('poster'),
+      mediaPosterImage.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/thumbnail.jpg?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3MzYsImF1ZCI6InQiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.gDe_efqmRB5E3e4ag6in8MfMK-Vn3c_3B4M-BiWw6lg2aaf2BOTv7ltxhn2cvg4G0iFi-esRjhDlHbMRTxwTGavsx8TRLFtJ8vyBzToaFQbQMrn9OZztq_XrCEwqkD8bUAVtdOT1YB606OZyy6XO-CxdMRrKMUsM-cGrfv0TxvzJjThJBY4SzFv_whtYRxqAypZojROU7IiTbqcsk_cSrRMjB7WyAOAvyPNKnr6RkVEuMJtlCtaf_e4DIJHebZUZb3JmVTG4jIWrD1QkN7uLUwCPPRvGhXwhet9JaJPyC5lmkcb9YmH-15V6GOpwSg7sDMGC3YS4aIb_RtVkan0t-w'
     );
 

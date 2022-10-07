@@ -124,6 +124,7 @@ describe('playback core', function () {
 
   it('preload="auto" will start loading data', async function () {
     const video = document.createElement('video');
+    const loadeddataPromise = new Promise((resolve) => video.addEventListener('loadeddata', resolve));
     initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -133,12 +134,23 @@ describe('playback core', function () {
     );
 
     assert.equal(video.preload, 'auto', 'preload is auto');
-    await new Promise((resolve) => video.addEventListener('progress', resolve));
+    await loadeddataPromise;
+    await aTimeout(100);
     assert.equal(video.buffered.length, 1, 'some buffer loaded');
+
+    video.muted = true;
+    try {
+      await video.play();
+    } catch (error) {
+      console.warn(error);
+    }
+
+    assert(!video.paused, 'is playing after play()');
   });
 
   it('preload="none" to preload="metadata"', async function () {
     const video = document.createElement('video');
+    const loadeddataPromise = new Promise((resolve) => video.addEventListener('loadeddata', resolve));
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -151,7 +163,8 @@ describe('playback core', function () {
 
     core.setPreload('metadata');
     assert.equal(video.preload, 'metadata', 'preload is metadata');
-    await new Promise((resolve) => video.addEventListener('loadedmetadata', resolve));
+    await loadeddataPromise;
+    await aTimeout(100);
     assert.equal(video.buffered.length, 1, 'some buffer loaded');
 
     video.muted = true;

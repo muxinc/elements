@@ -1,11 +1,6 @@
 import './media-theme-mux/media-theme-mux';
 import './dialog';
-import {
-  castThemeName,
-  getSrcFromPlaybackId,
-  getPosterURLFromPlaybackId,
-  getStoryboardURLFromPlaybackId,
-} from './helpers';
+import { castThemeName, getSrcFromPlaybackId, getStoryboardURLFromPlaybackId } from './helpers';
 import { html, unsafeStatic } from './html';
 // @ts-ignore
 import cssStr from './styles.css';
@@ -28,10 +23,10 @@ const isLiveOrDVR = (props: MuxTemplateProps) =>
 
 export const content = (props: MuxTemplateProps) => html`
   <${unsafeStatic(castThemeName(props.theme) ?? 'media-theme-mux')}
-    has-src="${props.hasSrc}"
-    has-open-dialog="${props.isDialogOpen}"
+    has-src="${props.hasSrc ?? false}"
+    has-open-dialog="${props.isDialogOpen ?? false}"
     nohotkeys="${props.noHotKeys ?? false}"
-    audio="${props.audio || false}"
+    audio="${props.audio ?? false}"
     style="${
       stylePropsToString({
         '--primary-color': props.primaryColor,
@@ -39,28 +34,18 @@ export const content = (props: MuxTemplateProps) => html`
       }) ?? false
     }"
     class="size-${props.playerSize}${props.secondaryColor ? ' two-tone' : ''}"
-    stream-type="${props.streamType}"
-    player-size="${props.playerSize}"
-    default-hidden-captions="${props.defaultHiddenCaptions}"
-    forward-seek-offset="${props.forwardSeekOffset}"
-    backward-seek-offset="${props.backwardSeekOffset}"
+    stream-type="${props.streamType ?? false}"
+    player-size="${props.playerSize ?? false}"
+    default-hidden-captions="${props.defaultHiddenCaptions ?? false}"
+    forward-seek-offset="${props.forwardSeekOffset ?? false}"
+    backward-seek-offset="${props.backwardSeekOffset ?? false}"
     playbackrates="${props.playbackRates ?? false}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     title="${props.title ?? false}"
-    hotkeys="${props.hotKeys || false}"
-    poster="${
-      !!props.poster
-        ? props.poster
-        : props.playbackId && !props.audio
-        ? getPosterURLFromPlaybackId(props.playbackId, {
-            domain: props.customDomain,
-            thumbnailTime: props.thumbnailTime ?? props.startTime,
-            token: props.tokens.thumbnail,
-          })
-        : false
-    }"
-    placeholder="${props.placeholder}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
+    hotkeys="${props.hotKeys ?? false}"
+    poster="${props.poster === '' ? false : props.poster ?? false}"
+    placeholder="${props.placeholder ?? false}"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"
@@ -77,8 +62,8 @@ export const content = (props: MuxTemplateProps) => html`
       metadata-video-title="${props.metadataVideoTitle ?? false}"
       metadata-viewer-user-id="${props.metadataViewerUserId ?? false}"
       beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
-      player-software-name="${props.playerSoftwareName}"
-      player-software-version="${props.playerSoftwareVersion}"
+      player-software-name="${props.playerSoftwareName ?? false}"
+      player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
       stream-type="${props.streamType ?? false}"
       custom-domain="${props.customDomain ?? false}"
@@ -87,17 +72,6 @@ export const content = (props: MuxTemplateProps) => html`
           ? props.src
           : props.playbackId
           ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
-          : false
-      }"
-      poster="${
-        !!props.poster
-          ? props.poster
-          : props.playbackId && !props.audio
-          ? getPosterURLFromPlaybackId(props.playbackId, {
-              domain: props.customDomain,
-              thumbnailTime: props.thumbnailTime ?? props.startTime,
-              token: props.tokens.thumbnail,
-            })
           : false
       }"
       cast-src="${
@@ -146,7 +120,7 @@ export const content = (props: MuxTemplateProps) => html`
     }
     <mxp-dialog
       no-auto-hide
-      open="${props.isDialogOpen}"
+      open="${props.isDialogOpen ?? false}"
       onclose="${props.onCloseErrorDialog}"
       oninitfocus="${props.onInitFocusDialog}"
     >

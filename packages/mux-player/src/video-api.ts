@@ -22,8 +22,6 @@ const AllowedVideoAttributes = {
   LOOP: 'loop',
   MUTED: 'muted',
   PLAYSINLINE: 'playsinline',
-  SRC: 'src',
-  POSTER: 'poster',
   PRELOAD: 'preload',
 };
 
@@ -123,6 +121,7 @@ type PartialHTMLVideoElement = Omit<
   | 'NETWORK_LOADING'
   | 'NETWORK_NO_SOURCE'
   | 'src'
+  | 'poster'
   | 'mux' // NOTE: Because of our global types extension of HTMLMediaElement, `mux` is a property that also needs to be omitted (CJP)
 >;
 
@@ -277,14 +276,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     if (this.media) {
       this.media.volume = Number(val);
     }
-  }
-
-  get poster() {
-    return getVideoAttribute(this, AllowedVideoAttributes.POSTER) ?? '';
-  }
-
-  set poster(val) {
-    this.setAttribute(AllowedVideoAttributes.POSTER, `${val}`);
   }
 
   get playbackRate() {
