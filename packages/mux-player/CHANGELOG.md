@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.0.0...@mux/mux-player@1.1.0) (2022-10-07)
+
+### Bug Fixes
+
+- turn off backdrop color when controls are disabled ([#451](https://github.com/muxinc/elements/issues/451)) ([f0d97b3](https://github.com/muxinc/elements/commit/f0d97b3db1e6ec2a4e90311d9416b27d87d60769))
+
+### Features
+
+- add ability to unset poster ([#447](https://github.com/muxinc/elements/issues/447)) ([d61e295](https://github.com/muxinc/elements/commit/d61e295952d59ba42ad077c4a2b7fb3bb0d7079c))
+
 # [1.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.0.0-beta.0...@mux/mux-player@1.0.0) (2022-10-05)
 
 ### Bug Fixes
