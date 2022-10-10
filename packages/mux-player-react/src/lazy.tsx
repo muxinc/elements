@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import type * as CSS from 'csstype';
+import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 import ConditionalSuspense from './ConditionalSuspense';
 import useIsBrowser from './useIsBrowser';
 import useIsIntersecting from './useIsIntersecting';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
+
+declare module 'csstype' {
+  interface Properties {
+    // Add a CSS Custom Property
+    '--controls'?: CSS.Properties['display'];
+  }
+}
+
+interface MuxPlayerElement extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
+  nohotkeys?: boolean | undefined;
+}
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'mux-player': MuxPlayerElement;
+    }
+  }
+}
 
 const MuxPlayerIndex = React.lazy(() => import('./index'));
 
@@ -57,7 +78,7 @@ const Fallback = (props: FallbackProps) => {
         // we need to make sure that the placeholder doesn't get rendered and isn't interactive
         nohotkeys
         aria-hidden
-        tabIndex="-1"
+        tabIndex={-1}
       >
         {/* Overlay */}
         <div
