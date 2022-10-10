@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.1.0...@mux/mux-player-react@1.1.1) (2022-10-07)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+# [1.1.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.0.0...@mux/mux-player-react@1.1.0) (2022-10-07)
+
+### Features
+
+- add ability to unset poster ([#447](https://github.com/muxinc/elements/issues/447)) ([d61e295](https://github.com/muxinc/elements/commit/d61e295952d59ba42ad077c4a2b7fb3bb0d7079c))
+
 # [1.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.0.0-beta.0...@mux/mux-player-react@1.0.0) (2022-10-05)
 
 ### Bug Fixes

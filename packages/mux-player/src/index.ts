@@ -12,7 +12,14 @@ import {
   removeTextTrack,
 } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
-import { getPlayerVersion, isInLiveWindow, seekToLive, toPropName, AttributeTokenList } from './helpers';
+import {
+  getPlayerVersion,
+  isInLiveWindow,
+  seekToLive,
+  toPropName,
+  AttributeTokenList,
+  getPosterURLFromPlaybackId,
+} from './helpers';
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
@@ -48,6 +55,7 @@ function getPlayerSize(el: Element) {
 
 const VideoAttributes = {
   SRC: 'src',
+  POSTER: 'poster',
 };
 
 const PlayerAttributes = {
@@ -76,10 +84,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     src: !el.playbackId && el.src,
     playbackId: el.playbackId,
     hasSrc: !!el.playbackId || !!el.src,
-    // NOTE: Always use the externally set poster attribute here to guarantee
-    // it's used if/when it's been explicitly set "from the outside"
-    // (See template.ts for additional context) (CJP)
-    poster: el.getAttribute('poster'),
+    poster: el.poster,
     placeholder: el.getAttribute('placeholder'),
     theme: el.getAttribute('theme'),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
@@ -126,6 +131,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
+const VideoAttributeNames = Object.values(VideoAttributes);
 const PlayerAttributeNames = Object.values(PlayerAttributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-player';
@@ -153,7 +159,12 @@ class MuxPlayerElement extends VideoApiElement {
   };
 
   static get observedAttributes() {
-    return [...(VideoApiElement.observedAttributes ?? []), ...MuxVideoAttributeNames, ...PlayerAttributeNames];
+    return [
+      ...(VideoApiElement.observedAttributes ?? []),
+      ...VideoAttributeNames,
+      ...MuxVideoAttributeNames,
+      ...PlayerAttributeNames,
+    ];
   }
 
   constructor() {
@@ -594,14 +605,86 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
-   * Get the thumbnailTime offset used for the poster image.
+   * Get Mux asset playback id.
+   */
+  get playbackId() {
+    // Don't get the mux-video attribute here because it could have the
+    // playback token appended to it.
+    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID) ?? undefined;
+  }
+
+  /**
+   * Set Mux asset playback id.
+   */
+  set playbackId(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.PLAYBACK_ID);
+    }
+  }
+
+  /**
+   * Get the string that reflects the src HTML attribute, which contains the URL of a media resource to use.
+   */
+  get src() {
+    // Only get the internal video.src if a playbackId is present.
+    if (this.playbackId) {
+      return getVideoAttribute(this, VideoAttributes.SRC) ?? undefined;
+    }
+    return this.getAttribute(VideoAttributes.SRC) ?? undefined;
+  }
+
+  /**
+   * Set the string that reflects the src HTML attribute, which contains the URL of a media resource to use.
+   */
+  set src(val) {
+    if (val) {
+      this.setAttribute(VideoAttributes.SRC, val);
+    } else {
+      this.removeAttribute(VideoAttributes.SRC);
+    }
+  }
+
+  /**
+   * Gets a URL of an image to display, for example, like a movie poster. This can be a still frame from the video, or another image if no video data is available.
+   */
+  get poster() {
+    const val = this.getAttribute(VideoAttributes.POSTER);
+    if (val != null) return val;
+
+    // Get the derived poster if a playbackId is present.
+    if (this.playbackId && !this.audio) {
+      return getPosterURLFromPlaybackId(this.playbackId, {
+        domain: this.customDomain,
+        thumbnailTime: this.thumbnailTime ?? this.startTime,
+        token: this.tokens.thumbnail,
+      });
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Sets a URL of an image to display, for example, like a movie poster. This can be a still frame from the video, or another image if no video data is available.
+   */
+  set poster(val) {
+    if (val || val === '') {
+      this.setAttribute(VideoAttributes.POSTER, val);
+    } else {
+      this.removeAttribute(VideoAttributes.POSTER);
+    }
+  }
+
+  /**
+   * Gets the boolean indicator this is an audio player.
    */
   get audio() {
     return this.hasAttribute(PlayerAttributes.AUDIO);
   }
 
   /**
-   * Set the thumbnailTime offset used for the poster image.
+   * Sets the boolean indicator this is an audio player.
    */
   set audio(val: boolean) {
     if (!val) {
@@ -641,12 +724,19 @@ class MuxPlayerElement extends VideoApiElement {
     this.setAttribute(PlayerAttributes.THUMBNAIL_TIME, `${val}`);
   }
 
+  /**
+   * Get the title shown in the player.
+   */
   get title() {
     return this.getAttribute(PlayerAttributes.TITLE) ?? '';
   }
 
+  /**
+   * Set the title shown in the player.
+   */
   set title(val: string) {
     if (val === this.title) return;
+
     if (!!val) {
       this.setAttribute(PlayerAttributes.TITLE, val);
     } else {
@@ -656,10 +746,16 @@ class MuxPlayerElement extends VideoApiElement {
     super.title = val;
   }
 
+  /**
+   * Gets the data URL of a placeholder image shown before the thumbnail is loaded.
+   */
   get placeholder() {
     return getVideoAttribute(this, PlayerAttributes.PLACEHOLDER) ?? '';
   }
 
+  /**
+   * Sets the data URL of a placeholder image shown before the thumbnail is loaded.
+   */
   set placeholder(val) {
     this.setAttribute(PlayerAttributes.PLACEHOLDER, `${val}`);
   }
@@ -808,42 +904,6 @@ class MuxPlayerElement extends VideoApiElement {
       this.setAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN);
-    }
-  }
-
-  /**
-   * Get Mux asset playback id.
-   */
-  get playbackId() {
-    // Don't get the mux-video attribute here because it could have the
-    // playback token appended to it.
-    return this.getAttribute(MuxVideoAttributes.PLAYBACK_ID) ?? undefined;
-  }
-
-  /**
-   * Set Mux asset playback id.
-   */
-  set playbackId(val) {
-    if (val) {
-      this.setAttribute(MuxVideoAttributes.PLAYBACK_ID, val);
-    } else {
-      this.removeAttribute(MuxVideoAttributes.PLAYBACK_ID);
-    }
-  }
-
-  get src() {
-    // Only get the internal video.src if a playbackId is present.
-    if (this.playbackId) {
-      return getVideoAttribute(this, VideoAttributes.SRC) ?? undefined;
-    }
-    return this.getAttribute(VideoAttributes.SRC) ?? undefined;
-  }
-
-  set src(val) {
-    if (val) {
-      this.setAttribute(VideoAttributes.SRC, val);
-    } else {
-      this.removeAttribute(VideoAttributes.SRC);
     }
   }
 
