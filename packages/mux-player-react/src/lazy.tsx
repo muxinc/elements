@@ -43,11 +43,10 @@ const Fallback = (props: FallbackProps) => {
           display: 'block',
           backgroundColor: 'var(--media-control-background, #000)',
           width: '100%',
-          // some styles specific to this placeholder
-          position: 'relative',
           // user-implemented styles
           ...style,
           // and styles that are important enough to override the user's preferences
+          position: 'relative',
           backgroundImage: placeholder ? `url(${placeholder})` : undefined,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'contain',
