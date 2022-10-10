@@ -51,12 +51,18 @@ nav ul {
   grid-gap: 1.5rem;
 }
 
+nav li {
+  position: relative;
+}
+
 nav li a {
   color: var(--text-main);
   font-family: monospace;
   font-size: 16px;
-  display: block;
   padding: 2rem;
+  height: calc(100% - 4rem);
+  display: flex;
+  align-items: center;
 }
 
 li a.video {
