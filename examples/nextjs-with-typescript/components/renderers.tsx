@@ -6,11 +6,11 @@ export const toWordsFromCamel = (string: string) => {
   return `${first}${rest.replace(/[A-Z]/g, (match) => ` ${match}`)}`
 };
 
-export const BooleanRenderer = ({ 
-  name, 
-  value, 
-  label, 
-  onChange 
+export const BooleanRenderer = ({
+  name,
+  value,
+  label,
+  onChange
 }: { name: string, value: boolean | undefined, label?: string, onChange: (obj: any) => void }) => {
   const labelStr = label ?? toWordsFromCamel(name);
   return (
@@ -26,10 +26,10 @@ export const BooleanRenderer = ({
   );
 };
 
-export const NumberRenderer = ({ 
-  name, 
-  value, 
-  label, 
+export const NumberRenderer = ({
+  name,
+  value,
+  label,
   onChange,
   min,
   max,
@@ -52,10 +52,10 @@ export const NumberRenderer = ({
   );
 };
 
-export const TextRenderer = ({ 
-  name, 
-  value, 
-  label, 
+export const TextRenderer = ({
+  name,
+  value,
+  label,
   onChange,
   placeholder,
 }: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; placeholder?: string }) => {
@@ -74,10 +74,10 @@ export const TextRenderer = ({
   );
 };
 
-export const URLRenderer = ({ 
-  name, 
-  value, 
-  label, 
+export const URLRenderer = ({
+  name,
+  value,
+  label,
   onChange,
   placeholder,
 }: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; placeholder?: string }) => {
@@ -96,10 +96,10 @@ export const URLRenderer = ({
   );
 };
 
-export const ColorRenderer = ({ 
-  name, 
-  value, 
-  label, 
+export const ColorRenderer = ({
+  name,
+  value,
+  label,
   onChange,
 }: { name: string; value: string | undefined; label?: string; onChange: (obj: any) => void; }) => {
   const labelStr = label ?? toWordsFromCamel(name);
@@ -116,10 +116,10 @@ export const ColorRenderer = ({
   );
 };
 
-export const EnumRenderer = ({ 
-  name, 
-  value, 
-  label, 
+export const EnumRenderer = ({
+  name,
+  value,
+  label,
   onChange,
   values,
 }: { name: string; value: any | undefined; label?: string; onChange: (obj: any) => void; values: any[] }) => {
@@ -154,10 +154,10 @@ export const EnumRenderer = ({
   );
 };
 
-export const EnumMultiSelectRenderer = ({ 
-  name, 
-  value, 
-  label, 
+export const EnumMultiSelectRenderer = ({
+  name,
+  value,
+  label,
   onChange,
   values,
 }: { name: string; value: any[] | undefined; label?: string; onChange: (obj: any) => void; values: any[] }) => {
@@ -169,8 +169,9 @@ export const EnumMultiSelectRenderer = ({
             id={`${name}-control`}
             multiple
             size={values.length}
+            defaultValue={value ?? []}
             onChange={({ target: { selectedOptions } }) => {
-              const currentValues = selectedOptions?.length 
+              const currentValues = selectedOptions?.length
                 ? Array.from(selectedOptions, ({ value }) => values.find(enumValue => enumValue.toString() === value))
                 : undefined;
               onChange({ [name]: currentValues });
@@ -178,10 +179,9 @@ export const EnumMultiSelectRenderer = ({
           >
             {values.map((enumValue) => {
               return (
-                <option 
-                  key={`${name}-${enumValue}-option`} 
+                <option
+                  key={`${name}-${enumValue}-option`}
                   value={enumValue}
-                  selected={value?.includes(enumValue)}
                 >
                   {`${enumValue}`}
                 </option>
