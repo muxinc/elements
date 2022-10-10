@@ -20,7 +20,10 @@
   "typesVersions": {
     ">=4.3.5": {
       "*": [
-        "dist/types/index.d.ts"
+        "./dist/types/index.d.ts"
+      ],
+      "lazy": [
+        "./dist/types/lazy.d.ts"
       ]
     }
   },
