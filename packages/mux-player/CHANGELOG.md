@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.1.1...@mux/mux-player@1.1.2) (2022-10-10)
+
+### Bug Fixes
+
+- update to media-chrome 0.14.0 ([#457](https://github.com/muxinc/elements/issues/457)) ([0fd7078](https://github.com/muxinc/elements/commit/0fd70788aed4ddabfb821abc3bd0e101bd27a1b9))
+
 ## [1.1.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.1.0...@mux/mux-player@1.1.1) (2022-10-07)
 
 **Note:** Version bump only for package @mux/mux-player
