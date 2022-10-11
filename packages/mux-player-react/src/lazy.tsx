@@ -60,7 +60,7 @@ const Fallback = (props: FallbackProps) => {
         // default mux-player styling
         aspectRatio: '16/9',
         display: 'block',
-        backgroundColor: 'var(--media-control-background, #000)',
+        backgroundColor: 'var(--media-background-color, #000)',
         width: '100%',
         // user-implemented styles
         ...style,
