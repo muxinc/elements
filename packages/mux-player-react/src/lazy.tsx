@@ -20,6 +20,7 @@ interface MuxPlayerElement extends DetailedHTMLProps<HTMLAttributes<HTMLElement>
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
       'mux-player': MuxPlayerElement;
@@ -45,60 +46,53 @@ const Fallback = (props: FallbackProps) => {
   }, [isIntersecting, onIntersection]);
 
   return (
-    <>
-      {/* 
-        Why do we have a mux-player element before the mux-player bundle is even loaded?
-        Before the bundle is loaded, this mux-player element just acts like a div. 
-        However, by calling this placeholder "mux-player", 
-        it now gets the same CSS applied to it that the eventual "real" mux-player element will.
-      */}
-      {/* TODO: can we add mux-player to JSX.IntrinsicElements */}
-      {/* @ts-ignore */}
-      <mux-player
-        ref={intersectionRef}
-        data-mux-player-react-lazy-placeholder
-        className={className || ''}
+    /* 
+    Why do we have a mux-player element before the mux-player bundle is even loaded?
+    Before the bundle is loaded, this mux-player element just acts like a div.
+    However, by calling this placeholder "mux-player",
+    it now gets the same CSS applied to it that the eventual "real" mux-player element will. 
+    */
+    <mux-player
+      ref={intersectionRef}
+      data-mux-player-react-lazy-placeholder
+      className={className || ''}
+      style={{
+        // default mux-player styling
+        aspectRatio: '16/9',
+        display: 'block',
+        backgroundColor: 'var(--media-control-background, #000)',
+        width: '100%',
+        // user-implemented styles
+        ...style,
+        // and placeholder styles that are important enough to override the user's preferences
+        position: 'relative',
+        backgroundImage: placeholder ? `url(${placeholder})` : undefined,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        '--controls': 'none',
+      }}
+      placeholder={placeholder}
+      // since there's a possibility that the bundle loads before Suspense clears this placeholder,
+      // we need to make sure that the placeholder isn't interactive and its player chrome in doesn't get rendered
+      nohotkeys
+      aria-hidden
+      tabIndex={-1}
+    >
+      <div
+        data-mux-player-react-lazy-placeholder-overlay
         style={{
-          // default mux-player styling
-          aspectRatio: '16/9',
-          display: 'block',
-          backgroundColor: 'var(--media-control-background, #000)',
-          width: '100%',
-          // user-implemented styles
-          ...style,
-          // and styles that are important enough to override the user's preferences
-          position: 'relative',
-          backgroundImage: placeholder ? `url(${placeholder})` : undefined,
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'contain',
-          '--controls': 'none',
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'var(--controls-backdrop-color, rgba(0, 0, 0, 0.6))',
         }}
-        placeholder={placeholder}
-        // since there's a possibility that the bundle loads before Suspense clears this placeholder,
-        // we need to make sure that the placeholder doesn't get rendered and isn't interactive
-        nohotkeys
-        aria-hidden
-        tabIndex={-1}
-      >
-        {/* Overlay */}
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'var(--controls-backdrop-color, var(--controls, rgba(0, 0, 0, 0.6)))',
-          }}
-        />
-        {/* TODO: can we add mux-player to JSX.IntrinsicElements */}
-        {/* @ts-ignore */}
-      </mux-player>
-    </>
+      />
+    </mux-player>
   );
 };
 
 interface MuxPlayerLazyProps extends MuxPlayerProps {
   loading?: 'page' | 'viewport';
 }
-
 const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((props, ref) => {
   const { loading = 'viewport', ...playerProps } = props;
 
