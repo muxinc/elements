@@ -1,12 +1,33 @@
-import MuxPlayer from '@mux/mux-player-react/lazy';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Link } from "react-router-dom";
+import MuxPlayer from "@mux/mux-player-react/lazy";
 
-function MuxPlayerSuspensePage() {
-  return <MuxPlayer
-    playbackId="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
-    streamType="on-demand"
-    placeholder="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAASACADASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAUBAwQC/8QAHRAAAgIDAAMAAAAAAAAAAAAAAAECAwQSIREiMf/EABUBAQEAAAAAAAAAAAAAAAAAAAME/8QAGREAAwEBAQAAAAAAAAAAAAAAAAEDMRFR/9oADAMBAAIRAxEAPwBS4pEa7Geq2cn7GuLXgvT8ImuaUWYqkui/JpVT4M7bWlwWZNjm+g1wafTbEtiACoBnM/gvyQAOuCz0/9k="
-    style={{ width: '100%' }}
-  />;
+function MuxPlayerPage() {
+  return (
+    <>
+      <style>
+        {`mux-player {
+          display: block;
+          width: 100%;
+          aspect-ratio: 16 / 9;
+          margin: 1rem 0 2rem;
+        }`}
+      </style>
+
+      <MuxPlayer
+        playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        metadata={{
+          video_id: "video-id-12345",
+          video_title: "Star Wars: Episode 3",
+          viewer_user_id: "user-id-6789",
+        }}
+        streamType="on-demand"
+        muted
+      />
+
+      <Link to="/">Browse Elements</Link>
+    </>
+  );
 }
 
-export default MuxPlayerSuspensePage;
+export default MuxPlayerPage;
