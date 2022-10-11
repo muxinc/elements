@@ -85,7 +85,7 @@ const Fallback = (props: FallbackProps) => {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'var(--controls-backdrop-color, rgba(0, 0, 0, 0.6))',
+            backgroundColor: 'var(--controls-backdrop-color, var(--controls, rgba(0, 0, 0, 0.6)))',
           }}
         />
         {/* TODO: can we add mux-player to JSX.IntrinsicElements */}
