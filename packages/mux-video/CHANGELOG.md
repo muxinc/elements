@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.9.1...@mux/mux-video@0.9.2) (2022-10-12)
+
+### Bug Fixes
+
+- add default value to object-fit and object-position ([#460](https://github.com/muxinc/elements/issues/460)) ([56b4068](https://github.com/muxinc/elements/commit/56b4068ef170e03fca104561d402337c9172d03b))
+
 ## [0.9.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.9.0...@mux/mux-video@0.9.1) (2022-10-07)
 
 ### Bug Fixes
