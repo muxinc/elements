@@ -60,8 +60,8 @@ template.innerHTML = `
     max-height: 100%;
     min-width: 100%;
     min-height: 100%;
-    object-fit: var(--media-object-fit);
-    object-position: var(--media-object-position);
+    object-fit: var(--media-object-fit, contain);
+    object-position: var(--media-object-position, 50% 50%);
   }
 </style>
 <video is="castable-video" part="video" crossorigin></video>
