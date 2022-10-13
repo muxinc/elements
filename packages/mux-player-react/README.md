@@ -7,7 +7,7 @@
 
 # Introduction
 
-`<MuxPlayer />` is a Mux-flavored React video player component, built on top of our [mux-player web componnent](../mux-player) and [Media Chrome](https://media-chrome.org).
+`<MuxPlayer />` is a Mux-flavored React video player component, built on top of our [mux-player web component](../mux-player) and [Media Chrome](https://media-chrome.org).
 
 # Installation
 
@@ -24,6 +24,8 @@ yarn add @mux/mux-player-react
 # Usage
 
 ```jsx
+import MuxPlayer from '@mux/mux-player-react';
+
 <MuxPlayer
   playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
   metadata={{
@@ -32,8 +34,29 @@ yarn add @mux/mux-player-react
     viewer_user_id: 'user-id-bc-789',
   }}
   streamType="on-demand"
-/>
+/>;
 ```
+
+### Lazy-loading
+
+Defer loading of Mux Player by importing from `@mux/mux-player-react/lazy`.
+
+```jsx
+import MuxPlayer from '@mux/mux-player-react/lazy';
+
+<MuxPlayer
+  loading="viewport"
+  playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+  metadata={{
+    video_id: 'video-id-123456',
+    video_title: 'Bick Buck Bunny',
+    viewer_user_id: 'user-id-bc-789',
+  }}
+  streamType="on-demand"
+/>;
+```
+
+If you are generating your pages with a Node.js server (for example, [Next.js](https://nextjs.org/docs/basic-features/data-fetching/)), consider using `@mux/mux-player-react/lazy` with [`@mux/blurhash`](https://github.com/muxinc/blurhash) to generate a placeholder to display during loading.
 
 # Docs
 

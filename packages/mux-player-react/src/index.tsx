@@ -24,7 +24,6 @@ type VideoApiAttributes = {
   paused: boolean;
   src: string | null;
   poster: string;
-  placeholder: string;
   playbackRate: number;
   playsInline: boolean;
   preload: string;
@@ -68,6 +67,7 @@ export type MuxPlayerProps = {
   metadataViewerUserId?: string;
   primaryColor?: string;
   secondaryColor?: string;
+  placeholder?: string;
   playbackRates?: number[];
   defaultShowRemainingTime?: boolean;
   thumbnailTime?: number;

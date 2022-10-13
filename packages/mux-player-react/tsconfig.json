@@ -6,7 +6,7 @@
     "outDir": "dist",
     "incremental": true,
     "target": "ES2019",
-    "module": "es6",
+    "module": "ES2020",
     "declaration": true,
     "sourceMap": true,
     "composite": true,

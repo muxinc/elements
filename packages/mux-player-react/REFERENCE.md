@@ -42,6 +42,13 @@
 | `src`                                          | `string` (URL)                                                                                                                  | Full URL string for the media asset. Typically derived from the `playbackId`                                                                                                                                                                                                                                                                                                                     | `undefined`                      |
 -->
 
+## Mux Player React Lazy
+
+By importing from `@mux/mux-player-react/lazy`, you gain access to the following prop:
+| Prop | Type | Description | Default |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| `loading` | `"page" \| "viewport"` | Specifies when Mux Player React Lazy loads the player and replaces the placeholder. If `"page"`, the player will load after the page loads and executes the initial JavaScript bundle. `"viewport"` extends this behavior by also waiting until the placeholder has entered the viewport | `"viewport"` |
+
 # Callbacks
 
 `<MuxPlayer/>` has a number of callbacks associated with events for media loading, playback, and the player itself. For example, a callback for `'loadstart'` event is `onLoadStart`. See [mux-player's reference](../mux-player/REFERENCE.md#events) for a list of events.
