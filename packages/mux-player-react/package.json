@@ -12,8 +12,7 @@
     },
     "./lazy": {
       "import": "./dist/lazy.mjs",
-      "require": "./dist/lazy.cjs.js",
-      "default": "./dist/lazy.cjs.js"
+      "default": "./dist/lazy.mjs"
     }
   },
   "types": "dist/types-ts3.4/index.d.ts",
