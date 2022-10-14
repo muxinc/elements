@@ -68,7 +68,8 @@ const Fallback = (props: FallbackProps) => {
         position: 'relative',
         backgroundImage: placeholder ? `url(${placeholder})` : undefined,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain',
+        backgroundSize: 'var(--media-object-fit, contain)',
+        backgroundPosition: 'var(--media-object-position, 50% 50%)',
         '--controls': 'none',
       }}
       placeholder={placeholder}
