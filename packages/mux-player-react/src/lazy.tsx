@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import type * as CSS from 'csstype';
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 import ConditionalSuspense from './ConditionalSuspense';
@@ -27,7 +26,7 @@ interface FallbackProps extends MuxPlayerProps {
   onIntersection?: () => void;
 }
 const Fallback = (props: FallbackProps) => {
-  const { onIntersection, placeholder } = props;
+  const { style, className, onIntersection, placeholder } = props;
 
   const intersectionRef = React.useRef<HTMLElement>(null);
   const isIntersecting = useIsIntersecting(intersectionRef);
@@ -50,6 +49,8 @@ const Fallback = (props: FallbackProps) => {
         ref={intersectionRef}
         data-mux-player-react-lazy-placeholder
         placeholder={placeholder}
+        style={style}
+        className={className || ''}
         // since there's a possibility that the bundle loads before Suspense clears this placeholder,
         // we need to make sure that the placeholder isn't interactive and its player chrome in doesn't get rendered
         nohotkeys
@@ -60,8 +61,8 @@ const Fallback = (props: FallbackProps) => {
       </mux-player>
       <style>{
         /* css */ `
-        [data-mux-player-react-lazy-placeholder] {
-          aspect-ratio: '16/9';
+        [data-mux-player-react-lazy-placeholder]:not([bump-specificity]) {
+          aspect-ratio: 16/9;
           display: block;
           background-color: var(--media-background-color, #000);
           width: 100%;
@@ -71,11 +72,12 @@ const Fallback = (props: FallbackProps) => {
           background-size: var(--media-object-fit, contain);
           background-position: var(--media-object-position, 50% 50%);
           --controls: none;
+          --controls-backdrop-color: rgba(0, 0, 0, 0.6);
         }
         [data-mux-player-react-lazy-placeholder-overlay] {
           position: absolute;
           inset: 0;
-          background-color: var(--controls-backdrop-color, rgba(0, 0, 0, 0.6));
+          background-color: var(--controls-backdrop-color);
         }
       `
       }</style>
