@@ -8,13 +8,6 @@ import useIsIntersecting from './useIsIntersecting';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
 
-declare module 'csstype' {
-  interface Properties {
-    // Add a CSS Custom Property
-    '--controls'?: CSS.Properties['display'];
-  }
-}
-
 interface MuxPlayerElement extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
   nohotkeys?: boolean | undefined;
 }
@@ -34,7 +27,7 @@ interface FallbackProps extends MuxPlayerProps {
   onIntersection?: () => void;
 }
 const Fallback = (props: FallbackProps) => {
-  const { style, className, onIntersection, placeholder } = props;
+  const { onIntersection, placeholder } = props;
 
   const intersectionRef = React.useRef<HTMLElement>(null);
   const isIntersecting = useIsIntersecting(intersectionRef);
@@ -52,41 +45,41 @@ const Fallback = (props: FallbackProps) => {
     However, by calling this placeholder "mux-player",
     it now gets the same CSS applied to it that the eventual "real" mux-player element will. 
     */
-    <mux-player
-      ref={intersectionRef}
-      data-mux-player-react-lazy-placeholder
-      className={className || ''}
-      style={{
-        // default mux-player styling
-        aspectRatio: '16/9',
-        display: 'block',
-        backgroundColor: 'var(--media-background-color, #000)',
-        width: '100%',
-        // user-implemented styles
-        ...style,
-        // and placeholder styles that are important enough to override the user's preferences
-        position: 'relative',
-        backgroundImage: placeholder ? `url(${placeholder})` : undefined,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'contain',
-        '--controls': 'none',
-      }}
-      placeholder={placeholder}
-      // since there's a possibility that the bundle loads before Suspense clears this placeholder,
-      // we need to make sure that the placeholder isn't interactive and its player chrome in doesn't get rendered
-      nohotkeys
-      aria-hidden
-      tabIndex={-1}
-    >
-      <div
-        data-mux-player-react-lazy-placeholder-overlay
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundColor: 'var(--controls-backdrop-color, rgba(0, 0, 0, 0.6))',
-        }}
-      />
-    </mux-player>
+    <>
+      <mux-player
+        ref={intersectionRef}
+        data-mux-player-react-lazy-placeholder
+        placeholder={placeholder}
+        // since there's a possibility that the bundle loads before Suspense clears this placeholder,
+        // we need to make sure that the placeholder isn't interactive and its player chrome in doesn't get rendered
+        nohotkeys
+        aria-hidden
+        tabIndex={-1}
+      >
+        <div data-mux-player-react-lazy-placeholder-overlay />
+      </mux-player>
+      <style>{
+        /* css */ `
+        [data-mux-player-react-lazy-placeholder] {
+          aspect-ratio: '16/9';
+          display: block;
+          background-color: var(--media-background-color, #000);
+          width: 100%;
+          position: relative;
+          ${placeholder ? `background-image: url(${placeholder});` : ''}
+          background-repeat: no-repeat;
+          background-size: var(--media-object-fit, contain);
+          background-position: var(--media-object-position, 50% 50%);
+          --controls: none;
+        }
+        [data-mux-player-react-lazy-placeholder-overlay] {
+          position: absolute;
+          inset: 0;
+          background-color: var(--controls-backdrop-color, rgba(0, 0, 0, 0.6));
+        }
+      `
+      }</style>
+    </>
   );
 };
 
