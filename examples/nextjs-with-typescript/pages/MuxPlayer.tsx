@@ -346,8 +346,7 @@ function MuxPlayerPage({ location }: Props) {
         secondaryColor={state.secondaryColor}
         defaultShowRemainingTime={state.defaultShowRemainingTime}
         defaultHiddenCaptions={state.defaultHiddenCaptions}
-        /** @TODO This doesn't appear to work? (CJP) */
-        // playbackRate={state.playbackRate}
+        playbackRate={state.playbackRate}
         playbackRates={state.playbackRates}
         onPlay={(evt: Event) => {
           onPlay(evt);
@@ -554,15 +553,14 @@ function MuxPlayerPage({ location }: Props) {
           onChange={genericOnChange}
           values={['anonymous', 'use-credentials']}
         />
-        {/** @TODO This doesn't appear to work? (CJP) */}
-        {/* <NumberRenderer
+        <NumberRenderer
           value={state.playbackRate}
           name="playbackRate"
           onChange={genericOnChange}
           min={0}
           max={3}
           step={0.25}
-        /> */}
+        />
         {/** @TODO Is this sufficient for a UI or do we want a "fancier" one that allows adding/removing dynamic items from a list (CJP) */}
         <EnumMultiSelectRenderer
           value={state.playbackRates}

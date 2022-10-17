@@ -10,6 +10,7 @@ const ReactPropToAttrNameMap = {
   viewBox: 'viewBox',
   playsInline: 'playsinline',
   autoPlay: 'autoplay',
+  playbackRate: 'playbackrate',
 };
 
 type KeyTypes = string | number | symbol;
