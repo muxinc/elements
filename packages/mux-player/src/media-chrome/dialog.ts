@@ -43,7 +43,6 @@ const styles = `
     box-shadow: 0 0 0 2px rgba(27, 127, 204, 0.9);
   }
 
-
   .dialog {
     position: relative;
     box-sizing: border-box;
