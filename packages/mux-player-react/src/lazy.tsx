@@ -61,7 +61,7 @@ const Fallback = (props: FallbackProps) => {
       </mux-player>
       <style>{
         /* css */ `
-        [data-mux-player-react-lazy-placeholder]:not([bump-specificity]) {
+        mux-player[data-mux-player-react-lazy-placeholder] {
           aspect-ratio: 16/9;
           display: block;
           background-color: var(--media-background-color, #000);
@@ -74,7 +74,7 @@ const Fallback = (props: FallbackProps) => {
           --controls: none;
           --controls-backdrop-color: rgba(0, 0, 0, 0.6);
         }
-        [data-mux-player-react-lazy-placeholder-overlay] {
+        mux-player [data-mux-player-react-lazy-placeholder-overlay] {
           position: absolute;
           inset: 0;
           background-color: var(--controls-backdrop-color);
