@@ -14,13 +14,13 @@ The player UI is built on [Media Chrome](https://media-chrome.org) and [`<mux-vi
 # Installation
 
 ```shell
-npm install @mux/mux-player-react
+npm install @mux/mux-player
 ```
 
 or
 
 ```shell
-yarn add @mux/mux-player-react
+yarn add @mux/mux-player
 ```
 
 # Usage
