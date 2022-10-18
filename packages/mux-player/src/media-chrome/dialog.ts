@@ -39,13 +39,7 @@ const styles = `
     pointer-events: none !important;
   }
 
-  /*
-    Only show outline when keyboard focusing.
-    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-    :host-context support is bad https://caniuse.com/mdn-css_selectors_host-context
-  */
-  :host-context([media-keyboard-control]) ::slotted(:focus),
-  :host-context([media-keyboard-control]) :focus {
+  :focus-visible {
     box-shadow: 0 0 0 2px rgba(27, 127, 204, 0.9);
   }
 
