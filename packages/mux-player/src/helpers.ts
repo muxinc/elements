@@ -1,4 +1,4 @@
-import { toQuery, camelCase } from './utils';
+import { toQuery, camelCase, parseJwt } from './utils';
 import type MuxPlayerElement from '.';
 import { StreamTypes } from '@mux/playback-core';
 
@@ -41,6 +41,13 @@ export const getPosterURLFromPlaybackId = (
 ) => {
   // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
   const time = token == null ? thumbnailTime : undefined;
+
+  const { aud } = parseJwt(token);
+
+  if (token && aud !== 't') {
+    return;
+  }
+
   return `https://image.${domain}/${playbackId}/thumbnail.jpg${toQuery({
     token,
     time,
@@ -51,6 +58,12 @@ export const getStoryboardURLFromPlaybackId = (
   playbackId?: string,
   { token, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string } = {}
 ) => {
+  const { aud } = parseJwt(token);
+
+  if (token && aud !== 's') {
+    return;
+  }
+
   return `https://image.${domain}/${playbackId}/storyboard.vtt${toQuery({
     token,
   })}`;

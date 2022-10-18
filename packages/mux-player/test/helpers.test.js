@@ -6,6 +6,11 @@ import {
   AttributeTokenList,
 } from '../src/helpers.ts';
 
+// token key Key-Must-Be-at-least-32-bytes-in-length!
+// generated via https://dinochiesa.github.io/jwt/
+const THUMBNAIL_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0In0.BUhYQ9GTTFrrqyfT_7d2hb7FCnpmdRnzHPJulYU_yUo';
+const STORYBOARD_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJzIn0.aYYPU6VETdQOF04OEbhDYPOCgIxmngVBIfC6BQXbgI8';
+
 describe('helpers', () => {
   describe('getSrcFromPlaybackId', () => {
     it('with no token', () => {
@@ -34,8 +39,8 @@ describe('helpers', () => {
 
     it('with a token', () => {
       assert.equal(
-        getPosterURLFromPlaybackId('12345', { token: 't-1234' }),
-        'https://image.mux.com/12345/thumbnail.jpg?token=t-1234'
+        getPosterURLFromPlaybackId('12345', { token: THUMBNAIL_TOKEN }),
+        `https://image.mux.com/12345/thumbnail.jpg?token=${THUMBNAIL_TOKEN}`
       );
     });
 
@@ -48,8 +53,8 @@ describe('helpers', () => {
 
     it('with a thumbnailTime and token', () => {
       assert.equal(
-        getPosterURLFromPlaybackId('12345', { token: 't-1234', thumbnailTime: 20 }),
-        'https://image.mux.com/12345/thumbnail.jpg?token=t-1234'
+        getPosterURLFromPlaybackId('12345', { token: THUMBNAIL_TOKEN, thumbnailTime: 20 }),
+        `https://image.mux.com/12345/thumbnail.jpg?token=${THUMBNAIL_TOKEN}`
       );
     });
 
@@ -58,6 +63,14 @@ describe('helpers', () => {
         getPosterURLFromPlaybackId('12345', { domain: 'fake.com' }),
         'https://image.fake.com/12345/thumbnail.jpg'
       );
+    });
+
+    it('no url with a mismatched token', () => {
+      assert.equal(getPosterURLFromPlaybackId('12345', { token: STORYBOARD_TOKEN }), undefined);
+    });
+
+    it('no url with a bad token', () => {
+      assert.equal(getPosterURLFromPlaybackId('12345', { token: 'bad-token' }), undefined);
     });
   });
 
@@ -68,8 +81,8 @@ describe('helpers', () => {
 
     it('with a token', () => {
       assert.equal(
-        getStoryboardURLFromPlaybackId('12345', { token: 't-1234' }),
-        'https://image.mux.com/12345/storyboard.vtt?token=t-1234'
+        getStoryboardURLFromPlaybackId('12345', { token: STORYBOARD_TOKEN }),
+        `https://image.mux.com/12345/storyboard.vtt?token=${STORYBOARD_TOKEN}`
       );
     });
 
@@ -78,6 +91,14 @@ describe('helpers', () => {
         getStoryboardURLFromPlaybackId('12345', { domain: 'fake.com' }),
         'https://image.fake.com/12345/storyboard.vtt'
       );
+    });
+
+    it('no url with a mismatched token', () => {
+      assert.equal(getStoryboardURLFromPlaybackId('12345', { token: THUMBNAIL_TOKEN }), undefined);
+    });
+
+    it('no url with a bad token', () => {
+      assert.equal(getStoryboardURLFromPlaybackId('12345', { token: 'bad-token' }), undefined);
     });
   });
 

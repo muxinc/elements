@@ -79,7 +79,7 @@ export function toParams(obj: Record<string, any>) {
   return new URLSearchParams(params);
 }
 
-export function parseJwt(token: string) {
+export function parseJwt(token: string | undefined) {
   const base64Url = (token ?? '').split('.')[1];
 
   // exit early on invalid value
