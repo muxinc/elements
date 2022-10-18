@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [push, pull_request, repository_dispatch]
 
 # To use Turborepo Remote Caching, set the following environment variables.
 env:
@@ -11,7 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
+    if: github.event.action != 'pong'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -30,7 +30,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
-
+    if: github.event.action != 'pong'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -42,7 +42,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
+    if: github.event.action != 'pong'
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -57,3 +57,26 @@ jobs:
         uses: codecov/codecov-action@v2.1.0
         with:
           verbose: true
+          
+  integration-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: PING - Dispatch initiating repository event
+        if: github.event.action != 'pong'
+        run: |
+          curl -X POST https://api.github.com/repos/muxinc/playback-testing/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACCESS_TOKEN }} \
+          --data '{"event_type": "ping", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
+      - name: ACK - Acknowledge pong from remote repository
+        if: github.event.action == 'pong'
+        run: |
+          echo "PONG received from '${{ github.event.client_payload.repository }}' " && \
+          curl -X POST https://api.github.com/repos/muxinc/playback-testing/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACCESS_TOKEN }} \
+          --data '{"event_type": "ack", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'" }}'
+      - name: Test results
+        if: github.event.action == 'pong'
+        run: echo -e '${{toJSON(github.event.client_payload.data)}}'
