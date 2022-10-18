@@ -196,15 +196,15 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
         return;
       }
       case CustomVideoAttributes.VOLUME: {
-        const val = +newValue;
-        if (this.media && !Number.isNaN(val)) {
+        const val = toNumberOrUndefined(newValue) ?? 1;
+        if (this.media) {
           this.media.volume = val;
         }
         return;
       }
       case CustomVideoAttributes.PLAYBACKRATE: {
-        const val = +newValue;
-        if (this.media && !Number.isNaN(val)) {
+        const val = toNumberOrUndefined(newValue) ?? 1;
+        if (this.media) {
           this.media.playbackRate = val;
           this.media.defaultPlaybackRate = val;
         }
