@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.1.3...@mux/mux-player@1.2.0) (2022-10-19)
+
+
+### Bug Fixes
+
+* playbackRate not working on mux-player-react ([#470](https://github.com/muxinc/elements/issues/470)) ([e2c64b6](https://github.com/muxinc/elements/commit/e2c64b60bb53a66101004ed198f9bb1a08630eb2))
+* should have focus outline on dialog's close button ([#472](https://github.com/muxinc/elements/issues/472)) ([da33141](https://github.com/muxinc/elements/commit/da33141ba4a518a1843fc75c8e69ed24de5d00f1))
+
+
+### Features
+
+* **mux-player:** Add type-compliant seekable prop to video-api. ([587266a](https://github.com/muxinc/elements/commit/587266a2a517875a509fa8540f606ee81c2d6c0a))
+
+
+
+
+
 ## [1.1.3](https://github.com/muxinc/elements/compare/@mux/mux-player@1.1.2...@mux/mux-player@1.1.3) (2022-10-12)
 
 **Note:** Version bump only for package @mux/mux-player

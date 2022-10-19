@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.1.3...@mux/mux-player-react@1.2.0) (2022-10-19)
+
+
+### Bug Fixes
+
+* lazy placeholder lower specificity styles ([#465](https://github.com/muxinc/elements/issues/465)) ([6387081](https://github.com/muxinc/elements/commit/6387081f70aacac99820be40f13a8228b22109b8))
+* observe media-object css variables on lazy placeholder ([#464](https://github.com/muxinc/elements/issues/464)) ([6aabbc0](https://github.com/muxinc/elements/commit/6aabbc06add2aad283f533a4186e9a397c7515b9))
+* playbackRate not working on mux-player-react ([#470](https://github.com/muxinc/elements/issues/470)) ([e2c64b6](https://github.com/muxinc/elements/commit/e2c64b60bb53a66101004ed198f9bb1a08630eb2))
+
+
+### Features
+
+* implement react lazy with mux-player-react ([21ab5da](https://github.com/muxinc/elements/commit/21ab5dad724270082f73f2aa1cec5f4a0ed3e539))
+
+
+
+
+
 ## [1.1.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.1.2...@mux/mux-player-react@1.1.3) (2022-10-12)
 
 **Note:** Version bump only for package @mux/mux-player-react
