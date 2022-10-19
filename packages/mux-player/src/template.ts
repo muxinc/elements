@@ -59,7 +59,7 @@ export const content = (props: MuxTemplateProps) => html`
       prefer-playback="${props.preferPlayback ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"
       metadata-video-id="${props.metadataVideoId ?? false}"
-      metadata-video-title="${props.metadataVideoTitle ?? false}"
+      metadata-video-title="${props.metadataVideoTitle ?? props.title ?? false}"
       metadata-viewer-user-id="${props.metadataViewerUserId ?? false}"
       beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
       player-software-name="${props.playerSoftwareName ?? false}"
