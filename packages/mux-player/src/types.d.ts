@@ -5,6 +5,7 @@ export type MuxPlayerProps = Partial<MuxVideoElement> & {
   nohotkeys?: boolean;
   hotkeys?: AttributeTokenList;
   preferPlayback?: 'mse' | 'native' | undefined;
+  storyboard?: string;
 };
 
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
