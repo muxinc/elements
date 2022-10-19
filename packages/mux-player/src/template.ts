@@ -1,6 +1,6 @@
 import './media-theme-mux/media-theme-mux';
 import './dialog';
-import { castThemeName, getSrcFromPlaybackId, getStoryboardURLFromPlaybackId } from './helpers';
+import { castThemeName, getSrcFromPlaybackId } from './helpers';
 import { html, unsafeStatic } from './html';
 // @ts-ignore
 import cssStr from './styles.css';
@@ -85,17 +85,7 @@ export const content = (props: MuxTemplateProps) => html`
       exportparts="video"
     >
       ${
-        props.playbackId && !props.audio && !isLiveOrDVR(props)
-          ? html`<track
-              label="thumbnails"
-              default
-              kind="metadata"
-              src="${getStoryboardURLFromPlaybackId(props.playbackId, {
-                domain: props.customDomain,
-                token: props.tokens.storyboard,
-              })}"
-            />`
-          : html``
+        props.storyboard ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />` : html``
       }
     </mux-video>
     ${

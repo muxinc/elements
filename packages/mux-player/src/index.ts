@@ -19,6 +19,7 @@ import {
   toPropName,
   AttributeTokenList,
   getPosterURLFromPlaybackId,
+  getStoryboardURLFromPlaybackId,
 } from './helpers';
 import { template } from './template';
 import { render } from './html';
@@ -85,6 +86,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackId: el.playbackId,
     hasSrc: !!el.playbackId || !!el.src,
     poster: el.poster,
+    storyboard: el.storyboard,
     placeholder: el.getAttribute('placeholder'),
     theme: el.getAttribute('theme'),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
@@ -674,6 +676,26 @@ class MuxPlayerElement extends VideoApiElement {
     } else {
       this.removeAttribute(VideoAttributes.POSTER);
     }
+  }
+
+  /**
+   * Return the storyboard URL when a playback ID is provided,
+   * we aren't an audio player and the stream-type isn't live.
+   */
+  get storyboard() {
+    if (
+      this.playbackId &&
+      !this.audio &&
+      (!this.streamType ||
+        ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any))
+    ) {
+      return getStoryboardURLFromPlaybackId(this.playbackId, {
+        domain: this.customDomain,
+        token: this.tokens.storyboard,
+      });
+    }
+
+    return;
   }
 
   /**
