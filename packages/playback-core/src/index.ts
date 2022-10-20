@@ -30,20 +30,32 @@ export const generatePlayerInitTime = () => {
   return mux.utils.now();
 };
 
-/** @TODO REPLACE WITH mux.publicUtils.generateUUID() (CJP) */
-export const generateUUID = function () {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
-
-    return v.toString(16);
-  });
-};
+export const generateUUID = mux.utils.generateUUID;
 
 export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
+};
+
+const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined) => {
+  if (!playbackIdWithParams) return undefined;
+  const [playbackId] = playbackIdWithParams.split('?');
+  // `|| undefined` is here to handle potential invalid cases
+  return playbackId || undefined;
+};
+
+const toPlaybackIdFromSrc = (src: string | undefined) => {
+  if (!src || !src.startsWith('https://stream.')) return undefined;
+  const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
+  // `|| undefined` is here to handle potential invalid cases
+  return playbackId || undefined;
+};
+
+const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
+  if (props?.metadata?.video_id) return props.metadata.video_id;
+  if (!isMuxVideoSrc(props)) return generateUUID();
+  return toPlaybackIdFromParameterized(props.playbackId) ?? toPlaybackIdFromSrc(props.src) ?? generateUUID();
 };
 
 export const getError = (mediaEl: HTMLMediaElement) => {
@@ -58,8 +70,9 @@ export const initialize = (
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
   // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
-  const { metadata = {}, playbackId, src } = props;
-  const { view_session_id = generateUUID(), video_id = playbackId || src } = metadata;
+  const { metadata = {} } = props;
+  const { view_session_id = generateUUID() } = metadata;
+  const video_id = toVideoId(props);
   metadata.view_session_id = view_session_id;
   metadata.video_id = video_id;
   props.metadata = metadata;

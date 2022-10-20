@@ -534,6 +534,7 @@ type publicUtils = {
   headersStringToObject(headers: string): Partial<Headers>;
   extractHostnameAndDomain(url: string): HostnameDomain;
   extractHostname(url: string): HostnameDomain;
+  generateUUID(): string;
 };
 
 export const utils: publicUtils;
