@@ -68,6 +68,7 @@ const ActionTypes = {
 };
 
 const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
+  experimentalCmcd: undefined,
   muted: undefined,
   debug: undefined,
   autoPlay: undefined,
@@ -333,6 +334,7 @@ function MuxPlayerPage({ location }: Props) {
         nohotkeys={state.nohotkeys}
         hotkeys={state.hotkeys}
         // onPlayerReady={() => console.log("ready!")}
+        experimentalCmcd={state.experimentalCmcd}
         debug={state.debug}
         loop={state.loop}
         muted={state.muted}
@@ -540,6 +542,11 @@ function MuxPlayerPage({ location }: Props) {
         <BooleanRenderer
           value={state.debug}
           name="debug"
+          onChange={genericOnChange}
+        />
+        <BooleanRenderer
+          value={state.experimentalCmcd}
+          name="experimentalCmcd"
           onChange={genericOnChange}
         />
         <BooleanRenderer
