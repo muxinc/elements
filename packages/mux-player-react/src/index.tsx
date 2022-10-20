@@ -48,6 +48,7 @@ type MuxMediaPropTypes = {
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;
+  experimentalCmcd: boolean;
   children: never[];
 };
 
