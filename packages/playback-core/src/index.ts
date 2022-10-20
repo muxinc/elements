@@ -212,7 +212,7 @@ export const setupMux = (
 
     const metadata = {
       ...props.metadata,
-      video_title: props.metadata.video_title || undefined,
+      video_title: props?.metadata?.video_title || undefined,
     };
 
     const muxEmbedErrorTranslator = (error: ErrorEvent) => {
