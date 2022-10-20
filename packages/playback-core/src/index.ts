@@ -207,9 +207,13 @@ export const setupMux = (
       playerSoftwareName: player_software_name,
       playerSoftwareVersion: player_software_version,
       beaconCollectionDomain,
-      metadata,
       debug,
     } = props;
+
+    const metadata = {
+      ...props.metadata,
+      video_title: props?.metadata?.video_title || undefined,
+    };
 
     const muxEmbedErrorTranslator = (error: ErrorEvent) => {
       // mux-embed auto tracks fatal hls.js errors, turn it off.
