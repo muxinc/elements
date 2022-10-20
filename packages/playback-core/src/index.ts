@@ -210,7 +210,7 @@ export const setupMux = (
       debug,
     } = props;
 
-    const metadata = Object.keys(props.metadata).reduce((mdata, prop) => {
+    const metadata = Object.keys(props.metadata).reduce((mdata: Record<string, string>, prop) => {
       const val = props.metadata[prop];
       if (val !== '') {
         mdata[prop] = val;
