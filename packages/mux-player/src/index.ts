@@ -80,7 +80,7 @@ const PlayerAttributes = {
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
-  return {
+  const props = {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
     playbackId: el.playbackId,
@@ -103,6 +103,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // playsInline: el.playsInline,
     preload: el.preload,
     envKey: el.envKey,
+    experimentalCmcd: el.experimentalCmcd,
     debug: el.debug,
     tokens: el.tokens,
     beaconCollectionDomain: el.beaconCollectionDomain,
@@ -130,6 +131,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     title: el.getAttribute(PlayerAttributes.TITLE),
     ...state,
   };
+
+  return props;
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
@@ -588,6 +591,19 @@ class MuxPlayerElement extends VideoApiElement {
     }
 
     this.#render({ [toPropName(attrName)]: newValue });
+  }
+
+  get experimentalCmcd() {
+    return this.hasAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD);
+  }
+
+  set experimentalCmcd(value: boolean | undefined) {
+    if (!!value === this.experimentalCmcd) return;
+    if (!value) {
+      this.removeAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD);
+    } else {
+      this.setAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD, '');
+    }
   }
 
   get hasPlayed() {
