@@ -210,13 +210,10 @@ export const setupMux = (
       debug,
     } = props;
 
-    const metadata = Object.keys(props.metadata).reduce((mdata: Record<string, string>, prop) => {
-      const val = props.metadata[prop];
-      if (val !== '') {
-        mdata[prop] = val;
-      }
-      return mdata;
-    }, {});
+    const metadata = {
+      ...props.metadata,
+      video_title: props.metadata.video_title || undefined,
+    };
 
     const muxEmbedErrorTranslator = (error: ErrorEvent) => {
       // mux-embed auto tracks fatal hls.js errors, turn it off.
