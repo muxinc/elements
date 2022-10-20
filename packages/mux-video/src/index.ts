@@ -34,6 +34,7 @@ type AttributeNames = {
   TYPE: 'type';
   STREAM_TYPE: 'stream-type';
   START_TIME: 'start-time';
+  EXPERIMENTAL_CMCD: 'experimental-cmcd';
 };
 
 export const Attributes: AttributeNames = {
@@ -52,6 +53,7 @@ export const Attributes: AttributeNames = {
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
+  EXPERIMENTAL_CMCD: 'experimental-cmcd',
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -74,6 +76,19 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   constructor() {
     super();
     this.__playerInitTime = generatePlayerInitTime();
+  }
+
+  get experimentalCmcd() {
+    return this.hasAttribute(Attributes.EXPERIMENTAL_CMCD);
+  }
+
+  set experimentalCmcd(value: boolean | undefined) {
+    if (!!value === this.experimentalCmcd) return;
+    if (!value) {
+      this.removeAttribute(Attributes.EXPERIMENTAL_CMCD);
+    } else {
+      this.setAttribute(Attributes.EXPERIMENTAL_CMCD, '');
+    }
   }
 
   get playerInitTime() {
