@@ -57,17 +57,20 @@ import MuxPlayer from '@mux/mux-player-react/lazy';
 ```
 
 #### Styling `@mux/mux-player-react/lazy`
-Important: since `@mux/mux-player-react/lazy` adds a wrapper around mux-player to achieve its effect, if you are styling mux-player via CSS selector, use `[data-mux-player-react-lazy]` instead of `mux-player`. For example:
+
+Because `@mux/mux-player-react/lazy` adds a wrapper around mux-player to achieve its effect, use `[data-mux-player-react-lazy]` instead of `mux-player` as its CSS selector. For example:
 
 ```css
 /* This will not work */
 mux-player {
   aspect-ratio: 1;
+  max-width: 50%;
 }
 
 /* do this instead to target the mux-player-react/lazy wrapper */
 [data-mux-player-react-lazy] {
   aspect-ratio: 1;
+  max-width: 50%:
 }
 ```
 
@@ -75,7 +78,11 @@ mux-player {
 
 #### Customizing `@mux/mux-player-react/lazy`'s placeholder
 
+`@mux/mux-player-react/lazy` will display the contents of mux-player's `placeholder=` attribute as a background image.
+
 If you are generating your pages with a Node.js server (for example, [Next.js](https://nextjs.org/docs/basic-features/data-fetching/)), consider using `@mux/mux-player-react/lazy` with [`@mux/blurhash`](https://github.com/muxinc/blurhash) to generate a placeholder to display during loading.
+
+If you want to apply CSS _just_ to the placeholder, use the css selector `[data-mux-player-react-lazy-placeholder]`. 
 
 # Docs
 
