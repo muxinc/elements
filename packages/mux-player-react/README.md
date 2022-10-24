@@ -41,6 +41,8 @@ import MuxPlayer from '@mux/mux-player-react';
 
 Defer loading of Mux Player by importing from `@mux/mux-player-react/lazy`.
 
+> Note: `@mux/mux-player-react/lazy` is currently in development and may not follow the semantic versioning of mux-player or mux-player-react. Changes in behavior will be documented in the release notes; please check them when upgrading.
+
 ```jsx
 import MuxPlayer from '@mux/mux-player-react/lazy';
 
