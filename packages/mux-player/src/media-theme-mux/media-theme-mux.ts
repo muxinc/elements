@@ -79,13 +79,6 @@ export default class MediaThemeMux extends MediaTheme {
         inherits: true,
         initialValue: 'transparent',
       });
-      // @ts-ignore
-      window?.CSS?.registerProperty({
-        name: '--controls-backdrop-color',
-        syntax: '<color>',
-        inherits: true,
-        initialValue: 'rgba(0, 0, 0, 0.6)',
-      });
     } catch (e) {}
   }
 
