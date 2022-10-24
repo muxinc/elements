@@ -110,6 +110,9 @@ audio {
   line-height: 0;
   margin-bottom: 1rem;
 }
+[data-mux-player-react-lazy] mux-player:not([audio]) {
+  margin-bottom: 0;
+}
 
 .options {
   overflow: auto;
