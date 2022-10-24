@@ -12,7 +12,7 @@ interface MuxPlayerLazyProps extends MuxPlayerProps {
   loading?: 'page' | 'viewport';
 }
 const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((props, ref) => {
-  const { loading = 'viewport', ...playerProps } = props;
+  const { loading = 'viewport', style, className, ...playerProps } = props;
 
   // We load mux player once two conditions are met:
   // 1. We're in a browser (react.lazy doesn't work on the server in react 17)
@@ -23,10 +23,14 @@ const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((
 
   return (
     <>
-      <div data-mux-player-react-lazy ref={intersectionRef}>
+      <div data-mux-player-react-lazy ref={intersectionRef} style={style} className={className || ''}>
         <ConditionalSuspense
           condition={isBrowser && (isIntersecting || loading === 'page')}
-          fallback={<div data-mux-player-react-lazy-placeholder />}
+          fallback={
+            <div data-mux-player-react-lazy-placeholder>
+              <div data-mux-player-react-lazy-placeholder-overlay />
+            </div>
+          }
         >
           <MuxPlayerIndex {...playerProps} ref={ref} />
         </ConditionalSuspense>
@@ -40,10 +44,13 @@ const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((
           aspect-ratio: 16/9;
           width: 100%;
         }
-        mux-player, [data-mux-player-react-lazy-placeholder] {
+        [data-mux-player-react-lazy] mux-player, [data-mux-player-react-lazy-placeholder] {
           /* its children just inherit its size */
           position: absolute;
           inset: 0;
+        }
+        [data-mux-player-react-lazy] mux-player {
+          aspect-ratio: auto;
         }
         [data-mux-player-react-lazy-placeholder] {
           background-color: var(--media-background-color, #000);
@@ -52,7 +59,7 @@ const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((
           background-size: var(--media-object-fit, contain);
           background-position: var(--media-object-position, 50% 50%);
         }
-        [data-mux-player-react-lazy-placeholder]:after {
+        [data-mux-player-react-lazy-placeholder-overlay] {
           /* 
             atop the placeholder is an overlay to dim the placeholder
             in the same way that the incoming controls overlay will
