@@ -49,7 +49,12 @@ const Fallback = (props: FallbackProps) => {
         ref={intersectionRef}
         data-mux-player-react-lazy-placeholder
         placeholder={placeholder}
-        style={style}
+        style={
+          {
+            '--mux-player-react-lazy-placeholder': placeholder ? `url(${placeholder});` : '',
+            ...style,
+          } as React.CSSProperties
+        }
         className={className || ''}
         // since there's a possibility that the bundle loads before Suspense clears this placeholder,
         // we need to make sure that the placeholder isn't interactive and its player chrome in doesn't get rendered
@@ -67,7 +72,7 @@ const Fallback = (props: FallbackProps) => {
           background-color: var(--media-background-color, #000);
           width: 100%;
           position: relative;
-          ${placeholder ? `background-image: url(${placeholder});` : ''}
+          background-image: var(--mux-player-react-lazy-placeholder);
           background-repeat: no-repeat;
           background-size: var(--media-object-fit, contain);
           background-position: var(--media-object-position, 50% 50%);
