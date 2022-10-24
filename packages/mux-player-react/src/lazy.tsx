@@ -79,6 +79,11 @@ const Fallback = (props: FallbackProps) => {
           --controls: none;
           --controls-backdrop-color: rgba(0, 0, 0, 0.6);
         }
+        mux-player[data-mux-player-react-lazy-placeholder]::part(poster),
+        mux-player[data-mux-player-react-lazy-placeholder]::part(vertical-layer) {
+          opacity: 1;
+          transition: none;
+        }
         mux-player [data-mux-player-react-lazy-placeholder-overlay] {
           position: absolute;
           inset: 0;
