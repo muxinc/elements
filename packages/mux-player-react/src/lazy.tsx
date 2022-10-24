@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import type * as CSS from 'csstype';
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 
 import ConditionalSuspense from './ConditionalSuspense';
