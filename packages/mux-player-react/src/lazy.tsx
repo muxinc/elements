@@ -8,13 +8,6 @@ import useIsIntersecting from './useIsIntersecting';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
 
-declare module 'csstype' {
-  interface Properties {
-    // Add a CSS Custom Property
-    '--mux-player-react-lazy-placeholder'?: CSS.Properties['display'];
-  }
-}
-
 interface MuxPlayerElement extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
   nohotkeys?: boolean | undefined;
 }
@@ -57,10 +50,12 @@ const Fallback = (props: FallbackProps) => {
         ref={intersectionRef}
         data-mux-player-react-lazy-placeholder
         placeholder={placeholder}
-        style={{
-          '--mux-player-react-lazy-placeholder': placeholder ? `url(${placeholder});` : '',
-          ...style,
-        }}
+        style={
+          {
+            '--mux-player-react-lazy-placeholder': placeholder ? `url(${placeholder});` : '',
+            ...style,
+          } as React.CSSProperties
+        }
         className={className || ''}
         // since there's a possibility that the bundle loads before Suspense clears this placeholder,
         // we need to make sure that the placeholder isn't interactive and its player chrome in doesn't get rendered
