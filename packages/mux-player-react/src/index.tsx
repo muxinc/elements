@@ -40,6 +40,7 @@ type MuxMediaPropTypes = {
   envKey: string;
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
+  disableCookies: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
   beaconCollectionDomain: string;
