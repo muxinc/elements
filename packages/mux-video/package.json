@@ -6,6 +6,7 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-video.js",
+  "jsdelivr": "./dist/mux-video.js",
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs.js",
