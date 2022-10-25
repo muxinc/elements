@@ -29,6 +29,7 @@ type AttributeNames = {
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   CUSTOM_DOMAIN: 'custom-domain';
+  DISABLE_COOKIES: 'disable-cookies';
   PLAYBACK_ID: 'playback-id';
   PREFER_PLAYBACK: 'prefer-playback';
   TYPE: 'type';
@@ -50,6 +51,7 @@ export const Attributes: AttributeNames = {
   METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
+  DISABLE_COOKIES: 'disable-cookies',
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
@@ -211,7 +213,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  /** @TODO write a generic module for well defined primitive types -> attribute getter/setters/removers (CJP) */
   get debug(): boolean {
     return this.getAttribute(Attributes.DEBUG) != null;
   }
@@ -224,6 +225,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       this.setAttribute(Attributes.DEBUG, '');
     } else {
       this.removeAttribute(Attributes.DEBUG);
+    }
+  }
+
+  get disableCookies(): boolean {
+    return this.hasAttribute(Attributes.DISABLE_COOKIES);
+  }
+
+  set disableCookies(val: boolean) {
+    // dont' cause an infinite loop
+    if (val === this.disableCookies) return;
+
+    if (val) {
+      this.setAttribute(Attributes.DISABLE_COOKIES, '');
+    } else {
+      this.removeAttribute(Attributes.DISABLE_COOKIES);
     }
   }
 
