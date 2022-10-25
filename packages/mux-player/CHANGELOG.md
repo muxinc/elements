@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.2.0...@mux/mux-player@1.3.0) (2022-10-25)
+
+
+### Bug Fixes
+
+* check JWT before setting poster and storyboard urls ([3c3d5c5](https://github.com/muxinc/elements/commit/3c3d5c5c2d16a75b3ab7ce82447d6973578ed3e9))
+* don't register prop --controls-backdrop-color ([#480](https://github.com/muxinc/elements/issues/480)) ([b820a14](https://github.com/muxinc/elements/commit/b820a14656444b49ed6c0a59fede7327da76936c))
+* update to media-chrome 0.15.0 ([#483](https://github.com/muxinc/elements/issues/483)) ([71f51ab](https://github.com/muxinc/elements/commit/71f51ab501085a65e5a01eb1edca2f8bdbddaf6a))
+* update to media-chrome 0.15.1 ([#484](https://github.com/muxinc/elements/issues/484)) ([fdc5c7a](https://github.com/muxinc/elements/commit/fdc5c7ada514fd5c417b1adbb6b4d538aa2bc580))
+
+
+### Features
+
+* add storyboard getter on player ([26c3a7c](https://github.com/muxinc/elements/commit/26c3a7c3fd85c43537e7a2b6578c51a631c15b13))
+* conditionally use title for title metadata ([#475](https://github.com/muxinc/elements/issues/475)) ([63166a4](https://github.com/muxinc/elements/commit/63166a4be93e3eceb211f2c1973f324416af3985))
+* **mux-player:** Add disable cookies attr and prop. ([d8cbe69](https://github.com/muxinc/elements/commit/d8cbe69645f9215d63a54b6cfbc4abb8bf6c45f0))
+* **mux-player:** Expose and propagate experimental cmcd prop and attr. ([dbcf85a](https://github.com/muxinc/elements/commit/dbcf85a5e687ad36c410c36042a224361942ed9b))
+
+
+
+
+
 # [1.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.1.3...@mux/mux-player@1.2.0) (2022-10-19)
 
 

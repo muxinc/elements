@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.9.2...@mux/mux-video@0.10.0) (2022-10-25)
+
+
+### Features
+
+* **mux-video:** Add disable cookies attr and prop. ([d3bf5a2](https://github.com/muxinc/elements/commit/d3bf5a2d1af898569add4151a06c5bc4c7e469d9))
+* **mux-video:** Expose experimental cmcd prop and attr. ([969251d](https://github.com/muxinc/elements/commit/969251dd1ec6f3a2cfe924935077d50915288e30))
+
+
+
+
+
 ## [0.9.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.9.1...@mux/mux-video@0.9.2) (2022-10-12)
 
 ### Bug Fixes

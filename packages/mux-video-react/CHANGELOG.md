@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.6.0...@mux/mux-video-react@0.7.0) (2022-10-25)
+
+
+### Features
+
+* **mux-video-react:** Add disable cookies prop. ([777db83](https://github.com/muxinc/elements/commit/777db8301e6bbb97ef542a05251b00e450a04b8d))
+
+
+
+
+
 # [0.6.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.5.4...@mux/mux-video-react@0.6.0) (2022-10-05)
 
 ### Bug Fixes

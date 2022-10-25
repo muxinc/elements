@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.12.0...@mux/playback-core@0.13.0) (2022-10-25)
+
+
+### Features
+
+* add ability to unset poster ([#447](https://github.com/muxinc/elements/issues/447)) ([d61e295](https://github.com/muxinc/elements/commit/d61e295952d59ba42ad077c4a2b7fb3bb0d7079c))
+* conditionally use title for title metadata ([#475](https://github.com/muxinc/elements/issues/475)) ([63166a4](https://github.com/muxinc/elements/commit/63166a4be93e3eceb211f2c1973f324416af3985))
+* **playback-core:** Abstract video_id derivation and make more consistent use of playback-id. ([fdeb1a0](https://github.com/muxinc/elements/commit/fdeb1a065e0aa92998de48a6148590bc5df6a77f))
+* **playback-core:** Add CMCD support (mutative). ([dbe27e0](https://github.com/muxinc/elements/commit/dbe27e086f59245d1782a9e972859d4051d42eac))
+* **playback-core:** Add experimental flag for enabling cmcd (disabled by default). ([5fe2e55](https://github.com/muxinc/elements/commit/5fe2e5550db073c79f1e4712bb7a9c2b0450819f))
+* **playback-core:** Support disableCookies for mux-embed. ([cbd6516](https://github.com/muxinc/elements/commit/cbd651668a51e37dd4fa9b86c212ff51620832a5))
+
+
+
+
+
 # [0.12.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.11.0...@mux/playback-core@0.12.0) (2022-10-05)
 
 ### Bug Fixes

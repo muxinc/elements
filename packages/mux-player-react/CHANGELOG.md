@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.2.0...@mux/mux-player-react@1.3.0) (2022-10-25)
+
+
+### Bug Fixes
+
+* lazy placeholder properly scoped styles ([#478](https://github.com/muxinc/elements/issues/478)) ([d0f8aa1](https://github.com/muxinc/elements/commit/d0f8aa165a66df8e4e617120bd4d19949b0bee37))
+
+
+### Features
+
+* **mux-player-react:** Add disable cookies prop. ([ba9d46a](https://github.com/muxinc/elements/commit/ba9d46a2da652555565d5f82b6fc6550899ef4fb))
+* **mux-player-react:** Add experimentalCmcd prop. ([40b44ff](https://github.com/muxinc/elements/commit/40b44ff042f57d2b265398c024117ccce9af3982))
+
+
+
+
+
 # [1.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.1.3...@mux/mux-player-react@1.2.0) (2022-10-19)
 
 

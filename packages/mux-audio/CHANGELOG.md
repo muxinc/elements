@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.7.0...@mux/mux-audio@0.8.0) (2022-10-25)
+
+
+### Features
+
+* **mux-audio:** Add disable cookies attr and prop. ([ef453ed](https://github.com/muxinc/elements/commit/ef453edf9cb9696150ae89f995a6af8472161153))
+
+
+
+
+
 # [0.7.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.6.4...@mux/mux-audio@0.7.0) (2022-10-05)
 
 ### Bug Fixes

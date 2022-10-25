@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.5.0...@mux/mux-audio-react@0.6.0) (2022-10-25)
+
+
+### Features
+
+* **mux-audio-react:** Add disable cookies prop. ([a025fe7](https://github.com/muxinc/elements/commit/a025fe7b93ddb83cd378ebe444ffc94ce5d76758))
+
+
+
+
+
 # [0.5.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.4.3...@mux/mux-audio-react@0.5.0) (2022-10-05)
 
 ### Bug Fixes
