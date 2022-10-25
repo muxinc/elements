@@ -30,10 +30,32 @@ export const generatePlayerInitTime = () => {
   return mux.utils.now();
 };
 
+export const generateUUID = mux.utils.generateUUID;
+
 export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
+};
+
+const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined) => {
+  if (!playbackIdWithParams) return undefined;
+  const [playbackId] = playbackIdWithParams.split('?');
+  // `|| undefined` is here to handle potential invalid cases
+  return playbackId || undefined;
+};
+
+const toPlaybackIdFromSrc = (src: string | undefined) => {
+  if (!src || !src.startsWith('https://stream.')) return undefined;
+  const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
+  // `|| undefined` is here to handle potential invalid cases
+  return playbackId || undefined;
+};
+
+const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
+  if (props?.metadata?.video_id) return props.metadata.video_id;
+  if (!isMuxVideoSrc(props)) return generateUUID();
+  return toPlaybackIdFromParameterized(props.playbackId) ?? toPlaybackIdFromSrc(props.src) ?? generateUUID();
 };
 
 export const getError = (mediaEl: HTMLMediaElement) => {
@@ -47,6 +69,13 @@ export const initialize = (
 ) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
+  // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
+  const { metadata = {} } = props;
+  const { view_session_id = generateUUID() } = metadata;
+  const video_id = toVideoId(props);
+  metadata.view_session_id = view_session_id;
+  metadata.video_id = video_id;
+  props.metadata = metadata;
 
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
@@ -110,10 +139,12 @@ function useNative(
 }
 
 export const setupHls = (
-  props: Partial<Pick<MuxMediaProps, 'debug' | 'streamType' | 'type' | 'startTime'>>,
+  props: Partial<
+    Pick<MuxMediaPropsInternal, 'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'experimentalCmcd'>
+  >,
   mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
 ) => {
-  const { debug, streamType, startTime: startPosition = -1 } = props;
+  const { debug, streamType, startTime: startPosition = -1, metadata, experimentalCmcd } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -126,11 +157,19 @@ export const setupHls = (
       liveDurationInfinity: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
+    const cmcd = experimentalCmcd
+      ? {
+          useHeaders: true,
+          sessionId: metadata.view_session_id,
+          contentId: metadata.video_id,
+        }
+      : undefined;
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
       debug,
       startPosition,
+      cmcd,
       ...defaultConfig,
       ...streamTypeConfig,
     });

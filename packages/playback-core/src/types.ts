@@ -112,6 +112,7 @@ export type MuxMediaPropTypes = {
   startTime: HlsConfig['startPosition'];
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
+  experimentalCmcd?: boolean;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload'>>;
