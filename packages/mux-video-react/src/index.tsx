@@ -80,6 +80,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
 MuxVideo.propTypes = {
   envKey: PropTypes.string,
   debug: PropTypes.bool,
+  disableCookies: PropTypes.bool,
   // Improve this by adding a full shape() definition for all metadata props
   // metadata: PropTypes.shape({}),
   metadata: PropTypes.any,
