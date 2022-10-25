@@ -6,6 +6,7 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "unpkg": "./dist/playback-core.js",
+  "jsdelivr": "./dist/playback-core.js",
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs.js",

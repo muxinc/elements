@@ -6,6 +6,7 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-uploader.js",
+  "jsdelivr": "./dist/mux-uploader.js",
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs",

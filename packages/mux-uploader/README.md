@@ -46,13 +46,13 @@ require('@mux/mux-uploader');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://unpkg.com/@mux/mux-uploader"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.1"></script>
 ```
 
 If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://unpkg.com/@mux/mux-uploader/dist/mux-uploader.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.1/dist/mux-uploader.mjs"></script>
 ```
 
 # Usage
