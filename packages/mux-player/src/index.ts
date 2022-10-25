@@ -105,6 +105,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     envKey: el.envKey,
     experimentalCmcd: el.experimentalCmcd,
     debug: el.debug,
+    disableCookies: el.disableCookies,
     tokens: el.tokens,
     beaconCollectionDomain: el.beaconCollectionDomain,
     metadata: el.metadata,
@@ -995,6 +996,24 @@ class MuxPlayerElement extends VideoApiElement {
       this.setAttribute(MuxVideoAttributes.DEBUG, '');
     } else {
       this.removeAttribute(MuxVideoAttributes.DEBUG);
+    }
+  }
+
+  /**
+   * Get video engine disable cookies flag.
+   */
+  get disableCookies() {
+    return getVideoAttribute(this, MuxVideoAttributes.DISABLE_COOKIES) != null;
+  }
+
+  /**
+   * Set video engine debug flag.
+   */
+  set disableCookies(val) {
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.DISABLE_COOKIES, '');
+    } else {
+      this.removeAttribute(MuxVideoAttributes.DISABLE_COOKIES);
     }
   }
 
