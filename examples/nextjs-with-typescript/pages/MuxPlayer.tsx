@@ -71,6 +71,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   experimentalCmcd: undefined,
   muted: undefined,
   debug: undefined,
+  disableCookies: undefined,
   autoPlay: undefined,
   preload: undefined,
   startTime: undefined,
@@ -336,6 +337,7 @@ function MuxPlayerPage({ location }: Props) {
         // onPlayerReady={() => console.log("ready!")}
         experimentalCmcd={state.experimentalCmcd}
         debug={state.debug}
+        disableCookies={state.disableCookies}
         loop={state.loop}
         muted={state.muted}
         volume={state.volume}
@@ -538,6 +540,11 @@ function MuxPlayerPage({ location }: Props) {
           name="thumbnailTime"
           onChange={genericOnChange}
           min={0}
+        />
+        <BooleanRenderer
+          value={state.disableCookies}
+          name="disableCookies"
+          onChange={genericOnChange}
         />
         <BooleanRenderer
           value={state.debug}
