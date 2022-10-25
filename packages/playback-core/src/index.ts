@@ -232,6 +232,7 @@ export const setupMux = (
       | 'playbackId'
       | 'src'
       | 'customDomain'
+      | 'disableCookies'
     >
   >,
   mediaEl?: HTMLMediaElement | null,
@@ -247,6 +248,7 @@ export const setupMux = (
       playerSoftwareVersion: player_software_version,
       beaconCollectionDomain,
       debug,
+      disableCookies,
     } = props;
 
     const metadata = {
@@ -273,6 +275,7 @@ export const setupMux = (
       Hls: hlsjs ? Hls : undefined,
       automaticErrorTracking: false,
       errorTranslator: muxEmbedErrorTranslator,
+      disableCookies,
       data: {
         ...(env_key ? { env_key } : {}),
         // Metadata fields

@@ -104,6 +104,7 @@ export type MuxMediaPropTypes = {
   customDomain: string;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   errorTranslator: Options['errorTranslator'];
+  disableCookies: Options['disableCookies'];
   playbackId: string;
   playerInitTime: Options['data']['player_init_time'];
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
