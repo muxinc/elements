@@ -11,6 +11,8 @@ import {
   Metadata,
   MediaError,
   getError,
+  CmcdTypes,
+  CmcdTypeValues,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -35,6 +37,7 @@ type AttributeNames = {
   TYPE: 'type';
   STREAM_TYPE: 'stream-type';
   START_TIME: 'start-time';
+  PREFER_CMCD: 'prefer-cmcd';
   EXPERIMENTAL_CMCD: 'experimental-cmcd';
 };
 
@@ -55,6 +58,7 @@ export const Attributes: AttributeNames = {
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
+  PREFER_CMCD: 'prefer-cmcd',
   EXPERIMENTAL_CMCD: 'experimental-cmcd',
 };
 
@@ -90,6 +94,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       this.removeAttribute(Attributes.EXPERIMENTAL_CMCD);
     } else {
       this.setAttribute(Attributes.EXPERIMENTAL_CMCD, '');
+    }
+  }
+
+  get preferCmcd() {
+    return (this.getAttribute(Attributes.PREFER_CMCD) as ValueOf<CmcdTypes>) ?? undefined;
+  }
+
+  set preferCmcd(value: ValueOf<CmcdTypes> | undefined) {
+    if (value === this.preferCmcd) return;
+    if (!value) {
+      this.removeAttribute(Attributes.PREFER_CMCD);
+    } else if (CmcdTypeValues.includes(value)) {
+      this.setAttribute(Attributes.PREFER_CMCD, value);
+    } else {
+      console.warn(`Invalid value for preferCmcd. Must be one of ${CmcdTypeValues.join()}`);
     }
   }
 
