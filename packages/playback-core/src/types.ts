@@ -69,6 +69,8 @@ export const CmcdTypes: CmcdTypes = {
   QUERY: 'query',
 };
 
+export const CmcdTypeValues = Object.values(CmcdTypes);
+
 export type ExtensionMimeTypeMap = {
   M3U8: 'application/vnd.apple.mpegurl';
   MP4: 'video/mp4';
