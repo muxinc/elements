@@ -69,6 +69,7 @@ const ActionTypes = {
 
 const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   experimentalCmcd: undefined,
+  preferCmcd: undefined,
   muted: undefined,
   debug: undefined,
   disableCookies: undefined,
@@ -335,6 +336,7 @@ function MuxPlayerPage({ location }: Props) {
         nohotkeys={state.nohotkeys}
         hotkeys={state.hotkeys}
         // onPlayerReady={() => console.log("ready!")}
+        preferCmcd={state.preferCmcd}
         experimentalCmcd={state.experimentalCmcd}
         debug={state.debug}
         disableCookies={state.disableCookies}
@@ -555,6 +557,12 @@ function MuxPlayerPage({ location }: Props) {
           value={state.experimentalCmcd}
           name="experimentalCmcd"
           onChange={genericOnChange}
+        />
+        <EnumRenderer
+          value={state.preferCmcd}
+          name="preferCmcd"
+          onChange={genericOnChange}
+          values={['query', 'header']}
         />
         <BooleanRenderer
           value={state.loop}
