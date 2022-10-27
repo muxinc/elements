@@ -9,6 +9,7 @@ import {
   StreamTypes,
   PlaybackTypes,
   ExtensionMimeTypeMap,
+  CmcdTypes,
   type ValueOf,
   type PlaybackCore,
   type MuxMediaProps,
@@ -140,11 +141,14 @@ function useNative(
 
 export const setupHls = (
   props: Partial<
-    Pick<MuxMediaPropsInternal, 'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'experimentalCmcd'>
+    Pick<
+      MuxMediaPropsInternal,
+      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'experimentalCmcd' | 'preferCmcd'
+    >
   >,
   mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
 ) => {
-  const { debug, streamType, startTime: startPosition = -1, metadata, experimentalCmcd } = props;
+  const { debug, streamType, startTime: startPosition = -1, metadata, experimentalCmcd, preferCmcd } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -159,7 +163,7 @@ export const setupHls = (
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const cmcd = experimentalCmcd
       ? {
-          useHeaders: true,
+          useHeaders: preferCmcd === CmcdTypes.HEADER,
           sessionId: metadata.view_session_id,
           contentId: metadata.video_id,
         }
