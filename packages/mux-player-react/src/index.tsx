@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import type { StreamTypes, PlaybackTypes } from '@mux/playback-core';
+import type { StreamTypes, PlaybackTypes, CmcdTypes } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens } from '@mux/mux-player';
@@ -49,6 +49,7 @@ type MuxMediaPropTypes = {
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;
+  preferCmcd: ValueOf<CmcdTypes> | undefined;
   experimentalCmcd: boolean;
   children: never[];
 };
