@@ -59,6 +59,16 @@ export const PlaybackTypes: PlaybackTypes = {
   NATIVE: 'native',
 };
 
+export type CmcdTypes = {
+  HEADER: 'header';
+  QUERY: 'query';
+};
+
+export const CmcdTypes: CmcdTypes = {
+  HEADER: 'header',
+  QUERY: 'query',
+};
+
 export type ExtensionMimeTypeMap = {
   M3U8: 'application/vnd.apple.mpegurl';
   MP4: 'video/mp4';
@@ -113,6 +123,7 @@ export type MuxMediaPropTypes = {
   startTime: HlsConfig['startPosition'];
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
+  preferCmcd: ValueOf<CmcdTypes> | undefined;
   experimentalCmcd?: boolean;
 };
 
