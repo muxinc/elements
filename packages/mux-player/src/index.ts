@@ -10,6 +10,8 @@ import {
   PlaybackEngine,
   addTextTrack,
   removeTextTrack,
+  CmcdTypes,
+  CmcdTypeValues,
 } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
@@ -104,6 +106,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     preload: el.preload,
     envKey: el.envKey,
     experimentalCmcd: el.experimentalCmcd,
+    preferCmcd: el.preferCmcd,
     debug: el.debug,
     disableCookies: el.disableCookies,
     tokens: el.tokens,
@@ -604,6 +607,21 @@ class MuxPlayerElement extends VideoApiElement {
       this.removeAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD);
     } else {
       this.setAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD, '');
+    }
+  }
+
+  get preferCmcd() {
+    return (this.getAttribute(MuxVideoAttributes.PREFER_CMCD) as ValueOf<CmcdTypes>) ?? undefined;
+  }
+
+  set preferCmcd(value: ValueOf<CmcdTypes> | undefined) {
+    if (value === this.preferCmcd) return;
+    if (!value) {
+      this.removeAttribute(MuxVideoAttributes.PREFER_CMCD);
+    } else if (CmcdTypeValues.includes(value)) {
+      this.setAttribute(MuxVideoAttributes.PREFER_CMCD, value);
+    } else {
+      console.warn(`Invalid value for preferCmcd. Must be one of ${CmcdTypeValues.join()}`);
     }
   }
 
