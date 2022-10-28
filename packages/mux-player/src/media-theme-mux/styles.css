@@ -104,19 +104,8 @@ media-controller {
 :host(:not([audio])) media-time-range {
   --media-range-padding-left: var(--mux-time-range-padding, 10px);
   --media-range-padding-right: var(--mux-time-range-padding, 10px);
+  --media-range-padding: 0;
   width: 100%;
-  z-index: 10;
-  height: 10px;
-  bottom: -2px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    transparent 3px,
-    var(--media-control-background) 3px,
-    var(--media-control-background) 8px,
-    transparent 8px,
-    transparent
-  );
 }
 
 media-control-bar {
