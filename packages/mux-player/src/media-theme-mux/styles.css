@@ -112,8 +112,8 @@ media-controller {
     180deg,
     transparent,
     transparent 3px,
-    var(--media-control-background) 3px,
-    var(--media-control-background) 7px,
+    var(--media-control-background, rgba(20, 20, 30, 0.7)) 3px,
+    var(--media-control-background, rgba(20, 20, 30, 0.7)) 7px,
     transparent 7px,
     transparent
   );
@@ -197,7 +197,7 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
-  width: max(43px, min(10%, 60px));
+  width: max(43px, min(10%, 55px));
 }
 
 .center-controls media-seek-backward-button,
@@ -206,7 +206,7 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   --media-control-hover-background: transparent;
   padding: 0;
   margin: 0 2%;
-  width: max(33px, min(8%, 48px));
+  width: max(33px, min(8%, 40px));
 }
 
 media-loading-indicator {
