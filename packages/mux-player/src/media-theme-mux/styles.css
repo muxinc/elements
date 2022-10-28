@@ -105,6 +105,18 @@ media-controller {
   --media-range-padding-left: var(--mux-time-range-padding, 10px);
   --media-range-padding-right: var(--mux-time-range-padding, 10px);
   --media-range-padding: 0;
+  z-index: 10;
+  height: 10px;
+  bottom: -3px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    transparent 3px,
+    var(--media-control-background) 3px,
+    var(--media-control-background) 7px,
+    transparent 7px,
+    transparent
+  );
   width: 100%;
 }
 
