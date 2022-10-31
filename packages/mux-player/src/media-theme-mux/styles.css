@@ -154,7 +154,11 @@ media-control-bar :is(media-text-display, mxp-time-display):first-child {
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
-media-control-bar[slot='top-chrome']::before {
+media-control-bar[slot='top-chrome'] {
+  min-height: 42px;
+}
+
+:host([title]) media-control-bar[slot='top-chrome']::before {
   content: '';
   position: absolute;
   width: 100%;
