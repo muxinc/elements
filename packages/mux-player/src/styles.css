@@ -15,7 +15,10 @@ a {
 }
 
 [audio] [part~='seek-live'] {
-  margin-left: 5px;
+  margin: 0;
+  height: 42px;
+  border-radius: 0;
+  background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
 [part~='seek-live'] {
@@ -26,7 +29,7 @@ a {
   box-sizing: border-box;
   padding: 4px 6px;
   border-radius: 12px;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(20, 20, 30, 0.7);
   font-size: 0.75rem;
   line-height: 1;
   color: #fff;
