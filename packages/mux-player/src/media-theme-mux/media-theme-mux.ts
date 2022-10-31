@@ -400,7 +400,6 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
-    <div class="padding-2"></div>
   </media-control-bar>
 `;
 
@@ -427,7 +426,6 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
     ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
-    <div class="padding-2"></div>
   </media-control-bar>
 `;
 
@@ -501,7 +499,6 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
-    <div class="padding-2"></div>
   </media-control-bar>
 `;
 
@@ -527,6 +524,5 @@ export const DvrChromeLarge = (props: ThemeMuxTemplateProps) => html`
     ${MediaCastButton(props)}
     ${MediaPipButton(props)}
     ${MediaFullscreenButton(props)}
-    <div class="padding-2"></div>
   </media-control-bar>
 `;

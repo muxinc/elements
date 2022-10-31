@@ -148,7 +148,8 @@ media-control-bar :is(media-text-display, mxp-time-display):first-child {
 
 /* Add a small space on the right to have the play button and
  * fullscreen button aligned in relation to the progress bar. */
-.size-large .padding-2 {
+media-control-bar:not([slot])::after {
+  content: '';
   width: 2px;
   height: 100%;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
