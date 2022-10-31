@@ -380,7 +380,9 @@ export const VodChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
 
 // prettier-ignore
 export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
-  ${props.title ? html`<media-control-bar slot="top-chrome">${TitleDisplay(props)}</media-control-bar>` : html``}
+  <media-control-bar slot="top-chrome">
+    ${props.title ? TitleDisplay(props) : html``}
+  </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
     ${MediaSeekBackwardButton(props)}
     ${MediaPlayButton(props)}
@@ -404,7 +406,9 @@ export const VodChromeSmall = (props: ThemeMuxTemplateProps) => html`
 
 // prettier-ignore
 export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
-  ${props.title ? html`<media-control-bar slot="top-chrome">${TitleDisplay(props)}</media-control-bar>` : html``}
+  <media-control-bar slot="top-chrome">
+    ${props.title ? TitleDisplay(props) : html``}
+  </media-control-bar>
   <div slot="centered-chrome" class="center-controls">
     ${MediaPlayButton(props)}
   </div>
