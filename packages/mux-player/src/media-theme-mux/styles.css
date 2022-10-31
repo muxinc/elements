@@ -142,7 +142,6 @@ media-control-bar :is(media-text-display, mxp-time-display):first-child {
 
 .spacer {
   flex-grow: 1;
-  height: 100%;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
