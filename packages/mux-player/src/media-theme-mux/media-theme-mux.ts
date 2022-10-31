@@ -444,7 +444,6 @@ export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
     ${MediaPlayButton(props)}
   </div>
   <media-control-bar>
-    ${MediaPlayButton(props)}
     ${MediaMuteButton(props)}
     ${MediaVolumeRange(props)}
     <div class="spacer"></div>
@@ -494,7 +493,6 @@ export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
   </div>
   ${MediaTimeRange(props)}
   <media-control-bar>
-    ${MediaPlayButton(props)}
     ${MediaMuteButton(props)}
     ${MediaVolumeRange(props)}
     <div class="spacer"></div>
