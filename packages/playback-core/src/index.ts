@@ -55,8 +55,8 @@ const toPlaybackIdFromSrc = (src: string | undefined) => {
 
 const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
   if (props?.metadata?.video_id) return props.metadata.video_id;
-  if (!isMuxVideoSrc(props)) return generateUUID();
-  return toPlaybackIdFromParameterized(props.playbackId) ?? toPlaybackIdFromSrc(props.src) ?? generateUUID();
+  if (!isMuxVideoSrc(props)) return props.src;
+  return toPlaybackIdFromParameterized(props.playbackId) ?? toPlaybackIdFromSrc(props.src) ?? props.src;
 };
 
 export const getError = (mediaEl: HTMLMediaElement) => {
