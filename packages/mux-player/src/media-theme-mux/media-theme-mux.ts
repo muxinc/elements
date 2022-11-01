@@ -430,7 +430,18 @@ export const VodChromeLarge = (props: ThemeMuxTemplateProps) => html`
 `;
 
 // prettier-ignore
-export const LiveChromeExtraSmall = VodChromeExtraSmall;
+export const LiveChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome">
+    <slot name="seek-live"></slot>
+  </media-control-bar>
+  <media-control-bar>
+    ${MediaPlayButton(props)}
+    ${MediaMuteButton(props)}
+    <div class="spacer"></div>
+    ${MediaCaptionsButton(props)}
+    ${MediaFullscreenButton(props)}
+  </media-control-bar>
+`;
 
 // prettier-ignore
 export const LiveChromeSmall = (props: ThemeMuxTemplateProps) => html`
@@ -476,7 +487,19 @@ export const LiveChromeLarge = (props: ThemeMuxTemplateProps) => html`
 `;
 
 // prettier-ignore
-export const DvrChromeExtraSmall = VodChromeExtraSmall;
+export const DvrChromeExtraSmall = (props: ThemeMuxTemplateProps) => html`
+  <media-control-bar slot="top-chrome">
+    <slot name="seek-live"></slot>
+  </media-control-bar>
+  ${MediaTimeRange(props)}
+  <media-control-bar>
+    ${MediaPlayButton(props)}
+    ${MediaMuteButton(props)}
+    <div class="spacer"></div>
+    ${MediaCaptionsButton(props)}
+    ${MediaFullscreenButton(props)}
+  </media-control-bar>
+`;
 
 // prettier-ignore
 export const DvrChromeSmall = (props: ThemeMuxTemplateProps) => html`
