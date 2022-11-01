@@ -6,6 +6,11 @@
     "placeholder": "data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAASACADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAQFAwEC/8QAHRAAAgICAwEAAAAAAAAAAAAAAAECAwQhERIxIv/EABUBAQEAAAAAAAAAAAAAAAAAAAME/8QAGhEAAgMBAQAAAAAAAAAAAAAAAAEDETEyUf/aAAwDAQACEQMRAD8Ak9UjnHYXqtlJ/Q1FrgvT8Imq0xsxFNbJ+TSqXop22tLRMyZuctgy4NHY7E1XgAKAzxZ4I3gAc3Isen//2Q=="
   },
   {
+    "playback-id": "VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA",
+    "description": "Landscape VOD (White Background)",
+    "stream-type": "on-demand"
+  },
+  {
     "playback-id": "gZh02tKCI015W6k2XdYSh4srGnksYvsoT1uHsYOlv4Blo",
     "description": "Landscape VOD (No Audio)",
     "stream-type": "on-demand",

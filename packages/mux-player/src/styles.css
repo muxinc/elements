@@ -13,21 +13,36 @@ a {
   font-size: 0.9em;
   text-decoration: underline;
 }
-[part~='seek-live'] {
-  height: 44px;
+
+[audio] [part~='seek-live'] {
+  margin: 0;
+  height: 42px;
+  border-radius: 0;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
-  color: white;
+}
+
+[part~='seek-live'] {
+  margin-left: 10px;
+  margin-right: 5px;
+  align-self: center;
+  position: relative;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  border-radius: 12px;
+  background-color: rgba(20, 20, 30, 0.7);
+  font-size: 0.75rem;
+  line-height: 1;
+  color: #fff;
   border: none;
   cursor: pointer;
 }
 
-[part~='seek-live']::before {
-  content: '● ';
-  color: rgb(118, 118, 118);
-  padding-right: 5px;
+[part~='seek-live'] svg {
+  width: 8px;
+  fill: rgb(118, 118, 118);
 }
-[part~='seek-live'][in-live-window]::before {
-  color: #fb3c4d;
+[part~='seek-live'][in-live-window] svg {
+  fill: #fb3c4d;
 }
 
 [part~='seek-live'][disabled] {

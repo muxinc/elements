@@ -98,49 +98,79 @@ media-controller {
 
 :host media-time-range {
   color: var(--_primary-color);
+  --media-range-thumb-opacity: 0;
 }
 
 :host(:not([audio])) media-time-range {
   --media-range-padding-left: var(--mux-time-range-padding, 10px);
   --media-range-padding-right: var(--mux-time-range-padding, 10px);
-  width: 100%;
+  --media-range-padding: 0;
   z-index: 10;
   height: 10px;
-  bottom: -2px;
+  bottom: -3px;
   background: linear-gradient(
     180deg,
     transparent,
     transparent 3px,
-    var(--media-control-background) 3px,
-    var(--media-control-background) 8px,
-    transparent 8px,
+    var(--media-control-background, rgba(20, 20, 30, 0.7)) 3px,
+    var(--media-control-background, rgba(20, 20, 30, 0.7)) 7px,
+    transparent 7px,
     transparent
   );
+  width: 100%;
+}
+
+media-control-bar {
+  --media-control-padding: 9px 7px;
+}
+
+.size-small media-control-bar {
+  --media-control-padding: 9px 5px;
+}
+
+.size-extra-small media-control-bar {
+  --media-control-padding: 4px 3px;
 }
 
 media-control-bar :is([role='button'], [role='switch'], button) {
   line-height: 0;
-  --media-control-padding: 10px 7px;
 }
 
-.size-extra-small media-control-bar [role='button'],
-.size-extra-small media-control-bar [role='switch'] {
-  height: auto;
-  padding: 4.4% 3.2%;
+media-control-bar :is(media-text-display, mxp-time-display):first-child {
+  --media-control-padding: 9px 5px 9px 10px;
 }
 
 .spacer {
   flex-grow: 1;
-  height: 100%;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
 }
 
 /* Add a small space on the right to have the play button and
  * fullscreen button aligned in relation to the progress bar. */
-.size-large .padding-2 {
+media-control-bar:not([slot])::after {
+  content: '';
   width: 2px;
   height: 100%;
   background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
+}
+
+media-control-bar[slot='top-chrome'] {
+  min-height: 42px;
+  pointer-events: none;
+}
+
+:host([title]) media-control-bar[slot='top-chrome']::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  padding-bottom: min(160px, 25%);
+  background: linear-gradient(rgb(0 0 0 / 0.4), transparent);
+}
+
+media-control-bar[slot='top-chrome'] > * {
+  --media-control-background: transparent;
+  --media-control-hover-background: transparent;
+  position: relative;
 }
 
 media-controller::part(vertical-layer) {
@@ -148,7 +178,7 @@ media-controller::part(vertical-layer) {
 }
 
 media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
-  background-color: var(--controls-backdrop-color, var(--controls, rgba(0, 0, 0, 0.6)));
+  background-color: var(--controls-backdrop-color, var(--controls, transparent));
   transition: background-color 0.25s;
 }
 
@@ -161,13 +191,18 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   flex-flow: row;
   align-items: center;
   justify-content: center;
+  filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
+  paint-order: stroke;
+  stroke: rgba(102, 102, 102, 1);
+  stroke-width: 0.3px;
+  text-shadow: 0 0 2px rgb(0 0 0 / 0.25), 0 0 6px rgb(0 0 0 / 0.25);
 }
 
 .center-controls media-play-button {
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
-  width: max(30px, min(11%, 100px));
+  width: max(43px, min(10%, 55px));
 }
 
 .center-controls media-seek-backward-button,
@@ -175,8 +210,16 @@ media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer)
   --media-control-background: transparent;
   --media-control-hover-background: transparent;
   padding: 0;
-  margin: 0 4%;
-  width: min(7%, 70px);
+  margin: 0 2%;
+  width: max(33px, min(8%, 40px));
+}
+
+media-control-bar:not([slot]) media-seek-backward-button {
+  padding-right: 5px;
+}
+
+media-control-bar:not([slot]) media-seek-forward-button {
+  padding-left: 5px;
 }
 
 media-loading-indicator {
@@ -218,6 +261,7 @@ media-time-display {
 
 .title-display {
   font-size: 16px;
+  text-shadow: 0 0 2px rgb(0 0 0 / 0.6);
 }
 
 :host([audio]) .title-display {
