@@ -135,7 +135,11 @@ export default class MediaThemeMux extends MediaTheme {
             src="${props.poster ?? false}"
             placeholder-src="${props.placeholder ?? false}"
           ></media-poster-image>
-          <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+          <media-loading-indicator
+            slot="centered-chrome"
+            no-auto-hide
+            part="media-loading-indicator"
+          ></media-loading-indicator>
           ${ChromeRenderer(props)}
           <slot></slot>
         </media-controller>
