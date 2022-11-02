@@ -621,7 +621,7 @@ class MuxPlayerElement extends VideoApiElement {
     } else if (CmcdTypeValues.includes(value)) {
       this.setAttribute(MuxVideoAttributes.PREFER_CMCD, value);
     } else {
-      console.warn(`Invalid value for preferCmcd. Must be one of ${CmcdTypeValues.join()}`);
+      logger.warn(`Invalid value for preferCmcd. Must be one of ${CmcdTypeValues.join()}`);
     }
   }
 
