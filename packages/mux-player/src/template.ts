@@ -45,7 +45,7 @@ export const content = (props: MuxTemplateProps) => html`
     hotkeys="${props.hotKeys ?? false}"
     poster="${props.poster === '' ? false : props.poster ?? false}"
     placeholder="${props.placeholder ?? false}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, seek-live, play, button, seek-backward, seek-forward, dialog, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"
@@ -116,6 +116,7 @@ export const content = (props: MuxTemplateProps) => html`
       open="${props.isDialogOpen ?? false}"
       onclose="${props.onCloseErrorDialog}"
       oninitfocus="${props.onInitFocusDialog}"
+      part="dialog"
     >
       ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : html``}
       <p>
