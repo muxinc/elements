@@ -72,16 +72,16 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
 
-  protected __core?: PlaybackCore;
-  protected __playerInitTime: number;
-  protected __metadata: Readonly<Metadata> = {};
-  protected __playerSoftwareVersion?: string;
-  protected __playerSoftwareName?: string;
-  protected __errorTranslator?: (errorEvent: any) => any;
+  #core?: PlaybackCore;
+  #playerInitTime: number;
+  #metadata: Readonly<Metadata> = {};
+  #playerSoftwareVersion?: string;
+  #playerSoftwareName?: string;
+  #errorTranslator?: (errorEvent: any) => any;
 
   constructor() {
     super();
-    this.__playerInitTime = generatePlayerInitTime();
+    this.#playerInitTime = generatePlayerInitTime();
   }
 
   get experimentalCmcd() {
@@ -113,28 +113,28 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get playerInitTime() {
-    return this.__playerInitTime;
+    return this.#playerInitTime;
   }
 
   get playerSoftwareName() {
-    return this.__playerSoftwareName ?? playerSoftwareName;
+    return this.#playerSoftwareName ?? playerSoftwareName;
   }
 
   set playerSoftwareName(value: string | undefined) {
-    this.__playerSoftwareName = value;
+    this.#playerSoftwareName = value;
   }
 
   get playerSoftwareVersion() {
-    return this.__playerSoftwareVersion ?? playerSoftwareVersion;
+    return this.#playerSoftwareVersion ?? playerSoftwareVersion;
   }
 
   set playerSoftwareVersion(value: string | undefined) {
-    this.__playerSoftwareVersion = value;
+    this.#playerSoftwareVersion = value;
   }
 
   // Keeping this named "_hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
   get _hls(): PlaybackEngine | undefined {
-    return this.__core?.engine;
+    return this.#core?.engine;
   }
 
   get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
@@ -147,11 +147,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get errorTranslator(): ((errorEvent: any) => any) | undefined {
-    return this.__errorTranslator;
+    return this.#errorTranslator;
   }
 
   set errorTranslator(value: ((errorEvent: any) => any) | undefined) {
-    this.__errorTranslator = value;
+    this.#errorTranslator = value;
   }
 
   get src() {
@@ -377,7 +377,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     const video_title = this.getAttribute(Attributes.METADATA_VIDEO_TITLE);
     const viewer_user_id = this.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
     return {
-      ...this.__metadata,
+      ...this.#metadata,
       ...(video_id != null ? { video_id } : {}),
       ...(video_title != null ? { video_title } : {}),
       ...(viewer_user_id != null ? { viewer_user_id } : {}),
@@ -385,19 +385,19 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   set metadata(val: Readonly<Metadata> | undefined) {
-    this.__metadata = val ?? {};
+    this.#metadata = val ?? {};
     if (!!this.mux) {
-      this.mux.emit('hb', this.__metadata);
+      this.mux.emit('hb', this.#metadata);
     }
   }
 
   load() {
-    this.__core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__core);
+    this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
   }
 
   unload() {
-    teardown(this.nativeEl, this.__core);
-    this.__core = undefined;
+    teardown(this.nativeEl, this.#core);
+    this.#core = undefined;
   }
 
   // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
@@ -440,13 +440,13 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           break;
         }
         /** In case newValue is an empty string or null, use this.autoplay which translates to booleans (WL) */
-        this.__core?.setAutoplay(this.autoplay);
+        this.#core?.setAutoplay(this.autoplay);
         break;
       case 'preload':
         if (newValue === oldValue) {
           break;
         }
-        this.__core?.setPreload(newValue as HTMLMediaElement['preload']);
+        this.#core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
