@@ -33,5 +33,5 @@ jobs:
       - uses: actions/github-script@v6.3.3
         with:
           script: |
-            const createSummary = require('.github/workflows/integration-tests/createSummary.js')
+            const createSummary = require('.github/external-testing/createSummary.js')
             await createSummary({core}, ${{toJSON(github.event.client_payload.summary)}})
