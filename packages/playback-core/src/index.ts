@@ -11,7 +11,6 @@ import {
   ExtensionMimeTypeMap,
   CmcdTypes,
   type ValueOf,
-  type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
 } from './types';
@@ -63,34 +62,10 @@ export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
 };
 
-export const initialize = (
-  props: Partial<MuxMediaPropsInternal>,
-  mediaEl?: HTMLMediaElement | null,
-  core?: PlaybackCore
-) => {
+export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
-  // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
-  const { metadata = {} } = props;
-  const { view_session_id = generateUUID() } = metadata;
-  const video_id = toVideoId(props);
-  metadata.view_session_id = view_session_id;
-  metadata.video_id = video_id;
-  props.metadata = metadata;
-
-  muxMediaState.set(mediaEl as HTMLMediaElement, {});
-  const nextHlsInstance = setupHls(props, mediaEl);
-  setupMux(props, mediaEl, nextHlsInstance);
-  loadMedia(props, mediaEl, nextHlsInstance);
-
-  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
-  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
-
-  return {
-    engine: nextHlsInstance,
-    setAutoplay,
-    setPreload,
-  };
+  return new PlaybackCore(props, mediaEl);
 };
 
 export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore) => {
@@ -114,6 +89,45 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
   }
 };
 
+export class PlaybackCore {
+  #props;
+  #mediaEl;
+  engine?: Hls;
+  setAutoplay;
+  setPreload;
+
+  constructor(props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement) {
+    this.#props = props;
+    this.#mediaEl = mediaEl;
+
+    // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
+    const { metadata = {}, autoload = true } = props;
+    const { view_session_id = generateUUID() } = metadata;
+    const video_id = toVideoId(props);
+    metadata.view_session_id = view_session_id;
+    metadata.video_id = video_id;
+    props.metadata = metadata;
+
+    muxMediaState.set(mediaEl as HTMLMediaElement, {});
+
+    this.engine = setupHls(props, mediaEl);
+    setupMux(props, mediaEl, this.engine);
+
+    this.setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, this.engine);
+    this.setPreload = setupPreload(props as Pick<MuxMediaProps, 'src'>, mediaEl, this.engine);
+
+    if (autoload) this.loadMedia();
+  }
+
+  teardown() {
+    teardown(this.#mediaEl, this);
+  }
+
+  loadMedia() {
+    loadMedia(this.#props, this.#mediaEl, this);
+  }
+}
+
 /**
  * Returns true if we should use native playback. e.g. progressive files (mp3, mp4, webm) or native HLS on Safari.
  * We should use native playback for hls media sources if we
@@ -123,13 +137,13 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
  */
 function useNative(
   props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'type'>>,
-  mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
+  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) {
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   if (!hlsType) return true;
 
-  const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
+  const canUseNative = !type || (mediaEl.canPlayType(type) ?? true);
   const { preferPlayback } = props;
 
   const preferMse = preferPlayback === PlaybackTypes.MSE;
@@ -146,7 +160,7 @@ export const setupHls = (
       'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'experimentalCmcd' | 'preferCmcd'
     >
   >,
-  mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
+  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) => {
   const { debug, streamType, startTime: startPosition = -1, metadata, experimentalCmcd, preferCmcd } = props;
   const type = getType(props);
@@ -239,13 +253,13 @@ export const setupMux = (
       | 'disableCookies'
     >
   >,
-  mediaEl?: HTMLMediaElement | null,
+  mediaEl: HTMLMediaElement,
   hlsjs?: Hls
 ) => {
   const { envKey: env_key } = props;
   const inferredEnv = isMuxVideoSrc(props);
 
-  if ((env_key || inferredEnv) && mediaEl) {
+  if (env_key || inferredEnv) {
     const {
       playerInitTime: player_init_time,
       playerSoftwareName: player_software_name,
@@ -297,31 +311,17 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
-  mediaEl?: HTMLMediaElement | null,
-  hls?: Pick<
-    Hls,
-    | 'config'
-    | 'on'
-    | 'once'
-    | 'startLoad'
-    | 'stopLoad'
-    | 'recoverMediaError'
-    | 'destroy'
-    | 'loadSource'
-    | 'attachMedia'
-    | 'liveSyncPosition'
-    | 'subtitleTracks'
-    | 'subtitleTrack'
-  >
-) => {
-  if (!mediaEl) {
-    console.warn('attempting to load media before mediaEl exists');
-    return;
-  }
+  props: Partial<
+    Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay' | 'preload'>
+  >,
+  mediaEl: HTMLMediaElement,
+  core: PlaybackCore
+): void => {
+  const hls = core.engine;
   const shouldUseNative = useNative(props, mediaEl);
-  const { src } = props;
-  if (mediaEl && shouldUseNative) {
+  const { src, autoplay, preload } = props;
+
+  if (shouldUseNative) {
     if (typeof src === 'string') {
       mediaEl.setAttribute('src', src);
       if (props.startTime) {
@@ -381,6 +381,9 @@ export const loadMedia = (
       "It looks like the video you're trying to play will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
     );
   }
+
+  core.setAutoplay(autoplay);
+  core.setPreload(preload);
 };
 
 function seekInSeekableRange(event: Event) {

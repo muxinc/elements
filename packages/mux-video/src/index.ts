@@ -7,7 +7,6 @@ import {
   PlaybackTypes,
   ValueOf,
   toMuxVideoURL,
-  teardown,
   Metadata,
   MediaError,
   getError,
@@ -72,7 +71,9 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
 
+  autoload = false;
   #core?: PlaybackCore;
+  #loadRequested?: Promise<void> | null;
   #playerInitTime: number;
   #metadata: Readonly<Metadata> = {};
   #playerSoftwareVersion?: string;
@@ -391,12 +392,22 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  load() {
+  async load() {
+    // Reset Hls.js and Mux data synchronously so all needed props are updated but
+    // wait 1 tick w/ loading the source to prevent multiple requests and cancels.
+    console.time('init core');
     this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
+    console.timeEnd('init core');
+
+    if (this.#loadRequested || !this.src) return;
+    await (this.#loadRequested = Promise.resolve());
+    this.#loadRequested = null;
+
+    this.#core.loadMedia();
   }
 
   unload() {
-    teardown(this.nativeEl, this.#core);
+    this.#core?.teardown();
     this.#core = undefined;
   }
 
@@ -415,22 +426,28 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     switch (attrName) {
+      case Attributes.ENV_KEY:
+      case Attributes.STREAM_TYPE:
+      case Attributes.DEBUG:
+      case Attributes.CUSTOM_DOMAIN:
+      case Attributes.BEACON_COLLECTION_DOMAIN:
+      case Attributes.EXPERIMENTAL_CMCD:
+      case Attributes.PREFER_CMCD:
+      case Attributes.DISABLE_COOKIES:
+        this.load();
+        break;
       case Attributes.PLAYER_SOFTWARE_NAME:
         this.playerSoftwareName = newValue ?? undefined;
+        this.load();
         break;
       case Attributes.PLAYER_SOFTWARE_VERSION:
         this.playerSoftwareVersion = newValue ?? undefined;
+        this.load();
         break;
       case 'src': {
-        const hadSrc = !!oldValue;
-        const hasSrc = !!newValue;
-        if (!hadSrc && hasSrc) {
-          this.load();
-        } else if (hadSrc && !hasSrc) {
+        if (!newValue) {
           this.unload();
-          /** @TODO Test this thoroughly (async?) and confirm unload() necessary (CJP) */
-        } else if (hadSrc && hasSrc) {
-          this.unload();
+        } else {
           this.load();
         }
         break;
@@ -452,19 +469,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue ?? undefined, { domain: this.customDomain }) as string;
         break;
-      case Attributes.DEBUG: {
-        const debug = this.debug;
-        if (!!this.mux) {
-          /** @TODO Link to docs for a more detailed discussion (CJP) */
-          console.info(
-            'Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.'
-          );
-        }
-        if (!!this._hls) {
-          this._hls.config.debug = debug;
-        }
-        break;
-      }
       case Attributes.METADATA_URL:
         if (newValue) {
           fetch(newValue)

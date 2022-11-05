@@ -12,12 +12,6 @@ export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Options['data']>;
 export type PlaybackEngine = Hls;
 
-export type PlaybackCore = {
-  engine?: PlaybackEngine;
-  setAutoplay: (autoplay?: Autoplay) => void;
-  setPreload: (preload?: HTMLMediaElement['preload']) => void;
-};
-
 // TODO add INVIEW_MUTED, INVIEW_ANY
 export type AutoplayTypes = {
   ANY: 'any';
@@ -133,6 +127,7 @@ export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'prel
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
+  autoload: boolean;
   playerSoftwareName: Options['data']['player_software_name'];
   playerSoftwareVersion: Options['data']['player_software_version'];
 };
