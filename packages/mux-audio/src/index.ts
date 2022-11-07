@@ -297,9 +297,15 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
         this.load();
         break;
       case 'src': {
-        if (!newValue) {
+        const hadSrc = !!oldValue;
+        const hasSrc = !!newValue;
+        if (!hadSrc && hasSrc) {
+          this.load();
+        } else if (hadSrc && !hasSrc) {
           this.unload();
-        } else {
+          /** @TODO Test this thoroughly (async?) and confirm unload() necessary (CJP) */
+        } else if (hadSrc && hasSrc) {
+          this.unload();
           this.load();
         }
         break;
