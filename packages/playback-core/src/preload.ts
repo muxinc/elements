@@ -2,12 +2,10 @@ import { addEventListenerWithTeardown } from './util';
 import { PlaybackEngine } from './types';
 
 export const setupPreload = (
-  { src }: Partial<HTMLMediaElement>,
-  mediaEl?: HTMLMediaElement | null,
+  { preload, src }: Partial<HTMLMediaElement>,
+  mediaEl: HTMLMediaElement,
   hls?: PlaybackEngine
 ) => {
-  if (!mediaEl) return () => undefined;
-
   const updatePreload = (val?: HTMLMediaElement['preload']) => {
     if (val != null && ['', 'none', 'metadata', 'auto'].includes(val)) {
       mediaEl.setAttribute('preload', val);
@@ -18,6 +16,7 @@ export const setupPreload = (
 
   // handle native without hls.js (MSE)
   if (!hls) {
+    updatePreload(preload);
     return updatePreload;
   }
 
@@ -68,6 +67,8 @@ export const setupPreload = (
     },
     { once: true }
   );
+
+  updateHlsPreload(preload);
 
   return updateHlsPreload;
 };

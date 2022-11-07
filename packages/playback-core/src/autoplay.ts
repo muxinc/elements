@@ -18,11 +18,9 @@ export const isAutoplayValue = (value: unknown): value is Autoplay => {
 // the value of the autoplay attribute and it will react appropriately.
 export const setupAutoplay = (
   { autoplay: maybeAutoplay }: { autoplay?: Autoplay },
-  mediaEl?: HTMLMediaElement | null,
+  mediaEl: HTMLMediaElement,
   hls?: PlaybackEngine
 ) => {
-  if (!mediaEl) return () => undefined;
-
   let hasPlayed = false;
   let isLive = false;
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;

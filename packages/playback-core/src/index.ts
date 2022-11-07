@@ -11,6 +11,7 @@ import {
   ExtensionMimeTypeMap,
   CmcdTypes,
   type ValueOf,
+  type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
 } from './types';
@@ -65,7 +66,27 @@ export const getError = (mediaEl: HTMLMediaElement) => {
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
-  return new PlaybackCore(props, mediaEl);
+  // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
+  const { metadata = {} } = props;
+  const { view_session_id = generateUUID() } = metadata;
+  const video_id = toVideoId(props);
+  metadata.view_session_id = view_session_id;
+  metadata.video_id = video_id;
+  props.metadata = metadata;
+
+  muxMediaState.set(mediaEl as HTMLMediaElement, {});
+  const nextHlsInstance = setupHls(props, mediaEl);
+  setupMux(props, mediaEl, nextHlsInstance);
+  loadMedia(props, mediaEl, nextHlsInstance);
+
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+
+  return {
+    engine: nextHlsInstance,
+    setAutoplay,
+    setPreload,
+  };
 };
 
 export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore) => {
@@ -88,45 +109,6 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
     mediaEl.dispatchEvent(new Event('teardown'));
   }
 };
-
-export class PlaybackCore {
-  #props;
-  #mediaEl;
-  engine?: Hls;
-  setAutoplay;
-  setPreload;
-
-  constructor(props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement) {
-    this.#props = props;
-    this.#mediaEl = mediaEl;
-
-    // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
-    const { metadata = {}, autoload = true } = props;
-    const { view_session_id = generateUUID() } = metadata;
-    const video_id = toVideoId(props);
-    metadata.view_session_id = view_session_id;
-    metadata.video_id = video_id;
-    props.metadata = metadata;
-
-    muxMediaState.set(mediaEl as HTMLMediaElement, {});
-
-    this.engine = setupHls(props, mediaEl);
-    setupMux(props, mediaEl, this.engine);
-
-    this.setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, this.engine);
-    this.setPreload = setupPreload(props as Pick<MuxMediaProps, 'src'>, mediaEl, this.engine);
-
-    if (autoload) this.loadMedia();
-  }
-
-  teardown() {
-    teardown(this.#mediaEl, this);
-  }
-
-  loadMedia() {
-    loadMedia(this.#props, this.#mediaEl, this);
-  }
-}
 
 /**
  * Returns true if we should use native playback. e.g. progressive files (mp3, mp4, webm) or native HLS on Safari.
@@ -311,17 +293,27 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<
-    Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay' | 'preload'>
-  >,
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
   mediaEl: HTMLMediaElement,
-  core: PlaybackCore
-): void => {
-  const hls = core.engine;
+  hls?: Pick<
+    Hls,
+    | 'config'
+    | 'on'
+    | 'once'
+    | 'startLoad'
+    | 'stopLoad'
+    | 'recoverMediaError'
+    | 'destroy'
+    | 'loadSource'
+    | 'attachMedia'
+    | 'liveSyncPosition'
+    | 'subtitleTracks'
+    | 'subtitleTrack'
+  >
+) => {
   const shouldUseNative = useNative(props, mediaEl);
-  const { src, autoplay, preload } = props;
-
-  if (shouldUseNative) {
+  const { src } = props;
+  if (mediaEl && shouldUseNative) {
     if (typeof src === 'string') {
       mediaEl.setAttribute('src', src);
       if (props.startTime) {
@@ -381,9 +373,6 @@ export const loadMedia = (
       "It looks like the video you're trying to play will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
     );
   }
-
-  core.setAutoplay(autoplay);
-  core.setPreload(preload);
 };
 
 function seekInSeekableRange(event: Event) {
