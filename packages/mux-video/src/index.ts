@@ -392,11 +392,14 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  async load() {
-    if (this.#loadRequested || !this.src) return;
+  async #requestLoad() {
+    if (this.#loadRequested) return;
     await (this.#loadRequested = Promise.resolve());
     this.#loadRequested = null;
+    this.load();
+  }
 
+  load() {
     this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
   }
 
@@ -430,13 +433,13 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
-          this.load();
+          this.#requestLoad();
         } else if (hadSrc && !hasSrc) {
           this.unload();
           /** @TODO Test this thoroughly (async?) and confirm unload() necessary (CJP) */
         } else if (hadSrc && hasSrc) {
           this.unload();
-          this.load();
+          this.#requestLoad();
         }
         break;
       }
