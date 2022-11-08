@@ -63,11 +63,7 @@ export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
 };
 
-export const initialize = (
-  props: Partial<MuxMediaPropsInternal>,
-  mediaEl?: HTMLMediaElement | null,
-  core?: PlaybackCore
-) => {
+export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
   // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
@@ -123,13 +119,13 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
  */
 function useNative(
   props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'type'>>,
-  mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
+  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) {
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   if (!hlsType) return true;
 
-  const canUseNative = !type || (mediaEl?.canPlayType(type) ?? true);
+  const canUseNative = !type || (mediaEl.canPlayType(type) ?? true);
   const { preferPlayback } = props;
 
   const preferMse = preferPlayback === PlaybackTypes.MSE;
@@ -146,7 +142,7 @@ export const setupHls = (
       'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'experimentalCmcd' | 'preferCmcd'
     >
   >,
-  mediaEl?: Pick<HTMLMediaElement, 'canPlayType'> | null
+  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) => {
   const { debug, streamType, startTime: startPosition = -1, metadata, experimentalCmcd, preferCmcd } = props;
   const type = getType(props);
@@ -239,13 +235,13 @@ export const setupMux = (
       | 'disableCookies'
     >
   >,
-  mediaEl?: HTMLMediaElement | null,
+  mediaEl: HTMLMediaElement,
   hlsjs?: Hls
 ) => {
   const { envKey: env_key } = props;
   const inferredEnv = isMuxVideoSrc(props);
 
-  if ((env_key || inferredEnv) && mediaEl) {
+  if (env_key || inferredEnv) {
     const {
       playerInitTime: player_init_time,
       playerSoftwareName: player_software_name,
@@ -298,7 +294,7 @@ export const setupMux = (
 
 export const loadMedia = (
   props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
-  mediaEl?: HTMLMediaElement | null,
+  mediaEl: HTMLMediaElement,
   hls?: Pick<
     Hls,
     | 'config'
@@ -315,10 +311,6 @@ export const loadMedia = (
     | 'subtitleTrack'
   >
 ) => {
-  if (!mediaEl) {
-    console.warn('attempting to load media before mediaEl exists');
-    return;
-  }
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
   if (mediaEl && shouldUseNative) {

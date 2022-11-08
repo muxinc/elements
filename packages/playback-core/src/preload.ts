@@ -3,11 +3,9 @@ import { PlaybackEngine } from './types';
 
 export const setupPreload = (
   { preload, src }: Partial<HTMLMediaElement>,
-  mediaEl?: HTMLMediaElement | null,
+  mediaEl: HTMLMediaElement,
   hls?: PlaybackEngine
 ) => {
-  if (!mediaEl) return () => undefined;
-
   const updatePreload = (val?: HTMLMediaElement['preload']) => {
     if (val != null && ['', 'none', 'metadata', 'auto'].includes(val)) {
       mediaEl.setAttribute('preload', val);

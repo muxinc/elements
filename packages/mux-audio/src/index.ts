@@ -1,13 +1,13 @@
 import { globalThis } from 'shared-polyfills';
 import {
   initialize,
+  teardown,
   generatePlayerInitTime,
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
   ValueOf,
   toMuxVideoURL,
-  teardown,
   Metadata,
   MediaError,
 } from '@mux/playback-core';
@@ -59,17 +59,18 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     return [...AttributeNameValues, ...(CustomAudioElement.observedAttributes ?? [])];
   }
 
-  protected __core?: PlaybackCore;
-  protected __playerInitTime: number;
-  protected __metadata: Readonly<Metadata> = {};
+  #core?: PlaybackCore;
+  #loadRequested?: Promise<void> | null;
+  #playerInitTime: number;
+  #metadata: Readonly<Metadata> = {};
 
   constructor() {
     super();
-    this.__playerInitTime = generatePlayerInitTime();
+    this.#playerInitTime = generatePlayerInitTime();
   }
 
   get playerInitTime() {
-    return this.__playerInitTime;
+    return this.#playerInitTime;
   }
 
   get playerSoftwareName() {
@@ -82,7 +83,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
 
   // Keeping this named "_hls" since it's exposed for unadvertised "advanced usage" via getter that assumes specifically hls.js (CJP)
   get _hls(): PlaybackEngine | undefined {
-    return this.__core?.engine;
+    return this.#core?.engine;
   }
 
   get mux(): Readonly<HTMLAudioElement['mux']> | undefined {
@@ -253,27 +254,34 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   }
 
   get metadata() {
-    return this.__metadata;
+    return this.#metadata;
   }
 
   set metadata(val: Readonly<Metadata> | undefined) {
-    this.__metadata = val ?? {};
+    this.#metadata = val ?? {};
     if (!!this.mux) {
       /** @TODO Link to docs for a more detailed discussion (CJP) */
       console.info(
         'Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src.'
       );
-      this.mux.emit('hb', this.__metadata);
+      this.mux.emit('hb', this.#metadata);
     }
   }
 
+  async #requestLoad() {
+    if (this.#loadRequested) return;
+    await (this.#loadRequested = Promise.resolve());
+    this.#loadRequested = null;
+    this.load();
+  }
+
   load() {
-    this.__core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.__core);
+    this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
   }
 
   unload() {
-    teardown(this.nativeEl, this.__core);
-    this.__core = undefined;
+    teardown(this.nativeEl, this.#core);
+    this.#core = undefined;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
@@ -284,13 +292,13 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
         const hadSrc = !!oldValue;
         const hasSrc = !!newValue;
         if (!hadSrc && hasSrc) {
-          this.load();
+          this.#requestLoad();
         } else if (hadSrc && !hasSrc) {
           this.unload();
           /** @TODO Test this thoroughly (async?) and confirm unload() necessary (CJP) */
         } else if (hadSrc && hasSrc) {
           this.unload();
-          this.load();
+          this.#requestLoad();
         }
         break;
       }
@@ -299,13 +307,13 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
           break;
         }
         /** In case newValue is an empty string or null, use this.autoplay which translates to booleans (WL) */
-        this.__core?.setAutoplay(this.autoplay);
+        this.#core?.setAutoplay(this.autoplay);
         break;
       case 'preload':
         if (newValue === oldValue) {
           break;
         }
-        this.__core?.setPreload(newValue as HTMLMediaElement['preload']);
+        this.#core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
