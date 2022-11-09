@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       MUX_CDN_URL:
-        description: 'Mux Player hosted script'
+        description: 'Mux Player version'
         required: false
 
 jobs:
