@@ -4,7 +4,7 @@ on:
   repository_dispatch:
   workflow_dispatch:
     inputs:
-      MUX-CDN-URL:
+      MUX_CDN_URL:
         description: 'Mux Player hosted script'
         required: false
 
@@ -19,7 +19,7 @@ jobs:
           curl -X POST https://api.github.com/repos/muxinc/playback-testing/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u ${{ secrets.ACCESS_TOKEN }} \
-          --data '{"event_type": "Run integration tests", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "repositoryUrl": "https://api.github.com/repos/hernanr99/elements/dispatches", "players": "mux", "MUX-CDN-URL":"'${{ github.event.inputs.MUX-CDN-URL }}'"  }}'
+          --data '{"event_type": "Run integration tests", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "repositoryUrl": "https://api.github.com/repos/hernanr99/elements/dispatches", "players": "mux", "MUX_CDN_URL":"'${{ github.event.inputs.MUX_CDN_URL }}'"  }}'
           echo "Integration tests will be run on a separate repository. Once results are ready, a workflow will be executed that will display the results."
       - name: Show test results from external repository
         if: github.event.action == 'Test results from external repository'
