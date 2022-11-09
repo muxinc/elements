@@ -58,7 +58,9 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
       playerSoftwareVersion,
       autoplay: autoPlay,
     };
-    playbackCoreRef.current = initialize(propsWithState, mediaElRef.current, playbackCoreRef.current);
+    if (mediaElRef.current) {
+      playbackCoreRef.current = initialize(propsWithState, mediaElRef.current, playbackCoreRef.current);
+    }
   }, [src]);
 
   useEffect(() => {
