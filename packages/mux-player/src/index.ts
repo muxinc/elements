@@ -179,6 +179,7 @@ class MuxPlayerElement extends VideoApiElement {
     super();
 
     this.attachShadow({ mode: 'open' });
+    this.#setupCSSProperties();
 
     // If the custom element is defined before the <mux-player> HTML is parsed
     // no attributes will be available in the constructor (construction process).
@@ -227,6 +228,27 @@ class MuxPlayerElement extends VideoApiElement {
     this.#monitorLiveWindow();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
+  }
+
+  #setupCSSProperties() {
+    // registerProperty will throw if the prop has already been registered
+    // and there's currently no way to check ahead of time
+    try {
+      // @ts-ignore
+      window?.CSS?.registerProperty({
+        name: '--primary-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'white',
+      });
+      // @ts-ignore
+      window?.CSS?.registerProperty({
+        name: '--secondary-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'transparent',
+      });
+    } catch (e) {}
   }
 
   get theme(): Element | null | undefined {
