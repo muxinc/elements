@@ -115,30 +115,6 @@ export default class MediaThemeMux extends MediaTheme {
       `,
       this.shadowRoot as Node
     );
-
-    // Possibly add this functionality to the base class MediaTheme.
-    this.shadowRoot?.querySelectorAll('*').forEach((element) => {
-      if (!element.localName.includes('-')) return;
-
-      const matches = element.localName.match(/^([^-]+)-(.*)-(button|range|display)$/);
-      if (!matches) return;
-      // eslint-disable-next-line prefer-const
-      let [, , namePart, typePart] = matches;
-
-      // NOTE: Since this code/implementation will be replaced for any parts support,
-      // relying on an ad hoc solution for title display (CJP)
-      if (namePart === 'text') {
-        if (element.classList.contains('title-display')) {
-          namePart = 'title';
-        }
-      }
-      const section = element.closest('[slot="top-chrome"]')
-        ? 'top'
-        : element.closest('[slot="centered-chrome"]')
-        ? 'center'
-        : 'bottom';
-      element.setAttribute('part', `${section} ${namePart} ${typePart}`);
-    });
   }
 }
 
