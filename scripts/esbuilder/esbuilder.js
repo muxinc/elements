@@ -55,6 +55,7 @@ const options = {
   metafile: true,
   plugins: [i18nPlugin],
   loader: {
+    '.html': 'text',
     '.css': 'text',
     '.svg': 'text',
   },
