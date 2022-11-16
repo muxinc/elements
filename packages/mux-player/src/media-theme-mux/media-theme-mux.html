@@ -288,13 +288,13 @@
     ></media-poster-image>
     <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
-    <template directive="set" expression="TitleDisplay">
+    <template directive="partial" expression="TitleDisplay">
       <template directive="if" expression="title">
         <media-text-display part="top title display" class="title-display"> {{title | string}} </media-text-display>
       </template>
     </template>
 
-    <template directive="set" expression="PlayButton">
+    <template directive="partial" expression="PlayButton">
       <media-play-button
         part="{{section ?? 'bottom'}} play button"
         disabled="{{disabled}}"
@@ -311,7 +311,7 @@
       </media-play-button>
     </template>
 
-    <template directive="set" expression="SeekBackwardButton">
+    <template directive="partial" expression="SeekBackwardButton">
       <media-seek-backward-button
         seek-offset="{{backwardSeekOffset}}"
         part="{{section ?? 'bottom'}} seek-backward button"
@@ -327,7 +327,7 @@
       </media-seek-backward-button>
     </template>
 
-    <template directive="set" expression="SeekForwardButton">
+    <template directive="partial" expression="SeekForwardButton">
       <media-seek-forward-button
         seek-offset="{{forwardSeekOffset}}"
         part="{{section ?? 'bottom'}} seek-forward button"
@@ -343,7 +343,7 @@
       </media-seek-forward-button>
     </template>
 
-    <template directive="set" expression="MuteButton">
+    <template directive="partial" expression="MuteButton">
       <media-mute-button part="bottom mute button" disabled="{{disabled}}" aria-disabled="{{disabled | string}}">
         <svg aria-hidden="true" viewBox="0 0 24 24" slot="high">
           <path
@@ -368,7 +368,7 @@
       </media-mute-button>
     </template>
 
-    <template directive="set" expression="PipButton">
+    <template directive="partial" expression="PipButton">
       <media-pip-button part="bottom pip button" disabled="{{disabled}}" aria-disabled="{{disabled | string}}">
         <svg aria-hidden="true" viewBox="0 0 26 24" slot="enter">
           <path
@@ -383,7 +383,7 @@
       </media-pip-button>
     </template>
 
-    <template directive="set" expression="CaptionsButton">
+    <template directive="partial" expression="CaptionsButton">
       <media-captions-button
         default-showing="{{defaultShowingCaptions}}"
         part="bottom captions button"
@@ -403,7 +403,7 @@
       </media-captions-button>
     </template>
 
-    <template directive="set" expression="AirplayButton">
+    <template directive="partial" expression="AirplayButton">
       <media-airplay-button part="bottom airplay button" disabled="{{disabled}}" aria-disabled="{{disabled | string}}">
         <svg aria-hidden="true" viewBox="0 0 26 24" slot="airplay">
           <path
@@ -416,7 +416,7 @@
       </media-airplay-button>
     </template>
 
-    <template directive="set" expression="FullscreenButton">
+    <template directive="partial" expression="FullscreenButton">
       <media-fullscreen-button
         part="bottom fullscreen button"
         disabled="{{disabled}}"
@@ -435,7 +435,7 @@
       </media-fullscreen-button>
     </template>
 
-    <template directive="set" expression="CastButton">
+    <template directive="partial" expression="CastButton">
       <media-cast-button part="bottom cast button" disabled="{{disabled}}" aria-disabled="{{disabled | string}}">
         <svg aria-hidden="true" viewBox="0 0 26 24" slot="enter">
           <path d="M3 15.5V17c2.206 0 4 1.794 4 4h1.5A5.5 5.5 0 0 0 3 15.5Zm0 3V21h2.5A2.5 2.5 0 0 0 3 18.5Z" />
@@ -455,7 +455,7 @@
       </media-cast-button>
     </template>
 
-    <template directive="set" expression="PlaybackRateButton">
+    <template directive="partial" expression="PlaybackRateButton">
       <media-playback-rate-button
         rates="{{playbackRates}}"
         part="bottom playback-rate button"
@@ -464,7 +464,7 @@
       ></media-playback-rate-button>
     </template>
 
-    <template directive="set" expression="VolumeRange">
+    <template directive="partial" expression="VolumeRange">
       <media-volume-range
         part="bottom volume range"
         disabled="{{disabled}}"
@@ -472,7 +472,7 @@
       ></media-volume-range>
     </template>
 
-    <template directive="set" expression="TimeDisplay">
+    <template directive="partial" expression="TimeDisplay">
       <mxp-time-display
         remaining="{{defaultShowRemainingTime}}"
         part="bottom time display"
@@ -481,7 +481,7 @@
       ></mxp-time-display>
     </template>
 
-    <template directive="set" expression="TimeRange">
+    <template directive="partial" expression="TimeRange">
       <media-time-range
         part="bottom time range"
         disabled="{{disabled}}"

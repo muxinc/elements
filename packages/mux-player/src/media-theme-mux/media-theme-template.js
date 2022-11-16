@@ -49,7 +49,7 @@ const operators = {
   '??': (value, defaults) => value ?? defaults,
 };
 
-class SetDirective {
+class PartialDirective {
   constructor(template) {
     this.template = template;
   }
@@ -80,8 +80,8 @@ const mediaThemeProcessor = {
     for (const [expression, part] of parts) {
       if (part instanceof InnerTemplatePart) {
         switch (part.directive) {
-          case 'set': {
-            state[expression] = new SetDirective(part.template);
+          case 'partial': {
+            state[expression] = new PartialDirective(part.template);
             break;
           }
           case 'layout': {
@@ -119,7 +119,7 @@ const mediaThemeProcessor = {
       }
 
       if (name in state) {
-        if (value instanceof SetDirective) {
+        if (value instanceof PartialDirective) {
           const localState = { ...state };
           // Adds support for params e.g. {{PlayButton section="center"}}
           const matches = expression.matchAll(/(\w+)\s*=\s*(['"\w]*)/g);
