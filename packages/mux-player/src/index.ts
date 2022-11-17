@@ -238,8 +238,25 @@ class MuxPlayerElement extends VideoApiElement {
     return this.theme?.shadowRoot?.querySelector('media-controller');
   }
 
+  get metadataFromAttrs() {
+    const metadata: { [key: string]: string } = {};
+    this.getAttributeNames()
+      .filter((attrName) => attrName.startsWith('metadata-'))
+      .forEach((attrName) => {
+        const value = this.getAttribute(attrName);
+        if (value !== null) {
+          metadata[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
+        }
+      });
+    return metadata;
+  }
+
   connectedCallback() {
     this.#renderChrome();
+    const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
+    if (muxVideo) {
+      muxVideo.metadata = metadataFromAttrs();
+    }
     this.#initResizing();
   }
 
@@ -1098,7 +1115,7 @@ class MuxPlayerElement extends VideoApiElement {
       logger.error('underlying media element missing when trying to set metadata. metadata will not be set.');
       return;
     }
-    this.media.metadata = val;
+    this.media.metadata = { ...metadataFromAttrs, ...val };
   }
 
   /**
