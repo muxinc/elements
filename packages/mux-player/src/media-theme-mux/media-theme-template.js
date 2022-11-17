@@ -129,15 +129,22 @@ const mediaThemeProcessor = {
           value = new TemplateInstance(value.template, localState, mediaThemeProcessor);
         }
 
-        // boolean attr
-        if (
-          typeof value === 'boolean' &&
-          part instanceof AttrPart
-          // typeof part.element[part.attributeName] === 'boolean'
-        ) {
-          part.booleanValue = value;
-        } else if (typeof value === 'function' && part instanceof AttrPart) {
-          part.element[part.attributeName] = value;
+        if (part instanceof AttrPart) {
+          if (part.attributeName.startsWith('aria-')) {
+            value = String(value);
+          }
+
+          if (
+            typeof value === 'boolean'
+            // can't use this because on custom elements the props are always undefined
+            // typeof part.element[part.attributeName] === 'boolean'
+          ) {
+            part.booleanValue = value;
+          } else if (typeof value === 'function') {
+            part.element[part.attributeName] = value;
+          } else {
+            part.value = value;
+          }
         } else {
           part.value = value;
         }
