@@ -1,3 +1,5 @@
+import { globalThis } from 'shared-polyfills';
+
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 
 // Template Instance API
@@ -30,7 +32,7 @@ export const defaultProcessor = {
   },
 };
 
-export class TemplateInstance extends DocumentFragment {
+export class TemplateInstance extends globalThis.DocumentFragment {
   #parts;
   #processor;
   constructor(template, state, processor = defaultProcessor) {

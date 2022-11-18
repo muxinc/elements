@@ -1,22 +1,34 @@
 import { globalThis } from 'shared-polyfills';
-import { MediaTheme } from 'media-chrome';
+import 'media-chrome';
 import { InnerTemplatePart, TemplateInstance, AttrPart } from '../template-parts.js';
 
-class MediaThemeTemplate extends MediaTheme {
+class MediaTheme extends globalThis.HTMLElement {
+  static observedAttributes = ['template'];
+
   constructor() {
     super();
-  }
-
-  connectedCallback() {
-    this.template = this.getRootNode().querySelector(`#${this.getAttribute('template')}`);
-
-    if (this.template) {
-      this.templateInstance = new TemplateInstance(this.template, this.props, mediaThemeProcessor);
-      this.shadowRoot.append(this.templateInstance);
-    }
+    this.attachShadow({ mode: 'open' });
 
     const observer = new MutationObserver(() => this.render());
     observer.observe(this, { attributes: true });
+  }
+
+  get mediaController() {
+    // Expose the media controller if API access is needed
+    return this.shadowRoot.querySelector('media-controller');
+  }
+
+  get template() {
+    return this.getRootNode().querySelector(`#${this.getAttribute('template')}`);
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'template' && oldValue != newValue) {
+      if (this.template) {
+        this.templateInstance = new TemplateInstance(this.template, this.props, mediaThemeProcessor);
+        this.shadowRoot.append(this.templateInstance);
+      }
+    }
   }
 
   get props() {
@@ -36,10 +48,6 @@ class MediaThemeTemplate extends MediaTheme {
   }
 }
 
-const camelCase = (name) => {
-  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
-};
-
 const operators = {
   // Filters concept like Nunjucks or Liquid.
   '|': {
@@ -53,25 +61,6 @@ class PartialDirective {
   constructor(template) {
     this.template = template;
   }
-}
-
-const getValue = (raw, state) => {
-  const firstChar = raw[0];
-  const lastChar = raw.slice(-1);
-  if (firstChar === lastChar && [`'`, `"`].includes(firstChar)) {
-    // string
-    return raw.slice(1, -1);
-  }
-  if (isNumeric(raw)) return raw; // number value
-  else return state[raw]; // variable name
-};
-
-function isNumeric(str) {
-  if (typeof str != 'string') return false; // we only process strings!
-  return (
-    !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-    !isNaN(parseFloat(str))
-  ); // ...and ensure strings of whitespace fail
 }
 
 const mediaThemeProcessor = {
@@ -154,11 +143,11 @@ const mediaThemeProcessor = {
           // typeof part.element[part.attributeName] === 'boolean'
           // media-play-button doesn't have `disabled` props so can't test
         ) {
-          // console.warn(expression, name, value);
           if (value) {
             if (
               typeof value === 'boolean' &&
               part instanceof AttrPart
+              // can't use this because on custom elements the props are always undefined
               // typeof part.element[part.attributeName] === 'boolean'
             ) {
               part.booleanValue = value;
@@ -176,8 +165,32 @@ const mediaThemeProcessor = {
   },
 };
 
-export default MediaThemeTemplate;
+// Eval params of something like `{{PlayButton param='center'}}
+function getValue(raw, state) {
+  const firstChar = raw[0];
+  const lastChar = raw.slice(-1);
+  if (firstChar === lastChar && [`'`, `"`].includes(firstChar)) {
+    // string
+    return raw.slice(1, -1);
+  }
+  if (isNumeric(raw)) return raw; // number value
+  else return state[raw]; // variable name
+}
 
-if (!globalThis.customElements.get('media-theme-template')) {
-  globalThis.customElements.define('media-theme-template', MediaThemeTemplate);
+function camelCase(name) {
+  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
+}
+
+function isNumeric(str) {
+  if (typeof str != 'string') return false; // we only process strings!
+  return (
+    !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+    !isNaN(parseFloat(str))
+  ); // ...and ensure strings of whitespace fail
+}
+
+export default MediaTheme;
+
+if (!globalThis.customElements.get('media-theme-base')) {
+  globalThis.customElements.define('media-theme-base', MediaTheme);
 }

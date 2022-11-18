@@ -1,5 +1,5 @@
 import { document } from 'shared-polyfills';
-import './media-theme-mux/media-theme-template';
+import './media-theme-mux/media-theme';
 import './media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
@@ -22,7 +22,7 @@ export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
-  ${muxTemplate.content} ${content(props)}
+  ${muxTemplate.content.cloneNode(true)} ${content(props)}
 `;
 
 const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
@@ -36,7 +36,7 @@ const getLayout = (props: MuxTemplateProps) => {
   if (isLive(props)) layout += 'live';
   else if (isLiveOrDVR(props)) layout += 'dvr';
   else layout += props.streamType || 'on-demand';
-  if (!props.audio) layout += ` ${props.playerSize}`;
+  if (!props.audio && props.playerSize) layout += ` ${props.playerSize}`;
   return layout;
 };
 
@@ -49,7 +49,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 };
 
 export const content = (props: MuxTemplateProps) => html`
-  <media-theme-template
+  <media-theme-base
     template="media-theme-mux"
     class="size-${props.playerSize}${props.secondaryColor ? ' two-tone' : ''}"
     player-size="${props.playerSize ?? false}"
@@ -150,5 +150,5 @@ export const content = (props: MuxTemplateProps) => html`
           : html``}
       </p>
     </mxp-dialog>
-  </media-theme-template>
+  </media-theme-base>
 `;

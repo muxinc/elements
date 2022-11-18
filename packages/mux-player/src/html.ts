@@ -153,73 +153,18 @@ const defaultProcessor = {
   processCallback(instance: any, parts: any, state: any) {
     if (!state) return;
     for (const [expression, part] of parts) {
-      processPart(part, state[expression]);
+      if (expression in state) {
+        const value = state[expression] ?? '';
+        processPart(part, value);
+      }
     }
   },
 };
 
-const stringsCache = new Map();
 export function html(strings: TemplateStringsArray, ...values: unknown[]): TemplateResult {
-  const staticStrings: any = [''];
-  const dynamicValues: any[] = [];
-  let staticValues;
-  let hasStatics = false;
-
-  // Here the unsafe static values are moved from the string expressions
-  // to the static strings so they can be used in the cache key and later
-  // be used to generate the HTML via the <template> element.
-  const join = (strs: TemplateStringsArray, vals: any[] = []) => {
-    staticStrings[staticStrings.length - 1] = staticStrings[staticStrings.length - 1] + strs[0];
-
-    vals.forEach((dynamicValue, i) => {
-      if ((staticValues = dynamicValue?.$static$) !== undefined) {
-        staticValues.forEach((staticValue: TemplateResult) => {
-          join(staticValue.strings, staticValue.values);
-        });
-
-        staticStrings[staticStrings.length - 1] = staticStrings[staticStrings.length - 1] + strs[i + 1];
-        hasStatics = true;
-      } else {
-        dynamicValues.push(dynamicValue);
-        staticStrings.push(strs[i + 1]);
-      }
-    });
-  };
-
-  join(strings, values);
-
-  if (hasStatics) {
-    // Tagged template literals with the same static strings return the same
-    // TemplateStringsArray, aka they are cached. emulate this behavior w/ a Map.
-    const key = staticStrings.join('$$html$$');
-    strings = stringsCache.get(key);
-    if (strings === undefined) {
-      (staticStrings as any).raw = staticStrings;
-      stringsCache.set(key, (strings = staticStrings));
-    }
-    values = dynamicValues;
-  }
-
   return new TemplateResult(strings, values, defaultProcessor);
 }
 
 export function render(result: TemplateResult, element: Node | ChildNodePart): void {
   result.renderInto(element);
 }
-
-export function createTemplateInstance(content: string, props?: any) {
-  const template = document.createElement('template');
-  if ('innerHTML' in template) {
-    template.innerHTML = content;
-    return new TemplateInstance(template, props);
-  }
-}
-
-export const unsafeStatic = (...values: any[]) => ({
-  ['$static$']: values.map((value) => {
-    if (value instanceof TemplateResult) return value;
-    // Only allow word characters and dashes for security.
-    if (!/\w-/.test(value)) return { strings: [] };
-    return { strings: [value] };
-  }),
-});
