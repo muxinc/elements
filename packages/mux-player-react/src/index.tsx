@@ -50,7 +50,6 @@ type MuxMediaPropTypes = {
   streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
-  experimentalCmcd: boolean;
   children: never[];
 };
 
