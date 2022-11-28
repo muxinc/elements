@@ -56,7 +56,6 @@ export const content = (props: MuxTemplateProps) => html`
       loop="${props.loop ?? false}"
       preload="${props.preload ?? false}"
       debug="${props.debug ?? false}"
-      experimental-cmcd="${props.experimentalCmcd ?? false}"
       prefer-cmcd="${props.preferCmcd ?? false}"
       disable-cookies="${props.disableCookies ?? false}"
       prefer-playback="${props.preferPlayback ?? false}"
