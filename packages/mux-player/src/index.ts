@@ -204,7 +204,7 @@ class MuxPlayerElement extends VideoApiElement {
       customElements.upgrade(this.theme as Node);
       if (!(this.theme instanceof globalThis.HTMLElement)) throw '';
     } catch (error) {
-      logger.error(`<media-theme-base> failed to upgrade!`);
+      logger.error(`<media-theme> failed to upgrade!`);
     }
 
     try {
@@ -252,7 +252,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get theme(): Element | null | undefined {
-    return this.shadowRoot?.querySelector('media-theme-base');
+    return this.shadowRoot?.querySelector('media-theme');
   }
 
   get mediaController(): MediaController | null | undefined {

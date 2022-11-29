@@ -1,10 +1,10 @@
 import { document } from 'shared-polyfills';
-import './media-theme-mux/media-theme';
+import 'media-chrome/dist/media-theme-element';
 import './media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
 // @ts-ignore
-import muxTheme from './media-theme-mux/media-theme-mux.html';
+import muxTheme from './media-theme-mux.html';
 import './dialog';
 import { getSrcFromPlaybackId } from './helpers';
 import { html } from './html';
@@ -18,11 +18,13 @@ const muxTemplate = document.createElement('template');
 if ('innerHTML' in muxTemplate) muxTemplate.innerHTML = muxTheme;
 console.timeEnd('muxTemplate');
 
+// prettier-ignore
 export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
-  ${muxTemplate.content.cloneNode(true)} ${content(props)}
+  ${muxTemplate.content.cloneNode(true)}
+  ${content(props)}
 `;
 
 const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
@@ -49,7 +51,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 };
 
 export const content = (props: MuxTemplateProps) => html`
-  <media-theme-base
+  <media-theme
     template="media-theme-mux"
     class="size-${props.playerSize}${props.secondaryColor ? ' two-tone' : ''}"
     player-size="${props.playerSize ?? false}"
@@ -150,5 +152,5 @@ export const content = (props: MuxTemplateProps) => html`
           : html``}
       </p>
     </mxp-dialog>
-  </media-theme-base>
+  </media-theme>
 `;

@@ -69,7 +69,7 @@ if (options.format === 'esm' || options.format === 'cjs') {
 }
 
 if (options.format === 'esm') {
-  options.external.push('@github/template-parts', 'media-chrome');
+  options.external.push('media-chrome');
 }
 
 if (esmScriptModule) {
