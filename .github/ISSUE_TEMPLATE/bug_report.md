@@ -22,7 +22,14 @@ assignees: ''
   Uncomment all that apply. Also, make sure you add the appropriate Label after creating the issue!
 
 - mux-video
+- mux-video-react
 - mux-audio
+- mux-audio-react
+- mux-player
+- mux-player-react
+- mux-uploader
+- mux-uploader-react
+- playback-core
 - common
 -->
 
