@@ -274,9 +274,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #render(props: Record<string, any> = {}) {
-    console.time('render');
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
-    console.timeEnd('render');
   }
 
   #renderChrome() {

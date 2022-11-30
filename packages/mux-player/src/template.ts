@@ -13,10 +13,8 @@ import { i18n, stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
-console.time('muxTemplate');
 const muxTemplate = document.createElement('template');
 if ('innerHTML' in muxTemplate) muxTemplate.innerHTML = muxTheme;
-console.timeEnd('muxTemplate');
 
 // prettier-ignore
 export const template = (props: MuxTemplateProps) => html`
@@ -52,7 +50,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="media-theme-mux"
+    template="${props.theme ?? 'media-theme-mux'}"
     class="size-${props.playerSize}${props.secondaryColor ? ' two-tone' : ''}"
     player-size="${props.playerSize ?? false}"
     layout="${getLayout(props)}"
