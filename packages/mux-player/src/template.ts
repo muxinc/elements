@@ -1,5 +1,5 @@
 import { document } from 'shared-polyfills';
-import 'media-chrome/dist/media-theme-element';
+import 'media-chrome/dist/media-theme-element.js';
 import './media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
