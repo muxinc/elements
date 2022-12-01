@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.3.0...@mux/mux-player@1.4.0) (2022-11-21)
+
+
+### Features
+
+* first iteration on player design update ([#486](https://github.com/muxinc/elements/issues/486)) ([a2befb5](https://github.com/muxinc/elements/commit/a2befb53200df08c40a79d7ed84e267cd1279648))
+* **mux-player:** Add prefer cmcd attr and prop. ([308e9a7](https://github.com/muxinc/elements/commit/308e9a7c879594edbe2d4f4ffe462c7efb53299f))
+
+
+
+
+
 # [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.2.0...@mux/mux-player@1.3.0) (2022-10-25)
 
 

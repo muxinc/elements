@@ -62,11 +62,13 @@ export const PlaybackTypes: PlaybackTypes = {
 export type CmcdTypes = {
   HEADER: 'header';
   QUERY: 'query';
+  NONE: 'none';
 };
 
 export const CmcdTypes: CmcdTypes = {
   HEADER: 'header',
   QUERY: 'query',
+  NONE: 'none',
 };
 
 export const CmcdTypeValues = Object.values(CmcdTypes);
@@ -126,7 +128,6 @@ export type MuxMediaPropTypes = {
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
-  experimentalCmcd?: boolean;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload'>>;

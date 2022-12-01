@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.8.0...@mux/mux-audio@0.8.1) (2022-11-21)
+
+
+### Bug Fixes
+
+* add async effect for loading media ([#492](https://github.com/muxinc/elements/issues/492)) ([d2b250a](https://github.com/muxinc/elements/commit/d2b250a2d86e4e6a4c17fc34196e6468c4fedf1f))
+
+
+
+
+
 # [0.8.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.7.0...@mux/mux-audio@0.8.0) (2022-10-25)
 
 
