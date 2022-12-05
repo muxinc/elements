@@ -52,7 +52,7 @@
   "dependencies": {
     "@mux/mux-video": "0.11.0",
     "@mux/playback-core": "0.14.0",
-    "media-chrome": "0.16.1-canary.10-7245358"
+    "media-chrome": "0.16.1-canary.10-e20953a"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",
