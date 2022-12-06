@@ -179,6 +179,7 @@ class MuxPlayerElement extends VideoApiElement {
     super();
 
     this.attachShadow({ mode: 'open' });
+    this.#setupCSSProperties();
 
     // If the custom element is defined before the <mux-player> HTML is parsed
     // no attributes will be available in the constructor (construction process).
@@ -203,7 +204,7 @@ class MuxPlayerElement extends VideoApiElement {
       customElements.upgrade(this.theme as Node);
       if (!(this.theme instanceof globalThis.HTMLElement)) throw '';
     } catch (error) {
-      logger.error(`<${this.theme?.localName}> failed to upgrade!`);
+      logger.error(`<media-theme> failed to upgrade!`);
     }
 
     try {
@@ -229,8 +230,29 @@ class MuxPlayerElement extends VideoApiElement {
     this.#setUpCaptionsMovement();
   }
 
+  #setupCSSProperties() {
+    // registerProperty will throw if the prop has already been registered
+    // and there's currently no way to check ahead of time
+    try {
+      // @ts-ignore
+      window?.CSS?.registerProperty({
+        name: '--primary-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'white',
+      });
+      // @ts-ignore
+      window?.CSS?.registerProperty({
+        name: '--secondary-color',
+        syntax: '<color>',
+        inherits: true,
+        initialValue: 'transparent',
+      });
+    } catch (e) {}
+  }
+
   get theme(): Element | null | undefined {
-    return Array.from(this.shadowRoot?.children ?? []).find(({ localName }) => localName.startsWith('media-theme-'));
+    return this.shadowRoot?.querySelector('media-theme');
   }
 
   get mediaController(): MediaController | null | undefined {

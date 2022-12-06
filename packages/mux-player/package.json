@@ -50,10 +50,9 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@github/template-parts": "^0.5.3",
     "@mux/mux-video": "0.11.0",
     "@mux/playback-core": "0.14.0",
-    "media-chrome": "0.16.0"
+    "media-chrome": "0.16.1-canary.10-e20953a"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",

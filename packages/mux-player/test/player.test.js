@@ -206,12 +206,14 @@ describe('<mux-player>', () => {
     );
 
     player.removeAttribute('poster');
+    await aTimeout(1); // add one tick here because media-theme renders from attributes are not sync
     assert(!mediaPosterImage.hasAttribute('src'), `has src attr removed`);
 
     player.setAttribute(
       'poster',
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1'
     );
+    await aTimeout(1); // add one tick here because media-theme renders from attributes are not sync
     assert.equal(
       mediaPosterImage.getAttribute('src'),
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1',
@@ -242,6 +244,7 @@ describe('<mux-player>', () => {
 
     player.poster = '';
     assert.equal(player.poster, '');
+    await aTimeout(1); // add one tick here because media-theme renders from attributes are not sync
     assert(!mediaPosterImage.hasAttribute('src'), 'media-poster-image does have a poster attribute');
 
     player.setAttribute(
@@ -253,6 +256,7 @@ describe('<mux-player>', () => {
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1',
       'does not equal poster set with setAttribute()'
     );
+    await aTimeout(1); // add one tick here because media-theme renders from attributes are not sync
     assert.equal(
       mediaPosterImage.getAttribute('src'),
       'https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=1',

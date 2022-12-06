@@ -19,7 +19,7 @@ export default {
     esbuildPlugin({
       ts: true,
       json: true,
-      loaders: { '.css': 'text', '.svg': 'text' },
+      loaders: { '.css': 'text', '.svg': 'text', '.html': 'text' },
     }),
   ],
   coverageConfig: {
