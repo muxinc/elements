@@ -132,6 +132,12 @@ audio {
   background-color: #e9e9f9;
 }
 
+input[type=text],
+input[type=url],
+select {
+  flex-grow: 1;
+}
+
 @media (prefers-color-scheme: dark) {
   .options > div:nth-of-type(odd) {
     background-color: #3b3b3b;
