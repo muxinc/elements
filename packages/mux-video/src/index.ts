@@ -26,9 +26,6 @@ type AttributeNames = {
   METADATA_URL: 'metadata-url';
   PLAYER_SOFTWARE_VERSION: 'player-software-version';
   PLAYER_SOFTWARE_NAME: 'player-software-name';
-  METADATA_VIDEO_ID: 'metadata-video-id';
-  METADATA_VIDEO_TITLE: 'metadata-video-title';
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   CUSTOM_DOMAIN: 'custom-domain';
   DISABLE_COOKIES: 'disable-cookies';
@@ -48,9 +45,6 @@ export const Attributes: AttributeNames = {
   PREFER_PLAYBACK: 'prefer-playback',
   PLAYER_SOFTWARE_VERSION: 'player-software-version',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
-  METADATA_VIDEO_ID: 'metadata-video-id',
-  METADATA_VIDEO_TITLE: 'metadata-video-title',
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
   DISABLE_COOKIES: 'disable-cookies',
@@ -359,37 +353,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get metadata() {
-    const video_id = this.getAttribute(Attributes.METADATA_VIDEO_ID);
-    const video_title = this.getAttribute(Attributes.METADATA_VIDEO_TITLE);
-    const viewer_user_id = this.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
-
-    const otherMetadataAttrs: { [key: string]: string } = {};
+    const inferredMetadataAttrs: { [key: string]: string } = {};
     this.getAttributeNames()
       .filter((attrName) => {
-        return (
-          attrName.startsWith('metadata-') &&
-          !(
-            [
-              Attributes.METADATA_VIDEO_ID,
-              Attributes.METADATA_VIDEO_TITLE,
-              Attributes.METADATA_VIEWER_USER_ID,
-            ] as string[]
-          ).includes(attrName)
-        );
+        return attrName.startsWith('metadata-') && !([Attributes.METADATA_URL] as string[]).includes(attrName);
       })
       .map((attrName) => {
         const value = this.getAttribute(attrName);
         if (value != null) {
-          otherMetadataAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
+          inferredMetadataAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
         }
       });
 
     return {
+      ...inferredMetadataAttrs,
       ...this.#metadata,
-      ...(video_id != null ? { video_id } : {}),
-      ...(video_title != null ? { video_title } : {}),
-      ...(viewer_user_id != null ? { viewer_user_id } : {}),
-      ...otherMetadataAttrs,
     };
   }
 
