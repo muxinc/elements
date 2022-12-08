@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script>
 import "@mux/mux-video";
 </script>
 
@@ -22,5 +22,5 @@ mux-video {
     muted
   ></mux-video>
 
-  <RouterLink to="/">Browse Elements</RouterLink>
+  <NuxtLink to="/">Browse Elements</NuxtLink>
 </template>

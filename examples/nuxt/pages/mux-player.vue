@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script>
 import "@mux/mux-player";
 </script>
 
@@ -22,5 +22,5 @@ mux-player:not([audio]) {
     playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
   ></mux-player>
 
-  <RouterLink to="/">Browse Elements</RouterLink>
+  <NuxtLink to="/">Browse Elements</NuxtLink>
 </template>
