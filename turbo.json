@@ -25,6 +25,10 @@
       "outputs": ["dist/**/*"],
       "dependsOn": ["^build"]
     },
+    "build:esm": {
+      "outputs": ["dist/**/*"],
+      "dependsOn": ["^build:esm"]
+    },
     "build": {
       "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*"],
       "dependsOn": ["build:types", "^build"]

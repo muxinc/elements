@@ -35,6 +35,7 @@
     "test": "turbo run test --filter '!./examples/*'",
     "dev": "turbo run dev --filter '!./examples/*'",
     "build:packages": "turbo run build --filter '!./examples/*'",
+    "build:esm": "turbo run build:esm --filter '!./examples/*'",
     "build": "turbo run build",
     "i18n": "turbo run i18n",
     "prepare": "husky install",
