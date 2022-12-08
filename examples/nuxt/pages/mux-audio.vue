@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script>
 import "@mux/mux-audio";
 </script>
 
@@ -19,5 +19,5 @@ mux-audio {
     controls
   ></mux-audio>
 
-  <RouterLink to="/">Browse Elements</RouterLink>
+  <NuxtLink to="/">Browse Elements</NuxtLink>
 </template>
