@@ -355,17 +355,17 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get metadata() {
-    const inferredMetadataAttrs: { [key: string]: string } = {};
-    this.getAttributeNames()
+    const inferredMetadataAttrs: { [key: string]: string } = this.getAttributeNames()
       .filter((attrName) => {
         return attrName.startsWith('metadata-') && !([Attributes.METADATA_URL] as string[]).includes(attrName);
       })
-      .map((attrName) => {
+      .reduce((currAttrs, attrName) => {
         const value = this.getAttribute(attrName);
         if (value != null) {
-          inferredMetadataAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
+          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
         }
-      });
+        return currAttrs;
+      }, {} as { [key: string]: string });
 
     return {
       ...inferredMetadataAttrs,

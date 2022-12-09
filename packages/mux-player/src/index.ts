@@ -255,16 +255,15 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get metadataFromAttrs() {
-    const metadata: { [key: string]: string } = {};
-    this.getAttributeNames()
+    return this.getAttributeNames()
       .filter((attrName) => attrName.startsWith('metadata-'))
-      .forEach((attrName) => {
+      .reduce((currAttrs, attrName) => {
         const value = this.getAttribute(attrName);
         if (value !== null) {
-          metadata[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
+          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
         }
-      });
-    return metadata;
+        return currAttrs;
+      }, {} as { [key: string]: string });
   }
 
   connectedCallback() {
