@@ -1,5 +1,6 @@
-import { TemplateInstance, NodeTemplatePart, createProcessor, AttributeTemplatePart } from '@github/template-parts';
-import type { TemplatePart, TemplateTypeInit } from '@github/template-parts';
+import { document } from 'shared-polyfills';
+// @ts-ignore
+import { TemplateInstance, ChildNodePart, AttrPart, Part } from 'media-chrome/dist/media-theme-element.js';
 
 // NOTE: These are either direct ports or significantly based off of github's jtml template part processing logic. For more, see: https://github.com/github/jtml
 
@@ -26,7 +27,7 @@ class EventHandler {
       }
     }
   }
-  static for(part: AttributeTemplatePart): EventHandler {
+  static for(part: AttrPart): EventHandler {
     if (!eventListeners.has(part.element)) eventListeners.set(part.element, new Map());
     const type = part.attributeName.slice(2);
     const elementListeners = eventListeners.get(part.element);
@@ -35,8 +36,8 @@ class EventHandler {
   }
 }
 
-export function processEvent(part: TemplatePart, value: unknown): boolean {
-  if (part instanceof AttributeTemplatePart && part.attributeName.startsWith('on')) {
+export function processEvent(part: Part, value: unknown): boolean {
+  if (part instanceof AttrPart && part.attributeName.startsWith('on')) {
     EventHandler.for(part).set(value as unknown as EventListener);
     part.element.removeAttributeNS(part.attributeNamespace, part.attributeName);
     return true;
@@ -44,24 +45,24 @@ export function processEvent(part: TemplatePart, value: unknown): boolean {
   return false;
 }
 
-function processSubTemplate(part: TemplatePart, value: unknown): boolean {
-  if (value instanceof TemplateResult && part instanceof NodeTemplatePart) {
+function processSubTemplate(part: Part, value: unknown): boolean {
+  if (value instanceof TemplateResult && part instanceof ChildNodePart) {
     value.renderInto(part);
     return true;
   }
   return false;
 }
 
-function processDocumentFragment(part: TemplatePart, value: unknown): boolean {
-  if (value instanceof DocumentFragment && part instanceof NodeTemplatePart) {
+function processDocumentFragment(part: Part, value: unknown): boolean {
+  if (value instanceof DocumentFragment && part instanceof ChildNodePart) {
     if (value.childNodes.length) part.replace(...value.childNodes);
     return true;
   }
   return false;
 }
 
-export function processPropertyIdentity(part: TemplatePart, value: unknown): boolean {
-  if (part instanceof AttributeTemplatePart) {
+export function processPropertyIdentity(part: Part, value: unknown): boolean {
+  if (part instanceof AttrPart) {
     const ns = part.attributeNamespace;
     const oldValue = part.element.getAttributeNS(ns, part.attributeName);
     if (String(value) !== oldValue) {
@@ -73,10 +74,10 @@ export function processPropertyIdentity(part: TemplatePart, value: unknown): boo
   return true;
 }
 
-export function processBooleanAttribute(part: TemplatePart, value: unknown): boolean {
+export function processBooleanAttribute(part: Part, value: unknown): boolean {
   if (
     typeof value === 'boolean' &&
-    part instanceof AttributeTemplatePart
+    part instanceof AttrPart
     // can't use this because on custom elements the props are always undefined
     // typeof part.element[part.attributeName as keyof Element] === 'boolean'
   ) {
@@ -90,15 +91,15 @@ export function processBooleanAttribute(part: TemplatePart, value: unknown): boo
   return false;
 }
 
-export function processBooleanNode(part: TemplatePart, value: unknown): boolean {
-  if (value === false && part instanceof NodeTemplatePart) {
+export function processBooleanNode(part: Part, value: unknown): boolean {
+  if (value === false && part instanceof ChildNodePart) {
     part.replace('');
     return true;
   }
   return false;
 }
 
-export function processPart(part: TemplatePart, value: unknown): void {
+export function processPart(part: Part, value: unknown): void {
   processBooleanAttribute(part, value) ||
     processEvent(part, value) ||
     processBooleanNode(part, value) ||
@@ -108,13 +109,13 @@ export function processPart(part: TemplatePart, value: unknown): void {
 }
 
 const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>();
-const renderedTemplates = new WeakMap<Node | NodeTemplatePart, HTMLTemplateElement>();
-const renderedTemplateInstances = new WeakMap<Node | NodeTemplatePart, TemplateInstance>();
+const renderedTemplates = new WeakMap<Node | ChildNodePart, HTMLTemplateElement>();
+const renderedTemplateInstances = new WeakMap<Node | ChildNodePart, TemplateInstance>();
 export class TemplateResult {
   constructor(
     public readonly strings: TemplateStringsArray,
     public readonly values: unknown[],
-    public readonly processor: TemplateTypeInit
+    public readonly processor: any
   ) {}
 
   get template(): HTMLTemplateElement {
@@ -129,13 +130,13 @@ export class TemplateResult {
     }
   }
 
-  renderInto(element: Node | NodeTemplatePart): void {
+  renderInto(element: Node | ChildNodePart): void {
     const template = this.template;
     if (renderedTemplates.get(element) !== template) {
       renderedTemplates.set(element, template);
       const instance = new TemplateInstance(template, this.values, this.processor);
       renderedTemplateInstances.set(element, instance);
-      if (element instanceof NodeTemplatePart) {
+      if (element instanceof ChildNodePart) {
         element.replace(...instance.children);
       } else {
         element.appendChild(instance);
@@ -149,67 +150,22 @@ export class TemplateResult {
   }
 }
 
-const stringsCache = new Map();
-const defaultProcessor = createProcessor(processPart);
-export function html(strings: TemplateStringsArray, ...values: unknown[]): TemplateResult {
-  const staticStrings: any = [''];
-  const dynamicValues: any[] = [];
-  let staticValues;
-  let hasStatics = false;
-
-  // Here the unsafe static values are moved from the string expressions
-  // to the static strings so they can be used in the cache key and later
-  // be used to generate the HTML via the <template> element.
-  const join = (strs: TemplateStringsArray, vals: any[] = []) => {
-    staticStrings[staticStrings.length - 1] = staticStrings[staticStrings.length - 1] + strs[0];
-
-    vals.forEach((dynamicValue, i) => {
-      if ((staticValues = dynamicValue?.$static$) !== undefined) {
-        staticValues.forEach((staticValue: TemplateResult) => {
-          join(staticValue.strings, staticValue.values);
-        });
-
-        staticStrings[staticStrings.length - 1] = staticStrings[staticStrings.length - 1] + strs[i + 1];
-        hasStatics = true;
-      } else {
-        dynamicValues.push(dynamicValue);
-        staticStrings.push(strs[i + 1]);
+const defaultProcessor = {
+  processCallback(instance: any, parts: any, state: any) {
+    if (!state) return;
+    for (const [expression, part] of parts) {
+      if (expression in state) {
+        const value = state[expression] ?? '';
+        processPart(part, value);
       }
-    });
-  };
-
-  join(strings, values);
-
-  if (hasStatics) {
-    // Tagged template literals with the same static strings return the same
-    // TemplateStringsArray, aka they are cached. emulate this behavior w/ a Map.
-    const key = staticStrings.join('$$html$$');
-    strings = stringsCache.get(key);
-    if (strings === undefined) {
-      (staticStrings as any).raw = staticStrings;
-      stringsCache.set(key, (strings = staticStrings));
     }
-    values = dynamicValues;
-  }
+  },
+};
 
+export function html(strings: TemplateStringsArray, ...values: unknown[]): TemplateResult {
   return new TemplateResult(strings, values, defaultProcessor);
 }
 
-export function render(result: TemplateResult, element: Node | NodeTemplatePart): void {
+export function render(result: TemplateResult, element: Node | ChildNodePart): void {
   result.renderInto(element);
 }
-
-export function createTemplateInstance(content: string, props?: any) {
-  const template = document.createElement('template');
-  template.innerHTML = content;
-  return new TemplateInstance(template, props);
-}
-
-export const unsafeStatic = (...values: any[]) => ({
-  ['$static$']: values.map((value) => {
-    if (value instanceof TemplateResult) return value;
-    // Only allow word characters and dashes for security.
-    if (!/\w-/.test(value)) return { strings: [] };
-    return { strings: [value] };
-  }),
-});

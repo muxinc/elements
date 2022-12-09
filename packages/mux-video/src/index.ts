@@ -168,6 +168,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  /** @ts-ignore */
   get autoplay(): Autoplay {
     const attr = this.getAttribute('autoplay');
 
@@ -180,6 +181,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  /** @ts-ignore */
   set autoplay(val: Autoplay) {
     const currentVal = this.autoplay;
     if (val === currentVal) {
