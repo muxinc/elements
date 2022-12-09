@@ -89,10 +89,9 @@ Attributes:
 - `metadata-video-title`: This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
+- `metadata-*`: This syntax can be used to pass any other Mux Data metadata fields, for example `metadata-sub-property-id="123"`
 - `stream-type`: Enum value: one of `"on-demand"`, `"live"` (HLS live stream), `"ll-live"` (low latency live). Not strictly required, but preferred so that `<mux-video />` can make optimizations based on the type of stream.
 - `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0.
-
-This is the bare bones of metadata that you should provide to the `<mux-video>` element.
 
 All the other attributes that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoplay` are available and will work the same as they do with the HTML5 video element. One sidenote about `autoplay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
 

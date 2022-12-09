@@ -33,9 +33,6 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
     thumbnail?: string;
     storyboard?: string;
   };
-  metadataVideoId: string;
-  metadataVideoTitle: string;
-  metadataViewerUserId: string;
   noHotKeys: boolean;
   placeholder: string;
   hotKeys: AttributeTokenList;

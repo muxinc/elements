@@ -126,11 +126,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     playerSize: getPlayerSize(el.mediaController ?? el),
-    // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
-    // and to guarantee they'll all be set *before* the playback id is set, using attr values here (CJP)
-    metadataVideoId: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_ID),
-    metadataVideoTitle: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_TITLE),
-    metadataViewerUserId: el.getAttribute(MuxVideoAttributes.METADATA_VIEWER_USER_ID),
     title: el.getAttribute(PlayerAttributes.TITLE),
     ...state,
   };
@@ -259,8 +254,24 @@ class MuxPlayerElement extends VideoApiElement {
     return this.theme?.shadowRoot?.querySelector('media-controller');
   }
 
+  get metadataFromAttrs() {
+    return this.getAttributeNames()
+      .filter((attrName) => attrName.startsWith('metadata-'))
+      .reduce((currAttrs, attrName) => {
+        const value = this.getAttribute(attrName);
+        if (value !== null) {
+          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
+        }
+        return currAttrs;
+      }, {} as { [key: string]: string });
+  }
+
   connectedCallback() {
     this.#renderChrome();
+    const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
+    if (muxVideo) {
+      muxVideo.metadata = this.metadataFromAttrs;
+    }
     this.#initResizing();
   }
 
@@ -1106,7 +1117,7 @@ class MuxPlayerElement extends VideoApiElement {
       logger.error('underlying media element missing when trying to set metadata. metadata will not be set.');
       return;
     }
-    this.media.metadata = val;
+    this.media.metadata = { ...this.metadataFromAttrs, ...val };
   }
 
   /**

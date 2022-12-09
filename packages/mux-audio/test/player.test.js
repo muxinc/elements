@@ -91,4 +91,15 @@ describe('<mux-audio>', () => {
     await aTimeout(3000);
     assert.equal(player.buffered.length, 0, 'no buffer loaded');
   });
+
+  it('maps arbitrary metadata-* attrs to the metadata prop and populates video_id if not provided', async function () {
+    const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+    const player = await fixture(`<mux-audio
+      src="https://stream.mux.com/${playbackId}.m3u8"
+      metadata-sub-property-id="sub-id-12"
+    ></mux-video>`);
+
+    assert.equal(player.metadata.sub_property_id, 'sub-id-12');
+    assert.equal(player.metadata.video_id, playbackId);
+  });
 });
