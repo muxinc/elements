@@ -121,7 +121,10 @@ export class TemplateResult {
     public readonly values: unknown[],
     public readonly processor: any
   ) {
-    // Use a control character to join the expression boundaries.
+    // Use a control character to join the expression boundaries. It should be
+    // a character that is not used in the static strings so the key is unique
+    // if the expressions are in a different place even tough the static strings
+    // are identical.
     this.stringsKey = this.strings.join('\x01');
   }
 
