@@ -108,6 +108,8 @@ export function processPart(part: Part, value: unknown): void {
     processPropertyIdentity(part, value);
 }
 
+// The Map's data will not be garbage collected however the number of created
+// templates will not exceed the html`` defined templates. This is fine.
 const templates = new Map<string, HTMLTemplateElement>();
 const renderedTemplates = new WeakMap<Node | ChildNodePart, HTMLTemplateElement>();
 const renderedTemplateInstances = new WeakMap<Node | ChildNodePart, TemplateInstance>();
