@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader-react",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "type": "commonjs",
   "description": "An uploader element for React that handles Mux Direct Uploads and a visual progress bar for you",
   "main": "./dist/index.cjs.js",
@@ -53,7 +53,7 @@
     }
   },
   "dependencies": {
-    "@mux/mux-uploader": "1.0.0-beta.2",
+    "@mux/mux-uploader": "1.0.0-beta.3",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

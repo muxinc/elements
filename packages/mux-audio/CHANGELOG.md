@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.8.1...@mux/mux-audio@0.9.0) (2022-12-13)
+
+
+### Features
+
+* allow video, audio and player elements to get any metadata-* attrs set ([#501](https://github.com/muxinc/elements/issues/501)) ([8ee139d](https://github.com/muxinc/elements/commit/8ee139d2bbd08e1e3c08d047f870c1dcf01dac7e))
+
+
+
+
+
 ## [0.8.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.8.0...@mux/mux-audio@0.8.1) (2022-11-21)
 
 

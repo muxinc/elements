@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.11.0...@mux/mux-video@0.12.0) (2022-12-13)
+
+
+### Bug Fixes
+
+* **mux-video:** Clean up some type defs. ([6daddd2](https://github.com/muxinc/elements/commit/6daddd2cb72dc496bb138b06c2673026db299dc0))
+
+
+### Features
+
+* allow video, audio and player elements to get any metadata-* attrs set ([#501](https://github.com/muxinc/elements/issues/501)) ([8ee139d](https://github.com/muxinc/elements/commit/8ee139d2bbd08e1e3c08d047f870c1dcf01dac7e))
+* Remove experimentalCmcd and add none to preferCmcd. Update secret docs. ([2656631](https://github.com/muxinc/elements/commit/2656631968f2b7e97a07d435818ee43c16627002))
+
+
+
+
+
 # [0.11.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.10.0...@mux/mux-video@0.11.0) (2022-11-21)
 
 

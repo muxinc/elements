@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.3](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.2...@mux/mux-uploader@1.0.0-beta.3) (2022-12-13)
+
+
+### Features
+
+* **mux-uploader:** Upgrade upchunk to take advantage of readable streams. ([9a2c1b9](https://github.com/muxinc/elements/commit/9a2c1b973966a65702ba0259a5e59dfe8a378cd0))
+
+
+
+
+
 # [1.0.0-beta.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.1...@mux/mux-uploader@1.0.0-beta.2) (2022-10-25)
 
 **Note:** Version bump only for package @mux/mux-uploader

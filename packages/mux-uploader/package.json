@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "An uploader elements to be used with Mux Direct Uploads",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
