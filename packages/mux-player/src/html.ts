@@ -108,24 +108,34 @@ export function processPart(part: Part, value: unknown): void {
     processPropertyIdentity(part, value);
 }
 
-const templates = new WeakMap<TemplateStringsArray, HTMLTemplateElement>();
+// The Map's data will not be garbage collected however the number of created
+// templates will not exceed the html`` defined templates. This is fine.
+const templates = new Map<string, HTMLTemplateElement>();
 const renderedTemplates = new WeakMap<Node | ChildNodePart, HTMLTemplateElement>();
 const renderedTemplateInstances = new WeakMap<Node | ChildNodePart, TemplateInstance>();
 export class TemplateResult {
+  public readonly stringsKey: string;
+
   constructor(
     public readonly strings: TemplateStringsArray,
     public readonly values: unknown[],
     public readonly processor: any
-  ) {}
+  ) {
+    // Use a control character to join the expression boundaries. It should be
+    // a character that is not used in the static strings so the key is unique
+    // if the expressions are in a different place even tough the static strings
+    // are identical.
+    this.stringsKey = this.strings.join('\x01');
+  }
 
   get template(): HTMLTemplateElement {
-    if (templates.has(this.strings)) {
-      return templates.get(this.strings) as HTMLTemplateElement;
+    if (templates.has(this.stringsKey)) {
+      return templates.get(this.stringsKey) as HTMLTemplateElement;
     } else {
       const template = document.createElement('template');
       const end = this.strings.length - 1;
       template.innerHTML = this.strings.reduce((str, cur, i) => str + cur + (i < end ? `{{ ${i} }}` : ''), '');
-      templates.set(this.strings, template);
+      templates.set(this.stringsKey, template);
       return template;
     }
   }
