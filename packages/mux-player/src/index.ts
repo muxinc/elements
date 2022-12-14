@@ -71,6 +71,7 @@ const PlayerAttributes = {
   PLAYBACK_TOKEN: 'playback-token',
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
+  STORYBOARD_SRC: 'storyboard-src',
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
   NOHOTKEYS: 'nohotkeys',
@@ -89,6 +90,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     hasSrc: !!el.playbackId || !!el.src,
     poster: el.poster,
     storyboard: el.storyboard,
+    storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     placeholder: el.getAttribute('placeholder'),
     theme: el.getAttribute('theme'),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
@@ -733,20 +735,41 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
-   * Return the storyboard URL when a playback ID is provided,
+   * Return the storyboard-src attribute URL
+   */
+  get storyboardSrc() {
+    return this.getAttribute(PlayerAttributes.STORYBOARD_SRC) ?? '';
+  }
+
+  /**
+   * Set the storyboard-src attribute URL
+   */
+  set storyboardSrc(src: string) {
+    if (!src) {
+      this.removeAttribute(PlayerAttributes.STORYBOARD_SRC);
+    } else {
+      this.setAttribute(PlayerAttributes.STORYBOARD_SRC, src);
+    }
+  }
+  /**
+   * Return the storyboard URL when a playback ID or storyboard-src is provided,
    * we aren't an audio player and the stream-type isn't live.
    */
   get storyboard() {
     if (
-      this.playbackId &&
       !this.audio &&
       (!this.streamType ||
         ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any))
     ) {
-      return getStoryboardURLFromPlaybackId(this.playbackId, {
-        domain: this.customDomain,
-        token: this.tokens.storyboard,
-      });
+      // only infer from playbackId if not set on storyboardSrc
+      if (!this.storyboardSrc && this.playbackId) {
+        return getStoryboardURLFromPlaybackId(this.playbackId, {
+          domain: this.customDomain,
+          token: this.tokens.storyboard,
+        });
+      } else {
+        return this.storyboardSrc;
+      }
     }
 
     return;
