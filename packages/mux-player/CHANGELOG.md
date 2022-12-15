@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.5.0...@mux/mux-player@1.5.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* allow setting theme template via property ([6ec0bb0](https://github.com/muxinc/elements/commit/6ec0bb0b4f6964490dc8d339e174462e98f80116))
+
+
+
+
+
 # [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.4.0...@mux/mux-player@1.5.0) (2022-12-13)
 
 
