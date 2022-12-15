@@ -74,6 +74,19 @@ export function processPropertyIdentity(part: Part, value: unknown): boolean {
   return true;
 }
 
+export function processElementAttribute(part: Part, value: unknown): boolean {
+  // This allows us to set the media-theme template property directly.
+  if (part instanceof AttrPart && value instanceof Element) {
+    const element = part.element as any;
+    if (element[part.attributeName] !== value) {
+      part.element.removeAttributeNS(part.attributeNamespace, part.attributeName);
+      element[part.attributeName] = value;
+    }
+    return true;
+  }
+  return false;
+}
+
 export function processBooleanAttribute(part: Part, value: unknown): boolean {
   if (
     typeof value === 'boolean' &&
@@ -100,7 +113,8 @@ export function processBooleanNode(part: Part, value: unknown): boolean {
 }
 
 export function processPart(part: Part, value: unknown): void {
-  processBooleanAttribute(part, value) ||
+  processElementAttribute(part, value) ||
+    processBooleanAttribute(part, value) ||
     processEvent(part, value) ||
     processBooleanNode(part, value) ||
     processSubTemplate(part, value) ||

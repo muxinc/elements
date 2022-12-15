@@ -21,7 +21,6 @@ export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
-  ${muxTemplate.content.cloneNode(true)}
   ${content(props)}
 `;
 
@@ -50,7 +49,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="${props.theme ?? 'media-theme-mux'}"
+    template="${props.theme ?? muxTemplate.content.children[0]}"
     class="size-${props.playerSize}${props.secondaryColor ? ' two-tone' : ''}"
     player-size="${props.playerSize ?? false}"
     layout="${getLayout(props)}"
