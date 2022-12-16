@@ -34,34 +34,34 @@ describe('helpers', () => {
 
   describe('getPosterURLFromPlaybackId', () => {
     it('with no token', () => {
-      assert.equal(getPosterURLFromPlaybackId('12345'), 'https://image.mux.com/12345/thumbnail.jpg');
+      assert.equal(getPosterURLFromPlaybackId('12345'), 'https://image.mux.com/12345/thumbnail.webp');
     });
 
     it('with a token', () => {
       assert.equal(
         getPosterURLFromPlaybackId('12345', { token: THUMBNAIL_TOKEN }),
-        `https://image.mux.com/12345/thumbnail.jpg?token=${THUMBNAIL_TOKEN}`
+        `https://image.mux.com/12345/thumbnail.webp?token=${THUMBNAIL_TOKEN}`
       );
     });
 
     it('with a thumbnailTime', () => {
       assert.equal(
         getPosterURLFromPlaybackId('12345', { thumbnailTime: 20 }),
-        'https://image.mux.com/12345/thumbnail.jpg?time=20'
+        'https://image.mux.com/12345/thumbnail.webp?time=20'
       );
     });
 
     it('with a thumbnailTime and token', () => {
       assert.equal(
         getPosterURLFromPlaybackId('12345', { token: THUMBNAIL_TOKEN, thumbnailTime: 20 }),
-        `https://image.mux.com/12345/thumbnail.jpg?token=${THUMBNAIL_TOKEN}`
+        `https://image.mux.com/12345/thumbnail.webp?token=${THUMBNAIL_TOKEN}`
       );
     });
 
     it('with a custom domain', () => {
       assert.equal(
         getPosterURLFromPlaybackId('12345', { domain: 'fake.com' }),
-        'https://image.fake.com/12345/thumbnail.jpg'
+        'https://image.fake.com/12345/thumbnail.webp'
       );
     });
 
@@ -76,20 +76,20 @@ describe('helpers', () => {
 
   describe('getStoryboardURLFromPlaybackId', () => {
     it('with no token', () => {
-      assert.equal(getStoryboardURLFromPlaybackId('12345'), 'https://image.mux.com/12345/storyboard.vtt');
+      assert.equal(getStoryboardURLFromPlaybackId('12345'), 'https://image.mux.com/12345/storyboard.vtt?format=webp');
     });
 
     it('with a token', () => {
       assert.equal(
         getStoryboardURLFromPlaybackId('12345', { token: STORYBOARD_TOKEN }),
-        `https://image.mux.com/12345/storyboard.vtt?token=${STORYBOARD_TOKEN}`
+        `https://image.mux.com/12345/storyboard.vtt?token=${STORYBOARD_TOKEN}&format=webp`
       );
     });
 
     it('with a custom domain', () => {
       assert.equal(
         getStoryboardURLFromPlaybackId('12345', { domain: 'fake.com' }),
-        'https://image.fake.com/12345/storyboard.vtt'
+        'https://image.fake.com/12345/storyboard.vtt?format=webp'
       );
     });
 
