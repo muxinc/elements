@@ -48,7 +48,7 @@ export const getPosterURLFromPlaybackId = (
     return;
   }
 
-  return `https://image.${domain}/${playbackId}/thumbnail.jpg${toQuery({
+  return `https://image.${domain}/${playbackId}/thumbnail.webp${toQuery({
     token,
     time,
   })}`;
@@ -66,6 +66,7 @@ export const getStoryboardURLFromPlaybackId = (
 
   return `https://image.${domain}/${playbackId}/storyboard.vtt${toQuery({
     token,
+    format: 'webp',
   })}`;
 };
 
