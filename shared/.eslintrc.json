@@ -1,0 +1,22 @@
+{
+  "root": true,
+  "extends": ["eslint:recommended"],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "globals": {
+    "globalThis": "readonly",
+    "chrome": "readonly",
+    "cast": "readonly"
+  },
+  "rules": {
+    "no-shadow": "error",
+    "no-extra-boolean-cast": 0,
+    "no-empty": 0
+  }
+}

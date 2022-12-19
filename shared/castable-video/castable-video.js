@@ -1,4 +1,14 @@
-/* global globalThis, chrome, cast */
+class IterableWeakSet extends Set {
+  add(el) {
+    super.add(new WeakRef(el));
+  }
+  forEach(fn) {
+    super.forEach((ref) => {
+      const value = ref.deref();
+      if (value) fn(value);
+    });
+  }
+}
 
 /**
  * CastableVideoMixin
@@ -13,7 +23,7 @@
 const CastableVideoMixin = (superclass) =>
   class CastableVideo extends superclass {
     static observedAttributes = ['cast-src', 'cast-content-type', 'cast-stream-type'];
-    static instances = new Set();
+    static instances = new IterableWeakSet();
 
     static #castElement;
     static get castElement() {
