@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
+		"prepare": "svelte-kit sync",
 		"dev": "vite dev --port 3002",
 		"build": "vite build",
 		"preview": "vite preview",
