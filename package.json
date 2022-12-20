@@ -24,10 +24,6 @@
     "scripts/*",
     "shared/*"
   ],
-  "nohoist": [
-    "examples/svelte-kit/vite/**",
-    "examples/vue-with-typescript/vite/**"
-  ],
   "scripts": {
     "format": "prettier --write .",
     "clean": "turbo run clean",
