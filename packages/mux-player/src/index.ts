@@ -751,6 +751,7 @@ class MuxPlayerElement extends VideoApiElement {
       this.setAttribute(PlayerAttributes.STORYBOARD_SRC, src);
     }
   }
+
   /**
    * Return the storyboard URL when a playback ID or storyboard-src is provided,
    * we aren't an audio player and the stream-type isn't live.
