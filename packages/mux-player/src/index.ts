@@ -738,13 +738,13 @@ class MuxPlayerElement extends VideoApiElement {
    * Return the storyboard-src attribute URL
    */
   get storyboardSrc() {
-    return this.getAttribute(PlayerAttributes.STORYBOARD_SRC) ?? '';
+    return this.getAttribute(PlayerAttributes.STORYBOARD_SRC) ?? undefined;
   }
 
   /**
    * Set the storyboard-src attribute URL
    */
-  set storyboardSrc(src: string) {
+  set storyboardSrc(src: string | undefined) {
     if (!src) {
       this.removeAttribute(PlayerAttributes.STORYBOARD_SRC);
     } else {
