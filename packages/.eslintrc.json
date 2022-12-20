@@ -14,7 +14,7 @@
     "sourceType": "module"
   },
   "globals": {
-    "globalThis": false
+    "globalThis": "readonly"
   },
   "rules": {
     "no-shadow": "error",
