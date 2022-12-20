@@ -308,7 +308,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.progressBar?.setAttribute('aria-description', ariaDescription);
 
     // These should only ever be setup once on instantiation/construction.
-    this.hiddenFileInput?.addEventListener('change', (evt) => {
+    this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
 
       if (file) {
@@ -359,7 +359,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     return this.shadowRoot?.querySelector('#hidden-file-input') as HTMLInputElement;
   }
 
-  handleFilePickerButtonClick(e: MouseEvent) {
+  handleFilePickerButtonClick() {
     // TO-DO: Allow user to reattempt uploading the same file after an error.
     // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
     // Source: https://stackoverflow.com/a/46689013
@@ -466,6 +466,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     switch (this.getAttribute('type')) {
       case TYPES.BAR: {
         if (this.progressBar) this.progressBar.style.width = `${percent}%`;
+        break;
       }
       case TYPES.RADIAL: {
         if (this.svgCircle) {
@@ -558,6 +559,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
 type MuxUploaderElementType = typeof MuxUploaderElement;
 declare global {
+  // eslint-disable-next-line
   var MuxUploaderElement: MuxUploaderElementType;
 }
 
