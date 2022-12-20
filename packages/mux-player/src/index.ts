@@ -762,14 +762,15 @@ class MuxPlayerElement extends VideoApiElement {
       (!this.streamType ||
         ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any))
     ) {
-      // only infer from playbackId if not set on storyboardSrc
-      if (!this.storyboardSrc && this.playbackId) {
+      // only infer from playbackId if not set on storyboardSrc and no token
+      if (this.storyboardSrc && !this.tokens.storyboard) {
+        return this.storyboardSrc;
+      }
+      if (this.playbackId) {
         return getStoryboardURLFromPlaybackId(this.playbackId, {
           domain: this.customDomain,
           token: this.tokens.storyboard,
         });
-      } else {
-        return this.storyboardSrc;
       }
     }
 
