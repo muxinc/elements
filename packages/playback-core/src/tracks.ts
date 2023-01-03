@@ -112,7 +112,7 @@ export function addTextTrack(
   label: string,
   lang?: string,
   id?: string
-): TextTrack | undefined {
+): TextTrack {
   const trackEl = document.createElement('track');
   trackEl.kind = kind;
   trackEl.label = label;
@@ -127,7 +127,7 @@ export function addTextTrack(
   // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
   trackEl.setAttribute('data-removeondestroy', '');
   mediaEl.append(trackEl);
-  return trackEl.track;
+  return trackEl.track as TextTrack;
 }
 
 export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
@@ -136,4 +136,39 @@ export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
     (trackEl: HTMLTrackElement) => trackEl.track === track
   );
   trackElement?.remove();
+}
+
+type CuePoint<T = any> = {
+  timestamp: number;
+  value: T;
+};
+
+const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
+type CuePointsConfig = { label: string };
+export function addCuePoints<T>(
+  mediaEl: HTMLMediaElement,
+  cuePoints: CuePoint<T>[],
+  { label = DEFAULT_CUEPOINTS_TRACK_LABEL }: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+) {
+  const track = addTextTrack(mediaEl, 'metadata', label);
+  track.mode = 'hidden';
+  cuePoints
+    .sort(({ timestamp: timestampA }, { timestamp: timestampB }) => timestampA - timestampB)
+    .forEach(({ timestamp: startime, value }, index, cuePointsArray) => {
+      const lastCuePoint = index === cuePointsArray.length - 1;
+      const endtime = !lastCuePoint
+        ? cuePointsArray[index + 1].timestamp
+        : Number.isFinite(mediaEl.duration)
+        ? mediaEl.duration
+        : Number.MAX_SAFE_INTEGER;
+
+      const cue = new VTTCue(startime, endtime, JSON.stringify(value ?? null));
+      track.addCue(cue);
+      console.log('cues', track.cues);
+    });
+
+  console.log('cues post forEach', track.cues);
+  console.log('track post forEach', track);
+
+  return track;
 }

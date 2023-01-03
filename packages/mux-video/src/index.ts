@@ -13,6 +13,7 @@ import {
   getError,
   CmcdTypes,
   CmcdTypeValues,
+  addCuePoints,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -336,6 +337,10 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
     }
+  }
+
+  addCuePoints<T = any>(cuePoints: { timestamp: number; value: T }[]) {
+    return addCuePoints(this.nativeEl, cuePoints);
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
