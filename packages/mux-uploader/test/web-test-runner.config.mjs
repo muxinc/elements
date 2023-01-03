@@ -2,6 +2,12 @@ import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { importMapsPlugin } from '@web/dev-server-import-maps';
 
 export default {
+  testFramework: {
+    config: {
+      ui: 'bdd',
+      timeout: '5000',
+    },
+  },
   nodeResolve: true,
   plugins: [
     importMapsPlugin({
