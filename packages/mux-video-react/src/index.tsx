@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   allMediaTypes,
   initialize,
+  teardown,
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
@@ -58,9 +59,18 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
       playerSoftwareVersion,
       autoplay: autoPlay,
     };
-    if (mediaElRef.current) {
-      playbackCoreRef.current = initialize(propsWithState, mediaElRef.current, playbackCoreRef.current);
+
+    // mediaEl required caching here so the ref was not null in the unmount callback.
+    let mediaEl = mediaElRef.current;
+    if (mediaEl) {
+      playbackCoreRef.current = initialize(propsWithState, mediaEl, playbackCoreRef.current);
     }
+
+    return () => {
+      teardown(mediaEl, playbackCoreRef.current);
+      mediaEl = undefined;
+      playbackCoreRef.current = undefined;
+    };
   }, [src]);
 
   useEffect(() => {
