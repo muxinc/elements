@@ -46,7 +46,8 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/upchunk": "^3.0.0"
+    "@mux/upchunk": "^3.0.0",
+    "sinon": "^15.0.1"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
