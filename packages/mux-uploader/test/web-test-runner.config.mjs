@@ -9,7 +9,7 @@ export default {
     },
   },
   middleware: [
-    function rewriteIndex(context, next) {
+    function respondWithUploadSuccess(context, next) {
       if (context.url === '/mock-upload-endpoint') {
         console.log(`Received ${context.headers['content-type']} request for ${context.url}`);
         context.body = 'foo';
