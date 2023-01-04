@@ -105,6 +105,7 @@ class CustomVideoElement extends globalThis.HTMLElement {
     slotEl.addEventListener('slotchange', () => {
       slotEl.assignedElements().forEach((el) => {
         if (!['track', 'source'].includes(el.localName)) return;
+        console.log('cues in track el', el.track.cues);
         let cues = [];
         if (el.localName === 'track' && !el.hasAttribute('src')) {
           // copy programmatic cues

@@ -143,15 +143,51 @@ type CuePoint<T = any> = {
   value: T;
 };
 
+const getCuePointsTrack = (
+  mediaEl: HTMLMediaElement,
+  { label = DEFAULT_CUEPOINTS_TRACK_LABEL }: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+) => {
+  return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
+    return trackEl.track.label === label && trackEl.track.kind === 'metadata';
+  })?.track;
+};
+
+const getOrCreateCuePointsTrack = async (
+  mediaEl: HTMLMediaElement,
+  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+) => {
+  let track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  if (track) return track;
+  const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
+  track = addTextTrack(mediaEl, 'metadata', label);
+  track.mode = 'hidden';
+  // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
+  await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
+  return track;
+};
+
 const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
 type CuePointsConfig = { label: string };
-export function addCuePoints<T>(
+export async function addCuePoints<T>(
   mediaEl: HTMLMediaElement,
   cuePoints: CuePoint<T>[],
-  { label = DEFAULT_CUEPOINTS_TRACK_LABEL }: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
 ) {
-  const track = addTextTrack(mediaEl, 'metadata', label);
-  track.mode = 'hidden';
+  let track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  if (!track) {
+    const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
+    track = addTextTrack(mediaEl, 'metadata', label);
+    track.mode = 'hidden';
+    track.addEventListener('cuechange', () => {
+      console.log(track?.activeCues);
+      // mediaEl.dispatchEvent(new)
+    });
+    // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
+    await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
+  }
+  // const track = await getOrCreateCuePointsTrack(mediaEl, cuePointsConfig);
+
+  /** @TODO To determine end values, check against previously added cues instead of cuePoints (CJP) */
   cuePoints
     .sort(({ timestamp: timestampA }, { timestamp: timestampB }) => timestampA - timestampB)
     .forEach(({ timestamp: startime, value }, index, cuePointsArray) => {
@@ -163,12 +199,22 @@ export function addCuePoints<T>(
         : Number.MAX_SAFE_INTEGER;
 
       const cue = new VTTCue(startime, endtime, JSON.stringify(value ?? null));
-      track.addCue(cue);
-      console.log('cues', track.cues);
+      (track as TextTrack).addCue(cue);
     });
 
-  console.log('cues post forEach', track.cues);
-  console.log('track post forEach', track);
-
   return track;
+}
+
+const toCuePoint = (cue: VTTCue) => ({
+  timestamp: cue.startTime,
+  value: JSON.parse(cue.text),
+});
+
+export function getCuePoints(
+  mediaEl: HTMLMediaElement,
+  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+) {
+  const track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  if (!track || !track.cues) return [];
+  return Array.from(track.cues, (cue) => toCuePoint(cue as VTTCue));
 }

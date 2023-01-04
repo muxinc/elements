@@ -14,6 +14,7 @@ import {
   CmcdTypes,
   CmcdTypeValues,
   addCuePoints,
+  getCuePoints,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -339,8 +340,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  addCuePoints<T = any>(cuePoints: { timestamp: number; value: T }[]) {
+  async addCuePoints<T = any>(cuePoints: { timestamp: number; value: T }[]) {
     return addCuePoints(this.nativeEl, cuePoints);
+  }
+
+  get cuePoints() {
+    return getCuePoints(this.nativeEl);
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
@@ -497,5 +502,11 @@ if (!globalThis.customElements.get('mux-video')) {
 }
 
 export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError, VideoEvents };
+
+/** @TODO REMOVE ME: Just testin' (CJP) */
+// const muxVideoEl = new MuxVideoElement();
+// muxVideoEl.addCuePoints<number|boolean>([{ timestamp: 0, value: 20 }, { timestamp: 0, value: true }]);
+// const cuePoints: ({ timestamp: number, value: number | boolean })[] = [{ timestamp: 0, value: 20 }, { timestamp: 0, value: true }];
+// muxVideoEl.addCuePoints(cuePoints);
 
 export default MuxVideoElement;
