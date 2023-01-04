@@ -2,6 +2,10 @@ import { fixture, assert, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-uploader>', () => {
+  let file = new File(['foo'], 'foo.mp4', {
+    type: 'video/mp4',
+  });
+
   it('initiates as expected', async function () {
     const uploader = await fixture(`<mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
@@ -17,15 +21,32 @@ describe('<mux-uploader>', () => {
     assert.equal(uploader.getAttribute('status'), '', 'status matches');
   });
 
+  it('does not init without endpoint', async function () {
+    const uploader = await fixture(`<mux-uploader
+      status
+    ></mux-uploader>`);
+
+    setTimeout(() => {
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      );
+    });
+
+    const { detail } = await oneEvent(uploader, 'uploaderror');
+
+    assert.equal(detail.message, 'No url or endpoint specified -- cannot handleUpload', 'error message matches');
+    assert.exists(uploader.getAttribute('upload-error'), 'upload error is true');
+  });
+
   it('completes a mock upload', async function () {
     const uploader = await fixture(`<mux-uploader
       endpoint="/mock-upload-endpoint"
       status
     ></mux-uploader>`);
-
-    const file = new File(['foo'], 'foo.mp4', {
-      type: 'video/mp4',
-    });
 
     setTimeout(() => {
       uploader.dispatchEvent(
