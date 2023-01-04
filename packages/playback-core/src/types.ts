@@ -2,13 +2,9 @@ import { Options } from 'mux-embed';
 import Hls, { HlsConfig } from 'hls.js';
 
 type KeyTypes = string | number | symbol;
-type Maybe<T> = T | null | undefined;
-
-const isNil = (x: unknown): x is null | undefined => x == undefined;
 
 // Type Guard to determine if a given key is actually a key of some object of type T
-export const isKeyOf = <T extends {} = any>(k: KeyTypes, o: Maybe<T>): k is keyof T => {
-  if (isNil(o)) return false;
+export const isKeyOf = <T extends object = any>(k: KeyTypes, o: T): k is keyof T => {
   return k in o;
 };
 
