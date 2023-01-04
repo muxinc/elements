@@ -1,17 +1,7 @@
-import { fixture, assert, expect, oneEvent, aTimeout } from '@open-wc/testing';
+import { fixture, assert, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
-import sinon from 'sinon';
 
 describe('<mux-uploader>', () => {
-  let server;
-  beforeEach(function () {
-    server = sinon.fakeServer.create();
-  });
-
-  afterEach(function () {
-    server.restore();
-  });
-
   it('initiates as expected', async function () {
     const uploader = await fixture(`<mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
@@ -28,12 +18,6 @@ describe('<mux-uploader>', () => {
   });
 
   it('completes a mock upload', async function () {
-    server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
-      200,
-      { 'Content-Type': 'application/json' },
-      '{success: true}',
-    ]);
-
     const uploader = await fixture(`<mux-uploader
       endpoint="/mock-upload-endpoint"
       status
@@ -43,18 +27,22 @@ describe('<mux-uploader>', () => {
       type: 'video/mp4',
     });
 
-    uploader.dispatchEvent(
-      new CustomEvent('file-ready', {
-        composed: true,
-        bubbles: true,
-        detail: file,
-      })
-    );
+    setTimeout(() => {
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      );
+    });
 
     const { detail } = await oneEvent(uploader, 'uploadstart');
-    await oneEvent(uploader, 'attempt');
-    await aTimeout(1000);
-    server.respond();
-    expect(server.requests.length).to.eq(1);
+    assert.equal(detail.chunkSize, 30720, 'chunk size matches');
+    assert.equal(detail.file, file, 'file matches');
+    assert.exists(uploader.getAttribute('upload-in-progress'), 'upload in progress is true');
+
+    await oneEvent(uploader, 'success');
+    assert.equal(uploader.statusMessage.innerHTML, 'Upload complete!', 'status message matches');
   });
 });

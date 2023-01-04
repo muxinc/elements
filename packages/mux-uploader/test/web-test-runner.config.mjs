@@ -8,6 +8,16 @@ export default {
       timeout: '5000',
     },
   },
+  middleware: [
+    function rewriteIndex(context, next) {
+      if (context.url === '/mock-upload-endpoint') {
+        console.log(`Received ${context.headers['content-type']} request for ${context.url}`);
+        context.body = 'foo';
+        context.status = 200;
+      }
+      return next();
+    },
+  ],
   nodeResolve: true,
   plugins: [
     importMapsPlugin({
