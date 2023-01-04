@@ -466,7 +466,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           fetch(newValue)
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
-            .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
+            .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
       default:
