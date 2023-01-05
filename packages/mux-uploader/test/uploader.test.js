@@ -43,6 +43,8 @@ describe('<mux-uploader>', () => {
   });
 
   it('completes a mock upload', async function () {
+    // Endpoint is a mock endpoint that returns a 200 response
+    // it is defined in the web-test-runner.config.mjs file as a middleware
     const uploader = await fixture(`<mux-uploader
       endpoint="/mock-upload-endpoint"
       status
