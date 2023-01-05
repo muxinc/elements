@@ -11,7 +11,7 @@ import {
   Metadata,
   MediaError,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomAudioElement, { AudioEvents } from './CustomAudioElement';
@@ -346,7 +346,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
           fetch(newValue)
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
-            .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
+            .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
       default:
