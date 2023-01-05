@@ -160,5 +160,8 @@ class ProgressIndicator extends globalThis.HTMLElement {
   }
 }
 
-// Define the new element
-customElements.define('progress-indicator', ProgressIndicator);
+if (!window.customElements.get('mux-uploader-progress-indicator')) {
+  window.customElements.define('mux-uploader-progress-indicator', ProgressIndicator);
+}
+
+export default ProgressIndicator;
