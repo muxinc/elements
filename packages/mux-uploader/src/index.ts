@@ -2,6 +2,7 @@ import { globalThis, document } from 'shared-polyfills';
 // Still need to import this to ensure component registration occurs when using the main module.
 // Consider refactoring module structure to avoid this. (CJP)
 import './mux-uploader-drop';
+import './progress-indicator';
 import * as UpChunk from '@mux/upchunk';
 
 const styles = `
@@ -18,7 +19,7 @@ const styles = `
   width:1px;
   height:1px;
   overflow:hidden;
-  }
+}
 
 p {
   color: black;
@@ -53,15 +54,7 @@ button:active {
   background: var(--button-active-background, #000000);
 }
 
-.bar-type {
-  background: #e6e6e6;
-  border-radius: 100px;
-  position: relative;
-  height: 4px;
-  width: 100%;
-}
-
-.radial-type, .bar-type, .upload-status, .retry-button, .text-container {
+.upload-status, .retry-button, .text-container {
   display: none;
 }
 
@@ -86,24 +79,12 @@ button:active {
   padding-bottom: 16px;
 }
 
-:host([type="radial"][upload-in-progress]) .radial-type {
-  display: block;
-}
-
-:host([type="bar"][upload-in-progress]) .bar-type {
-  display: block;
-}
-
 :host([upload-in-progress][status]) .upload-status {
   display: block;
 }
 
 :host([upload-in-progress]) ::slotted(p) {
   display: block;
-}
-
-:host([type="bar"][upload-error]) .progress-bar {
-  background: #e22c3e;
 }
 
 :host([type="bar"][upload-error]) .status-message {
@@ -135,14 +116,6 @@ button:active {
   margin-bottom: 16px;
 }
 
-.progress-bar {
-  box-shadow: 0 10px 40px -10px #fff;
-  border-radius: 100px;
-  background: var(--progress-bar-fill-color, #000000);
-  height: 4px;
-  width: 0%;
-}
-
 :host([upload-in-progress]) button {
   display: none;
 }
@@ -153,19 +126,6 @@ button:active {
 
 :host([upload-in-progress]) .upload-instruction {
   display: none;
-}
-
-circle {
-  stroke: var(--progress-radial-fill-color, black);
-  stroke-width: 6;  /* Thickness of the circle */
-  fill: transparent; /* Make inside of the circle see-through */
-
-  /* Animation */ 
-  transition: 0.35s;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-  -webkit-transform-origin: 50% 50%;
-  -moz-transform-origin: 50% 50%;
 }
 `;
 
@@ -186,38 +146,10 @@ template.innerHTML = `
 <input id="hidden-file-input" type="file" />
 <slot name="upload-button"><button type="button">Upload video</button></slot>
 <p class="upload-status" id="upload-status"></p>
-
-<div class="bar-type">
-  <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="progress-bar" id="progress-bar" tabindex="0"></div>
-</div>
-<div class="radial-type">
-  <svg
-    width="120"
-    height="120">
-    <!-- To prevent overflow of the SVG wrapper, radius must be  (svgWidth / 2) - (circleStrokeWidth * 2)
-      or use overflow: visible on the svg.-->
-    <circle
-      r="52"
-      cx="60"
-      cy="60"
-    />
-  <svg>
-</div>
+<progress-indicator></progress-indicator>
 `;
 
-// Note: Use "bar" for now since the CSS for radial is WIP. (TD).
-const TYPES = {
-  BAR: 'bar',
-  RADIAL: 'radial',
-};
-
 const defaultFormatProgress = (percent: number) => `${Math.floor(percent)}%`;
-
-const getRadius = (el: MuxUploaderElement) => Number(el.svgCircle?.getAttribute('r'));
-
-const getCircumference = (el: MuxUploaderElement) => getRadius(el) * 2 * Math.PI;
-
-const ariaDescription = 'Media upload progress bar';
 
 const ButtonPressedKeys = ['Enter', ' '];
 
@@ -277,8 +209,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _filePickerButton: HTMLElement | null | undefined;
   protected _endpoint: Endpoint;
-  svgCircle: SVGCircleElement | null | undefined;
-  progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
   statusMessage: HTMLElement | null | undefined;
   retryButton: HTMLElement | null | undefined;
@@ -298,14 +228,10 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     // Since we have a "default slotted" element, we still need to initialize the slottable elements
     // (Note the difference in selectors and related code in 'slotchange' handler, below)
     this.filePickerButton = this.shadowRoot?.querySelector('slot[name=upload-button] > *');
-    this.svgCircle = this.shadowRoot?.querySelector('circle');
-    this.progressBar = this.shadowRoot?.getElementById('progress-bar');
     this.uploadPercentage = this.shadowRoot?.getElementById('upload-status');
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
     this.retryButton = this.shadowRoot?.getElementById('retry-button');
     this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
-
-    this.progressBar?.setAttribute('aria-description', ariaDescription);
 
     // These should only ever be setup once on instantiation/construction.
     this.hiddenFileInput?.addEventListener('change', () => {
@@ -329,7 +255,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   connectedCallback() {
-    this.setDefaultType();
     this.setupRetry();
     //@ts-ignore
     this.addEventListener('file-ready', this.handleUpload);
@@ -401,28 +326,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this._formatProgress = value;
   }
 
-  setDefaultType() {
-    const currentType = this.getAttribute('type');
-
-    if (!currentType) {
-      this.setAttribute('type', TYPES.BAR);
-    }
-
-    if (currentType === TYPES.RADIAL) {
-      if (this.svgCircle) {
-        // strokeDasharray is the size of dashes used to draw the circle with the size of gaps in between.
-        // If the dash number is the same as the gap number, no gap is visible: a full circle.
-        // strokeDashoffset defines where along our circle the dashes (in our case, a dash as long as the
-        // circumference of our circle) begins. The larger the offset, the farther into the circle you're
-        // starting the "dash". In the beginning, offset is the same as the circumference. Meaning, the visible
-        // dash starts at the end so we don't see the full circle. Instead we see a gap the size of the circle.
-        // When the percentage is 100%, offset is 0 meaning the dash starts at the beginning so we can see the circle. (TD).
-        this.svgCircle.style.strokeDasharray = `${getCircumference(this)} ${getCircumference(this)}`;
-        this.svgCircle.style.strokeDashoffset = `${getCircumference(this)}`;
-      }
-    }
-  }
-
   setupRetry() {
     this.retryButton?.addEventListener('click', () => {
       this.resetState();
@@ -461,23 +364,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
   setProgress(percent: number) {
     if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
-    this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
-
-    switch (this.getAttribute('type')) {
-      case TYPES.BAR: {
-        if (this.progressBar) this.progressBar.style.width = `${percent}%`;
-        break;
-      }
-      case TYPES.RADIAL: {
-        if (this.svgCircle) {
-          // The closer the upload percentage gets to 100%, the closer offset gets to 0.
-          // The closer offset gets to 0, the more we can see the circumference of our circle. (TD).
-          const offset = getCircumference(this) - (percent / 100) * getCircumference(this);
-
-          this.svgCircle.style.strokeDashoffset = offset.toString();
-        }
-      }
-    }
   }
 
   handleUpload(evt: CustomEvent) {
@@ -502,7 +388,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
 
     this.setAttribute('upload-in-progress', '');
-    this.progressBar?.focus();
 
     const upload = UpChunk.createUpload({
       endpoint,
