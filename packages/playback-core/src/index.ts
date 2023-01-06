@@ -3,7 +3,7 @@ import Hls from 'hls.js';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
-import { setupTracks, addTextTrack, removeTextTrack, addCuePoints, getCuePoints } from './tracks';
+import { setupTracks, addTextTrack, removeTextTrack, addCuePoints, getCuePoints, getActiveCuePoint } from './tracks';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
   StreamTypes,
@@ -16,7 +16,7 @@ import {
   type MuxMediaPropsInternal,
 } from './types';
 
-export { mux, Hls, MediaError, addTextTrack, removeTextTrack, addCuePoints, getCuePoints };
+export { mux, Hls, MediaError, addTextTrack, removeTextTrack, addCuePoints, getCuePoints, getActiveCuePoint };
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';

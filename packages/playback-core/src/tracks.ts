@@ -152,20 +152,6 @@ const getCuePointsTrack = (
   })?.track;
 };
 
-const getOrCreateCuePointsTrack = async (
-  mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
-) => {
-  let track = getCuePointsTrack(mediaEl, cuePointsConfig);
-  if (track) return track;
-  const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
-  track = addTextTrack(mediaEl, 'metadata', label);
-  track.mode = 'hidden';
-  // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
-  await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
-  return track;
-};
-
 const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
 type CuePointsConfig = { label: string };
 export async function addCuePoints<T>(
@@ -178,14 +164,9 @@ export async function addCuePoints<T>(
     const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
     track = addTextTrack(mediaEl, 'metadata', label);
     track.mode = 'hidden';
-    track.addEventListener('cuechange', () => {
-      console.log(track?.activeCues);
-      // mediaEl.dispatchEvent(new)
-    });
     // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
   }
-  // const track = await getOrCreateCuePointsTrack(mediaEl, cuePointsConfig);
 
   /** @TODO To determine end values, check against previously added cues instead of cuePoints (CJP) */
   cuePoints
@@ -215,6 +196,15 @@ export function getCuePoints(
   cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
 ) {
   const track = getCuePointsTrack(mediaEl, cuePointsConfig);
-  if (!track || !track.cues) return [];
+  if (!track?.cues) return [];
   return Array.from(track.cues, (cue) => toCuePoint(cue as VTTCue));
+}
+
+export function getActiveCuePoint(
+  mediaEl: HTMLMediaElement,
+  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+) {
+  const track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  if (!track?.activeCues?.length) return [];
+  return toCuePoint(track.activeCues[0] as VTTCue);
 }
