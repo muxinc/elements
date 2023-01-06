@@ -83,11 +83,7 @@ button:active {
   display: block;
 }
 
-:host([type="bar"][upload-error]) .status-message {
-  color: #e22c3e;
-}
-
-:host([type="radial"][upload-error]) .status-message {
+:host([upload-error]) .status-message {
   color: #e22c3e;
 }
 
