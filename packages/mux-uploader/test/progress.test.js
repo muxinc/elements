@@ -8,7 +8,7 @@ describe('<mux-uploader>', () => {
       status
     ></mux-uploader>`);
 
-    const indicator = uploader.shadowRoot.querySelector('mux-uploader-progress-indicator');
+    const indicator = uploader.shadowRoot.querySelector('mux-uploader-progress');
     assert.equal(indicator.getAttribute('type'), 'bar', 'default progress type is reflected');
   });
 });
