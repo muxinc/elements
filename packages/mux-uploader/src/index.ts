@@ -1,6 +1,6 @@
 export * as constants from './constants';
 import MuxUploader, { MuxUploaderElementEventMap } from './mux-uploader';
-import MuxUploaderProgress from './progress';
+import MuxUploaderProgress from './mux-uploader-progress';
 import MuxUploaderDrop from './mux-uploader-drop';
 
 export { MuxUploaderDrop, MuxUploaderProgress };

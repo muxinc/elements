@@ -1,11 +1,6 @@
 import { globalThis, document } from 'shared-polyfills';
-
+import { ProgressTypes } from './constants';
 const template = document.createElement('template');
-const TYPES = {
-  BAR: 'bar',
-  RADIAL: 'radial',
-};
-
 const ariaDescription = 'Media upload progress bar';
 
 template.innerHTML = `
@@ -79,7 +74,7 @@ template.innerHTML = `
 </div>
 `;
 
-class Progress extends globalThis.HTMLElement {
+class MuxUploaderProgressElement extends globalThis.HTMLElement {
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
 
@@ -105,11 +100,11 @@ class Progress extends globalThis.HTMLElement {
       this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
 
       switch (this.getAttribute('type')) {
-        case TYPES.BAR: {
+        case ProgressTypes.BAR: {
           if (this.progressBar) this.progressBar.style.width = `${percent}%`;
           break;
         }
-        case TYPES.RADIAL: {
+        case ProgressTypes.RADIAL: {
           if (this.svgCircle) {
             // The closer the upload percentage gets to 100%, the closer offset gets to 0.
             // The closer offset gets to 0, the more we can see the circumference of our circle. (TD).
@@ -141,10 +136,10 @@ class Progress extends globalThis.HTMLElement {
     const currentType = this.getAttribute('type');
 
     if (!currentType) {
-      this.setAttribute('type', TYPES.BAR);
+      this.setAttribute('type', ProgressTypes.BAR);
     }
 
-    if (currentType === TYPES.RADIAL) {
+    if (currentType === ProgressTypes.RADIAL) {
       if (this.svgCircle) {
         // strokeDasharray is the size of dashes used to draw the circle with the size of gaps in between.
         // If the dash number is the same as the gap number, no gap is visible: a full circle.
@@ -161,7 +156,7 @@ class Progress extends globalThis.HTMLElement {
 }
 
 if (!globalThis.customElements.get('mux-uploader-progress')) {
-  globalThis.customElements.define('mux-uploader-progress', Progress);
+  globalThis.customElements.define('mux-uploader-progress', MuxUploaderProgressElement);
 }
 
-export default Progress;
+export default MuxUploaderProgressElement;
