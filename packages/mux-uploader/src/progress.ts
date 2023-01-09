@@ -79,7 +79,7 @@ template.innerHTML = `
 </div>
 `;
 
-class ProgressIndicator extends globalThis.HTMLElement {
+class Progress extends globalThis.HTMLElement {
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
 
@@ -160,8 +160,8 @@ class ProgressIndicator extends globalThis.HTMLElement {
   }
 }
 
-if (!globalThis.customElements.get('mux-uploader-progress-indicator')) {
-  globalThis.customElements.define('mux-uploader-progress-indicator', ProgressIndicator);
+if (!globalThis.customElements.get('mux-uploader-progress')) {
+  globalThis.customElements.define('mux-uploader-progress', Progress);
 }
 
-export default ProgressIndicator;
+export default Progress;
