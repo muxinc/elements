@@ -138,7 +138,7 @@ template.innerHTML = `
 <input id="hidden-file-input" type="file" />
 <slot name="upload-button"><button type="button">Upload video</button></slot>
 <p class="upload-status" id="upload-status"></p>
-<mux-uploader-progress-indicator></mux-uploader-progress-indicator>
+<mux-uploader-progress></mux-uploader-progress>
 `;
 
 const defaultFormatProgress = (percent: number) => `${Math.floor(percent)}%`;
