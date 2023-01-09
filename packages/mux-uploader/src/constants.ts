@@ -1,1 +1,9 @@
-export const PROGRESS_INDICATOR_TYPE_BAR = 'bar';
+export type ProgressTypes = {
+  BAR: 'bar';
+  RADIAL: 'radial';
+};
+
+export const ProgressTypes: ProgressTypes = {
+  BAR: 'bar',
+  RADIAL: 'radial',
+};
