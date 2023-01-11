@@ -93,8 +93,8 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
   }
 }
 
-if (!globalThis.customElements.get('mux-uploader-select')) {
-  globalThis.customElements.define('mux-uploader-select', MuxUploaderFileSelectElement);
+if (!globalThis.customElements.get('mux-uploader-file-select')) {
+  globalThis.customElements.define('mux-uploader-file-select', MuxUploaderFileSelectElement);
 }
 
 export default MuxUploaderFileSelectElement;
