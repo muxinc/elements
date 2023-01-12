@@ -1,7 +1,7 @@
 import { fixture, assert } from '@open-wc/testing';
 import '../src/index.ts';
 
-describe('<mux-uploader>', () => {
+describe('<mux-uploader-file-select>', () => {
   it('slots as expected', async function () {
     const uploader = await fixture(`
     <mux-uploader
