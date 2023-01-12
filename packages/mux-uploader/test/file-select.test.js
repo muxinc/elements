@@ -1,4 +1,4 @@
-import { fixture, assert, elementUpdated } from '@open-wc/testing';
+import { fixture, assert } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-uploader>', () => {
