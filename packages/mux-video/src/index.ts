@@ -345,8 +345,8 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return addCuePoints(this.nativeEl, cuePoints);
   }
 
-  get activePoint() {
-    return getActiveCuePoint(this.nativeEl)[0];
+  get activeCuePoint() {
+    return getActiveCuePoint(this.nativeEl);
   }
 
   get cuePoints() {
