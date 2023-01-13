@@ -1,4 +1,5 @@
 import Hls from 'hls.js';
+import { addEventListenerWithTeardown } from './util';
 
 export function setupTracks(
   mediaEl: HTMLMediaElement,
@@ -222,4 +223,24 @@ export function getActiveCuePoint(
   const track = getCuePointsTrack(mediaEl, cuePointsConfig);
   if (!track?.activeCues?.length) return undefined;
   return toCuePoint(track.activeCues[0] as VTTCue);
+}
+
+export function addActiveCuePointChangeCallback<T>(
+  mediaEl: HTMLMediaElement,
+  activeCuePointChangeCallback: (activeCuePoint: CuePoint<T>) => void,
+  cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
+) {
+  const cuePointsTrack = getCuePointsTrack(mediaEl, cuePointsConfig);
+  addEventListenerWithTeardown(
+    mediaEl,
+    'cuechange',
+    () => {
+      const activeCuePoint = getActiveCuePoint(mediaEl);
+      if (activeCuePoint) {
+        activeCuePointChangeCallback(activeCuePoint);
+      }
+    },
+    {},
+    cuePointsTrack
+  );
 }
