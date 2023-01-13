@@ -87,7 +87,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
     // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
     // Source: https://stackoverflow.com/a/46689013
     const attr = this.getAttribute('mux-uploader');
-    const controller = attr ? document.getElementById(attr) : (<ShadowRoot>this.getRootNode()).host;
+    const controller = attr ? document.getElementById(attr) : (this.getRootNode() as ShadowRoot).host;
 
     controller?.shadowRoot?.querySelector<HTMLInputElement>('#hidden-file-input')?.click();
   }
