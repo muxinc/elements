@@ -105,7 +105,7 @@ template.innerHTML = `
 <input id="hidden-file-input" type="file" />
 
 <mux-uploader-file-select>
-  <slot name="upload-button"></slot>
+  <slot name="file-select"></slot>
 </mux-uploader-file-select>
 
 <p class="upload-status" id="upload-status"></p>

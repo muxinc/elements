@@ -8,7 +8,7 @@ describe('<mux-uploader-file-select>', () => {
       endpoint="https://my-authenticated-url/storage?your-url-params"
       status
     >
-      <button class="btn" type="button" slot="upload-button">
+      <button class="btn" type="button" slot="file-select">
         Pick a file
       </button>
     </mux-uploader>`);
@@ -17,7 +17,7 @@ describe('<mux-uploader-file-select>', () => {
     const slot = el.querySelector('slot');
     const button = slot.assignedNodes()[0];
 
-    assert.equal(slot.getAttribute('name'), 'upload-button', 'slot name is reflected');
+    assert.equal(slot.getAttribute('name'), 'file-select', 'slot name is reflected');
     assert.equal(button.getAttribute('class'), 'btn', 'slot content is reflected');
     assert.equal(button.innerText, 'Pick a file', 'slot content is reflected');
   });
