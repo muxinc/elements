@@ -155,9 +155,11 @@ describe('textTracks', () => {
       it('should get the active cuePoint based on the media element currentTime', async () => {
         mediaEl.src = 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4';
         mediaEl.load();
-        const expectedCuePoint = cuePoints[1];
         await oneEvent(mediaEl, 'canplay');
         const track = await addCuePoints(mediaEl, cuePoints);
+        const expectedCuePoint = cuePoints[1];
+        // NOTE: There are precision considerations with active cues and currentTime. To test, seek
+        // "just past" the start time/timestamp of the cuePoint.
         mediaEl.currentTime = expectedCuePoint.timestamp + 0.001;
         await oneEvent(track, 'cuechange');
         const actualCuePoint = getActiveCuePoint(mediaEl);
@@ -167,15 +169,35 @@ describe('textTracks', () => {
       it('should get the closest previous cuePoint when seeking between cuePoint timestamps', async () => {
         mediaEl.src = 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4';
         mediaEl.load();
-        const expectedCuePoint = cuePoints[1];
-        const currentTime = expectedCuePoint.timestamp + (cuePoints[2].timestamp - expectedCuePoint.timestamp) / 2;
         await oneEvent(mediaEl, 'canplay');
         const track = await addCuePoints(mediaEl, cuePoints);
+        const expectedCuePoint = cuePoints[1];
+        const currentTime = expectedCuePoint.timestamp + (cuePoints[2].timestamp - expectedCuePoint.timestamp) / 2;
         mediaEl.currentTime = currentTime;
         await oneEvent(track, 'cuechange');
-        await waitUntil(() => !!track.activeCues[0].startTime);
         const actualCuePoint = getActiveCuePoint(mediaEl);
         assert.deepEqual(actualCuePoint, expectedCuePoint);
+      });
+
+      it('should get the closest previous cuePoints even after adding multiple times', async () => {
+        mediaEl.src = 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4';
+        mediaEl.load();
+        await oneEvent(mediaEl, 'canplay');
+        const track = await addCuePoints(mediaEl, cuePoints);
+        const expectedCuePoint1 = cuePoints[1];
+        const expectedCuePoint2 = {
+          timestamp: expectedCuePoint1.timestamp + (cuePoints[2].timestamp - expectedCuePoint1.timestamp) / 2,
+          value: { label: 'Additional CuePoint', showDuration: 10 },
+        };
+        await addCuePoints(mediaEl, [expectedCuePoint2]);
+        mediaEl.currentTime = expectedCuePoint1.timestamp + 1;
+        await oneEvent(track, 'cuechange');
+        const actualCuePoint1 = getActiveCuePoint(mediaEl);
+        assert.deepEqual(actualCuePoint1, expectedCuePoint1);
+        mediaEl.currentTime = expectedCuePoint2.timestamp + 1;
+        await oneEvent(track, 'cuechange');
+        const actualCuePoint2 = getActiveCuePoint(mediaEl);
+        assert.deepEqual(actualCuePoint2, expectedCuePoint2);
       });
     });
   });
