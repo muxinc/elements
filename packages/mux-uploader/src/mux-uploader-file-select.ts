@@ -44,7 +44,7 @@ button:active {
 `;
 
 class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
-  protected _filePickerButton: HTMLElement | null | undefined;
+  #filePickerButton: HTMLElement | null | undefined;
 
   constructor() {
     super();
@@ -67,18 +67,18 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
   }
 
   protected get filePickerButton() {
-    return this._filePickerButton;
+    return this.#filePickerButton;
   }
 
   protected set filePickerButton(value: HTMLElement | null | undefined) {
-    if (value === this._filePickerButton) return;
-    if (this._filePickerButton) {
-      this._filePickerButton.removeEventListener('click', this.handleFilePickerButtonClick);
+    if (value === this.#filePickerButton) return;
+    if (this.#filePickerButton) {
+      this.#filePickerButton.removeEventListener('click', this.handleFilePickerButtonClick);
     }
 
-    this._filePickerButton = value;
-    if (this._filePickerButton) {
-      this._filePickerButton.addEventListener('click', this.handleFilePickerButtonClick);
+    this.#filePickerButton = value;
+    if (this.#filePickerButton) {
+      this.#filePickerButton.addEventListener('click', this.handleFilePickerButtonClick);
     }
   }
 
