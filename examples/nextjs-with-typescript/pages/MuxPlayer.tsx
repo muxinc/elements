@@ -43,6 +43,7 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     // 'stream-type': streamType,
     tokens,
     'custom-domain': customDomain,
+    'storyboard-src': storyboardSrc,
     audio,
     description: title,
     placeholder,
@@ -57,6 +58,7 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     audio,
     tokens,
     customDomain,
+    storyboardSrc,
     metadata,
     title,
     placeholder,
@@ -97,6 +99,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   tokens: undefined,
   playbackId: undefined,
   streamType: undefined,
+  storyboardSrc: undefined,
 });
 
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
@@ -328,6 +331,7 @@ function MuxPlayerPage({ location }: Props) {
         placeholder={state.placeholder}
         playbackId={state.playbackId}
         tokens={state.tokens}
+        storyboardSrc={state.storyboardSrc}
         customDomain={state.customDomain}
         forwardSeekOffset={state.forwardSeekOffset}
         backwardSeekOffset={state.backwardSeekOffset}
@@ -447,6 +451,12 @@ function MuxPlayerPage({ location }: Props) {
         <URLRenderer
           value={state.poster}
           name="poster"
+          onChange={genericOnChange}
+          placeholder={`Inferred from playbackId`}
+        />
+        <URLRenderer
+          value={state.storyboardSrc}
+          name="storyboardSrc"
           onChange={genericOnChange}
           placeholder={`Inferred from playbackId`}
         />
