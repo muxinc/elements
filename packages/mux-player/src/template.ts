@@ -108,12 +108,12 @@ export const content = (props: MuxTemplateProps) => html`
         : html``}
     </mux-video>
     ${isLiveOrDVR(props)
-      ? html`<button
+      ? html`<media-live-button
           slot="seek-live"
           part="${isLive(props) ? 'top' : 'bottom'} seek-live button"
           disabled="${props.inLiveWindow || !props.hasSrc || props.isDialogOpen}"
           aria-disabled="${(props.inLiveWindow || !props.hasSrc || props.isDialogOpen) && 'true'}"
-          in-live-window="${props.inLiveWindow}"
+          media-time-is-live="${props.inLiveWindow}"
           onclick="${function (this: HTMLButtonElement, evt: Event) {
             props.onSeekToLive?.(evt);
             if (props.paused) {
@@ -121,10 +121,7 @@ export const content = (props: MuxTemplateProps) => html`
               (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
             }
           }}"
-        >
-          <svg viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"></circle></svg>
-          Live
-        </button>`
+        ></media-live-button>`
       : html``}
     <mxp-dialog
       no-auto-hide
