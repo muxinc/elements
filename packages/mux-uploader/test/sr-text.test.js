@@ -1,4 +1,6 @@
-import { fixture, assert, oneEvent } from '@open-wc/testing';
+import { server } from './utils/server';
+
+import { fixture, assert, oneEvent, aTimeout } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-uploader-sr-text>', () => {
@@ -7,10 +9,14 @@ describe('<mux-uploader-sr-text>', () => {
       type: 'video/mp4',
     });
 
-    // Endpoint is a mock endpoint that returns a 200 response
-    // it is defined in the web-test-runner.config.mjs file as a middleware
+    server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
+      200,
+      { 'Content-Type': 'application/json' },
+      '{success: true}',
+    ]);
+
     const uploader = await fixture(`<mux-uploader
-      endpoint="/mock-upload-endpoint"
+      endpoint="https://mock-upload-endpoint.com"
       status
     ></mux-uploader>`);
 
@@ -26,6 +32,8 @@ describe('<mux-uploader-sr-text>', () => {
       );
     });
 
+    await aTimeout(100);
+    server.respond();
     await oneEvent(uploader, 'success');
     assert.equal(sr.srOnlyText.innerHTML, 'Upload complete!', 'status message matches');
   });
