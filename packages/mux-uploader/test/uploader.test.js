@@ -1,4 +1,5 @@
-import { fixture, assert, oneEvent } from '@open-wc/testing';
+import { server } from './utils/server';
+import { fixture, assert, oneEvent, aTimeout } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-uploader>', () => {
@@ -42,10 +43,14 @@ describe('<mux-uploader>', () => {
   });
 
   it('completes a mock upload', async function () {
-    // Endpoint is a mock endpoint that returns a 200 response
-    // it is defined in the web-test-runner.config.mjs file as a middleware
+    server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
+      200,
+      { 'Content-Type': 'application/json' },
+      '{success: true}',
+    ]);
+
     const uploader = await fixture(`<mux-uploader
-      endpoint="/mock-upload-endpoint"
+      endpoint="https://mock-upload-endpoint.com"
       status
     ></mux-uploader>`);
 
@@ -63,6 +68,10 @@ describe('<mux-uploader>', () => {
     assert.equal(detail.chunkSize, 30720, 'chunk size matches');
     assert.equal(detail.file, file, 'file matches');
     assert.exists(uploader.getAttribute('upload-in-progress'), 'upload in progress is true');
+
+    await aTimeout(100);
+    server.respond();
+    assert.equal(server.lastRequest.url, 'https://mock-upload-endpoint.com', 'request url matches');
 
     await oneEvent(uploader, 'success');
     assert.equal(uploader.statusMessage.innerHTML, 'Upload complete!', 'status message matches');
