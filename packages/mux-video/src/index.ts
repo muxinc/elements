@@ -6,7 +6,6 @@ import {
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
-  ValueOf,
   toMuxVideoURL,
   Metadata,
   MediaError,
@@ -17,7 +16,14 @@ import {
   getCuePoints,
   getActiveCuePoint,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type {
+  PlaybackCore,
+  PlaybackEngine,
+  Autoplay,
+  ExtensionMimeTypeMap,
+  ValueOf,
+  CuePoint,
+} from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
@@ -78,6 +84,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   constructor() {
     super();
     this.#playerInitTime = generatePlayerInitTime();
+    this.onCuePointChange = this.onCuePointChange.bind(this);
   }
 
   get preferCmcd() {
@@ -393,6 +400,16 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     if (!!this.mux) {
       this.mux.emit('hb', this.#metadata);
     }
+  }
+
+  // NOTE: This needs to be public so it is accessible to playback-core
+  onCuePointChange<T = any>(cuePoint: CuePoint<T>): void {
+    const evt = new CustomEvent('cuepointchange', {
+      composed: true,
+      bubbles: true,
+      detail: cuePoint,
+    });
+    this.dispatchEvent(evt);
   }
 
   async #requestLoad() {

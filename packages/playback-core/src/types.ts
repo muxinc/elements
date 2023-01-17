@@ -1,5 +1,6 @@
-import { Options } from 'mux-embed';
-import Hls, { HlsConfig } from 'hls.js';
+import type { Options } from 'mux-embed';
+import type Hls from 'hls.js';
+import type { HlsConfig } from 'hls.js';
 
 type KeyTypes = string | number | symbol;
 type Maybe<T> = T | null | undefined;
@@ -116,6 +117,11 @@ export const allMediaTypes = [
   // ...(shorthandKeys.map((k) => k.toLowerCase()) as `${Lowercase<keyof MimeTypeShorthandMap>}`[]),
 ] as MediaTypes[];
 
+export type CuePoint<T = any> = {
+  timestamp: number;
+  value: T;
+};
+
 export type MuxMediaPropTypes = {
   envKey: Options['data']['env_key'];
   debug: Options['debug'] & Hls['config']['debug'];
@@ -141,4 +147,5 @@ export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareName: Options['data']['player_software_name'];
   playerSoftwareVersion: Options['data']['player_software_version'];
+  onCuePointChange: <T = any>(activeCuePoint: CuePoint<T>) => void;
 };

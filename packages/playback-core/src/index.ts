@@ -3,7 +3,15 @@ import Hls from 'hls.js';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
-import { setupTracks, addTextTrack, removeTextTrack, addCuePoints, getCuePoints, getActiveCuePoint } from './tracks';
+import {
+  setupTracks,
+  addTextTrack,
+  removeTextTrack,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
+  addActiveCuePointChangeCallback,
+} from './tracks';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
   StreamTypes,
@@ -79,6 +87,8 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
 
+  addCuePoints(mediaEl, []);
+  addActiveCuePointChangeCallback(mediaEl, props.onCuePointChange);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
