@@ -25,31 +25,6 @@ input[type="file"] {
   display: none;
 }
 
-button {
-  cursor: pointer;
-  line-height: 16px;
-  background: var(--button-background-color, #fff);
-  border: var(--button-border, 1px solid #000000);
-  color: #000000;
-  padding: var(--button-padding, 16px 24px);
-  border-radius: var(--button-border-radius, 4px);
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  font-size: inherit;
-  position: relative;
-}
-
-button:hover {
-  color: var(--button-hover-text, #fff);
-  background: var(--button-hover-background, #404040);
-}
-
-button:active {
-  color: var(--button-active-text, #fff);
-  background: var(--button-active-background, #000000);
-}
-
 .upload-status, .retry-button, .text-container {
   display: none;
 }
@@ -108,14 +83,6 @@ button:active {
   margin-bottom: 16px;
 }
 
-:host([upload-in-progress]) button {
-  display: none;
-}
-
-:host([upload-in-progress]) ::slotted(button) {
-  display: none;
-}
-
 :host([upload-in-progress]) .upload-instruction {
   display: none;
 }
@@ -136,7 +103,11 @@ template.innerHTML = `
 </div>
 
 <input id="hidden-file-input" type="file" />
-<slot name="upload-button"><button type="button">Upload video</button></slot>
+
+<mux-uploader-file-select>
+  <slot name="file-select"></slot>
+</mux-uploader-file-select>
+
 <p class="upload-status" id="upload-status"></p>
 <mux-uploader-progress></mux-uploader-progress>
 `;
@@ -199,7 +170,6 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   protected _formatProgress: ((percent: number) => string) | null | undefined;
-  protected _filePickerButton: HTMLElement | null | undefined;
   protected _endpoint: Endpoint;
   uploadPercentage: HTMLElement | null | undefined;
   statusMessage: HTMLElement | null | undefined;
@@ -209,23 +179,15 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   constructor() {
     super();
 
-    // NOTE: Binding this so that we have a reference to remove the event listener
-    // but can still reference `this` in the method. (CJP)
-    this.handleFilePickerButtonClick = this.handleFilePickerButtonClick.bind(this);
-
     const shadow = this.attachShadow({ mode: 'open' });
     const uploaderHtml = template.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
 
-    // Since we have a "default slotted" element, we still need to initialize the slottable elements
-    // (Note the difference in selectors and related code in 'slotchange' handler, below)
-    this.filePickerButton = this.shadowRoot?.querySelector('slot[name=upload-button] > *');
     this.uploadPercentage = this.shadowRoot?.getElementById('upload-status');
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
     this.retryButton = this.shadowRoot?.getElementById('retry-button');
     this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
 
-    // These should only ever be setup once on instantiation/construction.
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
 
@@ -238,11 +200,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
           })
         );
       }
-    });
-    this.shadowRoot?.querySelector('slot[name=upload-button]')?.addEventListener('slotchange', () => {
-      this.filePickerButton = (
-        this.shadowRoot?.querySelector('slot[name=upload-button]') as HTMLSlotElement
-      )?.assignedNodes()[0] as HTMLButtonElement;
     });
   }
 
@@ -257,30 +214,8 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.removeEventListener('file-ready', this.handleUpload, false);
   }
 
-  protected get filePickerButton() {
-    return this._filePickerButton;
-  }
-
-  protected set filePickerButton(value: HTMLElement | null | undefined) {
-    if (value === this._filePickerButton) return;
-    if (this._filePickerButton) {
-      this._filePickerButton.removeEventListener('click', this.handleFilePickerButtonClick);
-    }
-    this._filePickerButton = value;
-    if (this._filePickerButton) {
-      this._filePickerButton.addEventListener('click', this.handleFilePickerButtonClick);
-    }
-  }
-
   protected get hiddenFileInput() {
     return this.shadowRoot?.querySelector('#hidden-file-input') as HTMLInputElement;
-  }
-
-  handleFilePickerButtonClick() {
-    // TO-DO: Allow user to reattempt uploading the same file after an error.
-    // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
-    // Source: https://stackoverflow.com/a/46689013
-    this.hiddenFileInput.click();
   }
 
   get endpoint(): Endpoint {
