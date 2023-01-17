@@ -81,7 +81,7 @@ The default uploader looks nice out of the box, but it probably isn't exactly th
 
 ### Using your own button
 
-You can use your own button with the `slot="upload-button"` attribute.
+You can use your own button with the `slot="file-select"` attribute.
 
 This is really handy if, for example, you already have a `.btn` class that styles buttons in your application.
 
@@ -99,9 +99,9 @@ This is really handy if, for example, you already have a `.btn` class that style
   }
 </style>
 
-<!-- slot="upload-button" is doing the magic here -->
+<!-- slot="file-select" is doing the magic here -->
 <mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
-  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+  <button class="btn" type="button" slot="file-select">Pick a file</button>
 </mux-uploader>
 ```
 
@@ -119,7 +119,7 @@ By default, the progress bar color is black with a gray background, you can cust
 </style>
 
 <mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
-  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+  <button class="btn" type="button" slot="file-select">Pick a file</button>
 </mux-uploader>
 ```
 
@@ -140,7 +140,7 @@ By default the status text shows a percentage. If you want to center the status 
 </style>
 
 <mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
-  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+  <button class="btn" type="button" slot="file-select">Pick a file</button>
 </mux-uploader>
 ```
 
@@ -215,7 +215,7 @@ Here's a full example of a custom button, customized progress text and drag and 
 
 <mux-uploader-drop mux-uploader="my-uploader">
   <mux-uploader id="my-uploader" status endpoint="https://my-authenticated-url/storage?your-url-params">
-    <button class="btn" type="button" slot="upload-button">Pick a file</button>
+    <button class="btn" type="button" slot="file-select">Pick a file</button>
   </mux-uploader>
 </mux-uploader-drop>
 ```
