@@ -63,6 +63,10 @@ a {
   --media-seek-forward-button: var(--seek-forward-button, var(--top-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--top-mute-button));
   --media-captions-button: var(--captions-button, var(--top-captions-button));
+  --media-captions-menu-button: var(
+    --captions-menu-button,
+    var(--media-captions-button, var(--top-captions-menu-button))
+  );
   --media-airplay-button: var(--airplay-button, var(--top-airplay-button));
   --media-pip-button: var(--pip-button, var(--top-pip-button));
   --media-fullscreen-button: var(--fullscreen-button, var(--top-fullscreen-button));
@@ -84,6 +88,10 @@ a {
   --media-seek-forward-button: var(--seek-forward-button, var(--center-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--center-mute-button));
   --media-captions-button: var(--captions-button, var(--center-captions-button));
+  --media-captions-menu-button: var(
+    --captions-menu-button,
+    var(--media-captions-button, var(--center-captions-menu-button))
+  );
   --media-airplay-button: var(--airplay-button, var(--center-airplay-button));
   --media-pip-button: var(--pip-button, var(--center-pip-button));
   --media-fullscreen-button: var(--fullscreen-button, var(--center-fullscreen-button));
@@ -104,6 +112,10 @@ a {
   --media-seek-forward-button: var(--seek-forward-button, var(--bottom-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--bottom-mute-button));
   --media-captions-button: var(--captions-button, var(--bottom-captions-button));
+  --media-captions-menu-button: var(
+    --captions-menu-button,
+    var(--media-captions-button, var(--bottom-captions-menu-button))
+  );
   --media-airplay-button: var(--airplay-button, var(--bottom-airplay-button));
   --media-pip-button: var(--pip-button, var(--bottom-pip-button));
   --media-fullscreen-button: var(--fullscreen-button, var(--bottom-fullscreen-button));
@@ -134,8 +146,8 @@ a {
 ::part(mute button) {
   display: var(--media-controls, var(--media-mute-button));
 }
-::part(captions button) {
-  display: var(--media-controls, var(--media-captions-button));
+::part(captions menu-button) {
+  display: var(--media-controls, var(--media-captions-menu-button));
 }
 ::part(airplay button) {
   display: var(--media-controls, var(--media-airplay-button));
