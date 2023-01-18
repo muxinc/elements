@@ -753,7 +753,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('slot[name="seek-live"]');
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.notExists(seekToLiveEl);
   });
@@ -766,7 +766,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('slot[name="seek-live"]');
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -779,7 +779,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('slot[name="seek-live"]');
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -792,7 +792,7 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('[part~="seek-live"]');
+    const seekToLiveEl = playerEl.shadowRoot.querySelector('media-live-button');
     // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
     try {
       await playerEl.play();

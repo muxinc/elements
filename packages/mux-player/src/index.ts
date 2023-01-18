@@ -17,7 +17,6 @@ import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getPlayerVersion,
   isInLiveWindow,
-  seekToLive,
   toPropName,
   AttributeTokenList,
   getPosterURLFromPlaybackId,
@@ -160,7 +159,6 @@ class MuxPlayerElement extends VideoApiElement {
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
       if (!isFocusedElementInPlayer) e.preventDefault();
     },
-    onSeekToLive: () => seekToLive(this),
   };
 
   static get observedAttributes() {
@@ -306,19 +304,6 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   #monitorLiveWindow() {
-    this.mediaController?.addEventListener('mediaplayrequest', (event) => {
-      if (
-        (event.target as Element)?.localName === 'media-play-button' &&
-        this.streamType &&
-        [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any)
-      ) {
-        // playback core should handle the seek to live on first play
-        if (this.hasPlayed) {
-          seekToLive(this);
-        }
-      }
-    });
-
     const updateLiveWindow = () => {
       const nextInLiveWindow = isInLiveWindow(this);
       const prevInLiveWindow = this.#state.inLiveWindow;
