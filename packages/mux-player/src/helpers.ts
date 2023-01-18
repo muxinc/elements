@@ -94,15 +94,6 @@ export const getLiveTime = (el: MuxPlayerElement) => {
   );
 };
 
-export const seekToLive = (el: MuxPlayerElement) => {
-  const liveTime = getLiveTime(el);
-  if (liveTime == undefined) {
-    console.warn('attempting to seek to live but cannot determine live edge time!');
-    return;
-  }
-  el.currentTime = liveTime;
-};
-
 export const LL_LIVE_SEGMENT_SECS = 1;
 export const LIVE_SEGMENT_SECS = 5;
 export const DEFAULT_HOLDBACK = 3;

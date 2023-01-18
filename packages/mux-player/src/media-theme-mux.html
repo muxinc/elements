@@ -501,7 +501,7 @@
       </template>
       <media-control-bar>
         {{>PlayButton}}
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
         {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>TimeRange}} {{>MuteButton}} {{>VolumeRange}}
         {{>PlaybackRateButton}} {{>AirplayButton}} {{>CastButton}}
       </media-control-bar>
@@ -513,7 +513,7 @@
       </template>
       <media-control-bar>
         {{>PlayButton}}
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
         {{>MuteButton}} {{>VolumeRange}}
         <div class="spacer"></div>
         {{>AirplayButton}} {{>CastButton}}
@@ -558,7 +558,7 @@
 
     <template if="layout == 'live extra-small'">
       <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
       </media-control-bar>
       <media-control-bar>
         {{>PlayButton}} {{>MuteButton}}
@@ -569,7 +569,7 @@
 
     <template if="layout == 'live small'">
       <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
         {{>TitleDisplay}}
       </media-control-bar>
       <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>
@@ -582,7 +582,7 @@
 
     <template if="layout == 'live large'">
       <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
         {{>TitleDisplay}}
       </media-control-bar>
       <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>
@@ -595,7 +595,7 @@
 
     <template if="layout == 'dvr extra-small'">
       <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
       </media-control-bar>
       {{>TimeRange}}
       <media-control-bar>
@@ -607,7 +607,7 @@
 
     <template if="layout == 'dvr small'">
       <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
         {{>TitleDisplay}}
       </media-control-bar>
       <div slot="centered-chrome" class="center-controls">
@@ -624,7 +624,7 @@
 
     <template if="layout == 'dvr large'">
       <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
+        <media-live-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-live-button>
         {{>TitleDisplay}}
       </media-control-bar>
       <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>

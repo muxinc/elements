@@ -107,22 +107,6 @@ export const content = (props: MuxTemplateProps) => html`
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
     </mux-video>
-    ${isLiveOrDVR(props)
-      ? html`<media-live-button
-          slot="seek-live"
-          part="${isLive(props) ? 'top' : 'bottom'} seek-live button"
-          disabled="${props.inLiveWindow || !props.hasSrc || props.isDialogOpen}"
-          aria-disabled="${(props.inLiveWindow || !props.hasSrc || props.isDialogOpen) && 'true'}"
-          media-time-is-live="${props.inLiveWindow}"
-          onclick="${function (this: HTMLButtonElement, evt: Event) {
-            props.onSeekToLive?.(evt);
-            if (props.paused) {
-              const playRequestEvt = new CustomEvent('mediaplayrequest', { composed: true, bubbles: true });
-              (this as HTMLButtonElement).dispatchEvent(playRequestEvt);
-            }
-          }}"
-        ></media-live-button>`
-      : html``}
     <mxp-dialog
       no-auto-hide
       open="${props.isDialogOpen ?? false}"
