@@ -1,6 +1,4 @@
 import { toQuery, camelCase, parseJwt } from './utils';
-import type MuxPlayerElement from '.';
-import { StreamTypes } from '@mux/playback-core';
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 
@@ -85,38 +83,6 @@ const attrToPropNameMap: Record<string, string> = {
 export function toPropName(attrName: string) {
   return attrToPropNameMap[attrName] ?? camelCase(attrName);
 }
-
-export const getLiveTime = (el: MuxPlayerElement) => {
-  const { media } = el;
-  return (
-    media?._hls?.liveSyncPosition ??
-    (media?.seekable.length ? media?.seekable.end(media.seekable.length - 1) : undefined)
-  );
-};
-
-export const LL_LIVE_SEGMENT_SECS = 1;
-export const LIVE_SEGMENT_SECS = 5;
-export const DEFAULT_HOLDBACK = 3;
-export const LIVE_HOLDBACK_MOE = 0.5;
-
-export const isInLiveWindow = (el: MuxPlayerElement) => {
-  const { streamType } = el;
-  const liveTime = getLiveTime(el);
-  const currentTime = el.media?.currentTime;
-  if (liveTime == undefined || currentTime == undefined) {
-    return false;
-  }
-  const delta = liveTime - currentTime;
-  // The live window is based on whether or not the current playhead is within n segment durations (plus a margin of error)
-  // of the live edge (CJP)
-  if (streamType === StreamTypes.LL_LIVE || streamType === StreamTypes.LL_DVR) {
-    return delta <= LL_LIVE_SEGMENT_SECS * (DEFAULT_HOLDBACK + LIVE_HOLDBACK_MOE);
-  }
-  if (streamType === StreamTypes.LIVE || streamType === StreamTypes.DVR) {
-    return delta <= LIVE_SEGMENT_SECS * (DEFAULT_HOLDBACK + LIVE_HOLDBACK_MOE);
-  }
-  return false;
-};
 
 export class AttributeTokenList implements Iterable<string> {
   #el?: HTMLElement;
