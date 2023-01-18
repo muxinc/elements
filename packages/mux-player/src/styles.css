@@ -37,23 +37,6 @@ a {
   cursor: pointer;
 }
 
-[part~='seek-live'] svg {
-  width: 8px;
-  fill: rgb(118, 118, 118);
-}
-[part~='seek-live'][in-live-window] svg {
-  fill: #fb3c4d;
-}
-
-[part~='seek-live'][disabled] {
-  opacity: 60%;
-  cursor: not-allowed;
-}
-[part~='seek-live'][in-live-window] {
-  opacity: 100%;
-  cursor: unset;
-}
-
 ::part(top),
 [part~='top'] {
   --media-controls: var(--controls, var(--top-controls));
