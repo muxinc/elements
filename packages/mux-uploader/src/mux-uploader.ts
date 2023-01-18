@@ -1,6 +1,5 @@
 import { globalThis, document } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
-import { EventBus } from './utils/event-bus';
 
 const styles = `
 :host {
@@ -345,8 +344,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       if (this.statusMessage) {
         this.statusMessage.innerHTML = successMessage;
       }
-
-      EventBus.getInstance().dispatch('success', event);
 
       console.info(successMessage);
       this.dispatchEvent(new CustomEvent('success', event));

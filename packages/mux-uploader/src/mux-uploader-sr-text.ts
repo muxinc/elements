@@ -1,5 +1,5 @@
 import { globalThis, document } from 'shared-polyfills';
-import { EventBus, Registry } from './utils/event-bus';
+import { getMuxUploaderEl } from './utils/element-utils';
 
 const template = document.createElement('template');
 
@@ -21,8 +21,7 @@ template.innerHTML = `
 
 class MuxUploaderSrTextElement extends globalThis.HTMLElement {
   srOnlyText: HTMLElement | null | undefined;
-
-  private successHandler: Registry;
+  #uploaderEl: HTMLElement | null | undefined;
 
   constructor() {
     super();
@@ -30,12 +29,20 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
     shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
+  }
 
-    this.successHandler = EventBus.getInstance().register('success', this.updateText.bind(this));
+  connectedCallback() {
+    this.#uploaderEl = this.shadowRoot?.host ? getMuxUploaderEl(this.shadowRoot.host) : null;
+
+    if (this.#uploaderEl) {
+      this.#uploaderEl.addEventListener('success', this.updateText.bind(this));
+    }
   }
 
   disconnectedCallback() {
-    this.successHandler.unregister();
+    if (this.#uploaderEl) {
+      this.#uploaderEl.removeEventListener('success', this.updateText.bind(this));
+    }
   }
 
   updateText() {
