@@ -8,15 +8,6 @@ const styles = `
   background-color: var(--uploader-background-color, inherit);
 }
 
-.sr-only {
-  position:absolute;
-  left:-10000px;
-  top:auto;
-  width:1px;
-  height:1px;
-  overflow:hidden;
-}
-
 p {
   color: black;
 }
@@ -95,8 +86,7 @@ template.innerHTML = `
   ${styles}
 </style>
 
-<div class="sr-only" id="sr-only" aria-live="polite"></div>
-
+<mux-uploader-sr-text></mux-uploader-sr-text>
 <div class=text-container>
   <span class="status-message" id="status-message" role="status" aria-live="polite"></span>
   <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
@@ -174,7 +164,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   uploadPercentage: HTMLElement | null | undefined;
   statusMessage: HTMLElement | null | undefined;
   retryButton: HTMLElement | null | undefined;
-  srOnlyText: HTMLElement | null | undefined;
 
   constructor() {
     super();
@@ -186,7 +175,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.uploadPercentage = this.shadowRoot?.getElementById('upload-status');
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
     this.retryButton = this.shadowRoot?.getElementById('retry-button');
-    this.srOnlyText = this.shadowRoot?.getElementById('sr-only');
 
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
@@ -355,12 +343,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
       if (this.statusMessage) {
         this.statusMessage.innerHTML = successMessage;
-      }
-
-      // TO-DO: It seems like statusMessage cannot be updated within two different events. (TD).
-      // Timing? Need to look into this...
-      if (this.srOnlyText) {
-        this.srOnlyText.innerHTML = successMessage;
       }
 
       console.info(successMessage);
