@@ -147,7 +147,7 @@ a {
   display: var(--media-controls, var(--media-mute-button));
 }
 ::part(captions menu-button) {
-  display: var(--media-controls, var(--media-captions-menu-button));
+  display: var(--media-controls, var(--media-captions-menu-button, contents));
 }
 ::part(airplay button) {
   display: var(--media-controls, var(--media-airplay-button));
