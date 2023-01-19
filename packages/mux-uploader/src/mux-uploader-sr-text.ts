@@ -32,7 +32,7 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
   }
 
   connectedCallback() {
-    this.#uploaderEl = this.shadowRoot?.host ? getMuxUploaderEl(this.shadowRoot.host) : null;
+    this.#uploaderEl = getMuxUploaderEl(this);
 
     if (this.#uploaderEl) {
       this.#uploaderEl.addEventListener('success', this.updateText.bind(this));
