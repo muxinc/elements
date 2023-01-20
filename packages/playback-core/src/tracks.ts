@@ -223,7 +223,9 @@ export function getActiveCuePoint(
 
 export function addActiveCuePointChangeCallback<T = any>(
   mediaEl: HTMLMediaElement,
-  activeCuePointChangeCallback: (activeCuePoint: CuePoint<T>) => void = () => {},
+  activeCuePointChangeCallback: (activeCuePoint: CuePoint<T>) => void = () => {
+    /* noop */
+  },
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
   const cuePointsTrack = getCuePointsTrack(mediaEl, cuePointsConfig);
