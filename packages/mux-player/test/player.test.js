@@ -826,7 +826,7 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
-describe('<mux-player> should move cues up', () => {
+describe('<mux-player> should move cues up', function () {
   this.timeout(12000);
 
   it('when user the user active', async function () {
