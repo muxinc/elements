@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.5.1...@mux/mux-player-react@1.6.0) (2023-01-20)
+
+
+### Features
+
+* **mux-player:** add storyboard-src attribute and corresponding prop ([#522](https://github.com/muxinc/elements/issues/522)) ([e9c3f0a](https://github.com/muxinc/elements/commit/e9c3f0afd3eb2521248996c37de1716b4ce724c4))
+
+
+
+
+
 ## [1.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.5.0...@mux/mux-player-react@1.5.1) (2022-12-15)
 
 **Note:** Version bump only for package @mux/mux-player-react
