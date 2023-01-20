@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout } from '@open-wc/testing';
+import { fixture, assert, aTimeout, oneEvent } from '@open-wc/testing';
 import MuxVideoElement, { VideoEvents } from '../src/index.ts';
 
 describe('<mux-video>', () => {
@@ -174,5 +174,62 @@ describe('<mux-video>', () => {
     assert.equal(player.metadata.video_title, 'Video Title');
     assert.equal(player.metadata.sub_property_id, 'sub-id-12');
     assert.equal(player.metadata.video_id, playbackId);
+  });
+
+  describe('Feature: cuePoints', async () => {
+    it('adds cuepoints', async () => {
+      const cuePoints = [
+        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { timestamp: 15, value: { label: 'CTA 2', showDuration: 5 } },
+        { timestamp: 21, value: { label: 'CTA 3', showDuration: 2 } },
+      ];
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+      ></mux-video>`);
+      await muxVideoEl.addCuePoints(cuePoints);
+      assert.deepEqual(muxVideoEl.cuePoints, cuePoints);
+    });
+
+    it('dispatches a cuepointchange event when the active cuepoint changes', async () => {
+      const cuePoints = [
+        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { timestamp: 15, value: { label: 'CTA 2', showDuration: 5 } },
+        { timestamp: 21, value: { label: 'CTA 3', showDuration: 2 } },
+      ];
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+      ></mux-video>`);
+      // NOTE: Since cuepoints get reset by (re/un)setting a media source/playback-id,
+      // waiting until ~the next frame before adding cuePoints.
+      // Alternatively, if we wanted something event-driven, we could wait until metadata
+      // has loaded (Commented out, below) (CJP)
+      await aTimeout(50);
+      // await oneEvent(muxVideoEl, 'loadedmetadata');
+      await muxVideoEl.addCuePoints(cuePoints);
+      const expectedCuePoint = cuePoints[1];
+      muxVideoEl.currentTime = expectedCuePoint.timestamp + 0.01;
+      await oneEvent(muxVideoEl, 'cuepointchange');
+      assert.deepEqual(muxVideoEl.activeCuePoint, expectedCuePoint);
+    });
+
+    it('clears cuepoints when playback-id is updated', async () => {
+      const cuePoints = [
+        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { timestamp: 15, value: { label: 'CTA 2', showDuration: 5 } },
+        { timestamp: 21, value: { label: 'CTA 3', showDuration: 2 } },
+      ];
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+      ></mux-video>`);
+      await aTimeout(50);
+      await muxVideoEl.addCuePoints(cuePoints);
+      assert.deepEqual(muxVideoEl.cuePoints, cuePoints); // confirm set to ensure valid test
+      muxVideoEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+      await oneEvent(muxVideoEl, 'emptied');
+      assert.equal(muxVideoEl.cuePoints.length, 0, 'cuePoints should be empty');
+    });
   });
 });
