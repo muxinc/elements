@@ -1040,7 +1040,9 @@ describe('Feature: cuePoints', async () => {
     await muxPlayerEl.addCuePoints(cuePoints);
     const expectedCuePoint = cuePoints[1];
     muxPlayerEl.currentTime = expectedCuePoint.timestamp + 0.01;
-    await oneEvent(muxPlayerEl, 'cuepointchange');
+    const event = await oneEvent(muxPlayerEl, 'cuepointchange');
+    assert.equal(event.target, muxPlayerEl, 'event target should be the MuxPlayerElement instance');
+    assert.deepEqual(event.detail, expectedCuePoint);
     assert.deepEqual(muxPlayerEl.activeCuePoint, expectedCuePoint);
   });
 

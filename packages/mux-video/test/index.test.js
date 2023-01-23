@@ -210,7 +210,9 @@ describe('<mux-video>', () => {
       await muxVideoEl.addCuePoints(cuePoints);
       const expectedCuePoint = cuePoints[1];
       muxVideoEl.currentTime = expectedCuePoint.timestamp + 0.01;
-      await oneEvent(muxVideoEl, 'cuepointchange');
+      const event = await oneEvent(muxVideoEl, 'cuepointchange');
+      assert.equal(event.target, muxVideoEl, 'event target should be the MuxVideoElement instance');
+      assert.deepEqual(event.detail, expectedCuePoint);
       assert.deepEqual(muxVideoEl.activeCuePoint, expectedCuePoint);
     });
 

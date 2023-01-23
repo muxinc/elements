@@ -221,24 +221,27 @@ export function getActiveCuePoint(
   return toCuePoint(track.activeCues[0] as VTTCue);
 }
 
-export function addActiveCuePointChangeCallback<T = any>(
+export async function setupCuePoints(
   mediaEl: HTMLMediaElement,
-  activeCuePointChangeCallback: (activeCuePoint: CuePoint<T>) => void = () => {
-    /* noop */
-  },
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
-  const cuePointsTrack = getCuePointsTrack(mediaEl, cuePointsConfig);
+  const track = await addCuePoints(mediaEl, [], cuePointsConfig);
   addEventListenerWithTeardown(
     mediaEl,
     'cuechange',
     () => {
       const activeCuePoint = getActiveCuePoint(mediaEl);
       if (activeCuePoint) {
-        activeCuePointChangeCallback(activeCuePoint);
+        const evt = new CustomEvent('cuepointchange', {
+          composed: true,
+          bubbles: true,
+          detail: activeCuePoint,
+        });
+        mediaEl.dispatchEvent(evt);
       }
     },
     {},
-    cuePointsTrack
+    track
   );
+  return track;
 }
