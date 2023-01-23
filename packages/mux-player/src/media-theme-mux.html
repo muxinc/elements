@@ -305,7 +305,9 @@
 
     <template partial="TitleDisplay">
       <template if="title">
-        <media-text-display part="top title display" class="title-display"> {{title}} </media-text-display>
+        <media-text-display part="top title display" class="title-display">
+          {{title}}
+        </media-text-display>
       </template>
     </template>
 
@@ -550,7 +552,7 @@
           </media-control-bar>
         </template>
 
-        <template if="targetLiveWindow == 0">
+        <template if="targetLiveWindow == null">
           <template if="title">
             <media-control-bar>{{>TitleDisplay}}</media-control-bar>
           </template>
@@ -639,7 +641,7 @@
 
       <template if="streamType == 'live'">
 
-        <template if="targetLiveWindow == 0">
+        <template if="targetLiveWindow == null">
 
           <template if="breakpointSm == null">
             <media-control-bar slot="top-chrome">

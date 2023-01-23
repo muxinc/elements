@@ -170,7 +170,7 @@ class MuxPlayerElement extends VideoApiElement {
     this.#isInit = true;
 
     // The next line triggers the first render of the template.
-    this.#setState();
+    this.#render();
 
     // Fixes a bug in React where mux-player's CE children were not upgraded yet.
     // These lines ensure the rendered mux-video and media-controller are upgraded,
