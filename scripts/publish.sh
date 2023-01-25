@@ -169,10 +169,12 @@ function canary {
     scope+="--scope $name "
   done
 
-  if "$dry_run"; then
-    echo "Running the following command" npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+  if [ -n "$scope" ]; then
+    if "$dry_run"; then
+      echo "Running the following command" npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+    fi
+    npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
   fi
-  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
 
   echo "Ending release $PKG_NAME@$VERSION"
 }
