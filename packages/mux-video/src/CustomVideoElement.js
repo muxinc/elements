@@ -105,26 +105,7 @@ class CustomVideoElement extends globalThis.HTMLElement {
     slotEl.addEventListener('slotchange', () => {
       slotEl.assignedElements().forEach((el) => {
         if (!['track', 'source'].includes(el.localName)) return;
-        console.log('cues in track el', el.track.cues);
-        let cues = [];
-        if (el.localName === 'track' && !el.hasAttribute('src')) {
-          // copy programmatic cues
-          const disabled = el.track.mode === 'disabled';
-          if (disabled) {
-            el.track.mode = 'hidden';
-          }
-          cues = Array.from(el.track.cues);
-          console.log('cues in slotchange', cues);
-          if (disabled) {
-            el.track.mode = disabled;
-          }
-        }
         this.nativeEl.append(el);
-        if (el.localName === 'track') {
-          cues.forEach((cue) => el.track.addCue(cue));
-          console.log('cues on track post append in slotchange', el.track.cues);
-          console.log('track post append in slotchange', el.track);
-        }
       });
     });
 
