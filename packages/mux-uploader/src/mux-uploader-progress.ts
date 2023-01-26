@@ -17,15 +17,16 @@ template.innerHTML = `
     width: 100%;
   }
   
-  .radial-type, .bar-type {
+  .radial-type,
+  .bar-type,
+  #percentage-type,
+  :host([type="bar"][upload-error]) #percentage-type {
     display: none;
   }
 
-  :host([type="radial"][upload-in-progress]) .radial-type {
-    display: block;
-  }
-  
-  :host([type="bar"][upload-in-progress]) .bar-type {
+  :host([type="radial"][upload-in-progress]) .radial-type,
+  :host([type="bar"][upload-in-progress]) .bar-type, 
+  :host([type="percentage"][upload-in-progress]) #percentage-type {
     display: block;
   }
 
@@ -53,9 +54,16 @@ template.innerHTML = `
     -webkit-transform-origin: 50% 50%;
     -moz-transform-origin: 50% 50%;
   }
+
+  #percentage-type {
+    font-size: inherit;
+    margin-bottom: 16px;
+  }
 </style>
 
 <slot></slot>
+
+<p id="percentage-type"></p>
 <div class="bar-type">
   <div role="progressbar" aria-valuemin="0" aria-valuemax="100" class="progress-bar" id="progress-bar" tabindex="0"></div>
 </div>
@@ -77,6 +85,9 @@ template.innerHTML = `
 class MuxUploaderProgressElement extends globalThis.HTMLElement {
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
+  uploadPercentage: HTMLElement | null | undefined;
+
+  protected _formatProgress: ((percent: number) => string) | null | undefined;
 
   $isUploading = false;
 
@@ -87,6 +98,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
 
     this.svgCircle = this.shadowRoot?.querySelector('circle');
     this.progressBar = this.shadowRoot?.getElementById('progress-bar');
+    this.uploadPercentage = this.shadowRoot?.getElementById('percentage-type');
     this.progressBar?.setAttribute('aria-description', ariaDescription);
   }
 
@@ -113,10 +125,17 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
             this.svgCircle.style.strokeDashoffset = offset.toString();
           }
         }
+        case ProgressTypes.PERCENTAGE: {
+          if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
+        }
       }
     });
 
     parent?.addEventListener('uploadstart', this.onUploadStart.bind(this));
+
+    parent?.addEventListener('reset', () => {
+      if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
+    });
   }
 
   onUploadStart() {
@@ -152,6 +171,22 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
         this.svgCircle.style.strokeDashoffset = `${this.getCircumference()}`;
       }
     }
+  }
+
+  #defaultFormatProgress(percent: number) {
+    return `${Math.floor(percent)}%`;
+  }
+
+  get formatProgress(): (percent: number) => string {
+    return this._formatProgress ?? this.#defaultFormatProgress;
+  }
+
+  set formatProgress(value: ((percent: number) => string) | null | undefined) {
+    this._formatProgress = value;
+  }
+
+  setProgress(percent: number) {
+    if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
   }
 }
 
