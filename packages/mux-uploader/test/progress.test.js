@@ -46,5 +46,9 @@ describe('<mux-uploader>', () => {
     server.respond();
     await oneEvent(uploader, 'success');
     assert.equal(percentage.uploadPercentage.innerHTML, '100%', 'percentage matches');
+
+    uploader.dispatchEvent(new CustomEvent('reset'));
+
+    assert.equal(percentage.uploadPercentage.innerHTML, '', 'reset matches');
   });
 });
