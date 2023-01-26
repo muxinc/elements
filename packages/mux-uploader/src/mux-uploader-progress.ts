@@ -1,5 +1,7 @@
 import { globalThis, document } from 'shared-polyfills';
 import { ProgressTypes } from './constants';
+import { getMuxUploaderEl } from './utils/element-utils';
+
 const template = document.createElement('template');
 const ariaDescription = 'Media upload progress bar';
 
@@ -58,6 +60,7 @@ template.innerHTML = `
   #percentage-type {
     font-size: inherit;
     margin-bottom: 16px;
+    color: black;
   }
 </style>
 
@@ -83,13 +86,13 @@ template.innerHTML = `
 `;
 
 class MuxUploaderProgressElement extends globalThis.HTMLElement {
+  #uploaderEl: HTMLElement | null | undefined;
+
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
 
   protected _formatProgress: ((percent: number) => string) | null | undefined;
-
-  $isUploading = false;
 
   constructor() {
     super();
@@ -104,43 +107,56 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
 
   connectedCallback() {
     this.setDefaultType();
-    const parent = document.querySelector('mux-uploader');
 
-    parent?.addEventListener('progress', (e) => {
-      // @ts-ignore
-      const percent = e.detail;
-      this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
+    this.#uploaderEl = getMuxUploaderEl(this);
 
-      switch (this.getAttribute('type')) {
-        case ProgressTypes.BAR: {
-          if (this.progressBar) this.progressBar.style.width = `${percent}%`;
-          break;
-        }
-        case ProgressTypes.RADIAL: {
-          if (this.svgCircle) {
-            // The closer the upload percentage gets to 100%, the closer offset gets to 0.
-            // The closer offset gets to 0, the more we can see the circumference of our circle. (TD).
-            const offset = this.getCircumference() - (percent / 100) * this.getCircumference();
+    if (this.#uploaderEl) {
+      this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart.bind(this));
+      this.#uploaderEl.addEventListener('reset', this.onReset.bind(this));
+      this.#uploaderEl.addEventListener('progress', this.onProgress.bind(this));
+    }
+  }
 
-            this.svgCircle.style.strokeDashoffset = offset.toString();
-          }
-        }
-        case ProgressTypes.PERCENTAGE: {
-          if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
-        }
-      }
-    });
-
-    parent?.addEventListener('uploadstart', this.onUploadStart.bind(this));
-
-    parent?.addEventListener('reset', () => {
-      if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
-    });
+  disconnectedCallback() {
+    if (this.#uploaderEl) {
+      this.#uploaderEl.removeEventListener('uploadstart', this.onUploadStart.bind(this));
+      this.#uploaderEl.removeEventListener('reset', this.onReset.bind(this));
+      this.#uploaderEl.removeEventListener('progress', this.onProgress.bind(this));
+    }
   }
 
   onUploadStart() {
     this.progressBar?.focus();
     this.setAttribute('upload-in-progress', '');
+  }
+
+  onProgress(e: Event) {
+    // @ts-ignore
+    const percent = e.detail;
+    this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
+
+    switch (this.getAttribute('type')) {
+      case ProgressTypes.BAR: {
+        if (this.progressBar) this.progressBar.style.width = `${percent}%`;
+        break;
+      }
+      case ProgressTypes.RADIAL: {
+        if (this.svgCircle) {
+          // The closer the upload percentage gets to 100%, the closer offset gets to 0.
+          // The closer offset gets to 0, the more we can see the circumference of our circle. (TD).
+          const offset = this.getCircumference() - (percent / 100) * this.getCircumference();
+
+          this.svgCircle.style.strokeDashoffset = offset.toString();
+        }
+      }
+      case ProgressTypes.PERCENTAGE: {
+        if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
+      }
+    }
+  }
+
+  onReset() {
+    if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
   }
 
   getRadius() {

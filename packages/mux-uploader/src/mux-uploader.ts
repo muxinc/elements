@@ -8,10 +8,6 @@ const styles = `
   background-color: var(--uploader-background-color, inherit);
 }
 
-p {
-  color: black;
-}
-
 input[type="file"] {
   display: none;
 }
