@@ -32,7 +32,7 @@ describe('<mux-uploader-sr-text>', () => {
       );
     });
 
-    await aTimeout(100);
+    await aTimeout(500);
     server.respond();
     await oneEvent(uploader, 'success');
     assert.equal(sr.srOnlyText.innerHTML, 'Upload complete!', 'status message matches');
