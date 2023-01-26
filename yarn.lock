@@ -2413,10 +2413,10 @@
     blurhash "^1.1.5"
     sharp "^0.30.7"
 
-"@mux/upchunk@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.0.tgz#657d88241e24776b9b9c53365ded3b70cf60c4c8"
-  integrity sha512-Aan5CzCcQSjVBOa2KxyMZiQVvh+D6vfnfcM4JXayQCTQ1bipK8jukmuXwC/ipd8IzBVAVyaLmXMuDX4LAk5mXA==
+"@mux/upchunk@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.2.tgz#5c7dd7cb084ff9ba61a998f7b854610305e1c08e"
+  integrity sha512-IDNwH84hYl6saWDlpfc6QVnEf72xtK6vsoFJTGET4o4aDPba25StMqFQjCN16rz82fy7Y14uepS9hivQP4sbOA==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
@@ -8175,6 +8175,9 @@ get-symbol-description@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/get-symbol-description/-/get-symbol-description-1.0.0.tgz#7fdb81c900101fbd564dd5f1a30af5aadc1e58d6"
   integrity sha512-2EmdH1YvIQiZpltCNgkuiUnyukzxM/R6NDJX31Ke3BG1Nq5b0S2PhX59UKi9vZpPDQVdqn+1IcaAwnzTT5vCjw==
+  dependencies:
+    call-bind "^1.0.2"
+    get-intrinsic "^1.1.1"
 
 getpass@^0.1.1:
   version "0.1.7"
