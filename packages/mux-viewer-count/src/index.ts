@@ -9,7 +9,6 @@ const DEFAULT_POLL_INTERVAL = 20;
 
 const AttributeValues = Object.freeze(Object.values(Attributes));
 
-/** @TODO Add code comments (CJP) */
 export const subscribeViewerCount = (
   token: string,
   pollInterval: number,
@@ -22,30 +21,53 @@ export const subscribeViewerCount = (
   let timeoutId: number | undefined;
   let aborted = false;
   const fetchViewerCountPoll: () => Promise<any> = async () => {
+    // If the polling has been aborted (via an "unsubscribe()"),
+    // we can simply bail on the recursion.
     if (aborted) return Promise.resolve();
-    return fetch(url, { signal })
-      .then((resp) => resp.json())
-      .then((respObj) => {
-        const views = respObj?.data?.[0]?.views;
-        if (!!respObj?.error || views == null) {
-          return Promise.reject(respObj?.error ?? 'no data in response');
-        }
-        callback(views);
-        return views;
-      })
-      .catch(errorCb)
-      .then(() => {
-        return new Promise((resolve) => {
-          timeoutId = setTimeout(async () => {
-            resolve(undefined);
-          }, pollInterval * 1000);
-        });
-      })
-      .then(fetchViewerCountPoll);
+    // GET the latest view count, providing an abort signal
+    // for unsubscription.
+    return (
+      fetch(url, { signal })
+        // Grab the JSON value of the response
+        .then((resp) => resp.json())
+        // Confirm that response wasn't an error and the JSON
+        // has the expected data
+        .then((respObj) => {
+          const views = respObj?.data?.[0]?.views;
+          if (!!respObj?.error || views == null) {
+            // If not, treat as an error.
+            return Promise.reject(respObj?.error ?? 'no data in response');
+          }
+          // Otherwise, we successfully retrieved the latest views, so
+          // provide that info out via `callback()`.
+          callback(views);
+          return views;
+        })
+        // Catch and invoke errorCb before timeout + re-fetch. This allows
+        // for re-fetching by default, but provides the opportunity
+        // to unsubscribe externally via `errorCb` if desired (CJP)
+        .catch(errorCb)
+        // Wait the duration of the polling interval before restarting
+        // the next fetch
+        .then(() => {
+          return new Promise((resolve) => {
+            timeoutId = setTimeout(async () => {
+              resolve(undefined);
+            }, pollInterval * 1000);
+          });
+        })
+        // Restart process of re-fetching by invoking this method again
+        // (async recursion)
+        .then(fetchViewerCountPoll)
+    );
   };
 
+  // Kick off the polling functionality.
   fetchViewerCountPoll();
 
+  // Return an "unsubscribe()" function. Invoking this will abort
+  // any mid-flight fetches, clear any pending timeouts for
+  // a re-fetch, and mark this process as "aborted".
   return () => {
     aborted = true;
     controller.abort();
