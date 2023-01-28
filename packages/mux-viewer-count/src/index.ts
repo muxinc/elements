@@ -28,8 +28,7 @@ export const subscribeViewerCount = (
       .then((respObj) => {
         const views = respObj?.data?.[0]?.views;
         if (!!respObj?.error || views == null) {
-          errorCb(respObj?.error ?? 'no data in response');
-          return;
+          return Promise.reject(respObj?.error ?? 'no data in response');
         }
         callback(views);
         return views;
@@ -116,6 +115,7 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
         (errorMsg) => {
           /** @TODO Add event for error (CJP) */
           /** @TODO Consider adding retry count/logic (CJP) */
+          console.warn('Failed to retrieve viewer count: Error - ', errorMsg);
           this.#teardownViewerCountPolling();
         }
       );
