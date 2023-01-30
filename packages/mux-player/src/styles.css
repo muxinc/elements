@@ -14,29 +14,6 @@ a {
   text-decoration: underline;
 }
 
-[audio] [part~='seek-live'] {
-  margin: 0;
-  height: 42px;
-  border-radius: 0;
-  background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
-}
-
-[part~='seek-live'] {
-  margin-left: 10px;
-  margin-right: 5px;
-  align-self: center;
-  position: relative;
-  box-sizing: border-box;
-  padding: 4px 6px;
-  border-radius: 12px;
-  background-color: rgba(20, 20, 30, 0.7);
-  font-size: 0.75rem;
-  line-height: 1;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
 ::part(top),
 [part~='top'] {
   --media-controls: var(--controls, var(--top-controls));
