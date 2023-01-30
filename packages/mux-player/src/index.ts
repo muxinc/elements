@@ -880,7 +880,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .83)';
+    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .75)';
   }
 
   /**
