@@ -147,5 +147,4 @@ export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareName: Options['data']['player_software_name'];
   playerSoftwareVersion: Options['data']['player_software_version'];
-  onCuePointChange: <T = any>(activeCuePoint: CuePoint<T>) => void;
 };
