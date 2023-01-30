@@ -130,6 +130,11 @@
       width: 100%;
     }
 
+    :host(:not([audio])) media-captions-menu-button::part(listbox) {
+      bottom: 42px;
+      z-index: 10;
+    }
+
     media-control-bar {
       --media-control-padding: 9px 7px;
     }
