@@ -195,8 +195,15 @@ Other CSS variables:
 
 ```
 mux-player {
-  /* the controls backdrop color */
+  /* The controls backdrop color */
   --controls-backdrop-color: rgb(0 0 0 / 0%);
+
+  /*
+   * Controls how the media is sized and positioned inside of the <video> element
+   * Supports everything the standard CSS properties support
+   */
+  --media-object-size: cover;
+  --media-object-position: center;
 }
 ```
 
