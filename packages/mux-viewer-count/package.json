@@ -43,13 +43,12 @@
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:@mux/*",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-viewer-counts.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
-    "postbuild:types": "shx cp -r \"src/**/*.d.ts\" dist/types && downlevel-dts ./dist/types ./dist/types-ts3.4",
+    "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
