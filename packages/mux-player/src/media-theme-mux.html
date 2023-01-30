@@ -274,7 +274,8 @@
       line-height: 24px;
     }
 
-    .title-display {
+    :is(.title-display, media-live-button) {
+      color: inherit;
       font-size: 16px;
       text-shadow: 0 0 2px rgb(0 0 0 / 0.6);
     }
@@ -464,6 +465,15 @@
       </media-cast-button>
     </template>
 
+    <template partial="LiveButton">
+      <!-- NOTE: Keeping "seek-live" part for backwards compatibility for now -->
+      <media-live-button
+        part="{{section ?? 'top'}} live seek-live button"
+        disabled="{{disabled}}"
+        aria-disabled="{{disabled}}"
+      ></media-live-button>
+    </template>
+
     <template partial="PlaybackRateButton">
       <media-playback-rate-button
         rates="{{playbackRates}}"
@@ -513,10 +523,9 @@
         <media-control-bar>{{>TitleDisplay}}</media-control-bar>
       </template>
       <media-control-bar>
-        {{>PlayButton}}
-        <slot name="seek-live"></slot>
-        {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>TimeRange}} {{>MuteButton}} {{>VolumeRange}}
-        {{>PlaybackRateButton}} {{>AirplayButton}} {{>CastButton}}
+        {{>PlayButton}} {{> LiveButton section="bottom"}} {{>SeekBackwardButton}} {{>SeekForwardButton}}
+        {{>TimeDisplay}} {{>TimeRange}} {{>MuteButton}} {{>VolumeRange}} {{>PlaybackRateButton}} {{>AirplayButton}}
+        {{>CastButton}}
       </media-control-bar>
     </template>
 
@@ -525,9 +534,7 @@
         <media-control-bar>{{>TitleDisplay}}</media-control-bar>
       </template>
       <media-control-bar>
-        {{>PlayButton}}
-        <slot name="seek-live"></slot>
-        {{>MuteButton}} {{>VolumeRange}}
+        {{>PlayButton}} {{> LiveButton section="bottom"}} {{>MuteButton}} {{>VolumeRange}}
         <div class="spacer"></div>
         {{>AirplayButton}} {{>CastButton}}
       </media-control-bar>
@@ -570,9 +577,7 @@
     </template>
 
     <template if="layout == 'live extra-small'">
-      <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
-      </media-control-bar>
+      <media-control-bar slot="top-chrome"> {{> LiveButton}} </media-control-bar>
       <media-control-bar>
         {{>PlayButton}} {{>MuteButton}}
         <div class="spacer"></div>
@@ -581,10 +586,7 @@
     </template>
 
     <template if="layout == 'live small'">
-      <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
-        {{>TitleDisplay}}
-      </media-control-bar>
+      <media-control-bar slot="top-chrome"> {{> LiveButton}} {{>TitleDisplay}} </media-control-bar>
       <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>
       <media-control-bar>
         {{>PlayButton}} {{>MuteButton}} {{>VolumeRange}}
@@ -594,10 +596,7 @@
     </template>
 
     <template if="layout == 'live large'">
-      <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
-        {{>TitleDisplay}}
-      </media-control-bar>
+      <media-control-bar slot="top-chrome"> {{> LiveButton}} {{>TitleDisplay}} </media-control-bar>
       <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>
       <media-control-bar>
         {{>PlayButton}} {{>MuteButton}} {{>VolumeRange}}
@@ -607,9 +606,7 @@
     </template>
 
     <template if="layout == 'dvr extra-small'">
-      <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
-      </media-control-bar>
+      <media-control-bar slot="top-chrome"> {{> LiveButton}} </media-control-bar>
       {{>TimeRange}}
       <media-control-bar>
         {{>PlayButton}} {{>MuteButton}}
@@ -619,10 +616,7 @@
     </template>
 
     <template if="layout == 'dvr small'">
-      <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
-        {{>TitleDisplay}}
-      </media-control-bar>
+      <media-control-bar slot="top-chrome"> {{> LiveButton}} {{>TitleDisplay}} </media-control-bar>
       <div slot="centered-chrome" class="center-controls">
         {{>SeekBackwardButton section="center"}} {{>PlayButton section="center"}} {{>SeekForwardButton
         section="center"}}
@@ -636,10 +630,7 @@
     </template>
 
     <template if="layout == 'dvr large'">
-      <media-control-bar slot="top-chrome">
-        <slot name="seek-live"></slot>
-        {{>TitleDisplay}}
-      </media-control-bar>
+      <media-control-bar slot="top-chrome"> {{> LiveButton}} {{>TitleDisplay}} </media-control-bar>
       <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>
       {{>TimeRange}}
       <media-control-bar>

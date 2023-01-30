@@ -2413,10 +2413,10 @@
     blurhash "^1.1.5"
     sharp "^0.30.7"
 
-"@mux/upchunk@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.0.tgz#657d88241e24776b9b9c53365ded3b70cf60c4c8"
-  integrity sha512-Aan5CzCcQSjVBOa2KxyMZiQVvh+D6vfnfcM4JXayQCTQ1bipK8jukmuXwC/ipd8IzBVAVyaLmXMuDX4LAk5mXA==
+"@mux/upchunk@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.2.tgz#5c7dd7cb084ff9ba61a998f7b854610305e1c08e"
+  integrity sha512-IDNwH84hYl6saWDlpfc6QVnEf72xtK6vsoFJTGET4o4aDPba25StMqFQjCN16rz82fy7Y14uepS9hivQP4sbOA==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
@@ -8480,10 +8480,10 @@ he@^1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-hls.js@1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.2.3.tgz#9b9e5d5b05c4912dacec173962694b710eea33ac"
-  integrity sha512-CC/vHi82ldiiydIhliNI3whlcepRXxI2jdpd/KKb6lyEv+74e7lXs4cGk5PHfTLxZMKOj6+m5LX9VAbvV/r7AQ==
+hls.js@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.3.1.tgz#2e43949aeaee8f3d54cabd7c4c1a9a718a03e7c2"
+  integrity sha512-6f4Qyrfj9sNUWMzNFKruqeD2KdisOwQ1GQJqnWAgMQ1hequlFK7e2dmF9qQD3mF/RI76hvztCMBptlPb+HcDow==
 
 hoopy@^0.1.4:
   version "0.1.4"
@@ -10576,10 +10576,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@0.17.2-canary.4-a6dcbb7:
-  version "0.17.2-canary.4-a6dcbb7"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.17.2-canary.4-a6dcbb7.tgz#291130994eb185977b34e3af1a53fd4138d82ce3"
-  integrity sha512-JLwNg3Krb9Xyae5ThYv6pVP6YoELPIIZaFFAWcbShcczQZ2UDbKssh9jp/F/zWnRbHvcEKv4luTZ/b90wcDP3Q==
+media-chrome@0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.18.0.tgz#7824fbeb3694a683beac6e9e448bfcb07df4df74"
+  integrity sha512-lru0kFpSKe7F7Ow7XptejIS6Fmc9WJnHZRckrVKNHzf2MoCVMZiFt4UCn3zEmC3IxLJNeOAavSqYpwqbdaenGA==
 
 media-typer@0.3.0:
   version "0.3.0"
