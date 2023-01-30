@@ -507,10 +507,4 @@ if (!globalThis.customElements.get('mux-video')) {
 
 export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError, VideoEvents };
 
-/** @TODO REMOVE ME: Just testin' (CJP) */
-// const muxVideoEl = new MuxVideoElement();
-// muxVideoEl.addCuePoints<number|boolean>([{ timestamp: 0, value: 20 }, { timestamp: 0, value: true }]);
-// const cuePoints: ({ timestamp: number, value: number | boolean })[] = [{ timestamp: 0, value: 20 }, { timestamp: 0, value: true }];
-// muxVideoEl.addCuePoints(cuePoints);
-
 export default MuxVideoElement;
