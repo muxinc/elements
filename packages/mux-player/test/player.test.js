@@ -753,7 +753,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('slot[name="seek-live"]');
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.notExists(seekToLiveEl);
   });
@@ -766,7 +766,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('slot[name="seek-live"]');
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -779,12 +779,13 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('slot[name="seek-live"]');
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
 
   it('should seek to live when seek to live button pressed', async function () {
+    this.timeout(15000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
@@ -792,7 +793,7 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    const seekToLiveEl = playerEl.shadowRoot.querySelector('[part~="seek-live"]');
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
     try {
       await playerEl.play();
@@ -800,12 +801,13 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
     playerEl.pause();
-    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
+    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
     seekToLiveEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
 
   it('should seek to live when play button is pressed', async function () {
+    this.timeout(15000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
@@ -818,7 +820,7 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
     playerEl.pause();
-    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 7500 });
+    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
 
     const mcPlayEl = playerEl.theme.shadowRoot.querySelector('media-play-button');
     mcPlayEl.click();
