@@ -31,27 +31,23 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
     this.#uploaderEl = getMuxUploaderEl(this);
 
     if (this.#uploaderEl) {
-      this.#uploaderEl.addEventListener('reset', this.onReset.bind(this));
+      this.#uploaderEl.addEventListener('reset', this.clearStatusMessage.bind(this));
       this.#uploaderEl.addEventListener('uploaderror', this.onUploadError.bind(this));
       this.#uploaderEl.addEventListener('success', this.onSuccess.bind(this));
-      this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart.bind(this));
+      this.#uploaderEl.addEventListener('uploadstart', this.clearStatusMessage.bind(this));
     }
   }
 
   disconnectedCallback() {
     if (this.#uploaderEl) {
-      this.#uploaderEl.removeEventListener('reset', this.onReset.bind(this));
+      this.#uploaderEl.removeEventListener('reset', this.clearStatusMessage.bind(this));
       this.#uploaderEl.removeEventListener('uploaderror', this.onUploadError.bind(this));
       this.#uploaderEl.removeEventListener('success', this.onSuccess.bind(this));
-      this.#uploaderEl.removeEventListener('uploadstart', this.onSuccess.bind(this));
+      this.#uploaderEl.removeEventListener('uploadstart', this.clearStatusMessage.bind(this));
     }
   }
 
-  onReset() {
-    if (this.statusMessage) this.statusMessage.innerHTML = '';
-  }
-
-  onUploadStart() {
+  clearStatusMessage() {
     if (this.statusMessage) {
       this.statusMessage.innerHTML = '';
     }
