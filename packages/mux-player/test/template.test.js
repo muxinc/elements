@@ -14,7 +14,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme class="size-" default-showing-captions="" disabled="" nohotkeys="" layout="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -23,7 +23,6 @@ describe('<mux-player> template render', () => {
     render(
       content({
         inLiveWindow: false,
-        playerSize: 'extra-small',
         streamType: 'live',
         isDialogOpen: true,
         dialog: {
@@ -36,7 +35,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme hotkeys=" noarrowleft noarrowright" class="size-extra-small" layout="live extra-small" player-size="extra-small" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><button aria-disabled="true" disabled="" slot="seek-live" part="top seek-live button">\n          \n          Live\n        </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme hotkeys=" noarrowleft noarrowright" stream-type="live" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -44,7 +43,6 @@ describe('<mux-player> template render', () => {
   it('template VodChromeLarge with captions', function () {
     render(
       content({
-        playerSize: 'large',
         streamType: 'on-demand',
         hasCaptions: true,
       }),
@@ -54,7 +52,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme class="size-large" default-showing-captions="" disabled="" nohotkeys="" layout="on-demand large" player-size="large" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -62,7 +60,6 @@ describe('<mux-player> template render', () => {
   it('template VodChromeLarge without captions', function () {
     render(
       content({
-        playerSize: 'large',
         streamType: 'on-demand',
         hasCaptions: false,
         isDialogOpen: true,
@@ -76,7 +73,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme class="size-large" layout="on-demand large" player-size="large" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme stream-type="on-demand" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
