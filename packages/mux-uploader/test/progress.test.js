@@ -51,4 +51,47 @@ describe('<mux-uploader>', () => {
 
     assert.equal(percentage.uploadPercentage.innerHTML, '', 'reset matches');
   });
+
+  it('updates radial progress', async function () {
+    let file = new File(['foo'], 'foo.mp4', {
+      type: 'video/mp4',
+    });
+
+    server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
+      200,
+      { 'Content-Type': 'application/json' },
+      '{success: true}',
+    ]);
+
+    const html = await fixture(`<div><mux-uploader
+      id="my-uploader"
+      endpoint="https://mock-upload-endpoint.com"
+      status
+    ></mux-uploader>
+    <mux-uploader-progress type="radial" mux-uploader="my-uploader"></mux-uploader-progress></div>`);
+
+    const uploader = html.querySelector('mux-uploader');
+    const radialProgress = html.querySelector('mux-uploader-progress[type="radial"]');
+
+    assert.notEqual(radialProgress.svgCircle.style.strokeDashoffset, 0, 'offset is not 0');
+
+    setTimeout(() => {
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      );
+    });
+
+    await aTimeout(100);
+    server.respond();
+    await oneEvent(uploader, 'success');
+
+    assert.equal(radialProgress.svgCircle.style.strokeDashoffset, 0, 'offset matches');
+
+    uploader.dispatchEvent(new CustomEvent('reset'));
+    assert.notEqual(radialProgress.svgCircle.style.strokeDashoffset, 0, 'offset is not 0');
+  });
 });
