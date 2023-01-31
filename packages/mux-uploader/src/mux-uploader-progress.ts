@@ -148,6 +148,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
 
           this.svgCircle.style.strokeDashoffset = offset.toString();
         }
+        break;
       }
       case ProgressTypes.PERCENTAGE: {
         if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
