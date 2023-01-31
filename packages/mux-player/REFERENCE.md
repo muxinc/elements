@@ -52,6 +52,7 @@
 | --------- | -------------------------------------------------------------------------------------------------------------------- |
 | `play()`  | Identical to the [native `play()` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play).   |
 | `pause()` | Identical to the [native `pause()` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause). |
+| `addCuePoints()` | Add an array of metadata CuePoints of "shape" `{ time: number; value: any; }` to the Mux Player instance for the current media |
 
 <!-- UNDOCUMENTED
 | `addTextTrack()` | Identical to the [native `addTextTrack()` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement#methods). |
@@ -113,6 +114,8 @@
 | `storyboardSrc`                              | `string` (URL)                                                                                                                        | Full URL string for the storyboard asset. Setting this will override the storyboard URL derived from the playback ID.                                                                                                                                                                                                                                                                                                                                             | `undefined`                      |
 | `tokens`                                       | `object`\*                                                                                                                      | An object for setting all signed URL tokens with the signature `{ playback: string; thumbnail: string; storyboard: string; }`. If any `*token` properties or `*-token` attributes are set, they will take precedence.                                                                                                                                                                            | `undefined`                      |
 | `textTracks`                                   | [`TextTrackList`](https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList)                                               | Identical to the [native `textTracks` property](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/textTracks)                                                                                                                                                                                                                                                                    | (empty `TextTrackList` instance) |
+| `cuePoints` <sub><sup>Read only</sup></sub> | `Array<{ time: number; value: any; }>` | The array of CuePoints for the current media, added via `addCuePoints(cuePoints)`. | `[]` |
+| `activeCuePoint` <sub><sup>Read only</sup></sub> | `{ time: number; value: any; }` | The current active CuePoint, determined based on the player's `currentTime`. | `undefined` |
 
 <!-- UNDOCUMENTED
 | `preferCmcd`                                   | `"query" \| "header" \| "none"`                                                             | Preference for how CMCD data is sent provided in Mux Video requests. Defaults to query params for performance.                                                                                                                                                                                                                                                       | `"query"`                    |
@@ -151,6 +154,7 @@
 | `timeupdate`     | Identical to the native [`timeupdate` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event)         |
 | `volumechange`   | Identical to the native [`volumechange` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volumechange_event)     |
 | `waiting`        | Identical to the native [`waiting` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/waiting_event)               |
+| `cuepointchange` | Similar to the native `TextTrack` [`cuechange` event](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/cuechange_event), only the event's `detail` will be the `activeCuePoint` |
 
 # CSS Variables
 
