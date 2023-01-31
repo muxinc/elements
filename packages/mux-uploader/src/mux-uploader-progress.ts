@@ -150,6 +150,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
       }
       case ProgressTypes.PERCENTAGE: {
         if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
+        break;
       }
     }
   }
@@ -190,10 +191,6 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
 
   formatProgress(percent: number): string {
     return `${Math.floor(percent)}%`;
-  }
-
-  setProgress(percent: number) {
-    if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
   }
 }
 
