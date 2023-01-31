@@ -78,6 +78,14 @@ export const subscribeViewerCount = (
   };
 };
 
+const template = document.createElement('template');
+template.innerHTML = `
+<style>
+</style>
+<span id="viewer-count">
+</span>
+`;
+
 class MuxViewerCountElement extends globalThis.HTMLElement {
   static get observedAttributes() {
     return AttributeValues;
@@ -85,8 +93,14 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
 
   #unsubscribeViewerCount: (() => void) | undefined;
 
+  get #viewerCountEl() {
+    return (this.shadowRoot as ShadowRoot).querySelector('#viewer-count') as HTMLElement;
+  }
+
   constructor() {
     super();
+    const shadowRoot = this.attachShadow({ mode: 'open' });
+    shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   get token() {
@@ -117,8 +131,11 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
     this.#teardownViewerCountPolling();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
-    /** @TODO Support dynamic (re)setting of attributes (CJP) */
+  attributeChangedCallback(attrName: string, _oldValue: string | null, _newValue: string | null) {
+    if (attrName === Attributes.POLL_INTERVAL || attrName === Attributes.TOKEN) {
+      this.#teardownViewerCountPolling();
+      this.#setupViewerCountPolling();
+    }
   }
 
   #setupViewerCountPolling() {
@@ -135,7 +152,7 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
           );
           /** @TODO Add views getter (JKS) */
           /** @TODO Add "beefier" template (CJP) */
-          this.textContent = `${views}`;
+          this.#viewerCountEl.textContent = `${views}`;
         },
         // Error callback
         (errorMsg) => {
