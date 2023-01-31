@@ -1,6 +1,7 @@
 import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
+import 'media-chrome/dist/media-captions-menu-button.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
   ValueOf,
@@ -16,8 +17,6 @@ import {
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getPlayerVersion,
-  isInLiveWindow,
-  seekToLive,
   toPropName,
   AttributeTokenList,
   getPosterURLFromPlaybackId,
@@ -144,7 +143,6 @@ const playerSoftwareName = 'mux-player';
 const initialState = {
   dialog: undefined,
   isDialogOpen: false,
-  inLiveWindow: false,
 };
 
 class MuxPlayerElement extends VideoApiElement {
@@ -160,7 +158,6 @@ class MuxPlayerElement extends VideoApiElement {
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
       if (!isFocusedElementInPlayer) e.preventDefault();
     },
-    onSeekToLive: () => seekToLive(this),
   };
 
   static get observedAttributes() {
@@ -222,7 +219,6 @@ class MuxPlayerElement extends VideoApiElement {
 
     this.#setUpErrors();
     this.#setUpCaptionsButton();
-    this.#monitorLiveWindow();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
   }
@@ -303,36 +299,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   #deinitResizing() {
     this.#resizeObserver?.disconnect();
-  }
-
-  #monitorLiveWindow() {
-    this.mediaController?.addEventListener('mediaplayrequest', (event) => {
-      if (
-        (event.target as Element)?.localName === 'media-play-button' &&
-        this.streamType &&
-        [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any)
-      ) {
-        // playback core should handle the seek to live on first play
-        if (this.hasPlayed) {
-          seekToLive(this);
-        }
-      }
-    });
-
-    const updateLiveWindow = () => {
-      const nextInLiveWindow = isInLiveWindow(this);
-      const prevInLiveWindow = this.#state.inLiveWindow;
-      if (nextInLiveWindow !== prevInLiveWindow) {
-        this.#setState({ inLiveWindow: nextInLiveWindow });
-        this.dispatchEvent(
-          new CustomEvent('inlivewindowchange', { composed: true, bubbles: true, detail: this.inLiveWindow })
-        );
-      }
-    };
-    this.media?.addEventListener('progress', updateLiveWindow);
-    this.media?.addEventListener('waiting', updateLiveWindow);
-    this.media?.addEventListener('timeupdate', updateLiveWindow);
-    this.media?.addEventListener('emptied', updateLiveWindow);
   }
 
   #setUpErrors() {
@@ -651,7 +617,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get inLiveWindow() {
-    return this.#state.inLiveWindow;
+    return this.mediaController?.hasAttribute('media-time-is-live');
   }
 
   get _hls(): PlaybackEngine | undefined {
@@ -879,7 +845,7 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .65)';
+    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .75)';
   }
 
   /**

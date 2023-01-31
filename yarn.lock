@@ -2413,10 +2413,10 @@
     blurhash "^1.1.5"
     sharp "^0.30.7"
 
-"@mux/upchunk@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.0.tgz#657d88241e24776b9b9c53365ded3b70cf60c4c8"
-  integrity sha512-Aan5CzCcQSjVBOa2KxyMZiQVvh+D6vfnfcM4JXayQCTQ1bipK8jukmuXwC/ipd8IzBVAVyaLmXMuDX4LAk5mXA==
+"@mux/upchunk@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.2.tgz#5c7dd7cb084ff9ba61a998f7b854610305e1c08e"
+  integrity sha512-IDNwH84hYl6saWDlpfc6QVnEf72xtK6vsoFJTGET4o4aDPba25StMqFQjCN16rz82fy7Y14uepS9hivQP4sbOA==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
@@ -8175,6 +8175,9 @@ get-symbol-description@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/get-symbol-description/-/get-symbol-description-1.0.0.tgz#7fdb81c900101fbd564dd5f1a30af5aadc1e58d6"
   integrity sha512-2EmdH1YvIQiZpltCNgkuiUnyukzxM/R6NDJX31Ke3BG1Nq5b0S2PhX59UKi9vZpPDQVdqn+1IcaAwnzTT5vCjw==
+  dependencies:
+    call-bind "^1.0.2"
+    get-intrinsic "^1.1.1"
 
 getpass@^0.1.1:
   version "0.1.7"
@@ -10573,10 +10576,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@0.16.2:
-  version "0.16.2"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.16.2.tgz#45d9f5c8557a36d8d31a3244ab16b3ca550dc82b"
-  integrity sha512-2oNkmoJ+MPqGfQzs7U3ds9kzxRdhcO90T70Wo6s3QnzpdvCgi68T6XLIdep+JvVLgkO6+L0UuqfXK3H9L/uBaw==
+media-chrome@0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.18.0.tgz#7824fbeb3694a683beac6e9e448bfcb07df4df74"
+  integrity sha512-lru0kFpSKe7F7Ow7XptejIS6Fmc9WJnHZRckrVKNHzf2MoCVMZiFt4UCn3zEmC3IxLJNeOAavSqYpwqbdaenGA==
 
 media-typer@0.3.0:
   version "0.3.0"
