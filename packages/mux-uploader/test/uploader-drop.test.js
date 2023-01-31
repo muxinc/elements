@@ -5,7 +5,7 @@ describe('<mux-uploader-drop>', () => {
   it('adds and removes active attribute on drag events', async function () {
     const uploader = await fixture(`
       <mux-uploader-drop mux-uploader="my-uploader">
-        <mux-uploader id="my-uploader" status endpoint="https://my-authenticated-url/storage?your-url-params">
+        <mux-uploader id="my-uploader" endpoint="https://my-authenticated-url/storage?your-url-params">
         </mux-uploader>
       </mux-uploader-drop>
     `);
@@ -32,7 +32,7 @@ describe('<mux-uploader-drop>', () => {
   it('fires a file-ready event when a file is dropped', async function () {
     const uploader = await fixture(`
       <mux-uploader-drop mux-uploader="my-uploader">
-        <mux-uploader id="my-uploader" status endpoint="https://my-authenticated-url/storage?your-url-params">
+        <mux-uploader id="my-uploader" endpoint="https://my-authenticated-url/storage?your-url-params">
         </mux-uploader>
       </mux-uploader-drop>
     `);

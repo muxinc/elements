@@ -17,7 +17,6 @@ describe('<mux-uploader-sr-text>', () => {
 
     const uploader = await fixture(`<mux-uploader
       endpoint="https://mock-upload-endpoint.com"
-      status
     ></mux-uploader>`);
 
     const sr = uploader.shadowRoot.querySelector('mux-uploader-sr-text');

@@ -7,7 +7,6 @@ describe('<mux-uploader>', () => {
   it('initiates as expected', async function () {
     const uploader = await fixture(`<mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
-      status
     ></mux-uploader>`);
 
     const indicator = uploader.shadowRoot.querySelector('mux-uploader-progress:not([type="percentage"])');
@@ -27,7 +26,6 @@ describe('<mux-uploader>', () => {
 
     const uploader = await fixture(`<mux-uploader
       endpoint="https://mock-upload-endpoint.com"
-      status
     ></mux-uploader>`);
 
     const percentage = uploader.shadowRoot.querySelector('mux-uploader-progress[type="percentage"]');
@@ -66,7 +64,6 @@ describe('<mux-uploader>', () => {
     const html = await fixture(`<div><mux-uploader
       id="my-uploader"
       endpoint="https://mock-upload-endpoint.com"
-      status
     ></mux-uploader>
     <mux-uploader-progress type="radial" mux-uploader="my-uploader"></mux-uploader-progress></div>`);
 

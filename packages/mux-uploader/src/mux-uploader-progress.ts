@@ -27,9 +27,12 @@ template.innerHTML = `
   }
 
   :host([type="radial"][upload-in-progress]) .radial-type,
-  :host([type="bar"][upload-in-progress]) .bar-type, 
-  :host([type="percentage"][upload-in-progress]) #percentage-type {
+  :host([type="bar"][upload-in-progress]) .bar-type {
     display: block;
+  }
+
+  :host([type="percentage"][upload-in-progress]) #percentage-type {
+    display: var(--progress-percentage-display, block);
   }
 
   :host([type="bar"][upload-error]) .progress-bar {

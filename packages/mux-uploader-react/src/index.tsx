@@ -19,7 +19,6 @@ export type MuxUploaderProps = {
   id?: string;
   endpoint?: MuxUploaderElement['endpoint'];
   type?: string;
-  status?: boolean;
   style?: CSSProperties & {
     ['--uploader-font-family']?: CSSProperties['fontFamily'];
     ['--uploader-font-size']?: CSSProperties['fontSize'];
