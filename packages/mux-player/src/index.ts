@@ -38,23 +38,6 @@ export type Tokens = {
 
 const streamTypeValues = Object.values(StreamTypes);
 
-const SMALL_BREAKPOINT = 700;
-const XSMALL_BREAKPOINT = 300;
-const MediaChromeSizes = {
-  LG: 'large',
-  SM: 'small',
-  XS: 'extra-small',
-};
-
-function getPlayerSize(el: Element) {
-  const muxPlayerRect = el.getBoundingClientRect();
-  return muxPlayerRect.width < XSMALL_BREAKPOINT
-    ? MediaChromeSizes.XS
-    : muxPlayerRect.width < SMALL_BREAKPOINT
-    ? MediaChromeSizes.SM
-    : MediaChromeSizes.LG;
-}
-
 const VideoAttributes = {
   SRC: 'src',
   POSTER: 'poster',
@@ -126,7 +109,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     defaultShowRemainingTime: el.defaultShowRemainingTime,
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
-    playerSize: getPlayerSize(el.mediaController ?? el),
     title: el.getAttribute(PlayerAttributes.TITLE),
     ...state,
   };
@@ -150,7 +132,6 @@ class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
   #userInactive = true;
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
-  #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
     onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
@@ -189,7 +170,7 @@ class MuxPlayerElement extends VideoApiElement {
     this.#isInit = true;
 
     // The next line triggers the first render of the template.
-    this.#setState({ playerSize: getPlayerSize(this) });
+    this.#render();
 
     // Fixes a bug in React where mux-player's CE children were not upgraded yet.
     // These lines ensure the rendered mux-video and media-controller are upgraded,
@@ -265,16 +246,10 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   connectedCallback() {
-    this.#renderChrome();
     const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
     if (muxVideo) {
       muxVideo.metadata = this.metadataFromAttrs;
     }
-    this.#initResizing();
-  }
-
-  disconnectedCallback() {
-    this.#deinitResizing();
   }
 
   #setState(newState: Record<string, any>) {
@@ -284,21 +259,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   #render(props: Record<string, any> = {}) {
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
-  }
-
-  #renderChrome() {
-    if (this.#state.playerSize != getPlayerSize(this.mediaController ?? this)) {
-      this.#setState({ playerSize: getPlayerSize(this.mediaController ?? this) });
-    }
-  }
-
-  #initResizing() {
-    this.#resizeObserver = new ResizeObserver(() => this.#renderChrome());
-    this.#resizeObserver.observe(this.mediaController ?? this);
-  }
-
-  #deinitResizing() {
-    this.#resizeObserver?.disconnect();
   }
 
   #setUpErrors() {
