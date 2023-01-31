@@ -1,21 +1,67 @@
-<!-- eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJwbGF5YmFja19pZCIsImV4cCI6MTY3NDg2NjU4NCwia2lkIjoiWkV5TlA2OWY1Z1RQQ1V2MDJ5N0FNRjAwQ2hwRUFZS1ViWThpOXk5ekNnQWVZIiwic3ViIjoiWWtnSFdTYTVDT0NYWWJuV2ZrR1loZzRvNm9CTk5QWFBHNzAxQ2tjY2RkV2MifQ.SwJR4G8u-kI9pFQ9r4MwZ06bDiZyFyQGHYO-Tg89W3ZT6L6dUQ6xQ_PhRFlNfSqc3rIooP5aBBDXWQfDBBgUPcxkZ_SQPWqZFvhdNyuT_vEeOpJXE_Sg7DcpAq5pXkm5H8HR5mjsslHoXEN1-6495ReKiiCW6h1GEpzo1O9RkanLybONttiXJW-IK59EvlB6QxYrxsr1hslLJd1z1SMyYhGxTEpw0IeXzWkLm49wI-MIDN87fb14ydiPtJ2pli5cmp2jOdoQGlQa5eFtavVuB-7zGQiSPoJ8fXGQruNdPtsZ34Z25lkRu55hed_adDK0BF84mSqZxhrWCmBuHQGmZg -->
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-viewer-count&gt; simple example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./dist/mux-viewer-count.js"></script>
+    <style>
+      .viewer-count-token {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .btn {
+        border: 1px solid #0d9488;
+        color: #134e4a;
+        background: #99f6e4;
+      }
+      mux-uploader {
+        --progress-bar-fill-color: #7e22ce;
+        font-family: monospace;
+        font-size: 22px;
+      }
+      mux-uploader-drop {
+        display: block;
+        padding: 40px;
+        background: #fef9c3;
+      }
+      mux-uploader-drop[active] {
+        background: red;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
 
-<head>
-  <style>
-    media-viewer-count {
-      display: inline-block;
-      color: blue;
-    }
+    <h2>Enter your Viewer Count Token:</h2>
+    <div>
+      <input type="text" class="viewer-count-token" placeholder="my.token-for-views-api" />
+    </div>
 
-  </style>
-  <meta charset="UTF-8">
-</head>
+    <div style="margin: 40px 0;">
+      Current Number of Views: <mux-viewer-count></mux-viewer-count>
+    </div>
 
-<body>
-  <media-viewer-count interval="10" token="eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJwbGF5YmFja19pZCIsImV4cCI6MTY3NTE5NTU2MSwia2lkIjoiWkV5TlA2OWY1Z1RQQ1V2MDJ5N0FNRjAwQ2hwRUFZS1ViWThpOXk5ekNnQWVZIiwic3ViIjoiWWtnSFdTYTVDT0NYWWJuV2ZrR1loZzRvNm9CTk5QWFBHNzAxQ2tjY2RkV2MifQ.GscKKFyhzpP6MLrYOUmcxWy2Ror0SbBPBjppkrinMvu-ACqIwQqqHNmVPpSogUPF_FvOexfbPsINvLWdF392jf0GzXxkOtu-lWOcrm0TI-XCIBFkK0zZUsiDPhKBX_VsNhQw7BeImW23vIlvlpoRvf0Vv_HfwF-bCcJV_zoQtQpRErDbHyX7gfq3vKOTURD2gLgj_VetVZ31P4fsJUNX2nO8Zu39n_SELEQmAXEnlCk0plDeB3juX03P3TFQ21Dp3Jj9vr9pcGiYVxhN2fCGU-r03sYp6LE20gwMHA7VS7AkkuusBql84GJZNomkz1BDVzp9JFbd5qBF6oQ5HYiXmw"></media-viewer-count>
-  <script type='module' src='./dist/mux-viewer-count.js'></script>
-</body>
-
+    <a href="../">Browse Elements</a>
+    <script>
+      const input = document.querySelector('input[type="text"]');
+      const muxViewerCount = document.querySelector('mux-viewer-count');
+      input.addEventListener('change', () => {
+        muxViewerCount.token = input.value;
+      });
+    </script>
+  </body>
 </html>
