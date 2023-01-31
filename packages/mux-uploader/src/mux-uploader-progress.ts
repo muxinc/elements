@@ -92,8 +92,6 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
   progressBar: HTMLElement | null | undefined;
   uploadPercentage: HTMLElement | null | undefined;
 
-  protected _formatProgress: ((percent: number) => string) | null | undefined;
-
   constructor() {
     super();
     const shadowRoot = this.attachShadow({ mode: 'open' });
@@ -190,16 +188,8 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
     }
   }
 
-  #defaultFormatProgress(percent: number) {
+  formatProgress(percent: number): string {
     return `${Math.floor(percent)}%`;
-  }
-
-  get formatProgress(): (percent: number) => string {
-    return this._formatProgress ?? this.#defaultFormatProgress;
-  }
-
-  set formatProgress(value: ((percent: number) => string) | null | undefined) {
-    this._formatProgress = value;
   }
 
   setProgress(percent: number) {

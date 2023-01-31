@@ -287,13 +287,6 @@ If an error happens during the upload, `uploaderror` will fire.
 | `overlay-text` | `string`  | Optional text to display on dragover when `overlay` is on. | `''`    |
 | `mux-uploader` | `string ` | Must match the `id` on `MuxUploader`. Required.            | N/A     |
 
-### Properties
-
-#### `<mux-uploader>`
-
-| Property         | Type       | Description                                                                                                                                                                                                                                                                                        | Default                                                          |
-| ---------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `formatProgress` | `function` | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered - whether you want to display only the number or a sentence with the number etc. i.e. `formatProgress={(percent: number) => `${percent} percent uploaded`}` | A function that yields only the percent as a string i.e. `"60%"` |
 
 ### Events
 

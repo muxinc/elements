@@ -115,8 +115,6 @@
     <script>
       const input = document.querySelector('input[type="text"]');
       const muxUploader = document.querySelector('mux-uploader');
-      // Uncomment for example of custom progress formatting.
-      // muxUploader.formatProgress = (percent) => `THIS IS A WHOLE ${percent} UPLOADED`;
       input.addEventListener('change', () => {
         muxUploader.endpoint = input.value;
         // You can also pass in a function that yields a promise that resolves to a URL.
