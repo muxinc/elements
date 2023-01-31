@@ -128,14 +128,22 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
         this.pollInterval,
         // Success callback
         (views) => {
-          /** @TODO Add event for viewschange (CJP) */
-          /** @TODO Add views getter (CJP) */
+          this.dispatchEvent(
+            new CustomEvent('change', {
+            detail: views,
+            })
+          );
+          /** @TODO Add views getter (JKS) */
           /** @TODO Add "beefier" template (CJP) */
           this.textContent = `${views}`;
         },
         // Error callback
         (errorMsg) => {
-          /** @TODO Add event for error (CJP) */
+          this.dispatchEvent(
+            new CustomEvent('error', {
+            detail: errorMsg,
+            })
+          );
           /** @TODO Consider adding retry count/logic (CJP) */
           console.warn('Failed to retrieve viewer count: Error - ', errorMsg);
           this.#teardownViewerCountPolling();
