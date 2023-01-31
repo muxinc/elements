@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-player&gt; example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.18.1/dist/themes/media-theme-youtube.js"></script>
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      mux-player {
+        display: block;
+        width: 100%;
+        margin: 1rem 0 2rem;
+        background-color: #000;
+        line-height: 0;
+      }
+
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <mux-player
+      theme="youtube"
+      stream-type="on-demand"
+      playback-id="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
+      start-time="1"
+    ></mux-player>
+
+    <a href="../">Browse Elements</a>
+  </body>
+</html>

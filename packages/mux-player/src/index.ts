@@ -119,11 +119,15 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 }
 
 function getThemeTemplate(el: MuxPlayerElement) {
-  const themeName = el.getAttribute('theme');
+  let themeName = el.getAttribute('theme');
   if (themeName) {
     // @ts-ignore
     const templateElement = el.getRootNode()?.getElementById(themeName);
     if (templateElement) return templateElement;
+
+    if (!themeName.startsWith('media-theme-')) {
+      themeName = `media-theme-${themeName}`;
+    }
 
     const ThemeElement = globalThis.customElements.get(themeName) as MediaThemeElement | undefined;
     if (ThemeElement?.template) return ThemeElement.template;
