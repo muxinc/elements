@@ -156,7 +156,13 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
   }
 
   onReset() {
-    if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
+    if (this.uploadPercentage) {
+      this.uploadPercentage.innerHTML = '';
+    }
+
+    if (this.svgCircle) {
+      this.svgCircle.style.strokeDashoffset = `${this.getCircumference()}`;
+    }
   }
 
   getRadius() {
