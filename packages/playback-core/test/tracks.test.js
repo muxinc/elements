@@ -5,13 +5,13 @@ describe('textTracks', () => {
   describe('cuePoints', () => {
     let mediaEl;
     const cuePoints = [
-      { timestamp: 0, value: 'string' },
-      { timestamp: 1, value: 2 },
-      { timestamp: 2, value: true },
-      { timestamp: 3, value: undefined },
-      { timestamp: 4 },
-      { timestamp: 5, value: null },
-      { timestamp: 6, value: { complex: 'object' } },
+      { time: 0, value: 'string' },
+      { time: 1, value: 2 },
+      { time: 2, value: true },
+      { time: 3, value: undefined },
+      { time: 4 },
+      { time: 5, value: null },
+      { time: 6, value: { complex: 'object' } },
     ];
 
     beforeEach(() => {
@@ -33,7 +33,7 @@ describe('textTracks', () => {
         const track = await addCuePoints(mediaEl, cuePoints);
         assert.equal(track.cues.length, cuePoints.length);
         track.cues.forEach((cue, index, cues) => {
-          assert.equal(cue.startTime, cuePoints[index].timestamp);
+          assert.equal(cue.startTime, cuePoints[index].time);
           const expectedEndTime = cues[index + 1]?.startTime;
           if (expectedEndTime) {
             assert.equal(cue.endTime, expectedEndTime);
@@ -56,7 +56,7 @@ describe('textTracks', () => {
         const track = await addCuePoints(mediaEl, rotatedCuePoints);
         assert.equal(track.cues.length, cuePoints.length);
         track.cues.forEach((cue, index) => {
-          assert.equal(cue.startTime, cuePoints[index].timestamp);
+          assert.equal(cue.startTime, cuePoints[index].time);
           // Since `undefined` isn't serializable, it is represented as null in JSON.
           const expectedValue = cuePoints[index].value ?? null;
           // Parsing to not assume string formatting in the JSON.
@@ -75,13 +75,13 @@ describe('textTracks', () => {
         const refCuePointIdx = Math.floor(cuePoints.length / 2);
         const refCuePointBefore = cuePoints[refCuePointIdx];
         const refCuePointAfter = cuePoints[refCuePointIdx + 1];
-        const timestamp = refCuePointBefore.timestamp + (refCuePointAfter.timestamp - refCuePointBefore.timestamp) / 2;
+        const time = refCuePointBefore.time + (refCuePointAfter.time - refCuePointBefore.time) / 2;
         const additionalCuePoint = {
-          timestamp,
+          time,
           value: 'non-overlapping',
         };
         await addCuePoints(mediaEl, [additionalCuePoint]);
-        const actualCueIdx = Array.prototype.findIndex.call(track.cues, (cue) => cue.startTime === timestamp);
+        const actualCueIdx = Array.prototype.findIndex.call(track.cues, (cue) => cue.startTime === time);
         const actualCue = track.cues[actualCueIdx];
         const expectedEndTime = track.cues[actualCueIdx + 1]?.startTime;
         assert.equal(actualCue.endTime, expectedEndTime);
@@ -115,10 +115,10 @@ describe('textTracks', () => {
 
       it('should get the added cuePoints from a media element with values deserialized', async () => {
         const cuePoints = [
-          { timestamp: 0, value: null },
-          { timestamp: 12, value: { label: 'CTA 1', showDuration: 10 } },
-          { timestamp: 30, value: { label: 'CTA 2', showDuration: 5 } },
-          { timestamp: 43, value: null },
+          { time: 0, value: null },
+          { time: 12, value: { label: 'CTA 1', showDuration: 10 } },
+          { time: 30, value: { label: 'CTA 2', showDuration: 5 } },
+          { time: 43, value: null },
         ];
         await addCuePoints(mediaEl, cuePoints);
         const actualCuePoints = getCuePoints(mediaEl);
@@ -130,7 +130,7 @@ describe('textTracks', () => {
       });
 
       it('converts undefined cuePoint values into nulls', async () => {
-        const cuePoints = [{ timestamp: 0, value: undefined }, { timestamp: 4 }];
+        const cuePoints = [{ time: 0, value: undefined }, { time: 4 }];
         await addCuePoints(mediaEl, cuePoints);
         const actualCuePoints = getCuePoints(mediaEl);
 
@@ -142,9 +142,9 @@ describe('textTracks', () => {
 
     describe('getActiveCuePoints()', () => {
       const cuePoints = [
-        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
-        { timestamp: 30, value: { label: 'CTA 2', showDuration: 5 } },
-        { timestamp: 120, value: { label: 'CTA 3', showDuration: 5 } },
+        { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { time: 30, value: { label: 'CTA 2', showDuration: 5 } },
+        { time: 120, value: { label: 'CTA 3', showDuration: 5 } },
       ];
 
       it('yields undefined if no active cuePoints have been added', () => {
@@ -159,8 +159,8 @@ describe('textTracks', () => {
         const track = await addCuePoints(mediaEl, cuePoints);
         const expectedCuePoint = cuePoints[1];
         // NOTE: There are precision considerations with active cues and currentTime. To test, seek
-        // "just past" the start time/timestamp of the cuePoint.
-        mediaEl.currentTime = expectedCuePoint.timestamp + 0.001;
+        // "just past" the start time/time of the cuePoint.
+        mediaEl.currentTime = expectedCuePoint.time + 0.001;
         await oneEvent(track, 'cuechange');
         const actualCuePoint = getActiveCuePoint(mediaEl);
         assert.deepEqual(actualCuePoint, expectedCuePoint);
@@ -172,7 +172,7 @@ describe('textTracks', () => {
         await oneEvent(mediaEl, 'canplay');
         const track = await addCuePoints(mediaEl, cuePoints);
         const expectedCuePoint = cuePoints[1];
-        const currentTime = expectedCuePoint.timestamp + (cuePoints[2].timestamp - expectedCuePoint.timestamp) / 2;
+        const currentTime = expectedCuePoint.time + (cuePoints[2].time - expectedCuePoint.time) / 2;
         mediaEl.currentTime = currentTime;
         await oneEvent(track, 'cuechange');
         const actualCuePoint = getActiveCuePoint(mediaEl);
@@ -186,15 +186,15 @@ describe('textTracks', () => {
         const track = await addCuePoints(mediaEl, cuePoints);
         const expectedCuePoint1 = cuePoints[1];
         const expectedCuePoint2 = {
-          timestamp: expectedCuePoint1.timestamp + (cuePoints[2].timestamp - expectedCuePoint1.timestamp) / 2,
+          time: expectedCuePoint1.time + (cuePoints[2].time - expectedCuePoint1.time) / 2,
           value: { label: 'Additional CuePoint', showDuration: 10 },
         };
         await addCuePoints(mediaEl, [expectedCuePoint2]);
-        mediaEl.currentTime = expectedCuePoint1.timestamp + 1;
+        mediaEl.currentTime = expectedCuePoint1.time + 1;
         await oneEvent(track, 'cuechange');
         const actualCuePoint1 = getActiveCuePoint(mediaEl);
         assert.deepEqual(actualCuePoint1, expectedCuePoint1);
-        mediaEl.currentTime = expectedCuePoint2.timestamp + 1;
+        mediaEl.currentTime = expectedCuePoint2.time + 1;
         await oneEvent(track, 'cuechange');
         const actualCuePoint2 = getActiveCuePoint(mediaEl);
         assert.deepEqual(actualCuePoint2, expectedCuePoint2);

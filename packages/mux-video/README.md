@@ -219,7 +219,7 @@ playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?token=jwt-signed-token"
 
 ### Advanced: CuePoints
 
-`<mux-video>` has an extended API for working with CuePoints metadata. This includes the `addCuePoints()` method to add CuePoints, `cuePoints` and `activeCuePoint` properties to get all CuePoints or the current active CuePoint (based on the element's `currentTime`), and the `cuepointchange` event, which fires whenever the `activeCuePoint` changes. The "shape" of a CuePoint is `{ timestamp: number; value: any; }`, where `timestamp` is the playback time you want the `CuePoint` to begin, and `value` is whatever (JSON-serializable) value is appropriate for your CuePoint use case.
+`<mux-video>` has an extended API for working with CuePoints metadata. This includes the `addCuePoints()` method to add CuePoints, `cuePoints` and `activeCuePoint` properties to get all CuePoints or the current active CuePoint (based on the element's `currentTime`), and the `cuepointchange` event, which fires whenever the `activeCuePoint` changes. The "shape" of a CuePoint is `{ time: number; value: any; }`, where `time` is the playback time you want the `CuePoint` to begin, and `value` is whatever (JSON-serializable) value is appropriate for your CuePoint use case.
 
 To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as described above). Note that CuePoints are tied to the loaded media source, so: (a) you'll need to wait until the media source (`src` or `playback-id`) has loaded before adding any CuePoints; and (b) the CuePoints will be removed if you `unload()` the current media source or change it by re-setting e.g. `playback-id`. Below is a simple example of using CuePoints:
 
@@ -233,10 +233,10 @@ To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as d
   const muxVideoEl = document.querySelector('mux-video');
   function addCuePointsToElement() {
     const cuePoints = [
-      { timestamp: 1, value: 'Simple Value' }, 
-      { timestamp: 3, value: { complex: 'Complex Object', duration: 2 } },
-      { timestamp: 10, value: true },
-      { timestamp: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+      { time: 1, value: 'Simple Value' }, 
+      { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+      { time: 10, value: true },
+      { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
     ];
 
     muxVideoEl.addCuePoints(cuePoints);
@@ -260,15 +260,15 @@ To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as d
 </script>
 ```
 
-One last thing to note about CuePoints: Although they only have a single `timestamp` value, if a user seeks between the `timestamp` of two CuePoints, the `cuepointchange` event will still fire and the  `activeCuePoint` will be the earlier CuePoint. Using the example above for reference, we have a CuePoint with a `timestamp` of `3` and another with a `timestamp` of `10`. If a user seeks to `8`, the `activeCuePoint` will be the CuePoint with the `timestamp` of `3`. This is intentional to cover as many use cases as possible. If you only care about the `activeCuePoint` when the `currentTime` is roughly
-the same as the `timestamp`, you can add some simple logic to account for that, e.g.:
+One last thing to note about CuePoints: Although they only have a single `time` value, if a user seeks between the `time` of two CuePoints, the `cuepointchange` event will still fire and the  `activeCuePoint` will be the earlier CuePoint. Using the example above for reference, we have a CuePoint with a `time` of `3` and another with a `time` of `10`. If a user seeks to `8`, the `activeCuePoint` will be the CuePoint with the `time` of `3`. This is intentional to cover as many use cases as possible. If you only care about the `activeCuePoint` when the `currentTime` is roughly
+the same as the `time`, you can add some simple logic to account for that, e.g.:
 
 ```js
 function cuePointChangeListener() {
-  // Only do something with the activeCuePoint if we're playing "near" its `timestamp`.
+  // Only do something with the activeCuePoint if we're playing "near" its `time`.
   const MARGIN_OF_ERROR = 1;
-  if (Math.abs(muxVideoEl.currentTime - muxVideoEl.activeCuePoint.timestamp) <= MARGIN_OF_ERROR) {
-    console.log('Active CuePoint playing near its timestamp!', muxVideoEl.activeCuePoint);
+  if (Math.abs(muxVideoEl.currentTime - muxVideoEl.activeCuePoint.time) <= MARGIN_OF_ERROR) {
+    console.log('Active CuePoint playing near its time!', muxVideoEl.activeCuePoint);
   }
 }
 ```

@@ -174,9 +174,9 @@ export async function addCuePoints<T>(
     // Sort descending to ensure last cuepoints are added as cues first. This is done
     // so the track's cue's can be used for reference when determining an appropriate
     // endTime, allowing support of multiple invocations of addCuePoints
-    .sort(({ timestamp: timestampA }, { timestamp: timestampB }) => timestampB - timestampA)
-    .forEach(({ timestamp: startTime, value }) => {
-      // find the cue that starts immediately after the cuePoint's timestamp
+    .sort(({ time: timestampA }, { time: timestampB }) => timestampB - timestampA)
+    .forEach(({ time: startTime, value }) => {
+      // find the cue that starts immediately after the cuePoint's time
       const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
       const cueAfter = track?.cues?.[cueAfterIndex];
       const endTime = cueAfter
@@ -199,7 +199,7 @@ export async function addCuePoints<T>(
 }
 
 const toCuePoint = (cue: VTTCue) => ({
-  timestamp: cue.startTime,
+  time: cue.startTime,
   value: JSON.parse(cue.text),
 });
 

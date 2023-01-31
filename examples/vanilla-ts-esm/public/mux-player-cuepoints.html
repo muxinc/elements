@@ -57,10 +57,10 @@
 
       function addCuePointsToPlayer() {
         const cuePoints = [
-          { timestamp: 1, value: 'Simple Value' }, 
-          { timestamp: 3, value: { complex: 'Complex Object', duration: 2 } },
-          { timestamp: 10, value: true },
-          { timestamp: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+          { time: 1, value: 'Simple Value' }, 
+          { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+          { time: 10, value: true },
+          { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
         ];
 
         playerEl.addCuePoints(cuePoints);

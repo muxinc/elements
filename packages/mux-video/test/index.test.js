@@ -179,9 +179,9 @@ describe('<mux-video>', () => {
   describe('Feature: cuePoints', async () => {
     it('adds cuepoints', async () => {
       const cuePoints = [
-        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
-        { timestamp: 15, value: { label: 'CTA 2', showDuration: 5 } },
-        { timestamp: 21, value: { label: 'CTA 3', showDuration: 2 } },
+        { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
+        { time: 21, value: { label: 'CTA 3', showDuration: 2 } },
       ];
       const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
       const muxVideoEl = await fixture(`<mux-video
@@ -193,9 +193,9 @@ describe('<mux-video>', () => {
 
     it('dispatches a cuepointchange event when the active cuepoint changes', async () => {
       const cuePoints = [
-        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
-        { timestamp: 15, value: { label: 'CTA 2', showDuration: 5 } },
-        { timestamp: 21, value: { label: 'CTA 3', showDuration: 2 } },
+        { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
+        { time: 21, value: { label: 'CTA 3', showDuration: 2 } },
       ];
       const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
       const muxVideoEl = await fixture(`<mux-video
@@ -209,7 +209,7 @@ describe('<mux-video>', () => {
       // await oneEvent(muxVideoEl, 'loadedmetadata');
       await muxVideoEl.addCuePoints(cuePoints);
       const expectedCuePoint = cuePoints[1];
-      muxVideoEl.currentTime = expectedCuePoint.timestamp + 0.01;
+      muxVideoEl.currentTime = expectedCuePoint.time + 0.01;
       const event = await oneEvent(muxVideoEl, 'cuepointchange');
       assert.equal(event.target, muxVideoEl, 'event target should be the MuxVideoElement instance');
       assert.deepEqual(event.detail, expectedCuePoint);
@@ -218,9 +218,9 @@ describe('<mux-video>', () => {
 
     it('clears cuepoints when playback-id is updated', async () => {
       const cuePoints = [
-        { timestamp: 0, value: { label: 'CTA 1', showDuration: 10 } },
-        { timestamp: 15, value: { label: 'CTA 2', showDuration: 5 } },
-        { timestamp: 21, value: { label: 'CTA 3', showDuration: 2 } },
+        { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
+        { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
+        { time: 21, value: { label: 'CTA 3', showDuration: 2 } },
       ];
       const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
       const muxVideoEl = await fixture(`<mux-video

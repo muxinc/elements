@@ -340,7 +340,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
-  async addCuePoints<T = any>(cuePoints: { timestamp: number; value: T }[]) {
+  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
     return addCuePoints(this.nativeEl, cuePoints);
   }
 

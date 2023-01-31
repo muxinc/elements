@@ -118,7 +118,7 @@ export const allMediaTypes = [
 ] as MediaTypes[];
 
 export type CuePoint<T = any> = {
-  timestamp: number;
+  time: number;
   value: T;
 };
 

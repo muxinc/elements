@@ -1071,8 +1071,15 @@ class MuxPlayerElement extends VideoApiElement {
     this.media.metadata = { ...this.metadataFromAttrs, ...val };
   }
 
-  async addCuePoints<T = any>(cuePoints: { timestamp: number; value: T }[]) {
-    if (!this.media) return Promise.reject(new Error('Cannot add cuePoints until mux-player has initialized'));
+  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+    if (!this.#isInit) {
+      this.#init();
+    }
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to addCuePoints. cuePoints will not be added.');
+      return;
+    }
     return this.media?.addCuePoints(cuePoints);
   }
 
