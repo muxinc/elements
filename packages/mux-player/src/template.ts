@@ -26,18 +26,9 @@ export const template = (props: MuxTemplateProps) => html`
 
 const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
 
-const isLiveOrDVR = (props: MuxTemplateProps) =>
-  [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
+const isDVR = (props: MuxTemplateProps) => [StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
 
-const getLayout = (props: MuxTemplateProps) => {
-  let layout = '';
-  if (props.audio) layout += 'audio ';
-  if (isLive(props)) layout += 'live';
-  else if (isLiveOrDVR(props)) layout += 'dvr';
-  else layout += props.streamType || 'on-demand';
-  if (!props.audio && props.playerSize) layout += ` ${props.playerSize}`;
-  return layout;
-};
+const isLiveOrDVR = (props: MuxTemplateProps) => isLive(props) || isDVR(props);
 
 const getHotKeys = (props: MuxTemplateProps) => {
   let hotKeys = props.hotKeys ? `${props.hotKeys}` : '';
@@ -50,9 +41,9 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.theme ?? muxTemplate.content.children[0]}"
-    class="size-${props.playerSize}${props.secondaryColor ? ' two-tone' : ''}"
-    player-size="${props.playerSize ?? false}"
-    layout="${getLayout(props)}"
+    class="${props.secondaryColor ? 'two-tone' : false}"
+    stream-type="${isLiveOrDVR(props) ? 'live' : 'on-demand'}"
+    target-live-window="${isDVR(props) ? 1 : false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"

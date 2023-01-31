@@ -793,7 +793,6 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
     try {
       await playerEl.play();
@@ -802,6 +801,7 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
     playerEl.pause();
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
+    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
     seekToLiveEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
