@@ -2,6 +2,7 @@ import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import 'media-chrome/dist/experimental/media-captions-menu-button.js';
+import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
   ValueOf,
@@ -74,7 +75,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     storyboard: el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     placeholder: el.getAttribute('placeholder'),
-    theme: el.getAttribute('theme'),
+    themeTemplate: getThemeTemplate(el),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
@@ -115,6 +116,18 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   };
 
   return props;
+}
+
+function getThemeTemplate(el: MuxPlayerElement) {
+  const themeName = el.getAttribute('theme');
+  if (themeName) {
+    // @ts-ignore
+    const templateElement = el.getRootNode()?.getElementById(themeName);
+    if (templateElement) return templateElement;
+
+    const ThemeElement = globalThis.customElements.get(themeName) as MediaThemeElement | undefined;
+    if (ThemeElement?.template) return ThemeElement.template;
+  }
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
