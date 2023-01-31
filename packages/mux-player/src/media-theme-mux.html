@@ -580,7 +580,7 @@
             {{>PlayButton}}
             {{>MuteButton}}
             <div class="spacer"></div>
-            {{>CaptionsButton}}
+            {{>CaptionsMenuButton}}
             {{>FullscreenButton}}
           </media-control-bar>
         </template>
@@ -603,7 +603,7 @@
               {{>VolumeRange}}
               <div class="spacer"></div>
               {{>PlaybackRateButton}}
-              {{>CaptionsButton}}
+              {{>CaptionsMenuButton}}
               {{>AirplayButton}}
               {{>CastButton}}
               {{>PipButton}}
@@ -629,7 +629,7 @@
             {{>VolumeRange}}
             <div class="spacer"></div>
             {{>PlaybackRateButton}}
-            {{>CaptionsButton}}
+            {{>CaptionsMenuButton}}
             {{>AirplayButton}}
             {{>CastButton}}
             {{>PipButton}}
@@ -645,13 +645,13 @@
 
           <template if="breakpointSm == null">
             <media-control-bar slot="top-chrome">
-              {{>LiveButton section="top"}}
+              {{>LiveButton}}
             </media-control-bar>
             <media-control-bar>
               {{>PlayButton}}
               {{>MuteButton}}
               <div class="spacer"></div>
-              {{>CaptionsButton}}
+              {{>CaptionsMenuButton}}
               {{>FullscreenButton}}
             </media-control-bar>
           </template>
@@ -659,7 +659,7 @@
           <template if="breakpointSm">
             <template if="breakpointMd == null">
               <media-control-bar slot="top-chrome">
-                {{>LiveButton section="top"}}
+                {{>LiveButton}}
                 {{>TitleDisplay}}
               </media-control-bar>
               <div slot="centered-chrome" class="center-controls">
@@ -670,7 +670,7 @@
                 {{>MuteButton}}
                 {{>VolumeRange}}
                 <div class="spacer"></div>
-                {{>CaptionsButton}}
+                {{>CaptionsMenuButton}}
                 {{>AirplayButton}}
                 {{>CastButton}}
                 {{>PipButton}}
@@ -681,7 +681,7 @@
 
           <template if="breakpointMd">
             <media-control-bar slot="top-chrome">
-              {{>LiveButton section="top"}}
+              {{>LiveButton}}
               {{>TitleDisplay}}
             </media-control-bar>
             <div slot="centered-chrome" class="center-controls">
@@ -692,7 +692,7 @@
               {{>MuteButton}}
               {{>VolumeRange}}
               <div class="spacer"></div>
-              {{>CaptionsButton}}
+              {{>CaptionsMenuButton}}
               {{>AirplayButton}}
               {{>CastButton}}
               {{>PipButton}}
@@ -705,14 +705,14 @@
 
           <template if="breakpointSm == null">
             <media-control-bar slot="top-chrome">
-              {{>LiveButton section="top"}}
+              {{>LiveButton}}
             </media-control-bar>
             {{>TimeRange}}
             <media-control-bar>
               {{>PlayButton}}
               {{>MuteButton}}
               <div class="spacer"></div>
-              {{>CaptionsButton}}
+              {{>CaptionsMenuButton}}
               {{>FullscreenButton}}
             </media-control-bar>
           </template>
@@ -720,7 +720,7 @@
           <template if="breakpointSm">
             <template if="breakpointMd == null">
               <media-control-bar slot="top-chrome">
-                {{>LiveButton section="top"}}
+                {{>LiveButton}}
                 {{>TitleDisplay}}
               </media-control-bar>
               <div slot="centered-chrome" class="center-controls">
@@ -734,7 +734,7 @@
                 {{>MuteButton}}
                 {{>VolumeRange}}
                 <div class="spacer"></div>
-                {{>CaptionsButton}}
+                {{>CaptionsMenuButton}}
                 {{>AirplayButton}}
                 {{>CastButton}}
                 {{>PipButton}}
@@ -745,7 +745,7 @@
 
           <template if="breakpointMd">
             <media-control-bar slot="top-chrome">
-              {{>LiveButton section="top"}}
+              {{>LiveButton}}
               {{>TitleDisplay}}
             </media-control-bar>
             <div slot="centered-chrome" class="center-controls">
@@ -759,7 +759,7 @@
               {{>MuteButton}}
               {{>VolumeRange}}
               <div class="spacer"></div>
-              {{>CaptionsButton}}
+              {{>CaptionsMenuButton}}
               {{>AirplayButton}}
               {{>CastButton}}
               {{>PipButton}}
