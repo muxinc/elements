@@ -147,18 +147,17 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
         (views) => {
           this.dispatchEvent(
             new CustomEvent('change', {
-            detail: views,
+              detail: views,
             })
           );
           /** @TODO Add views getter (JKS) */
-          /** @TODO Add "beefier" template (CJP) */
           this.#viewerCountEl.textContent = `${views}`;
         },
         // Error callback
         (errorMsg) => {
           this.dispatchEvent(
             new CustomEvent('error', {
-            detail: errorMsg,
+              detail: errorMsg,
             })
           );
           /** @TODO Consider adding retry count/logic (CJP) */
@@ -175,8 +174,8 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
   }
 }
 
-if (!globalThis.customElements.get('media-viewer-count')) {
-  globalThis.customElements.define('media-viewer-count', MuxViewerCountElement);
+if (!globalThis.customElements.get('mux-viewer-count')) {
+  globalThis.customElements.define('mux-viewer-count', MuxViewerCountElement);
 }
 
 export default MuxViewerCountElement;
