@@ -298,6 +298,7 @@ If an error happens during the upload, `uploaderror` will fire.
 | `--button-active-background`   | `background`       | `#000000`           | background color of upload button when button is active | Applied via `:active` [pseudo selector](https://developer.mozilla.org/en-US/docs/Web/CSS/:active) |
 | `--progress-bar-fill-color`    | `background`       | `#000000`           | background color for progress bar div                   |                                                                                                   |
 | `--progress-radial-fill-color` | `stroke`           | `black`             | stroke color for circle SVG (wip)                       |                                                                                                   |
+| `--progress-percentage-display`| `display`          | `block`             | display value for percentage progress                   |                                                                                                   |
 
 #### `<mux-uploader-drop/>`
 
