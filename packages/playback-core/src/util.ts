@@ -1,22 +1,36 @@
 import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, type MuxMediaProps } from './types';
 
-type addEventListenerWithTeardown = <K extends keyof HTMLMediaElementEventMap>(
+type addEventListenerWithTeardown = <
+  K extends keyof HTMLMediaElementEventMap,
+  T extends EventTarget = HTMLMediaElement
+>(
   mediaEl: HTMLMediaElement,
   type: K,
-  listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any,
-  options?: boolean | AddEventListenerOptions
+  listener: (this: T, ev: HTMLMediaElementEventMap[K]) => any,
+  options?: boolean | AddEventListenerOptions,
+  target?: T | HTMLMediaElement
 ) => void;
 
 // Adds an event listener to a media element that will be removed when an 'teardown' event is dispatched.
 // Using this instead of 'emptied' as that can fire on initial load based on prior state of the media element
 // Will be fired as a result of (directly or indirectly) invoking playback-core's `teardown()` function.
-export const addEventListenerWithTeardown: addEventListenerWithTeardown = (mediaEl, type, listener, options) => {
-  mediaEl.addEventListener(type, listener, options);
+export const addEventListenerWithTeardown: addEventListenerWithTeardown = (
+  mediaEl,
+  type,
+  listener,
+  options,
+  target = mediaEl
+) => {
+  /** @TODO fix types (hard problem due to lack of explicit relationship between Element and EventMap definitions) */
+  // @ts-ignore
+  target.addEventListener(type, listener, options);
   // NOTE: Using custom teardown
   mediaEl.addEventListener(
     'teardown',
     () => {
-      mediaEl.removeEventListener(type, listener);
+      /** @TODO fix types (hard problem due to lack of explicit relationship between Element and EventMap definitions) */
+      // @ts-ignore
+      target.removeEventListener(type, listener);
     },
     { once: true }
   );
