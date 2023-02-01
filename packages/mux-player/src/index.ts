@@ -809,7 +809,14 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the primary color used by the player.
    */
   get primaryColor() {
-    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR) ?? undefined;
+    const color = this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+    if (color) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      return globalThis.getComputedStyle(this.mediaTheme).getPropertyValue('--primary-color');
+    }
   }
 
   /**
@@ -823,7 +830,14 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .75)';
+    const color = this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+    if (color) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      return globalThis.getComputedStyle(this.mediaTheme).getPropertyValue('--secondary-color');
+    }
   }
 
   /**

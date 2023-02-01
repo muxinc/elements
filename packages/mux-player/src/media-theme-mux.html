@@ -1,18 +1,15 @@
 <!-- prettier-ignore -->
 <template id="media-theme-mux">
   <style>
-    :host(:not([audio])) {
-      --secondary-color: transparent;
-    }
-
     :host {
       --_primary-color: var(--primary-color, #fff);
+      --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
 
       --media-icon-color: var(--_primary-color);
       --media-range-thumb-background: var(--_primary-color);
       --media-range-bar-color: var(--_primary-color);
-      --media-control-background: var(--secondary-color);
-      --media-control-hover-background: var(--secondary-color);
+      --media-control-background: var(--_secondary-color);
+      --media-control-hover-background: var(--_secondary-color);
       --media-time-buffered-color: rgba(255, 255, 255, 0.4);
       --media-range-track-background: rgba(255, 255, 255, 0.5);
       --media-range-track-border-radius: 3px;
@@ -23,6 +20,10 @@
       display: inline-block;
       width: 100%;
       height: 100%;
+    }
+
+    :host(:not([audio])) {
+      --secondary-color: transparent;
     }
 
     :host(.two-tone:not([audio])) {
@@ -80,7 +81,7 @@
     }
 
     media-captions-menu-button {
-      --media-listbox-background: var(--secondary-color);
+      --media-listbox-background: var(--_secondary-color);
       --media-listbox-selected-background: rgba(255, 255, 255, 0.28);
       --media-listbox-hover-background: none;
       --media-listbox-hover-outline: white solid 1px;
