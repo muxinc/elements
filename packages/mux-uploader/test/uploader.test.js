@@ -10,7 +10,6 @@ describe('<mux-uploader>', () => {
   it('initiates as expected', async function () {
     const uploader = await fixture(`<mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
-      status
     ></mux-uploader>`);
 
     assert.equal(
@@ -18,13 +17,10 @@ describe('<mux-uploader>', () => {
       'https://my-authenticated-url/storage?your-url-params',
       'endpoint matches'
     );
-    assert.equal(uploader.getAttribute('status'), '', 'status matches');
   });
 
   it('does not init without endpoint', async function () {
-    const uploader = await fixture(`<mux-uploader
-      status
-    ></mux-uploader>`);
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
 
     setTimeout(() => {
       uploader.dispatchEvent(
@@ -51,7 +47,6 @@ describe('<mux-uploader>', () => {
 
     const uploader = await fixture(`<mux-uploader
       endpoint="https://mock-upload-endpoint.com"
-      status
     ></mux-uploader>`);
 
     setTimeout(() => {
@@ -75,5 +70,16 @@ describe('<mux-uploader>', () => {
 
     await oneEvent(uploader, 'success');
     assert.equal(uploader.statusMessage.innerHTML, 'Upload complete!', 'status message matches');
+  });
+
+  it('fires a reset event on reset btn click', async function () {
+    const uploader = await fixture(`<mux-uploader
+      endpoint="https://mock-upload-endpoint.com"
+    ></mux-uploader>`);
+
+    const listener = oneEvent(uploader, 'reset');
+    uploader.retryButton.click();
+    const e = await listener;
+    assert.exists(e);
   });
 });

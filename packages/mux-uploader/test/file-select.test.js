@@ -6,7 +6,6 @@ describe('<mux-uploader-file-select>', () => {
     const uploader = await fixture(`
     <mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
-      status
     >
       <button class="btn" type="button" slot="file-select">
         Pick a file
@@ -27,7 +26,6 @@ describe('<mux-uploader-file-select>', () => {
     const uploader = await fixture(`
     <mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
-      status
     >
       <button class="btn" type="button" slot="file-select">
         Pick a file

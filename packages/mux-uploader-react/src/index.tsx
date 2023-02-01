@@ -19,7 +19,6 @@ export type MuxUploaderProps = {
   id?: string;
   endpoint?: MuxUploaderElement['endpoint'];
   type?: string;
-  status?: boolean;
   style?: CSSProperties & {
     ['--uploader-font-family']?: CSSProperties['fontFamily'];
     ['--uploader-font-size']?: CSSProperties['fontSize'];
@@ -36,7 +35,6 @@ export type MuxUploaderProps = {
     ['--progress-radial-fill-color']?: CSSProperties['stroke'];
   };
   children?: React.ReactNode;
-  formatProgress?: (percent: number) => string;
   dynamicChunkSize?: boolean;
   onUploadStart?: GenericEventListener<MuxUploaderElementEventMap['uploadstart']>;
   onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap['chunkattempt']>;
@@ -80,12 +78,10 @@ const useUploader = (
     onUploadError,
     onProgress,
     onSuccess,
-    formatProgress,
     endpoint,
     ...remainingProps
   } = props;
   useObjectPropEffect('endpoint', endpoint, ref);
-  useObjectPropEffect('formatProgress', formatProgress, ref);
   useEventCallbackEffect('uploadstart', ref, onUploadStart);
   useEventCallbackEffect('chunkattempt', ref, onChunkAttempt);
   useEventCallbackEffect('chunksuccess', ref, onChunkSuccess);

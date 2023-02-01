@@ -17,7 +17,6 @@ describe('<mux-uploader-sr-text>', () => {
 
     const uploader = await fixture(`<mux-uploader
       endpoint="https://mock-upload-endpoint.com"
-      status
     ></mux-uploader>`);
 
     const sr = uploader.shadowRoot.querySelector('mux-uploader-sr-text');
@@ -32,7 +31,7 @@ describe('<mux-uploader-sr-text>', () => {
       );
     });
 
-    await aTimeout(100);
+    await aTimeout(500);
     server.respond();
     await oneEvent(uploader, 'success');
     assert.equal(sr.srOnlyText.innerHTML, 'Upload complete!', 'status message matches');
