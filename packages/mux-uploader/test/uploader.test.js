@@ -81,4 +81,15 @@ describe('<mux-uploader>', () => {
     const e = await listener;
     assert.exists(e);
   });
+
+  it('fires a reset event on reset btn click', async function () {
+    const uploader = await fixture(`<mux-uploader
+      endpoint="https://mock-upload-endpoint.com"
+    ></mux-uploader>`);
+
+    const listener = oneEvent(uploader, 'reset');
+    uploader.retryButton.click();
+    const e = await listener;
+    assert.exists(e);
+  });
 });

@@ -217,6 +217,62 @@ In order to use `token=` -- or any other query params, pass them through with th
 playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?token=jwt-signed-token"
 ```
 
+### Advanced: CuePoints
+
+`<mux-video>` has an extended API for working with CuePoints metadata. This includes the `addCuePoints()` method to add CuePoints, `cuePoints` and `activeCuePoint` properties to get all CuePoints or the current active CuePoint (based on the element's `currentTime`), and the `cuepointchange` event, which fires whenever the `activeCuePoint` changes. The "shape" of a CuePoint is `{ time: number; value: any; }`, where `time` is the playback time you want the `CuePoint` to begin, and `value` is whatever (JSON-serializable) value is appropriate for your CuePoint use case.
+
+To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as described above). Note that CuePoints are tied to the loaded media source, so: (a) you'll need to wait until the media source (`src` or `playback-id`) has loaded before adding any CuePoints; and (b) the CuePoints will be removed if you `unload()` the current media source or change it by re-setting e.g. `playback-id`. Below is a simple example of using CuePoints:
+
+```html
+<mux-video
+  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+  controls
+>
+</mux-video>
+<script>
+  const muxVideoEl = document.querySelector('mux-video');
+  function addCuePointsToElement() {
+    const cuePoints = [
+      { time: 1, value: 'Simple Value' }, 
+      { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+      { time: 10, value: true },
+      { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+    ];
+
+    muxVideoEl.addCuePoints(cuePoints);
+  }
+
+  function cuePointChangeListener() {
+    // Do something with the activeCuePoint here. 
+    console.log('Active CuePoint!', muxVideoEl.activeCuePoint);
+  }
+
+  // 
+  muxVideoEl.addEventListener('cuepointchange', cuePointChangeListener);
+  // Here, we're `duration` and `'durationchange'` to determine if the `<mux-video>` element has loaded src. This also gives
+  // us the opportunity to compare our intended CuePoints against the duration of the media source.
+  // Note that you could use other events, such as `'loadedmetadata'` if that makes more sense for your use case.
+  if (playerEl.duration) {
+    addCuePointsToElement();
+  } else {
+    muxVideoEl.addEventListener('durationchange', addCuePointsToElement, { once: true });
+  }
+</script>
+```
+
+One last thing to note about CuePoints: Although they only have a single `time` value, if a user seeks between the `time` of two CuePoints, the `cuepointchange` event will still fire and the  `activeCuePoint` will be the earlier CuePoint. Using the example above for reference, we have a CuePoint with a `time` of `3` and another with a `time` of `10`. If a user seeks to `8`, the `activeCuePoint` will be the CuePoint with the `time` of `3`. This is intentional to cover as many use cases as possible. If you only care about the `activeCuePoint` when the `currentTime` is roughly
+the same as the `time`, you can add some simple logic to account for that, e.g.:
+
+```js
+function cuePointChangeListener() {
+  // Only do something with the activeCuePoint if we're playing "near" its `time`.
+  const MARGIN_OF_ERROR = 1;
+  if (Math.abs(muxVideoEl.currentTime - muxVideoEl.activeCuePoint.time) <= MARGIN_OF_ERROR) {
+    console.log('Active CuePoint playing near its time!', muxVideoEl.activeCuePoint);
+  }
+}
+```
+
 ### Advanced: Use with React+TypeScript
 
 Even though we don't (yet!) have our own `React` version of `<mux-video>`, you can still use it in your `React` app. However, if you're also using TypeScript, make sure you add the following TypeScript definitions, since custom elements (like as `<mux-video>`) will not be recognized as [Intrinsic Elements](https://www.typescriptlang.org/docs/handbook/jsx.html#intrinsic-elements):

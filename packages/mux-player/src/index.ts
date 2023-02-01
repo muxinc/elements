@@ -1071,6 +1071,26 @@ class MuxPlayerElement extends VideoApiElement {
     this.media.metadata = { ...this.metadataFromAttrs, ...val };
   }
 
+  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+    if (!this.#isInit) {
+      this.#init();
+    }
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to addCuePoints. cuePoints will not be added.');
+      return;
+    }
+    return this.media?.addCuePoints(cuePoints);
+  }
+
+  get activeCuePoint() {
+    return this.media?.activeCuePoint;
+  }
+
+  get cuePoints() {
+    return this.media?.cuePoints ?? [];
+  }
+
   /**
    * Get the signing tokens for the Mux asset URL's.
    */

@@ -39,7 +39,6 @@ function MuxUploaderPage() {
           style={{ display: "block", height: "200px" }}
           id="uploader"
           endpoint={url}
-          type="bar"
           onUploadStart={onUploadStart}
           onChunkAttempt={onChunkAttempt}
           onChunkSuccess={onChunkSuccess}

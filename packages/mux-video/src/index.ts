@@ -6,15 +6,17 @@ import {
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
-  ValueOf,
   toMuxVideoURL,
   Metadata,
   MediaError,
   getError,
   CmcdTypes,
   CmcdTypeValues,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
@@ -336,6 +338,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
     }
+  }
+
+  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+    return addCuePoints(this.nativeEl, cuePoints);
+  }
+
+  get activeCuePoint() {
+    return getActiveCuePoint(this.nativeEl);
+  }
+
+  get cuePoints() {
+    return getCuePoints(this.nativeEl);
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
