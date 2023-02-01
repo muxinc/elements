@@ -192,7 +192,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
     ></mux-player>`);
-    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -227,7 +227,7 @@ describe('<mux-player>', () => {
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
     ></mux-player>`);
-    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -424,7 +424,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
-    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(
@@ -774,7 +774,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.notExists(seekToLiveEl);
   });
@@ -787,7 +787,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -800,7 +800,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -822,7 +822,7 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
     playerEl.pause();
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     seekToLiveEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
@@ -843,7 +843,7 @@ describe('<mux-player> seek to live behaviors', function () {
     playerEl.pause();
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
 
-    const mcPlayEl = playerEl.theme.shadowRoot.querySelector('media-play-button');
+    const mcPlayEl = playerEl.mediaTheme.shadowRoot.querySelector('media-play-button');
     mcPlayEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
   });

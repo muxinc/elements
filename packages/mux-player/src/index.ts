@@ -194,8 +194,8 @@ class MuxPlayerElement extends VideoApiElement {
     // These lines ensure the rendered mux-video and media-controller are upgraded,
     // even before they are connected to the main document.
     try {
-      customElements.upgrade(this.theme as Node);
-      if (!(this.theme instanceof globalThis.HTMLElement)) throw '';
+      customElements.upgrade(this.mediaTheme as Node);
+      if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
     } catch (error) {
       logger.error(`<media-theme> failed to upgrade!`);
     }
@@ -243,12 +243,12 @@ class MuxPlayerElement extends VideoApiElement {
     } catch (e) {}
   }
 
-  get theme(): Element | null | undefined {
+  get mediaTheme(): Element | null | undefined {
     return this.shadowRoot?.querySelector('media-theme');
   }
 
   get mediaController(): MediaController | null | undefined {
-    return this.theme?.shadowRoot?.querySelector('media-controller');
+    return this.mediaTheme?.shadowRoot?.querySelector('media-controller');
   }
 
   get metadataFromAttrs() {
