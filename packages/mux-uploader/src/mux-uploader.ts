@@ -8,15 +8,11 @@ const styles = `
   background-color: var(--uploader-background-color, inherit);
 }
 
-p {
-  color: black;
-}
-
 input[type="file"] {
   display: none;
 }
 
-.upload-status, .retry-button, .text-container {
+.retry-button, .text-container {
   display: none;
 }
 
@@ -41,20 +37,12 @@ input[type="file"] {
   padding-bottom: 16px;
 }
 
-:host([upload-in-progress][status]) .upload-status {
-  display: block;
-}
-
 :host([upload-in-progress]) ::slotted(p) {
   display: block;
 }
 
 :host([upload-error]) .status-message {
   color: #e22c3e;
-}
-
-:host([upload-error][status]) .upload-status {
-  display: none;
 }
 
 :host([upload-error]) .retry-button {
@@ -67,11 +55,6 @@ input[type="file"] {
 
 :host([upload-error]) ::slotted(p) {
   display: none;
-}
-
-.upload-status {
-  font-size: inherit;
-  margin-bottom: 16px;
 }
 
 :host([upload-in-progress]) .upload-instruction {
@@ -98,11 +81,9 @@ template.innerHTML = `
   <slot name="file-select"></slot>
 </mux-uploader-file-select>
 
-<p class="upload-status" id="upload-status"></p>
+<mux-uploader-progress type="percentage"></mux-uploader-progress>
 <mux-uploader-progress></mux-uploader-progress>
 `;
-
-const defaultFormatProgress = (percent: number) => `${Math.floor(percent)}%`;
 
 const ButtonPressedKeys = ['Enter', ' '];
 
@@ -159,9 +140,7 @@ interface MuxUploaderElement extends HTMLElement {
 }
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
-  protected _formatProgress: ((percent: number) => string) | null | undefined;
   protected _endpoint: Endpoint;
-  uploadPercentage: HTMLElement | null | undefined;
   statusMessage: HTMLElement | null | undefined;
   retryButton: HTMLElement | null | undefined;
 
@@ -172,7 +151,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const uploaderHtml = template.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
 
-    this.uploadPercentage = this.shadowRoot?.getElementById('upload-status');
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
     this.retryButton = this.shadowRoot?.getElementById('retry-button');
 
@@ -233,16 +211,9 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
-  get formatProgress(): (percent: number) => string {
-    return this._formatProgress ?? defaultFormatProgress;
-  }
-
-  set formatProgress(value: ((percent: number) => string) | null | undefined) {
-    this._formatProgress = value;
-  }
-
   setupRetry() {
     this.retryButton?.addEventListener('click', () => {
+      this.dispatchEvent(new CustomEvent('reset'));
       this.resetState();
     });
 
@@ -255,6 +226,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
         return;
       }
 
+      this.dispatchEvent(new CustomEvent('reset'));
       this.resetState();
     };
 
@@ -274,11 +246,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     // Reset file to ensure change/input events will fire, even if selecting the same file (CJP).
     this.hiddenFileInput.value = '';
     if (this.statusMessage) this.statusMessage.innerHTML = '';
-    if (this.uploadPercentage) this.uploadPercentage.innerHTML = '';
-  }
-
-  setProgress(percent: number) {
-    if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
   }
 
   handleUpload(evt: CustomEvent) {
@@ -334,7 +301,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     });
 
     upload.on('progress', (event) => {
-      this.setProgress(event.detail);
       this.dispatchEvent(new CustomEvent('progress', event));
     });
 

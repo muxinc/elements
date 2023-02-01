@@ -23,8 +23,6 @@ function MuxUploaderPage() {
       <MuxUploader
         style={{ display: "block", height: "200px" }}
         endpoint={url}
-        type="bar"
-        status
       />
 
       <Link to="/">Browse Elements</Link>

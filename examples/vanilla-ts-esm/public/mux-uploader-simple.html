@@ -53,10 +53,7 @@
 
     <div style="margin: 40px 0;">
       <mux-uploader-drop mux-uploader="my-uploader">
-        <mux-uploader
-          id="my-uploader"
-          status
-        >
+        <mux-uploader id="my-uploader">
           <button class="btn" type="button" slot="file-select">
             Pick a file
           </button>
@@ -69,8 +66,6 @@
     <script>
       const input = document.querySelector('input[type="text"]');
       const muxUploader = document.querySelector('mux-uploader');
-      // Uncomment for example of custom progress formatting.
-      // muxUploader.formatProgress = (percent) => `THIS IS A WHOLE ${percent} UPLOADED`;
       input.addEventListener('change', () => {
         muxUploader.endpoint = input.value;
         // You can also pass in a function that yields a promise that resolves to a URL.

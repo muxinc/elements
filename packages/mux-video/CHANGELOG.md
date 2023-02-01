@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.12.1...@mux/mux-video@0.13.0) (2023-02-01)
+
+
+### Features
+
+* **mux-player, mux-video, playback-core:** Add API for CuePoints metadata. ([1f0b40a](https://github.com/muxinc/elements/commit/1f0b40a6d7f09c0e08a42353e241a26857edaad6))
+
+
+
+
+
 ## [0.12.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.12.0...@mux/mux-video@0.12.1) (2023-01-20)
 
 **Note:** Version bump only for package @mux/mux-video

@@ -49,10 +49,10 @@ const MuxUploaderWithMuxUploaderDropExample = () => {
     <div>
       <h1>Simple MuxUploader and Mux Uploader Drop Examples</h1>
       {/* Rounded upload button by itself. Displays upload progress in text as percentage. */}
-      <MuxUploader endpoint="authenticated-url" type="bar" status style={{ '--button-border-radius': '40px' }}></MuxUploader>
+      <MuxUploader endpoint="authenticated-url" style={{ '--button-border-radius': '40px' }}></MuxUploader>
 
-      {/* Upload button by itself. Does not display text percentage. */}
-      <MuxUploader endpoint="authenticated-url" type="bar"></MuxUploader>
+      {/* Upload button by itself. */}
+      <MuxUploader endpoint="authenticated-url"></MuxUploader>
 
       {/* Upload button with access to optional supplentary drag and drop features. */}
       <MuxUploaderDrop mux-uploader="uploader">
@@ -73,9 +73,6 @@ For a more complex implementation out in the wild, check out [stream.new](https:
 | ------------------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | `endpoint`         | `string \| Promise` | Either a) the authenticated URL that your file will be uploaded to or b) an async function that yields a promise that resolves to that url. Check out the [direct uploads docs](https://docs.mux.com/guides/video/upload-files-directly#1-create-an-authenticated-mux-url) for how to create one. Required. | `undefined`                                                      |
 | `id`               | `string`            | An ID that allows `<MuxUploaderDrop>` to locate `<MuxUploader>`. Required if you use `<MuxUploaderDrop>`.                                                                                                                                                                                                   | N/A                                                              |
-| `type`             | `"bar"`             | Specifies the visual type of progress bar. A radial type is in-progress.                                                                                                                                                                                                                                    | "bar"                                                            |
-| `status`           | `boolean`           | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                                                                                                        | false                                                            |
-| `formatProgress`   | `function`          | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered - whether you want to display only the number, a sentence with the number etc. i.e. `formatProgress={(percent: number) => `${percent} percent uploaded`}`            | A function that yields only the percent as a string i.e. `"60%"` |
 | `dynamicChunkSize` | `boolean`           | Toggles uploading with dynamic chunk sizes. Chunk sizes will change with upload speed to attempt to optimize upload.                                                                                                                                                                                        | `false`                                                          |
 
 #### `<MuxUploaderDrop>`
