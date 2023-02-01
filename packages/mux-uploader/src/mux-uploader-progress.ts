@@ -1,6 +1,7 @@
 import { globalThis, document } from 'shared-polyfills';
 import { ProgressTypes } from './constants';
 import { getMuxUploaderEl } from './utils/element-utils';
+import { formatProgress } from './utils/progress';
 
 const template = document.createElement('template');
 const ariaDescription = 'Media upload progress bar';
@@ -152,7 +153,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
         break;
       }
       case ProgressTypes.PERCENTAGE: {
-        if (this.uploadPercentage) this.uploadPercentage.innerHTML = this.formatProgress(percent);
+        if (this.uploadPercentage) this.uploadPercentage.innerHTML = formatProgress(percent);
         break;
       }
     }
@@ -194,10 +195,6 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
       this.svgCircle.style.strokeDasharray = `${this.getCircumference()} ${this.getCircumference()}`;
       this.svgCircle.style.strokeDashoffset = `${this.getCircumference()}`;
     }
-  }
-
-  formatProgress(percent: number): string {
-    return `${Math.floor(percent)}%`;
   }
 }
 
