@@ -7,7 +7,7 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
 
-:host([upload-error]) #status-message {
+:host([upload-error]) {
   color: #e22c3e;
 }
 </style>
