@@ -224,21 +224,20 @@ class MuxPlayerElement extends VideoApiElement {
 
   #setupCSSProperties() {
     // registerProperty will throw if the prop has already been registered
-    // and there's currently no way to check ahead of time
+    // and there's currently no way to check ahead of time.
+    // initialValue's are defined in the theme
     try {
       // @ts-ignore
       window?.CSS?.registerProperty({
         name: '--primary-color',
         syntax: '<color>',
         inherits: true,
-        initialValue: 'white',
       });
       // @ts-ignore
       window?.CSS?.registerProperty({
         name: '--secondary-color',
         syntax: '<color>',
         inherits: true,
-        initialValue: 'transparent',
       });
     } catch (e) {}
   }
@@ -809,13 +808,14 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the primary color used by the player.
    */
   get primaryColor() {
-    const color = this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
-    if (color) return color;
+    let color = this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+    if (color != null) return color;
 
     // Fallback to computed style if no attribute is set, causes layout.
     // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
     if (this.mediaTheme) {
-      return globalThis.getComputedStyle(this.mediaTheme).getPropertyValue('--primary-color');
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_primary-color')?.trim();
+      if (color) return color;
     }
   }
 
@@ -830,13 +830,14 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    const color = this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
-    if (color) return color;
+    let color = this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+    if (color != null) return color;
 
     // Fallback to computed style if no attribute is set, causes layout.
     // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
     if (this.mediaTheme) {
-      return globalThis.getComputedStyle(this.mediaTheme).getPropertyValue('--secondary-color');
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_secondary-color')?.trim();
+      if (color) return color;
     }
   }
 

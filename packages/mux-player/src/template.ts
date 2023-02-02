@@ -41,7 +41,6 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    class="${props.secondaryColor ? 'two-tone' : false}"
     stream-type="${isLiveOrDVR(props) ? 'live' : 'on-demand'}"
     target-live-window="${isDVR(props) ? 1 : false}"
     hotkeys="${getHotKeys(props) || false}"
