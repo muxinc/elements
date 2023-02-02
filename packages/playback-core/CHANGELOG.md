@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.0...@mux/playback-core@0.16.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* **playback-core:** Only initialize with setupCuePoints when using hls.js for playback ([a9076fb](https://github.com/muxinc/elements/commit/a9076fbec6135ec789c49838ba7efff6b7962f2c))
+
+
+
+
+
 # [0.16.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.15.1...@mux/playback-core@0.16.0) (2023-02-01)
 
 
