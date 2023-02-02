@@ -11,6 +11,7 @@ import {
   getCuePoints,
   getActiveCuePoint,
   setupCuePoints,
+  getCuePointsTrack,
 } from './tracks';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
@@ -24,7 +25,18 @@ import {
   type MuxMediaPropsInternal,
 } from './types';
 
-export { mux, Hls, MediaError, addTextTrack, removeTextTrack, addCuePoints, getCuePoints, getActiveCuePoint };
+export {
+  mux,
+  Hls,
+  MediaError,
+  addTextTrack,
+  removeTextTrack,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
+  getCuePointsTrack,
+  setupCuePoints,
+};
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
@@ -87,7 +99,11 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
 
-  setupCuePoints(mediaEl);
+  // NOTE: Safari native playback behaves differently for <track>s added. For those cases,
+  // using a workaround for now (see: MuxVideoElement::addCuePoints()) (CJP)
+  if (nextHlsInstance) {
+    setupCuePoints(mediaEl);
+  }
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
