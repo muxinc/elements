@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player-react",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "An open source Mux player for React that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",

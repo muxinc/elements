@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.6.1...@mux/mux-player-react@1.7.0) (2023-02-01)
+
+
+### Features
+
+* **mux-player-react:** Force version bump to 1.7.0 for parity with mux-player (minor code refactor for lerna). ([aba4ec0](https://github.com/muxinc/elements/commit/aba4ec0f6724928bd25f8def3685bfbccf68ec4c))
+* **mux-player-react:** Force version bump to 1.7.0 for parity with mux-player. ([e7d6b3f](https://github.com/muxinc/elements/commit/e7d6b3f3eb36166c32d643de58baee9decf31fac))
+
+
+
+
+
 ## [1.6.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.6.0...@mux/mux-player-react@1.6.1) (2023-02-01)
 
 **Note:** Version bump only for package @mux/mux-player-react

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
+import type { ValueOf } from '@mux/playback-core';
 
 import ConditionalSuspense from './ConditionalSuspense';
 import useIsBrowser from './useIsBrowser';
@@ -90,17 +91,27 @@ const Fallback = (props: FallbackProps) => {
   );
 };
 
+type LoadingType = {
+  PAGE: 'page';
+  VIEWPORT: 'viewport';
+};
+
+const LoadingType: LoadingType = {
+  PAGE: 'page',
+  VIEWPORT: 'viewport',
+};
+
 interface MuxPlayerLazyProps extends MuxPlayerProps {
-  loading?: 'page' | 'viewport';
+  loading?: ValueOf<LoadingType>;
 }
 const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((props, ref) => {
-  const { loading = 'viewport', ...playerProps } = props;
+  const { loading = LoadingType.VIEWPORT, ...playerProps } = props;
 
   // We load mux player once two conditions are met:
   // 1. We're in a browser (react.lazy doesn't work on the server in react 17)
   const isBrowser = useIsBrowser();
   // 2. The player has entered the viewport, according to the fallback (if enabled).
-  const [isIntersecting, setIsIntersecting] = useState(() => (loading === 'viewport' ? false : true));
+  const [isIntersecting, setIsIntersecting] = useState(() => (loading === LoadingType.VIEWPORT ? false : true));
 
   return (
     <ConditionalSuspense
