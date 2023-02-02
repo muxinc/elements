@@ -7,12 +7,12 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
 
-:host([upload-error]) .status-message {
+:host([upload-error]) #status-message {
   color: #e22c3e;
 }
 </style>
 
-<span class="status-message" id="status-message" role="status" aria-live="polite"></span>
+<span id="status-message" role="status" aria-live="polite"></span>
 `;
 
 class MuxUploaderStatusElement extends globalThis.HTMLElement {
