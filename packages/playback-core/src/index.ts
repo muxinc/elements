@@ -99,8 +99,8 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
 
-  // NOTE: Safari native playback behaves differently for <track>s added. For those cases,
-  // using a workaround for now (see: MuxVideoElement::addCuePoints()) (CJP)
+  // NOTE: Safari native playback behaves differently for <track>s added.
+  // For those cases, have the track created on demand when cues are added.
   if (nextHlsInstance) {
     setupCuePoints(mediaEl);
   }
