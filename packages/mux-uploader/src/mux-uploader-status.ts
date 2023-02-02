@@ -18,6 +18,7 @@ template.innerHTML = `
 class MuxUploaderStatusElement extends globalThis.HTMLElement {
   statusMessage: HTMLElement | null | undefined;
   #uploaderEl: IMuxUploaderElement | null | undefined;
+  #controller: AbortController;
 
   constructor() {
     super();
@@ -25,41 +26,38 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
     shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
+    this.#controller = new AbortController();
   }
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
 
     if (this.#uploaderEl) {
-      this.#uploaderEl.addEventListener('reset', this.clearStatusMessage.bind(this));
-      this.#uploaderEl.addEventListener('uploaderror', this.onUploadError.bind(this));
-      this.#uploaderEl.addEventListener('success', this.onSuccess.bind(this));
-      this.#uploaderEl.addEventListener('uploadstart', this.clearStatusMessage.bind(this));
+      const opts = { signal: this.#controller.signal };
+      this.#uploaderEl.addEventListener('reset', this.clearStatusMessage, opts);
+      this.#uploaderEl.addEventListener('uploaderror', this.onUploadError, opts);
+      this.#uploaderEl.addEventListener('success', this.onSuccess, opts);
+      this.#uploaderEl.addEventListener('uploadstart', this.clearStatusMessage, opts);
     }
   }
 
   disconnectedCallback() {
-    if (this.#uploaderEl) {
-      this.#uploaderEl.removeEventListener('reset', this.clearStatusMessage.bind(this));
-      this.#uploaderEl.removeEventListener('uploaderror', this.onUploadError.bind(this));
-      this.#uploaderEl.removeEventListener('success', this.onSuccess.bind(this));
-      this.#uploaderEl.removeEventListener('uploadstart', this.clearStatusMessage.bind(this));
-    }
+    this.#controller.abort();
   }
 
-  clearStatusMessage() {
+  clearStatusMessage = () => {
     if (this.statusMessage) {
       this.statusMessage.innerHTML = '';
     }
-  }
+  };
 
-  onUploadError(e: MuxUploaderElementEventMap['uploaderror']) {
+  onUploadError = (e: MuxUploaderElementEventMap['uploaderror']) => {
     if (this.statusMessage) {
       this.statusMessage.innerHTML = e.detail.message;
     }
-  }
+  };
 
-  onSuccess() {
+  onSuccess = () => {
     const successMessage = 'Upload complete!';
 
     if (this.statusMessage) {
@@ -67,7 +65,7 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
     }
 
     console.info(successMessage);
-  }
+  };
 }
 
 if (!globalThis.customElements.get('mux-uploader-status')) {
