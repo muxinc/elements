@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-livestream-status&gt; example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./dist/mux-livestream-status.js"></script>
+	<style>
+		.custom-style {
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			overflow: hidden;
+			border-radius: 50%;
+			font-size: 0;
+			box-shadow: 0 0 10px #a3cc80;
+		}
+
+		.custom-style[status=active] {
+			background: #82f479;
+		}
+	</style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+	<h2>&lt;mux-livestream-status&gt;</h2>
+
+	<h3>Default</h3>
+    <mux-livestream-status playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"></mux-livestream-status>
+
+	<h3>Custom styled</h3>
+    <mux-livestream-status class="custom-style" playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"></mux-livestream-status>
+
+	<br/><br/><br/><br/><br/><br/>
+
+    <a href="../">Browse Elements</a>
+  </body>
+</html>
