@@ -12,27 +12,12 @@ input[type="file"] {
   display: none;
 }
 
-.retry-button {
-  display: none;
-}
-
 ::slotted(p) {
   display: none;
 }
 
-.retry-button {
-  color: #e22c3e;
-  text-decoration-line: underline;
-  cursor: pointer;
-  position: relative;
-}
-
 :host([upload-in-progress]) ::slotted(p) {
   display: block;
-}
-
-:host([upload-error]) .retry-button {
-  display: inline-block;
 }
 
 :host([upload-error]) ::slotted(p) {
@@ -51,6 +36,7 @@ template.innerHTML = `
 <mux-uploader-sr-text></mux-uploader-sr-text>
 
 <mux-uploader-status></mux-uploader-status>
+<mux-uploader-retry></mux-uploader-retry>
 <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 
 <mux-uploader-file-select>
@@ -60,8 +46,6 @@ template.innerHTML = `
 <mux-uploader-progress type="percentage"></mux-uploader-progress>
 <mux-uploader-progress></mux-uploader-progress>
 `;
-
-const ButtonPressedKeys = ['Enter', ' '];
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
@@ -117,7 +101,6 @@ export interface IMuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements IMuxUploaderElement {
   protected _endpoint: Endpoint;
-  retryButton: HTMLElement | null | undefined;
 
   constructor() {
     super();
@@ -125,8 +108,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements IMuxUploaderE
     const shadow = this.attachShadow({ mode: 'open' });
     const uploaderHtml = template.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
-
-    this.retryButton = this.shadowRoot?.getElementById('retry-button');
 
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
@@ -144,14 +125,15 @@ class MuxUploaderElement extends globalThis.HTMLElement implements IMuxUploaderE
   }
 
   connectedCallback() {
-    this.setupRetry();
     //@ts-ignore
     this.addEventListener('file-ready', this.handleUpload);
+    this.addEventListener('reset', this.resetState);
   }
 
   disconnectedCallback() {
     //@ts-ignore
     this.removeEventListener('file-ready', this.handleUpload, false);
+    this.removeEventListener('reset', this.resetState);
   }
 
   protected get hiddenFileInput() {
@@ -183,35 +165,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements IMuxUploaderE
     } else {
       this.removeAttribute('dynamic-chunk-size');
     }
-  }
-
-  setupRetry() {
-    this.retryButton?.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('reset'));
-      this.resetState();
-    });
-
-    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
-    // but this should be good enough for most use cases.
-    const keyUpHandler = (e: KeyboardEvent) => {
-      const { key } = e;
-      if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-
-      this.dispatchEvent(new CustomEvent('reset'));
-      this.resetState();
-    };
-
-    this.addEventListener('keydown', (e) => {
-      const { metaKey, altKey, key } = e;
-      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-      this.addEventListener('keyup', keyUpHandler);
-    });
   }
 
   resetState() {
