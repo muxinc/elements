@@ -77,11 +77,13 @@
       }
 
       playerEl.addEventListener('cuepointchange', cuePointChangeListener);
-      // if (playerEl.duration) {
-      //   addCuePointsToPlayer();
-      // } else {
+
+      // NOTE: Need to wait until the player has loaded metadata before adding cuePoints!
+      if (playerEl.readyState >= 1) {
+        addCuePointsToPlayer();
+      } else {
         playerEl.addEventListener('loadedmetadata', addCuePointsToPlayer, { once: true });
-      // }
+      }
     </script>
     <a href="../">Browse Elements</a>
   </body>
