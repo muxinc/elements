@@ -161,7 +161,6 @@ export async function addCuePoints<T>(
   // If the track has already been created/added, use it.
   let track = getCuePointsTrack(mediaEl, cuePointsConfig);
   if (!track) {
-    console.log('no track??');
     // Otherwise, create a new one
     const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
     track = addTextTrack(mediaEl, 'metadata', label);
@@ -171,7 +170,6 @@ export async function addCuePoints<T>(
   }
 
   if (track.mode !== 'hidden') {
-    console.log('track was no longer hidden??');
     track.mode = 'hidden';
   }
   // Copy cuePoints to ensure sort is not mutative
@@ -199,16 +197,6 @@ export async function addCuePoints<T>(
       const cue = new VTTCue(startTime, endTime, JSON.stringify(value ?? null));
       (track as TextTrack).addCue(cue);
     });
-
-  const logTrack = getCuePointsTrack(mediaEl);
-  if (logTrack) {
-    console.log('after populating cuepoints via addCuePoints()!');
-    console.log('label', logTrack.label);
-    console.log('mode', logTrack.mode);
-    const cues = Array.from(logTrack.cues ?? []);
-    console.log('cues.length', cues.length);
-    console.log('cues', ...cues);
-  }
 
   return track;
 }
@@ -243,7 +231,6 @@ export async function setupCuePoints(
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
   addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
-    console.log('playback-core loadstart');
     const track = await addCuePoints(mediaEl, [], cuePointsConfig);
     addEventListenerWithTeardown(
       mediaEl,
@@ -263,6 +250,4 @@ export async function setupCuePoints(
       track
     );
   });
-
-  // return track;
 }

@@ -84,7 +84,6 @@ export const getError = (mediaEl: HTMLMediaElement) => {
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
-  console.log('initializing');
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
   // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
@@ -97,15 +96,6 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
-  mediaEl.textTracks.addEventListener('change', () => {
-    const textTracks = Array.from(mediaEl.textTracks, ({ mode, label, kind, cues }) => ({
-      mode,
-      label,
-      kind,
-      cuesLength: cues?.length,
-    }));
-    console.log('TextTracksList changed!', ...textTracks);
-  });
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
