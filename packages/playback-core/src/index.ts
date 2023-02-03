@@ -41,6 +41,7 @@ export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
+const isSafari = userAgentStr.toLowerCase().indexOf('safari') !== -1;
 const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -84,6 +85,7 @@ export const getError = (mediaEl: HTMLMediaElement) => {
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
+  console.log('initializing');
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
   // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
@@ -99,9 +101,9 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
 
-  // NOTE: Safari native playback behaves differently for <track>s added.
+  // NOTE: Safari behaves differently for <track>s added.
   // For those cases, have the track created on demand when cues are added.
-  if (nextHlsInstance) {
+  if (!isSafari) {
     setupCuePoints(mediaEl);
   }
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);

@@ -169,6 +169,9 @@ export async function addCuePoints<T>(
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
   }
 
+  if (track.mode !== 'hidden') {
+    track.mode = 'hidden';
+  }
   // Copy cuePoints to ensure sort is not mutative
   [...cuePoints]
     // Sort descending to ensure last cuepoints are added as cues first. This is done
@@ -194,6 +197,13 @@ export async function addCuePoints<T>(
       const cue = new VTTCue(startTime, endTime, JSON.stringify(value ?? null));
       (track as TextTrack).addCue(cue);
     });
+
+  Array.prototype.forEach.call(mediaEl.textTracks, (track) => {
+    console.log('after populating cuepoints!');
+    console.log('label', track.label);
+    console.log('mode', track.mode);
+    console.log('cues', ...Array.from(track.cues));
+  });
 
   return track;
 }
