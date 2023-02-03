@@ -9,6 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/cache": "^11.10.5",
+    "@emotion/react": "^11.10.5",
+    "@emotion/serialize": "^1.1.1",
+    "@emotion/styled": "^11.10.5",
+    "@emotion/utils": "^1.2.0",
+    "@mui/material": "^5.11.7",
     "@mux/assets": ">=0.1.0",
     "@mux/blurhash": "^0.1.1",
     "@mux/mux-audio-react": ">=0.2.0",
