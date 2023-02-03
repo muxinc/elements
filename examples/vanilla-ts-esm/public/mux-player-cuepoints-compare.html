@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>&lt;mux-player&gt; example</title>
+    <title>&lt;mux-player&gt; cuepoints (api) example</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" href="./styles.css">
     <script
@@ -48,16 +48,36 @@
       stream-type="on-demand"
       playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
       muted
-      preload="auto"
-    >
-    </mux-player>
+    ></mux-player>
     <div>
       <b>Active CuePoint:</b> <pre id="cuepoint-renderer">Unset</pre>
     </div>
     <script>
+      const getCuePointsTrack = (
+        mediaEl,
+        { label = 'cuepoints' } = {}
+      ) => {
+        return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
+          return trackEl.track.label === label && trackEl.track.kind === 'metadata';
+        })?.track;
+      };
+
+      let mediaEl;
       const playerEl = document.querySelector('mux-player');
 
-      function addCuePointsToPlayer() {
+      const logCuePointsTrackState = (mediaEl) => {
+        const logTrack = getCuePointsTrack(mediaEl);
+        if (logTrack) {
+          console.log('after populating cuepoints via addCuePoints()!');
+          console.log('label', logTrack.label);
+          console.log('mode', logTrack.mode);
+          const cues = Array.from(logTrack.cues ?? []);
+          console.log('cues.length', cues.length);
+          console.log('cues', ...cues);
+        }
+      };
+
+      async function addCuePointsToPlayer() {
         const cuePoints = [
           { time: 1, value: 'Simple Value' }, 
           { time: 3, value: { complex: 'Complex Object', duration: 2 } },
@@ -65,7 +85,8 @@
           { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
         ];
 
-        playerEl.addCuePoints(cuePoints);
+        await playerEl.addCuePoints(cuePoints);
+        console.log('app level playerEl.cuePoints after addCuePoints()', ...playerEl.cuePoints);
       }
 
       function cuePointChangeListener() {
@@ -77,11 +98,22 @@
       }
 
       playerEl.addEventListener('cuepointchange', cuePointChangeListener);
-      // if (playerEl.duration) {
-      //   addCuePointsToPlayer();
-      // } else {
-        playerEl.addEventListener('loadedmetadata', addCuePointsToPlayer, { once: true });
-      // }
+      playerEl.addEventListener('loadstart', () => {
+        console.log('app level loadstart');
+        mediaEl = document.querySelector('mux-player').media.nativeEl;
+        logCuePointsTrackState(mediaEl);
+      }, { once: true });
+      playerEl.addEventListener('loadedmetadata', async () => {
+        await addCuePointsToPlayer();
+        console.log('after loadedmetadata');
+        logCuePointsTrackState(mediaEl);
+      }, { once: true });
+      playerEl.addEventListener('playing', () => {
+        console.log('app level playing playerEl.cuePoints', ...playerEl.cuePoints);
+      });
+      playerEl.addEventListener('timeupdate', () => {
+        console.log('app level timeupdate playerEl.cuePoints', ...playerEl.cuePoints);
+      });
     </script>
     <a href="../">Browse Elements</a>
   </body>

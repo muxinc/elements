@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-player&gt; cuepoints (manually added) example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      mux-player {
+        display: block;
+        width: 100%;
+        margin: 1rem 0 2rem;
+        background-color: #000;
+        line-height: 0;
+      }
+
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
+      }
+
+      #cuepoint-renderer {
+        background-color: lightgray;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <mux-player
+      stream-type="on-demand"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+      muted
+    >
+    </mux-player>
+    <div>
+      <b>Active CuePoint:</b> <pre id="cuepoint-renderer">Unset</pre>
+    </div>
+    <script>
+      const getCuePointsTrack = (
+        mediaEl,
+        { label = 'cuepoints' } = {}
+      ) => {
+        return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
+          return trackEl.track.label === label && trackEl.track.kind === 'metadata';
+        })?.track;
+      };
+
+      let mediaEl;
+      const playerEl = document.querySelector('mux-player');
+
+      const logCuePointsTrackState = (mediaEl) => {
+        const logTrack = getCuePointsTrack(mediaEl);
+        if (logTrack) {
+          console.log('after populating cuepoints via addCuePoints()!');
+          console.log('label', logTrack.label);
+          console.log('mode', logTrack.mode);
+          const cues = Array.from(logTrack.cues ?? []);
+          console.log('cues.length', cues.length);
+          console.log('cues', ...cues);
+        }
+      };
+
+      async function addCuePointsToPlayer() {
+        const cuePoints = [
+          { time: 1, value: 'Simple Value' }, 
+          { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+          { time: 10, value: true },
+          { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+        ];
+
+        await addCuePoints(cuePoints);
+        console.log('app level playerEl.cuePoints after addCuePoints()', ...playerEl.cuePoints);
+      }
+
+      function cuePointChangeListener() {
+        // Do something with the activeCuePoint here. In this example,
+        // we're simply updating the innerText of some element with the latest.
+        // activeCuePoint.value.
+        console.log('Active CuePoint!', playerEl.activeCuePoint);
+        document.getElementById('cuepoint-renderer').innerText = JSON.stringify(playerEl?.activeCuePoint?.value, null, 2);
+      }
+
+      playerEl.addEventListener('cuepointchange', cuePointChangeListener);
+      playerEl.addEventListener('loadstart', () => {
+        console.log('app level loadstart');
+        mediaEl = document.querySelector('mux-player').media.nativeEl;
+        logCuePointsTrackState(mediaEl);
+      }, { once: true });
+
+      playerEl.addEventListener('loadedmetadata', async () => {
+        await addCuePointsToPlayer();
+        console.log('after loadedmetadata');
+        logCuePointsTrackState(mediaEl);
+      }, { once: true });
+      playerEl.addEventListener('playing', () => {
+        console.log('app level playing playerEl.cuePoints', ...playerEl.cuePoints);
+      });
+      playerEl.addEventListener('timeupdate', () => {
+        console.log('app level timeupdate playerEl.cuePoints', ...playerEl.cuePoints);
+      });
+
+      async function addCuePoints(cuePoints) {
+        const track = getCuePointsTrack(mediaEl);
+
+        [...cuePoints]
+          // Sort descending to ensure last cuepoints are added as cues first. This is done
+          // so the track's cue's can be used for reference when determining an appropriate
+          // endTime, allowing support of multiple invocations of addCuePoints
+          .sort(({ time: timestampA }, { time: timestampB }) => timestampB - timestampA)
+          .forEach(({ time: startTime, value }) => {
+            // find the cue that starts immediately after the cuePoint's time
+            const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
+            const cueAfter = track?.cues?.[cueAfterIndex];
+            const endTime = cueAfter
+              ? cueAfter.startTime
+              : Number.isFinite(playerEl.duration)
+              ? playerEl.duration
+              : Number.MAX_SAFE_INTEGER;
+
+            // Adjust the endTime of the already added previous cue, if present, so it does not overlap
+            // with the newly added cue.
+            const previousCue = track?.cues?.[cueAfterIndex - 1];
+            if (previousCue) {
+              previousCue.endTime = startTime;
+            }
+            const cue = new VTTCue(startTime, endTime, JSON.stringify(value ?? null));
+            (track).addCue(cue);
+          });
+        console.log('app level playerEl.cuePoints after addCuePoints()', ...playerEl.cuePoints);
+      }
+    </script>
+
+    <a href="../">Browse Elements</a>
+  </body>
+</html>

@@ -343,28 +343,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
-    // NOTE: This is a sub-optimal workaround for cuepoints with native playback
-    // in Safari, which doesn't "play nicely" with <track>s added explicitly. (CJP)
-    if (!getCuePointsTrack(this.nativeEl)) {
-      return setupCuePoints(this.nativeEl)
-        .then((track) => {
-          console.log('track.mode?', track.mode);
-          track.mode = 'hidden';
-          return addCuePoints(this.nativeEl, cuePoints);
-        })
-        .then((track) => {
-          const track2 = getCuePointsTrack(this.nativeEl);
-          console.log('yielded track.mode', track.mode);
-          if (track2) {
-            console.log('getCuePointsTrack(this.nativeEl).mode', track2.mode);
-          }
-          return track;
-        });
-      // const track = await setupCuePoints(this.nativeEl);
-      // console.log('track.mode?', track.mode);
-      // track.mode = 'hidden';
-      // return addCuePoints(this.nativeEl, cuePoints);
-    }
     return addCuePoints(this.nativeEl, cuePoints);
   }
 

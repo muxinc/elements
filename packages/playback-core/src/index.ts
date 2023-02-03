@@ -41,7 +41,6 @@ export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const isSafari = userAgentStr.toLowerCase().indexOf('safari') !== -1;
 const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -98,14 +97,18 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
+  mediaEl.textTracks.addEventListener('change', () => {
+    const textTracks = Array.from(mediaEl.textTracks, ({ mode, label, kind, cues }) => ({
+      mode,
+      label,
+      kind,
+      cuesLength: cues?.length,
+    }));
+    console.log('TextTracksList changed!', ...textTracks);
+  });
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
-
-  // NOTE: Safari behaves differently for <track>s added.
-  // For those cases, have the track created on demand when cues are added.
-  if (!isSafari) {
-    setupCuePoints(mediaEl);
-  }
+  setupCuePoints(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 

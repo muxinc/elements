@@ -125,7 +125,7 @@ export function addTextTrack(
   if (id) {
     trackEl.id = id;
   }
-  trackEl.track.mode = 'disabled';
+  trackEl.track.mode = ['subtitles', 'captions'].includes(kind) ? 'disabled' : 'hidden';
   // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
   trackEl.setAttribute('data-removeondestroy', '');
   mediaEl.append(trackEl);
@@ -161,6 +161,7 @@ export async function addCuePoints<T>(
   // If the track has already been created/added, use it.
   let track = getCuePointsTrack(mediaEl, cuePointsConfig);
   if (!track) {
+    console.log('no track??');
     // Otherwise, create a new one
     const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
     track = addTextTrack(mediaEl, 'metadata', label);
@@ -170,6 +171,7 @@ export async function addCuePoints<T>(
   }
 
   if (track.mode !== 'hidden') {
+    console.log('track was no longer hidden??');
     track.mode = 'hidden';
   }
   // Copy cuePoints to ensure sort is not mutative
@@ -198,20 +200,25 @@ export async function addCuePoints<T>(
       (track as TextTrack).addCue(cue);
     });
 
-  Array.prototype.forEach.call(mediaEl.textTracks, (track) => {
-    console.log('after populating cuepoints!');
-    console.log('label', track.label);
-    console.log('mode', track.mode);
-    console.log('cues', ...Array.from(track.cues));
-  });
+  const logTrack = getCuePointsTrack(mediaEl);
+  if (logTrack) {
+    console.log('after populating cuepoints via addCuePoints()!');
+    console.log('label', logTrack.label);
+    console.log('mode', logTrack.mode);
+    const cues = Array.from(logTrack.cues ?? []);
+    console.log('cues.length', cues.length);
+    console.log('cues', ...cues);
+  }
 
   return track;
 }
 
-const toCuePoint = (cue: VTTCue) => ({
-  time: cue.startTime,
-  value: JSON.parse(cue.text),
-});
+const toCuePoint = (cue: VTTCue) => {
+  return {
+    time: cue.startTime,
+    value: JSON.parse(cue.text),
+  };
+};
 
 export function getCuePoints(
   mediaEl: HTMLMediaElement,
@@ -235,23 +242,27 @@ export async function setupCuePoints(
   mediaEl: HTMLMediaElement,
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
-  const track = await addCuePoints(mediaEl, [], cuePointsConfig);
-  addEventListenerWithTeardown(
-    mediaEl,
-    'cuechange',
-    () => {
-      const activeCuePoint = getActiveCuePoint(mediaEl);
-      if (activeCuePoint) {
-        const evt = new CustomEvent('cuepointchange', {
-          composed: true,
-          bubbles: true,
-          detail: activeCuePoint,
-        });
-        mediaEl.dispatchEvent(evt);
-      }
-    },
-    {},
-    track
-  );
-  return track;
+  addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
+    console.log('playback-core loadstart');
+    const track = await addCuePoints(mediaEl, [], cuePointsConfig);
+    addEventListenerWithTeardown(
+      mediaEl,
+      'cuechange',
+      () => {
+        const activeCuePoint = getActiveCuePoint(mediaEl);
+        if (activeCuePoint) {
+          const evt = new CustomEvent('cuepointchange', {
+            composed: true,
+            bubbles: true,
+            detail: activeCuePoint,
+          });
+          mediaEl.dispatchEvent(evt);
+        }
+      },
+      {},
+      track
+    );
+  });
+
+  // return track;
 }
