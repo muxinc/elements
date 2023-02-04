@@ -15,8 +15,6 @@ import {
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
-  getCuePointsTrack,
-  setupCuePoints,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';

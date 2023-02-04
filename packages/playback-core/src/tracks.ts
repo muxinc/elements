@@ -201,12 +201,10 @@ export async function addCuePoints<T>(
   return track;
 }
 
-const toCuePoint = (cue: VTTCue) => {
-  return {
-    time: cue.startTime,
-    value: JSON.parse(cue.text),
-  };
-};
+const toCuePoint = (cue: VTTCue) => ({
+  time: cue.startTime,
+  value: JSON.parse(cue.text),
+});
 
 export function getCuePoints(
   mediaEl: HTMLMediaElement,
