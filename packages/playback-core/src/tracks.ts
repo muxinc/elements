@@ -230,24 +230,27 @@ export async function setupCuePoints(
   mediaEl: HTMLMediaElement,
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
-  addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
-    const track = await addCuePoints(mediaEl, [], cuePointsConfig);
-    addEventListenerWithTeardown(
-      mediaEl,
-      'cuechange',
-      () => {
-        const activeCuePoint = getActiveCuePoint(mediaEl);
-        if (activeCuePoint) {
-          const evt = new CustomEvent('cuepointchange', {
-            composed: true,
-            bubbles: true,
-            detail: activeCuePoint,
-          });
-          mediaEl.dispatchEvent(evt);
-        }
-      },
-      {},
-      track
-    );
+  return new Promise((resolve) => {
+    addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
+      const track = await addCuePoints(mediaEl, [], cuePointsConfig);
+      addEventListenerWithTeardown(
+        mediaEl,
+        'cuechange',
+        () => {
+          const activeCuePoint = getActiveCuePoint(mediaEl);
+          if (activeCuePoint) {
+            const evt = new CustomEvent('cuepointchange', {
+              composed: true,
+              bubbles: true,
+              detail: activeCuePoint,
+            });
+            mediaEl.dispatchEvent(evt);
+          }
+        },
+        {},
+        track
+      );
+      resolve(track);
+    });
   });
 }
