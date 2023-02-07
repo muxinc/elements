@@ -1,6 +1,7 @@
 import { globalThis, document } from 'shared-polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
-import { MuxUploaderElementEventMap, IMuxUploaderElement } from './mux-uploader';
+import { type MuxUploaderElementEventMap } from './mux-uploader';
+import type MuxUploaderElement from './mux-uploader';
 
 const template = document.createElement('template');
 
@@ -17,8 +18,8 @@ template.innerHTML = `
 
 class MuxUploaderStatusElement extends globalThis.HTMLElement {
   statusMessage: HTMLElement | null | undefined;
-  #uploaderEl: IMuxUploaderElement | null | undefined;
-  #controller: AbortController;
+  #uploaderEl: MuxUploaderElement | null | undefined;
+  #controller: AbortController | undefined;
 
   constructor() {
     super();
@@ -26,11 +27,11 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
     shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.statusMessage = this.shadowRoot?.getElementById('status-message');
-    this.#controller = new AbortController();
   }
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
+    this.#controller = new AbortController();
 
     if (this.#uploaderEl) {
       const opts = { signal: this.#controller.signal };
@@ -42,7 +43,7 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#controller.abort();
+    this.#controller?.abort();
   }
 
   clearStatusMessage = () => {

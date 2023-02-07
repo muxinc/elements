@@ -230,7 +230,6 @@ declare global {
   var MuxUploaderElement: MuxUploaderElementType;
 }
 
-/** @TODO Refactor once using `globalThis` polyfills */
 if (!globalThis.customElements.get('mux-uploader')) {
   globalThis.customElements.define('mux-uploader', MuxUploaderElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
