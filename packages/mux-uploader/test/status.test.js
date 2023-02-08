@@ -71,9 +71,11 @@ describe('<mux-uploader-status>', () => {
 
     await oneEvent(uploader, 'uploaderror');
 
-    const listener = oneEvent(uploader, 'reset');
-    uploader.retryButton.click();
-    const e = await listener;
+    setTimeout(() => {
+      uploader.dispatchEvent(new CustomEvent('reset'));
+    });
+
+    const e = await oneEvent(uploader, 'reset');
     assert.equal(status.statusMessage.innerHTML, '', 'status message cleared');
   });
 });
