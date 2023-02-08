@@ -98,12 +98,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
-
-  // NOTE: Safari native playback behaves differently for <track>s added.
-  // For those cases, have the track created on demand when cues are added.
-  if (nextHlsInstance) {
-    setupCuePoints(mediaEl);
-  }
+  setupCuePoints(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 

@@ -125,7 +125,7 @@ export function addTextTrack(
   if (id) {
     trackEl.id = id;
   }
-  trackEl.track.mode = 'disabled';
+  trackEl.track.mode = ['subtitles', 'captions'].includes(kind) ? 'disabled' : 'hidden';
   // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
   trackEl.setAttribute('data-removeondestroy', '');
   mediaEl.append(trackEl);
@@ -169,6 +169,9 @@ export async function addCuePoints<T>(
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
   }
 
+  if (track.mode !== 'hidden') {
+    track.mode = 'hidden';
+  }
   // Copy cuePoints to ensure sort is not mutative
   [...cuePoints]
     // Sort descending to ensure last cuepoints are added as cues first. This is done
@@ -225,23 +228,27 @@ export async function setupCuePoints(
   mediaEl: HTMLMediaElement,
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
-  const track = await addCuePoints(mediaEl, [], cuePointsConfig);
-  addEventListenerWithTeardown(
-    mediaEl,
-    'cuechange',
-    () => {
-      const activeCuePoint = getActiveCuePoint(mediaEl);
-      if (activeCuePoint) {
-        const evt = new CustomEvent('cuepointchange', {
-          composed: true,
-          bubbles: true,
-          detail: activeCuePoint,
-        });
-        mediaEl.dispatchEvent(evt);
-      }
-    },
-    {},
-    track
-  );
-  return track;
+  return new Promise((resolve) => {
+    addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
+      const track = await addCuePoints(mediaEl, [], cuePointsConfig);
+      addEventListenerWithTeardown(
+        mediaEl,
+        'cuechange',
+        () => {
+          const activeCuePoint = getActiveCuePoint(mediaEl);
+          if (activeCuePoint) {
+            const evt = new CustomEvent('cuepointchange', {
+              composed: true,
+              bubbles: true,
+              detail: activeCuePoint,
+            });
+            mediaEl.dispatchEvent(evt);
+          }
+        },
+        {},
+        track
+      );
+      resolve(track);
+    });
+  });
 }
