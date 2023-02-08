@@ -76,7 +76,7 @@ export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'p
   success: CustomEvent<undefined | null>;
 }
 
-export interface IMuxUploaderElement extends HTMLElement {
+interface MuxUploaderElement extends HTMLElement {
   addEventListener<K extends keyof MuxUploaderElementEventMap>(
     type: K,
     listener: (this: HTMLMediaElement, ev: MuxUploaderElementEventMap[K]) => any,
@@ -99,7 +99,7 @@ export interface IMuxUploaderElement extends HTMLElement {
   ): void;
 }
 
-class MuxUploaderElement extends globalThis.HTMLElement implements IMuxUploaderElement {
+class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   protected _endpoint: Endpoint;
 
   constructor() {

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
-import type { IMuxUploaderElement } from '@mux/mux-uploader';
 import type MuxUploaderElement from '@mux/mux-uploader';
 import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
@@ -54,7 +53,7 @@ const MuxUploaderInternal = React.forwardRef<MuxUploaderRefAttributes, MuxUpload
 const useEventCallbackEffect = <K extends keyof MuxUploaderElementEventMap>(
   type: K,
   ref: // | ((instance: EventTarget | null) => void)
-  React.MutableRefObject<IMuxUploaderElement | null> | null | undefined,
+  React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
   callback: GenericEventListener<MuxUploaderElementEventMap[K]> | undefined
 ) => {
   return useEffect(() => {

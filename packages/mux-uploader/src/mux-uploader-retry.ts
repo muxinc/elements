@@ -1,6 +1,6 @@
 import { globalThis, document } from 'shared-polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
-import { MuxUploaderElementEventMap, IMuxUploaderElement } from './mux-uploader';
+import type MuxUploaderElement from './mux-uploader';
 
 const template = document.createElement('template');
 
@@ -24,7 +24,7 @@ template.innerHTML = `
 
 class MuxUploaderRetryElement extends globalThis.HTMLElement {
   retryButton: HTMLElement | null | undefined;
-  #uploaderEl: IMuxUploaderElement | null | undefined;
+  #uploaderEl: MuxUploaderElement | null | undefined;
   #controller: AbortController;
 
   constructor() {
