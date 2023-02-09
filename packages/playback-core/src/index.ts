@@ -1,5 +1,6 @@
 import mux, { ErrorEvent } from 'mux-embed';
-import Hls from 'hls.js';
+import Hls from './hls';
+import type { HlsInterface } from './hls';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -24,7 +25,6 @@ import {
   type MuxMediaProps,
   type MuxMediaPropsInternal,
 } from './types';
-
 export {
   mux,
   Hls,
@@ -190,7 +190,7 @@ export const setupHls = (
       cmcd,
       ...defaultConfig,
       ...streamTypeConfig,
-    });
+    }) as HlsInterface;
 
     return hls;
   }
@@ -254,7 +254,7 @@ export const setupMux = (
     >
   >,
   mediaEl: HTMLMediaElement,
-  hlsjs?: Hls
+  hlsjs?: HlsInterface
 ) => {
   const { envKey: env_key } = props;
   const inferredEnv = isMuxVideoSrc(props);

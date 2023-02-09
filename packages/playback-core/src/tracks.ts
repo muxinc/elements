@@ -1,4 +1,4 @@
-import Hls from 'hls.js';
+import Hls from './hls';
 import { CuePoint } from './types';
 import { addEventListenerWithTeardown } from './util';
 
