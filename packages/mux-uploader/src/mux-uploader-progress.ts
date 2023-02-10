@@ -91,6 +91,7 @@ template.innerHTML = `
 
 class MuxUploaderProgressElement extends globalThis.HTMLElement {
   #uploaderEl: HTMLElement | null | undefined;
+  #controller: AbortController | undefined;
 
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
@@ -111,28 +112,27 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
     this.setDefaultType();
 
     this.#uploaderEl = getMuxUploaderEl(this);
+    this.#controller = new AbortController();
 
     if (this.#uploaderEl) {
-      this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart.bind(this));
-      this.#uploaderEl.addEventListener('reset', this.onReset.bind(this));
-      this.#uploaderEl.addEventListener('progress', this.onProgress.bind(this));
+      const opts = { signal: this.#controller.signal };
+
+      this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart, opts);
+      this.#uploaderEl.addEventListener('reset', this.onReset);
+      this.#uploaderEl.addEventListener('progress', this.onProgress);
     }
   }
 
   disconnectedCallback() {
-    if (this.#uploaderEl) {
-      this.#uploaderEl.removeEventListener('uploadstart', this.onUploadStart.bind(this));
-      this.#uploaderEl.removeEventListener('reset', this.onReset.bind(this));
-      this.#uploaderEl.removeEventListener('progress', this.onProgress.bind(this));
-    }
+    this.#controller?.abort();
   }
 
-  onUploadStart() {
+  onUploadStart = () => {
     this.progressBar?.focus();
     this.setAttribute('upload-in-progress', '');
-  }
+  };
 
-  onProgress(e: Event) {
+  onProgress = (e: Event) => {
     // @ts-ignore
     const percent = e.detail;
     this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
@@ -157,9 +157,9 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
         break;
       }
     }
-  }
+  };
 
-  onReset() {
+  onReset = () => {
     if (this.uploadPercentage) {
       this.uploadPercentage.innerHTML = '';
     }
@@ -167,7 +167,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
     if (this.svgCircle) {
       this.svgCircle.style.strokeDashoffset = `${this.getCircumference()}`;
     }
-  }
+  };
 
   getRadius() {
     return Number(this.svgCircle?.getAttribute('r'));
