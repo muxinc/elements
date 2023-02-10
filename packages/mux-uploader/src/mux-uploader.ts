@@ -73,6 +73,7 @@ export interface MuxUploaderElementEventMap extends Omit<HTMLElementEventMap, 'p
   uploaderror: CustomEvent<ErrorDetail>;
   progress: CustomEvent<number>;
   success: CustomEvent<undefined | null>;
+  'file-ready': CustomEvent<File>;
 }
 
 interface MuxUploaderElement extends HTMLElement {
@@ -124,13 +125,11 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   connectedCallback() {
-    //@ts-ignore
     this.addEventListener('file-ready', this.handleUpload);
     this.addEventListener('reset', this.resetState);
   }
 
   disconnectedCallback() {
-    //@ts-ignore
     this.removeEventListener('file-ready', this.handleUpload, false);
     this.removeEventListener('reset', this.resetState);
   }
