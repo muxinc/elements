@@ -37,7 +37,6 @@ template.innerHTML = `
 
 <mux-uploader-status></mux-uploader-status>
 <mux-uploader-retry></mux-uploader-retry>
-<span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 
 <mux-uploader-file-select>
   <slot name="file-select"></slot>
