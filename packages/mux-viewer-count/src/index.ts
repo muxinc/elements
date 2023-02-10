@@ -1,14 +1,5 @@
 import { globalThis } from 'shared-polyfills';
 
-const Attributes = {
-  TOKEN: 'token',
-  POLL_INTERVAL: 'pollinterval',
-};
-
-const DEFAULT_POLL_INTERVAL = 20;
-
-const AttributeValues = Object.freeze(Object.values(Attributes));
-
 export const subscribeViewerCount = (
   token: string,
   pollInterval: number,
@@ -78,11 +69,29 @@ export const subscribeViewerCount = (
   };
 };
 
+const Attributes = {
+  TOKEN: 'token',
+  POLL_INTERVAL: 'pollinterval',
+  DISABLED: 'disabled',
+};
+
+const DEFAULT_POLL_INTERVAL = 20;
+
+const AttributeValues = Object.freeze(Object.values(Attributes));
+
+const ARIA_LABEL = 'Viewer Count';
+const DEFAULT_VIEWER_COUNT_VALUE = '??';
+const toAriaLabel = ({ viewerCount }: { viewerCount?: number }) => {
+  const viewerCountStr = typeof viewerCount === 'number' ? `${viewerCount}` : 'Unknown';
+  return `${ARIA_LABEL} ${viewerCountStr}`;
+};
+
 const template = document.createElement('template');
 template.innerHTML = `
 <style>
 </style>
 <span id="viewer-count">
+${DEFAULT_VIEWER_COUNT_VALUE}
 </span>
 `;
 
@@ -123,7 +132,22 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
     this.setAttribute(Attributes.POLL_INTERVAL, `${value}`);
   }
 
+  enable() {
+    this.setAttribute('tabindex', '0');
+  }
+
+  disable() {
+    this.removeAttribute('tabindex');
+  }
+
   connectedCallback() {
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    }
+
+    /** @TODO Update to use `viewerCount` prop when available (CJP) */
+    this.setAttribute('aria-label', toAriaLabel({}));
+    this.setAttribute('role', 'presentation');
     this.#setupViewerCountPolling();
   }
 
@@ -131,10 +155,16 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
     this.#teardownViewerCountPolling();
   }
 
-  attributeChangedCallback(attrName: string, _oldValue: string | null, _newValue: string | null) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     if (attrName === Attributes.POLL_INTERVAL || attrName === Attributes.TOKEN) {
       this.#teardownViewerCountPolling();
       this.#setupViewerCountPolling();
+    } else if (attrName === Attributes.DISABLED && oldValue !== newValue) {
+      if (newValue) {
+        this.disable();
+      } else {
+        this.enable();
+      }
     }
   }
 
@@ -152,6 +182,8 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
           );
           /** @TODO Add views getter (JKS) */
           this.#viewerCountEl.textContent = `${views}`;
+          /** @TODO Update to use `viewerCount` prop when available (CJP) */
+          this.setAttribute('aria-label', toAriaLabel({ viewerCount: views }));
         },
         // Error callback
         (errorMsg) => {
