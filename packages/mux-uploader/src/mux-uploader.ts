@@ -1,6 +1,9 @@
 import { globalThis, document } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
 
+import './mux-uploader-file-select';
+import { btnFragment } from './mux-uploader-file-select';
+
 const styles = `
 :host {
   font-family: var(--uploader-font-family, Arial);
@@ -40,7 +43,9 @@ template.innerHTML = `
 <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 
 <mux-uploader-file-select>
-  <slot name="file-select"></slot>
+  <slot name="file-select">
+    ${btnFragment}
+  </slot>
 </mux-uploader-file-select>
 
 <mux-uploader-progress type="percentage"></mux-uploader-progress>

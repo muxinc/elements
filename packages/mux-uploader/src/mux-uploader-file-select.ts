@@ -1,45 +1,20 @@
 import { globalThis, document } from 'shared-polyfills';
+import { getMuxUploaderEl } from './utils/element-utils';
+import type MuxUploaderElement from './mux-uploader';
+
+// @ts-ignore
+import btnFragment from './mux-uploader-file-select/buttonFragment.html';
+export { btnFragment };
+
 const template = document.createElement('template');
 
 template.innerHTML = `
 <style>
-
-button {
-  cursor: pointer;
-  line-height: 16px;
-  background: var(--button-background-color, #fff);
-  border: var(--button-border, 1px solid #000000);
-  color: #000000;
-  padding: var(--button-padding, 16px 24px);
-  border-radius: var(--button-border-radius, 4px);
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  font-size: inherit;
-  position: relative;
-}
-
-button:hover {
-  color: var(--button-hover-text, #fff);
-  background: var(--button-hover-background, #404040);
-}
-
-button:active {
-  color: var(--button-active-text, #fff);
-  background: var(--button-active-background, #000000);
-}
-
-:host([upload-in-progress]) button {
-  display: none;
-}
-
-:host([upload-in-progress]) ::slotted(button) {
-  display: none;
-}
+  :host { display: inline-block; }
 </style>
 
 <slot>
-<button type="button">Upload video</button>
+  ${btnFragment}
 </slot>
 `;
 
@@ -61,8 +36,9 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
 
     this.shadowRoot?.querySelector('slot')?.addEventListener('slotchange', (e) => {
       const slot = e.currentTarget as HTMLSlotElement;
-
-      this.filePickerButton = slot.assignedElements({ flatten: true })[0] as HTMLButtonElement;
+      this.filePickerButton = slot
+        .assignedElements({ flatten: true })
+        .filter((el) => !['STYLE'].includes(el.nodeName))[0] as HTMLButtonElement;
     });
   }
 
