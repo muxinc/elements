@@ -19,7 +19,7 @@ describe('<mux-uploader-file-select>', () => {
     assert.equal(slot.getAttribute('name'), 'file-select', 'slot name is reflected');
     assert.equal(button.getAttribute('class'), 'btn', 'slot content is reflected');
     assert.equal(button.innerText, 'Pick a file', 'slot content is reflected');
-    assert.equal(button, el.filePickerButton, 'filePickerButton is set');
+    assert.equal(button, el.filePickerEl, 'filePickerEl is set');
   });
 
   it('propagates click events to hidden file input', async function () {
