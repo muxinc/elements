@@ -46,6 +46,7 @@ template.innerHTML = `
     background: var(--progress-bar-fill-color, #000000);
     height: 4px;
     width: 0%;
+    transition: width 0.25s;
   }
 
   circle {
@@ -139,7 +140,9 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
 
     switch (this.getAttribute('type')) {
       case ProgressTypes.BAR: {
-        if (this.progressBar) this.progressBar.style.width = `${percent}%`;
+        if (this.progressBar) {
+          this.progressBar.style.width = `${percent}%`;
+        }
         break;
       }
       case ProgressTypes.RADIAL: {
