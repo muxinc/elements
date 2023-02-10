@@ -1,9 +1,11 @@
 import { globalThis, document } from 'shared-polyfills';
+import { getMuxUploaderEl } from './utils/element-utils';
+import type MuxUploaderElement from './mux-uploader';
+
 const template = document.createElement('template');
 
 template.innerHTML = `
 <style>
-
 button {
   cursor: pointer;
   line-height: 16px;
@@ -28,14 +30,6 @@ button:active {
   color: var(--button-active-text, #fff);
   background: var(--button-active-background, #000000);
 }
-
-:host([upload-in-progress]) button {
-  display: none;
-}
-
-:host([upload-in-progress]) ::slotted(button) {
-  display: none;
-}
 </style>
 
 <slot>
@@ -44,7 +38,10 @@ button:active {
 `;
 
 class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
-  #filePickerButton: HTMLElement | null | undefined;
+  #filePickerEl: HTMLElement | null | undefined;
+  #uploaderEl: MuxUploaderElement | null | undefined;
+
+  #controller: AbortController | undefined;
 
   constructor() {
     super();
@@ -53,36 +50,59 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
 
     // NOTE: Binding this so that we have a reference to remove the event listener
     // but can still reference `this` in the method. (CJP)
-    this.handleFilePickerButtonClick = this.handleFilePickerButtonClick.bind(this);
+    this.handleFilePickerElClick = this.handleFilePickerElClick.bind(this);
 
     // Since we have a "default slotted" element, we still need to initialize the slottable elements
     // (Note the difference in selectors and related code in 'slotchange' handler, below)
-    this.filePickerButton = this.shadowRoot?.querySelector('button');
+    this.filePickerEl = this.shadowRoot?.querySelector('button');
 
     this.shadowRoot?.querySelector('slot')?.addEventListener('slotchange', (e) => {
       const slot = e.currentTarget as HTMLSlotElement;
 
-      this.filePickerButton = slot.assignedElements({ flatten: true })[0] as HTMLButtonElement;
+      this.filePickerEl = slot.assignedElements({ flatten: true })[0] as HTMLButtonElement;
     });
   }
 
-  protected get filePickerButton() {
-    return this.#filePickerButton;
+  connectedCallback() {
+    this.#uploaderEl = getMuxUploaderEl(this);
+    this.#controller = new AbortController();
+
+    if (this.#uploaderEl) {
+      const opts = { signal: this.#controller.signal };
+
+      this.#uploaderEl.addEventListener(
+        'file-ready',
+        () => {
+          if (this.filePickerEl) {
+            this.filePickerEl.style.display = 'none';
+          }
+        },
+        opts
+      );
+    }
   }
 
-  protected set filePickerButton(value: HTMLElement | null | undefined) {
-    if (value === this.#filePickerButton) return;
-    if (this.#filePickerButton) {
-      this.#filePickerButton.removeEventListener('click', this.handleFilePickerButtonClick);
+  disconnectedCallback() {
+    this.#controller?.abort();
+  }
+
+  protected get filePickerEl() {
+    return this.#filePickerEl;
+  }
+
+  protected set filePickerEl(value: HTMLElement | null | undefined) {
+    if (value === this.#filePickerEl) return;
+    if (this.#filePickerEl) {
+      this.#filePickerEl.removeEventListener('click', this.handleFilePickerElClick);
     }
 
-    this.#filePickerButton = value;
-    if (this.#filePickerButton) {
-      this.#filePickerButton.addEventListener('click', this.handleFilePickerButtonClick);
+    this.#filePickerEl = value;
+    if (this.#filePickerEl) {
+      this.#filePickerEl.addEventListener('click', this.handleFilePickerElClick);
     }
   }
 
-  handleFilePickerButtonClick() {
+  handleFilePickerElClick() {
     // TO-DO: Allow user to reattempt uploading the same file after an error.
     // Note: Apparently Chrome and Firefox do not allow changing an indexed property on FileList...(TD).
     // Source: https://stackoverflow.com/a/46689013
