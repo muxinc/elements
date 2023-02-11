@@ -163,6 +163,24 @@ describe('<mux-video>', () => {
     assert(!player.paused, 'is playing after play()');
   });
 
+  it('forward max-resolution attr as a query param', async function () {
+    const player = await fixture(`<mux-video
+      max-resolution="720p"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+    ></mux-video>`);
+
+    assert.equal(player.maxResolution, '720p');
+    assert.equal(
+      player._hls.url,
+      'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8?max_resolution=720p'
+    );
+
+    player.removeAttribute('max-resolution');
+    assert.equal(player.maxResolution, null);
+    player.maxResolution = '720p';
+    assert.equal(player.maxResolution, '720p');
+  });
+
   it('maps arbitrary metadata-* attrs to the metadata prop and populates video_id if not provided', async function () {
     const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
     const player = await fixture(`<mux-video

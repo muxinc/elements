@@ -16,20 +16,19 @@ export const getPlayerVersion = () => player_version;
 
 export const getSrcFromPlaybackId = (
   playbackId?: string,
-  { token, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string } = {}
+  { maxResolution, token, domain = MUX_VIDEO_DOMAIN }: { maxResolution?: string; token?: string; domain?: string } = {}
 ) => {
   /*
-   * 2022-04-01 djhaveri
+   * 2023-02-11 djhaveri
    *
-   * `redundant_streams` query param can only be added to public
-   * playback IDs, in order to use this feature with signed URLs
+   * `redundant_streams` and `max_resolution` query param can only be added to public
+   * playback IDs, in order to use these features with signed URLs
    * the query param must be added to the signing token.
-   *
-   * https://docs.mux.com/guides/video/play-your-videos#add-delivery-redundancy-with-redundant-streams
    *
    * */
   const isSignedUrl = !!token;
-  const query = isSignedUrl ? { token } : { redundant_streams: true };
+  const maxRes = maxResolution ? { max_resolution: maxResolution } : {};
+  const query = isSignedUrl ? { token } : { redundant_streams: true, ...maxRes };
   return `https://stream.${domain}/${playbackId}.m3u8${toQuery(query)}`;
 };
 
