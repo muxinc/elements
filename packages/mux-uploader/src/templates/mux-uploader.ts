@@ -1,3 +1,5 @@
+import { document } from 'shared-polyfills';
+
 import '../mux-uploader-file-select';
 import { fileSelectFragment } from '../mux-uploader-file-select';
 

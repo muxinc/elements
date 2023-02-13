@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
 
 import rootTemplate from './templates/mux-uploader';
