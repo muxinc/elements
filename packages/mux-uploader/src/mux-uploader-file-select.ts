@@ -3,8 +3,8 @@ import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
 
 // @ts-ignore
-import btnFragment from './mux-uploader-file-select/buttonFragment.html';
-export { btnFragment };
+import fileSelectFragment from './templates/mux-uploader-file-select.html';
+export { fileSelectFragment };
 
 const template = document.createElement('template');
 
@@ -14,7 +14,7 @@ template.innerHTML = `
 </style>
 
 <slot>
-  ${btnFragment}
+  ${fileSelectFragment}
 </slot>
 `;
 
