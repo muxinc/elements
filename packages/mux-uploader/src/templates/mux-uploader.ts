@@ -13,18 +13,6 @@ const styles = `
 input[type="file"] {
   display: none;
 }
-
-::slotted(p) {
-  display: none;
-}
-
-:host([upload-in-progress]) ::slotted(p) {
-  display: block;
-}
-
-:host([upload-error]) ::slotted(p) {
-  display: none;
-}
 `;
 
 const template = document.createElement('template');
