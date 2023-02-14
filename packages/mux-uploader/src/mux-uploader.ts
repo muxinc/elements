@@ -1,51 +1,7 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
 
-const styles = `
-:host {
-  font-family: var(--uploader-font-family, Arial);
-  font-size: var(--uploader-font-size, 16px);
-  background-color: var(--uploader-background-color, inherit);
-}
-
-input[type="file"] {
-  display: none;
-}
-
-::slotted(p) {
-  display: none;
-}
-
-:host([upload-in-progress]) ::slotted(p) {
-  display: block;
-}
-
-:host([upload-error]) ::slotted(p) {
-  display: none;
-}
-`;
-
-const template = document.createElement('template');
-
-template.innerHTML = `
-<style>
-  ${styles}
-</style>
-
-<input id="hidden-file-input" type="file" />
-<mux-uploader-sr-text></mux-uploader-sr-text>
-
-<mux-uploader-status></mux-uploader-status>
-<mux-uploader-retry></mux-uploader-retry>
-<span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
-
-<mux-uploader-file-select>
-  <slot name="file-select"></slot>
-</mux-uploader-file-select>
-
-<mux-uploader-progress type="percentage"></mux-uploader-progress>
-<mux-uploader-progress></mux-uploader-progress>
-`;
+import rootTemplate from './layouts/block';
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
@@ -106,7 +62,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
-    const uploaderHtml = template.content.cloneNode(true);
+    const uploaderHtml = rootTemplate.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
 
     this.hiddenFileInput?.addEventListener('change', () => {
