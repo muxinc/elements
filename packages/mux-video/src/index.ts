@@ -16,6 +16,7 @@ import {
   getCuePoints,
   getActiveCuePoint,
   getStreamType,
+  getTargetLiveWindow,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -344,6 +345,10 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return getStreamType(this.nativeEl);
     // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
     // return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? undefined;
+  }
+
+  get targetLiveWindow() {
+    return getTargetLiveWindow(this.nativeEl);
   }
 
   // set streamType(val: ValueOf<StreamTypes> | undefined) {

@@ -74,8 +74,10 @@ export const toStreamTypeFromPlaylistType = (playlistType: HlsPlaylistTypes) => 
   return playlistType === 'VOD' ? StreamTypes.ON_DEMAND : StreamTypes.LIVE;
 };
 
-export const isDvrFromPlaylistType = (playlistType: HlsPlaylistTypes) => {
-  return playlistType === 'EVENT';
+export const toTargetLiveWindowFromPlaylistType = (playlistType: HlsPlaylistTypes) => {
+  if (playlistType === 'EVENT') return Number.POSITIVE_INFINITY;
+  if (playlistType === 'VOD') return Number.NaN;
+  return 0;
 };
 
 export const inferMimeTypeFromURL = (url: string) => {

@@ -16,7 +16,13 @@ import {
   setupCuePoints,
   getCuePointsTrack,
 } from './tracks';
-import { inSeekableRange, toPlaybackIdParts, getType, toStreamTypeFromPlaylistType } from './util';
+import {
+  inSeekableRange,
+  toPlaybackIdParts,
+  getType,
+  toStreamTypeFromPlaylistType,
+  toTargetLiveWindowFromPlaylistType,
+} from './util';
 import {
   StreamTypes,
   PlaybackTypes,
@@ -95,9 +101,9 @@ export const getStreamType = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.streamType ?? StreamTypes.UNKNOWN;
 };
 
-// export const getDvr = (mediaEl: HTMLMediaElement) => {
-//   return muxMediaState.get(mediaEl)?.dvr;
-// };
+export const getTargetLiveWindow = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.targetLiveWindow ?? Number.NaN;
+};
 
 // export const getLowLatency = (mediaEl: HTMLMediaElement) => {
 //   return muxMediaState.get(mediaEl)?.lowLatency;
@@ -365,6 +371,7 @@ export const loadMedia = (
           const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
           const streamType = toStreamTypeFromPlaylistType(playlistType);
           (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+          (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
           mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail: streamType }));
         });
       mediaEl.setAttribute('src', src);
@@ -393,10 +400,9 @@ export const loadMedia = (
     hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
       const playlistType: HlsPlaylistTypes = data.details.type as HlsPlaylistTypes;
       const streamType = toStreamTypeFromPlaylistType(playlistType);
-      // const dvr = isDvrFromPlaylistType(playlistType);
       const lowLatency = !!data.details.partList?.length;
       (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
-      // (muxMediaState.get(mediaEl) ?? {}).dvr = dvr;
+      (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
       // (muxMediaState.get(mediaEl) ?? {}).lowLatency = lowLatency;
       if (streamType === StreamTypes.LIVE) {
         const seekable: TimeRanges = Object.freeze({
