@@ -463,7 +463,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       // - native fullscreen on iPhones
       return (
         this.streamType &&
-        [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(this.streamType as any) &&
+        [StreamTypes.LIVE].includes(this.streamType as any) &&
         !this.secondaryColor &&
         this.offsetWidth >= 800
       );
@@ -495,7 +495,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           // default safari styles are taller than other browsers
           let offset = isSafari ? -2 : -3;
 
-          if (this.streamType && [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(this.streamType as any)) {
+          if (this.streamType && [StreamTypes.LIVE].includes(this.streamType as any)) {
             offset = isSafari ? -1 : -2;
           }
 
@@ -838,11 +838,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * we aren't an audio player and the stream-type isn't live.
    */
   get storyboard() {
-    if (
-      !this.audio &&
-      (!this.streamType ||
-        ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any))
-    ) {
+    if (!this.audio && (!this.streamType || ![StreamTypes.LIVE].includes(this.streamType as any))) {
       // only infer from playbackId if not set on storyboardSrc and no token
       if (this.storyboardSrc && !this.tokens.storyboard) {
         return this.storyboardSrc;

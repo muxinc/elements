@@ -23,9 +23,11 @@ export const template = (props: MuxTemplateProps) => html`
   ${content(props)}
 `;
 
-const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
+const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE].includes(props.streamType as any);
 
-const isDVR = (props: MuxTemplateProps) => [StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
+/** @TODO: Re-implment using new modeling from inferred */
+const isDVR = (props: MuxTemplateProps) => false;
+// const isDVR = (props: MuxTemplateProps) => [StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
 
 const isLiveOrDVR = (props: MuxTemplateProps) => isLive(props) || isDVR(props);
 
@@ -43,7 +45,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    stream-type="${isLiveOrDVR(props) ? 'live' : 'on-demand'}"
+    class="${props.secondaryColor ? 'two-tone' : false}"
     target-live-window="${isDVR(props) ? 1 : false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
@@ -79,7 +81,6 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-name="${props.playerSoftwareName ?? false}"
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
-      stream-type="${props.streamType ?? false}"
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src
         ? props.src
