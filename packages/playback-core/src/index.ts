@@ -56,15 +56,11 @@ export const generateUUID = mux.utils.generateUUID;
 export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN, maxResolution = '' } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
-  let queryWithMaxRes;
+  const url = new URL(`https://stream.${domain}/${idPart}.m3u8${queryPart}`);
   if (maxResolution) {
-    if (queryPart && queryPart.length) {
-      queryWithMaxRes = `${queryPart}&max_resolution=${maxResolution}`;
-    } else {
-      queryWithMaxRes = `?max_resolution=${maxResolution}`;
-    }
+    url.searchParams.set('max_resolution', maxResolution);
   }
-  return `https://stream.${domain}/${idPart}.m3u8${queryWithMaxRes || queryPart}`;
+  return url.toString();
 };
 
 const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined) => {

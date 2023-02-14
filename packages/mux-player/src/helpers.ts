@@ -19,8 +19,6 @@ export const getSrcFromPlaybackId = (
   { maxResolution, token, domain = MUX_VIDEO_DOMAIN }: { maxResolution?: string; token?: string; domain?: string } = {}
 ) => {
   /*
-   * 2023-02-11 djhaveri
-   *
    * `redundant_streams` and `max_resolution` query param can only be added to public
    * playback IDs, in order to use these features with signed URLs
    * the query param must be added to the signing token.
