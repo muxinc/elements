@@ -1,7 +1,7 @@
 import { globalThis } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
 
-import rootTemplate from './templates/mux-uploader';
+import rootTemplate from './layouts/block';
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;

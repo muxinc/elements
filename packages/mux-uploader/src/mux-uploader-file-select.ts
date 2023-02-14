@@ -2,20 +2,47 @@ import { globalThis, document } from 'shared-polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
 
-// @ts-ignore
-import fileSelectFragment from './templates/mux-uploader-file-select.html';
-export { fileSelectFragment };
+export const fileSelectFragment = /*html*/ `
+  <style>
+  #file-select {
+    cursor: pointer;
+    line-height: 16px;
+    background: var(--button-background-color, #fff);
+    border: var(--button-border, 1px solid #000000);
+    color: #000000;
+    padding: var(--button-padding, 16px 24px);
+    border-radius: var(--button-border-radius, 4px);
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-size: inherit;
+    position: relative;
+  }
+
+  #file-select:hover {
+    color: var(--button-hover-text, #fff);
+    background: var(--button-hover-background, #404040);
+  }
+
+  #file-select:active {
+    color: var(--button-active-text, #fff);
+    background: var(--button-active-background, #000000);
+  }
+  </style>
+
+  <button id="file-select" type="button">Upload video</button>
+`;
 
 const template = document.createElement('template');
 
-template.innerHTML = `
-<style>
-  :host { display: inline-block; }
-</style>
+template.innerHTML = /*html*/ `
+  <style>
+    :host { display: inline-block; }
+  </style>
 
-<slot>
-  ${fileSelectFragment}
-</slot>
+  <slot>
+    ${fileSelectFragment}
+  </slot>
 `;
 
 class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
