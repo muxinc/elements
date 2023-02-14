@@ -8,7 +8,7 @@ export const fileSelectFragment = /*html*/ `
     cursor: pointer;
     line-height: 16px;
     background: var(--button-background-color, #fff);
-    border: var(--button-border, 1px solid #000000);
+    border: var(--button-border, 1px solid #000);
     color: #000000;
     padding: var(--button-padding, 16px 24px);
     border-radius: var(--button-border-radius, 4px);
@@ -26,7 +26,7 @@ export const fileSelectFragment = /*html*/ `
 
   #file-select:active {
     color: var(--button-active-text, #fff);
-    background: var(--button-active-background, #000000);
+    background: var(--button-active-background, #000);
   }
   </style>
 
