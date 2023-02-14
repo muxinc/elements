@@ -351,6 +351,22 @@ export const loadMedia = (
   const { src } = props;
   if (mediaEl && shouldUseNative) {
     if (typeof src === 'string') {
+      fetch(src)
+        .then((resp) => resp.text())
+        .then((multivariantPlaylistStr) => {
+          const mediaPlaylistUrl = multivariantPlaylistStr.split('\n').find((_line, idx, lines) => {
+            return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
+          }) as string;
+
+          return fetch(mediaPlaylistUrl).then((resp) => resp.text());
+        })
+        .then((mediaPlaylistStr) => {
+          const typeLine = mediaPlaylistStr.split('\n').find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
+          const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
+          const streamType = toStreamTypeFromPlaylistType(playlistType);
+          (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+          mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail: streamType }));
+        });
       mediaEl.setAttribute('src', src);
       if (props.startTime) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
@@ -403,10 +419,7 @@ export const loadMedia = (
           hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 8;
         }
       }
-      // const detail = { streamType, dvr, lowLatency };
-
-      const detail = streamType;
-      mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail }));
+      mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail: streamType }));
     });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
