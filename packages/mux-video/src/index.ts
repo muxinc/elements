@@ -15,6 +15,7 @@ import {
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
+  getStreamType,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -340,20 +341,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get streamType(): ValueOf<StreamTypes> | undefined {
+    return getStreamType(this.nativeEl);
     // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
-    return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? undefined;
+    // return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? undefined;
   }
 
-  set streamType(val: ValueOf<StreamTypes> | undefined) {
-    // dont' cause an infinite loop
-    if (val === this.streamType) return;
+  // set streamType(val: ValueOf<StreamTypes> | undefined) {
+  //   // dont' cause an infinite loop
+  //   if (val === this.streamType) return;
 
-    if (val) {
-      this.setAttribute(Attributes.STREAM_TYPE, val);
-    } else {
-      this.removeAttribute(Attributes.STREAM_TYPE);
-    }
-  }
+  //   if (val) {
+  //     this.setAttribute(Attributes.STREAM_TYPE, val);
+  //   } else {
+  //     this.removeAttribute(Attributes.STREAM_TYPE);
+  //   }
+  // }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
     return addCuePoints(this.nativeEl, cuePoints);
