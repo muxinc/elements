@@ -16,7 +16,7 @@ import {
   setupCuePoints,
   getCuePointsTrack,
 } from './tracks';
-import { inSeekableRange, toPlaybackIdParts, getType } from './util';
+import { inSeekableRange, toPlaybackIdParts, getType, toStreamTypeFromPlaylistType } from './util';
 import {
   StreamTypes,
   PlaybackTypes,
@@ -26,6 +26,7 @@ import {
   type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
+  HlsPlaylistTypes,
 } from './types';
 export {
   mux,
@@ -43,7 +44,8 @@ export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps>> = new WeakMap();
+const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { seekable?: TimeRanges }> =
+  new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -87,6 +89,22 @@ const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
+};
+
+export const getStreamType = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.streamType ?? StreamTypes.UNKNOWN;
+};
+
+// export const getDvr = (mediaEl: HTMLMediaElement) => {
+//   return muxMediaState.get(mediaEl)?.dvr;
+// };
+
+// export const getLowLatency = (mediaEl: HTMLMediaElement) => {
+//   return muxMediaState.get(mediaEl)?.lowLatency;
+// };
+
+export const getSeekable = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.seekable ?? mediaEl.seekable;
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
@@ -208,24 +226,9 @@ export const setupHls = (
 
 export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   // for regular live videos, set backBufferLength to 8
-  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
+  if ([StreamTypes.LIVE].includes(streamType as any)) {
     const liveConfig = {
       backBufferLength: 8,
-    };
-
-    return liveConfig;
-  }
-
-  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
-  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 4,
-      maxFragLookUpTolerance: 0.001,
-      // For ll-hls, we're going to weight the bandwidth for switching to higher levels/renditions
-      // equal to the weight for switching to lower levels/renditions. This may result in a higher
-      // chance of hopping up and back down between levels, but significantly increases the
-      // chances of playing at a higher quality (CJP)
-      abrBandWidthUpFactor: 0.95,
     };
 
     return liveConfig;
@@ -341,6 +344,7 @@ export const loadMedia = (
     | 'liveSyncPosition'
     | 'subtitleTracks'
     | 'subtitleTrack'
+    | 'userConfig'
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
@@ -370,6 +374,40 @@ export const loadMedia = (
       { once: true }
     );
   } else if (hls && src) {
+    hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
+      const playlistType: HlsPlaylistTypes = data.details.type as HlsPlaylistTypes;
+      const streamType = toStreamTypeFromPlaylistType(playlistType);
+      // const dvr = isDvrFromPlaylistType(playlistType);
+      const lowLatency = !!data.details.partList?.length;
+      (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+      // (muxMediaState.get(mediaEl) ?? {}).dvr = dvr;
+      // (muxMediaState.get(mediaEl) ?? {}).lowLatency = lowLatency;
+      if (streamType === StreamTypes.LIVE) {
+        const seekable: TimeRanges = Object.freeze({
+          get length() {
+            return mediaEl.seekable.length;
+          },
+          start(index: number) {
+            return mediaEl.seekable.start(index);
+          },
+          end(index: number) {
+            if (index > this.length) return mediaEl.seekable.end(index);
+            return hls.liveSyncPosition ?? mediaEl.seekable.end(index);
+          },
+        });
+        (muxMediaState.get(mediaEl) ?? {}).seekable = seekable;
+        if (lowLatency) {
+          hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 4;
+          hls.config.maxFragLookUpTolerance = hls.userConfig.maxFragLookUpTolerance ?? 0.001;
+        } else {
+          hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 8;
+        }
+      }
+      // const detail = { streamType, dvr, lowLatency };
+
+      const detail = streamType;
+      mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail }));
+    });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
       //   switch (data.type) {

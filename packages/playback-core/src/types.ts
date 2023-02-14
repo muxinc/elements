@@ -40,22 +40,18 @@ export const AutoplayTypes: AutoplayTypes = {
 
 export type Autoplay = boolean | ValueOf<AutoplayTypes>;
 
+export type HlsPlaylistTypes = 'VOD' | 'EVENT' | null | undefined;
+
 export type StreamTypes = {
-  VOD: 'on-demand';
   ON_DEMAND: 'on-demand';
   LIVE: 'live';
-  LL_LIVE: 'll-live';
-  DVR: 'live:dvr';
-  LL_DVR: 'll-live:dvr';
+  UNKNOWN: 'unknown';
 };
 
 export const StreamTypes: StreamTypes = {
-  VOD: 'on-demand',
   ON_DEMAND: 'on-demand',
   LIVE: 'live',
-  LL_LIVE: 'll-live',
-  DVR: 'live:dvr',
-  LL_DVR: 'll-live:dvr',
+  UNKNOWN: 'unknown',
 };
 
 export type PlaybackTypes = {
@@ -146,7 +142,7 @@ export type MuxMediaPropTypes = {
   error?: HTMLMediaElement['error'] | MediaError;
 };
 
-export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error'>>;
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
