@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.1...@mux/playback-core@0.16.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* Improve behavior for cuepoints with Safari usage. ([be2e353](https://github.com/muxinc/elements/commit/be2e353f8e904fb7b701e32247436578ae416ecc))
+* **playback-core:** Typescript + min acrobatics to make svelte and others happy ([fdf34bb](https://github.com/muxinc/elements/commit/fdf34bb8fd409f0c2b5945802251ed2e6ffafd7e))
+
+
+
+
+
 ## [0.16.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.0...@mux/playback-core@0.16.1) (2023-02-02)
 
 

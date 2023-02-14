@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.4](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.3...@mux/mux-audio@0.9.4) (2023-02-14)
+
+
+### Bug Fixes
+
+* **playback-core:** Typescript + min acrobatics to make svelte and others happy ([fdf34bb](https://github.com/muxinc/elements/commit/fdf34bb8fd409f0c2b5945802251ed2e6ffafd7e))
+
+
+
+
+
 ## [0.9.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.2...@mux/mux-audio@0.9.3) (2023-02-02)
 
 **Note:** Version bump only for package @mux/mux-audio
