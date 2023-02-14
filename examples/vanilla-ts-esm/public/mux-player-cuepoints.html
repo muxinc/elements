@@ -47,13 +47,14 @@
     <mux-player
       stream-type="on-demand"
       playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
-      id="cued-player"
+      muted
+      preload="auto"
     ></mux-player>
     <div>
       <b>Active CuePoint:</b> <pre id="cuepoint-renderer">Unset</pre>
     </div>
     <script>
-      const playerEl = document.getElementById('cued-player');
+      const playerEl = document.querySelector('mux-player');
 
       function addCuePointsToPlayer() {
         const cuePoints = [
@@ -75,10 +76,12 @@
       }
 
       playerEl.addEventListener('cuepointchange', cuePointChangeListener);
-      if (playerEl.duration) {
+
+      // NOTE: Need to wait until the player has loaded metadata before adding cuePoints!
+      if (playerEl.readyState >= 1) {
         addCuePointsToPlayer();
       } else {
-        playerEl.addEventListener('durationchange', addCuePointsToPlayer, { once: true });
+        playerEl.addEventListener('loadedmetadata', addCuePointsToPlayer, { once: true });
       }
     </script>
     <a href="../">Browse Elements</a>

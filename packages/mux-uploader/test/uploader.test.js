@@ -69,17 +69,5 @@ describe('<mux-uploader>', () => {
     assert.equal(server.lastRequest.url, 'https://mock-upload-endpoint.com', 'request url matches');
 
     await oneEvent(uploader, 'success');
-    assert.equal(uploader.statusMessage.innerHTML, 'Upload complete!', 'status message matches');
-  });
-
-  it('fires a reset event on reset btn click', async function () {
-    const uploader = await fixture(`<mux-uploader
-      endpoint="https://mock-upload-endpoint.com"
-    ></mux-uploader>`);
-
-    const listener = oneEvent(uploader, 'reset');
-    uploader.retryButton.click();
-    const e = await listener;
-    assert.exists(e);
   });
 });

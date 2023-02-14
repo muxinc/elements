@@ -1,6 +1,5 @@
 import type { Options } from 'mux-embed';
-import type Hls from 'hls.js';
-import type { HlsConfig } from 'hls.js';
+import type { HlsInterface as Hls } from './hls';
 
 type KeyTypes = string | number | symbol;
 type Maybe<T> = T | null | undefined;
@@ -135,7 +134,7 @@ export type MuxMediaPropTypes = {
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
-  startTime: HlsConfig['startPosition'];
+  startTime: Hls['config']['startPosition'];
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
   preferCmcd: ValueOf<CmcdTypes> | undefined;

@@ -1,5 +1,6 @@
 import mux, { ErrorEvent } from 'mux-embed';
-import Hls from 'hls.js';
+import Hls from './hls';
+import type { HlsInterface } from './hls';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -11,6 +12,7 @@ import {
   getCuePoints,
   getActiveCuePoint,
   setupCuePoints,
+  getCuePointsTrack,
 } from './tracks';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
@@ -23,8 +25,18 @@ import {
   type MuxMediaProps,
   type MuxMediaPropsInternal,
 } from './types';
-
-export { mux, Hls, MediaError, addTextTrack, removeTextTrack, addCuePoints, getCuePoints, getActiveCuePoint };
+export {
+  mux,
+  Hls,
+  MediaError,
+  addTextTrack,
+  removeTextTrack,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
+  getCuePointsTrack,
+  setupCuePoints,
+};
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
@@ -86,7 +98,6 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
-
   setupCuePoints(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
@@ -179,7 +190,7 @@ export const setupHls = (
       cmcd,
       ...defaultConfig,
       ...streamTypeConfig,
-    });
+    }) as HlsInterface;
 
     return hls;
   }
@@ -243,7 +254,7 @@ export const setupMux = (
     >
   >,
   mediaEl: HTMLMediaElement,
-  hlsjs?: Hls
+  hlsjs?: HlsInterface
 ) => {
   const { envKey: env_key } = props;
   const inferredEnv = isMuxVideoSrc(props);

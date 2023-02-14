@@ -10,7 +10,7 @@ export default {
           imports: {
             // see shared/test-esm-exports/README.md for more information on this configuration
             '/test/': '/packages/mux-video/test/',
-            'hls.js': '/node_modules/@mux/test-esm-exports/dist/hls.js',
+            'hls.js/dist/hls.min.js': '/node_modules/@mux/test-esm-exports/dist/hls.js',
             'mux-embed': '/node_modules/@mux/test-esm-exports/dist/mux-embed.js',
           },
         },

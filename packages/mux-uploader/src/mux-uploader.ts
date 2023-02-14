@@ -12,52 +12,15 @@ input[type="file"] {
   display: none;
 }
 
-.retry-button, .text-container {
-  display: none;
-}
-
 ::slotted(p) {
   display: none;
-}
-
-.upload-instruction {
-  display: none;
-}
-
-.retry-button {
-  color: #e22c3e;
-  text-decoration-line: underline;
-  cursor: pointer;
-  position: relative;
-}
-
-.text-container {
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  padding-bottom: 16px;
 }
 
 :host([upload-in-progress]) ::slotted(p) {
   display: block;
 }
 
-:host([upload-error]) .status-message {
-  color: #e22c3e;
-}
-
-:host([upload-error]) .retry-button {
-  display: inline-block;
-}
-
-:host([upload-error]) .text-container {
-  display: flex;
-}
-
 :host([upload-error]) ::slotted(p) {
-  display: none;
-}
-
-:host([upload-in-progress]) .upload-instruction {
   display: none;
 }
 `;
@@ -69,13 +32,12 @@ template.innerHTML = `
   ${styles}
 </style>
 
-<mux-uploader-sr-text></mux-uploader-sr-text>
-<div class=text-container>
-  <span class="status-message" id="status-message" role="status" aria-live="polite"></span>
-  <span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
-</div>
-
 <input id="hidden-file-input" type="file" />
+<mux-uploader-sr-text></mux-uploader-sr-text>
+
+<mux-uploader-status></mux-uploader-status>
+<mux-uploader-retry></mux-uploader-retry>
+<span class="retry-button" id="retry-button" role="button" tabindex="0">Try again</span>
 
 <mux-uploader-file-select>
   <slot name="file-select"></slot>
@@ -84,8 +46,6 @@ template.innerHTML = `
 <mux-uploader-progress type="percentage"></mux-uploader-progress>
 <mux-uploader-progress></mux-uploader-progress>
 `;
-
-const ButtonPressedKeys = ['Enter', ' '];
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
@@ -141,8 +101,6 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   protected _endpoint: Endpoint;
-  statusMessage: HTMLElement | null | undefined;
-  retryButton: HTMLElement | null | undefined;
 
   constructor() {
     super();
@@ -150,9 +108,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const shadow = this.attachShadow({ mode: 'open' });
     const uploaderHtml = template.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
-
-    this.statusMessage = this.shadowRoot?.getElementById('status-message');
-    this.retryButton = this.shadowRoot?.getElementById('retry-button');
 
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
@@ -170,14 +125,15 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   connectedCallback() {
-    this.setupRetry();
     //@ts-ignore
     this.addEventListener('file-ready', this.handleUpload);
+    this.addEventListener('reset', this.resetState);
   }
 
   disconnectedCallback() {
     //@ts-ignore
     this.removeEventListener('file-ready', this.handleUpload, false);
+    this.removeEventListener('reset', this.resetState);
   }
 
   protected get hiddenFileInput() {
@@ -211,41 +167,11 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
-  setupRetry() {
-    this.retryButton?.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('reset'));
-      this.resetState();
-    });
-
-    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
-    // but this should be good enough for most use cases.
-    const keyUpHandler = (e: KeyboardEvent) => {
-      const { key } = e;
-      if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-
-      this.dispatchEvent(new CustomEvent('reset'));
-      this.resetState();
-    };
-
-    this.addEventListener('keydown', (e) => {
-      const { metaKey, altKey, key } = e;
-      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-      this.addEventListener('keyup', keyUpHandler);
-    });
-  }
-
   resetState() {
     this.removeAttribute('upload-error');
     this.removeAttribute('upload-in-progress');
     // Reset file to ensure change/input events will fire, even if selecting the same file (CJP).
     this.hiddenFileInput.value = '';
-    if (this.statusMessage) this.statusMessage.innerHTML = '';
   }
 
   handleUpload(evt: CustomEvent) {
@@ -254,9 +180,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
     if (!endpoint) {
       const invalidUrlMessage = 'No url or endpoint specified -- cannot handleUpload';
-      if (this.statusMessage) {
-        this.statusMessage.innerHTML = invalidUrlMessage;
-      }
+
       this.setAttribute('upload-error', '');
       console.error(invalidUrlMessage);
       this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message: invalidUrlMessage } }));
@@ -264,9 +188,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       return;
     } else {
       this.removeAttribute('upload-error');
-      if (this.statusMessage) {
-        this.statusMessage.innerHTML = '';
-      }
     }
 
     this.setAttribute('upload-in-progress', '');
@@ -288,14 +209,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     });
 
     upload.on('error', (event) => {
-      const errorMessage = 'An error has occurred';
-
       this.setAttribute('upload-error', '');
-
-      if (this.statusMessage) {
-        this.statusMessage.innerHTML = errorMessage;
-      }
-
       console.error(event.detail.message);
       this.dispatchEvent(new CustomEvent('uploaderror', event));
     });
@@ -305,13 +219,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     });
 
     upload.on('success', (event) => {
-      const successMessage = 'Upload complete!';
-
-      if (this.statusMessage) {
-        this.statusMessage.innerHTML = successMessage;
-      }
-
-      console.info(successMessage);
       this.dispatchEvent(new CustomEvent('success', event));
     });
   }
@@ -323,7 +230,6 @@ declare global {
   var MuxUploaderElement: MuxUploaderElementType;
 }
 
-/** @TODO Refactor once using `globalThis` polyfills */
 if (!globalThis.customElements.get('mux-uploader')) {
   globalThis.customElements.define('mux-uploader', MuxUploaderElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
