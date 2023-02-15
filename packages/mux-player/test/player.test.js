@@ -443,6 +443,27 @@ describe('<mux-player>', () => {
     );
   });
 
+  it('max-resolution is set as a prop and forwarded to the media element', async function () {
+    const player = await fixture(`<mux-player
+      max-resolution="720p"
+      stream-type="on-demand"
+      playback-id="r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA"
+    ></mux-player>`);
+    const muxVideo = player.media;
+
+    assert.equal(player.maxResolution, '720p');
+    assert.equal(
+      muxVideo.src,
+      'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8?redundant_streams=true&max_resolution=720p'
+    );
+
+    player.removeAttribute('max-resolution');
+    assert.equal(player.maxResolution, null);
+
+    player.maxResolution = '720p';
+    assert.equal(player.maxResolution, '720p');
+  });
+
   describe('buffered behaviors', function () {
     it('should have an empty TimeRanges value by default', async function () {
       const playerEl = await fixture('<mux-player></mux-player>');

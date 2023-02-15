@@ -65,6 +65,7 @@ export type MuxPlayerProps = {
   playerSoftwareName?: string;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
+  maxResolution?: string;
   metadataVideoId?: string;
   metadataVideoTitle?: string;
   metadataViewerUserId?: string;

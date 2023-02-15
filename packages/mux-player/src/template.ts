@@ -84,12 +84,20 @@ export const content = (props: MuxTemplateProps) => html`
       src="${!!props.src
         ? props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
+        ? getSrcFromPlaybackId(props.playbackId, {
+            maxResolution: props.maxResolution,
+            domain: props.customDomain,
+            token: props.tokens.playback,
+          })
         : false}"
       cast-src="${!!props.src
         ? props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
+        ? getSrcFromPlaybackId(props.playbackId, {
+            maxResolution: props.maxResolution,
+            domain: props.customDomain,
+            token: props.tokens.playback,
+          })
         : false}"
       cast-stream-type="${isLive(props) ? 'live' : false}"
       exportparts="video"

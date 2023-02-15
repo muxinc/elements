@@ -53,10 +53,14 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
+export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN, maxResolution = '' } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
-  return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
+  const url = new URL(`https://stream.${domain}/${idPart}.m3u8${queryPart}`);
+  if (maxResolution) {
+    url.searchParams.set('max_resolution', maxResolution);
+  }
+  return url.toString();
 };
 
 const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined) => {

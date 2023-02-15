@@ -94,6 +94,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     disableCookies: el.disableCookies,
     tokens: el.tokens,
     beaconCollectionDomain: el.beaconCollectionDomain,
+    maxResolution: el.maxResolution,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
@@ -931,6 +932,20 @@ class MuxPlayerElement extends VideoApiElement {
       this.setAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN);
+    }
+  }
+
+  get maxResolution() {
+    return this.getAttribute(MuxVideoAttributes.MAX_RESOLUTION) ?? undefined;
+  }
+
+  set maxResolution(val: string | undefined) {
+    if (val === this.maxResolution) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.MAX_RESOLUTION, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.MAX_RESOLUTION);
     }
   }
 

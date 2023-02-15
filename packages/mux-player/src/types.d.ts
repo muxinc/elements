@@ -27,6 +27,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   onInitFocusDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
   inLiveWindow: boolean;
+  maxResolution?: string;
   tokens: {
     playback?: string;
     thumbnail?: string;
