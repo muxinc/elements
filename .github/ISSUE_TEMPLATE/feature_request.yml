@@ -34,34 +34,9 @@ body:
         - mux-uploader-react
         - playback-core
         - common
+        - new element
     validations:
       required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: Which browsers are you using?
-      description: Currently, Mux Elements are only officially supported in new version of the browsers listed.
-      multiple: true
-      options:
-        - Chrome
-        - Safari
-        - Firefox
-        - Edge ("Edgeium")
-        - Chrome Android
-        - Safari on iOS
-        - Other (add details below)
-    validations:
-      required: true
-  - type: dropdown
-    id: oses
-    attributes:
-      label: Which operating systems are you using?
-      options:
-        - Windows
-        - macOS
-        - iOS
-        - Android
-        - Other (add details below)
   - type: textarea
     id: description
     attributes:
