@@ -368,11 +368,20 @@ export const loadMedia = (
         })
         .then((mediaPlaylistStr) => {
           const typeLine = mediaPlaylistStr.split('\n').find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
+
           const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
+
           const streamType = toStreamTypeFromPlaylistType(playlistType);
           (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
-          (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
-          mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail: streamType }));
+          mediaEl.dispatchEvent(
+            new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: streamType })
+          );
+
+          const targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
+          (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
+          mediaEl.dispatchEvent(
+            new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: targetLiveWindow })
+          );
         });
       mediaEl.setAttribute('src', src);
       if (props.startTime) {
@@ -399,10 +408,17 @@ export const loadMedia = (
   } else if (hls && src) {
     hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
       const playlistType: HlsPlaylistTypes = data.details.type as HlsPlaylistTypes;
+
       const streamType = toStreamTypeFromPlaylistType(playlistType);
-      const lowLatency = !!data.details.partList?.length;
       (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
-      (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
+      mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: streamType }));
+
+      const targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
+      (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
+      mediaEl.dispatchEvent(
+        new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: targetLiveWindow })
+      );
+      const lowLatency = !!data.details.partList?.length;
       // (muxMediaState.get(mediaEl) ?? {}).lowLatency = lowLatency;
       if (streamType === StreamTypes.LIVE) {
         const seekable: TimeRanges = Object.freeze({
@@ -425,7 +441,6 @@ export const loadMedia = (
           hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 8;
         }
       }
-      mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { detail: streamType }));
     });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
