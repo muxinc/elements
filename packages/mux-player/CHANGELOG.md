@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.7.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.7.1...@mux/mux-player@1.7.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **playback-core:** Typescript + min acrobatics to make svelte and others happy ([fdf34bb](https://github.com/muxinc/elements/commit/fdf34bb8fd409f0c2b5945802251ed2e6ffafd7e))
+
+
+
+
+
 ## [1.7.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.7.0...@mux/mux-player@1.7.1) (2023-02-02)
 
 **Note:** Version bump only for package @mux/mux-player

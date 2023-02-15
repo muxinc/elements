@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.5...@mux/mux-uploader@1.0.0-beta.6) (2023-02-14)
+
+
+### Bug Fixes
+
+* **mux-uploader:** Establish pattern for default slot content ([#580](https://github.com/muxinc/elements/issues/580)) ([8cfeec6](https://github.com/muxinc/elements/commit/8cfeec62e8599063469b6d6f07f0a852be2cf0fe))
+
+
+
+
+
 # [1.0.0-beta.5](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.4...@mux/mux-uploader@1.0.0-beta.5) (2023-02-01)
 
 

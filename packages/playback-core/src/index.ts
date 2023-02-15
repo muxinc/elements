@@ -349,6 +349,16 @@ export const loadMedia = (
 
     mediaEl.addEventListener('error', handleNativeError);
     mediaEl.addEventListener('error', handleInternalError);
+    mediaEl.addEventListener(
+      'emptied',
+      () => {
+        const trackEls: NodeListOf<HTMLTrackElement> = mediaEl.querySelectorAll('track[data-removeondestroy]');
+        trackEls.forEach((trackEl) => {
+          trackEl.remove();
+        });
+      },
+      { once: true }
+    );
   } else if (hls && src) {
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
