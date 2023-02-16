@@ -122,7 +122,7 @@ function getThemeTemplate(el: MuxPlayerElement) {
   let themeName = el.getAttribute('theme');
   if (themeName) {
     // @ts-ignore
-    const templateElement = el.getRootNode()?.getElementById(themeName);
+    const templateElement = el.getRootNode()?.getElementById?.(themeName);
     if (templateElement) return templateElement;
 
     if (!themeName.startsWith('media-theme-')) {
