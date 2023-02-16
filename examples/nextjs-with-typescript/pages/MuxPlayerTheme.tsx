@@ -30,7 +30,6 @@ function MuxPlayerPage() {
         // }}
         // envKey="mux-data-env-key"
         streamType="on-demand"
-        controls
         autoPlay={autoplay}
         muted={muted}
         onPlay={() => {
