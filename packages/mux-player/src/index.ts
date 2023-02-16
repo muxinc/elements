@@ -2,6 +2,7 @@ import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import 'media-chrome/dist/experimental/media-captions-menu-button.js';
+import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
   ValueOf,
@@ -74,7 +75,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     storyboard: el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     placeholder: el.getAttribute('placeholder'),
-    theme: el.getAttribute('theme'),
+    themeTemplate: getThemeTemplate(el),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
@@ -115,6 +116,22 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   };
 
   return props;
+}
+
+function getThemeTemplate(el: MuxPlayerElement) {
+  let themeName = el.getAttribute('theme');
+  if (themeName) {
+    // @ts-ignore
+    const templateElement = el.getRootNode()?.getElementById?.(themeName);
+    if (templateElement) return templateElement;
+
+    if (!themeName.startsWith('media-theme-')) {
+      themeName = `media-theme-${themeName}`;
+    }
+
+    const ThemeElement = globalThis.customElements.get(themeName) as MediaThemeElement | undefined;
+    if (ThemeElement?.template) return ThemeElement.template;
+  }
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
@@ -177,8 +194,8 @@ class MuxPlayerElement extends VideoApiElement {
     // These lines ensure the rendered mux-video and media-controller are upgraded,
     // even before they are connected to the main document.
     try {
-      customElements.upgrade(this.theme as Node);
-      if (!(this.theme instanceof globalThis.HTMLElement)) throw '';
+      customElements.upgrade(this.mediaTheme as Node);
+      if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
     } catch (error) {
       logger.error(`<media-theme> failed to upgrade!`);
     }
@@ -207,31 +224,30 @@ class MuxPlayerElement extends VideoApiElement {
 
   #setupCSSProperties() {
     // registerProperty will throw if the prop has already been registered
-    // and there's currently no way to check ahead of time
+    // and there's currently no way to check ahead of time.
+    // initialValue's are defined in the theme
     try {
       // @ts-ignore
       window?.CSS?.registerProperty({
         name: '--primary-color',
         syntax: '<color>',
         inherits: true,
-        initialValue: 'white',
       });
       // @ts-ignore
       window?.CSS?.registerProperty({
         name: '--secondary-color',
         syntax: '<color>',
         inherits: true,
-        initialValue: 'transparent',
       });
     } catch (e) {}
   }
 
-  get theme(): Element | null | undefined {
+  get mediaTheme(): Element | null | undefined {
     return this.shadowRoot?.querySelector('media-theme');
   }
 
   get mediaController(): MediaController | null | undefined {
-    return this.theme?.shadowRoot?.querySelector('media-controller');
+    return this.mediaTheme?.shadowRoot?.querySelector('media-controller');
   }
 
   get metadataFromAttrs() {
@@ -792,7 +808,15 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the primary color used by the player.
    */
   get primaryColor() {
-    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR) ?? undefined;
+    let color = this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+    if (color != null) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_primary-color')?.trim();
+      if (color) return color;
+    }
   }
 
   /**
@@ -806,7 +830,15 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .75)';
+    let color = this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+    if (color != null) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_secondary-color')?.trim();
+      if (color) return color;
+    }
   }
 
   /**
