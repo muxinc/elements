@@ -31,6 +31,7 @@ export const subscribeViewerCount = (
           }
           // Otherwise, we successfully retrieved the latest views, so
           // provide that info out via `callback()`.
+          this.#views = views;
           callback(views);
           return views;
         })
@@ -104,6 +105,12 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
 
   get #viewerCountEl() {
     return (this.shadowRoot as ShadowRoot).querySelector('#viewer-count') as HTMLElement;
+  }
+
+  #views?: number
+
+  get views(): number {
+    return this.#views ?? Number.NaN;
   }
 
   constructor() {
@@ -180,8 +187,7 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
               detail: views,
             })
           );
-          /** @TODO Add views getter (JKS) */
-          this.#viewerCountEl.textContent = `${views}`;
+          this.#viewerCountEl.textContent = `${this.views}`;
           /** @TODO Update to use `viewerCount` prop when available (CJP) */
           this.setAttribute('aria-label', toAriaLabel({ viewerCount: views }));
         },
