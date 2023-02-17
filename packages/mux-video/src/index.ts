@@ -17,6 +17,7 @@ import {
   getActiveCuePoint,
   getStreamType,
   getTargetLiveWindow,
+  getLiveEdgeStart,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -349,6 +350,10 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   get targetLiveWindow() {
     return getTargetLiveWindow(this.nativeEl);
+  }
+
+  get liveEdgeStart() {
+    return getLiveEdgeStart(this.nativeEl);
   }
 
   // set streamType(val: ValueOf<StreamTypes> | undefined) {

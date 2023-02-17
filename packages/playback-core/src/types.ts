@@ -136,6 +136,7 @@ export type MuxMediaPropTypes = {
   type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
   targetLiveWindow: Number;
+  liveEdgeStart: Number;
   startTime: Hls['config']['startPosition'];
   autoPlay?: Autoplay;
   autoplay?: Autoplay;

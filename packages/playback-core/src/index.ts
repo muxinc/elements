@@ -50,8 +50,10 @@ export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { seekable?: TimeRanges }> =
-  new WeakMap();
+const muxMediaState: WeakMap<
+  HTMLMediaElement,
+  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: Number }
+> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -111,6 +113,13 @@ export const getTargetLiveWindow = (mediaEl: HTMLMediaElement) => {
 
 export const getSeekable = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.seekable ?? mediaEl.seekable;
+};
+
+export const getLiveEdgeStart = (mediaEl: HTMLMediaElement) => {
+  const liveEdgeStartOffset = muxMediaState.get(mediaEl)?.liveEdgeStartOffset;
+  if (typeof liveEdgeStartOffset !== 'number') return Number.NaN;
+  const seekable = getSeekable(mediaEl);
+  return seekable.end(seekable.length - 1) - liveEdgeStartOffset;
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
@@ -418,6 +427,7 @@ export const loadMedia = (
       mediaEl.dispatchEvent(
         new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: targetLiveWindow })
       );
+
       const lowLatency = !!data.details.partList?.length;
       // (muxMediaState.get(mediaEl) ?? {}).lowLatency = lowLatency;
       if (streamType === StreamTypes.LIVE) {
@@ -440,7 +450,13 @@ export const loadMedia = (
         } else {
           hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 8;
         }
+
+        const liveEdgeStartOffset = lowLatency ? data.details.partTarget * 2 : data.details.targetduration * 3;
+        (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
       }
+      // mediaEl.dispatchEvent(
+      //   new CustomEvent('liveedgestartchange', { composed: true, bubbles: true, detail: getLiveEdgeStart(mediaEl) })
+      // );
     });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
