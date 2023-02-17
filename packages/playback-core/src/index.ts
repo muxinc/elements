@@ -53,10 +53,14 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
+export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN, maxResolution = '' } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
-  return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
+  const url = new URL(`https://stream.${domain}/${idPart}.m3u8${queryPart}`);
+  if (maxResolution) {
+    url.searchParams.set('max_resolution', maxResolution);
+  }
+  return url.toString();
 };
 
 const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined) => {
@@ -345,6 +349,16 @@ export const loadMedia = (
 
     mediaEl.addEventListener('error', handleNativeError);
     mediaEl.addEventListener('error', handleInternalError);
+    mediaEl.addEventListener(
+      'emptied',
+      () => {
+        const trackEls: NodeListOf<HTMLTrackElement> = mediaEl.querySelectorAll('track[data-removeondestroy]');
+        trackEls.forEach((trackEl) => {
+          trackEl.remove();
+        });
+      },
+      { once: true }
+    );
   } else if (hls && src) {
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
