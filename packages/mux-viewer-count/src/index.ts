@@ -31,7 +31,6 @@ export const subscribeViewerCount = (
           }
           // Otherwise, we successfully retrieved the latest views, so
           // provide that info out via `callback()`.
-          this.#views = views;
           callback(views);
           return views;
         })
@@ -182,6 +181,7 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
         this.pollInterval,
         // Success callback
         (views) => {
+          this.#views = views;
           this.dispatchEvent(
             new CustomEvent('change', {
               detail: views,
