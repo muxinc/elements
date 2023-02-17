@@ -12,7 +12,7 @@
 
 Elements are written to make it easy to work in a variety of web frameworks. If we don't (yet) have a framework-specific "flavor" of an element, we always provide a pure [Web Component](https://developer.mozilla.org/en-US/docs/Web/Web_Components) version that work with HTML and can be used by most modern web frameworks and web application environments.
 
-| Name i                                                      | Description                                   | Framework     | Official Release Status |
+| Name                                                        | Description                                   | Framework     | Official Release Status |
 | ----------------------------------------------------------- | --------------------------------------------- | ------------- | ----------------------- |
 | [mux-video](packages/mux-video)                             | A Mux-flavored HTML5 video element            | Web Component | Public Beta             |
 | [mux-video-react](packages/mux-video-react)                 | A Mux-flavored React video component          | React         | Public Beta             |
