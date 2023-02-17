@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>&lt;mux-viewer-count&gt; simple example</title>
+    <title>&lt;mux-active-viewer-count&gt; simple example</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" href="./styles.css">
-    <script type="module" src="./dist/mux-viewer-count.js"></script>
+    <script type="module" src="./dist/mux-active-viewer-count.js"></script>
     <style>
       .viewer-count-token {
         width: 100%;
@@ -52,15 +52,15 @@
     </div>
 
     <div style="margin: 40px 0;">
-      Current Number of Views: <mux-viewer-count></mux-viewer-count>
+      Current Number of Views: <mux-active-viewer-count></mux-active-viewer-count>
     </div>
 
     <a href="../">Browse Elements</a>
     <script>
       const input = document.querySelector('input[type="text"]');
-      const muxViewerCount = document.querySelector('mux-viewer-count');
+      const muxActiveViewerCount = document.querySelector('mux-active-viewer-count');
       input.addEventListener('change', () => {
-        muxViewerCount.token = input.value;
+        muxActiveViewerCount.token = input.value;
       });
     </script>
   </body>
