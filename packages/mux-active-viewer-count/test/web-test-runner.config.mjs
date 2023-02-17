@@ -10,7 +10,7 @@ export default {
         importMap: {
           imports: {
             // see shared/test-esm-exports/README.md for more information on this configuration
-            '/test/': '/packages/mux-viewer-count/test/',
+            '/test/': '/packages/mux-active-viewer-count/test/',
           },
         },
       },

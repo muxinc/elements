@@ -1,12 +1,12 @@
 {
-  "name": "@mux/mux-viewer-count",
+  "name": "@mux/mux-active-viewer-count",
   "version": "0.1.0",
   "description": "A custom Mux element to show the current viewer count for the browser that Just Works™",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
-  "unpkg": "./dist/mux-viewer-count.js",
-  "jsdelivr": "./dist/mux-viewer-counts.js",
+  "unpkg": "./dist/mux-active-viewer-count.js",
+  "jsdelivr": "./dist/mux-active-viewer-counts.js",
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs.js",
@@ -23,7 +23,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
-    "directory": "packages/mux-viewer-counts"
+    "directory": "packages/mux-active-viewer-counts"
   },
   "author": "Mux, Inc.",
   "license": "MIT",
@@ -31,7 +31,7 @@
     "clean": "shx rm -rf dist/",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
-    "posttest": "replace 'SF:src/' 'SF:packages/mux-viewer-counts/src/' coverage/lcov.info --silent",
+    "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-counts/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
     "dev:cjs": "yarn build:cjs --watch=forever",
     "dev:esm": "yarn build:esm --watch=forever",
@@ -39,9 +39,9 @@
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:esm-module dev:iife",
     "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --external:@mux/*",
-    "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-viewer-counts.mjs",
+    "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-active-viewer-counts.mjs",
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:@mux/*",
-    "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-viewer-counts.js",
+    "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-active-viewer-counts.js",
     "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",

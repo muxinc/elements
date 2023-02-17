@@ -71,7 +71,7 @@ export const subscribeViewerCount = (
 
 const Attributes = {
   TOKEN: 'token',
-  POLL_INTERVAL: 'pollinterval',
+  POLL_INTERVAL: 'poll-interval',
   DISABLED: 'disabled',
 };
 
@@ -95,7 +95,7 @@ ${DEFAULT_VIEWER_COUNT_VALUE}
 </span>
 `;
 
-class MuxViewerCountElement extends globalThis.HTMLElement {
+class MuxActiveViewerCountElement extends globalThis.HTMLElement {
   static get observedAttributes() {
     return AttributeValues;
   }
@@ -124,13 +124,19 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
 
   set token(value: string) {
     if (this.token === value) return;
+    this.#views = undefined;
     this.setAttribute(Attributes.TOKEN, value);
   }
 
   get pollInterval() {
-    return this.hasAttribute(Attributes.POLL_INTERVAL)
+    let temp = this.hasAttribute(Attributes.POLL_INTERVAL)
       ? +(this.getAttribute(Attributes.POLL_INTERVAL) as string)
       : DEFAULT_POLL_INTERVAL;
+    if (temp < 15) {
+      console.warn('Poll interval must be at least 15 seconds, setting to default.');
+      temp = DEFAULT_POLL_INTERVAL;
+    }
+    return temp;
   }
 
   set pollInterval(value: number) {
@@ -212,8 +218,8 @@ class MuxViewerCountElement extends globalThis.HTMLElement {
   }
 }
 
-if (!globalThis.customElements.get('mux-viewer-count')) {
-  globalThis.customElements.define('mux-viewer-count', MuxViewerCountElement);
+if (!globalThis.customElements.get('mux-active-viewer-count')) {
+  globalThis.customElements.define('mux-active-viewer-count', MuxActiveViewerCountElement);
 }
 
-export default MuxViewerCountElement;
+export default MuxActiveViewerCountElement;
