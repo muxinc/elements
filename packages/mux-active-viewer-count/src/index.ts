@@ -133,8 +133,8 @@ class MuxActiveViewerCountElement extends globalThis.HTMLElement {
       ? +(this.getAttribute(Attributes.POLL_INTERVAL) as string)
       : DEFAULT_POLL_INTERVAL;
     if (temp < 15) {
-      console.warn('Poll interval must be at least 15 seconds, setting to default.');
-      temp = DEFAULT_POLL_INTERVAL;
+      console.warn('Poll interval must be at least 15 seconds, setting to 15.');
+      temp = 15;
     }
     return temp;
   }
