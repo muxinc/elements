@@ -1,15 +1,15 @@
 <p align="center">
-  <h1 align="center">&lt;mux-audio/&gt;</h1>
-  <a href="https://npmcharts.com/compare/@mux/mux-audio?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-audio.svg?sanitize=true" alt="Downloads"></a>
-    <a href="https://www.npmjs.com/package/@mux/mux-audio"><img src="https://img.shields.io/npm/v/@mux/mux-audio.svg?sanitize=true" alt="Version"></a>
-    <a href="https://www.npmjs.com/package/@mux/mux-audio"><img src="https://img.shields.io/npm/l/@mux/mux-audio.svg?sanitize=true" alt="License"></a>
+  <h1 align="center">&lt;mux-viewer-count/&gt;</h1>
+  <a href="https://npmcharts.com/compare/@mux/mux-viewer-count?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-viewer-count.svg?sanitize=true" alt="Downloads"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-viewer-count"><img src="https://img.shields.io/npm/v/@mux/mux-viewer-count.svg?sanitize=true" alt="Version"></a>
+    <a href="https://www.npmjs.com/package/@mux/mux-viewer-count"><img src="https://img.shields.io/npm/l/@mux/mux-viewer-count.svg?sanitize=true" alt="License"></a>
 </p>
 
 # Introduction
 
-`<mux-audio></mux-audio>` is a Mux-flavored HTML5 audio element.
+`<mux-viewer-count></mux-viewer-count>` is a Mux-flavored HTML5 viewer count element.
 
-If you are familiar with using `<audio />` + [Hls.js](https://github.com/video-dev/hls.js) in your application, then you'll feel right at home with this web component.
+This element shows the current number of viewers for the specified video.
 
 # Installation
 
@@ -18,25 +18,25 @@ If you're using `npm` or `yarn`, install that way:
 ## Package manager
 
 ```
-yarn add @mux/mux-audio
+yarn add @mux/mux-viewer-count
 ```
 
 or
 
 ```
-npm i @mux/mux-audio
+npm i @mux/mux-viewer-count
 ```
 
 Then, import the library into your application with either `import` or `require`:
 
 ```js
-import '@mux/mux-audio';
+import '@mux/mux-viewer-count';
 ```
 
 or
 
 ```js
-require('@mux/mux-audio');
+require('@mux/mux-viewer-count');
 ```
 
 ## CDN option
@@ -44,34 +44,20 @@ require('@mux/mux-audio');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@mux/mux-audio@0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-viewer-count@0"></script>
 ```
 
-If you are using ecmascript modules, you can also load the `mux-audio.mjs` file with `type=module`:
+If you are using ecmascript modules, you can also load the `mux-viewer-count.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-audio@0/dist/mux-audio.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-viewer-count@0/dist/mux-viewer-count.mjs"></script>
 ```
 
 ## Usage
 
-`<mux-audio>` has all the same features, benefits and options as `<mux-video>`. View the documentation for [`<mux-video>`](../mux-video) for details.
+`<mux-viewer-count>` has two attributes. The first is called `token`, and it should be a signed JavaScript Web Token (JWT)
+for which you want the viewer count. (For more information on creating a JWT for a particular video, see 
+https://docs.mux.com/guides/data/see-how-many-people-are-watching.
 
-### Advanced: Use with React+TypeScript
-
-Even though we don't (yet!) have our own `React` version of `<mux-audio>`, you can still use it in your `React` app. However, if you're also using TypeScript, make sure you add the following TypeScript definitions, since custom elements (like as `<mux-audio>`) will not be recognized as [Intrinsic Elements](https://www.typescriptlang.org/docs/handbook/jsx.html#intrinsic-elements):
-
-```typescript
-interface MuxAudioHTMLAttributes<T> extends React.AudioHTMLAttributes<T> {
-  debug?: boolean;
-  autoplay?: boolean;
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'mux-audio': React.DetailedHTMLProps<MuxAudioHTMLAttributes<HTMLAudioElement>, HTMLAudioElement>;
-    }
-  }
-}
-```
+The second attribute is called `pollInterval`. It specifies the number of seconds that the component should wait between
+requests to get the viewer count. It defaults to 20 seconds.

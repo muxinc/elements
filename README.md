@@ -22,6 +22,7 @@ Elements are written to make it easy to work in a variety of web frameworks. If 
 | [mux-player-react](packages/mux-player-react)     | A Mux-flavored React media player component   | React         | 1.x.x 🎉                |
 | [mux-uploader](packages/mux-uploader)             | A Mux-flavored HTML5 media uploader component | Web Component | Public Beta             |
 | [mux-uploader-react](packages/mux-uploader-react) | A Mux-flavored React media uploader component | React         | Public Beta             |
+| [mux-viewer-count](packages/mux-viewer-count)     | A Mux-flavored HTML5 viewer count component   | Web Component | Public Alpha            |
 
 # Contribution
 
