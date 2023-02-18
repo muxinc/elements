@@ -1,6 +1,21 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
 
+const windowErrorHandler = (e) => {
+  if (
+    e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+    e.message === 'ResizeObserver loop limit exceeded' ||
+    e.message === 'Script error.'
+  ) {
+    e.stopPropagation();
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  } else {
+    console.log('error', e);
+  }
+};
+window.addEventListener('error', windowErrorHandler);
+
 describe('<mux-player>', () => {
   it('has a Mux specific API', async function () {
     this.timeout(5000);
