@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.2...@mux/mux-player-react@1.8.0) (2023-02-15)
+
+
+### Features
+
+* add attribute max-resolution on mux-player and mux-video ([#581](https://github.com/muxinc/elements/issues/581)) ([1936c8e](https://github.com/muxinc/elements/commit/1936c8ecb47805ee75fd04ffee514b846043efc1))
+
+
+
+
+
+## [1.7.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.1...@mux/mux-player-react@1.7.2) (2023-02-14)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
 ## [1.7.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.0...@mux/mux-player-react@1.7.1) (2023-02-02)
 
 **Note:** Version bump only for package @mux/mux-player-react

@@ -125,6 +125,7 @@ export type MuxMediaPropTypes = {
   envKey: Options['data']['env_key'];
   debug: Options['debug'] & Hls['config']['debug'];
   metadata: Partial<Options['data']>;
+  maxResolution: string;
   customDomain: string;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   errorTranslator: Options['errorTranslator'];

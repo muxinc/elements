@@ -192,7 +192,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
     ></mux-player>`);
-    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -227,7 +227,7 @@ describe('<mux-player>', () => {
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
     ></mux-player>`);
-    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -424,7 +424,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
-    const mediaPosterImage = player.theme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(
@@ -441,6 +441,27 @@ describe('<mux-player>', () => {
       storyboardTrack.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/storyboard.vtt?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3NzcsImF1ZCI6InMiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.aVd0dsOJUVeQko3BWd9YEhL41Eytf_ZfaBeNzHSSUqU_gREa_jJEVTlRfuiE4g71cKJLSiVTKP7f-F7Txh6DlL8E2SkonfIPB2H0f_3DQxYLso2E8qI4zuJkyxKORbQFLAEB_vSE-2lMbrHXfdpQhv6SrVyu6di9ku0LpFpoyz-_7fVJICr8nhlsqOGt66AYcaa99TXoZ582FWzBaePmWw-WWKYsLvtNjLS9UoxbdVaBRwNylohvhh-i1Y9dNilyNooJ7O8Cj4GuMjeh1pCj0BOrGagxrWrswm3HjUVNUqFq5JCWnJCxgjjwiV4RLZg_4z7gkBXyX7H2-i1dKA3Cpw&format=webp'
     );
+  });
+
+  it('max-resolution is set as a prop and forwarded to the media element', async function () {
+    const player = await fixture(`<mux-player
+      max-resolution="720p"
+      stream-type="on-demand"
+      playback-id="r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA"
+    ></mux-player>`);
+    const muxVideo = player.media;
+
+    assert.equal(player.maxResolution, '720p');
+    assert.equal(
+      muxVideo.src,
+      'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8?redundant_streams=true&max_resolution=720p'
+    );
+
+    player.removeAttribute('max-resolution');
+    assert.equal(player.maxResolution, null);
+
+    player.maxResolution = '720p';
+    assert.equal(player.maxResolution, '720p');
   });
 
   describe('buffered behaviors', function () {
@@ -753,7 +774,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.notExists(seekToLiveEl);
   });
@@ -766,7 +787,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -779,7 +800,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     const mediaControllerEl = playerEl.mediaController;
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
     assert.exists(seekToLiveEl);
   });
@@ -801,7 +822,7 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
     playerEl.pause();
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
-    const seekToLiveEl = playerEl.theme.shadowRoot.querySelector('media-live-button');
+    const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     seekToLiveEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
@@ -822,7 +843,7 @@ describe('<mux-player> seek to live behaviors', function () {
     playerEl.pause();
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
 
-    const mcPlayEl = playerEl.theme.shadowRoot.querySelector('media-play-button');
+    const mcPlayEl = playerEl.mediaTheme.shadowRoot.querySelector('media-play-button');
     mcPlayEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
   });
