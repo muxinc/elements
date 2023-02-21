@@ -44,7 +44,7 @@ Here's a quick summary of how we use conventional commits in this repository:
 - Commit messages containing `BREAKING CHANGE` in the footer will notify CD that the release is minimally a `major` release.
 - All other conventional commits have no impact on the versioning.
 
-### First, prepare your local `elements` directory**
+### First, prepare your local `elements` directory
 
 It's critical to only release from a fresh copy of the `muxinc/elements` repo. There should be no divergence from what is published on the `main` branch on GitHub.
 
