@@ -11,7 +11,7 @@ export const subscribeViewerCount = (
   const signal = controller.signal;
   let timeoutId: number | undefined;
   let aborted = false;
-  const fetchViewerCountPoll: () => Promise<any> = async () => {
+  const fetchViewerCountPoll: () => Promise<any> = () => {
     // If the polling has been aborted (via an "unsubscribe()"),
     // we can simply bail on the recursion.
     if (aborted) return Promise.resolve();
@@ -42,7 +42,7 @@ export const subscribeViewerCount = (
         // the next fetch
         .then(() => {
           return new Promise((resolve) => {
-            timeoutId = setTimeout(async () => {
+            timeoutId = setTimeout(() => {
               resolve(undefined);
             }, pollInterval * 1000);
           });
