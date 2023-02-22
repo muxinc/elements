@@ -7,7 +7,7 @@
 
 # Introduction
 
-`<mux-uploader>` is web component for uploading files to Mux.
+`<mux-uploader>` is a web component for uploading video files to Mux.
 
 `<mux-uploader-drop>` is an optional supporting container-style web component for drag and drop. You can always configure your own drag and drop with `<mux-uploader>`.
 
@@ -46,13 +46,13 @@ require('@mux/mux-uploader');
 Alternatively, use the CDN hosted version of this package:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6"></script>
 ```
 
 If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` file with `type=module`:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.1/dist/mux-uploader.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6/dist/mux-uploader.mjs"></script>
 ```
 
 # Usage
