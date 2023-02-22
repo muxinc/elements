@@ -7,11 +7,11 @@
 
 # Introduction
 
-`<mux-uploader>` is a web component for uploading video files to Mux.
+`<mux-uploader>` is a web component that makes it easier to upload video files to Mux.
 
 `<mux-uploader-drop>` is an optional supporting container-style web component for drag and drop. You can always configure your own drag and drop with `<mux-uploader>`.
 
-If you are looking for a direct upload interface and a progress bar, you're in the right place.
+If you are looking for a direct upload interface for your application, you're in the right place.
 
 # Installation
 
@@ -55,11 +55,13 @@ If you are using ECMAScript modules, you can also load the `mux-uploader.mjs` fi
 <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-uploader@1.0.0-beta.6/dist/mux-uploader.mjs"></script>
 ```
 
-# Usage
+# How to use `mux-uploader`
 
-In these examples, you will replace the value of the `endpoint` property with the the response returned from [creating a Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload). Creating a direct upload happens server-side directly to the Mux API.
+When uploading a file directly to Mux, you must first generate a signed upload URL by making a server-side API call to Mux's [Create Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload) endpoint.
 
-The URL for a Direct Upload looks like `"https://storage.googleapis.com/video..."`.
+In a successful API response, you will receive a unique signed upload URL that can then be passed along to your client application and set as the `endpoint` property on a `mux-uploader` element. The URL for a Direct Upload looks like `"https://storage.googleapis.com/video..."`.
+
+> In the following examples, you will replace the value of the `endpoint` property with your unique direct upload URL.
 
 ## Quickstart
 
@@ -73,6 +75,31 @@ This will show:
 ```
 
 ![mux uploader with defaults](./screenshots/default-everything.gif)
+
+## Fetching the upload URL async
+
+At the time you render the `<mux-uploader>`, you may not have the direct upload URL yet. Instead, you might want to retrieve it async from your server after a user selects a file. You can do that by setting the `endpoint` property value to a custom function.
+
+```html
+<mux-uploader></mux-uploader>
+
+<script>
+  const muxUploader = document.querySelector('mux-uploader');
+  /*
+    Endpoint should be a function that returns a promise and resolves
+    with a string for the upload URL.
+  */
+  muxUploader.endpoint = function () {
+    /*
+      In this example, your server endpoint would return the upload URL
+      in the response body "https://storage.googleapis.com/video..."
+    */
+    return fetch('/your-server/api/create-upload').then((resp) => {
+      return resp.text();
+    });
+  };
+</script>
+```
 
 ## Customizing
 
@@ -123,33 +150,6 @@ By default, the progress bar color is black with a gray background, you can cust
 ```
 
 ![mux uploader with custom progress bar](./screenshots/custom-progress-bar.gif)
-
-## Fetching the upload URL async
-
-In the examples above, the `endpoint` attribute is an authenticated URL for a Mux [Direct Upload](https://docs.mux.com/api-reference/video#operation/create-direct-upload).
-
-At the time you render the `<mux-uploader>`, you may not have the direct upload URL yet, so it helps to fetch that async from your server after a user selects a file.
-
-```html
-<mux-uploader></mux-uploader>
-
-<script>
-  const muxUploader = document.querySelector('mux-uploader');
-  /*
-    Endpoint should be a function that returns a promise and resolves
-    with a string for the upload URL.
-  */
-  muxUploader.endpoint = function () {
-    /*
-      In this example, the server endpoint will return the upload URL
-      in the response body "https://storage.googleapis.com/video..."
-    */
-    return fetch('/your-server/api/create-upload').then((resp) => {
-      return resp.text();
-    });
-  };
-</script>
-```
 
 ## Drag and Drop
 
@@ -218,11 +218,23 @@ You can implement your own drag and drop completely separate from `<mux-uploader
 </script>
 ```
 
-## Handling events
+## Listening for events
+
+`mux-uploader` uses custom events to share details about how the upload is progressing.
+
+You can listen for the `progress` event to receive details on how far along your file upload is.
+
+```html
+  const muxUploader = document.querySelector('mux-uploader');
+
+  muxUploader.addEventListener('progress', function (e) {
+    console.log(`My upload is ${e.detail}% complete!`)
+  });
+```
 
 When the upload is complete, you'll see 100% on the progress bar and the `success` event will fire.
 
-If an error happens during the upload, `uploaderror` will fire.
+If an error occurs during the upload, `uploaderror` will fire.
 
 ```html
 <mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params"></mux-uploader>
