@@ -40,8 +40,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="${props.theme ?? muxTemplate.content.children[0]}"
-    class="${props.secondaryColor ? 'two-tone' : false}"
+    template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
     stream-type="${isLiveOrDVR(props) ? 'live' : 'on-demand'}"
     target-live-window="${isDVR(props) ? 1 : false}"
     hotkeys="${getHotKeys(props) || false}"
@@ -84,12 +83,20 @@ export const content = (props: MuxTemplateProps) => html`
       src="${!!props.src
         ? props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
+        ? getSrcFromPlaybackId(props.playbackId, {
+            maxResolution: props.maxResolution,
+            domain: props.customDomain,
+            token: props.tokens.playback,
+          })
         : false}"
       cast-src="${!!props.src
         ? props.src
         : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, { domain: props.customDomain, token: props.tokens.playback })
+        ? getSrcFromPlaybackId(props.playbackId, {
+            maxResolution: props.maxResolution,
+            domain: props.customDomain,
+            token: props.tokens.playback,
+          })
         : false}"
       cast-stream-type="${isLive(props) ? 'live' : false}"
       exportparts="video"

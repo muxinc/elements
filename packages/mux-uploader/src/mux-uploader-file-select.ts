@@ -2,39 +2,47 @@ import { globalThis, document } from 'shared-polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
 
+export const fileSelectFragment = /*html*/ `
+  <style>
+  #file-select {
+    cursor: pointer;
+    line-height: 16px;
+    background: var(--button-background-color, #fff);
+    border: var(--button-border, 1px solid #000);
+    color: #000000;
+    padding: var(--button-padding, 16px 24px);
+    border-radius: var(--button-border-radius, 4px);
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-size: inherit;
+    position: relative;
+  }
+
+  #file-select:hover {
+    color: var(--button-hover-text, #fff);
+    background: var(--button-hover-background, #404040);
+  }
+
+  #file-select:active {
+    color: var(--button-active-text, #fff);
+    background: var(--button-active-background, #000);
+  }
+  </style>
+
+  <button id="file-select" type="button">Upload video</button>
+`;
+
 const template = document.createElement('template');
 
-template.innerHTML = `
-<style>
-button {
-  cursor: pointer;
-  line-height: 16px;
-  background: var(--button-background-color, #fff);
-  border: var(--button-border, 1px solid #000000);
-  color: #000000;
-  padding: var(--button-padding, 16px 24px);
-  border-radius: var(--button-border-radius, 4px);
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  font-size: inherit;
-  position: relative;
-}
+template.innerHTML = /*html*/ `
+  <style>
+    :host { display: inline-block; }
+  </style>
 
-button:hover {
-  color: var(--button-hover-text, #fff);
-  background: var(--button-hover-background, #404040);
-}
-
-button:active {
-  color: var(--button-active-text, #fff);
-  background: var(--button-active-background, #000000);
-}
-</style>
-
-<slot>
-<button type="button">Upload video</button>
-</slot>
+  <slot>
+    ${fileSelectFragment}
+  </slot>
 `;
 
 class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
@@ -58,8 +66,9 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
 
     this.shadowRoot?.querySelector('slot')?.addEventListener('slotchange', (e) => {
       const slot = e.currentTarget as HTMLSlotElement;
-
-      this.filePickerEl = slot.assignedElements({ flatten: true })[0] as HTMLButtonElement;
+      this.filePickerEl = slot
+        .assignedElements({ flatten: true })
+        .filter((el) => !['STYLE'].includes(el.nodeName))[0] as HTMLButtonElement;
     });
   }
 

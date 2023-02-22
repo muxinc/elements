@@ -65,6 +65,7 @@ export type MuxPlayerProps = {
   playerSoftwareName?: string;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
+  maxResolution?: string;
   metadataVideoId?: string;
   metadataVideoTitle?: string;
   metadataViewerUserId?: string;
@@ -76,6 +77,7 @@ export type MuxPlayerProps = {
   thumbnailTime?: number;
   title?: string;
   tokens?: Tokens;
+  theme?: string;
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;

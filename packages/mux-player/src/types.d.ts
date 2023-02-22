@@ -11,7 +11,7 @@ export type MuxPlayerProps = Partial<MuxVideoElement> & {
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   hasSrc: boolean;
   audio: boolean;
-  theme?: string;
+  themeTemplate?: string | HTMLTemplateElement;
   playerSize: string;
   showLoading: boolean;
   thumbnailTime: number;
@@ -27,6 +27,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   onInitFocusDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
   inLiveWindow: boolean;
+  maxResolution?: string;
   tokens: {
     playback?: string;
     thumbnail?: string;

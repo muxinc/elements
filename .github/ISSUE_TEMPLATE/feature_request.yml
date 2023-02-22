@@ -1,0 +1,54 @@
+name: 💎 Feature Request
+description: Request a new feature or enhancement
+labels: ['enhancement']
+title: 'Feature Request: '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file an enhancement report report! Please fill this template out as completely as possible.
+        * If you are not a new feature or enhancement, but want to ask a general question, use [discussions](https://github.com/muxinc/elements/discussions) instead.
+        * Check the [docs](https://docs.mux.com/guides/player?utm_source=github-mux-player).
+        * Please check to see if there's an existing issue and replying there instead.
+        * Please give as much details as you can.
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for the bug you encountered.
+      options:
+        - label: I have searched the existing issues
+          required: true
+  - type: dropdown
+    id: elements
+    attributes:
+      label: Which Mux Elements/Packages does this apply to? Select all that apply
+      multiple: true
+      options:
+        - mux-video
+        - mux-video-react
+        - mux-audio
+        - mux-audio-react
+        - mux-player
+        - mux-player-react
+        - mux-uploader
+        - mux-uploader-react
+        - playback-core
+        - common
+        - new element
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please provide as much information about the feature or enhancement as
+        possible. Include images or screenshots if needed.
+    validations:
+      required: true
+  - type: textarea
+    id: expectedbehavior
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true

@@ -84,6 +84,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   defaultShowRemainingTime: undefined,
   defaultHiddenCaptions: undefined,
   primaryColor: undefined,
+  maxResolution: undefined,
   secondaryColor: undefined,
   thumbnailTime: undefined,
   title: undefined,
@@ -350,6 +351,7 @@ function MuxPlayerPage({ location }: Props) {
         volume={state.volume}
         paused={state.paused}
         autoPlay={state.autoPlay}
+        maxResolution={state.maxResolution}
         preload={state.preload}
         streamType={state.streamType}
         audio={state.audio}
@@ -633,6 +635,12 @@ function MuxPlayerPage({ location }: Props) {
             genericOnChange({ hotkeys: hotkeys.join(' ') });
           }}
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
+        />
+        <EnumRenderer
+          value={state.maxResolution}
+          name="maxResolution"
+          onChange={genericOnChange}
+          values={['720p']}
         />
       </div>
 

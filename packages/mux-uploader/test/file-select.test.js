@@ -2,7 +2,20 @@ import { fixture, assert, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-uploader-file-select>', () => {
-  it('slots as expected', async function () {
+  it('renders default template', async function () {
+    const uploader = await fixture(`
+    <mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params">
+    </mux-uploader>`);
+
+    const el = uploader.shadowRoot.querySelector('mux-uploader-file-select');
+    const slot = el.querySelector('slot');
+    const button = slot.querySelector('button');
+
+    assert.equal(slot.getAttribute('name'), 'file-select', 'slot name is reflected');
+    assert.equal(button.innerText, 'Upload video', 'slot content is reflected');
+  });
+
+  it('slots custom content as expected', async function () {
     const uploader = await fixture(`
     <mux-uploader
       endpoint="https://my-authenticated-url/storage?your-url-params"
