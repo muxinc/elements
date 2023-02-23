@@ -865,7 +865,10 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
-describe('<mux-player> should move cues up', function () {
+const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
+
+// skip these cue shifting tests as its disabled in Safari
+(isSafari ? describe.skip : describe)('<mux-player> should move cues up', function () {
   this.timeout(12000);
 
   it('when user the user active', async function () {
