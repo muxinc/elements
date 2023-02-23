@@ -1154,10 +1154,9 @@ describe('Feature: cuePoints', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-    await aTimeout(50);
     await muxPlayerEl.addCuePoints(cuePoints);
-    await aTimeout(50);
-    assert.deepEqual(muxPlayerEl.cuePoints, cuePoints); // confirm set to ensure valid test
+    await aTimeout(100);
+    assert.deepEqual(muxPlayerEl.cuePoints, cuePoints, 'cue points were added as expected');
     muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
     await oneEvent(muxPlayerEl, 'emptied');
     // Safari needs an extra tick for the cues to clear
