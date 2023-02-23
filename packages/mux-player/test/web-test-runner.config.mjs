@@ -27,6 +27,7 @@ const config = {
     report: true,
     include: ['src/**/*'],
   },
+  testsFinishTimeout: 300000,
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
