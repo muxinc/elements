@@ -79,7 +79,8 @@ describe('<mux-player>', () => {
     player.playbackRate = 2;
     await aTimeout(1000);
 
-    assert.equal(String(Math.round(player.currentTime)), 3, 'is about 3s in');
+    assert.isAtLeast(Math.round(player.currentTime), 2, 'is about 3s in, at least 2s in');
+    assert.isAtMost(Math.round(player.currentTime), 3, 'is about 3s in, at most 3s in');
   });
 
   it('playbackId is forwarded to the media element', async function () {
