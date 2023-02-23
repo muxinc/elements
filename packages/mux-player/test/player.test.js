@@ -736,6 +736,12 @@ describe('<mux-player> playbackId transitions', () => {
   });
 
   it('loads the new playbackId and clears dialog state', async function () {
+    const oldLogError = console.error;
+    const oldLogWarn = console.warn;
+
+    console.error = () => {};
+    console.warn = () => {};
+
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -755,9 +761,18 @@ describe('<mux-player> playbackId transitions', () => {
     player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';
 
     assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+
+    console.error = oldLogError;
+    console.warn = oldLogWarn;
   });
 
   it('loads the new src and clears dialog state', async function () {
+    const oldLogError = console.error;
+    const oldLogWarn = console.warn;
+
+    console.error = () => {};
+    console.warn = () => {};
+
     const player = await fixture(`<mux-player
       src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
       stream-type="on-demand"
@@ -777,6 +792,9 @@ describe('<mux-player> playbackId transitions', () => {
     player.src = 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8';
 
     assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+
+    console.error = oldLogError;
+    console.warn = oldLogWarn;
   });
 });
 
@@ -854,7 +872,9 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    await playerEl.play();
+    try {
+      await playerEl.play();
+    } catch(_e) {}
 
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow', { timeout: 11000 });
