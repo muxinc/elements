@@ -60,6 +60,8 @@ jobs:
       # esbuild requires --ignore-scripts to NOT be added here.
       - run: yarn install --frozen-lockfile
       - run: yarn clean
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
       # run yarn and pass through `-- --all` to turborepo
       - run: yarn test -- -- --all
       - name: Upload coverage to Codecov
