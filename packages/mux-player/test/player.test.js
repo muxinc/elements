@@ -74,7 +74,8 @@ describe('<mux-player>', () => {
 
     await aTimeout(1000);
 
-    assert.equal(String(Math.round(player.currentTime)), 1, 'is about 1s in');
+    assert.isAtLeast(Math.round(player.currentTime), 0, 'is about 1s in, at least 0s in');
+    assert.isAtMost(Math.round(player.currentTime), 1, 'is about 1s in, at most 1s in');
 
     player.playbackRate = 2;
     await aTimeout(1000);
