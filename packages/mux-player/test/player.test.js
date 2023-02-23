@@ -95,6 +95,8 @@ describe('<mux-player>', () => {
       muted
     ></mux-player>`);
 
+    await aTimeout(100);
+
     assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
   });
 
