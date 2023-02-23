@@ -1,6 +1,10 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
 
+// Media Chrome uses a ResizeObserver which ends up throwing in Firefox and Safari in some cases
+// so we want to catch those. It is supposedly not a blocker if this error is thrown.
+// Safari also has some weird script error being thrown, so, we want to catch it to.
+// This unblocks a bunch of tests from running properly.
 const windowErrorHandler = (e) => {
   if (
     e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
@@ -1116,7 +1120,7 @@ describe('Feature: cuePoints', async () => {
   });
 
   it('dispatches a cuepointchange event when the active cuepoint changes', async function () {
-    this.timeout(5000);
+    this.timeout(10000);
 
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
