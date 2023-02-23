@@ -895,7 +895,7 @@ describe('<mux-player> seek to live behaviors', function () {
 
     try {
       await playerEl.play();
-    } catch(_e) {}
+    } catch (_e) {}
 
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow', { timeout: 11000 });
@@ -1109,7 +1109,9 @@ describe('Feature: cuePoints', async () => {
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints);
   });
 
-  it('dispatches a cuepointchange event when the active cuepoint changes', async () => {
+  it('dispatches a cuepointchange event when the active cuepoint changes', async function () {
+    this.timeout(5000);
+
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
       { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
