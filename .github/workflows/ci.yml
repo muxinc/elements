@@ -60,7 +60,8 @@ jobs:
       # esbuild requires --ignore-scripts to NOT be added here.
       - run: yarn install --frozen-lockfile
       - run: yarn clean
-      - run: yarn test
+      # run yarn and pass through `-- --all` to turborepo
+      - run: yarn test -- -- --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
