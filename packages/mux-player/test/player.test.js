@@ -824,6 +824,7 @@ describe('<mux-player> seek to live behaviors', function () {
 
   it('should seek to live when seek to live button pressed', async function () {
     this.timeout(15000);
+    console.log('THIS IS A TEST 1');
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
@@ -831,17 +832,32 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
+    console.log('THIS IS A TEST 2');
+
     // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
     try {
       await playerEl.play();
-    } catch (_e) {}
+    } catch (_e) {
+      console.log(_e);
+
+      // await aTimeout(1);
+      // await playerEl.play();
+    }
+    console.log('THIS IS A TEST 3');
     await waitUntil(() => !playerEl.paused, 'play() failed');
+    console.log('THIS IS A TEST 4');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow');
+    console.log('THIS IS A TEST 5');
     playerEl.pause();
+    console.log('THIS IS A TEST 6');
     await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
+    console.log('THIS IS A TEST 7');
     const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
+    console.log('THIS IS A TEST 8');
     seekToLiveEl.click();
+    console.log('THIS IS A TEST 9');
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
+    console.log('THIS IS A TEST 10');
   });
 
   it('should seek to live when play button is pressed', async function () {
