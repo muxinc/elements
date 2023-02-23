@@ -1098,9 +1098,12 @@ describe('Feature: cuePoints', async () => {
     ></mux-player>`);
     await aTimeout(50);
     await muxPlayerEl.addCuePoints(cuePoints);
+    await aTimeout(50);
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints); // confirm set to ensure valid test
     muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
     await oneEvent(muxPlayerEl, 'emptied');
+    // Safari needs an extra tick for the cues to clear
+    await aTimeout(50);
     assert.equal(muxPlayerEl.cuePoints.length, 0, 'cuePoints should be empty');
   });
 });
