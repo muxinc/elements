@@ -199,8 +199,14 @@ describe('<mux-player>', () => {
     const muxVideo = player.media;
     const defaultPreload = document.createElement('video').preload;
 
-    assert.equal(player.preload, defaultPreload, `player default preload is ${defaultPreload}`);
-    assert.equal(muxVideo.preload, defaultPreload, `muxVideo default preload is ${defaultPreload}`);
+    // firefox returns '' by default, but we return auto in that case
+    if (defaultPreload === '') {
+      assert.equal(player.preload, 'auto', 'player default preload auto');
+      assert.equal(muxVideo.preload, 'auto', 'player default preload auto');
+    } else {
+      assert.equal(player.preload, defaultPreload, `player default preload is ${defaultPreload}`);
+      assert.equal(muxVideo.preload, defaultPreload, `muxVideo default preload is ${defaultPreload}`);
+    }
 
     player.setAttribute('preload', '');
     assert.equal(player.preload, 'auto', 'player preload="" maps to auto');
