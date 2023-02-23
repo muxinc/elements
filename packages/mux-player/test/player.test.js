@@ -74,8 +74,7 @@ describe('<mux-player>', () => {
 
     await aTimeout(1000);
 
-    assert.isAtLeast(Math.round(player.currentTime), 0, 'is about 1s in, at least 0s in');
-    assert.isAtMost(Math.round(player.currentTime), 1, 'is about 1s in, at most 1s in');
+    assert.equal(String(Math.round(player.currentTime)), 1, 'is about 1s in');
 
     player.playbackRate = 2;
     await aTimeout(1000);
@@ -91,8 +90,6 @@ describe('<mux-player>', () => {
       muted
     ></mux-player>`);
 
-    await aTimeout(1);
-
     assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
   });
 
@@ -101,8 +98,6 @@ describe('<mux-player>', () => {
       autoplay
     ></mux-player>`);
     const muxVideo = player.media;
-
-    await aTimeout(1);
 
     assert.equal(player.autoplay, true);
     assert.equal(muxVideo.autoplay, true);
