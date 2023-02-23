@@ -32,7 +32,7 @@ const config = {
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
   Object.assign(config, {
-    concurrentBrowsers: 1,
+    concurrentBrowsers: 3,
     browsers: [
       playwrightLauncher({
         product: 'chromium',
