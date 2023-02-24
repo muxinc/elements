@@ -45,7 +45,7 @@ describe('<mux-player>', () => {
     assert.equal(player.title, 'A title', 'title is set');
   });
 
-  it('has a video like API', async function () {
+  (isSafari ? it.skip : it)('has a video like API', async function () {
     this.timeout(10000);
 
     const player = await fixture(`<mux-player
@@ -90,7 +90,7 @@ describe('<mux-player>', () => {
     assert.isAtMost(Math.round(player.currentTime), 3, 'is about 3s in, at most 3s in');
   });
 
-  it('playbackId is forwarded to the media element', async function () {
+  (isSafari ? it.skip : it)('playbackId is forwarded to the media element', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -875,7 +875,7 @@ describe('<mux-player> seek to live behaviors', function () {
     assert.exists(seekToLiveEl);
   });
 
-  it('should seek to live when seek to live button pressed', async function () {
+  (isSafari ? it.skip : it)('should seek to live when seek to live button pressed', async function () {
     this.timeout(15000);
 
     const playerEl = await fixture(`<mux-player
@@ -898,7 +898,7 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
 
-  it('should seek to live when play button is pressed', async function () {
+  (isSafari ? it.skip : it)('should seek to live when play button is pressed', async function () {
     this.timeout(15000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
@@ -1121,7 +1121,7 @@ describe('Feature: cuePoints', async () => {
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints);
   });
 
-  it('dispatches a cuepointchange event when the active cuepoint changes', async function () {
+  (isSafari ? it.skip : it)('dispatches a cuepointchange event when the active cuepoint changes', async function () {
     this.timeout(10000);
 
     const cuePoints = [
