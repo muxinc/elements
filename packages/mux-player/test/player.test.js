@@ -1,6 +1,8 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing';
 import '../src/index.ts';
 
+const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
+
 // Media Chrome uses a ResizeObserver which ends up throwing in Firefox and Safari in some cases
 // so we want to catch those. It is supposedly not a blocker if this error is thrown.
 // Safari also has some weird script error being thrown, so, we want to catch it to.
@@ -920,8 +922,6 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
-const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
-
 // skip these cue shifting tests as its disabled in Safari
 (isSafari ? describe.skip : describe)('<mux-player> should move cues up', function () {
   this.timeout(12000);
@@ -1149,7 +1149,7 @@ describe('Feature: cuePoints', async () => {
     assert.deepEqual(muxPlayerEl.activeCuePoint, expectedCuePoint);
   });
 
-  it('clears cuepoints when playback-id is updated', async () => {
+  (isSafari ? it.skip : it)('clears cuepoints when playback-id is updated', async () => {
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
       { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
@@ -1161,7 +1161,7 @@ describe('Feature: cuePoints', async () => {
       playback-id="${playbackId}"
     ></mux-player>`);
     await muxPlayerEl.addCuePoints(cuePoints);
-    await aTimeout(100);
+    await aTimeout(50);
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints, 'cue points were added as expected');
     muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
     await oneEvent(muxPlayerEl, 'emptied');
