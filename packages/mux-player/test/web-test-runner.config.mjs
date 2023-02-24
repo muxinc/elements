@@ -1,7 +1,8 @@
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { importMapsPlugin } from '@web/dev-server-import-maps';
+import { playwrightLauncher } from '@web/test-runner-playwright';
 
-export default {
+const config = {
   nodeResolve: true,
   plugins: [
     importMapsPlugin({
@@ -26,4 +27,23 @@ export default {
     report: true,
     include: ['src/**/*'],
   },
+  testsFinishTimeout: 300000,
 };
+
+if (process.argv.some((arg) => arg.includes('--all'))) {
+  Object.assign(config, {
+    concurrentBrowsers: 3,
+    browsers: [
+      playwrightLauncher({
+        product: 'chromium',
+        launchOptions: {
+          channel: 'chrome',
+        },
+      }),
+      playwrightLauncher({ product: 'firefox' }),
+      playwrightLauncher({ product: 'webkit' }),
+    ],
+  });
+}
+
+export default config;
