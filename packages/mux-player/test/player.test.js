@@ -387,7 +387,7 @@ describe('<mux-player>', () => {
     assert(nativeVideo.defaultMuted, 'nativeVideo.defaultMuted is true');
   });
 
-  (isSafari ? it.skip : it)('volume attribute behaves like expected', async function () {
+  it('volume attribute behaves like expected', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -399,15 +399,15 @@ describe('<mux-player>', () => {
     const muxVideo = player.media;
     const nativeVideo = muxVideo.shadowRoot.querySelector('video');
 
-    assert.equal(player.volume, 0.4, 'player.volume is 0.4');
-    assert.equal(muxVideo.volume, 0.4, 'muxVideo.volume is 0.4');
-    assert.equal(nativeVideo.volume, 0.4, 'nativeVideo.volume is 0.4');
+    assert.equal(player.volume.toFixed(1), '0.4', 'player.volume is 0.4');
+    assert.equal(muxVideo.volume.toFixed(1), '0.4', 'muxVideo.volume is 0.4');
+    assert.equal(nativeVideo.volume.toFixed(1), '0.4', 'nativeVideo.volume is 0.4');
 
     player.setAttribute('volume', '0.9');
 
-    assert.equal(player.volume, 0.9, 'player.volume is 0.9');
-    assert.equal(muxVideo.volume, 0.9, 'muxVideo.volume is 0.9');
-    assert.equal(nativeVideo.volume, 0.9, 'nativeVideo.volume is 0.9');
+    assert.equal(player.volume.toFixed(1), '0.9', 'player.volume is 0.9');
+    assert.equal(muxVideo.volume.toFixed(1), '0.9', 'muxVideo.volume is 0.9');
+    assert.equal(nativeVideo.volume.toFixed(1), '0.9', 'nativeVideo.volume is 0.9');
   });
 
   it('playbackrate attribute behaves like expected', async function () {
