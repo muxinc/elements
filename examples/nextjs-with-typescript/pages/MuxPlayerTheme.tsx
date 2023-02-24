@@ -2,7 +2,7 @@ import Link from "next/link";
 import Head from 'next/head';
 import { useRef, useState } from "react";
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
-import "media-chrome/dist/themes/youtube";
+import "media-chrome/dist/themes/media-theme-youtube";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
