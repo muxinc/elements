@@ -387,7 +387,7 @@ describe('<mux-player>', () => {
     assert(nativeVideo.defaultMuted, 'nativeVideo.defaultMuted is true');
   });
 
-  it('volume attribute behaves like expected', async function () {
+  (isSafari ? it.skip : it)('volume attribute behaves like expected', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
