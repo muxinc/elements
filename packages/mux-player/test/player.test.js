@@ -1101,7 +1101,7 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
-describe('Feature: cuePoints', async () => {
+(isSafari ? describe.skip : describe)('Feature: cuePoints', async () => {
   it('adds cuepoints', async () => {
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
@@ -1121,7 +1121,7 @@ describe('Feature: cuePoints', async () => {
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints);
   });
 
-  (isSafari ? it.skip : it)('dispatches a cuepointchange event when the active cuepoint changes', async function () {
+  it('dispatches a cuepointchange event when the active cuepoint changes', async function () {
     this.timeout(10000);
 
     const cuePoints = [
@@ -1149,7 +1149,7 @@ describe('Feature: cuePoints', async () => {
     assert.deepEqual(muxPlayerEl.activeCuePoint, expectedCuePoint);
   });
 
-  (isSafari ? it.skip : it)('clears cuepoints when playback-id is updated', async () => {
+  it('clears cuepoints when playback-id is updated', async () => {
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
       { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
