@@ -2,6 +2,7 @@ import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
+import "@mux/mux-player/themes/micro";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import type MuxPlayerElement from "@mux/mux-player";
@@ -101,6 +102,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   playbackId: undefined,
   streamType: undefined,
   storyboardSrc: undefined,
+  theme: undefined,
 });
 
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
@@ -325,6 +327,7 @@ function MuxPlayerPage({ location }: Props) {
       <MuxPlayer
         ref={mediaElRef}
         style={stylesState}
+        theme={state.theme}
         envKey={state.envKey}
         metadata={state.metadata}
         title={state.title}
@@ -439,6 +442,12 @@ function MuxPlayerPage({ location }: Props) {
           value={state.audio}
           name="audio"
           onChange={genericOnChange}
+        />
+        <EnumMultiSelectRenderer
+          value={state.theme}
+          name="theme"
+          onChange={genericOnChange}
+          values={['default', 'micro']}
         />
         <TextRenderer
           value={state.envKey}
