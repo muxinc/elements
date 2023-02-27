@@ -293,6 +293,11 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     this.#setUpCaptionsButton();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
+    // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
+    // template details get updated appropriately (e.g. thumbnails track) (CJP)
+    this.media?.addEventListener('streamtypechange', () => {
+      this.#render();
+    });
   }
 
   #setupCSSProperties() {
@@ -840,20 +845,22 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * we aren't an audio player and the stream-type isn't live.
    */
   get storyboard() {
-    if (!this.audio && (!this.streamType || ![StreamTypes.LIVE].includes(this.streamType as any))) {
-      // only infer from playbackId if not set on storyboardSrc and no token
-      if (this.storyboardSrc && !this.tokens.storyboard) {
-        return this.storyboardSrc;
-      }
-      if (this.playbackId) {
-        return getStoryboardURLFromPlaybackId(this.playbackId, {
-          domain: this.customDomain,
-          token: this.tokens.storyboard,
-        });
-      }
+    // If the storyboardSrc has been explicitly set, assume it should be used
+    if (this.storyboardSrc && !this.tokens.storyboard) return this.storyboardSrc;
+    if (
+      // NOTE: Some audio use cases may have a storyboard (e.g. it's an audio+video stream being played *as* audio)
+      // Consider supporting cases (CJP)
+      this.audio ||
+      !this.playbackId ||
+      !this.streamType ||
+      [StreamTypes.LIVE, StreamTypes.UNKNOWN].includes(this.streamType as any)
+    ) {
+      return undefined;
     }
-
-    return;
+    return getStoryboardURLFromPlaybackId(this.playbackId, {
+      domain: this.customDomain,
+      token: this.tokens.storyboard,
+    });
   }
 
   /**
@@ -1192,9 +1199,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Get stream type.
    */
   get streamType() {
-    return getVideoAttribute(this, MuxVideoAttributes.STREAM_TYPE);
+    return this.media?.streamType;
   }
 
+  /** @TODO (re)implement streamType setter (CJP) */
   /**
    * Set stream type.
    */
