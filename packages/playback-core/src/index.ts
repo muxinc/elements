@@ -454,9 +454,6 @@ export const loadMedia = (
         const liveEdgeStartOffset = lowLatency ? data.details.partTarget * 2 : data.details.targetduration * 3;
         (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
       }
-      // mediaEl.dispatchEvent(
-      //   new CustomEvent('liveedgestartchange', { composed: true, bubbles: true, detail: getLiveEdgeStart(mediaEl) })
-      // );
     });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
