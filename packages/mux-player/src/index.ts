@@ -624,21 +624,23 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         }
 
         if (!this.streamType) {
-          logger.devlog({
-            file: 'invalid-stream-type.md',
-            message: String(
-              i18n(
-                `No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
-              )
-            ),
-          });
+          /** @TODO Determine if logs still necessary (maybe different conditions) (CJP) */
+          // logger.devlog({
+          //   file: 'invalid-stream-type.md',
+          //   message: String(
+          //     i18n(
+          //       `No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
+          //     )
+          //   ),
+          // });
         } else if (this.streamType != null && !streamTypeValues.includes(this.streamType as any)) {
-          logger.devlog({
-            file: 'invalid-stream-type.md',
-            message: i18n(
-              `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
-            ).format({ streamType: this.streamType }),
-          });
+          /** @TODO Determine if logs still necessary (maybe different conditions) (CJP) */
+          // logger.devlog({
+          //   file: 'invalid-stream-type.md',
+          //   message: i18n(
+          //     `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
+          //   ).format({ streamType: this.streamType }),
+          // });
         }
         break;
       }
