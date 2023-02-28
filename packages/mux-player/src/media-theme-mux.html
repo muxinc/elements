@@ -469,7 +469,7 @@
   </template>
 
   <media-controller
-    default-stream-type="on-demand"
+    default-stream-type="{{defaultStreamType ?? 'on-demand'}}"
     breakpoints="sm:300 md:700"
     gestures-disabled="{{disabled}}"
     hotkeys="{{hotkeys}}"

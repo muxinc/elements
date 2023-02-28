@@ -5,7 +5,7 @@ import cssStr from './styles.css';
 // @ts-ignore
 import muxTheme from './media-theme-mux.html';
 import './dialog';
-import { getSrcFromPlaybackId } from './helpers';
+import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
 
@@ -45,8 +45,8 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
+    default-stream-type="${props.defaultStreamType}"
     class="${props.secondaryColor ? 'two-tone' : false}"
-    target-live-window="${isDVR(props) ? 1 : false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
@@ -66,6 +66,8 @@ export const content = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
+      target-live-window="${props.targetLiveWindow ?? false}"
+      stream-type="${getStreamTypeFromAttr(props.streamType) ?? false}"
       crossorigin="${props.crossOrigin ?? ''}"
       playsinline
       autoplay="${props.autoplay ?? false}"

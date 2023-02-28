@@ -52,7 +52,7 @@ const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
 const muxMediaState: WeakMap<
   HTMLMediaElement,
-  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: Number }
+  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number }
 > = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';

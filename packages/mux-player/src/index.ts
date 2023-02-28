@@ -22,6 +22,7 @@ import {
   AttributeTokenList,
   getPosterURLFromPlaybackId,
   getStoryboardURLFromPlaybackId,
+  getStreamTypeFromAttr,
 } from './helpers';
 import { template } from './template';
 import { render } from './html';
@@ -64,6 +65,8 @@ const PlayerAttributes = {
   TITLE: 'title',
   PLACEHOLDER: 'placeholder',
   THEME: 'theme',
+  DEFAULT_STREAM_TYPE: 'default-stream-type',
+  TARGET_LIVE_WINDOW: 'target-live-window',
 };
 
 const ThemeAttributeNames = [
@@ -122,7 +125,9 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     startTime: el.startTime,
     preferPlayback: el.preferPlayback,
     audio: el.audio,
-    streamType: el.streamType,
+    defaultStreamType: el.defaultStreamType,
+    targetLiveWindow: el.getAttribute(MuxVideoAttributes.TARGET_LIVE_WINDOW),
+    streamType: getStreamTypeFromAttr(el.getAttribute(MuxVideoAttributes.STREAM_TYPE)),
     primaryColor: el.primaryColor,
     secondaryColor: el.secondaryColor,
     forwardSeekOffset: el.forwardSeekOffset,
@@ -627,27 +632,31 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
             })
           );
         }
-
-        if (!this.streamType) {
-          /** @TODO Determine if logs still necessary (maybe different conditions) (CJP) */
-          // logger.devlog({
-          //   file: 'invalid-stream-type.md',
-          //   message: String(
-          //     i18n(
-          //       `No stream-type value supplied. Defaulting to \`on-demand\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
-          //     )
-          //   ),
-          // });
-        } else if (this.streamType != null && !streamTypeValues.includes(this.streamType as any)) {
-          /** @TODO Determine if logs still necessary (maybe different conditions) (CJP) */
+        break;
+      }
+      case MuxVideoAttributes.STREAM_TYPE: {
+        /** @TODO Decide if we should also set liveEdgeOffset based on explicit streamType/stream-type set (CJP) */
+        if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(newValue as any)) {
+          const streamType = newValue as ValueOf<StreamTypes>;
+          this.defaultStreamType = streamType;
+          this.targetLiveWindow = streamType === StreamTypes.LIVE ? 0 : Number.NaN;
+        } else if (newValue) {
+          /** @TODO Add links to relevant docs and/or add new markdown page (CJP) */
           // logger.devlog({
           //   file: 'invalid-stream-type.md',
           //   message: i18n(
           //     `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
           //   ).format({ streamType: this.streamType }),
           // });
+          logger.warn(`stream-type ${newValue} is deprecated`);
+          if (newValue.includes('live')) {
+            const streamType = StreamTypes.LIVE;
+            this.defaultStreamType = streamType;
+            if (newValue.includes('dvr')) {
+              this.targetLiveWindow = Number.POSITIVE_INFINITY;
+            }
+          }
         }
-        break;
       }
     }
 
@@ -1199,15 +1208,48 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Get stream type.
    */
   get streamType() {
-    return this.media?.streamType;
+    if (this.hasAttribute(MuxVideoAttributes.STREAM_TYPE)) {
+      return this.getAttribute(MuxVideoAttributes.STREAM_TYPE);
+    }
+    return this.media?.streamType ?? StreamTypes.UNKNOWN;
   }
 
-  /** @TODO (re)implement streamType setter (CJP) */
   /**
    * Set stream type.
    */
   set streamType(val) {
     this.setAttribute(MuxVideoAttributes.STREAM_TYPE, `${val}`);
+  }
+
+  get defaultStreamType() {
+    return (this.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>) ?? StreamTypes.ON_DEMAND;
+  }
+
+  set defaultStreamType(val: ValueOf<StreamTypes> | undefined) {
+    if (val) {
+      this.setAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE, val);
+    } else {
+      this.removeAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE);
+    }
+  }
+
+  get targetLiveWindow() {
+    // Allow overriding inferred `targetLiveWindow`
+    if (this.hasAttribute(PlayerAttributes.TARGET_LIVE_WINDOW)) {
+      return +(this.getAttribute(PlayerAttributes.TARGET_LIVE_WINDOW) as string) as number;
+    }
+    return this.media?.targetLiveWindow ?? Number.NaN;
+  }
+
+  set targetLiveWindow(val: number | undefined) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val === this.targetLiveWindow) return;
+
+    if (typeof val === 'number') {
+      this.setAttribute(PlayerAttributes.TARGET_LIVE_WINDOW, `${val}`);
+    } else {
+      this.removeAttribute(PlayerAttributes.TARGET_LIVE_WINDOW);
+    }
   }
 
   /**

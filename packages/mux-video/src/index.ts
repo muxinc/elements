@@ -41,7 +41,7 @@ type AttributeNames = {
   START_TIME: 'start-time';
   STREAM_TYPE: 'stream-type';
   TARGET_LIVE_WINDOW: 'target-live-window';
-  LIVE_EDGE_START: 'LIVE_EDGE_START';
+  LIVE_EDGE_OFFSET: 'live-edge-offset';
   TYPE: 'type';
 };
 
@@ -61,7 +61,7 @@ export const Attributes: AttributeNames = {
   START_TIME: 'start-time',
   STREAM_TYPE: 'stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
-  LIVE_EDGE_START: 'LIVE_EDGE_START',
+  LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
 };
 
@@ -363,7 +363,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
     }
-    this.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: this.streamType }));
   }
 
   get targetLiveWindow() {
@@ -383,27 +382,31 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     } else {
       this.removeAttribute(Attributes.TARGET_LIVE_WINDOW);
     }
-    this.dispatchEvent(
-      new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: this.targetLiveWindow })
-    );
   }
 
   get liveEdgeStart() {
-    // Allow overriding inferred `liveEdgeStart`
-    if (this.hasAttribute(Attributes.LIVE_EDGE_START)) {
-      return +(this.getAttribute(Attributes.LIVE_EDGE_START) as string) as number;
+    if (this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)) {
+      const { liveEdgeOffset } = this;
+      const seekableEnd = this.nativeEl.seekable.end(0) ?? 0;
+      const seekableStart = this.nativeEl.seekable.start(0) ?? 0;
+      return Math.max(seekableStart, seekableEnd - (liveEdgeOffset as number));
     }
     return getLiveEdgeStart(this.nativeEl);
   }
 
-  set liveEdgeStart(val: number | undefined) {
-    // don't cause an infinite loop
-    if (val === this.liveEdgeStart) return;
+  get liveEdgeOffset() {
+    if (!this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)) return undefined;
+    return +(this.getAttribute(Attributes.LIVE_EDGE_OFFSET) as string) as number;
+  }
+
+  set liveEdgeOffset(val: number | undefined) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val === this.liveEdgeOffset) return;
 
     if (typeof val === 'number') {
-      this.setAttribute(Attributes.LIVE_EDGE_START, `${val}`);
+      this.setAttribute(Attributes.LIVE_EDGE_OFFSET, `${val}`);
     } else {
-      this.removeAttribute(Attributes.LIVE_EDGE_START);
+      this.removeAttribute(Attributes.LIVE_EDGE_OFFSET);
     }
   }
 
@@ -549,6 +552,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
             .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
+        }
+        break;
+      case Attributes.STREAM_TYPE:
+        // If the newValue is unset
+        if (newValue == null || newValue !== oldValue) {
+          this.dispatchEvent(
+            new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: this.streamType })
+          );
+        }
+        break;
+      case Attributes.TARGET_LIVE_WINDOW:
+        if (newValue == null || newValue !== oldValue) {
+          this.dispatchEvent(
+            new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: this.targetLiveWindow })
+          );
         }
         break;
       default:
