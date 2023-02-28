@@ -606,6 +606,7 @@ describe('<mux-player>', () => {
         muted
       ></mux-player>`);
 
+      await oneEvent(player, 'streamtypechange');
       assert.equal(
         player.storyboard,
         'https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt?format=webp',
@@ -904,6 +905,8 @@ describe('<mux-player> seek to live behaviors', function () {
       stream-type="ll-live"
       preload="auto"
     ></mux-player>`);
+
+    await oneEvent(playerEl, 'streamtypechange');
 
     const mediaControllerEl = playerEl.mediaController;
     const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
