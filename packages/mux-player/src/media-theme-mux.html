@@ -321,6 +321,10 @@
     media-title-display {
       display: var(--media-controls, var(--media-title-display));
     }
+
+    media-live-button {
+      display: var(--media-controls, var(--media-live-button));
+    }
   </style>
   <media-controller
     breakpoints="sm:300 md:700"
@@ -505,9 +509,8 @@
     </template>
 
     <template partial="LiveButton">
-      <!-- NOTE: Keeping "seek-live" part for backwards compatibility for now -->
       <media-live-button
-        part="{{section ?? 'top'}} live seek-live button"
+        part="{{section ?? 'top'}} live button"
         disabled="{{disabled}}"
         aria-disabled="{{disabled}}"
       ></media-live-button>

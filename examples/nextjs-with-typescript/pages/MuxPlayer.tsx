@@ -259,9 +259,9 @@ const ControlCustomizationCSSVars = [
   "--bottom-pip-button",
   "--fullscreen-button",
   "--bottom-fullscreen-button",
-  "--seek-live-button",
-  "--top-seek-live-button",
-  "--bottom-seek-live-button",
+  "--live-button",
+  "--top-live-button",
+  "--bottom-live-button",
 ];
 
 const getControlCustomizationCSSVars = (state) => {

@@ -23,7 +23,7 @@ media-theme {
 [part~='top'] {
   --media-controls: var(--controls, var(--top-controls));
   --media-play-button: var(--play-button, var(--top-play-button));
-  --media-seek-live-button: var(--seek-live-button, var(--top-seek-live-button));
+  --media-live-button: var(--live-button, var(--top-live-button));
   --media-seek-backward-button: var(--seek-backward-button, var(--top-seek-backward-button));
   --media-seek-forward-button: var(--seek-forward-button, var(--top-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--top-mute-button));
@@ -48,7 +48,7 @@ media-theme {
 [part~='center'] {
   --media-controls: var(--controls, var(--center-controls));
   --media-play-button: var(--play-button, var(--center-play-button));
-  --media-seek-live-button: var(--seek-live-button, var(--center-seek-live-button));
+  --media-live-button: var(--live-button, var(--center-live-button));
   --media-seek-backward-button: var(--seek-backward-button, var(--center-seek-backward-button));
   --media-seek-forward-button: var(--seek-forward-button, var(--center-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--center-mute-button));
@@ -72,7 +72,7 @@ media-theme {
 [part~='bottom'] {
   --media-controls: var(--controls, var(--bottom-controls));
   --media-play-button: var(--play-button, var(--bottom-play-button));
-  --media-seek-live-button: var(--seek-live-button, var(--bottom-seek-live-button));
+  --media-live-button: var(--live-button, var(--bottom-live-button));
   --media-seek-backward-button: var(--seek-backward-button, var(--bottom-seek-backward-button));
   --media-seek-forward-button: var(--seek-forward-button, var(--bottom-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--bottom-mute-button));
@@ -91,8 +91,4 @@ media-theme {
   --media-time-display: var(--time-display, var(--bottom-time-display));
   --media-duration-display: var(--duration-display, var(--bottom-duration-display));
   --media-title-display: var(--title-display, var(--bottom-title-display));
-}
-
-[part*='seek-live button'] {
-  display: var(--media-controls, var(--media-seek-live-button));
 }
