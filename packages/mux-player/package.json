@@ -8,9 +8,12 @@
   "unpkg": "./dist/mux-player.js",
   "jsdelivr": "./dist/mux-player.js",
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs.js",
-    "default": "./dist/index.cjs.js"
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./themes/micro": "./themes/micro.js"
   },
   "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
@@ -52,7 +55,7 @@
   "dependencies": {
     "@mux/mux-video": "0.14.0",
     "@mux/playback-core": "0.17.0",
-    "media-chrome": "0.18.4"
+    "media-chrome": "0.18.5"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",

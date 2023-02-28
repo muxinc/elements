@@ -63,6 +63,7 @@ const PlayerAttributes = {
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
   TITLE: 'title',
   PLACEHOLDER: 'placeholder',
+  THEME: 'theme',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -119,7 +120,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 }
 
 function getThemeTemplate(el: MuxPlayerElement) {
-  let themeName = el.getAttribute('theme');
+  let themeName = el.getAttribute(PlayerAttributes.THEME);
   if (themeName) {
     // @ts-ignore
     const templateElement = el.getRootNode()?.getElementById?.(themeName);
@@ -603,6 +604,20 @@ class MuxPlayerElement extends VideoApiElement {
 
   get mux() {
     return this.media?.mux;
+  }
+
+  /**
+   * Gets the theme.
+   */
+  get theme() {
+    return this.getAttribute(PlayerAttributes.THEME) ?? '';
+  }
+
+  /**
+   * Sets the theme.
+   */
+  set theme(val) {
+    this.setAttribute(PlayerAttributes.THEME, `${val}`);
   }
 
   /**
