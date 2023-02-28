@@ -59,7 +59,7 @@ export const content = (props: MuxTemplateProps) => html`
     title="${props.title ?? false}"
     poster="${props.poster === '' ? false : props.poster ?? false}"
     placeholder="${props.placeholder ?? false}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"
@@ -78,7 +78,7 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-name="${props.playerSoftwareName ?? false}"
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
-      stream-type="${props.streamType ?? false}"
+      stream-type="${props.streamType ? (isLiveOrDVR(props) ? 'live' : 'on-demand') : false}"
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src
         ? props.src

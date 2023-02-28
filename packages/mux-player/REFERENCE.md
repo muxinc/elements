@@ -168,7 +168,7 @@ mux-player {
 
   /* Target all sections by excluding the section prefix */
   --play-button: none;
-  --seek-live-button: none;
+  --live-button: none;
   --seek-backward-button: none;
   --seek-forward-button: none;
   --mute-button: none;
@@ -227,6 +227,6 @@ Mux Player uses a [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_
 <mux-player playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>
 ```
 
-Supported parts: `top`, `center`, `bottom`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`, `gesture-layer`, `poster`, `seek-live`, `play`, `button`, `seek-backward`, `seek-forward`, `mute`, `captions`, `airplay`, `pip`, `fullscreen`, `cast`, `playback-rate`, `volume`, `range`, `time`, `display`, `video`
+Supported parts: `top`, `center`, `bottom`, `layer`, `media-layer`, `poster-layer`, `vertical-layer`, `centered-layer`, `gesture-layer`, `poster`, `live`, `play`, `button`, `seek-backward`, `seek-forward`, `mute`, `captions`, `airplay`, `pip`, `fullscreen`, `cast`, `playback-rate`, `volume`, `range`, `time`, `display`, `video`
 
 CSS parts allow you to style each part individually with a selector like `::part(center play button)` or target multiple elements if the part is assigned to multiple elements internally, usage `::part(button)`. Every CSS property can be declared in the selector, this makes it a very powerful API.
