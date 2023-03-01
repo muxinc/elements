@@ -69,11 +69,7 @@ describe('<mux-player>', () => {
     player.muted = true;
     assert(player.muted, 'is muted');
 
-    try {
-      await player.play();
-    } catch (error) {
-      console.warn(error);
-    }
+    await player.play();
 
     assert(!player.paused, 'is playing after player.play()');
     assert.equal(Math.round(player.duration), 134, `is 134s long`);
@@ -924,10 +920,7 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
-    try {
-      await playerEl.play();
-    } catch (_e) {}
+    await playerEl.play();
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow', { timeout: 11000 });
     playerEl.pause();
@@ -946,10 +939,7 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    try {
-      await playerEl.play();
-    } catch (_e) {}
-
+    await playerEl.play();
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow', { timeout: 11000 });
     playerEl.pause();

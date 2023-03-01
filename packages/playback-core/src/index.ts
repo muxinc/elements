@@ -119,6 +119,8 @@ export const getLiveEdgeStart = (mediaEl: HTMLMediaElement) => {
   const liveEdgeStartOffset = muxMediaState.get(mediaEl)?.liveEdgeStartOffset;
   if (typeof liveEdgeStartOffset !== 'number') return Number.NaN;
   const seekable = getSeekable(mediaEl);
+  // We aren't guaranteed that seekable is ready before invoking this, so handle that case.
+  if (!seekable.length) return Number.NaN;
   return seekable.end(seekable.length - 1) - liveEdgeStartOffset;
 };
 
@@ -376,7 +378,8 @@ export const loadMedia = (
           return fetch(mediaPlaylistUrl).then((resp) => resp.text());
         })
         .then((mediaPlaylistStr) => {
-          const typeLine = mediaPlaylistStr.split('\n').find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
+          const playlistLines = mediaPlaylistStr.split('\n');
+          const typeLine = playlistLines.find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
 
           const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
 
@@ -391,6 +394,31 @@ export const loadMedia = (
           mediaEl.dispatchEvent(
             new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: targetLiveWindow })
           );
+
+          if (streamType === StreamTypes.LIVE) {
+            // Required if playlist contains one or more EXT-X-PART tags. See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.3.7 (CJP)
+            const partInfLine = playlistLines.find((line) => line.startsWith('#EXT-X-PART-INF'));
+            const lowLatency = !!partInfLine;
+
+            // Computation of the live edge start offset per media-ui-extensions proposal. See: https://github.com/video-dev/media-ui-extensions/blob/main/proposals/0007-live-edge.md#recommended-computation-for-rfc8216bis12-aka-hls (CJP)
+            let liveEdgeStartOffset;
+            if (lowLatency) {
+              // The EXT-X-PART-INF only has one in-spec named attribute, PART-TARGET, which is required,
+              // so parsing & casting presumptuously here. See spec link above for more info. (CJP)
+              const partTarget = +partInfLine.split(':')[1].split('=')[1];
+              liveEdgeStartOffset = partTarget * 2;
+            } else {
+              // This is required for all media playlists. See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.3.1 (CJP)
+              const targetDurationLine = playlistLines.find((line) =>
+                line.startsWith('#EXT-X-TARGETDURATION')
+              ) as string;
+              // EXT-X-TARGETDURATION has exactly one unnamed attribute that represents the target duration value, which is required,
+              // so parsing and casting presumptuously here. See spec link above for more info. (CJP)
+              const targetDuration = +targetDurationLine.split(':')[1];
+              liveEdgeStartOffset = targetDuration * 3;
+            }
+            (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
+          }
         });
       mediaEl.setAttribute('src', src);
       if (props.startTime) {

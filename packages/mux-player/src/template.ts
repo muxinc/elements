@@ -33,7 +33,8 @@ const isLiveOrDVR = (props: MuxTemplateProps) => isLive(props) || isDVR(props);
 
 const getHotKeys = (props: MuxTemplateProps) => {
   let hotKeys = props.hotKeys ? `${props.hotKeys}` : '';
-  if (isLiveOrDVR(props)) {
+  // Applies to any live content, including "dvr". We may want to only apply for non-DVR live.
+  if (getStreamTypeFromAttr(props.streamType) === 'live') {
     hotKeys += ' noarrowleft noarrowright';
   }
   return hotKeys;
@@ -45,7 +46,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    default-stream-type="${props.defaultStreamType}"
+    default-stream-type="${props.defaultStreamType ?? 'on-demand'}"
     class="${props.secondaryColor ? 'two-tone' : false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
