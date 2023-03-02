@@ -30,7 +30,7 @@ export const fileSelectFragment = /*html*/ `
   }
   </style>
 
-  <button id="file-select" type="button">Upload video</button>
+  <button id="file-select" type="button">Select a video</button>
 `;
 
 const template = document.createElement('template');
