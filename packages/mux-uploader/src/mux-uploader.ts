@@ -1,7 +1,26 @@
 import { globalThis } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
 
-import rootTemplate from './layouts/block';
+import blockLayout from './layouts/block';
+
+const rootTemplate = document.createElement('template');
+
+rootTemplate.innerHTML = /*html*/ `
+<style>
+  :host {
+    font-family: var(--uploader-font-family, Arial);
+    font-size: var(--uploader-font-size, 16px);
+    background-color: var(--uploader-background-color, inherit);
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+</style>
+
+<input id="hidden-file-input" type="file" />
+<mux-uploader-sr-text></mux-uploader-sr-text>
+`;
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
@@ -63,7 +82,12 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
-    const uploaderHtml = rootTemplate.content.cloneNode(true);
+
+    // Always attach the root template
+    shadow.appendChild(rootTemplate.content.cloneNode(true));
+
+    // Attach a layout
+    const uploaderHtml = blockLayout.content.cloneNode(true);
     shadow.appendChild(uploaderHtml);
 
     this.hiddenFileInput?.addEventListener('change', () => {
