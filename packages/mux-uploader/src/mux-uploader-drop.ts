@@ -51,10 +51,12 @@ template.innerHTML = /*html*/ `
   <h1 id="overlay-label"></h1>
 </div>
 
-<slot name="heading">
+<slot name="heading" part="heading">
   <span id="heading">Drop a video file here to upload</span>
 </slot>
-<span id="separator">or</span>
+<slot name="separator" part="separator">
+  <span id="separator">or</span>
+</slot>
 <slot></slot>
 `;
 
