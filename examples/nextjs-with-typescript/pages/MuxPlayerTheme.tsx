@@ -2,7 +2,7 @@ import Link from "next/link";
 import Head from 'next/head';
 import { useRef, useState } from "react";
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
-import "media-chrome/dist/themes/media-theme-youtube";
+import "@mux/mux-player/themes/micro";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
@@ -21,8 +21,8 @@ function MuxPlayerPage() {
 
       <MuxPlayer
         ref={mediaElRef}
-        playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
-        theme="youtube"
+        playbackId="vJzD4ayErsL3z5qs0201rKHfffmQOMWSk58J6A7FtECKs"
+        theme="micro"
         // metadata={{
         //   video_id: "video-id-12345",
         //   video_title: "Mad Max: Fury Road Trailer",
