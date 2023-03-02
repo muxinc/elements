@@ -2,12 +2,14 @@
   "compilerOptions": {
     "preserveWatchOutput": true,
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "incremental": true,
+    "target": "ES2019",
     "lib": ["ES2019", "DOM"],
     "module": "commonjs",
-    "target": "ES2019",
-    "declaration": true,
+    "jsx": "react",
     "sourceMap": true,
     "composite": true,
     "strict": true,
@@ -17,7 +19,7 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types", "../../types"]
+    "typeRoots": ["node_modules/@types", "./dist/custom-types"]
   },
-  "include": ["src/**/*", "../../types"]
+  "include": ["src/**/*", "./dist/custom-types"]
 }
