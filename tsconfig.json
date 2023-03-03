@@ -1,8 +1,6 @@
 {
   "compilerOptions": {
     "preserveWatchOutput": true,
-    "rootDir": "src",
-    "outDir": "./dist/types",
     "declaration": true,
     "emitDeclarationOnly": true,
     "incremental": true,
@@ -17,8 +15,6 @@
     "baseUrl": "./packages",
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types", "'./custom-types"]
-  },
-  "include": ["src/**/*", "./custom-types"]
+    "forceConsistentCasingInFileNames": true
+  }
 }
