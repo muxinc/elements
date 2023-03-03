@@ -16,7 +16,7 @@ template.innerHTML = `
     background: #e6e6e6;
     border-radius: 100px;
     position: relative;
-    height: 4px;
+    height: var(--progress-bar-height, 4px);
     width: 100%;
   }
   
@@ -44,7 +44,7 @@ template.innerHTML = `
     box-shadow: 0 10px 40px -10px #fff;
     border-radius: 100px;
     background: var(--progress-bar-fill-color, #000000);
-    height: 4px;
+    height: var(--progress-bar-height, 4px);
     width: 0%;
     transition: width 0.25s;
   }
