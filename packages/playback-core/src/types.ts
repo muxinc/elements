@@ -1,4 +1,5 @@
 import type { Options } from 'mux-embed';
+import type { MediaError } from './errors';
 import type { HlsInterface as Hls } from './hls';
 
 type KeyTypes = string | number | symbol;
@@ -14,7 +15,8 @@ export const isKeyOf = <T extends {} = any>(k: KeyTypes, o: Maybe<T>): k is keyo
 };
 
 export type ValueOf<T> = T[keyof T];
-export type Metadata = Partial<Options['data']>;
+export type Metadata = Partial<Required<Options>['data']>;
+type MetaData = Metadata;
 export type PlaybackEngine = Hls;
 
 export type PlaybackCore = {
@@ -122,7 +124,7 @@ export type CuePoint<T = any> = {
 };
 
 export type MuxMediaPropTypes = {
-  envKey: Options['data']['env_key'];
+  envKey: MetaData['env_key'];
   debug: Options['debug'] & Hls['config']['debug'];
   metadata: Partial<Options['data']>;
   maxResolution: string;
@@ -131,7 +133,7 @@ export type MuxMediaPropTypes = {
   errorTranslator: Options['errorTranslator'];
   disableCookies: Options['disableCookies'];
   playbackId: string;
-  playerInitTime: Options['data']['player_init_time'];
+  playerInitTime: MetaData['player_init_time'];
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   type: MediaTypes;
   streamType: ValueOf<StreamTypes>;
@@ -139,12 +141,13 @@ export type MuxMediaPropTypes = {
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
+  error?: HTMLMediaElement['error'] | MediaError;
 };
 
-export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload'>>;
+export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error'>>;
 
 export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
-  playerSoftwareName: Options['data']['player_software_name'];
-  playerSoftwareVersion: Options['data']['player_software_version'];
+  playerSoftwareName: MetaData['player_software_name'];
+  playerSoftwareVersion: MetaData['player_software_version'];
 };
