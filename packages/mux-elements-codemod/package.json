@@ -18,7 +18,6 @@
     "dev:types": "yarn build:types -w --preserveWatchOutput",
     "dev": "npm-run-all --parallel dev:types dev:esm",
     "build:esm": "esbuild src/index.ts --target=es2019 --format=esm --outdir=dist --out-extension:.js=.mjs",
-    "prebuild:types": "shx mkdir -p dist/custom-types && shx cp -R ../../types/** dist/custom-types/",
     "build:types": "tsc",
     "build": "npm-run-all --parallel build:esm",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",

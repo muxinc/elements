@@ -13,12 +13,12 @@
     "composite": true,
     "strict": true,
     "noImplicitAny": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "baseUrl": "./packages",
     "esModuleInterop": true,
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types", "./dist/custom-types"]
+    "typeRoots": ["node_modules/@types", "'./custom-types"]
   },
-  "include": ["src/**/*", "./dist/custom-types"]
+  "include": ["src/**/*", "./custom-types"]
 }
