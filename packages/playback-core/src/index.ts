@@ -467,7 +467,6 @@ export const loadMedia = (
       );
 
       const lowLatency = !!data.details.partList?.length;
-      // (muxMediaState.get(mediaEl) ?? {}).lowLatency = lowLatency;
       if (streamType === StreamTypes.LIVE) {
         const seekable: TimeRanges = Object.freeze({
           get length() {
