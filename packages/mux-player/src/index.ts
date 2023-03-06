@@ -316,7 +316,7 @@ class MuxPlayerElement extends VideoApiElement {
 
     if (this.media) {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
-        if (!this.media?.error) return errorEvent;
+        if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
         const { devlog } = getErrorLogs(
           this.media?.error,
