@@ -125,8 +125,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return this.nativeEl.mux;
   }
 
-  // @ts-ignore
-  get error(): MediaError | null {
+  get error() {
     return getError(this.nativeEl) ?? null;
   }
 
