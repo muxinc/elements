@@ -642,12 +642,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           this.targetLiveWindow = streamType === StreamTypes.LIVE ? 0 : Number.NaN;
         } else if (newValue) {
           /** @TODO Add links to relevant docs and/or add new markdown page (CJP) */
-          // logger.devlog({
-          //   file: 'invalid-stream-type.md',
-          //   message: i18n(
-          //     `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`, \`ll-live\`, \`live:dvr\`, or \`ll-live:dvr\``
-          //   ).format({ streamType: this.streamType }),
-          // });
           logger.warn(`stream-type ${newValue} is deprecated`);
           if (newValue.includes('live')) {
             const streamType = StreamTypes.LIVE;
