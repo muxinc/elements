@@ -103,7 +103,6 @@ export const content = (props: MuxTemplateProps) => html`
             token: props.tokens.playback,
           })
         : false}"
-      cast-stream-type="${isLive(props) ? 'live' : false}"
       exportparts="video"
     >
       ${props.storyboard
