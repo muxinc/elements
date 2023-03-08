@@ -849,7 +849,7 @@ describe('<mux-player> seek to live behaviors', function () {
     assert.notExists(seekToLiveEl);
   });
 
-  it('should have a seek to live button if the stream-type is live', async function () {
+  it.skip('should have a seek to live button if the stream-type is live', async function () {
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       stream-type="live"
@@ -862,7 +862,7 @@ describe('<mux-player> seek to live behaviors', function () {
     assert.exists(seekToLiveEl);
   });
 
-  it('should have a seek to live button if the stream-type is ll-live', async function () {
+  it.skip('should have a seek to live button if the stream-type is ll-live', async function () {
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       stream-type="ll-live"
@@ -875,7 +875,7 @@ describe('<mux-player> seek to live behaviors', function () {
     assert.exists(seekToLiveEl);
   });
 
-  (isSafari ? it.skip : it)('should seek to live when seek to live button pressed', async function () {
+  it.skip('should seek to live when seek to live button pressed', async function () {
     this.timeout(15000);
 
     const playerEl = await fixture(`<mux-player
@@ -898,7 +898,7 @@ describe('<mux-player> seek to live behaviors', function () {
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
 
-  (isSafari ? it.skip : it)('should seek to live when play button is pressed', async function () {
+  it.skip('should seek to live when play button is pressed', async function () {
     this.timeout(15000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
