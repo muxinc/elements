@@ -18,7 +18,7 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types", "'./custom-types"]
+    "typeRoots": ["node_modules/@types", "../../types/media-chrome.d.ts"]
   },
-  "include": ["src/**/*", "./custom-types"]
+  "include": ["src/**/*", "../../types/media-chrome.d.ts"]
 }
