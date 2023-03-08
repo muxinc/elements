@@ -55,7 +55,7 @@
   "dependencies": {
     "@mux/mux-video": "0.14.0",
     "@mux/playback-core": "0.17.0",
-    "media-chrome": "0.18.6-canary.1-6d6ddc3"
+    "media-chrome": "0.18.7"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",
