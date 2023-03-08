@@ -1,3 +1,4 @@
+/// <reference path="../dist/types/shared-polyfills.d.ts" />
 import { globalThis } from 'shared-polyfills';
 import * as UpChunk from '@mux/upchunk';
 

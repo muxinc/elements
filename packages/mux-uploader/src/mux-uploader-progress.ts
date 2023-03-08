@@ -1,3 +1,4 @@
+/// <reference path="../dist/types/shared-polyfills.d.ts" />
 import { globalThis, document } from 'shared-polyfills';
 import { ProgressTypes } from './constants';
 import { getMuxUploaderEl } from './utils/element-utils';
