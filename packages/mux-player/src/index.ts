@@ -1,5 +1,4 @@
 import { globalThis, document } from './polyfills';
-// @ts-ignore
 import { MediaController } from 'media-chrome';
 import 'media-chrome/dist/experimental/media-captions-selectmenu.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
@@ -37,8 +36,6 @@ export type Tokens = {
   thumbnail?: string;
   storyboard?: string;
 };
-
-const streamTypeValues = Object.values(StreamTypes);
 
 const VideoAttributes = {
   SRC: 'src',
@@ -635,13 +632,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         break;
       }
       case MuxVideoAttributes.STREAM_TYPE: {
-        /** @TODO Decide if we should also set liveEdgeOffset based on explicit streamType/stream-type set (CJP) */
-        if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(newValue as any)) {
-          const streamType = newValue as ValueOf<StreamTypes>;
-          this.defaultStreamType = streamType;
-          this.targetLiveWindow = streamType === StreamTypes.LIVE ? 0 : Number.NaN;
-        } else if (newValue) {
-          // Handle deprecated values for the time being.
+        if (newValue && ![StreamTypes.LIVE, StreamTypes.ON_DEMAND, StreamTypes.UNKNOWN].includes(newValue as any)) {
+          // Handle deprecated values by translating to new properties for the time being.
+          // NOTE: The value of `streamType` / `stream-type` will be translated at the template
+          // level. See template.ts for more information (CJP).
           if (['ll-live', 'live:dvr', 'll-live:dvr'].includes(this.streamType as any)) {
             logger.devlog({
               file: 'deprecated-stream-type.md',
@@ -649,6 +643,9 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
                 `The stream type is currently deprecated: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`. For DVR, please use \`target-live-window="Infinity"\``
               ).format({ streamType: this.streamType }),
             });
+            if (newValue.includes('dvr')) {
+              this.targetLiveWindow = Number.POSITIVE_INFINITY;
+            }
           } else {
             logger.devlog({
               file: 'invalid-stream-type.md',
@@ -656,15 +653,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
                 `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\` or \`live\``
               ).format({ streamType: this.streamType }),
             });
-          }
-          /** @TODO Add links to relevant docs and/or add new markdown page (CJP) */
-          logger.warn(`stream-type ${newValue} is deprecated`);
-          if (newValue.includes('live')) {
-            const streamType = StreamTypes.LIVE;
-            this.defaultStreamType = streamType;
-            if (newValue.includes('dvr')) {
-              this.targetLiveWindow = Number.POSITIVE_INFINITY;
-            }
           }
         }
       }
@@ -1232,7 +1220,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get defaultStreamType() {
-    return (this.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>) ?? StreamTypes.ON_DEMAND;
+    if (this.hasAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE)) {
+      return this.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>;
+    }
+    return (
+      (this.mediaController?.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>) ??
+      StreamTypes.ON_DEMAND
+    );
   }
 
   set defaultStreamType(val: ValueOf<StreamTypes> | undefined) {
