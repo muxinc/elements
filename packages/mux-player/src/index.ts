@@ -640,7 +640,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
             logger.devlog({
               file: 'deprecated-stream-type.md',
               message: i18n(
-                `The stream type is currently deprecated: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`. For DVR, please use \`target-live-window="Infinity"\``
+                `The stream type is deprecated: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`. For DVR, please use \`target-live-window="Infinity"\``
               ).format({ streamType: this.streamType }),
             });
             if (newValue.includes('dvr')) {
