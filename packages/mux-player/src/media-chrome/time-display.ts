@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from '../polyfills';
 
 const styles = `
   :host {

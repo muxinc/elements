@@ -1,5 +1,4 @@
-/// <reference path="../dist/types/shared-polyfills.d.ts" />
-import { globalThis } from 'shared-polyfills';
+import { globalThis } from './polyfills';
 import * as UpChunk from '@mux/upchunk';
 
 import rootTemplate from './layouts/block';

@@ -1,5 +1,4 @@
-/// <reference path="../dist/types/shared-polyfills.d.ts" />
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from './polyfills';
 
 const template = document.createElement('template');
 

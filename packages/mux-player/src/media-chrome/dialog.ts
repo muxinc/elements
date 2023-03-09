@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from '../polyfills';
 
 /* Inspired by HTMLDialogElement &
    https://github.com/GoogleChrome/dialog-polyfill/blob/master/index.js */
