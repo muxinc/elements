@@ -1,4 +1,5 @@
 declare module 'shared-polyfills' {
-  export const globalThis: Window;
+  const internalGlobalThis: Window & typeof globalThis;
+  export { internalGlobalThis as globalThis };
   export const document: Document;
 }
