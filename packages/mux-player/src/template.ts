@@ -42,7 +42,7 @@ export const content = (props: MuxTemplateProps) => html`
     class="${props.secondaryColor ? 'two-tone' : false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
-    noautoseektolive="${getStreamTypeFromAttr(props.streamType) === StreamTypes.LIVE && props.targetLiveWindow !== 0}"
+    noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
