@@ -42,7 +42,7 @@
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-audio.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:@mux/* --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-audio.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "prebuild:types": "shx mkdir -p ./dist/types && shx cp ../../shared/polyfills/*.d.ts ./dist/types/shared-polyfills.d.ts",
+    "prebuild:types": "shx mkdir -p ./dist/types && shx cp ../../types/shared-polyfills.d.ts ./dist/types/",
     "build:types": "tsc",
     "postbuild:types": "shx cp -r \"src/**/*.d.ts\" dist/types && downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
