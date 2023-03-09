@@ -18,6 +18,7 @@
       }
       mux-uploader {
         --progress-bar-fill-color: #7e22ce;
+        --button-background-color: salmon;
         font-family: monospace;
         font-size: 22px;
       }
@@ -52,13 +53,7 @@
     </div>
 
     <div style="margin: 40px 0;">
-      <mux-uploader-drop mux-uploader="my-uploader">
-        <mux-uploader id="my-uploader">
-          <button class="btn" type="button" slot="file-select">
-            Pick a file
-          </button>
-        </mux-uploader>
-      </mux-uploader-drop>
+        <mux-uploader></mux-uploader>
     </div>
 
     <a href="../">Browse Elements</a>
