@@ -558,7 +558,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         // If the newValue is unset
         if (newValue == null || newValue !== oldValue) {
           this.dispatchEvent(
-            new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: this.streamType })
+            new CustomEvent('streamtypechange', { composed: true, bubbles: true })
           );
         }
         break;
