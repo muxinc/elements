@@ -1,4 +1,3 @@
-/// <reference path="../dist/types/shared-polyfills.d.ts" />
 import { document } from 'shared-polyfills';
 import 'media-chrome/dist/media-theme-element.js';
 import './media-chrome/time-display';

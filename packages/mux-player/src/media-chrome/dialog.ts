@@ -1,4 +1,3 @@
-/// <reference path="../../dist/types/shared-polyfills.d.ts" />
 import { globalThis, document } from 'shared-polyfills';
 
 /* Inspired by HTMLDialogElement &

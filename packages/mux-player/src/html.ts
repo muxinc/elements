@@ -1,4 +1,3 @@
-/// <reference path="../dist/types/shared-polyfills.d.ts" />
 import { document } from 'shared-polyfills';
 // @ts-ignore
 import { TemplateInstance, ChildNodePart, AttrPart, Part } from 'media-chrome/dist/media-theme-element.js';
