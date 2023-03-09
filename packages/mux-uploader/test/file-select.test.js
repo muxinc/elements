@@ -12,7 +12,7 @@ describe('<mux-uploader-file-select>', () => {
     const button = slot.querySelector('button');
 
     assert.equal(slot.getAttribute('name'), 'file-select', 'slot name is reflected');
-    assert.equal(button.innerText, 'Upload video', 'slot content is reflected');
+    assert.equal(button.innerText, 'Upload a video', 'slot content is reflected');
   });
 
   it('slots custom content as expected', async function () {
