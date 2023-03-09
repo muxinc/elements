@@ -9,9 +9,9 @@ The provided `stream-type` is invalid.
 If you are a viewer of this video there is not much you can do. The owner of the
 video will have to fix this issue.
 
-If you are the owner of this video, `stream-type`is no longer required, so you may consider removing it.
-If you still have a use case where you would like to explicitly define the `stream-type`, make sure it or
-`default-stream-type` is one of the following: `on-demand`, `live`.
+If you are the owner of this video, `stream-type` is no longer required, so you may consider removing it.
+If you still have a use case where you would like to explicitly define the `stream-type`, make sure the `stream-type` or
+`default-stream-type` attribute is one of the following: `on-demand`, `live`.
 
 ### Useful Links
 
