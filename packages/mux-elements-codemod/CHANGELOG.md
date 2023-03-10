@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.5](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.4...@mux/mux-elements-codemod@1.1.5) (2023-01-20)
+
+**Note:** Version bump only for package @mux/mux-elements-codemod
+
+
+
+
+
 ## [1.1.4](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.3...@mux/mux-elements-codemod@1.1.4) (2022-10-05)
 
 **Note:** Version bump only for package @mux/mux-elements-codemod

@@ -27,6 +27,12 @@ describe('errors', () => {
   });
 
   it('does propagate fatal error events', async function () {
+    const oldLogError = console.error;
+    const oldLogWarn = console.warn;
+
+    console.error = () => {};
+    console.warn = () => {};
+
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -45,6 +51,9 @@ describe('errors', () => {
     );
 
     assert(fired === true, 'the error handler was fired');
+
+    console.error = oldLogError;
+    console.warn = oldLogWarn;
   });
 
   it('default message for MediaError.MEDIA_ERR_ABORTED', function () {

@@ -11,7 +11,7 @@ import {
   Metadata,
   MediaError,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomAudioElement, { AudioEvents } from './CustomAudioElement';
@@ -21,9 +21,6 @@ type AttributeNames = {
   ENV_KEY: 'env-key';
   DEBUG: 'debug';
   METADATA_URL: 'metadata-url';
-  METADATA_VIDEO_ID: 'metadata-video-id';
-  METADATA_VIDEO_TITLE: 'metadata-video-title';
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   DISABLE_COOKIES: 'disable-cookies';
   PLAYBACK_ID: 'playback-id';
@@ -39,9 +36,6 @@ const Attributes: AttributeNames = {
   PLAYBACK_ID: 'playback-id',
   METADATA_URL: 'metadata-url',
   PREFER_PLAYBACK: 'prefer-playback',
-  METADATA_VIDEO_ID: 'metadata-video-id',
-  METADATA_VIDEO_TITLE: 'metadata-video-title',
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   DISABLE_COOKIES: 'disable-cookies',
   TYPE: 'type',
@@ -254,7 +248,22 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   }
 
   get metadata() {
-    return this.#metadata;
+    const inferredMetadataAttrs: { [key: string]: string } = this.getAttributeNames()
+      .filter((attrName) => {
+        return attrName.startsWith('metadata-') && !([Attributes.METADATA_URL] as string[]).includes(attrName);
+      })
+      .reduce((currAttrs, attrName) => {
+        const value = this.getAttribute(attrName);
+        if (value != null) {
+          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
+        }
+        return currAttrs;
+      }, {} as { [key: string]: string });
+
+    return {
+      ...inferredMetadataAttrs,
+      ...this.#metadata,
+    };
   }
 
   set metadata(val: Readonly<Metadata> | undefined) {
@@ -337,7 +346,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
           fetch(newValue)
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
-            .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
+            .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
       default:

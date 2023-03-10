@@ -26,7 +26,7 @@
       "dependsOn": ["^build"]
     },
     "build": {
-      "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*"],
+      "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*", ".vercel/**/*"],
       "dependsOn": ["build:types", "^build"]
     }
   }

@@ -3,6 +3,117 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.7.2...@mux/mux-player@1.8.0) (2023-02-15)
+
+
+### Features
+
+* add attribute max-resolution on mux-player and mux-video ([#581](https://github.com/muxinc/elements/issues/581)) ([1936c8e](https://github.com/muxinc/elements/commit/1936c8ecb47805ee75fd04ffee514b846043efc1))
+
+
+
+
+
+## [1.7.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.7.1...@mux/mux-player@1.7.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* **playback-core:** Typescript + min acrobatics to make svelte and others happy ([fdf34bb](https://github.com/muxinc/elements/commit/fdf34bb8fd409f0c2b5945802251ed2e6ffafd7e))
+
+
+
+
+
+## [1.7.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.7.0...@mux/mux-player@1.7.1) (2023-02-02)
+
+**Note:** Version bump only for package @mux/mux-player
+
+
+
+
+
+# [1.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.6.0...@mux/mux-player@1.7.0) (2023-02-01)
+
+
+### Bug Fixes
+
+* bring back play button to the control bar for small player size ([#556](https://github.com/muxinc/elements/issues/556)) ([38ef225](https://github.com/muxinc/elements/commit/38ef225543400a146159a24ccf13a4a22ac03bae)), closes [#554](https://github.com/muxinc/elements/issues/554)
+* merge conflict fallout ([4e4932c](https://github.com/muxinc/elements/commit/4e4932c8d18708d53dedc1907d7fe32255d4a556))
+* **mux-player:** Migrate to use new Media Chrome media-live-button. ([5613ba4](https://github.com/muxinc/elements/commit/5613ba48fbd9a497f127764404caf801bf7f7d74)), closes [#2](https://github.com/muxinc/elements/issues/2)
+* tests, improve attribute empty behavior ([5f53a5e](https://github.com/muxinc/elements/commit/5f53a5e12c2accc0e8216c1404889b11818c869e))
+* upgrade Media Chrome v0.18.1 ([fa7353b](https://github.com/muxinc/elements/commit/fa7353b761884ebb1a7cbe74dcd85165d939c119))
+* use new MC template syntax ([b656ccd](https://github.com/muxinc/elements/commit/b656ccd09d05fcee169f9956fd2571a56def47b5))
+
+
+### Features
+
+* introduce a captions menu button ([#549](https://github.com/muxinc/elements/issues/549)) ([9cb8454](https://github.com/muxinc/elements/commit/9cb845411230ea669c74c5ffe19f9fca4c60dce3))
+* **mux-player, mux-video, playback-core:** Add API for CuePoints metadata. ([1f0b40a](https://github.com/muxinc/elements/commit/1f0b40a6d7f09c0e08a42353e241a26857edaad6))
+
+
+
+
+
+# [1.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.5.1...@mux/mux-player@1.6.0) (2023-01-20)
+
+
+### Bug Fixes
+
+* use webp format instead of jpg, less bandwidth ([#525](https://github.com/muxinc/elements/issues/525)) ([9441de4](https://github.com/muxinc/elements/commit/9441de415b165a8f68c0db88eb25e2de827380f4))
+
+
+### Features
+
+* **mux-player:** add storyboard-src attribute and corresponding prop ([#522](https://github.com/muxinc/elements/issues/522)) ([e9c3f0a](https://github.com/muxinc/elements/commit/e9c3f0afd3eb2521248996c37de1716b4ce724c4))
+
+
+
+
+
+## [1.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.5.0...@mux/mux-player@1.5.1) (2022-12-15)
+
+
+### Bug Fixes
+
+* allow setting theme template via property ([6ec0bb0](https://github.com/muxinc/elements/commit/6ec0bb0b4f6964490dc8d339e174462e98f80116))
+
+
+
+
+
+# [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.4.0...@mux/mux-player@1.5.0) (2022-12-13)
+
+
+### Bug Fixes
+
+* duplicate render by using value cache key ([031a89a](https://github.com/muxinc/elements/commit/031a89a0d8a46d715b9ad778a732b720c7694ab5)), closes [#517](https://github.com/muxinc/elements/issues/517)
+* upgrade MC v0.16.1 ([#513](https://github.com/muxinc/elements/issues/513)) ([72da7a1](https://github.com/muxinc/elements/commit/72da7a1e77b6c8ed095785013c644888dcb2a8f8))
+* upgrade Media Chrome v0.16.2 ([5db98fb](https://github.com/muxinc/elements/commit/5db98fbc4d0e390858934c7f7cdf7da4442e2d02))
+
+
+### Features
+
+* allow video, audio and player elements to get any metadata-* attrs set ([#501](https://github.com/muxinc/elements/issues/501)) ([8ee139d](https://github.com/muxinc/elements/commit/8ee139d2bbd08e1e3c08d047f870c1dcf01dac7e))
+* implement Media Chrome HTML based theme  ([#498](https://github.com/muxinc/elements/issues/498)) ([d83501a](https://github.com/muxinc/elements/commit/d83501ac3ddb4661f34f5e7526e93af525035190))
+* Remove experimentalCmcd and add none to preferCmcd. Update secret docs. ([2656631](https://github.com/muxinc/elements/commit/2656631968f2b7e97a07d435818ee43c16627002))
+
+
+
+
+
+# [1.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.3.0...@mux/mux-player@1.4.0) (2022-11-21)
+
+
+### Features
+
+* first iteration on player design update ([#486](https://github.com/muxinc/elements/issues/486)) ([a2befb5](https://github.com/muxinc/elements/commit/a2befb53200df08c40a79d7ed84e267cd1279648))
+* **mux-player:** Add prefer cmcd attr and prop. ([308e9a7](https://github.com/muxinc/elements/commit/308e9a7c879594edbe2d4f4ffe462c7efb53299f))
+
+
+
+
+
 # [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.2.0...@mux/mux-player@1.3.0) (2022-10-25)
 
 

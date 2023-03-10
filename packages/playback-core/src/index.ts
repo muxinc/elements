@@ -1,9 +1,19 @@
 import mux, { ErrorEvent } from 'mux-embed';
-import Hls from 'hls.js';
+import Hls from './hls';
+import type { HlsInterface } from './hls';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
-import { setupTracks, addTextTrack, removeTextTrack } from './tracks';
+import {
+  setupTracks,
+  addTextTrack,
+  removeTextTrack,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
+  setupCuePoints,
+  getCuePointsTrack,
+} from './tracks';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
   StreamTypes,
@@ -15,13 +25,23 @@ import {
   type MuxMediaProps,
   type MuxMediaPropsInternal,
 } from './types';
-
-export { mux, Hls, MediaError, addTextTrack, removeTextTrack };
+export {
+  mux,
+  Hls,
+  MediaError,
+  addTextTrack,
+  removeTextTrack,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
+  getCuePointsTrack,
+  setupCuePoints,
+};
 export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
+const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps>> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -33,10 +53,14 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN } = {}) => {
+export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN, maxResolution = '' } = {}) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
-  return `https://stream.${domain}/${idPart}.m3u8${queryPart}`;
+  const url = new URL(`https://stream.${domain}/${idPart}.m3u8${queryPart}`);
+  if (maxResolution) {
+    url.searchParams.set('max_resolution', maxResolution);
+  }
+  return url.toString();
 };
 
 const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined) => {
@@ -78,7 +102,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   const nextHlsInstance = setupHls(props, mediaEl);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
-
+  setupCuePoints(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
@@ -137,14 +161,11 @@ function useNative(
 
 export const setupHls = (
   props: Partial<
-    Pick<
-      MuxMediaPropsInternal,
-      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'experimentalCmcd' | 'preferCmcd'
-    >
+    Pick<MuxMediaPropsInternal, 'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd'>
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) => {
-  const { debug, streamType, startTime: startPosition = -1, metadata, experimentalCmcd, preferCmcd } = props;
+  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -157,13 +178,15 @@ export const setupHls = (
       liveDurationInfinity: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
-    const cmcd = experimentalCmcd
-      ? {
-          useHeaders: preferCmcd === CmcdTypes.HEADER,
-          sessionId: metadata.view_session_id,
-          contentId: metadata.video_id,
-        }
-      : undefined;
+    // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
+    const cmcd =
+      preferCmcd !== CmcdTypes.NONE
+        ? {
+            useHeaders: preferCmcd === CmcdTypes.HEADER,
+            sessionId: metadata?.view_session_id,
+            contentId: metadata?.video_id,
+          }
+        : undefined;
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
@@ -172,7 +195,7 @@ export const setupHls = (
       cmcd,
       ...defaultConfig,
       ...streamTypeConfig,
-    });
+    }) as HlsInterface;
 
     return hls;
   }
@@ -236,7 +259,7 @@ export const setupMux = (
     >
   >,
   mediaEl: HTMLMediaElement,
-  hlsjs?: Hls
+  hlsjs?: HlsInterface
 ) => {
   const { envKey: env_key } = props;
   const inferredEnv = isMuxVideoSrc(props);
@@ -327,6 +350,16 @@ export const loadMedia = (
 
     mediaEl.addEventListener('error', handleNativeError);
     mediaEl.addEventListener('error', handleInternalError);
+    mediaEl.addEventListener(
+      'emptied',
+      () => {
+        const trackEls: NodeListOf<HTMLTrackElement> = mediaEl.querySelectorAll('track[data-removeondestroy]');
+        trackEls.forEach((trackEl) => {
+          trackEl.remove();
+        });
+      },
+      { once: true }
+    );
   } else if (hls && src) {
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
@@ -440,7 +473,7 @@ function handleInternalError(event: Event) {
   // Prevent tracking non-fatal errors in Mux data.
   if (!error || !error.fatal) return;
 
-  (muxMediaState.get(mediaEl) ?? {}).error = error;
+  (muxMediaState.get(mediaEl) ?? {}).error = error as unknown as HTMLMediaElement['error'];
 
   // Only pass valid mux-embed props: player_error_code, player_error_message
   mediaEl.mux?.emit('error', {

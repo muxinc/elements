@@ -35,6 +35,12 @@
     "placeholder": "data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAOACADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAgQFAQP/xAAeEAACAgEFAQAAAAAAAAAAAAAAAQIDBBESEyExUf/EABYBAQEBAAAAAAAAAAAAAAAAAAIDBP/EABgRAAMBAQAAAAAAAAAAAAAAAAABERIC/9oADAMBAAIRAxEAPwDLMpyXgs7Vu1Anb14J23NMhmmjpwpxyEkc7JqZNjkv4HytizAp0//Z"
   },
   {
+    "playback-id": "ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s",
+    "description": "Landscape VOD (Closed Captions x 3)",
+    "stream-type": "on-demand",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAA4AGQDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAIDAQQF/8QAHBABAQEAAwEBAQAAAAAAAAAAAAIBAxESEyFh/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAEC/8QAFREBAQAAAAAAAAAAAAAAAAAAABH/2gAMAwEAAhEDEQA/APF6abouqje25qe10X2EXzW5rnzkUmwizeiTqmIM6HR+h0BOg3S7oNBewontEqibRNoKLpCuQ9fqWz2LTTyOiLc0wtGdA6opaacsq5qC/obSXY7EPtE2mb2Tc0U3oE60ATxpdh27xE3jWsxybDPDp2C+QTyFJ4zzK0QKlPGpnE6I41p4kHHnE35O/OFvxB5/xZ8f49H4s+Kjz/iHofEA5tlOpARUaxPcAA8OnjwBUdXHLoiQEVXIb4AAbDNkAGeQAD//2Q=="
+  },
+  {
     "playback-id": "jylbh7Bh4nlUuZD00FPD5cky4Ub00MVNZQ2RKzAwGBcvY",
     "description": "Landscape VOD (Subtitles x 2)",
     "stream-type": "on-demand",
@@ -56,6 +62,13 @@
     "playback-id": "v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM",
     "description": "Long Lived LL-HLS",
     "stream-type": "ll-live"
+  },
+  {
+    "playback-id": "a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M",
+    "description": "Landscape VOD with storyboard-src",
+    "stream-type": "on-demand",
+    "storyboard-src": "https://image.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA/storyboard.vtt",
+    "placeholder": "data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAASACADASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAQFAwEC/8QAHRAAAgICAwEAAAAAAAAAAAAAAAECAwQhERIxIv/EABUBAQEAAAAAAAAAAAAAAAAAAAME/8QAGhEAAgMBAQAAAAAAAAAAAAAAAAEDETEyUf/aAAwDAQACEQMRAD8Ak9UjnHYXqtlJ/Q1FrgvT8Imq0xsxFNbJ+TSqXop22tLRMyZuctgy4NHY7E1XgAKAzxZ4I3gAc3Isen//2Q=="
   },
   {
     "playback-id": "qIJBqaJPkhNXiHbed8j2jyx02tQQWBI5fL6WkIQYL63w",

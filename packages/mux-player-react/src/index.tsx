@@ -49,8 +49,8 @@ type MuxMediaPropTypes = {
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   streamType: ValueOf<StreamTypes> | 'vod';
   startTime: number;
+  storyboardSrc: string;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
-  experimentalCmcd: boolean;
   children: never[];
 };
 
@@ -65,6 +65,7 @@ export type MuxPlayerProps = {
   playerSoftwareName?: string;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
+  maxResolution?: string;
   metadataVideoId?: string;
   metadataVideoTitle?: string;
   metadataViewerUserId?: string;
@@ -76,6 +77,7 @@ export type MuxPlayerProps = {
   thumbnailTime?: number;
   title?: string;
   tokens?: Tokens;
+  theme?: string;
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;

@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.7](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.6...@mux/mux-audio-react@0.6.7) (2023-02-15)
+
+**Note:** Version bump only for package @mux/mux-audio-react
+
+
+
+
+
+## [0.6.6](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.5...@mux/mux-audio-react@0.6.6) (2023-02-14)
+
+**Note:** Version bump only for package @mux/mux-audio-react
+
+
+
+
+
+## [0.6.5](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.4...@mux/mux-audio-react@0.6.5) (2023-02-02)
+
+**Note:** Version bump only for package @mux/mux-audio-react
+
+
+
+
+
+## [0.6.4](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.3...@mux/mux-audio-react@0.6.4) (2023-02-01)
+
+**Note:** Version bump only for package @mux/mux-audio-react
+
+
+
+
+
+## [0.6.3](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.2...@mux/mux-audio-react@0.6.3) (2023-01-20)
+
+
+### Bug Fixes
+
+* MuxAudioReact mem leak ([e707c8c](https://github.com/muxinc/elements/commit/e707c8ce4589e15b51343f24d700b952ffc38988))
+
+
+
+
+
+## [0.6.2](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.1...@mux/mux-audio-react@0.6.2) (2022-12-13)
+
+**Note:** Version bump only for package @mux/mux-audio-react
+
+
+
+
+
+## [0.6.1](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.0...@mux/mux-audio-react@0.6.1) (2022-11-21)
+
+
+### Bug Fixes
+
+* add async effect for loading media ([#492](https://github.com/muxinc/elements/issues/492)) ([d2b250a](https://github.com/muxinc/elements/commit/d2b250a2d86e4e6a4c17fc34196e6468c4fedf1f))
+
+
+
+
+
 # [0.6.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.5.0...@mux/mux-audio-react@0.6.0) (2022-10-25)
 
 

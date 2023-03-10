@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.6",
   "description": "An uploader elements to be used with Mux Direct Uploads",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -31,8 +31,10 @@
     "clean": "shx rm -rf dist/",
     "test": "web-test-runner **/*test.js --port 8005 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-uploader/src/' coverage/lcov.info --silent",
-    "dev:iife": "yarn build:iife --watch",
-    "dev:esm": "yarn build:esm --watch",
+    "dev:iife": "yarn build:iife --watch=forever",
+    "dev:cjs": "yarn build:cjs --watch=forever",
+    "dev:esm": "yarn build:esm --watch=forever",
+    "dev:esm-module": "yarn build:esm-module --watch=forever",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
     "build:esm": "esbuild src/index.ts --target=es2019 --external:@mux/upchunk --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs",
@@ -46,18 +48,19 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/upchunk": "^2.6.0"
+    "@mux/upchunk": "3.0.2"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
     "@web/dev-server-import-maps": "^0.0.6",
     "copyfiles": "^2.4.1",
-    "downlevel-dts": "^0.9.0",
+    "downlevel-dts": "^0.11.0",
     "esbuild": "^0.15.7",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
     "shared-polyfills": "0.1.0",
     "shx": "^0.3.4",
-    "typescript": "^4.5.2"
+    "sinon": "^15.0.1",
+    "typescript": "^4.9.4"
   }
 }

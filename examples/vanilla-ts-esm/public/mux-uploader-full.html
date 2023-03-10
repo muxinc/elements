@@ -102,9 +102,9 @@
           <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
         </section>
         <div class="button-container">
-          <mux-uploader id="uploader" type="bar" status>
+          <mux-uploader id="uploader">
             <!-- Uncomment for examples of customization via slots -->
-            <!-- <button slot="upload-button">I AM A SUPER CUSTOM BUTTON</button> -->
+            <!-- <button slot="file-select">I AM A SUPER CUSTOM BUTTON</button> -->
           </mux-uploader>
           <button class="second-button">Some other sample button</button>
         </div>
@@ -115,8 +115,6 @@
     <script>
       const input = document.querySelector('input[type="text"]');
       const muxUploader = document.querySelector('mux-uploader');
-      // Uncomment for example of custom progress formatting.
-      // muxUploader.formatProgress = (percent) => `THIS IS A WHOLE ${percent} UPLOADED`;
       input.addEventListener('change', () => {
         muxUploader.endpoint = input.value;
         // You can also pass in a function that yields a promise that resolves to a URL.

@@ -6,60 +6,56 @@ import {
   MuxMediaProps,
   StreamTypes,
   PlaybackTypes,
-  ValueOf,
   toMuxVideoURL,
   Metadata,
   MediaError,
   getError,
   CmcdTypes,
   CmcdTypeValues,
+  addCuePoints,
+  getCuePoints,
+  getActiveCuePoint,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
-  ENV_KEY: 'env-key';
-  DEBUG: 'debug';
-  METADATA_URL: 'metadata-url';
-  PLAYER_SOFTWARE_VERSION: 'player-software-version';
-  PLAYER_SOFTWARE_NAME: 'player-software-name';
-  METADATA_VIDEO_ID: 'metadata-video-id';
-  METADATA_VIDEO_TITLE: 'metadata-video-title';
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id';
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
   CUSTOM_DOMAIN: 'custom-domain';
+  DEBUG: 'debug';
   DISABLE_COOKIES: 'disable-cookies';
+  ENV_KEY: 'env-key';
+  MAX_RESOLUTION: 'max-resolution';
+  METADATA_URL: 'metadata-url';
   PLAYBACK_ID: 'playback-id';
-  PREFER_PLAYBACK: 'prefer-playback';
-  TYPE: 'type';
-  STREAM_TYPE: 'stream-type';
-  START_TIME: 'start-time';
+  PLAYER_SOFTWARE_NAME: 'player-software-name';
+  PLAYER_SOFTWARE_VERSION: 'player-software-version';
   PREFER_CMCD: 'prefer-cmcd';
-  EXPERIMENTAL_CMCD: 'experimental-cmcd';
+  PREFER_PLAYBACK: 'prefer-playback';
+  START_TIME: 'start-time';
+  STREAM_TYPE: 'stream-type';
+  TYPE: 'type';
 };
 
 export const Attributes: AttributeNames = {
-  ENV_KEY: 'env-key',
-  DEBUG: 'debug',
-  PLAYBACK_ID: 'playback-id',
-  METADATA_URL: 'metadata-url',
-  PREFER_PLAYBACK: 'prefer-playback',
-  PLAYER_SOFTWARE_VERSION: 'player-software-version',
-  PLAYER_SOFTWARE_NAME: 'player-software-name',
-  METADATA_VIDEO_ID: 'metadata-video-id',
-  METADATA_VIDEO_TITLE: 'metadata-video-title',
-  METADATA_VIEWER_USER_ID: 'metadata-viewer-user-id',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
+  DEBUG: 'debug',
   DISABLE_COOKIES: 'disable-cookies',
-  TYPE: 'type',
-  STREAM_TYPE: 'stream-type',
-  START_TIME: 'start-time',
+  ENV_KEY: 'env-key',
+  MAX_RESOLUTION: 'max-resolution',
+  METADATA_URL: 'metadata-url',
+  PLAYBACK_ID: 'playback-id',
+  PLAYER_SOFTWARE_NAME: 'player-software-name',
+  PLAYER_SOFTWARE_VERSION: 'player-software-version',
   PREFER_CMCD: 'prefer-cmcd',
-  EXPERIMENTAL_CMCD: 'experimental-cmcd',
+  PREFER_PLAYBACK: 'prefer-playback',
+  START_TIME: 'start-time',
+  STREAM_TYPE: 'stream-type',
+  TYPE: 'type',
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -83,19 +79,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   constructor() {
     super();
     this.#playerInitTime = generatePlayerInitTime();
-  }
-
-  get experimentalCmcd() {
-    return this.hasAttribute(Attributes.EXPERIMENTAL_CMCD);
-  }
-
-  set experimentalCmcd(value: boolean | undefined) {
-    if (!!value === this.experimentalCmcd) return;
-    if (!value) {
-      this.removeAttribute(Attributes.EXPERIMENTAL_CMCD);
-    } else {
-      this.setAttribute(Attributes.EXPERIMENTAL_CMCD, '');
-    }
   }
 
   get preferCmcd() {
@@ -142,8 +125,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     return this.nativeEl.mux;
   }
 
-  // @ts-ignore
-  get error(): MediaError | null {
+  get error() {
     return getError(this.nativeEl) ?? null;
   }
 
@@ -189,6 +171,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  /** @ts-ignore */
   get autoplay(): Autoplay {
     const attr = this.getAttribute('autoplay');
 
@@ -201,6 +184,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  /** @ts-ignore */
   set autoplay(val: Autoplay) {
     const currentVal = this.autoplay;
     if (val === currentVal) {
@@ -296,6 +280,20 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  get maxResolution() {
+    return this.getAttribute(Attributes.MAX_RESOLUTION) ?? undefined;
+  }
+
+  set maxResolution(val: string | undefined) {
+    if (val === this.maxResolution) return;
+
+    if (val) {
+      this.setAttribute(Attributes.MAX_RESOLUTION, val);
+    } else {
+      this.removeAttribute(Attributes.MAX_RESOLUTION);
+    }
+  }
+
   get customDomain() {
     return this.getAttribute(Attributes.CUSTOM_DOMAIN) ?? undefined;
   }
@@ -357,6 +355,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+    return addCuePoints(this.nativeEl, cuePoints);
+  }
+
+  get activeCuePoint() {
+    return getActiveCuePoint(this.nativeEl);
+  }
+
+  get cuePoints() {
+    return getCuePoints(this.nativeEl);
+  }
+
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
     const val = this.getAttribute(Attributes.PREFER_PLAYBACK);
     if (val === PlaybackTypes.MSE || val === PlaybackTypes.NATIVE) return val;
@@ -374,14 +384,21 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get metadata() {
-    const video_id = this.getAttribute(Attributes.METADATA_VIDEO_ID);
-    const video_title = this.getAttribute(Attributes.METADATA_VIDEO_TITLE);
-    const viewer_user_id = this.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
+    const inferredMetadataAttrs: { [key: string]: string } = this.getAttributeNames()
+      .filter((attrName) => {
+        return attrName.startsWith('metadata-') && !([Attributes.METADATA_URL] as string[]).includes(attrName);
+      })
+      .reduce((currAttrs, attrName) => {
+        const value = this.getAttribute(attrName);
+        if (value != null) {
+          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
+        }
+        return currAttrs;
+      }, {} as { [key: string]: string });
+
     return {
+      ...inferredMetadataAttrs,
       ...this.#metadata,
-      ...(video_id != null ? { video_id } : {}),
-      ...(video_title != null ? { video_title } : {}),
-      ...(viewer_user_id != null ? { viewer_user_id } : {}),
     };
   }
 
@@ -458,7 +475,10 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         break;
       case Attributes.PLAYBACK_ID:
         /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
-        this.src = toMuxVideoURL(newValue ?? undefined, { domain: this.customDomain }) as string;
+        this.src = toMuxVideoURL(newValue ?? undefined, {
+          maxResolution: this.maxResolution,
+          domain: this.customDomain,
+        }) as string;
         break;
       case Attributes.DEBUG: {
         const debug = this.debug;
@@ -478,7 +498,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           fetch(newValue)
             .then((resp) => resp.json())
             .then((json) => (this.metadata = json))
-            .catch((_err) => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
+            .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
       default:

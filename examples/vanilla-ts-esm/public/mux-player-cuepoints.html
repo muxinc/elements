@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-player&gt; example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      mux-player {
+        display: block;
+        width: 100%;
+        margin: 1rem 0 2rem;
+        background-color: #000;
+        line-height: 0;
+      }
+
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
+      }
+
+      #cuepoint-renderer {
+        background-color: lightgray;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async">
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <mux-player
+      stream-type="on-demand"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+      muted
+      preload="auto"
+    ></mux-player>
+    <div>
+      <b>Active CuePoint:</b> <pre id="cuepoint-renderer">Unset</pre>
+    </div>
+    <script>
+      const playerEl = document.querySelector('mux-player');
+
+      function addCuePointsToPlayer() {
+        const cuePoints = [
+          { time: 1, value: 'Simple Value' }, 
+          { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+          { time: 10, value: true },
+          { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+        ];
+
+        playerEl.addCuePoints(cuePoints);
+      }
+
+      function cuePointChangeListener() {
+        // Do something with the activeCuePoint here. In this example,
+        // we're simply updating the innerText of some element with the latest.
+        // activeCuePoint.value.
+        console.log('Active CuePoint!', playerEl.activeCuePoint);
+        document.getElementById('cuepoint-renderer').innerText = JSON.stringify(playerEl.activeCuePoint.value, null, 2);
+      }
+
+      playerEl.addEventListener('cuepointchange', cuePointChangeListener);
+
+      // NOTE: Need to wait until the player has loaded metadata before adding cuePoints!
+      if (playerEl.readyState >= 1) {
+        addCuePointsToPlayer();
+      } else {
+        playerEl.addEventListener('loadedmetadata', addCuePointsToPlayer, { once: true });
+      }
+    </script>
+    <a href="../">Browse Elements</a>
+  </body>
+</html>

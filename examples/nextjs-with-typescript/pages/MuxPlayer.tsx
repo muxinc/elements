@@ -2,6 +2,7 @@ import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
+import "@mux/mux-player/themes/micro";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import type MuxPlayerElement from "@mux/mux-player";
@@ -43,6 +44,7 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     // 'stream-type': streamType,
     tokens,
     'custom-domain': customDomain,
+    'storyboard-src': storyboardSrc,
     audio,
     description: title,
     placeholder,
@@ -57,6 +59,7 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     audio,
     tokens,
     customDomain,
+    storyboardSrc,
     metadata,
     title,
     placeholder,
@@ -68,7 +71,6 @@ const ActionTypes = {
 };
 
 const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
-  experimentalCmcd: undefined,
   preferCmcd: undefined,
   muted: undefined,
   debug: undefined,
@@ -83,6 +85,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   defaultShowRemainingTime: undefined,
   defaultHiddenCaptions: undefined,
   primaryColor: undefined,
+  maxResolution: undefined,
   secondaryColor: undefined,
   thumbnailTime: undefined,
   title: undefined,
@@ -98,6 +101,8 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   tokens: undefined,
   playbackId: undefined,
   streamType: undefined,
+  storyboardSrc: undefined,
+  theme: undefined,
 });
 
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
@@ -240,6 +245,9 @@ const ControlCustomizationCSSVars = [
   "--captions-button",
   "--top-captions-button",
   "--bottom-captions-button",
+  "--captions-selectmenu",
+  "--top-captions-selectmenu",
+  "--bottom-captions-selectmenu",
   "--airplay-button",
   "--top-airplay-button",
   "--bottom-airplay-button",
@@ -251,9 +259,9 @@ const ControlCustomizationCSSVars = [
   "--bottom-pip-button",
   "--fullscreen-button",
   "--bottom-fullscreen-button",
-  "--seek-live-button",
-  "--top-seek-live-button",
-  "--bottom-seek-live-button",
+  "--live-button",
+  "--top-live-button",
+  "--bottom-live-button",
 ];
 
 const getControlCustomizationCSSVars = (state) => {
@@ -319,6 +327,7 @@ function MuxPlayerPage({ location }: Props) {
       <MuxPlayer
         ref={mediaElRef}
         style={stylesState}
+        theme={state.theme}
         envKey={state.envKey}
         metadata={state.metadata}
         title={state.title}
@@ -329,6 +338,7 @@ function MuxPlayerPage({ location }: Props) {
         placeholder={state.placeholder}
         playbackId={state.playbackId}
         tokens={state.tokens}
+        storyboardSrc={state.storyboardSrc}
         customDomain={state.customDomain}
         forwardSeekOffset={state.forwardSeekOffset}
         backwardSeekOffset={state.backwardSeekOffset}
@@ -337,7 +347,6 @@ function MuxPlayerPage({ location }: Props) {
         hotkeys={state.hotkeys}
         // onPlayerReady={() => console.log("ready!")}
         preferCmcd={state.preferCmcd}
-        experimentalCmcd={state.experimentalCmcd}
         debug={state.debug}
         disableCookies={state.disableCookies}
         loop={state.loop}
@@ -345,6 +354,7 @@ function MuxPlayerPage({ location }: Props) {
         volume={state.volume}
         paused={state.paused}
         autoPlay={state.autoPlay}
+        maxResolution={state.maxResolution}
         preload={state.preload}
         streamType={state.streamType}
         audio={state.audio}
@@ -433,6 +443,12 @@ function MuxPlayerPage({ location }: Props) {
           name="audio"
           onChange={genericOnChange}
         />
+        <EnumMultiSelectRenderer
+          value={state.theme}
+          name="theme"
+          onChange={genericOnChange}
+          values={['default', 'micro']}
+        />
         <TextRenderer
           value={state.envKey}
           name="envKey"
@@ -449,6 +465,12 @@ function MuxPlayerPage({ location }: Props) {
         <URLRenderer
           value={state.poster}
           name="poster"
+          onChange={genericOnChange}
+          placeholder={`Inferred from playbackId`}
+        />
+        <URLRenderer
+          value={state.storyboardSrc}
+          name="storyboardSrc"
           onChange={genericOnChange}
           placeholder={`Inferred from playbackId`}
         />
@@ -553,16 +575,11 @@ function MuxPlayerPage({ location }: Props) {
           name="debug"
           onChange={genericOnChange}
         />
-        <BooleanRenderer
-          value={state.experimentalCmcd}
-          name="experimentalCmcd"
-          onChange={genericOnChange}
-        />
         <EnumRenderer
           value={state.preferCmcd}
           name="preferCmcd"
           onChange={genericOnChange}
-          values={['query', 'header']}
+          values={['query', 'header', 'none']}
         />
         <BooleanRenderer
           value={state.loop}
@@ -627,6 +644,12 @@ function MuxPlayerPage({ location }: Props) {
             genericOnChange({ hotkeys: hotkeys.join(' ') });
           }}
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
+        />
+        <EnumRenderer
+          value={state.maxResolution}
+          name="maxResolution"
+          onChange={genericOnChange}
+          values={['720p']}
         />
       </div>
 

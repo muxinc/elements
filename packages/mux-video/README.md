@@ -86,13 +86,13 @@ Attributes:
 
 <img src="../../images/env-key.png" alt="Mux Data dashboard env key"></img>
 
+| `max-resolution`: This can be used to limit the resolution of the video delivered. When using signed URLs this attribute will not work and instead you will need to include the `max_resolution` parameter in your signed token.
 - `metadata-video-title`: This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
+- `metadata-*`: This syntax can be used to pass any other Mux Data metadata fields, for example `metadata-sub-property-id="123"`
 - `stream-type`: Enum value: one of `"on-demand"`, `"live"` (HLS live stream), `"ll-live"` (low latency live). Not strictly required, but preferred so that `<mux-video />` can make optimizations based on the type of stream.
 - `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0.
-
-This is the bare bones of metadata that you should provide to the `<mux-video>` element.
 
 All the other attributes that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoplay` are available and will work the same as they do with the HTML5 video element. One sidenote about `autoplay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
 
@@ -216,6 +216,62 @@ In order to use `token=` -- or any other query params, pass them through with th
 
 ```
 playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?token=jwt-signed-token"
+```
+
+### Advanced: CuePoints
+
+`<mux-video>` has an extended API for working with CuePoints metadata. This includes the `addCuePoints()` method to add CuePoints, `cuePoints` and `activeCuePoint` properties to get all CuePoints or the current active CuePoint (based on the element's `currentTime`), and the `cuepointchange` event, which fires whenever the `activeCuePoint` changes. The "shape" of a CuePoint is `{ time: number; value: any; }`, where `time` is the playback time you want the `CuePoint` to begin, and `value` is whatever (JSON-serializable) value is appropriate for your CuePoint use case.
+
+To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as described above). Note that CuePoints are tied to the loaded media source, so: (a) you'll need to wait until the media source (`src` or `playback-id`) has loaded before adding any CuePoints; and (b) the CuePoints will be removed if you `unload()` the current media source or change it by re-setting e.g. `playback-id`. Below is a simple example of using CuePoints:
+
+```html
+<mux-video
+  playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+  controls
+>
+</mux-video>
+<script>
+  const muxVideoEl = document.querySelector('mux-video');
+  function addCuePointsToElement() {
+    const cuePoints = [
+      { time: 1, value: 'Simple Value' }, 
+      { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+      { time: 10, value: true },
+      { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+    ];
+
+    muxVideoEl.addCuePoints(cuePoints);
+  }
+
+  function cuePointChangeListener() {
+    // Do something with the activeCuePoint here. 
+    console.log('Active CuePoint!', muxVideoEl.activeCuePoint);
+  }
+
+  // 
+  muxVideoEl.addEventListener('cuepointchange', cuePointChangeListener);
+  // Here, we're `duration` and `'durationchange'` to determine if the `<mux-video>` element has loaded src. This also gives
+  // us the opportunity to compare our intended CuePoints against the duration of the media source.
+  // Note that you could use other events, such as `'loadedmetadata'` if that makes more sense for your use case.
+  if (playerEl.duration) {
+    addCuePointsToElement();
+  } else {
+    muxVideoEl.addEventListener('durationchange', addCuePointsToElement, { once: true });
+  }
+</script>
+```
+
+One last thing to note about CuePoints: Although they only have a single `time` value, if a user seeks between the `time` of two CuePoints, the `cuepointchange` event will still fire and the  `activeCuePoint` will be the earlier CuePoint. Using the example above for reference, we have a CuePoint with a `time` of `3` and another with a `time` of `10`. If a user seeks to `8`, the `activeCuePoint` will be the CuePoint with the `time` of `3`. This is intentional to cover as many use cases as possible. If you only care about the `activeCuePoint` when the `currentTime` is roughly
+the same as the `time`, you can add some simple logic to account for that, e.g.:
+
+```js
+function cuePointChangeListener() {
+  // Only do something with the activeCuePoint if we're playing "near" its `time`.
+  const MARGIN_OF_ERROR = 1;
+  if (Math.abs(muxVideoEl.currentTime - muxVideoEl.activeCuePoint.time) <= MARGIN_OF_ERROR) {
+    console.log('Active CuePoint playing near its time!', muxVideoEl.activeCuePoint);
+  }
+}
 ```
 
 ### Advanced: Use with React+TypeScript

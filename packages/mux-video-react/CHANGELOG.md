@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.7](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.6...@mux/mux-video-react@0.7.7) (2023-02-15)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.6](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.5...@mux/mux-video-react@0.7.6) (2023-02-14)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.5](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.4...@mux/mux-video-react@0.7.5) (2023-02-02)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.4](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.3...@mux/mux-video-react@0.7.4) (2023-02-01)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.3](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.2...@mux/mux-video-react@0.7.3) (2023-01-20)
+
+
+### Bug Fixes
+
+* MuxVideoReact memory leak ([c057099](https://github.com/muxinc/elements/commit/c057099bb344212c0afd5f938a92c893245423b4))
+
+
+
+
+
+## [0.7.2](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.1...@mux/mux-video-react@0.7.2) (2022-12-13)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.1](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.0...@mux/mux-video-react@0.7.1) (2022-11-21)
+
+
+### Bug Fixes
+
+* add async effect for loading media ([#492](https://github.com/muxinc/elements/issues/492)) ([d2b250a](https://github.com/muxinc/elements/commit/d2b250a2d86e4e6a4c17fc34196e6468c4fedf1f))
+
+
+
+
+
 # [0.7.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.6.0...@mux/mux-video-react@0.7.0) (2022-10-25)
 
 

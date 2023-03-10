@@ -39,10 +39,6 @@ function MuxUploaderPage() {
           style={{ display: "block", height: "200px" }}
           id="uploader"
           endpoint={url}
-          // Uncomment for example of custom progress formatting.
-          // formatProgress={(percent: number) => `${percent} percent uploaded`}
-          type="bar"
-          status
           onUploadStart={onUploadStart}
           onChunkAttempt={onChunkAttempt}
           onChunkSuccess={onChunkSuccess}

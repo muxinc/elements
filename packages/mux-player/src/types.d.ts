@@ -1,4 +1,5 @@
-import type MuxVideoElement, { MediaError } from '@mux/mux-video';
+import type MuxVideoElement from '@mux/mux-video';
+import type { MediaError } from '@mux/mux-video';
 import type { AttributeTokenList } from './helpers';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
@@ -11,7 +12,7 @@ export type MuxPlayerProps = Partial<MuxVideoElement> & {
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   hasSrc: boolean;
   audio: boolean;
-  theme?: string;
+  themeTemplate?: string | HTMLTemplateElement;
   playerSize: string;
   showLoading: boolean;
   thumbnailTime: number;
@@ -27,15 +28,12 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   onInitFocusDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
   inLiveWindow: boolean;
-  onSeekToLive: (_evt: Event) => void;
+  maxResolution?: string;
   tokens: {
     playback?: string;
     thumbnail?: string;
     storyboard?: string;
   };
-  metadataVideoId: string;
-  metadataVideoTitle: string;
-  metadataViewerUserId: string;
   noHotKeys: boolean;
   placeholder: string;
   hotKeys: AttributeTokenList;

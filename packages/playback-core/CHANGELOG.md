@@ -3,6 +3,93 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.17.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.2...@mux/playback-core@0.17.0) (2023-02-15)
+
+
+### Bug Fixes
+
+* **playback-core:** Explicitly remove textTracks we've added, even for native (non-hls.js) playback. ([#583](https://github.com/muxinc/elements/issues/583)) ([040ea61](https://github.com/muxinc/elements/commit/040ea61c8dddb5e856c37d9d8ba9fa8074bae6ad))
+
+
+### Features
+
+* add attribute max-resolution on mux-player and mux-video ([#581](https://github.com/muxinc/elements/issues/581)) ([1936c8e](https://github.com/muxinc/elements/commit/1936c8ecb47805ee75fd04ffee514b846043efc1))
+
+
+
+
+
+## [0.16.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.1...@mux/playback-core@0.16.2) (2023-02-14)
+
+
+### Bug Fixes
+
+* Improve behavior for cuepoints with Safari usage. ([be2e353](https://github.com/muxinc/elements/commit/be2e353f8e904fb7b701e32247436578ae416ecc))
+* **playback-core:** Typescript + min acrobatics to make svelte and others happy ([fdf34bb](https://github.com/muxinc/elements/commit/fdf34bb8fd409f0c2b5945802251ed2e6ffafd7e))
+
+
+
+
+
+## [0.16.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.0...@mux/playback-core@0.16.1) (2023-02-02)
+
+
+### Bug Fixes
+
+* **playback-core:** Only initialize with setupCuePoints when using hls.js for playback ([a9076fb](https://github.com/muxinc/elements/commit/a9076fbec6135ec789c49838ba7efff6b7962f2c))
+
+
+
+
+
+# [0.16.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.15.1...@mux/playback-core@0.16.0) (2023-02-01)
+
+
+### Features
+
+* **mux-player, mux-video, playback-core:** Add API for CuePoints metadata. ([1f0b40a](https://github.com/muxinc/elements/commit/1f0b40a6d7f09c0e08a42353e241a26857edaad6))
+
+
+
+
+
+## [0.15.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.15.0...@mux/playback-core@0.15.1) (2023-01-20)
+
+**Note:** Version bump only for package @mux/playback-core
+
+
+
+
+
+# [0.15.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.14.0...@mux/playback-core@0.15.0) (2022-12-13)
+
+
+### Features
+
+* Remove experimentalCmcd and add none to preferCmcd. Update secret docs. ([2656631](https://github.com/muxinc/elements/commit/2656631968f2b7e97a07d435818ee43c16627002))
+
+
+
+
+
+# [0.14.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.13.0...@mux/playback-core@0.14.0) (2022-11-21)
+
+
+### Bug Fixes
+
+* add async effect for loading media ([#492](https://github.com/muxinc/elements/issues/492)) ([d2b250a](https://github.com/muxinc/elements/commit/d2b250a2d86e4e6a4c17fc34196e6468c4fedf1f))
+* **playback-core:** Prefer deterministic value for cid/video_id (instead of UUID). ([7b4661f](https://github.com/muxinc/elements/commit/7b4661f838454aa7d19130272dff0fe6220f9afd))
+
+
+### Features
+
+* **mux-video:** Add prefer cmcd attr and prop. ([25f0fb7](https://github.com/muxinc/elements/commit/25f0fb7779a6fb30428a7df3a920030836b79dab))
+* **playback-core:** Add preferCmcd support to allow for cmcd query params (default) vs. headers. ([9654ffd](https://github.com/muxinc/elements/commit/9654ffdbc0b86e797284a379524ccef5d268ebd0))
+
+
+
+
+
 # [0.13.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.12.0...@mux/playback-core@0.13.0) (2022-10-25)
 
 

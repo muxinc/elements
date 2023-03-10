@@ -1,6 +1,8 @@
 import { globalThis, document } from 'shared-polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
+import 'media-chrome/dist/experimental/media-captions-selectmenu.js';
+import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
   ValueOf,
@@ -16,8 +18,6 @@ import {
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
   getPlayerVersion,
-  isInLiveWindow,
-  seekToLive,
   toPropName,
   AttributeTokenList,
   getPosterURLFromPlaybackId,
@@ -39,23 +39,6 @@ export type Tokens = {
 
 const streamTypeValues = Object.values(StreamTypes);
 
-const SMALL_BREAKPOINT = 700;
-const XSMALL_BREAKPOINT = 300;
-const MediaChromeSizes = {
-  LG: 'large',
-  SM: 'small',
-  XS: 'extra-small',
-};
-
-function getPlayerSize(el: Element) {
-  const muxPlayerRect = el.getBoundingClientRect();
-  return muxPlayerRect.width < XSMALL_BREAKPOINT
-    ? MediaChromeSizes.XS
-    : muxPlayerRect.width < SMALL_BREAKPOINT
-    ? MediaChromeSizes.SM
-    : MediaChromeSizes.LG;
-}
-
 const VideoAttributes = {
   SRC: 'src',
   POSTER: 'poster',
@@ -71,6 +54,7 @@ const PlayerAttributes = {
   PLAYBACK_TOKEN: 'playback-token',
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
+  STORYBOARD_SRC: 'storyboard-src',
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
   NOHOTKEYS: 'nohotkeys',
@@ -79,6 +63,7 @@ const PlayerAttributes = {
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
   TITLE: 'title',
   PLACEHOLDER: 'placeholder',
+  THEME: 'theme',
 };
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -89,8 +74,9 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     hasSrc: !!el.playbackId || !!el.src,
     poster: el.poster,
     storyboard: el.storyboard,
+    storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     placeholder: el.getAttribute('placeholder'),
-    theme: el.getAttribute('theme'),
+    themeTemplate: getThemeTemplate(el),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
     autoplay: el.autoplay,
     crossOrigin: el.crossOrigin,
@@ -105,12 +91,12 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // playsInline: el.playsInline,
     preload: el.preload,
     envKey: el.envKey,
-    experimentalCmcd: el.experimentalCmcd,
     preferCmcd: el.preferCmcd,
     debug: el.debug,
     disableCookies: el.disableCookies,
     tokens: el.tokens,
     beaconCollectionDomain: el.beaconCollectionDomain,
+    maxResolution: el.maxResolution,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
@@ -126,17 +112,27 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     defaultShowRemainingTime: el.defaultShowRemainingTime,
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
-    playerSize: getPlayerSize(el.mediaController ?? el),
-    // NOTE: In order to guarantee all expected metadata props are set "from the outside" when used
-    // and to guarantee they'll all be set *before* the playback id is set, using attr values here (CJP)
-    metadataVideoId: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_ID),
-    metadataVideoTitle: el.getAttribute(MuxVideoAttributes.METADATA_VIDEO_TITLE),
-    metadataViewerUserId: el.getAttribute(MuxVideoAttributes.METADATA_VIEWER_USER_ID),
     title: el.getAttribute(PlayerAttributes.TITLE),
     ...state,
   };
 
   return props;
+}
+
+function getThemeTemplate(el: MuxPlayerElement) {
+  let themeName = el.getAttribute(PlayerAttributes.THEME);
+  if (themeName) {
+    // @ts-ignore
+    const templateElement = el.getRootNode()?.getElementById?.(themeName);
+    if (templateElement) return templateElement;
+
+    if (!themeName.startsWith('media-theme-')) {
+      themeName = `media-theme-${themeName}`;
+    }
+
+    const ThemeElement = globalThis.customElements.get(themeName) as MediaThemeElement | undefined;
+    if (ThemeElement?.template) return ThemeElement.template;
+  }
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
@@ -148,7 +144,6 @@ const playerSoftwareName = 'mux-player';
 const initialState = {
   dialog: undefined,
   isDialogOpen: false,
-  inLiveWindow: false,
 };
 
 class MuxPlayerElement extends VideoApiElement {
@@ -156,7 +151,6 @@ class MuxPlayerElement extends VideoApiElement {
   #tokens = {};
   #userInactive = true;
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
-  #resizeObserver?: ResizeObserver;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
     onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
@@ -164,7 +158,6 @@ class MuxPlayerElement extends VideoApiElement {
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
       if (!isFocusedElementInPlayer) e.preventDefault();
     },
-    onSeekToLive: () => seekToLive(this),
   };
 
   static get observedAttributes() {
@@ -180,6 +173,7 @@ class MuxPlayerElement extends VideoApiElement {
     super();
 
     this.attachShadow({ mode: 'open' });
+    this.#setupCSSProperties();
 
     // If the custom element is defined before the <mux-player> HTML is parsed
     // no attributes will be available in the constructor (construction process).
@@ -195,16 +189,16 @@ class MuxPlayerElement extends VideoApiElement {
     this.#isInit = true;
 
     // The next line triggers the first render of the template.
-    this.#setState({ playerSize: getPlayerSize(this) });
+    this.#render();
 
     // Fixes a bug in React where mux-player's CE children were not upgraded yet.
     // These lines ensure the rendered mux-video and media-controller are upgraded,
     // even before they are connected to the main document.
     try {
-      customElements.upgrade(this.theme as Node);
-      if (!(this.theme instanceof globalThis.HTMLElement)) throw '';
+      customElements.upgrade(this.mediaTheme as Node);
+      if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
     } catch (error) {
-      logger.error(`<${this.theme?.localName}> failed to upgrade!`);
+      logger.error(`<media-theme> failed to upgrade!`);
     }
 
     try {
@@ -225,26 +219,55 @@ class MuxPlayerElement extends VideoApiElement {
 
     this.#setUpErrors();
     this.#setUpCaptionsButton();
-    this.#monitorLiveWindow();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
     this.#setUpCaptionsMovement();
   }
 
-  get theme(): Element | null | undefined {
-    return Array.from(this.shadowRoot?.children ?? []).find(({ localName }) => localName.startsWith('media-theme-'));
+  #setupCSSProperties() {
+    // registerProperty will throw if the prop has already been registered
+    // and there's currently no way to check ahead of time.
+    // initialValue's are defined in the theme
+    try {
+      // @ts-ignore
+      window?.CSS?.registerProperty({
+        name: '--primary-color',
+        syntax: '<color>',
+        inherits: true,
+      });
+      // @ts-ignore
+      window?.CSS?.registerProperty({
+        name: '--secondary-color',
+        syntax: '<color>',
+        inherits: true,
+      });
+    } catch (e) {}
+  }
+
+  get mediaTheme(): Element | null | undefined {
+    return this.shadowRoot?.querySelector('media-theme');
   }
 
   get mediaController(): MediaController | null | undefined {
-    return this.theme?.shadowRoot?.querySelector('media-controller');
+    return this.mediaTheme?.shadowRoot?.querySelector('media-controller');
+  }
+
+  get metadataFromAttrs() {
+    return this.getAttributeNames()
+      .filter((attrName) => attrName.startsWith('metadata-'))
+      .reduce((currAttrs, attrName) => {
+        const value = this.getAttribute(attrName);
+        if (value !== null) {
+          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
+        }
+        return currAttrs;
+      }, {} as { [key: string]: string });
   }
 
   connectedCallback() {
-    this.#renderChrome();
-    this.#initResizing();
-  }
-
-  disconnectedCallback() {
-    this.#deinitResizing();
+    const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
+    if (muxVideo) {
+      muxVideo.metadata = this.metadataFromAttrs;
+    }
   }
 
   #setState(newState: Record<string, any>) {
@@ -254,51 +277,6 @@ class MuxPlayerElement extends VideoApiElement {
 
   #render(props: Record<string, any> = {}) {
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
-  }
-
-  #renderChrome() {
-    if (this.#state.playerSize != getPlayerSize(this.mediaController ?? this)) {
-      this.#setState({ playerSize: getPlayerSize(this.mediaController ?? this) });
-    }
-  }
-
-  #initResizing() {
-    this.#resizeObserver = new ResizeObserver(() => this.#renderChrome());
-    this.#resizeObserver.observe(this.mediaController ?? this);
-  }
-
-  #deinitResizing() {
-    this.#resizeObserver?.disconnect();
-  }
-
-  #monitorLiveWindow() {
-    this.mediaController?.addEventListener('mediaplayrequest', (event) => {
-      if (
-        (event.target as Element)?.localName === 'media-play-button' &&
-        this.streamType &&
-        [StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any)
-      ) {
-        // playback core should handle the seek to live on first play
-        if (this.hasPlayed) {
-          seekToLive(this);
-        }
-      }
-    });
-
-    const updateLiveWindow = () => {
-      const nextInLiveWindow = isInLiveWindow(this);
-      const prevInLiveWindow = this.#state.inLiveWindow;
-      if (nextInLiveWindow !== prevInLiveWindow) {
-        this.#setState({ inLiveWindow: nextInLiveWindow });
-        this.dispatchEvent(
-          new CustomEvent('inlivewindowchange', { composed: true, bubbles: true, detail: this.inLiveWindow })
-        );
-      }
-    };
-    this.media?.addEventListener('progress', updateLiveWindow);
-    this.media?.addEventListener('waiting', updateLiveWindow);
-    this.media?.addEventListener('timeupdate', updateLiveWindow);
-    this.media?.addEventListener('emptied', updateLiveWindow);
   }
 
   #setUpErrors() {
@@ -338,7 +316,7 @@ class MuxPlayerElement extends VideoApiElement {
 
     if (this.media) {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
-        if (!this.media?.error) return errorEvent;
+        if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
         const { devlog } = getErrorLogs(
           this.media?.error,
@@ -597,19 +575,6 @@ class MuxPlayerElement extends VideoApiElement {
     this.#render({ [toPropName(attrName)]: newValue });
   }
 
-  get experimentalCmcd() {
-    return this.hasAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD);
-  }
-
-  set experimentalCmcd(value: boolean | undefined) {
-    if (!!value === this.experimentalCmcd) return;
-    if (!value) {
-      this.removeAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD);
-    } else {
-      this.setAttribute(MuxVideoAttributes.EXPERIMENTAL_CMCD, '');
-    }
-  }
-
   get preferCmcd() {
     return (this.getAttribute(MuxVideoAttributes.PREFER_CMCD) as ValueOf<CmcdTypes>) ?? undefined;
   }
@@ -630,7 +595,7 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   get inLiveWindow() {
-    return this.#state.inLiveWindow;
+    return this.mediaController?.hasAttribute('media-time-is-live');
   }
 
   get _hls(): PlaybackEngine | undefined {
@@ -639,6 +604,20 @@ class MuxPlayerElement extends VideoApiElement {
 
   get mux() {
     return this.media?.mux;
+  }
+
+  /**
+   * Gets the theme.
+   */
+  get theme() {
+    return this.getAttribute(PlayerAttributes.THEME) ?? '';
+  }
+
+  /**
+   * Sets the theme.
+   */
+  set theme(val) {
+    this.setAttribute(PlayerAttributes.THEME, `${val}`);
   }
 
   /**
@@ -714,20 +693,43 @@ class MuxPlayerElement extends VideoApiElement {
   }
 
   /**
-   * Return the storyboard URL when a playback ID is provided,
+   * Return the storyboard-src attribute URL
+   */
+  get storyboardSrc() {
+    return this.getAttribute(PlayerAttributes.STORYBOARD_SRC) ?? undefined;
+  }
+
+  /**
+   * Set the storyboard-src attribute URL
+   */
+  set storyboardSrc(src: string | undefined) {
+    if (!src) {
+      this.removeAttribute(PlayerAttributes.STORYBOARD_SRC);
+    } else {
+      this.setAttribute(PlayerAttributes.STORYBOARD_SRC, src);
+    }
+  }
+
+  /**
+   * Return the storyboard URL when a playback ID or storyboard-src is provided,
    * we aren't an audio player and the stream-type isn't live.
    */
   get storyboard() {
     if (
-      this.playbackId &&
       !this.audio &&
       (!this.streamType ||
         ![StreamTypes.LIVE, StreamTypes.LL_LIVE, StreamTypes.DVR, StreamTypes.LL_DVR].includes(this.streamType as any))
     ) {
-      return getStoryboardURLFromPlaybackId(this.playbackId, {
-        domain: this.customDomain,
-        token: this.tokens.storyboard,
-      });
+      // only infer from playbackId if not set on storyboardSrc and no token
+      if (this.storyboardSrc && !this.tokens.storyboard) {
+        return this.storyboardSrc;
+      }
+      if (this.playbackId) {
+        return getStoryboardURLFromPlaybackId(this.playbackId, {
+          domain: this.customDomain,
+          token: this.tokens.storyboard,
+        });
+      }
     }
 
     return;
@@ -821,7 +823,15 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the primary color used by the player.
    */
   get primaryColor() {
-    return this.getAttribute(PlayerAttributes.PRIMARY_COLOR) ?? undefined;
+    let color = this.getAttribute(PlayerAttributes.PRIMARY_COLOR);
+    if (color != null) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_primary-color')?.trim();
+      if (color) return color;
+    }
   }
 
   /**
@@ -835,7 +845,15 @@ class MuxPlayerElement extends VideoApiElement {
    * Get the secondary color used by the player.
    */
   get secondaryColor() {
-    return this.getAttribute(PlayerAttributes.SECONDARY_COLOR) ?? 'rgb(0 0 0 / .65)';
+    let color = this.getAttribute(PlayerAttributes.SECONDARY_COLOR);
+    if (color != null) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_secondary-color')?.trim();
+      if (color) return color;
+    }
   }
 
   /**
@@ -961,6 +979,20 @@ class MuxPlayerElement extends VideoApiElement {
       this.setAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN);
+    }
+  }
+
+  get maxResolution() {
+    return this.getAttribute(MuxVideoAttributes.MAX_RESOLUTION) ?? undefined;
+  }
+
+  set maxResolution(val: string | undefined) {
+    if (val === this.maxResolution) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.MAX_RESOLUTION, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.MAX_RESOLUTION);
     }
   }
 
@@ -1098,7 +1130,27 @@ class MuxPlayerElement extends VideoApiElement {
       logger.error('underlying media element missing when trying to set metadata. metadata will not be set.');
       return;
     }
-    this.media.metadata = val;
+    this.media.metadata = { ...this.metadataFromAttrs, ...val };
+  }
+
+  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+    if (!this.#isInit) {
+      this.#init();
+    }
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to addCuePoints. cuePoints will not be added.');
+      return;
+    }
+    return this.media?.addCuePoints(cuePoints);
+  }
+
+  get activeCuePoint() {
+    return this.media?.activeCuePoint;
+  }
+
+  get cuePoints() {
+    return this.media?.cuePoints ?? [];
   }
 
   /**

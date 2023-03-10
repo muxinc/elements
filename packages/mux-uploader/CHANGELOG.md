@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.5...@mux/mux-uploader@1.0.0-beta.6) (2023-02-14)
+
+
+### Bug Fixes
+
+* **mux-uploader:** Establish pattern for default slot content ([#580](https://github.com/muxinc/elements/issues/580)) ([8cfeec6](https://github.com/muxinc/elements/commit/8cfeec62e8599063469b6d6f07f0a852be2cf0fe))
+
+
+
+
+
+# [1.0.0-beta.5](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.4...@mux/mux-uploader@1.0.0-beta.5) (2023-02-01)
+
+
+### Bug Fixes
+
+* **mux-uploader:** Bump upchunk for min and max bug that impacts dynamic chunk sizing. ([#557](https://github.com/muxinc/elements/issues/557)) ([33a4690](https://github.com/muxinc/elements/commit/33a4690b470b64959fb6bc769825f4e309fd2bef))
+
+
+* chore(mux-uploader)!: refactor percentage progress into progress component (#555) ([5331f61](https://github.com/muxinc/elements/commit/5331f615d6e9b4e9b0590b8862df63d98d216a78)), closes [#555](https://github.com/muxinc/elements/issues/555)
+
+
+### BREAKING CHANGES
+
+* removes the formatProgress property and status attribute
+
+
+
+
+
+# [1.0.0-beta.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.3...@mux/mux-uploader@1.0.0-beta.4) (2023-01-20)
+
+**Note:** Version bump only for package @mux/mux-uploader
+
+
+
+
+
+# [1.0.0-beta.3](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.2...@mux/mux-uploader@1.0.0-beta.3) (2022-12-13)
+
+
+### Features
+
+* **mux-uploader:** Upgrade upchunk to take advantage of readable streams. ([9a2c1b9](https://github.com/muxinc/elements/commit/9a2c1b973966a65702ba0259a5e59dfe8a378cd0))
+
+
+
+
+
 # [1.0.0-beta.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.1...@mux/mux-uploader@1.0.0-beta.2) (2022-10-25)
 
 **Note:** Version bump only for package @mux/mux-uploader

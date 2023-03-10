@@ -3,6 +3,94 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.2...@mux/mux-player-react@1.8.0) (2023-02-15)
+
+
+### Features
+
+* add attribute max-resolution on mux-player and mux-video ([#581](https://github.com/muxinc/elements/issues/581)) ([1936c8e](https://github.com/muxinc/elements/commit/1936c8ecb47805ee75fd04ffee514b846043efc1))
+
+
+
+
+
+## [1.7.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.1...@mux/mux-player-react@1.7.2) (2023-02-14)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
+## [1.7.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.0...@mux/mux-player-react@1.7.1) (2023-02-02)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
+# [1.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.6.1...@mux/mux-player-react@1.7.0) (2023-02-01)
+
+
+### Features
+
+* **mux-player-react:** Force version bump to 1.7.0 for parity with mux-player (minor code refactor for lerna). ([aba4ec0](https://github.com/muxinc/elements/commit/aba4ec0f6724928bd25f8def3685bfbccf68ec4c))
+* **mux-player-react:** Force version bump to 1.7.0 for parity with mux-player. ([e7d6b3f](https://github.com/muxinc/elements/commit/e7d6b3f3eb36166c32d643de58baee9decf31fac))
+
+
+
+
+
+## [1.6.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.6.0...@mux/mux-player-react@1.6.1) (2023-02-01)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
+# [1.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.5.1...@mux/mux-player-react@1.6.0) (2023-01-20)
+
+
+### Features
+
+* **mux-player:** add storyboard-src attribute and corresponding prop ([#522](https://github.com/muxinc/elements/issues/522)) ([e9c3f0a](https://github.com/muxinc/elements/commit/e9c3f0afd3eb2521248996c37de1716b4ce724c4))
+
+
+
+
+
+## [1.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.5.0...@mux/mux-player-react@1.5.1) (2022-12-15)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
+# [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.4.0...@mux/mux-player-react@1.5.0) (2022-12-13)
+
+
+### Features
+
+* Remove experimentalCmcd and add none to preferCmcd. Update secret docs. ([2656631](https://github.com/muxinc/elements/commit/2656631968f2b7e97a07d435818ee43c16627002))
+
+
+
+
+
+# [1.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.3.0...@mux/mux-player-react@1.4.0) (2022-11-21)
+
+
+### Features
+
+* **mux-player-react:** Add prefer cmcd prop. ([4733618](https://github.com/muxinc/elements/commit/473361832e9209314106980ce3e1ff1009a40d12))
+
+
+
+
+
 # [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.2.0...@mux/mux-player-react@1.3.0) (2022-10-25)
 
 

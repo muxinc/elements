@@ -7,14 +7,14 @@ const minify = (html) => html.trim().replace(/>\s+</g, '><');
 describe('<mux-player> template render', () => {
   const div = document.createElement('div');
 
-  const exportParts = `top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, seek-live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display`;
+  const exportParts = `top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display`;
 
   it('default template without props', function () {
     render(content({}), div);
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -23,7 +23,6 @@ describe('<mux-player> template render', () => {
     render(
       content({
         inLiveWindow: false,
-        playerSize: 'extra-small',
         streamType: 'live',
         isDialogOpen: true,
         dialog: {
@@ -36,7 +35,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-extra-small" stream-type="live" player-size="extra-small" has-open-dialog="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><button aria-disabled="true" disabled="" slot="seek-live" part="top seek-live button">\n            \n            Live\n          </button><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme hotkeys=" noarrowleft noarrowright" stream-type="live" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -44,7 +43,6 @@ describe('<mux-player> template render', () => {
   it('template VodChromeLarge with captions', function () {
     render(
       content({
-        playerSize: 'large',
         streamType: 'on-demand',
         hasCaptions: true,
       }),
@@ -54,7 +52,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -62,7 +60,6 @@ describe('<mux-player> template render', () => {
   it('template VodChromeLarge without captions', function () {
     render(
       content({
-        playerSize: 'large',
         streamType: 'on-demand',
         hasCaptions: false,
         isDialogOpen: true,
@@ -76,7 +73,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme-mux class="size-large" stream-type="on-demand" player-size="large" has-open-dialog="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme-mux>`
+        `<media-theme stream-type="on-demand" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });

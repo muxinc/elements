@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.5](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.4...@mux/mux-audio@0.9.5) (2023-02-15)
+
+**Note:** Version bump only for package @mux/mux-audio
+
+
+
+
+
+## [0.9.4](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.3...@mux/mux-audio@0.9.4) (2023-02-14)
+
+
+### Bug Fixes
+
+* **playback-core:** Typescript + min acrobatics to make svelte and others happy ([fdf34bb](https://github.com/muxinc/elements/commit/fdf34bb8fd409f0c2b5945802251ed2e6ffafd7e))
+
+
+
+
+
+## [0.9.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.2...@mux/mux-audio@0.9.3) (2023-02-02)
+
+**Note:** Version bump only for package @mux/mux-audio
+
+
+
+
+
+## [0.9.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.1...@mux/mux-audio@0.9.2) (2023-02-01)
+
+**Note:** Version bump only for package @mux/mux-audio
+
+
+
+
+
+## [0.9.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.0...@mux/mux-audio@0.9.1) (2023-01-20)
+
+**Note:** Version bump only for package @mux/mux-audio
+
+
+
+
+
+# [0.9.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.8.1...@mux/mux-audio@0.9.0) (2022-12-13)
+
+
+### Features
+
+* allow video, audio and player elements to get any metadata-* attrs set ([#501](https://github.com/muxinc/elements/issues/501)) ([8ee139d](https://github.com/muxinc/elements/commit/8ee139d2bbd08e1e3c08d047f870c1dcf01dac7e))
+
+
+
+
+
+## [0.8.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.8.0...@mux/mux-audio@0.8.1) (2022-11-21)
+
+
+### Bug Fixes
+
+* add async effect for loading media ([#492](https://github.com/muxinc/elements/issues/492)) ([d2b250a](https://github.com/muxinc/elements/commit/d2b250a2d86e4e6a4c17fc34196e6468c4fedf1f))
+
+
+
+
+
 # [0.8.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.7.0...@mux/mux-audio@0.8.0) (2022-10-25)
 
 

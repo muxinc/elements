@@ -67,10 +67,9 @@ This will show:
 
 - An upload button
 - When a file is selected a progress bar will shows the upload progress
-- With the `status` attribute, the upload progress will also show the status of the upload (by default is a number percentage).
 
 ```html
-<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status></mux-uploader>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params"></mux-uploader>
 ```
 
 ![mux uploader with defaults](./screenshots/default-everything.gif)
@@ -81,7 +80,7 @@ The default uploader looks nice out of the box, but it probably isn't exactly th
 
 ### Using your own button
 
-You can use your own button with the `slot="upload-button"` attribute.
+You can use your own button with the `slot="file-select"` attribute.
 
 This is really handy if, for example, you already have a `.btn` class that styles buttons in your application.
 
@@ -99,9 +98,9 @@ This is really handy if, for example, you already have a `.btn` class that style
   }
 </style>
 
-<!-- slot="upload-button" is doing the magic here -->
-<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
-  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+<!-- slot="file-select" is doing the magic here -->
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params">
+  <button class="btn" type="button" slot="file-select">Pick a file</button>
 </mux-uploader>
 ```
 
@@ -118,33 +117,12 @@ By default, the progress bar color is black with a gray background, you can cust
   }
 </style>
 
-<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
-  <button class="btn" type="button" slot="upload-button">Pick a file</button>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params">
+  <button class="btn" type="button" slot="file-select">Pick a file</button>
 </mux-uploader>
 ```
 
 ![mux uploader with custom progress bar](./screenshots/custom-progress-bar.gif)
-
-### Customizing the status text
-
-By default the status text shows a percentage. If you want to center the status text and increase the font size, you can do that by applying styles to the `mux-uploader` component itself.
-
-```html
-<style>
-  mux-uploader {
-    --progress-bar-fill-color: #7e22ce;
-    font-size: 22px;
-    font-family: monospace;
-    text-align: center;
-  }
-</style>
-
-<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status>
-  <button class="btn" type="button" slot="upload-button">Pick a file</button>
-</mux-uploader>
-```
-
-![mux uploader with custom status text](./screenshots/custom-status-text.gif)
 
 ## Fetching the upload URL async
 
@@ -153,7 +131,7 @@ In the examples above, the `endpoint` attribute is an authenticated URL for a Mu
 At the time you render the `<mux-uploader>`, you may not have the direct upload URL yet, so it helps to fetch that async from your server after a user selects a file.
 
 ```html
-<mux-uploader status></mux-uploader>
+<mux-uploader></mux-uploader>
 
 <script>
   const muxUploader = document.querySelector('mux-uploader');
@@ -195,12 +173,9 @@ Here's a full example of a custom button, customized progress text and drag and 
     background: #99f6e4;
     cursor: pointer;
   }
-  /* Customize progress bar color & status text position & sizing */
+  /* Customize progress bar color */
   mux-uploader {
     --progress-bar-fill-color: #7e22ce;
-    font-family: monospace;
-    font-size: 22px;
-    text-align: center;
   }
   /* Customize drop area background color & active background color */
   mux-uploader-drop {
@@ -214,8 +189,8 @@ Here's a full example of a custom button, customized progress text and drag and 
 </style>
 
 <mux-uploader-drop mux-uploader="my-uploader">
-  <mux-uploader id="my-uploader" status endpoint="https://my-authenticated-url/storage?your-url-params">
-    <button class="btn" type="button" slot="upload-button">Pick a file</button>
+  <mux-uploader id="my-uploader" endpoint="https://my-authenticated-url/storage?your-url-params">
+    <button class="btn" type="button" slot="file-select">Pick a file</button>
   </mux-uploader>
 </mux-uploader-drop>
 ```
@@ -250,7 +225,7 @@ When the upload is complete, you'll see 100% on the progress bar and the `succes
 If an error happens during the upload, `uploaderror` will fire.
 
 ```html
-<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params" status></mux-uploader>
+<mux-uploader endpoint="https://my-authenticated-url/storage?your-url-params"></mux-uploader>
 
 <script>
   const muxUploader = document.querySelector('mux-uploader');
@@ -274,7 +249,6 @@ If an error happens during the upload, `uploaderror` will fire.
 | `id`                 | `string`            | An ID that allows `mux-uploader-drop` to locate `mux-uploader`. Required if you use `mux-uploader-drop`.                                                                                                                                                                              | N/A         |
 | `upload-in-progress` | `boolean`           | (Read-only) Toggles visual status of progress bar while upload is in progress. Can be targeted with CSS if you want to control styles while in progress i.e. mux-uploader[upload-in-progress].                                                                                        | false       |
 | `upload-error`       | `boolean`           | (Read-only) Toggles visual status of progress bar when upload encounters an error. Can be targeted with CSS if you want to control styles when an error occurs i.e. mux-uploader[upload-error].                                                                                       | false       |
-| `status`             | `boolean`           | Toggles text status visibility of progress bar. The text that is displayed is a percentage by default. If you prefer just the progress bar with no text upload status, don't include this attribute.                                                                                  | false       |
 | `dynamic-chunk-size` | `boolean`           | Toggles uploading with dynamic chunk sizes. Chunk sizes will change with upload speed to attempt to optimize upload.                                                                                                                                                                  | false       |
 
 ---
@@ -287,13 +261,6 @@ If an error happens during the upload, `uploaderror` will fire.
 | `overlay-text` | `string`  | Optional text to display on dragover when `overlay` is on. | `''`    |
 | `mux-uploader` | `string ` | Must match the `id` on `MuxUploader`. Required.            | N/A     |
 
-### Properties
-
-#### `<mux-uploader>`
-
-| Property         | Type       | Description                                                                                                                                                                                                                                                                                        | Default                                                          |
-| ---------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `formatProgress` | `function` | A function that accepts numeric percent and is expected to return a string. Allows for customizing how the progress should be rendered - whether you want to display only the number or a sentence with the number etc. i.e. `formatProgress={(percent: number) => `${percent} percent uploaded`}` | A function that yields only the percent as a string i.e. `"60%"` |
 
 ### Events
 
@@ -331,6 +298,7 @@ If an error happens during the upload, `uploaderror` will fire.
 | `--button-active-background`   | `background`       | `#000000`           | background color of upload button when button is active | Applied via `:active` [pseudo selector](https://developer.mozilla.org/en-US/docs/Web/CSS/:active) |
 | `--progress-bar-fill-color`    | `background`       | `#000000`           | background color for progress bar div                   |                                                                                                   |
 | `--progress-radial-fill-color` | `stroke`           | `black`             | stroke color for circle SVG (wip)                       |                                                                                                   |
+| `--progress-percentage-display`| `display`          | `block`             | display value for percentage progress                   |                                                                                                   |
 
 #### `<mux-uploader-drop/>`
 
