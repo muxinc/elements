@@ -122,8 +122,7 @@ function focus(el: MediaDialog) {
 
   // Find element with `autofocus` attribute, or fall back to the first form/tabindex control.
   let target: Element | null | undefined = el.querySelector('[autofocus]:not([disabled])');
-  if (!target && (el as unknown as HTMLElement).tabIndex >= 0) {
-    // @ts-ignore
+  if (!target && el.tabIndex >= 0) {
     target = el;
   }
   if (!target) {

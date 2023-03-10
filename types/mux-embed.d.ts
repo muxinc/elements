@@ -555,7 +555,7 @@ declare module 'mux-embed' {
   };
   interface MuxGlobal extends MuxType, muxProps {}
 
-  export var mux: MuxGlobal;
+  export const mux: MuxGlobal;
   export default mux;
 
   global {
