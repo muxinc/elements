@@ -29,7 +29,6 @@
   "license": "MIT",
   "scripts": {
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
-    "pretest": "yarn copypolyfills",
     "test": "web-test-runner **/*test.js --port 8005 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-uploader/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
@@ -43,10 +42,8 @@
     "build:cjs": "esbuild src/index.ts --target=es2019 --external:@mux/upchunk --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle  --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-uploader.js",
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
-    "prebuild:types": "yarn copypolyfills",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "prebuild": "yarn copypolyfills",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
