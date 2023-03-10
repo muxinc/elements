@@ -30,6 +30,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "pretest": "yarn copypolyfills",
     "test": "web-test-runner **/*test.js --port 8002 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-video/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
