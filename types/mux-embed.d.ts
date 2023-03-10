@@ -551,7 +551,13 @@ declare module 'mux-embed' {
   type MuxType = (task: any) => void;
   type muxProps = {
     utils: publicUtils;
+    events: MuxEvents;
     monitor: typeof monitor;
+    init: typeof init;
+    destroyMonitor: typeof destroyMonitor;
+    addHLSJS: typeof addHLSJS;
+    removeHLSJS: typeof removeHLSJS;
+    emit: typeof emit;
   };
   interface MuxGlobal extends MuxType, muxProps {}
 
