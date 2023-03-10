@@ -1,7 +1,7 @@
 module.exports = async ({core}, data) => {
   if(data.Reference)
       convertToArray({core}, data.Reference, null, null);
-  
+
   let keys = Object.keys(data);
   keys.forEach(a =>{
     if(a.includes("Summary")){
@@ -14,6 +14,9 @@ module.exports = async ({core}, data) => {
   });
   
   await core.summary.write();
+  
+  if(data.Status != 'success')
+    core.setFailed();
 }
 
 function addLinks({core}, data){
