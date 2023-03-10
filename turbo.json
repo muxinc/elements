@@ -31,7 +31,7 @@
     },
     "build": {
       "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*", ".vercel/**/*"],
-      "dependsOn": ["^copypolyfills", "build:types", "^build"]
+      "dependsOn": ["^copypolyfills", "copypolyfills", "build:types", "^build"]
     }
   }
 }
