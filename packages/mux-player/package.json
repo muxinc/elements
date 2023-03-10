@@ -32,7 +32,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "shx rm -rf dist/",
-    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx --ignore-pattern src/polyfills",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info --silent",
     "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
