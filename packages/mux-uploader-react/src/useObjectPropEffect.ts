@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React from 'react';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -55,7 +55,7 @@ export const useObjectPropEffect = <T extends { [k: string]: any }, V>(
   updateValue = defaultUpdateValue,
   hasChanged = defaultHasChanged
 ) => {
-  return useEffect(() => {
+  return React.useEffect(() => {
     const obj = ref?.current;
     if (!obj) return;
     if (!hasChanged(obj, propValue, propName)) return;

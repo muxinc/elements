@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import React from 'react';
 import type { MutableRefObject, ForwardedRef } from 'react';
 
 type Maybe<T> = T | null | undefined;
@@ -10,9 +10,9 @@ interface useCombinedRefs {
 }
 
 export const useCombinedRefs: useCombinedRefs = (...refs) => {
-  const targetRef = useRef(null);
+  const targetRef = React.useRef(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     refs.forEach((ref) => {
       if (!ref) return;
 

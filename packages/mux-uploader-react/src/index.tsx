@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
 import type MuxUploaderElement from '@mux/mux-uploader';
 import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect from './useObjectPropEffect';
 
@@ -56,7 +55,7 @@ const useEventCallbackEffect = <K extends keyof MuxUploaderElementEventMap>(
   React.MutableRefObject<MuxUploaderElement | null> | null | undefined,
   callback: GenericEventListener<MuxUploaderElementEventMap[K]> | undefined
 ) => {
-  return useEffect(() => {
+  return React.useEffect(() => {
     const eventTarget = ref?.current;
     if (!eventTarget || !callback) return;
     eventTarget.addEventListener(type, callback);
@@ -92,7 +91,7 @@ const useUploader = (
 };
 
 const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>((props, ref) => {
-  const innerUploaderRef = useRef<MuxUploaderElement>(null);
+  const innerUploaderRef = React.useRef<MuxUploaderElement>(null);
   const uploaderRef = useCombinedRefs(innerUploaderRef, ref);
   const [remainingProps] = useUploader(innerUploaderRef, props);
 
