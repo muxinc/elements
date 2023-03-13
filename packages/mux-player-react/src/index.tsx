@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import type { StreamTypes, PlaybackTypes, CmcdTypes } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
-import type { Tokens } from '@mux/mux-player';
+import type { Tokens, MuxPlayerElementEventMap } from '@mux/mux-player';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
@@ -54,8 +54,6 @@ type MuxMediaPropTypes = {
   children: never[];
 };
 
-interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {}
-
 export type MuxPlayerProps = {
   className?: string;
   hotkeys?: string;
@@ -101,6 +99,8 @@ export type MuxPlayerProps = {
   onSuspend?: GenericEventListener<MuxPlayerElementEventMap['suspend']>;
   onEnded?: GenericEventListener<MuxPlayerElementEventMap['ended']>;
   onError?: GenericEventListener<MuxPlayerElementEventMap['error']>;
+  onCuePointChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointchange']>;
+  onCuePointsChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointschange']>;
   // onPlayerReady?: EventListener;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
@@ -154,6 +154,8 @@ const usePlayer = (
     onSuspend,
     onEnded,
     onError,
+    onCuePointChange,
+    onCuePointsChange,
     // onPlayerReady,
     metadata,
     tokens,
@@ -212,6 +214,8 @@ const usePlayer = (
   useEventCallbackEffect('suspend', ref, onSuspend);
   useEventCallbackEffect('ended', ref, onEnded);
   useEventCallbackEffect('error', ref, onError);
+  useEventCallbackEffect('cuepointchange', ref, onCuePointChange);
+  useEventCallbackEffect('cuepointschange', ref, onCuePointsChange);
   // useEventCallbackEffect('playerready', ref, onPlayerReady);
   return [remainingProps];
 };
