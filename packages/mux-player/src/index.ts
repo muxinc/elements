@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from './polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
 import 'media-chrome/dist/experimental/media-captions-selectmenu.js';

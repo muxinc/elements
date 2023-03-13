@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from '../polyfills';
 
 /* Inspired by HTMLDialogElement &
    https://github.com/GoogleChrome/dialog-polyfill/blob/master/index.js */
@@ -122,7 +122,7 @@ function focus(el: MediaDialog) {
 
   // Find element with `autofocus` attribute, or fall back to the first form/tabindex control.
   let target: Element | null | undefined = el.querySelector('[autofocus]:not([disabled])');
-  if (!target && (el as HTMLElement).tabIndex >= 0) {
+  if (!target && el.tabIndex >= 0) {
     target = el;
   }
   if (!target) {
