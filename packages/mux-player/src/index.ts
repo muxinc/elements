@@ -258,6 +258,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     initVideoApi(this);
 
+    this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
@@ -306,6 +307,40 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   #render(props: Record<string, any> = {}) {
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
+  }
+
+  #setUpThemeAttributes() {
+    // Forward `theme-` prefixed attributes to the theme.
+    // e.g. `theme-control-bar-vertical` for the Micro theme.
+    const observer = new MutationObserver((mutationList) => {
+      for (const { type, attributeName } of mutationList) {
+        if (type === 'attributes' && attributeName?.startsWith('theme-')) {
+          const themeAttrName = attributeName.replace(/^theme-/, '');
+          const value = this.getAttribute(attributeName);
+          if (value != null) {
+            this.mediaTheme?.setAttribute(themeAttrName, value);
+          } else {
+            this.mediaTheme?.removeAttribute(themeAttrName);
+          }
+        }
+      }
+    });
+
+    observer.observe(this, {
+      attributes: true,
+    });
+
+    this.getAttributeNames()
+      .filter((attributeName) => attributeName.startsWith('theme-'))
+      .forEach((attributeName) => {
+        const themeAttrName = attributeName.replace(/^theme-/, '');
+        const value = this.getAttribute(attributeName);
+        if (value != null) {
+          this.mediaTheme?.setAttribute(themeAttrName, value);
+        } else {
+          this.mediaTheme?.removeAttribute(themeAttrName);
+        }
+      });
   }
 
   #setUpErrors() {
