@@ -16,6 +16,10 @@ globalThis.document.createElement;
 
 ## Usage
 
+You should copy the `index.ts` file into a local `src/polyfiils` on a pre-build step. Then reference it like so
+
 ```
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from './polyfills';
 ```
+
+Due to how this file is setup and our usage of types, we don't want it to be a separate package.

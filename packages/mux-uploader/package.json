@@ -28,7 +28,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "clean": "shx rm -rf dist/",
+    "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "test": "web-test-runner **/*test.js --port 8005 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-uploader/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
@@ -41,7 +41,8 @@
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-uploader.mjs",
     "build:cjs": "esbuild src/index.ts --target=es2019 --external:@mux/upchunk --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle  --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-uploader.js",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
+    "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
@@ -58,7 +59,6 @@
     "esbuild": "^0.15.7",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
-    "shared-polyfills": "0.1.0",
     "shx": "^0.3.4",
     "sinon": "^15.0.1",
     "typescript": "^4.9.4"

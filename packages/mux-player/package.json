@@ -31,7 +31,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "scripts": {
-    "clean": "shx rm -rf dist/",
+    "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info --silent",
@@ -46,7 +46,8 @@
     "build:esm-module": "esbuilder src/index.ts --format=esm-module --outfile=dist/mux-player.mjs",
     "build:iife": "esbuilder src/index.ts --format=iife --outfile=dist/mux-player.js",
     "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
+    "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
@@ -55,7 +56,7 @@
   "dependencies": {
     "@mux/mux-video": "0.14.0",
     "@mux/playback-core": "0.17.0",
-    "media-chrome": "0.18.5"
+    "media-chrome": "0.18.8"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",
@@ -71,7 +72,6 @@
     "eslint": "^8.24.0",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
-    "shared-polyfills": "0.1.0",
     "shx": "^0.3.4",
     "typescript": "^4.9.4"
   }

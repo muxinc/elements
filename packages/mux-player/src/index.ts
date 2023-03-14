@@ -1,7 +1,7 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from './polyfills';
 // @ts-ignore
 import { MediaController } from 'media-chrome';
-import 'media-chrome/dist/experimental/media-captions-menu-button.js';
+import 'media-chrome/dist/experimental/media-captions-selectmenu.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
@@ -146,7 +146,35 @@ const initialState = {
   isDialogOpen: false,
 };
 
-class MuxPlayerElement extends VideoApiElement {
+export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
+  cuepointchange: CustomEvent<{ time: number; value: any }>;
+  cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
+}
+
+interface MuxPlayerElement extends Omit<HTMLVideoElement, 'poster' | 'textTracks' | 'addTextTrack' | 'src'> {
+  addEventListener<K extends keyof MuxPlayerElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof MuxPlayerElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
+}
+
+class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   #isInit = false;
   #tokens = {};
   #userInactive = true;
@@ -316,7 +344,7 @@ class MuxPlayerElement extends VideoApiElement {
 
     if (this.media) {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
-        if (!this.media?.error) return errorEvent;
+        if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
         const { devlog } = getErrorLogs(
           this.media?.error,

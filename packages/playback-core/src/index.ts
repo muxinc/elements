@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/triple-slash-reference: "off" */
+/// <reference path="../dist/types/mux-embed.d.ts" />
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
@@ -41,7 +43,7 @@ export * from './types';
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps> & { error?: MediaError }> = new WeakMap();
+const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps>> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -178,12 +180,13 @@ export const setupHls = (
       liveDurationInfinity: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
+    // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
     const cmcd =
       preferCmcd !== CmcdTypes.NONE
         ? {
             useHeaders: preferCmcd === CmcdTypes.HEADER,
-            sessionId: metadata.view_session_id,
-            contentId: metadata.video_id,
+            sessionId: metadata?.view_session_id,
+            contentId: metadata?.video_id,
           }
         : undefined;
     const hls = new Hls({
@@ -472,7 +475,7 @@ function handleInternalError(event: Event) {
   // Prevent tracking non-fatal errors in Mux data.
   if (!error || !error.fatal) return;
 
-  (muxMediaState.get(mediaEl) ?? {}).error = error;
+  (muxMediaState.get(mediaEl) ?? {}).error = error as unknown as HTMLMediaElement['error'];
 
   // Only pass valid mux-embed props: player_error_code, player_error_message
   mediaEl.mux?.emit('error', {

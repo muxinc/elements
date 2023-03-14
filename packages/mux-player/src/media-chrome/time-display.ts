@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from '../polyfills';
 
 const styles = `
   :host {
@@ -54,7 +54,7 @@ class MxpTimeDisplay extends globalThis.HTMLElement {
       this.toggleTimeDisplay();
     };
 
-    this.addEventListener('keydown', (e) => {
+    this.addEventListener('keydown', (e: KeyboardEvent) => {
       const { metaKey, altKey, key } = e;
       if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
         this.removeEventListener('keyup', keyUpHandler);
@@ -76,7 +76,10 @@ class MxpTimeDisplay extends globalThis.HTMLElement {
   }
 
   #toggleDuration() {
-    const isDurationDisplayNone = getComputedStyle(this).getPropertyValue('--media-duration-display').trim() === 'none';
+    const isDurationDisplayNone =
+      getComputedStyle(this as unknown as HTMLElement)
+        .getPropertyValue('--media-duration-display')
+        .trim() === 'none';
 
     if (isDurationDisplayNone || this.getAttribute('hide-duration') != null) {
       if (this.timeDisplayEl?.hasAttribute('show-duration')) {

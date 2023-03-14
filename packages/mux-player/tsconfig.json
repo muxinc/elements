@@ -2,21 +2,23 @@
   "compilerOptions": {
     "preserveWatchOutput": true,
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "incremental": true,
     "target": "ES2019",
     "module": "es6",
-    "declaration": true,
+    "jsx": "react",
     "sourceMap": true,
     "composite": true,
     "strict": true,
     "noImplicitAny": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "baseUrl": "./packages",
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types", "../../types"]
+    "typeRoots": ["node_modules/@types", "../../types/media-chrome.d.ts"]
   },
-  "include": ["src/**/*", "../../types"]
+  "include": ["src/**/*", "../../types/media-chrome.d.ts"]
 }

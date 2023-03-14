@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from './polyfills';
 /**
  * Custom Audio Element
  * The goal is to create an element that works just like the audio element

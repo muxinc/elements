@@ -28,10 +28,7 @@ media-theme {
   --media-seek-forward-button: var(--seek-forward-button, var(--top-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--top-mute-button));
   --media-captions-button: var(--captions-button, var(--top-captions-button));
-  --media-captions-menu-button: var(
-    --captions-menu-button,
-    var(--media-captions-button, var(--top-captions-menu-button))
-  );
+  --media-captions-selectmenu: var(--captions-selectmenu, var(--media-captions-button, var(--top-captions-selectmenu)));
   --media-airplay-button: var(--airplay-button, var(--top-airplay-button));
   --media-pip-button: var(--pip-button, var(--top-pip-button));
   --media-fullscreen-button: var(--fullscreen-button, var(--top-fullscreen-button));
@@ -53,9 +50,9 @@ media-theme {
   --media-seek-forward-button: var(--seek-forward-button, var(--center-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--center-mute-button));
   --media-captions-button: var(--captions-button, var(--center-captions-button));
-  --media-captions-menu-button: var(
-    --captions-menu-button,
-    var(--media-captions-button, var(--center-captions-menu-button))
+  --media-captions-selectmenu: var(
+    --captions-selectmenu,
+    var(--media-captions-button, var(--center-captions-selectmenu))
   );
   --media-airplay-button: var(--airplay-button, var(--center-airplay-button));
   --media-pip-button: var(--pip-button, var(--center-pip-button));
@@ -77,9 +74,9 @@ media-theme {
   --media-seek-forward-button: var(--seek-forward-button, var(--bottom-seek-forward-button));
   --media-mute-button: var(--mute-button, var(--bottom-mute-button));
   --media-captions-button: var(--captions-button, var(--bottom-captions-button));
-  --media-captions-menu-button: var(
-    --captions-menu-button,
-    var(--media-captions-button, var(--bottom-captions-menu-button))
+  --media-captions-selectmenu: var(
+    --captions-selectmenu,
+    var(--media-captions-button, var(--bottom-captions-selectmenu))
   );
   --media-airplay-button: var(--airplay-button, var(--bottom-airplay-button));
   --media-pip-button: var(--pip-button, var(--bottom-pip-button));
