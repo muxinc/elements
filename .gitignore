@@ -127,4 +127,7 @@ dist
 **/*/iife.json
 **/*/module.json
 
+# ignore polyfills copy
+packages/*/src/polyfills
+
 .turbo

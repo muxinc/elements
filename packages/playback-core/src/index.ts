@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/triple-slash-reference: "off" */
+/// <reference path="../dist/types/mux-embed.d.ts" />
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';

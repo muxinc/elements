@@ -1,4 +1,4 @@
-import { document } from 'shared-polyfills';
+import { document } from './polyfills';
 import 'media-chrome/dist/media-theme-element.js';
 import './media-chrome/time-display';
 // @ts-ignore

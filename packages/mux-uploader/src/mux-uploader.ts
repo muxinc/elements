@@ -1,4 +1,4 @@
-import { globalThis } from 'shared-polyfills';
+import { globalThis } from './polyfills';
 import * as UpChunk from '@mux/upchunk';
 
 import rootTemplate from './layouts/block';

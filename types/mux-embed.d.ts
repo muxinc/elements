@@ -548,6 +548,22 @@ declare module 'mux-embed' {
 
   export const events: MuxEvents;
 
+  type MuxType = (task: any) => void;
+  type muxProps = {
+    utils: publicUtils;
+    events: MuxEvents;
+    monitor: typeof monitor;
+    init: typeof init;
+    destroyMonitor: typeof destroyMonitor;
+    addHLSJS: typeof addHLSJS;
+    removeHLSJS: typeof removeHLSJS;
+    emit: typeof emit;
+  };
+  interface MuxGlobal extends MuxType, muxProps {}
+
+  export const mux: MuxGlobal;
+  export default mux;
+
   global {
     type MuxOnVideoElement = {
       deleted: false;

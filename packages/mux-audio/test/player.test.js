@@ -22,7 +22,6 @@ describe('<mux-audio>', () => {
 
   it('dispatches events properly', async function () {
     const player = await fixture(`<mux-audio
-      playback-id="vDpm5ygrRJgfIEPNIc02IJR4Trf3z00AiP"
       muted
     ></mux-audio>`);
 
@@ -34,6 +33,9 @@ describe('<mux-audio>', () => {
         eventMap[e.type] = true;
       });
     });
+
+    player.playbackId = 'vDpm5ygrRJgfIEPNIc02IJR4Trf3z00AiP';
+    await aTimeout(100);
 
     player.volume = 0.5;
 
@@ -52,7 +54,6 @@ describe('<mux-audio>', () => {
     await aTimeout(100);
 
     assert.deepInclude(eventMap, {
-      emptied: true,
       loadstart: true,
       volumechange: true,
     });

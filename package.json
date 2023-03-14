@@ -30,6 +30,7 @@
     "lint": "turbo run lint --filter '!./examples/*'",
     "test": "turbo run test --filter '!./examples/*'",
     "dev": "turbo run dev --filter '!./examples/*'",
+    "copypolyfills": "turbo run copypolyfills --filter '!./examples/*'",
     "build:packages": "turbo run build --filter '!./examples/*'",
     "build": "turbo run build",
     "i18n": "turbo run i18n",

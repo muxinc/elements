@@ -1,4 +1,4 @@
-import { globalThis, document } from 'shared-polyfills';
+import { globalThis, document } from './polyfills';
 import MediaDialog from './media-chrome/dialog';
 
 const template = document.createElement('template');
