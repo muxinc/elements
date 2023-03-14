@@ -146,6 +146,19 @@ function getHideDuration(el: MuxPlayerElement) {
   );
 }
 
+function getMetadataFromAttrs(el: MuxPlayerElement) {
+  return el
+    .getAttributeNames()
+    .filter((attrName) => attrName.startsWith('metadata-'))
+    .reduce((currAttrs, attrName) => {
+      const value = el.getAttribute(attrName);
+      if (value !== null) {
+        currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
+      }
+      return currAttrs;
+    }, {} as { [key: string]: string });
+}
+
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
 const VideoAttributeNames = Object.values(VideoAttributes);
 const PlayerAttributeNames = Object.values(PlayerAttributes);
@@ -290,22 +303,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return this.mediaTheme?.shadowRoot?.querySelector('media-controller');
   }
 
-  get metadataFromAttrs() {
-    return this.getAttributeNames()
-      .filter((attrName) => attrName.startsWith('metadata-'))
-      .reduce((currAttrs, attrName) => {
-        const value = this.getAttribute(attrName);
-        if (value !== null) {
-          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
-        }
-        return currAttrs;
-      }, {} as { [key: string]: string });
-  }
-
   connectedCallback() {
     const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
     if (muxVideo) {
-      muxVideo.metadata = this.metadataFromAttrs;
+      muxVideo.metadata = getMetadataFromAttrs(this);
     }
   }
 
@@ -1166,7 +1167,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       logger.error('underlying media element missing when trying to set metadata. metadata will not be set.');
       return;
     }
-    this.media.metadata = { ...this.metadataFromAttrs, ...val };
+    this.media.metadata = { ...getMetadataFromAttrs(this), ...val };
   }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
