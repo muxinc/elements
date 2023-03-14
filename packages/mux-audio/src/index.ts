@@ -1,4 +1,4 @@
-import { globalThis } from 'shared-polyfills';
+import { globalThis } from './polyfills';
 import {
   initialize,
   teardown,

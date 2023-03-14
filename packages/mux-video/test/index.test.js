@@ -24,7 +24,6 @@ describe('<mux-video>', () => {
     this.timeout(10000);
 
     const player = await fixture(`<mux-video
-      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       muted
       preload="auto"
     ></mux-video>`);
@@ -38,6 +37,9 @@ describe('<mux-video>', () => {
       });
     });
 
+    player.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+    await aTimeout(100);
+
     player.volume = 0.5;
 
     try {
@@ -45,6 +47,8 @@ describe('<mux-video>', () => {
     } catch (error) {
       console.warn(error);
     }
+
+    await aTimeout(100);
 
     assert.deepInclude(eventMap, {
       canplay: true,

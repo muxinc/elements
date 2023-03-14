@@ -1,4 +1,4 @@
-import { document } from 'shared-polyfills';
+import { document } from './polyfills';
 // @ts-ignore
 import { TemplateInstance, ChildNodePart, AttrPart, Part } from 'media-chrome/dist/media-theme-element.js';
 

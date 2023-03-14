@@ -42,7 +42,8 @@
     "build:esm-module": "esbuild --metafile=./dist/module.json src/index.ts --target=es2019 --bundle --sourcemap --format=esm --outfile=./dist/playback-core.mjs",
     "build:cjs": "esbuild --metafile=./dist/cjs.json src/index.ts --target=es2019 --bundle --sourcemap --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:mux-embed --external:hls.js",
     "build:iife": "esbuild --metafile=./dist/iife.json src/index.ts --target=es2019 --bundle --sourcemap --format=iife --outfile=./dist/playback-core.js",
-    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "prebuild:types": "shx mkdir -p ./dist/types && shx cp ../../types/** ./dist/types/",
+    "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4 --to=3.4",
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
@@ -63,7 +64,6 @@
     "esbuild": "^0.15.7",
     "eslint": "^8.24.0",
     "npm-run-all": "^4.1.5",
-    "shared-polyfills": "0.1.0",
     "shx": "^0.3.4",
     "typescript": "^4.9.4"
   }
