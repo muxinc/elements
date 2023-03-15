@@ -82,63 +82,24 @@ const initialCuePoints: CuePoint[] = [
   }
 ];
 
-const AbbreviateCuePointRenderer = ({
-  time,
-  maxDuration = Number.POSITIVE_INFINITY,
-  value,
-  onDurationChange = noop,
-  onApplyChange = noop,
-}: {
-  time: number;
-  maxDuration?: number;
-  value: AbbreviableCuePointValue;
-  onDurationChange?: ((duration: number) => void);
-  onApplyChange?: ((apply: boolean) => void);
-}) => {
-  const abbreviateInputId = `cuepoint-abbreviate-${maxDuration}`;
-  const applyAbbrevInputId = `cuepoint-apply-abbreviate-${maxDuration}`;
-  console.log('value.apply', value.apply);
-  return (<>
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <label htmlFor={abbreviateInputId}>Duration (minutes)</label>
-      <input
-        id={abbreviateInputId}
-        type="number"
-        min={0}
-        max={maxDuration / 60}
-        step={1}
-        onInput={({ target }) => {
-          onDurationChange(+(target as HTMLInputElement).value * 60);
-        }}
-      />
-    </div>
-    <div>Choose how long you would like for silent self-practice</div>
-    <div>
-      <input
-        id={applyAbbrevInputId}
-        type={"checkbox"}
-        checked={value.apply}
-        onChange={({ target }) => {
-          onApplyChange(target.checked);
-        }}
-      />
-      <label htmlFor={applyAbbrevInputId}>Apply</label>
-    </div>
-  </>);
-};
-
 const CuePointRenderer = ({
   time,
   value,
   active = false,
+  maxDuration = Number.POSITIVE_INFINITY,
   onSelected = noop,
   onSkipChange = noop,
+  onDurationChange = noop,
+  onApplyChange = noop,
 }: {
   time: number;
   value: CuePoint['value'];
   active?: boolean;
+  maxDuration?: number;
   onSelected?: ((time: number) => void);
   onSkipChange?: ((skip: boolean) => void);
+  onDurationChange?: ((duration: number) => void);
+  onApplyChange?: ((apply: boolean) => void);
 }) => {
   const { description, skip = false } = value;
   const skipInputId = `cuepoint-skip-${time}`;
@@ -151,7 +112,43 @@ const CuePointRenderer = ({
     >
       {formatTime(time)}
     </button>
-    <div>{description}</div>
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div>{description}</div>
+      {value.type === "abbreviable" && (
+      <div style={{ display: 'flex', padding: '0px 5px' }}>
+        <div>
+          <input
+            style={{ width: '80%' }}
+            type="number"
+            min={0}
+            max={maxDuration / 60}
+            step={1}
+            placeholder="Entire duration"
+            onInput={({ target }) => {
+              const inputValue = (target as HTMLInputElement).value;
+              console.log('inputValue', inputValue);
+              const newDuration = inputValue === ''
+                ? undefined
+                : +inputValue * 60;
+              onDurationChange(newDuration);
+            }}
+          />
+          <div>
+            <label>Apply</label>
+            <input
+              type={"checkbox"}
+              checked={(value as AbbreviableCuePointValue).apply}
+              disabled={isNil((value as AbbreviableCuePointValue).duration)}
+              onChange={({ target }) => {
+                onApplyChange(target.checked);
+              }}
+            />
+            Duration (minutes, max 10)
+          </div>
+        </div>
+      </div>
+      )}
+    </div>
     <div>
       <input
         id={skipInputId}
@@ -185,35 +182,27 @@ const CuePointsList = ({
       }}
     >
       {cuePoints.map((cuePoint, i) => {
-        return (<>
-          <CuePointRenderer
-            key={cuePoint.time}
-            time={cuePoint.time}
-            value={cuePoint.value}
-            active={activeCuePoint?.time === cuePoint.time}
-            onSelected={(_time: number) => {
-              onCuePointSelected(cuePoint);
-            }}
-            onSkipChange={(skip) => {
-              onCuePointChange({ time: cuePoint.time, value: { ...cuePoint.value, skip } });
-            }}
-          />
-          {(cuePoint.value.type === "abbreviable") &&
-            <AbbreviateCuePointRenderer
-              key={`abbreviate-${cuePoint.time}`}
+        return (<CuePointRenderer
+              key={cuePoint.time}
               time={cuePoint.time}
-              value={cuePoint.value as AbbreviableCuePointValue}
+              value={cuePoint.value}
+              active={activeCuePoint?.time === cuePoint.time}
               maxDuration={((cuePoints[i + 1]?.time ?? Number.POSITIVE_INFINITY) - cuePoint.time)}
+              onSelected={(_time: number) => {
+                onCuePointSelected(cuePoint);
+              }}
+              onSkipChange={(skip) => {
+                onCuePointChange({ time: cuePoint.time, value: { ...cuePoint.value, skip } });
+              }}
               onApplyChange={(apply) => {
                 console.log('apply change!', apply);
                 onCuePointChange({ time: cuePoint.time, value: { ...cuePoint.value, apply } });
               }}
               onDurationChange={(duration) => {
-                onCuePointChange({ time: cuePoint.time, value: { ...cuePoint.value, duration, apply: true } });
+                onCuePointChange({ time: cuePoint.time, value: { ...cuePoint.value, duration, apply: !isNil(duration) } });
               }}
             />
-          }
-        </>);
+          );
       })}
     </div>
   );
@@ -268,7 +257,7 @@ function MuxPlayerPage() {
   useEffect(() => {
     const nextStartTime = cuePoints.find(cuePoint => !(cuePoint.value.skip))?.time;
     if (nextStartTime === startTime) return;
-    setStartTime(nextStartTime);
+    setStartTime(nextStartTime - 1);
   }, [cuePoints, startTime]);
 
   useEffect(() => {
@@ -290,7 +279,7 @@ function MuxPlayerPage() {
         style={{ background: 'black' }}
         audio
         stream-type="on-demand"
-        title="Drop-In Mediations Back to the Basics (UCLA Hammer, Jan 26, 2023)"
+        title="Drop-In Mediations Back to the Basics (UCLA MARC, Jan 26, 2023)"
         startTime={startTime}
         playbackId="UwsB8i59qz54R2yX91rnUJqmxSG6eHHt4g66YQ5eUFE"
         preload="metadata"
@@ -305,7 +294,12 @@ function MuxPlayerPage() {
           if (!muxPlayerEl.paused && activeCuePoint.value.skip) {
             const cuePoints = muxPlayerEl.cuePoints;
             const nextCuePointToPlay = cuePoints.find(({ time, value: { skip } }) => time > activeCuePoint.time && !skip);
-            setCurrentTimeOnPlayer(nextCuePointToPlay?.time ?? muxPlayerEl.duration, muxPlayerEl);
+            setCurrentTimeOnPlayer(
+              nextCuePointToPlay
+                ? nextCuePointToPlay.time + 1
+                : muxPlayerEl.duration,
+              muxPlayerEl
+            );
           }
         }}
         onCuePointsChange={({ target }) => {
@@ -313,11 +307,6 @@ function MuxPlayerPage() {
           const activeCuePoint = muxPlayerEl.activeCuePoint;
           setActiveCuePoint(activeCuePoint);
         }}
-        // onSeeked={({ target }) => {
-        //   const muxPlayerEl = target as MuxPlayerElement;
-        //   const activeCuePoint = muxPlayerEl.activeCuePoint;
-        //   setActiveCuePoint(activeCuePoint);
-        // }}
       />
       <CuePointsList
         cuePoints={cuePoints}
