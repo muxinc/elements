@@ -207,7 +207,7 @@ Here are all of the available components you can use with `<mux-uploader>`:
 | `<mux-uploader-retry>`       | Renders a "retry" button if the upload fails                                  |
 | `<mux-uploader-progress>`    | Displays a progress indicator showing how much of your file has been uploaded |
 
-Check out the `mux-uploader-modal.html` example application to see a real-world example of how these components can be used.
+Check out the [mux-uploader-modal.html](../../examples/vanilla-ts-esm/public/mux-uploader-modal.html) example application to see a real-world example of how these components can be used.
 
 ## Drag and Drop
 
