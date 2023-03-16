@@ -92,7 +92,7 @@ template.innerHTML = `
 
 class MuxUploaderProgressElement extends globalThis.HTMLElement {
   #uploaderEl: HTMLElement | null | undefined;
-  #controller: AbortController | undefined;
+  #abortController: AbortController | undefined;
 
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
@@ -113,10 +113,10 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
     this.setDefaultType();
 
     this.#uploaderEl = getMuxUploaderEl(this);
-    this.#controller = new AbortController();
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      const opts = { signal: this.#controller.signal };
+      const opts = { signal: this.#abortController.signal };
 
       this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart, opts);
       this.#uploaderEl.addEventListener('reset', this.onReset);
@@ -125,7 +125,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#controller?.abort();
+    this.#abortController?.abort();
   }
 
   onUploadStart = () => {

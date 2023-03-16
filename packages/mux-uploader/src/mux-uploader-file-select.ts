@@ -49,7 +49,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
   #filePickerEl: HTMLElement | null | undefined;
   #uploaderEl: MuxUploaderElement | null | undefined;
 
-  #controller: AbortController | undefined;
+  #abortController: AbortController | undefined;
 
   constructor() {
     super();
@@ -74,10 +74,10 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
-    this.#controller = new AbortController();
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      const opts = { signal: this.#controller.signal };
+      const opts = { signal: this.#abortController.signal };
 
       this.#uploaderEl.addEventListener(
         'file-ready',
@@ -92,7 +92,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#controller?.abort();
+    this.#abortController?.abort();
   }
 
   protected get filePickerEl() {

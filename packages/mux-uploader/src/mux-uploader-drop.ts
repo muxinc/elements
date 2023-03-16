@@ -70,7 +70,7 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
   #uploaderEl: MuxUploaderElement | null | undefined;
   #headingEl: HTMLSpanElement | null | undefined;
 
-  #controller: AbortController | undefined;
+  #abortController: AbortController | undefined;
 
   constructor() {
     super();
@@ -83,16 +83,16 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
-    this.#controller = new AbortController();
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      const opts = { signal: this.#controller.signal };
+      const opts = { signal: this.#abortController.signal };
       this.setupDragEvents(opts);
     }
   }
 
   disconnectedCallback() {
-    this.#controller?.abort();
+    this.#abortController?.abort();
   }
 
   attributeChangedCallback(attributeName: string, oldValue: string | null, newValue: string | null) {
