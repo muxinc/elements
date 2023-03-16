@@ -206,8 +206,8 @@ const reducer = (cuePoints: CuePoint[], action: { type: ActionType, value: CuePo
 
 const UCLAHeader = () => {
   return (
-    <header style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', padding: '0em .9em' }}>
-      <h1 style={{ padding: '0em', margin: '0em'}}>Mindful Meditation</h1>
+    <header style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', padding: '0' }}>
+      <h1 style={{ padding: '0em', margin: '0 0 1rem'}}>🧘‍♂️ Mindful Meditation</h1>
       {/* <Link href="https://www.uclahealth.org/">
         <a>
           <Image width="200" height="50" src="/images/ucla-health-logo.svg" alt="UCLA Health logo" />
@@ -234,9 +234,9 @@ const DurationList = ({
   onSelected?: (duration: number) => void;
 }) => {
   return (
-    <div style={{ display: "flex", justifyContent: 'space-evenly', margin: 10 }}>
+    <div style={{ display: "flex", justifyContent: 'space-between' }}>
       {values.map(duration => {
-        const selectedStyle: CSSProperties = duration === selectedValue ? { backgroundColor: 'lightgreen' } : {};
+        const selectedStyle: CSSProperties = duration === selectedValue ? { border: '1px solid white' } : {};
         return (
           <button
             disabled={disableUpdates}
@@ -301,18 +301,19 @@ function MuxPlayerPage() {
         <title>&lt;MuxPlayer/&gt; (Audio + CuePoints + Meditation) Demo</title>
       </Head>
       <UCLAHeader/>
-      <section style={{ padding: '0em .9em'}}>
-        <h1>About this App</h1>
-        <h4>
+      <section style={{ padding: '0', margin: `0 0 2.5rem`}}>
+        <div style={{color: `#fafafa`, fontSize: `1rem`, fontWeight: 400, lineHeight: 1.5, maxWidth: `600px`}}>
           <span>The </span><Link href="https://www.uclahealth.org/programs/marc"><a>Mindful Awareness Research Center (MARC)</a></Link>
           <span> provides fantastic, free, guided meditations, but wouldn't it be nice if you could just dive right into the meditation
-          practice? Wouldn't it be even better if you could adjust how long the silent self-practice was based on your level of
-          comfort or available time? That's exactly what this application lets you do! You may also choose to skip (or not skip) any parts
+          practice?</span>
+          <p>Wouldn't it be even better if you could adjust how long the silent self-practice was based on your level of
+          comfort or available time? That's exactly what this application lets you do!</p>
+          <p>You may also choose to skip (or not skip) any parts
           of the meditation recording as appropriate, for example, skipping the meditation preparation and starting immediately with the
-          meditation itself if you're already situated or unfortunately time constrained.</span>
-        </h4>
+          meditation itself if you're already situated or time constrained.</p>
+        </div>
       </section>
-      <section>
+      <section style={{ margin: `0 0 3rem`, background: `#2e3843`, padding: `2.5rem`, borderRadius: `0.25rem`}}>
       <MuxPlayer
         ref={playerElRef}
         style={{ background: 'black' }}
@@ -355,9 +356,9 @@ function MuxPlayerPage() {
         }}
       />
       <div style={{ fontWeight: "bold" }}>Total Meditation Time: {formatTime(meditationDuration)}</div>
-      <div>
-        <h2 style={{ margin: 10 }}>Silent Self Practice Length</h2>
-        <h3 style={{ margin: 10 }}>Choose the amount of time that works best for you</h3>
+      <div style={{margin: `4rem 0`}}>
+        <h2 style={{ margin: `0 0 0.5rem` }}>Silent self practice duration</h2>
+        <h3 style={{ margin: `0 0 2rem`, fontWeight: 400, color: `#f4f4f4` }}>How long would you like your silent self practice to be?</h3>
         <DurationList
           values={[1 * 60, 2 * 60, 3 * 60, 5 * 60, 10 * 60]}
           selectedValue={(cuePoints[abbreviableCuePointIndex]?.value as AbbreviableCuePointValue)?.duration}
