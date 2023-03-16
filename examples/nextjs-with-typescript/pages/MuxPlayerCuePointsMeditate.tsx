@@ -1,15 +1,16 @@
 import Link from "next/link";
 import Head from 'next/head';
-import Image from "next/image";
 import { useReducer, useRef, useState, useEffect } from "react";
 import type { CSSProperties } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import type MuxPlayerElement from "@mux/mux-player";
 
 const formatTime = (seconds: number | undefined) => {
+  if (isNil(seconds)) return '--:--:--';
   const date = new Date(0);
   date.setSeconds(seconds);
-  const timeString = date.toISOString().substring(11, 19);
+  const substrStart = (seconds / (60 * 60) >= 1) ? 11 : 14;
+  const timeString = date.toISOString().substring(substrStart, 19);
   return timeString;
 };
 
@@ -47,7 +48,7 @@ const initialCuePoints: CuePoint[] = [
     }
   },
   {
-    time: 60 * 8 + 20,
+    time: 60 * 8 + 18,
     value: {
       description: "Meditation practice begins"
     }
@@ -63,17 +64,17 @@ const initialCuePoints: CuePoint[] = [
     value: {
       type: "abbreviable",
       description: "Silent self practice",
-      duration: 10,
+      duration: undefined,
     }
   },
   {
-    time: 60 * 27 + 36,
+    time: 60 * 27 + 30,
     value: {
       description: "Preparing to end meditation practice"
     }
   },
   {
-    time: 60 * 29 + 49,
+    time: 60 * 29 + 43,
     value: {
       skip: true,
       description: "Beginning of post-meditation discussion"
@@ -165,7 +166,10 @@ const addCuePointsToPlayer = (cuePoints: CuePoint[], playerEl: MuxPlayerElement)
   const actualCuePoints = cuePoints.reduce((cuePoints, cuePoint) => {
     if (cuePoint.value.type === 'abbreviable') {
       const value: AbbreviableCuePointValue = cuePoint.value as AbbreviableCuePointValue;
+      console.log('abbreviable cuepoint');
       if (!isNil(value.duration)) {
+        console.log('duration?', value.duration);
+        console.log('cuePoint', cuePoint);
         const duration: number = value.duration;
         const insertedSkipCuePoint = {
           time: cuePoint.time + duration,
@@ -203,7 +207,8 @@ const reducer = (cuePoints: CuePoint[], action: { type: ActionType, value: CuePo
 const UCLAHeader = () => {
   return (
     <header style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', padding: '0em .9em' }}>
-      <Link href="https://www.uclahealth.org/">
+      <h1 style={{ padding: '0em', margin: '0em'}}>Mindful Meditation</h1>
+      {/* <Link href="https://www.uclahealth.org/">
         <a>
           <Image width="200" height="50" src="/images/ucla-health-logo.svg" alt="UCLA Health logo" />
         </a>
@@ -212,7 +217,7 @@ const UCLAHeader = () => {
         <a>
           <h2>Mindful Awareness Research Center (MARC)</h2>
         </a>
-      </Link>
+      </Link> */}
     </header>
   );
 };
@@ -229,7 +234,7 @@ const DurationList = ({
   onSelected?: (duration: number) => void;
 }) => {
   return (
-    <div style={{ display: "flex", justifyContent: 'space-evenly'}}>
+    <div style={{ display: "flex", justifyContent: 'space-evenly', margin: 10 }}>
       {values.map(duration => {
         const selectedStyle: CSSProperties = duration === selectedValue ? { backgroundColor: 'lightgreen' } : {};
         return (
@@ -255,6 +260,8 @@ function MuxPlayerPage() {
   const playerElRef = useRef(null);
   const [activeCuePoint, setActiveCuePoint] = useState<CuePoint>(undefined);
   const [startTime, setStartTime] = useState<number>(undefined);
+  const [mediaDuration, setMediaDuration] = useState<number>(Number.NaN);
+  const [meditationDuration, setMeditationDuration] = useState<number>(undefined);
   const [cuePointsAdded, setCuePointsAdded] = useState(false);
 
   useEffect(() => {
@@ -273,18 +280,36 @@ function MuxPlayerPage() {
     setCurrentTimeOnPlayer(startTime ?? 0, playerElRef.current);
   }, [startTime]);
 
+  useEffect(() => {
+    if (!(Array.isArray(cuePoints) && Number.isFinite(mediaDuration))) return;
+    const nextDuration = cuePoints.reduce((sum, cuePoint, i, cuePoints) => {
+      if (cuePoint.value.skip) return sum;
+      if (cuePoint.value.type === 'abbreviable') {
+        const { duration } = cuePoint.value as AbbreviableCuePointValue;
+        if (!isNil(duration)) return sum + duration;
+      }
+
+      const duration = (cuePoints[i+1]?.time ?? mediaDuration) - cuePoint.time;
+      return sum + duration;
+    }, 0);
+    setMeditationDuration(nextDuration);
+  }, [cuePoints, mediaDuration]);
+
   return (
     <>
       <Head>
-        <title>&lt;MuxPlayer/&gt; (CuePoints) Demo</title>
+        <title>&lt;MuxPlayer/&gt; (Audio + CuePoints + Meditation) Demo</title>
       </Head>
       <UCLAHeader/>
       <section style={{ padding: '0em .9em'}}>
         <h1>About this App</h1>
         <h4>
-          MARC provides fantastic, free guided meditations, but wouldn't it be nice if you could just dive right into the meditation practice?
-          Wouldn't it be even better if you could adjust how long the silent self-practice was based on your level of comfort or available time?
-          That's exactly what this application lets you do!
+          <span>The </span><Link href="https://www.uclahealth.org/programs/marc"><a>Mindful Awareness Research Center (MARC)</a></Link>
+          <span> provides fantastic, free, guided meditations, but wouldn't it be nice if you could just dive right into the meditation
+          practice? Wouldn't it be even better if you could adjust how long the silent self-practice was based on your level of
+          comfort or available time? That's exactly what this application lets you do! You may also choose to skip (or not skip) any parts
+          of the meditation recording as appropriate, for example, skipping the meditation preparation and starting immediately with the
+          meditation itself if you're already situated or unfortunately time constrained.</span>
         </h4>
       </section>
       <section>
@@ -297,6 +322,10 @@ function MuxPlayerPage() {
         startTime={startTime}
         playbackId="UwsB8i59qz54R2yX91rnUJqmxSG6eHHt4g66YQ5eUFE"
         preload="metadata"
+        onDurationChange={({ target }) => {
+          const muxPlayerEl = target as MuxPlayerElement;
+          setMediaDuration(muxPlayerEl.duration);
+        }}
         onPlay={({ target }) => {
           const muxPlayerEl = target as MuxPlayerElement;
           addCuePointsToPlayer(cuePoints, muxPlayerEl);
@@ -325,9 +354,12 @@ function MuxPlayerPage() {
           setActiveCuePoint(undefined);
         }}
       />
+      <div style={{ fontWeight: "bold" }}>Total Meditation Time: {formatTime(meditationDuration)}</div>
       <div>
+        <h2 style={{ margin: 10 }}>Silent Self Practice Length</h2>
+        <h3 style={{ margin: 10 }}>Choose the amount of time that works best for you</h3>
         <DurationList
-          values={[1 * 60, 2 * 60, 5 * 60, 10 * 60]}
+          values={[1 * 60, 2 * 60, 3 * 60, 5 * 60, 10 * 60]}
           selectedValue={(cuePoints[abbreviableCuePointIndex]?.value as AbbreviableCuePointValue)?.duration}
           disableUpdates={cuePointsAdded}
           onSelected={(duration) => {
@@ -358,17 +390,70 @@ function MuxPlayerPage() {
       </section>
       <footer>
         <p>
-          <span>This content is part of UCLA MARC's "Drop in Meditations" series, graciously provided under a Creative Commons License. You may find a list of all Drop in meditations </span>
+          <span>This application uses </span>
+          <Link href="https://github.com/muxinc/elements/tree/main/packages/mux-player-react">
+            <a>Mux Player (React)</a>
+          </Link>
+          <span>, a fully open source media player for </span>
+          <Link href="https://www.mux.com/">
+            <a>Mux, Inc.</a>
+          </Link>
+          <span> The content is part of UCLA MARC's "Drop in Meditations" series, graciously provided under a Creative Commons License.
+            You may find a list of all of their Drop in Meditations </span>
           <Link href="https://www.uclahealth.org/programs/marc/free-guided-meditations/drop-meditations-hammer-podcast">
             <a>here</a>
           </Link>
           <span>.</span>
         </p>
-
-        <p>“Drop-in Meditations” created by Diana Winston and others (see above) for the UCLA Mindful Awareness Research Center (MARC), ©2011- 2021 The Regents of the University of California (The UC Regents).</p>
-        <p>Drop-in Meditations are licensed under a Creative Commons Attribution, NonCommercial, NoDerivatives 4.0 International License.</p>
+        <p>
+          <span>“Drop-in Meditations” created by Diana Winston and others (see above) for the </span>
+          <Link href="http://www.uclahealth.org/marc">
+            <a>UCLA Mindful Awareness Research Center (MARC)</a>
+          </Link>
+          <span>, ©2011- 2021 The Regents of the University of California (The UC Regents).</span>
+        </p>
+        <p>
+          <span>Drop-in Meditations are licensed under a </span>
+          <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <a>Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>
+          </Link>
+          <span>.</span>
+        </p>
+        <ul>
+          <li>
+            <span><strong>NonCommercial</strong> — You may not use the material for </span>
+            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+              <a>commercial purposes</a>
+            </Link>
+            <span>.</span>
+          </li>
+	        <li>
+            <span><strong>NoDerivatives</strong> — If you </span>
+            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+              <a>remix, transform, or build upon</a>
+            </Link>
+            <span> the material, you may not distribute the modified material.</span>
+          </li>
+	        <li>
+            <span><strong>No additional restrictions</strong> — You may not apply legal terms or </span>
+            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+              <a>technological measures</a>
+            </Link>
+            <span> that legally restrict others from doing anything the license permits.</span>
+          </li>
+	        <li>
+            <span><strong>Attribution</strong> — You must give </span>
+            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+              <a>appropriate credit</a>
+            </Link>
+            <span>, provide a link to the license, and </span>
+            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+              <a>indicate if changes were made</a>
+            </Link>
+            <span>. You may do so in any reasonable manner, but not in any way that suggests the licensor (The UC Regents) endorses you or your use.</span>
+          </li>
+</ul>
       </footer>
-      <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
 }
