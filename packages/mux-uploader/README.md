@@ -105,9 +105,7 @@ At the time you render the `<mux-uploader>`, you may not have the direct upload 
       In this example, your server endpoint would return the upload URL
       in the response body "https://storage.googleapis.com/video..."
     */
-    return fetch('/your-server/api/create-upload').then((resp) => {
-      return resp.text();
-    });
+    return fetch('/your-server/api/create-upload').then(res => res.text());
   };
 </script>
 ```
