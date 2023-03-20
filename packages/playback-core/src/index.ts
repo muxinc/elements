@@ -108,10 +108,6 @@ export const getTargetLiveWindow = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.targetLiveWindow ?? Number.NaN;
 };
 
-// export const getLowLatency = (mediaEl: HTMLMediaElement) => {
-//   return muxMediaState.get(mediaEl)?.lowLatency;
-// };
-
 export const getSeekable = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.seekable ?? mediaEl.seekable;
 };
