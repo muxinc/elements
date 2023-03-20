@@ -11,11 +11,11 @@
     },
     "test": {
       "outputs": ["coverage/**/*"],
-      "dependsOn": ["^copypolyfills", "copypolyfills", "^build"]
+      "dependsOn": ["copypolyfills", "^build"]
     },
     "dev": {
       "cache": false,
-      "dependsOn": ["build:types", "^build"]
+      "dependsOn": ["copypolyfills", "build:types", "^build"]
     },
     "copypolyfills": {
       "outputs": ["src/polyfills/**/*"],
@@ -31,7 +31,7 @@
     },
     "build": {
       "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*", ".vercel/**/*"],
-      "dependsOn": ["^copypolyfills", "copypolyfills", "build:types", "^build"]
+      "dependsOn": ["copypolyfills", "build:types", "^build"]
     }
   }
 }
