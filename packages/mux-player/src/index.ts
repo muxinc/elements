@@ -1252,7 +1252,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get liveEdgeStart() {
-    return this.media?.liveEdgeOffset;
+    return this.media?.liveEdgeStart;
   }
 
   /**
