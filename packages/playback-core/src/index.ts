@@ -240,7 +240,7 @@ export const setupHls = (
 
 export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   // for regular live videos, set backBufferLength to 8
-  if ([StreamTypes.LIVE].includes(streamType as any)) {
+  if (streamType === StreamTypes.LIVE) {
     const liveConfig = {
       backBufferLength: 8,
     };
