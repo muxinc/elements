@@ -13,7 +13,7 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
-    "./themes/micro": "./themes/micro.js"
+    "./themes/microvideo": "./themes/microvideo.js"
   },
   "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
