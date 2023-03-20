@@ -468,12 +468,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       // skip line toggle when:
       // - streamType is live, unless secondary color is set or player size is too small
       // - native fullscreen on iPhones
-      return (
-        this.streamType &&
-        [StreamTypes.LIVE].includes(this.streamType as any) &&
-        !this.secondaryColor &&
-        this.offsetWidth >= 800
-      );
+      return this.streamType === StreamTypes.LIVE && !this.secondaryColor && this.offsetWidth >= 800;
     };
 
     // toggles activeCues for a particular track depending on whether the user is active or not
@@ -502,7 +497,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           // default safari styles are taller than other browsers
           let offset = isSafari ? -2 : -3;
 
-          if (this.streamType && [StreamTypes.LIVE].includes(this.streamType as any)) {
+          if (this.streamType === StreamTypes.LIVE) {
             offset = isSafari ? -1 : -2;
           }
 
