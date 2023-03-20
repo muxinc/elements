@@ -1,3 +1,4 @@
+import styles from './MuxPlayerCuePointsMeditate.module.css';
 import Link from "next/link";
 import Head from 'next/head';
 import { useReducer, useRef, useState, useEffect } from "react";
@@ -236,11 +237,11 @@ const DurationList = ({
   return (
     <div style={{ display: "flex", justifyContent: 'space-between' }}>
       {values.map(duration => {
-        const selectedStyle: CSSProperties = duration === selectedValue ? { border: '1px solid white' } : {};
+        const selectedStyle = duration === selectedValue ? styles.durationSelected : undefined;
         return (
           <button
+            className={selectedStyle}
             disabled={disableUpdates}
-            style={selectedStyle}
             key={duration}
             onClick={() => {
               onSelected(duration);
@@ -302,7 +303,7 @@ function MuxPlayerPage() {
       </Head>
       <UCLAHeader/>
       <section style={{ padding: '0', margin: `0 0 2.5rem`}}>
-        <div style={{color: `#fafafa`, fontSize: `1rem`, fontWeight: 400, lineHeight: 1.5, maxWidth: `600px`}}>
+        <div className={styles.description} style={{ fontSize: `1rem`, fontWeight: 400, lineHeight: 1.5, maxWidth: `600px`}}>
           <span>The </span><Link href="https://www.uclahealth.org/programs/marc"><a>Mindful Awareness Research Center (MARC)</a></Link>
           <span> provides fantastic, free, guided meditations, but wouldn't it be nice if you could just dive right into the meditation
           practice?</span>
@@ -313,7 +314,7 @@ function MuxPlayerPage() {
           meditation itself if you're already situated or time constrained.</p>
         </div>
       </section>
-      <section style={{ margin: `0 0 3rem`, background: `#2e3843`, padding: `2.5rem`, borderRadius: `0.25rem`}}>
+      <section className={styles.main} style={{ margin: `0 0 3rem`, padding: `2.5rem`, borderRadius: `0.25rem`}}>
       <MuxPlayer
         ref={playerElRef}
         style={{ background: 'black' }}
@@ -358,7 +359,7 @@ function MuxPlayerPage() {
       <div style={{ fontWeight: "bold" }}>Total Meditation Time: {formatTime(meditationDuration)}</div>
       <div style={{margin: `4rem 0`}}>
         <h2 style={{ margin: `0 0 0.5rem` }}>Silent self practice duration</h2>
-        <h3 style={{ margin: `0 0 2rem`, fontWeight: 400, color: `#f4f4f4` }}>How long would you like your silent self practice to be?</h3>
+        <h3 className={styles.abbreviatedSubtitle} style={{ margin: `0 0 2rem`, fontWeight: 400 }}>How long would you like your silent self practice to be?</h3>
         <DurationList
           values={[1 * 60, 2 * 60, 3 * 60, 5 * 60, 10 * 60]}
           selectedValue={(cuePoints[abbreviableCuePointIndex]?.value as AbbreviableCuePointValue)?.duration}

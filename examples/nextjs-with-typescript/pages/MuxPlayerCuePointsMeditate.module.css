@@ -1,0 +1,17 @@
+@media (prefers-color-scheme: dark) {
+  .description {
+    color: #fafafa
+  }
+
+  .abbreviatedSubtitle {
+    color: #f4f4f4
+  }
+
+  .main {
+    background-color: #2e3843
+  }
+
+  .durationSelected {
+    border: 1px solid white
+  }
+}
