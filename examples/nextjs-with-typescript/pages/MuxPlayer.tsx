@@ -2,7 +2,7 @@ import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
-import "@mux/mux-player/themes/micro";
+import "@mux/mux-player/themes/microvideo";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import type MuxPlayerElement from "@mux/mux-player";
@@ -447,7 +447,7 @@ function MuxPlayerPage({ location }: Props) {
           value={state.theme}
           name="theme"
           onChange={genericOnChange}
-          values={['default', 'micro']}
+          values={['default', 'microvideo']}
         />
         <TextRenderer
           value={state.envKey}
