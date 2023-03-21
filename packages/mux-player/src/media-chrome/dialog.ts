@@ -6,7 +6,7 @@ import { globalThis, document } from '../polyfills';
 const styles = `
   :host {
     z-index: 100;
-    display: flex;
+    display: var(--media-dialog-display, flex);
     justify-content: center;
     align-items: center;
     width: 100%;
