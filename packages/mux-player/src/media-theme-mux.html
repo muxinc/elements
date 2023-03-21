@@ -36,7 +36,8 @@
       height: 0px;
     }
 
-    :host([audio]) :is(media-poster-image, media-loading-indicator) {
+    :host([audio]) media-loading-indicator,
+    :host([audio]) ::slotted([slot=poster]) {
       display: none;
     }
 
@@ -272,12 +273,7 @@
     exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
   >
     <slot name="media" slot="media"></slot>
-    <media-poster-image
-      slot="poster"
-      part="poster"
-      src="{{poster}}"
-      placeholder-src="{{placeholder}}"
-    ></media-poster-image>
+    <slot name="poster" slot="poster"></slot>
     <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
     <template partial="TitleDisplay">

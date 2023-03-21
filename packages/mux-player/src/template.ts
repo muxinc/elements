@@ -57,8 +57,6 @@ export const content = (props: MuxTemplateProps) => html`
     playback-rates="${props.playbackRates ?? false}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
     title="${props.title ?? false}"
-    poster="${props.poster === '' ? false : props.poster ?? false}"
-    placeholder="${props.placeholder ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
@@ -105,6 +103,12 @@ export const content = (props: MuxTemplateProps) => html`
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
     </mux-video>
+    <media-poster-image
+      slot="poster"
+      part="poster"
+      src="${props.poster === '' ? false : props.poster ?? false}"
+      placeholder-src="${props.placeholder ?? false}"
+    ></media-poster-image>
     <mxp-dialog
       no-auto-hide
       open="${props.isDialogOpen ?? false}"
