@@ -221,7 +221,14 @@ export function getActiveCuePoint(
 ) {
   const track = getCuePointsTrack(mediaEl, cuePointsConfig);
   if (!track?.activeCues?.length) return undefined;
-  return toCuePoint(track.activeCues[0] as VTTCue);
+  // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
+  // after the playhead is no longer within their [startTime, endTime) bounds. This
+  // accounts for those cases (CJP)
+  const { currentTime } = mediaEl;
+  const actualActiveCue = Array.prototype.find.call(track.activeCues ?? [], ({ startTime, endTime }) => {
+    return startTime <= currentTime && endTime > currentTime;
+  });
+  return toCuePoint(actualActiveCue as VTTCue);
 }
 
 export async function setupCuePoints(
