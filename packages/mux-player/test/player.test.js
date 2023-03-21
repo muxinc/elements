@@ -231,7 +231,7 @@ describe('<mux-player>', () => {
       stream-type="on-demand"
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
     ></mux-player>`);
-    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -267,7 +267,7 @@ describe('<mux-player>', () => {
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
     ></mux-player>`);
-    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -466,7 +466,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
-    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(

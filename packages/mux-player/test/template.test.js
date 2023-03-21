@@ -14,7 +14,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" exportparts="video"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -35,7 +35,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme hotkeys=" noarrowleft noarrowright" stream-type="live" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme hotkeys=" noarrowleft noarrowright" stream-type="live" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="live" cast-stream-type="live" exportparts="video"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -52,7 +52,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme default-showing-captions="" disabled="" nohotkeys="" stream-type="on-demand" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -73,7 +73,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme stream-type="on-demand" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme stream-type="on-demand" default-showing-captions="" disabled="" nohotkeys="" exportparts="${exportParts}"><mux-video slot="media" crossorigin="" playsinline="" stream-type="on-demand" exportparts="video"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
