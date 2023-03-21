@@ -214,10 +214,10 @@
     media-loading-indicator {
       --media-loading-icon-width: 100%;
       --media-button-icon-height: auto;
+      display: var(--media-control-display, var(--media-loading-indicator-display, flex));
       pointer-events: none;
       position: absolute;
       width: min(15%, 150px);
-      display: flex;
       flex-flow: row;
       align-items: center;
       justify-content: center;

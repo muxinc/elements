@@ -220,6 +220,7 @@ const ControlCustomizationCSSVars = [
   "--top-controls",
   "--center-controls",
   "--bottom-controls",
+  "--loading-indicator",
   "--duration-display",
   "--bottom-duration-display",
   "--play-button",
