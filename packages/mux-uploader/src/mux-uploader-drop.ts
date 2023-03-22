@@ -18,12 +18,12 @@ template.innerHTML = /*html*/ `
     border-radius: .25rem;
   }
 
-  #heading {
+  slot[name='heading'] > * {
     margin-bottom: 0.75rem;
     font-size: 1.75rem;
   }
 
-  #separator {
+  slot[name='separator'] > * {
     margin-bottom: 0.75rem;
   }
 
