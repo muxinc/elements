@@ -49,6 +49,7 @@ export type DialogOptions = {
 
 export type DevlogOptions = {
   message?: string;
+  context?: string;
   file?: string;
 };
 

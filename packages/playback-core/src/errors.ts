@@ -17,13 +17,15 @@ export class MediaError extends Error {
 
   name: string;
   code: number;
+  context?: string;
   fatal: boolean;
   data?: any;
 
-  constructor(message?: string, code: number = MediaError.MEDIA_ERR_CUSTOM, fatal?: boolean) {
+  constructor(message?: string, code: number = MediaError.MEDIA_ERR_CUSTOM, fatal?: boolean, context?: string) {
     super(message);
     this.name = 'MediaError';
     this.code = code;
+    this.context = context;
     this.fatal = fatal ?? (code >= MediaError.MEDIA_ERR_NETWORK && code <= MediaError.MEDIA_ERR_ENCRYPTED);
 
     if (!this.message) {

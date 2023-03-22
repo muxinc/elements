@@ -66,10 +66,8 @@ export function getErrorLogs(
           if (tokenExpired) {
             dialog.title = i18n(`Video URL has expired`, translate);
             dialog.message = i18n(`The video’s secured playback-token has expired.`, translate);
-            devlog.message = i18n(
-              `This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.`,
-              translate
-            ).format({
+            devlog.message = i18n(`The video’s secured playback-token has expired.`, translate);
+            devlog.context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
               expiredDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(tokenExpiry * 1000),
               currentDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(Date.now()),
             });
@@ -84,7 +82,11 @@ export function getErrorLogs(
               translate
             );
             devlog.message = i18n(
-              `The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.`,
+              `The video’s playback ID does not match the one encoded in the playback-token.`,
+              translate
+            );
+            devlog.context = i18n(
+              `Specified playback ID: {playbackId} and the playback ID encoded in the playback-token: {tokenPlaybackId}`,
               translate
             ).format({
               playbackId,
@@ -97,7 +99,8 @@ export function getErrorLogs(
           if (badTokenType) {
             dialog.title = i18n(`Video URL is formatted incorrectly`, translate);
             dialog.message = i18n(`The playback-token is formatted with incorrect information.`, translate);
-            devlog.message = i18n(
+            devlog.message = i18n(`The playback-token is formatted with incorrect information.`, translate);
+            devlog.context = i18n(
               `The playback-token has an incorrect aud value: {tokenType}. aud value should be v.`,
               translate
             ).format({
