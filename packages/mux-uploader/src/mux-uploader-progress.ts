@@ -16,7 +16,7 @@ template.innerHTML = `
     background: #e6e6e6;
     border-radius: 100px;
     position: relative;
-    height: 4px;
+    height: var(--progress-bar-height, 4px);
     width: 100%;
   }
   
@@ -44,8 +44,9 @@ template.innerHTML = `
     box-shadow: 0 10px 40px -10px #fff;
     border-radius: 100px;
     background: var(--progress-bar-fill-color, #000000);
-    height: 4px;
+    height: var(--progress-bar-height, 4px);
     width: 0%;
+    transition: width 0.25s;
   }
 
   circle {
@@ -91,6 +92,7 @@ template.innerHTML = `
 
 class MuxUploaderProgressElement extends globalThis.HTMLElement {
   #uploaderEl: HTMLElement | null | undefined;
+  #abortController: AbortController | undefined;
 
   svgCircle: SVGCircleElement | null | undefined;
   progressBar: HTMLElement | null | undefined;
@@ -111,35 +113,36 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
     this.setDefaultType();
 
     this.#uploaderEl = getMuxUploaderEl(this);
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart.bind(this));
-      this.#uploaderEl.addEventListener('reset', this.onReset.bind(this));
-      this.#uploaderEl.addEventListener('progress', this.onProgress.bind(this));
+      const opts = { signal: this.#abortController.signal };
+
+      this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart, opts);
+      this.#uploaderEl.addEventListener('reset', this.onReset);
+      this.#uploaderEl.addEventListener('progress', this.onProgress);
     }
   }
 
   disconnectedCallback() {
-    if (this.#uploaderEl) {
-      this.#uploaderEl.removeEventListener('uploadstart', this.onUploadStart.bind(this));
-      this.#uploaderEl.removeEventListener('reset', this.onReset.bind(this));
-      this.#uploaderEl.removeEventListener('progress', this.onProgress.bind(this));
-    }
+    this.#abortController?.abort();
   }
 
-  onUploadStart() {
+  onUploadStart = () => {
     this.progressBar?.focus();
     this.setAttribute('upload-in-progress', '');
-  }
+  };
 
-  onProgress(e: Event) {
+  onProgress = (e: Event) => {
     // @ts-ignore
     const percent = e.detail;
     this.progressBar?.setAttribute('aria-valuenow', `${Math.floor(percent)}`);
 
     switch (this.getAttribute('type')) {
       case ProgressTypes.BAR: {
-        if (this.progressBar) this.progressBar.style.width = `${percent}%`;
+        if (this.progressBar) {
+          this.progressBar.style.width = `${percent}%`;
+        }
         break;
       }
       case ProgressTypes.RADIAL: {
@@ -157,9 +160,9 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
         break;
       }
     }
-  }
+  };
 
-  onReset() {
+  onReset = () => {
     if (this.uploadPercentage) {
       this.uploadPercentage.innerHTML = '';
     }
@@ -167,7 +170,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
     if (this.svgCircle) {
       this.svgCircle.style.strokeDashoffset = `${this.getCircumference()}`;
     }
-  }
+  };
 
   getRadius() {
     return Number(this.svgCircle?.getAttribute('r'));

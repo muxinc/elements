@@ -25,7 +25,7 @@ template.innerHTML = `
 class MuxUploaderRetryElement extends globalThis.HTMLElement {
   retryButton: HTMLElement | null | undefined;
   #uploaderEl: MuxUploaderElement | null | undefined;
-  #controller: AbortController | undefined;
+  #abortController: AbortController | undefined;
 
   constructor() {
     super();
@@ -37,10 +37,10 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
-    this.#controller = new AbortController();
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      const opts = { signal: this.#controller.signal };
+      const opts = { signal: this.#abortController.signal };
 
       this.retryButton?.addEventListener('click', this.triggerReset, opts);
       this.retryButton?.addEventListener('keyup', this.handleKeyup, opts);
@@ -48,7 +48,7 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#controller?.abort();
+    this.#abortController?.abort();
   }
 
   handleKeyup = (e: KeyboardEvent) => {

@@ -1,12 +1,30 @@
 import { globalThis, document } from './polyfills';
+import { getMuxUploaderEl } from './utils/element-utils';
+import type MuxUploaderElement from './mux-uploader';
 
 const template = document.createElement('template');
 
-/** @todo: Currently removing all styles. Follow up on overlay styling (CJP) */
-template.innerHTML = `
+template.innerHTML = /*html*/ `
 <style>
   :host {
     position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #ccc;
+    padding: 2.5rem 2rem;
+    border-radius: .25rem;
+  }
+
+  slot[name='heading'] > * {
+    margin-bottom: 0.75rem;
+    font-size: 1.75rem;
+  }
+
+  slot[name='separator'] > * {
+    margin-bottom: 0.75rem;
   }
 
   #overlay {
@@ -29,10 +47,17 @@ template.innerHTML = `
   }
 </style>
 
-<slot></slot>
 <div id="overlay">
   <h1 id="overlay-label"></h1>
 </div>
+
+<slot name="heading" part="heading">
+  <span id="heading">Drop a video file here to upload</span>
+</slot>
+<slot name="separator" part="separator">
+  <span id="separator">or</span>
+</slot>
+<slot></slot>
 `;
 
 const Attributes = {
@@ -41,23 +66,38 @@ const Attributes = {
 };
 
 class MuxUploaderDropElement extends globalThis.HTMLElement {
-  overlayText: HTMLElement;
+  #overlayTextEl: HTMLElement;
+  #uploaderEl: MuxUploaderElement | null | undefined;
+  #headingEl: HTMLSpanElement | null | undefined;
+
+  #abortController: AbortController | undefined;
 
   constructor() {
     super();
     const shadowRoot = this.attachShadow({ mode: 'open' });
     shadowRoot.appendChild(template.content.cloneNode(true));
 
-    this.overlayText = shadowRoot.getElementById('overlay-label') as HTMLElement;
+    this.#overlayTextEl = shadowRoot.getElementById('overlay-label') as HTMLElement;
+    this.#headingEl = shadowRoot.querySelector('#heading') as HTMLSpanElement;
   }
 
   connectedCallback() {
-    this.setupDragEvents();
+    this.#uploaderEl = getMuxUploaderEl(this);
+    this.#abortController = new AbortController();
+
+    if (this.#uploaderEl) {
+      const opts = { signal: this.#abortController.signal };
+      this.setupDragEvents(opts);
+    }
+  }
+
+  disconnectedCallback() {
+    this.#abortController?.abort();
   }
 
   attributeChangedCallback(attributeName: string, oldValue: string | null, newValue: string | null) {
     if (attributeName === Attributes.OVERLAY_TEXT && oldValue !== newValue) {
-      this.overlayText.innerHTML = newValue ?? '';
+      this.#overlayTextEl.innerHTML = newValue ?? '';
     } else if (attributeName === 'active') {
       if (this.getAttribute('overlay') && newValue != null) {
         this._currentDragTarget = this;
@@ -69,53 +109,68 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
     return [Attributes.OVERLAY_TEXT, Attributes.MUX_UPLOADER, 'active'];
   }
 
-  get muxUploader() {
-    const uploaderId = this.getAttribute(Attributes.MUX_UPLOADER);
-    return uploaderId ? document.getElementById(uploaderId) : null;
-  }
-
   protected _currentDragTarget?: Node;
 
-  setupDragEvents() {
-    this.addEventListener('dragenter', (evt) => {
-      this._currentDragTarget = evt.target as Node;
-      evt.preventDefault();
-      evt.stopPropagation();
-      this.setAttribute('active', '');
-    });
+  setupDragEvents(opts: AddEventListenerOptions) {
+    this.addEventListener(
+      'dragenter',
+      (evt) => {
+        this._currentDragTarget = evt.target as Node;
+        evt.preventDefault();
+        evt.stopPropagation();
+        this.setAttribute('active', '');
+      },
+      opts
+    );
 
-    this.addEventListener('dragleave', (evt) => {
-      if (this._currentDragTarget === evt.target) {
-        this._currentDragTarget = undefined;
+    this.addEventListener(
+      'dragleave',
+      (evt) => {
+        if (this._currentDragTarget === evt.target) {
+          this._currentDragTarget = undefined;
+          this.removeAttribute('active');
+        }
+      },
+      opts
+    );
+
+    this.addEventListener(
+      'dragover',
+      (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+      },
+      opts
+    );
+
+    this.addEventListener(
+      'drop',
+      (evt) => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        const { dataTransfer } = evt;
+        //@ts-ignore
+        const { files } = dataTransfer;
+        const file = files[0];
+
+        if (this.#headingEl) {
+          this.#headingEl.style.display = 'none';
+        }
+
+        const uploaderController = this.#uploaderEl ?? this;
+
+        uploaderController.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
+
         this.removeAttribute('active');
-      }
-    });
-
-    this.addEventListener('dragover', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-    });
-
-    this.addEventListener('drop', (evt) => {
-      evt.preventDefault();
-      evt.stopPropagation();
-      const { dataTransfer } = evt;
-      //@ts-ignore
-      const { files } = dataTransfer;
-      const file = files[0];
-
-      const uploaderController = this.muxUploader ?? this;
-
-      uploaderController.dispatchEvent(
-        new CustomEvent('file-ready', {
-          composed: true,
-          bubbles: true,
-          detail: file,
-        })
-      );
-
-      this.removeAttribute('active');
-    });
+      },
+      opts
+    );
   }
 }
 

@@ -19,7 +19,7 @@ template.innerHTML = `
 class MuxUploaderStatusElement extends globalThis.HTMLElement {
   statusMessage: HTMLElement | null | undefined;
   #uploaderEl: MuxUploaderElement | null | undefined;
-  #controller: AbortController | undefined;
+  #abortController: AbortController | undefined;
 
   constructor() {
     super();
@@ -31,10 +31,10 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
-    this.#controller = new AbortController();
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      const opts = { signal: this.#controller.signal };
+      const opts = { signal: this.#abortController.signal };
       this.#uploaderEl.addEventListener('reset', this.clearStatusMessage, opts);
       this.#uploaderEl.addEventListener('uploaderror', this.onUploadError, opts);
       this.#uploaderEl.addEventListener('success', this.onSuccess, opts);
@@ -43,7 +43,7 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#controller?.abort();
+    this.#abortController?.abort();
   }
 
   clearStatusMessage = () => {
