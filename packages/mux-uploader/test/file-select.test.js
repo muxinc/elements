@@ -57,4 +57,31 @@ describe('<mux-uploader-file-select>', () => {
     const evt = await listener;
     assert.equal(evt.type, 'click', 'click event is propagated');
   });
+
+  it('updates button display property on events', async function () {
+    let file = new File(['foo'], 'foo.mp4', {
+      type: 'video/mp4',
+    });
+
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    const el = uploader.shadowRoot.querySelector('mux-uploader-file-select');
+    const slot = el.querySelector('slot');
+    const button = slot.querySelector('button');
+
+    setTimeout(() => {
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      );
+    });
+
+    const { detail } = await oneEvent(uploader, 'uploaderror');
+
+    assert.equal(button.style.display, 'none', 'display is none');
+    uploader.dispatchEvent(new CustomEvent('reset'));
+    assert.equal(button.style.display, 'block', 'display is none');
+  });
 });

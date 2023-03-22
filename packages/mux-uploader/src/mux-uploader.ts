@@ -131,6 +131,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     } else if (value == undefined) {
       this.removeAttribute('endpoint');
     }
+    this.dispatchEvent(new CustomEvent('reset'));
     this._endpoint = value;
   }
 

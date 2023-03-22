@@ -88,6 +88,16 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
         },
         opts
       );
+
+      this.#uploaderEl.addEventListener(
+        'reset',
+        () => {
+          if (this.filePickerEl) {
+            this.filePickerEl.style.display = 'block';
+          }
+        },
+        opts
+      );
     }
   }
 
