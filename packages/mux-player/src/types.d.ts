@@ -57,4 +57,5 @@ export type ErrorEvent = {
   player_error?: MediaError;
   player_error_code?: number;
   player_error_message?: string;
+  player_error_context?: string;
 };
