@@ -12,11 +12,22 @@ describe('<mux-uploader>', () => {
       endpoint="https://my-authenticated-url/storage?your-url-params"
     ></mux-uploader>`);
 
+    const drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
+
     assert.equal(
       uploader.getAttribute('endpoint'),
       'https://my-authenticated-url/storage?your-url-params',
       'endpoint matches'
     );
+
+    assert.isNotNull(drop, 'mux-uploader-drop is not null');
+  });
+
+  it('removes dropzone with noDrop param', async function () {
+    const uploader = await fixture(`<mux-uploader noDrop></mux-uploader>`);
+    const drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
+
+    assert.isNull(drop, 'mux-uploader-drop is null');
   });
 
   it('does not init without endpoint', async function () {
