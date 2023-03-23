@@ -30,6 +30,22 @@ describe('<mux-uploader>', () => {
     assert.isNull(drop, 'mux-uploader-drop is null');
   });
 
+  it('should toggle the noDrop attribute when setting noDrop', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    uploader.noDrop = true;
+    assert.equal(uploader.hasAttribute('noDrop'), true, 'noDrop attr is set');
+
+    let drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
+
+    assert.isNull(drop, 'mux-uploader-drop is null');
+
+    uploader.noDrop = false;
+    drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
+
+    assert.equal(uploader.hasAttribute('noDrop'), false, 'noDrop attr is removed');
+    assert.isNotNull(drop, 'mux-uploader-drop is not null');
+  });
+
   it('does not init without endpoint', async function () {
     const uploader = await fixture(`<mux-uploader></mux-uploader>`);
 
