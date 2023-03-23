@@ -141,10 +141,8 @@ describe('errors', () => {
     const { dialog, devlog } = getErrorLogs(error, false, playbackId, playbackToken);
     assert.equal(String(dialog.title), 'Video URL has expired');
     assert.equal(String(dialog.message), 'The video’s secured playback-token has expired.');
-    assert.include(
-      String(devlog.message),
-      'This playback is using signed URLs and the playback-token has expired. Expired at:'
-    );
+    assert.equal(String(devlog.message), 'The video’s secured playback-token has expired.');
+    assert.include(String(devlog.context), 'Expired at:');
   });
 
   it('403 response code message w/ playback id mismatch for MediaError.MEDIA_ERR_NETWORK', function () {
@@ -160,7 +158,11 @@ describe('errors', () => {
       String(dialog.message),
       'The video’s playback ID does not match the one encoded in the playback-token.'
     );
-    assert.include(String(devlog.message), 'and the playback ID encoded in the playback-token');
+    assert.equal(
+      String(devlog.message),
+      'The video’s playback ID does not match the one encoded in the playback-token.'
+    );
+    assert.include(String(devlog.context), 'and the playback ID encoded in the playback-token');
   });
 
   it('403 response code message w/ token type mismatch for MediaError.MEDIA_ERR_NETWORK', function () {
@@ -173,6 +175,7 @@ describe('errors', () => {
     const { dialog, devlog } = getErrorLogs(error, false, playbackId, playbackToken);
     assert.equal(String(dialog.title), 'Video URL is formatted incorrectly');
     assert.equal(String(dialog.message), 'The playback-token is formatted with incorrect information.');
-    assert.include(String(devlog.message), 'The playback-token has an incorrect aud value: ');
+    assert.equal(String(devlog.message), 'The playback-token is formatted with incorrect information.');
+    assert.include(String(devlog.context), 'The playback-token has an incorrect aud value: ');
   });
 });

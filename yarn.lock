@@ -8194,9 +8194,6 @@ get-symbol-description@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/get-symbol-description/-/get-symbol-description-1.0.0.tgz#7fdb81c900101fbd564dd5f1a30af5aadc1e58d6"
   integrity sha512-2EmdH1YvIQiZpltCNgkuiUnyukzxM/R6NDJX31Ke3BG1Nq5b0S2PhX59UKi9vZpPDQVdqn+1IcaAwnzTT5vCjw==
-  dependencies:
-    call-bind "^1.0.2"
-    get-intrinsic "^1.1.1"
 
 getpass@^0.1.1:
   version "0.1.7"
@@ -10928,10 +10925,10 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mux-embed@^4.14.0:
-  version "4.17.0"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.17.0.tgz#385d0dbe97a84021905557d243524c3c36d29be9"
-  integrity sha512-GgrNo4k5sOnB5cj5O1L6EgVhitJ+I7Kgzqp6NzUf1PCEgeIIQz5EH+awNYiVqzQtvEFhbT5prExugI05pmErqg==
+mux-embed@^4.24.0:
+  version "4.24.0"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.24.0.tgz#3dbc853e881ab6f6c0c33e8f1e4e341dce98121b"
+  integrity sha512-78FLZMCjH7FnyaMfd/XCiJXe3NlAzPD8G8XyLfhpSn5WQkbRCDyKy+pSJ43MlXYnDkabF34L8OiU5nH/2j4riA==
 
 nanocolors@^0.2.1:
   version "0.2.13"

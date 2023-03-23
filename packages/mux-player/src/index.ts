@@ -357,6 +357,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         return {
           player_error_code: this.media?.error.code,
           player_error_message: devlog.message ? String(devlog.message) : errorEvent.player_error_message,
+          player_error_context: devlog.context ? String(devlog.context) : errorEvent.player_error_context,
         };
       };
     }
