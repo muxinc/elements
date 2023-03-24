@@ -52,10 +52,10 @@ template.innerHTML = /*html*/ `
 </div>
 
 <slot name="heading" part="heading">
-  <span id="heading">Drop a video file here to upload</span>
+  <span>Drop a video file here to upload</span>
 </slot>
 <slot name="separator" part="separator">
-  <span id="separator">or</span>
+  <span>or</span>
 </slot>
 <slot></slot>
 `;
@@ -68,7 +68,8 @@ const Attributes = {
 class MuxUploaderDropElement extends globalThis.HTMLElement {
   #overlayTextEl: HTMLElement;
   #uploaderEl: MuxUploaderElement | null | undefined;
-  #headingEl: HTMLSpanElement | null | undefined;
+  #headingEl: HTMLSlotElement | null | undefined;
+  #separatorEl: HTMLSlotElement | null | undefined;
 
   #abortController: AbortController | undefined;
 
@@ -78,7 +79,8 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
     shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.#overlayTextEl = shadowRoot.getElementById('overlay-label') as HTMLElement;
-    this.#headingEl = shadowRoot.querySelector('#heading') as HTMLSpanElement;
+    this.#headingEl = shadowRoot.querySelector('slot[name="heading"]') as HTMLSlotElement;
+    this.#separatorEl = shadowRoot.querySelector('slot[name="separator"]') as HTMLSlotElement;
   }
 
   connectedCallback() {
@@ -87,6 +89,21 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
 
     if (this.#uploaderEl) {
       const opts = { signal: this.#abortController.signal };
+
+      this.#uploaderEl.addEventListener(
+        'file-ready',
+        () => {
+          if (this.#headingEl) {
+            this.#headingEl.style.display = 'none';
+          }
+
+          if (this.#separatorEl) {
+            this.#separatorEl.style.display = 'none';
+          }
+        },
+        opts
+      );
+
       this.setupDragEvents(opts);
     }
   }
@@ -152,10 +169,6 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
         //@ts-ignore
         const { files } = dataTransfer;
         const file = files[0];
-
-        if (this.#headingEl) {
-          this.#headingEl.style.display = 'none';
-        }
 
         const uploaderController = this.#uploaderEl ?? this;
 

@@ -6,10 +6,11 @@ import { formatProgress } from './utils/progress';
 const template = document.createElement('template');
 const ariaDescription = 'Media upload progress bar';
 
-template.innerHTML = `
+template.innerHTML = /*html*/ `
 <style>
   :host {
     position: relative;
+    display: contents;
   }
 
   .bar-type {
@@ -64,8 +65,7 @@ template.innerHTML = `
 
   #percentage-type {
     font-size: inherit;
-    margin-bottom: 16px;
-    color: black;
+    margin: 0 0 1em;
   }
 </style>
 
@@ -121,6 +121,7 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
       this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart, opts);
       this.#uploaderEl.addEventListener('reset', this.onReset);
       this.#uploaderEl.addEventListener('progress', this.onProgress);
+      this.#uploaderEl.addEventListener('success', this.onSuccess);
     }
   }
 
@@ -160,6 +161,11 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
         break;
       }
     }
+  };
+
+  onSuccess = () => {
+    this.removeAttribute('upload-in-progress');
+    this.setAttribute('upload-complete', '');
   };
 
   onReset = () => {
