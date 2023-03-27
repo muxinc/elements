@@ -477,9 +477,10 @@ function handleInternalError(event: Event) {
 
   (muxMediaState.get(mediaEl) ?? {}).error = error as unknown as HTMLMediaElement['error'];
 
-  // Only pass valid mux-embed props: player_error_code, player_error_message
+  // Only pass valid mux-embed props: player_error_code, player_error_message, player_error_context
   mediaEl.mux?.emit('error', {
     player_error_code: error.code,
     player_error_message: error.message,
+    player_error_context: error.context,
   });
 }
