@@ -258,13 +258,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       // @ts-ignore
       window?.CSS?.registerProperty({
-        name: '--primary-color',
+        name: '--media-primary-color',
         syntax: '<color>',
         inherits: true,
       });
       // @ts-ignore
       window?.CSS?.registerProperty({
-        name: '--secondary-color',
+        name: '--media-secondary-color',
         syntax: '<color>',
         inherits: true,
       });

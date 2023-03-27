@@ -13,7 +13,8 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
-    "./themes/microvideo": "./themes/microvideo.js"
+    "./themes/microvideo": "./themes/microvideo.js",
+    "./themes/minimal": "./themes/minimal.js"
   },
   "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
@@ -56,7 +57,7 @@
   "dependencies": {
     "@mux/mux-video": "0.14.0",
     "@mux/playback-core": "0.17.0",
-    "media-chrome": "0.19.1"
+    "media-chrome": "0.20.0"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",

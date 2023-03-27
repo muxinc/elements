@@ -48,8 +48,8 @@ export const content = (props: MuxTemplateProps) => html`
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
-      '--primary-color': props.primaryColor,
-      '--secondary-color': props.secondaryColor,
+      '--media-primary-color': props.primaryColor,
+      '--media-secondary-color': props.secondaryColor,
     }) ?? false}"
     default-showing-captions="${!props.defaultHiddenCaptions}"
     forward-seek-offset="${props.forwardSeekOffset ?? false}"
