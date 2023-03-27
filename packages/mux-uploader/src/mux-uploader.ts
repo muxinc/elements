@@ -115,6 +115,14 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.removeEventListener('reset', this.resetState);
   }
 
+  attributeChangedCallback() {
+    this.updateLayout();
+  }
+
+  static get observedAttributes() {
+    return ['nodrop'];
+  }
+
   protected get hiddenFileInput() {
     return this.shadowRoot?.querySelector('#hidden-file-input') as HTMLInputElement;
   }
@@ -134,17 +142,12 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this._endpoint = value;
   }
 
-  get noDrop(): boolean {
-    return this.hasAttribute('noDrop');
+  get nodrop(): boolean {
+    return this.hasAttribute('nodrop');
   }
 
-  set noDrop(value: boolean) {
-    if (value) {
-      this.setAttribute('noDrop', '');
-    } else {
-      this.removeAttribute('noDrop');
-    }
-    this.updateLayout();
+  set nodrop(value: boolean) {
+    this.toggleAttribute('nodrop', Boolean(value));
   }
 
   updateLayout() {
@@ -152,7 +155,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     if (oldLayout) {
       oldLayout.remove();
     }
-    const newLayout = blockLayout(this.noDrop);
+    const newLayout = blockLayout(this.nodrop);
     this.shadowRoot!.appendChild(newLayout);
   }
 
