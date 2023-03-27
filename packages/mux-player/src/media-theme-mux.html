@@ -528,7 +528,7 @@
           </media-control-bar>
         </template>
 
-        <template if="targetLiveWindow == null">
+        <template if="targetLiveWindow == 0">
           <template if="title">
             <media-control-bar>{{>TitleDisplay}}</media-control-bar>
           </template>
@@ -617,7 +617,7 @@
 
       <template if="streamType == 'live'">
 
-        <template if="targetLiveWindow == null">
+        <template if="targetLiveWindow == 0">
 
           <template if="breakpointSm == null">
             <media-control-bar slot="top-chrome">
