@@ -23,26 +23,26 @@ describe('<mux-uploader>', () => {
     assert.isNotNull(drop, 'mux-uploader-drop is not null');
   });
 
-  it('removes dropzone with noDrop param', async function () {
-    const uploader = await fixture(`<mux-uploader noDrop></mux-uploader>`);
+  it('removes dropzone with nodrop param', async function () {
+    const uploader = await fixture(`<mux-uploader nodrop></mux-uploader>`);
     const drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
 
     assert.isNull(drop, 'mux-uploader-drop is null');
   });
 
-  it('should toggle the noDrop attribute when setting noDrop', async () => {
+  it('should toggle the nodrop attribute when setting nodrop', async () => {
     const uploader = await fixture(`<mux-uploader></mux-uploader>`);
-    uploader.noDrop = true;
-    assert.equal(uploader.hasAttribute('noDrop'), true, 'noDrop attr is set');
+    uploader.nodrop = true;
+    assert.equal(uploader.hasAttribute('nodrop'), true, 'nodrop attr is set');
 
     let drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
 
     assert.isNull(drop, 'mux-uploader-drop is null');
 
-    uploader.noDrop = false;
+    uploader.nodrop = false;
     drop = uploader.shadowRoot.querySelector('mux-uploader-drop');
 
-    assert.equal(uploader.hasAttribute('noDrop'), false, 'noDrop attr is removed');
+    assert.equal(uploader.hasAttribute('nodrop'), false, 'nodrop attr is removed');
     assert.isNotNull(drop, 'mux-uploader-drop is not null');
   });
 
