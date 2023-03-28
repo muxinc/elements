@@ -9,14 +9,16 @@ const ariaDescription = 'Media upload progress bar';
 template.innerHTML = /*html*/ `
 <style>
   :host {
-    position: relative;
-    display: contents;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
   }
 
   .bar-type {
     background: #e6e6e6;
     border-radius: 100px;
-    position: relative;
     height: var(--progress-bar-height, 4px);
     width: 100%;
   }

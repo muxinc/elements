@@ -21,6 +21,7 @@ template.innerHTML = /*html*/ `
   slot[name='heading'] > * {
     margin-bottom: 0.75rem;
     font-size: 1.75rem;
+    text-align: center;
   }
 
   slot[name='separator'] > * {
