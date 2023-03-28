@@ -88,8 +88,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     shadow.appendChild(rootTemplate.content.cloneNode(true));
 
     // Attach a layout
-    const uploaderHtml = blockLayout.content.cloneNode(true);
-    shadow.appendChild(uploaderHtml);
+    this.updateLayout();
 
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
@@ -116,6 +115,14 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.removeEventListener('reset', this.resetState);
   }
 
+  attributeChangedCallback() {
+    this.updateLayout();
+  }
+
+  static get observedAttributes() {
+    return ['nodrop'];
+  }
+
   protected get hiddenFileInput() {
     return this.shadowRoot?.querySelector('#hidden-file-input') as HTMLInputElement;
   }
@@ -133,6 +140,23 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
     this.dispatchEvent(new CustomEvent('reset'));
     this._endpoint = value;
+  }
+
+  get nodrop(): boolean {
+    return this.hasAttribute('nodrop');
+  }
+
+  set nodrop(value: boolean) {
+    this.toggleAttribute('nodrop', Boolean(value));
+  }
+
+  updateLayout() {
+    const oldLayout = this.shadowRoot!.querySelector('mux-uploader-drop, div');
+    if (oldLayout) {
+      oldLayout.remove();
+    }
+    const newLayout = blockLayout(this.nodrop);
+    this.shadowRoot!.appendChild(newLayout);
   }
 
   get dynamicChunkSize(): DynamicChunkSize {
