@@ -219,6 +219,11 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
     const liveConfig = {
       backBufferLength: 4,
       maxFragLookUpTolerance: 0.001,
+      // For ll-hls, we're going to weight the bandwidth for switching to higher levels/renditions
+      // equal to the weight for switching to lower levels/renditions. This may result in a higher
+      // chance of hopping up and back down between levels, but significantly increases the
+      // chances of playing at a higher quality (CJP)
+      abrBandWidthUpFactor: 0.95,
     };
 
     return liveConfig;
@@ -477,9 +482,10 @@ function handleInternalError(event: Event) {
 
   (muxMediaState.get(mediaEl) ?? {}).error = error as unknown as HTMLMediaElement['error'];
 
-  // Only pass valid mux-embed props: player_error_code, player_error_message
+  // Only pass valid mux-embed props: player_error_code, player_error_message, player_error_context
   mediaEl.mux?.emit('error', {
     player_error_code: error.code,
     player_error_message: error.message,
+    player_error_context: error.context,
   });
 }

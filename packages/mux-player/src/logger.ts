@@ -18,6 +18,9 @@ export function error(...args: any[]) {
 
 export function devlog(opts: DevlogOptions) {
   let message = opts.message ?? '';
+  if (opts.context) {
+    message += ` ${opts.context}`;
+  }
   if (opts.file) {
     const githubErrorsBase = 'https://github.com/muxinc/elements/blob/main/errors/';
     message += ` ${i18n(`Read more: `)}\n${githubErrorsBase}${opts.file}`;

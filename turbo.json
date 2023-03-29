@@ -11,7 +11,7 @@
     },
     "test": {
       "outputs": ["coverage/**/*"],
-      "dependsOn": ["^copypolyfills", "copypolyfills", "^build"]
+      "dependsOn": ["copypolyfills", "^build"]
     },
     "dev": {
       "cache": false,
@@ -23,7 +23,7 @@
     },
     "build:types": {
       "outputs": ["dist/types/**/*", "dist/types-ts3.4/**/*"],
-      "dependsOn": ["^build:types"]
+      "dependsOn": ["copypolyfills", "^build:types"]
     },
     "build:packages": {
       "outputs": ["dist/**/*"],
@@ -31,7 +31,7 @@
     },
     "build": {
       "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*", ".vercel/**/*"],
-      "dependsOn": ["^copypolyfills", "copypolyfills", "build:types", "^build"]
+      "dependsOn": ["build:types", "^build"]
     }
   }
 }

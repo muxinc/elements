@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-uploader&gt; modal example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+    <link rel="stylesheet" href="./styles.css" />
+    <!-- https://github.com/nathansmith/cta-modal -->
+    <script src="https://host.sonspring.com/cta-modal/dist/cta-modal.js"></script>
+    <script type="module" src="./dist/mux-uploader.js"></script>
+    <style>
+      .direct-upload-url {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      cta-modal {
+        --cta-modal-dialog-padding-top: 2rem;
+        --cta-modal-dialog-padding-left: 2rem;
+        --cta-modal-dialog-padding-right: 2rem;
+        --cta-modal-dialog-padding-bottom: 2rem;
+      }
+
+      cta-modal [slot='modal'] h2 {
+        color: #2a2932;
+        margin: 0 0 0.5rem;
+      }
+
+      cta-modal [slot='modal'] input {
+        margin: 0 0 1.5rem;
+      }
+
+      #upload-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+
+      mux-uploader-status {
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      mux-uploader-progress {
+        display: contents;
+        --progress-bar-fill-color: #46a6de;
+        --progress-bar-height: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <img width="81" height="26" src="./images/mux-logo@2x.webp" alt="Mux logo" decoding="async" />
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo" />
+        </a>
+      </div>
+    </header>
+
+    <div style="margin: 40px 0">
+      <cta-modal>
+        <div slot="button">
+          <p>
+            <button class="cta-modal-toggle" type="button">Upload a video</button>
+          </p>
+        </div>
+
+        <div slot="modal">
+          <h2>Enter your upload GCS url:</h2>
+          <div>
+            <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+          </div>
+          <mux-uploader id="my-uploader"></mux-uploader>
+        </div>
+      </cta-modal>
+
+      <div id="upload-status">
+        <mux-uploader-status mux-uploader="my-uploader"></mux-uploader-status>
+        <mux-uploader-progress mux-uploader="my-uploader"></mux-uploader-progress>
+      </div>
+    </div>
+
+    <a href="../">Browse Elements</a>
+
+    <script>
+      const input = document.querySelector('input[type="text"]');
+      const muxUploader = document.querySelector('mux-uploader');
+      const modal = document.querySelector('cta-modal');
+      const trigger = document.querySelector('cta-modal [slot="button"]');
+
+      input.addEventListener('change', () => {
+        muxUploader.endpoint = input.value;
+        // You can also pass in a function that yields a promise that resolves to a URL.
+        // muxUploader.endpoint = (_file) => Promise.resolve(input.value);
+      });
+
+      muxUploader.addEventListener('file-ready', () => {
+        trigger.style.display = 'none';
+        modal.removeAttribute('active');
+      });
+    </script>
+  </body>
+</html>
