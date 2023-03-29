@@ -520,7 +520,7 @@
           </media-control-bar>
         </template>
 
-        <template if="targetLiveWindow == 0">
+        <template if="!targetLiveWindow">
           <template if="title">
             <media-control-bar>{{>TitleDisplay}}</media-control-bar>
           </template>
@@ -538,11 +538,11 @@
       </template>
     </template>
 
-    <template if="audio == null">
+    <template if="!audio">
 
       <template if="streamType == 'on-demand'">
 
-        <template if="breakpointSm == null">
+        <template if="!breakpointSm">
           {{>TimeRange}}
           <media-control-bar>
             {{>PlayButton}}
@@ -554,7 +554,7 @@
         </template>
 
         <template if="breakpointSm">
-          <template if="breakpointMd == null">
+          <template if="!breakpointMd">
             <media-control-bar slot="top-chrome">
               {{>TitleDisplay}}
             </media-control-bar>
@@ -609,9 +609,9 @@
 
       <template if="streamType == 'live'">
 
-        <template if="targetLiveWindow == 0">
+        <template if="!targetLiveWindow">
 
-          <template if="breakpointSm == null">
+          <template if="!breakpointSm">
             <media-control-bar slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
@@ -625,7 +625,7 @@
           </template>
 
           <template if="breakpointSm">
-            <template if="breakpointMd == null">
+            <template if="!breakpointMd">
               <media-control-bar slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
@@ -671,7 +671,7 @@
 
         <template if="targetLiveWindow > 0">
 
-          <template if="breakpointSm == null">
+          <template if="!breakpointSm">
             <media-control-bar slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
@@ -686,7 +686,7 @@
           </template>
 
           <template if="breakpointSm">
-            <template if="breakpointMd == null">
+            <template if="!breakpointMd">
               <media-control-bar slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}

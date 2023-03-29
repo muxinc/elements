@@ -76,7 +76,7 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-name="${props.playerSoftwareName ?? false}"
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
-      stream-type="${props.streamType ? (isLiveOrDVR(props) ? 'live' : 'on-demand') : false}"
+      stream-type="${props.streamType ?? false}"
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src
         ? props.src
