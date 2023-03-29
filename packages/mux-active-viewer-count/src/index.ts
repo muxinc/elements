@@ -1,4 +1,4 @@
-import { globalThis } from 'shared-polyfills';
+import { globalThis } from './polyfills';
 
 export const subscribeViewerCount = (
   token: string,
@@ -106,7 +106,7 @@ class MuxActiveViewerCountElement extends globalThis.HTMLElement {
     return (this.shadowRoot as ShadowRoot).querySelector('#viewer-count') as HTMLElement;
   }
 
-  #views?: number
+  #views?: number;
 
   get views(): number {
     return this.#views ?? Number.NaN;
