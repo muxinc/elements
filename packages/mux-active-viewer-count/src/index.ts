@@ -88,8 +88,6 @@ const toAriaLabel = ({ viewerCount }: { viewerCount?: number }) => {
 
 const template = document.createElement('template');
 template.innerHTML = `
-<style>
-</style>
 <span id="viewer-count">
 ${DEFAULT_VIEWER_COUNT_VALUE}
 </span>
