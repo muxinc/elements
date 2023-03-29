@@ -208,7 +208,7 @@ const reducer = (cuePoints: CuePoint[], action: { type: ActionType, value: CuePo
 const UCLAHeader = () => {
   return (
     <header style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', padding: '0' }}>
-      <h1 style={{ padding: '0em', margin: '0 0 1rem'}}>🧘‍♂️ Mindful Meditation</h1>
+      <h1 style={{ padding: `0 2.5rem`, margin: '0 0 1rem'}}>🧘‍♂️ Mindful Meditation</h1>
     </header>
   );
 };
@@ -292,8 +292,8 @@ function MuxPlayerPage() {
         <title>&lt;MuxPlayer/&gt; (Audio + CuePoints + Meditation) Demo</title>
       </Head>
       <UCLAHeader/>
-      <section style={{ padding: '0', margin: `0 0 2.5rem`}}>
-        <div className={styles.description} style={{ fontSize: `1rem`, fontWeight: 400, lineHeight: 1.5, maxWidth: `600px`}}>
+      <section style={{ padding: `0 2.5rem`, margin: `0 0 2.5rem`}}>
+        <div className={styles.description} style={{ fontSize: `1rem`, fontWeight: 400, lineHeight: 1.5, }}>
           <span>The </span><Link href="https://www.uclahealth.org/programs/marc"><a>Mindful Awareness Research Center (MARC)</a></Link>
           <span> provides fantastic, free, guided meditations, but wouldn't it be nice if you could just dive right into the meditation
           practice?</span>
