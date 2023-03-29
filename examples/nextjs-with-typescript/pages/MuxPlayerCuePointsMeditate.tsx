@@ -209,16 +209,6 @@ const UCLAHeader = () => {
   return (
     <header style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', padding: '0' }}>
       <h1 style={{ padding: '0em', margin: '0 0 1rem'}}>🧘‍♂️ Mindful Meditation</h1>
-      {/* <Link href="https://www.uclahealth.org/">
-        <a>
-          <Image width="200" height="50" src="/images/ucla-health-logo.svg" alt="UCLA Health logo" />
-        </a>
-      </Link>
-      <Link href="https://www.uclahealth.org/programs/marc">
-        <a>
-          <h2>Mindful Awareness Research Center (MARC)</h2>
-        </a>
-      </Link> */}
     </header>
   );
 };
@@ -403,6 +393,10 @@ function MuxPlayerPage() {
           <span> The content is part of UCLA MARC's "Drop in Meditations" series, graciously provided under a Creative Commons License.
             You may find a list of all of their Drop in Meditations </span>
           <Link href="https://www.uclahealth.org/programs/marc/free-guided-meditations/drop-meditations-hammer-podcast">
+            <a>here</a>
+          </Link>
+          <span>. You can also find information on another great and free resource, the UCLA Mindful mobile application, </span>
+          <Link href="https://www.uclahealth.org/programs/marc/free-programming-resources/ucla-mindful-app">
             <a>here</a>
           </Link>
           <span>.</span>
