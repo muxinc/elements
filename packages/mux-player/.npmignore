@@ -1,5 +1,6 @@
 **/*
 !dist/**
+!themes/**
 !LICENSE
 dist/cjs.json
 dist/esm.json
