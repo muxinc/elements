@@ -401,10 +401,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   #setUpCaptionsMovement() {
-    type Maybe<T> = T | null | undefined;
-
-    const mc: Maybe<MediaController> = this.mediaController;
-
     // Any Safari
     const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
@@ -481,11 +477,11 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     // this is necessary so that if a cue becomes active while the user is active, we still position it above the control bar
     const cuechangeHandler = () => {
-      toggleLines(selectedTrack, mc?.hasAttribute('user-inactive') ?? false);
+      toggleLines(selectedTrack, this.mediaController?.hasAttribute('user-inactive') ?? false);
     };
 
     const selectTrack = () => {
-      const tracks = Array.from(mc?.media?.textTracks || []) as TextTrack[];
+      const tracks = Array.from(this.mediaController?.media?.textTracks || []) as TextTrack[];
       const newSelectedTrack = tracks.filter(
         (t) => ['subtitles', 'captions'].includes(t.kind) && t.mode === 'showing'
       )[0] as TextTrack;
@@ -502,8 +498,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     selectTrack();
     // update the selected track as necessary
-    mc?.media?.textTracks.addEventListener('change', selectTrack);
-    mc?.media?.textTracks.addEventListener('addtrack', selectTrack);
+    this.textTracks?.addEventListener('change', selectTrack);
+    this.textTracks?.addEventListener('addtrack', selectTrack);
 
     if (navigator.userAgent.includes('Chrome/')) {
       const chromeWorkaround = () => {
@@ -512,13 +508,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           window.requestAnimationFrame(chromeWorkaround);
         }
       };
-      mc?.media?.addEventListener('playing', () => {
+      this.addEventListener('playing', () => {
         chromeWorkaround();
       });
     }
 
-    mc?.addEventListener('userinactivechange', () => {
-      const newUserInactive = mc?.hasAttribute('user-inactive');
+    this.addEventListener('userinactivechange', () => {
+      const newUserInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
 
       if (this.#userInactive === newUserInactive) {
         return;
