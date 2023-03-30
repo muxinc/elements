@@ -30,7 +30,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "test": "web-test-runner **/*test.js --port 8003 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
+    "test": "web-test-runner **/*test.js --port 8006 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-counts/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
     "dev:cjs": "yarn build:cjs --watch=forever",

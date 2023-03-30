@@ -125,7 +125,7 @@
       line-height: 0;
     }
 
-    media-control-bar :is(media-text-display, mxp-time-display):first-child {
+    media-control-bar :is(media-text-display, media-time-display):first-child {
       --media-control-padding: 9px 5px 9px 10px;
     }
 
@@ -451,12 +451,13 @@
   </template>
 
   <template partial="TimeDisplay">
-    <mxp-time-display
+    <media-time-display
       remaining="{{defaultShowRemainingTime}}"
+      show-duration="{{!hideDuration}}"
       part="bottom time display"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
-    ></mxp-time-display>
+    ></media-time-display>
   </template>
 
   <template partial="TimeRange">

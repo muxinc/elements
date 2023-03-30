@@ -1,6 +1,5 @@
 import { document } from './polyfills';
 import 'media-chrome/dist/media-theme-element.js';
-import './media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
 // @ts-ignore
@@ -56,6 +55,7 @@ export const content = (props: MuxTemplateProps) => html`
     backward-seek-offset="${props.backwardSeekOffset ?? false}"
     playback-rates="${props.playbackRates ?? false}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
+    hide-duration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
