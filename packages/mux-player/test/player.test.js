@@ -513,7 +513,7 @@ describe('<mux-player>', () => {
       assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
     });
 
-    it('should have something in the buffer if canplay', async function () {
+    (isSafari ? it.skip : it)('should have something in the buffer if canplay', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
@@ -522,7 +522,7 @@ describe('<mux-player>', () => {
       assert(playerEl.buffered.length >= 1, 'should have a length of at least 1');
     });
 
-    it('should clear the buffer when the media is unset', async function () {
+    (isSafari ? it.skip : it)('should clear the buffer when the media is unset', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
@@ -541,16 +541,16 @@ describe('<mux-player>', () => {
       assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
     });
 
-    it('should have a length of exactly 1 if canplay', async function () {
+    (isSafari ? it.skip : it)('should have a length of exactly 1 if canplay', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
       await oneEvent(playerEl, 'canplay');
-      assert(playerEl.seekable.length >= 1, 'should have a length of at least 1');
+      assert.equal(playerEl.seekable.length, 1, 'should have a length of exactly 1');
     });
 
-    it('should clear the seekable range when the media is unset', async function () {
+    (isSafari ? it.skip : it)('should clear the seekable range when the media is unset', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'

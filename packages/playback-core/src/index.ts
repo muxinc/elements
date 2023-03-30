@@ -178,6 +178,8 @@ export const setupHls = (
       backBufferLength: 30,
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
+      capLevelToPlayerSize: true,
+      capLevelOnFPSDrop: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
     // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
