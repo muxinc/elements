@@ -8499,10 +8499,10 @@ he@^1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-hls.js@1.4.0-beta.1:
-  version "1.4.0-beta.1"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.4.0-beta.1.tgz#2d0dfd1aca5fbc7ae4aa6e68107d325ad7cfca93"
-  integrity sha512-VKV8pXYm0u0ABQFrXUk+OqWffw2M1bDI1s6IDVjR88MBjgp03qVoGPGeF1ubYYilkzBHM60z4fiuz10HxfWrRw==
+hls.js@1.4.0-beta.2:
+  version "1.4.0-beta.2"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.4.0-beta.2.tgz#decd0a2499c3697ccbdbf38d92e69dd368106ec8"
+  integrity sha512-Gl3OcY+ufUZaIMX0/4drb5z8FeeDSSm6f0DMsfOEDuLmNkfa3J9yB233+K5m2IcBqM+rrDtwrcntVzijRHud9w==
 
 hoopy@^0.1.4:
   version "0.1.4"
