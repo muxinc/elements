@@ -110,6 +110,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
     defaultShowRemainingTime: el.defaultShowRemainingTime,
+    hideDuration: getHideDuration(el),
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
@@ -133,6 +134,16 @@ function getThemeTemplate(el: MuxPlayerElement) {
     const ThemeElement = globalThis.customElements.get(themeName) as MediaThemeElement | undefined;
     if (ThemeElement?.template) return ThemeElement.template;
   }
+}
+
+function getHideDuration(el: MuxPlayerElement) {
+  const timeDisplay = el.mediaController?.querySelector('media-time-display');
+  return (
+    timeDisplay &&
+    getComputedStyle(timeDisplay as unknown as HTMLElement)
+      .getPropertyValue('--media-duration-display-display')
+      .trim() === 'none'
+  );
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
