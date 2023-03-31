@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.14.0...@mux/mux-video@0.14.1) (2023-03-31)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+
+
+
 # [0.14.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.13.2...@mux/mux-video@0.14.0) (2023-02-15)
 
 

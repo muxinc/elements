@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.6](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.5...@mux/mux-elements-codemod@1.1.6) (2023-03-31)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+
+
+
 ## [1.1.5](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.4...@mux/mux-elements-codemod@1.1.5) (2023-01-20)
 
 **Note:** Version bump only for package @mux/mux-elements-codemod
