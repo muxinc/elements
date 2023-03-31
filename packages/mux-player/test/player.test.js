@@ -938,10 +938,7 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    const mc = player.mediaController;
-    const media = mc.media;
-
-    media.textTracks.addEventListener('addtrack', (e) => {
+    player.textTracks.addEventListener('addtrack', (e) => {
       // wait till subtitles have loaded
       if (e.track.kind === 'subtitles') {
         // pool until cues have loaded
@@ -960,12 +957,12 @@ describe('<mux-player> seek to live behaviors', function () {
             () => {
               const activeCue = e.track.activeCues[0];
               assert.equal(activeCue.line, 'auto', "the active cue's line is set to auto");
-              mc.addEventListener(
+              player.addEventListener(
                 'userinactivechange',
                 () => {
                   assert.equal(activeCue.line, -4, 'the line is now set to -4');
 
-                  mc.addEventListener(
+                  player.addEventListener(
                     'userinactivechange',
                     () => {
                       setTimeout(() => {
@@ -979,18 +976,18 @@ describe('<mux-player> seek to live behaviors', function () {
                     },
                     { once: true }
                   );
-                  mc.setAttribute('user-inactive', '');
-                  mc.dispatchEvent(new Event('userinactivechange'));
+                  player.mediaController.setAttribute('user-inactive', '');
+                  player.dispatchEvent(new Event('userinactivechange'));
                 },
                 { once: true }
               );
-              mc.removeAttribute('user-inactive');
-              mc.dispatchEvent(new Event('userinactivechange'));
+              player.mediaController.removeAttribute('user-inactive');
+              player.dispatchEvent(new Event('userinactivechange'));
             },
             { once: true }
           );
 
-          media.currentTime = firstCue.startTime + 0.1;
+          player.currentTime = firstCue.startTime + 0.1;
         }, 10);
       }
     });
