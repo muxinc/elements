@@ -155,7 +155,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     if (oldLayout) {
       oldLayout.remove();
     }
-    const newLayout = blockLayout(this.nodrop);
+    const newLayout = blockLayout(this);
     this.shadowRoot!.appendChild(newLayout);
   }
 
