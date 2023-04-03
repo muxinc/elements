@@ -8,12 +8,6 @@ const rootTemplate = document.createElement('template');
 
 rootTemplate.innerHTML = /*html*/ `
 <style>
-  :host {
-    font-family: var(--uploader-font-family, Arial);
-    font-size: var(--uploader-font-size, 16px);
-    background-color: var(--uploader-background-color, inherit);
-  }
-
   input[type="file"] {
     display: none;
   }
