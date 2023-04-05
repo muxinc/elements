@@ -66,6 +66,25 @@ const PlayerAttributes = {
   THEME: 'theme',
 };
 
+const ThemeAttributeNames = [
+  'audio',
+  'backward-seek-offset',
+  'default-show-remaining-time',
+  'default-showing-captions',
+  'disabled',
+  'exportparts',
+  'forward-seek-offset',
+  'hide-duration',
+  'hotkeys',
+  'nohotkeys',
+  'playbackrates',
+  'stream-type',
+  'style',
+  'target-live-window',
+  'template',
+  'title',
+];
+
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   const props = {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
@@ -327,6 +346,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       if (!attributeName?.startsWith('theme-')) return;
 
       const themeAttrName = attributeName.replace(/^theme-/, '');
+      if (ThemeAttributeNames.includes(themeAttrName)) return;
+
       const value = this.getAttribute(attributeName);
       if (value != null) {
         this.mediaTheme?.setAttribute(themeAttrName, value);
@@ -683,7 +704,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   /**
    * Get the theme attributes in a plain object (camelCase keys).
-   * This includes already defined attributes. e.g. streamType, disabled, etc.
+   * This doesn't include already defined attributes. e.g. streamType, disabled, etc.
    */
   get themeProps() {
     const theme = this.mediaTheme;
@@ -692,6 +713,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     const props: Record<string, any> = {};
 
     for (const name of theme.getAttributeNames()) {
+      if (ThemeAttributeNames.includes(name)) continue;
+
       const value: string | boolean | null = theme.getAttribute(name);
       props[camelCase(name)] = value === '' ? true : value;
     }
@@ -705,8 +728,12 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   set themeProps(props) {
     this.#init();
 
-    for (const name in props) {
-      const value: string | boolean | null | undefined = props[name];
+    const themeProps = { ...this.themeProps, ...props };
+
+    for (const name in themeProps) {
+      if (ThemeAttributeNames.includes(name)) continue;
+
+      const value: string | boolean | null | undefined = props?.[name];
 
       if (typeof value === 'boolean' || value == null) {
         this.mediaTheme?.toggleAttribute(kebabCase(name), Boolean(value));
