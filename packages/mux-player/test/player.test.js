@@ -348,6 +348,42 @@ describe('<mux-player>', () => {
     assert.include(actual, expected, 'has expected metadata entries from attrs');
   });
 
+  it('should forward theme attributes to the theme element', async () => {
+    const player = await fixture(`<mux-player
+      stream-type="on-demand"
+      theme-control-bar-vertical
+      theme-control-bar-place="self end"
+    ></mux-player>`);
+
+    assert.equal(player.mediaTheme.attributes['control-bar-vertical'].value, '');
+    assert.equal(player.mediaTheme.attributes['control-bar-place'].value, 'self end');
+  });
+
+  it('should forward themeProps to the theme element', async () => {
+    const player = await fixture(`<mux-player
+      stream-type="on-demand"
+      theme-control-bar-vertical
+      theme-control-bar-place="self end"
+    ></mux-player>`);
+
+    assert.deepEqual(player.themeProps, {
+      controlBarVertical: true,
+      controlBarPlace: 'self end',
+    });
+
+    player.themeProps = {};
+
+    assert.deepEqual(player.themeProps, {});
+
+    player.themeProps = {
+      controlBarPlace: 'self end',
+    };
+
+    assert.deepEqual(player.themeProps, {
+      controlBarPlace: 'self end',
+    });
+  });
+
   it('muted attribute behaves like expected', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"

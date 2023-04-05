@@ -26,7 +26,7 @@ import {
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
-import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode } from './utils';
+import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 
@@ -65,6 +65,25 @@ const PlayerAttributes = {
   PLACEHOLDER: 'placeholder',
   THEME: 'theme',
 };
+
+const ThemeAttributeNames = [
+  'audio',
+  'backward-seek-offset',
+  'default-show-remaining-time',
+  'default-showing-captions',
+  'disabled',
+  'exportparts',
+  'forward-seek-offset',
+  'hide-duration',
+  'hotkeys',
+  'nohotkeys',
+  'playbackrates',
+  'stream-type',
+  'style',
+  'target-live-window',
+  'template',
+  'title',
+];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   const props = {
@@ -144,6 +163,19 @@ function getHideDuration(el: MuxPlayerElement) {
       .getPropertyValue('--media-duration-display-display')
       .trim() === 'none'
   );
+}
+
+function getMetadataFromAttrs(el: MuxPlayerElement) {
+  return el
+    .getAttributeNames()
+    .filter((attrName) => attrName.startsWith('metadata-'))
+    .reduce((currAttrs, attrName) => {
+      const value = el.getAttribute(attrName);
+      if (value !== null) {
+        currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
+      }
+      return currAttrs;
+    }, {} as { [key: string]: string });
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
@@ -256,6 +288,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     initVideoApi(this);
 
+    this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
     this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
@@ -290,22 +323,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return this.mediaTheme?.shadowRoot?.querySelector('media-controller');
   }
 
-  get metadataFromAttrs() {
-    return this.getAttributeNames()
-      .filter((attrName) => attrName.startsWith('metadata-'))
-      .reduce((currAttrs, attrName) => {
-        const value = this.getAttribute(attrName);
-        if (value !== null) {
-          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
-        }
-        return currAttrs;
-      }, {} as { [key: string]: string });
-  }
-
   connectedCallback() {
     const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
     if (muxVideo) {
-      muxVideo.metadata = this.metadataFromAttrs;
+      muxVideo.metadata = getMetadataFromAttrs(this);
     }
   }
 
@@ -316,6 +337,33 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   #render(props: Record<string, any> = {}) {
     render(template(getProps(this, { ...this.#state, ...props })), this.shadowRoot as Node);
+  }
+
+  #setUpThemeAttributes() {
+    // Forward `theme-` prefixed attributes to the theme.
+    // e.g. `theme-control-bar-vertical` for the Micro theme.
+    const setThemeAttribute = (attributeName: string | null) => {
+      if (!attributeName?.startsWith('theme-')) return;
+
+      const themeAttrName = attributeName.replace(/^theme-/, '');
+      if (ThemeAttributeNames.includes(themeAttrName)) return;
+
+      const value = this.getAttribute(attributeName);
+      if (value != null) {
+        this.mediaTheme?.setAttribute(themeAttrName, value);
+      } else {
+        this.mediaTheme?.removeAttribute(themeAttrName);
+      }
+    };
+
+    const observer = new MutationObserver((mutationList) => {
+      for (const { attributeName } of mutationList) {
+        setThemeAttribute(attributeName);
+      }
+    });
+
+    observer.observe(this, { attributes: true });
+    this.getAttributeNames().forEach(setThemeAttribute);
   }
 
   #setUpErrors() {
@@ -527,10 +575,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
-    if (!this.#isInit) {
-      // Initialize right after construction when the attributes become available.
-      this.#init();
-    }
+    // Initialize right after construction when the attributes become available.
+    this.#init();
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
@@ -654,6 +700,47 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   set theme(val) {
     this.setAttribute(PlayerAttributes.THEME, `${val}`);
+  }
+
+  /**
+   * Get the theme attributes in a plain object (camelCase keys).
+   * This doesn't include already defined attributes. e.g. streamType, disabled, etc.
+   */
+  get themeProps() {
+    const theme = this.mediaTheme;
+    if (!theme) return;
+
+    const props: Record<string, any> = {};
+
+    for (const name of theme.getAttributeNames()) {
+      if (ThemeAttributeNames.includes(name)) continue;
+
+      const value: string | boolean | null = theme.getAttribute(name);
+      props[camelCase(name)] = value === '' ? true : value;
+    }
+
+    return props;
+  }
+
+  /**
+   * Set the theme attributes via a plain object.
+   */
+  set themeProps(props) {
+    this.#init();
+
+    const themeProps = { ...this.themeProps, ...props };
+
+    for (const name in themeProps) {
+      if (ThemeAttributeNames.includes(name)) continue;
+
+      const value: string | boolean | null | undefined = props?.[name];
+
+      if (typeof value === 'boolean' || value == null) {
+        this.mediaTheme?.toggleAttribute(kebabCase(name), Boolean(value));
+      } else {
+        this.mediaTheme?.setAttribute(kebabCase(name), value);
+      }
+    }
   }
 
   /**
@@ -1158,21 +1245,19 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Set the metadata object for Mux Data.
    */
   set metadata(val: Readonly<Metadata> | undefined) {
-    if (!this.#isInit) {
-      this.#init();
-    }
+    this.#init();
+
     // NOTE: This condition should never be met. If it is, there is a bug (CJP)
     if (!this.media) {
       logger.error('underlying media element missing when trying to set metadata. metadata will not be set.');
       return;
     }
-    this.media.metadata = { ...this.metadataFromAttrs, ...val };
+    this.media.metadata = { ...getMetadataFromAttrs(this), ...val };
   }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
-    if (!this.#isInit) {
-      this.#init();
-    }
+    this.#init();
+
     // NOTE: This condition should never be met. If it is, there is a bug (CJP)
     if (!this.media) {
       logger.error('underlying media element missing when trying to addCuePoints. cuePoints will not be added.');
