@@ -46,6 +46,34 @@ describe('<mux-uploader>', () => {
     assert.isNotNull(drop, 'mux-uploader-drop is not null');
   });
 
+  it('removes progress with noprogress param', async function () {
+    const uploader = await fixture(`<mux-uploader noprogress></mux-uploader>`);
+    const progress = uploader.shadowRoot.querySelector('mux-uploader-progress');
+
+    assert.isNull(progress, 'mux-uploader-progress is null');
+  });
+
+  it('removes retry with noretry param', async function () {
+    const uploader = await fixture(`<mux-uploader noretry></mux-uploader>`);
+    const retry = uploader.shadowRoot.querySelector('mux-uploader-retry');
+
+    assert.isNull(retry, 'mux-uploader-retry is null');
+  });
+
+  it('removes retry with noretry param', async function () {
+    const uploader = await fixture(`<mux-uploader noretry></mux-uploader>`);
+    const retry = uploader.shadowRoot.querySelector('mux-uploader-retry');
+
+    assert.isNull(retry, 'mux-uploader-retry is null');
+  });
+
+  it('removes status with nostatus param', async function () {
+    const uploader = await fixture(`<mux-uploader nostatus></mux-uploader>`);
+    const status = uploader.shadowRoot.querySelector('mux-uploader-status');
+
+    assert.isNull(status, 'mux-uploader-status is null');
+  });
+
   it('does not init without endpoint', async function () {
     const uploader = await fixture(`<mux-uploader></mux-uploader>`);
 
