@@ -60,13 +60,6 @@ describe('<mux-uploader>', () => {
     assert.isNull(retry, 'mux-uploader-retry is null');
   });
 
-  it('removes retry with noretry param', async function () {
-    const uploader = await fixture(`<mux-uploader noretry></mux-uploader>`);
-    const retry = uploader.shadowRoot.querySelector('mux-uploader-retry');
-
-    assert.isNull(retry, 'mux-uploader-retry is null');
-  });
-
   it('removes status with nostatus param', async function () {
     const uploader = await fixture(`<mux-uploader nostatus></mux-uploader>`);
     const status = uploader.shadowRoot.querySelector('mux-uploader-status');
