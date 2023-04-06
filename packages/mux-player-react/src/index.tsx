@@ -76,6 +76,7 @@ export type MuxPlayerProps = {
   title?: string;
   tokens?: Tokens;
   theme?: string;
+  themeProps?: { [k: string]: any };
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;
@@ -163,10 +164,12 @@ const usePlayer = (
     playbackId,
     playbackRates,
     currentTime,
+    themeProps,
     ...remainingProps
   } = props;
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
+  useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect(

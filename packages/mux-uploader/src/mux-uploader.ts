@@ -114,7 +114,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   static get observedAttributes() {
-    return ['nodrop'];
+    return ['nodrop', 'noprogress', 'nostatus', 'noretry'];
   }
 
   protected get hiddenFileInput() {
@@ -144,12 +144,36 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.toggleAttribute('nodrop', Boolean(value));
   }
 
+  get noprogress(): boolean {
+    return this.hasAttribute('noprogress');
+  }
+
+  set noprogress(value: boolean) {
+    this.toggleAttribute('noprogress', Boolean(value));
+  }
+
+  get nostatus(): boolean {
+    return this.hasAttribute('nostatus');
+  }
+
+  set nostatus(value: boolean) {
+    this.toggleAttribute('nostatus', Boolean(value));
+  }
+
+  get noretry(): boolean {
+    return this.hasAttribute('noretry');
+  }
+
+  set noretry(value: boolean) {
+    this.toggleAttribute('noretry', Boolean(value));
+  }
+
   updateLayout() {
     const oldLayout = this.shadowRoot!.querySelector('mux-uploader-drop, div');
     if (oldLayout) {
       oldLayout.remove();
     }
-    const newLayout = blockLayout(this.nodrop);
+    const newLayout = blockLayout(this);
     this.shadowRoot!.appendChild(newLayout);
   }
 

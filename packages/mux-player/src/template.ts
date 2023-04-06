@@ -37,6 +37,9 @@ const getHotKeys = (props: MuxTemplateProps) => {
   return hotKeys;
 };
 
+// Warning: remember to update `ThemeAttributeNames` in index.ts
+// if you add or remove attributes in <media-theme>.
+
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
