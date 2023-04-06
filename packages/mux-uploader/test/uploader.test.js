@@ -53,6 +53,22 @@ describe('<mux-uploader>', () => {
     assert.isNull(progress, 'mux-uploader-progress is null');
   });
 
+  it('should toggle the noprogress attribute when setting noprogress', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    uploader.noprogress = true;
+    assert.equal(uploader.hasAttribute('noprogress'), true, 'noprogress attr is set');
+
+    let progress = uploader.shadowRoot.querySelector('mux-uploader-progress');
+
+    assert.isNull(progress, 'mux-uploader-progress is null');
+
+    uploader.noprogress = false;
+    progress = uploader.shadowRoot.querySelector('mux-uploader-progress');
+
+    assert.equal(uploader.hasAttribute('noprogress'), false, 'noprogress attr is removed');
+    assert.isNotNull(progress, 'mux-uploader-progress is not null');
+  });
+
   it('removes retry with noretry param', async function () {
     const uploader = await fixture(`<mux-uploader noretry></mux-uploader>`);
     const retry = uploader.shadowRoot.querySelector('mux-uploader-retry');
@@ -60,11 +76,43 @@ describe('<mux-uploader>', () => {
     assert.isNull(retry, 'mux-uploader-retry is null');
   });
 
+  it('should toggle the noretry attribute when setting noretry', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    uploader.noretry = true;
+    assert.equal(uploader.hasAttribute('noretry'), true, 'noretry attr is set');
+
+    let retry = uploader.shadowRoot.querySelector('mux-uploader-retry');
+
+    assert.isNull(retry, 'mux-uploader-retry is null');
+
+    uploader.noretry = false;
+    retry = uploader.shadowRoot.querySelector('mux-uploader-retry');
+
+    assert.equal(uploader.hasAttribute('noretry'), false, 'noretry attr is removed');
+    assert.isNotNull(retry, 'mux-uploader-retry is not null');
+  });
+
   it('removes status with nostatus param', async function () {
     const uploader = await fixture(`<mux-uploader nostatus></mux-uploader>`);
     const status = uploader.shadowRoot.querySelector('mux-uploader-status');
 
     assert.isNull(status, 'mux-uploader-status is null');
+  });
+
+  it('should toggle the nostatus attribute when setting nostatus', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    uploader.nostatus = true;
+    assert.equal(uploader.hasAttribute('nostatus'), true, 'nostatus attr is set');
+
+    let status = uploader.shadowRoot.querySelector('mux-uploader-status');
+
+    assert.isNull(status, 'mux-uploader-status is null');
+
+    uploader.nostatus = false;
+    status = uploader.shadowRoot.querySelector('mux-uploader-status');
+
+    assert.equal(uploader.hasAttribute('nostatus'), false, 'nostatus attr is removed');
+    assert.isNotNull(status, 'mux-uploader-status is not null');
   });
 
   it('does not init without endpoint', async function () {
