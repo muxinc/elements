@@ -18,6 +18,7 @@ import {
   getStreamType,
   getTargetLiveWindow,
   getLiveEdgeStart,
+  getSeekable,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -410,6 +411,10 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     }
   }
 
+  get seekable() {
+    return getSeekable(this.nativeEl);
+  }
+
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
     return addCuePoints(this.nativeEl, cuePoints);
   }
@@ -557,9 +562,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
       case Attributes.STREAM_TYPE:
         // If the newValue is unset
         if (newValue == null || newValue !== oldValue) {
-          this.dispatchEvent(
-            new CustomEvent('streamtypechange', { composed: true, bubbles: true })
-          );
+          this.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
         }
         break;
       case Attributes.TARGET_LIVE_WINDOW:

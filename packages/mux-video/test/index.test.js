@@ -275,7 +275,7 @@ describe('<mux-video>', () => {
         preload="metadata"
       ></mux-video>`);
       await oneEvent(muxVideoEl, 'targetlivewindowchange');
-      assert(Number.isNaN(muxVideoEl.targetLiveWindow));
+      assert(Number.isNaN(muxVideoEl.targetLiveWindow), 'targetLiveWindow should be NaN');
     });
 
     it('infers liveEdgeStart NaN for on demand content', async () => {
@@ -286,7 +286,7 @@ describe('<mux-video>', () => {
       ></mux-video>`);
       // Wait for this event simply to guarantee inferred values have been computed
       await oneEvent(muxVideoEl, 'streamtypechange');
-      assert(Number.isNaN(muxVideoEl.liveEdgeStart));
+      assert(Number.isNaN(muxVideoEl.liveEdgeStart), 'liveEdgeStart should be NaN');
     });
 
     it('infers live streamType for live content', async () => {
@@ -317,7 +317,23 @@ describe('<mux-video>', () => {
       ></mux-video>`);
       // Wait for this event simply to guarantee inferred values have been computed
       await oneEvent(muxVideoEl, 'streamtypechange');
-      assert(muxVideoEl.liveEdgeStart >= 0);
+      assert(muxVideoEl.liveEdgeStart >= 0, 'liveEdgeStart should be a positive number');
+    });
+
+    it('adjusts live seekable for hls.js-based playback', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+        prefer-playback="mse"
+      ></mux-video>`);
+      // Wait for this event simply to guarantee inferred values have been computed
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      // Since hls.js doesn't apply
+      assert(
+        muxVideoEl.seekable.end(0) < muxVideoEl.nativeEl.seekable.end(0),
+        'seekable should be adjusted based on holdback and related'
+      );
     });
   });
 });
