@@ -147,6 +147,9 @@ export const updateStreamInfoFromHlsjsLevelDetails = (
     if (lowLatency) {
       hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 4;
       hls.config.maxFragLookUpTolerance = hls.userConfig.maxFragLookUpTolerance ?? 0.001;
+      // For ll-hls, ensure that up switches are weighted the same as down switches to mitigate
+      // cases of getting stuck at lower bitrates.
+      hls.config.abrBandWidthUpFactor = hls.userConfig.abrBandWidthUpFactor ?? hls.config.abrBandWidthFactor;
     } else {
       hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 8;
     }
