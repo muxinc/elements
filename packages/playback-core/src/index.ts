@@ -104,15 +104,15 @@ export const updateStreamInfoFromSrc = async (src: string, mediaEl: HTMLMediaEle
 
   const { streamType, targetLiveWindow, liveEdgeStartOffset } = getStreamInfoFromPlaylistLines(playlistLines);
 
-  (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
-  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: streamType }));
+  (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
   (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
   mediaEl.dispatchEvent(
     new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: targetLiveWindow })
   );
 
-  (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
+  (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: streamType }));
 };
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
@@ -168,13 +168,13 @@ export const updateStreamInfoFromHlsjsLevelDetails = (
     (muxMediaState.get(mediaEl) ?? {}).seekable = seekable;
   }
 
-  (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
-  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
+  (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
   (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
   mediaEl.dispatchEvent(new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true }));
 
-  (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
+  (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
 };
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';

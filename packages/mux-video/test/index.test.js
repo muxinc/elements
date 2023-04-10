@@ -256,4 +256,68 @@ describe('<mux-video>', () => {
       assert.equal(muxVideoEl.cuePoints.length, 0, 'cuePoints should be empty');
     });
   });
+
+  describe('Feature: inferred streamType & related', async () => {
+    it('infers on-demand streamType for on demand content', async () => {
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert.equal(muxVideoEl.streamType, 'on-demand');
+    });
+
+    it('infers targetLiveWindow NaN for on demand content', async () => {
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'targetlivewindowchange');
+      assert(Number.isNaN(muxVideoEl.targetLiveWindow));
+    });
+
+    it('infers liveEdgeStart NaN for on demand content', async () => {
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      // Wait for this event simply to guarantee inferred values have been computed
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert(Number.isNaN(muxVideoEl.liveEdgeStart));
+    });
+
+    it('infers live streamType for live content', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert.equal(muxVideoEl.streamType, 'live');
+    });
+
+    it('infers targetLiveWindow 0 for live content', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'targetlivewindowchange');
+      assert.equal(muxVideoEl.targetLiveWindow, 0);
+    });
+
+    it('infers liveEdgeStart >= 0 for live content', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      // Wait for this event simply to guarantee inferred values have been computed
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert(muxVideoEl.liveEdgeStart >= 0);
+    });
+  });
 });
