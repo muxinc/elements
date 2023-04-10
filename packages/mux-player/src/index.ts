@@ -71,6 +71,7 @@ const ThemeAttributeNames = [
   'backward-seek-offset',
   'default-show-remaining-time',
   'default-showing-captions',
+  'noautoseektolive',
   'disabled',
   'exportparts',
   'forward-seek-offset',
