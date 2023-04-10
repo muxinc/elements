@@ -78,6 +78,7 @@ const ThemeAttributeNames = [
   'hotkeys',
   'nohotkeys',
   'playbackrates',
+  'default-stream-type',
   'stream-type',
   'style',
   'target-live-window',
