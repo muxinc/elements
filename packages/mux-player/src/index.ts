@@ -633,12 +633,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           // NOTE: The value of `streamType` / `stream-type` will be translated at the template
           // level. See template.ts for more information (CJP).
           if (['ll-live', 'live:dvr', 'll-live:dvr'].includes(this.streamType as any)) {
-            logger.devlog({
-              file: 'deprecated-stream-type.md',
-              message: i18n(
-                `The stream type is deprecated: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`. For DVR, please use \`target-live-window="Infinity"\``
-              ).format({ streamType: this.streamType }),
-            });
+            // NOTE: For now, we won't log any warnings/errors for "deprecated" stream types (CJP).
+            // logger.devlog({
+            //   file: 'deprecated-stream-type.md',
+            //   message: i18n(
+            //     `The stream type is deprecated: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`. For DVR, please use \`target-live-window="Infinity"\``
+            //   ).format({ streamType: this.streamType }),
+            // });
             if (newValue.includes('dvr')) {
               this.targetLiveWindow = Number.POSITIVE_INFINITY;
             }
