@@ -13,7 +13,7 @@ rootTemplate.innerHTML = /*html*/ `
   }
 </style>
 
-<input id="hidden-file-input" type="file" />
+<input id="hidden-file-input" type="file" accept="video/*" />
 <mux-uploader-sr-text></mux-uploader-sr-text>
 `;
 
