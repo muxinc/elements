@@ -114,7 +114,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   static get observedAttributes() {
-    return ['nodrop', 'noprogress', 'nostatus', 'noretry'];
+    return ['no-drop', 'no-progress', 'no-status', 'no-retry'];
   }
 
   protected get hiddenFileInput() {
@@ -136,36 +136,36 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this._endpoint = value;
   }
 
-  get nodrop(): boolean {
-    return this.hasAttribute('nodrop');
+  get noDrop(): boolean {
+    return this.hasAttribute('no-drop');
   }
 
-  set nodrop(value: boolean) {
-    this.toggleAttribute('nodrop', Boolean(value));
+  set noDrop(value: boolean) {
+    this.toggleAttribute('no-drop', Boolean(value));
   }
 
-  get noprogress(): boolean {
-    return this.hasAttribute('noprogress');
+  get noProgress(): boolean {
+    return this.hasAttribute('no-progress');
   }
 
-  set noprogress(value: boolean) {
-    this.toggleAttribute('noprogress', Boolean(value));
+  set noProgress(value: boolean) {
+    this.toggleAttribute('no-progress', Boolean(value));
   }
 
-  get nostatus(): boolean {
-    return this.hasAttribute('nostatus');
+  get noStatus(): boolean {
+    return this.hasAttribute('no-status');
   }
 
-  set nostatus(value: boolean) {
-    this.toggleAttribute('nostatus', Boolean(value));
+  set noStatus(value: boolean) {
+    this.toggleAttribute('no-status', Boolean(value));
   }
 
-  get noretry(): boolean {
-    return this.hasAttribute('noretry');
+  get noRetry(): boolean {
+    return this.hasAttribute('no-retry');
   }
 
-  set noretry(value: boolean) {
-    this.toggleAttribute('noretry', Boolean(value));
+  set noRetry(value: boolean) {
+    this.toggleAttribute('no-retry', Boolean(value));
   }
 
   updateLayout() {
