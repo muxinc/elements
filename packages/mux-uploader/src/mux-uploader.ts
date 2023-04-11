@@ -114,7 +114,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   static get observedAttributes() {
-    return ['no-drop', 'no-progress', 'no-status', 'no-retry'];
+    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
   }
 
   protected get hiddenFileInput() {
@@ -190,6 +190,19 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get maxFileSize(): number | undefined {
+    const maxFileSize = this.getAttribute('max-file-size');
+    return maxFileSize !== null ? parseInt(maxFileSize) : undefined;
+  }
+
+  set maxFileSize(value: number | undefined) {
+    if (value) {
+      this.setAttribute('max-file-size', value.toString());
+    } else {
+      this.removeAttribute('max-file-size');
+    }
+  }
+
   resetState() {
     this.removeAttribute('upload-error');
     this.removeAttribute('upload-in-progress');
@@ -219,6 +232,11 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       endpoint,
       dynamicChunkSize,
       file: evt.detail,
+      ...(this.maxFileSize !== undefined
+        ? {
+            maxFileSize: this.maxFileSize,
+          }
+        : {}),
     });
 
     this.dispatchEvent(new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } }));

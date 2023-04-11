@@ -166,4 +166,14 @@ describe('<mux-uploader>', () => {
 
     await oneEvent(uploader, 'success');
   });
+
+  it('should set and get maxFileSize attribute correctly', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+
+    uploader.maxFileSize = 1000000;
+    assert.equal(uploader.maxFileSize, 1000000, 'maxFileSize matches');
+
+    uploader.removeAttribute('max-file-size');
+    assert.equal(uploader.maxFileSize, undefined);
+  });
 });
