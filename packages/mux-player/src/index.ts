@@ -641,9 +641,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
             //     `The stream type is deprecated: \`{streamType}\`. Please provide stream-type as either: \`on-demand\`, \`live\`. For DVR, please use \`target-live-window="Infinity"\``
             //   ).format({ streamType: this.streamType }),
             // });
-            if (newValue.includes('dvr')) {
-              this.targetLiveWindow = Number.POSITIVE_INFINITY;
-            }
+            this.targetLiveWindow = newValue.includes('dvr') ? Number.POSITIVE_INFINITY : 0;
           } else {
             logger.devlog({
               file: 'invalid-stream-type.md',
@@ -652,6 +650,11 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
               ).format({ streamType: this.streamType }),
             });
           }
+        } else {
+          // NOTE: For now, since we are continuing support of the deprecated stream types (namely, "dvr" types) and not advertising the
+          // new APIs such as `targetLiveWindow`/`target-live-window`, we will (presumpuously) update the `targetLiveWindow` based on the
+          // stream type (CJP).
+          this.targetLiveWindow = newValue === StreamTypes.LIVE ? 0 : Number.NaN;
         }
       }
     }
