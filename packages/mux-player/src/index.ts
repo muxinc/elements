@@ -1240,12 +1240,12 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   set targetLiveWindow(val: number | undefined) {
     // don't cause an infinite loop and avoid change event dispatching
-    if (val === this.targetLiveWindow) return;
+    if (val == this.targetLiveWindow) return;
 
-    if (typeof val === 'number') {
-      this.setAttribute(PlayerAttributes.TARGET_LIVE_WINDOW, `${val}`);
-    } else {
+    if (val == null) {
       this.removeAttribute(PlayerAttributes.TARGET_LIVE_WINDOW);
+    } else {
+      this.setAttribute(PlayerAttributes.TARGET_LIVE_WINDOW, `${+val}`);
     }
   }
 

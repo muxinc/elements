@@ -373,12 +373,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   set targetLiveWindow(val: number | undefined) {
     // don't cause an infinite loop and avoid change event dispatching
-    if (val === this.targetLiveWindow) return;
+    if (val == this.targetLiveWindow) return;
 
-    if (typeof val === 'number') {
-      this.setAttribute(Attributes.TARGET_LIVE_WINDOW, `${val}`);
-    } else {
+    if (val == null) {
       this.removeAttribute(Attributes.TARGET_LIVE_WINDOW);
+    } else {
+      this.setAttribute(Attributes.TARGET_LIVE_WINDOW, `${+val}`);
     }
   }
 
@@ -399,12 +399,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   set liveEdgeOffset(val: number | undefined) {
     // don't cause an infinite loop and avoid change event dispatching
-    if (val === this.liveEdgeOffset) return;
+    if (val == this.targetLiveWindow) return;
 
-    if (typeof val === 'number') {
-      this.setAttribute(Attributes.LIVE_EDGE_OFFSET, `${val}`);
-    } else {
+    if (val == null) {
       this.removeAttribute(Attributes.LIVE_EDGE_OFFSET);
+    } else {
+      this.setAttribute(Attributes.LIVE_EDGE_OFFSET, `${+val}`);
     }
   }
 

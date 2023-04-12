@@ -107,12 +107,10 @@ export const updateStreamInfoFromSrc = async (src: string, mediaEl: HTMLMediaEle
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
   (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
-  mediaEl.dispatchEvent(
-    new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: targetLiveWindow })
-  );
+  mediaEl.dispatchEvent(new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true }));
 
   (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
-  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true, detail: streamType }));
+  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
 };
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
