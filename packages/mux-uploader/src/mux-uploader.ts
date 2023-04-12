@@ -203,6 +203,11 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  setError(message: string) {
+    this.setAttribute('upload-error', '');
+    this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message } }));
+  }
+
   resetState() {
     this.removeAttribute('upload-error');
     this.removeAttribute('upload-in-progress');
@@ -215,53 +220,57 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const dynamicChunkSize = this.dynamicChunkSize;
 
     if (!endpoint) {
-      const invalidUrlMessage = 'No url or endpoint specified -- cannot handleUpload';
-
-      this.setAttribute('upload-error', '');
-      console.error(invalidUrlMessage);
-      this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message: invalidUrlMessage } }));
+      this.setError(`No url or endpoint specified -- cannot handleUpload`);
       // Bail early if no endpoint.
       return;
     } else {
       this.removeAttribute('upload-error');
     }
 
-    this.setAttribute('upload-in-progress', '');
+    try {
+      const upload = UpChunk.createUpload({
+        endpoint,
+        dynamicChunkSize,
+        file: evt.detail,
+        ...(this.maxFileSize !== undefined
+          ? {
+              maxFileSize: this.maxFileSize,
+            }
+          : {}),
+      });
 
-    const upload = UpChunk.createUpload({
-      endpoint,
-      dynamicChunkSize,
-      file: evt.detail,
-      ...(this.maxFileSize !== undefined
-        ? {
-            maxFileSize: this.maxFileSize,
-          }
-        : {}),
-    });
+      this.setAttribute('upload-in-progress', '');
 
-    this.dispatchEvent(new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } }));
+      this.dispatchEvent(
+        new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } })
+      );
 
-    upload.on('attempt', (event) => {
-      this.dispatchEvent(new CustomEvent('chunkattempt', event));
-    });
+      upload.on('attempt', (event) => {
+        this.dispatchEvent(new CustomEvent('chunkattempt', event));
+      });
 
-    upload.on('chunkSuccess', (event) => {
-      this.dispatchEvent(new CustomEvent('chunksuccess', event));
-    });
+      upload.on('chunkSuccess', (event) => {
+        this.dispatchEvent(new CustomEvent('chunksuccess', event));
+      });
 
-    upload.on('error', (event) => {
-      this.setAttribute('upload-error', '');
-      console.error(event.detail.message);
-      this.dispatchEvent(new CustomEvent('uploaderror', event));
-    });
+      upload.on('error', (event) => {
+        this.setAttribute('upload-error', '');
+        console.error(event.detail.message);
+        this.dispatchEvent(new CustomEvent('uploaderror', event));
+      });
 
-    upload.on('progress', (event) => {
-      this.dispatchEvent(new CustomEvent('progress', event));
-    });
+      upload.on('progress', (event) => {
+        this.dispatchEvent(new CustomEvent('progress', event));
+      });
 
-    upload.on('success', (event) => {
-      this.dispatchEvent(new CustomEvent('success', event));
-    });
+      upload.on('success', (event) => {
+        this.dispatchEvent(new CustomEvent('success', event));
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        this.setError(err.message);
+      }
+    }
   }
 }
 

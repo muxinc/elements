@@ -176,4 +176,28 @@ describe('<mux-uploader>', () => {
     uploader.removeAttribute('max-file-size');
     assert.equal(uploader.maxFileSize, undefined);
   });
+
+  it('throws an error when uploading a file larger than maxFileSize', async function () {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    uploader.endpoint = 'https://example.com/upload';
+    uploader.maxFileSize = 1000; // Set max file size to 1KB
+
+    // Create a fake file larger than the maxFileSize
+    const testFile = new File([new ArrayBuffer(1024001)], 'testfile.mp4', { type: 'video/mp4' });
+
+    setTimeout(() => {
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: testFile,
+        })
+      );
+    });
+
+    const { detail } = await oneEvent(uploader, 'uploaderror');
+
+    assert.equal(detail.message, 'file size exceeds maximum (1024001 > 1024000)', 'error message matches');
+    assert.exists(uploader.getAttribute('upload-error'), 'upload error is true');
+  });
 });
