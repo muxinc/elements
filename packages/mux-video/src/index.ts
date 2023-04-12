@@ -15,6 +15,8 @@ import {
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
+  getStartDate,
+  getCurrentPdt,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -365,6 +367,14 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   get cuePoints() {
     return getCuePoints(this.nativeEl);
+  }
+
+  getStartDate() {
+    return getStartDate(this.nativeEl, this._hls);
+  }
+
+  get currentPdt() {
+    return getCurrentPdt(this.nativeEl, this._hls);
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {

@@ -1274,6 +1274,14 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return this.media?.cuePoints ?? [];
   }
 
+  getStartDate() {
+    return this.media?.getStartDate();
+  }
+
+  get currentPdt() {
+    return this.media?.currentPdt;
+  }
+
   /**
    * Get the signing tokens for the Mux asset URL's.
    */

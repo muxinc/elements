@@ -16,6 +16,7 @@ import {
   setupCuePoints,
   getCuePointsTrack,
 } from './tracks';
+import { getStartDate, getCurrentPdt } from './pdt';
 import { inSeekableRange, toPlaybackIdParts, getType } from './util';
 import {
   StreamTypes,
@@ -38,6 +39,8 @@ export {
   getActiveCuePoint,
   getCuePointsTrack,
   setupCuePoints,
+  getStartDate,
+  getCurrentPdt,
 };
 export * from './types';
 
