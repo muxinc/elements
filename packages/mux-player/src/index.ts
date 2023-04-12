@@ -1215,10 +1215,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get defaultStreamType() {
-    if (this.hasAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE)) {
-      return this.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>;
-    }
     return (
+      (this.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>) ??
       (this.mediaController?.getAttribute(PlayerAttributes.DEFAULT_STREAM_TYPE) as ValueOf<StreamTypes>) ??
       StreamTypes.ON_DEMAND
     );
