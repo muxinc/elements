@@ -17,11 +17,11 @@ export function getStartDate(mediaEl: MediaWithPDT, hls: PlaybackEngine | undefi
     return mediaEl.getStartDate();
   }
 
-  return null;
+  return new Date(NaN);
 }
 
 export function getCurrentPdt(mediaEl: MediaWithPDT, hls: PlaybackEngine | undefined) {
-  if (hls) {
+  if (hls && hls.playingDate) {
     return hls.playingDate;
   }
 
@@ -33,5 +33,5 @@ export function getCurrentPdt(mediaEl: MediaWithPDT, hls: PlaybackEngine | undef
     return new Date(startDate.getTime() + mediaEl.currentTime * 1000);
   }
 
-  return null;
+  return new Date(NaN);
 }
