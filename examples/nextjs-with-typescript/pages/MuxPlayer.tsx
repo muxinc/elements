@@ -6,7 +6,6 @@ import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
-import type MuxPlayerElement from "@mux/mux-player";
 import { useRouter } from "next/router";
 import type { NextParsedUrlQuery } from "next/dist/server/request-meta";
 import type { GetServerSideProps } from "next";
@@ -42,7 +41,6 @@ const toMetadataFromMediaAsset = (mediaAsset: typeof mediaAssetsJSON[0], mediaAs
 const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined, mediaAssets: typeof mediaAssetsJSON) => {
   const {
     'playback-id': playbackId,
-    // 'stream-type': streamType,
     tokens,
     'custom-domain': customDomain,
     'storyboard-src': storyboardSrc,
@@ -50,13 +48,10 @@ const toPlayerPropsFromJSON = (mediaAsset: typeof mediaAssetsJSON[0] | undefined
     description: title,
     placeholder,
   } = mediaAsset ?? {};
-  // NOTE: Inferred type is "string" from JSON (CJP)
-  const streamType = mediaAsset?.['stream-type'] as MuxPlayerProps["streamType"];
   const metadata = mediaAsset ? toMetadataFromMediaAsset(mediaAsset, mediaAssets) : undefined;
 
   return {
     playbackId,
-    streamType,
     audio,
     tokens,
     customDomain,
@@ -360,6 +355,8 @@ function MuxPlayerPage({ location }: Props) {
         maxResolution={state.maxResolution}
         preload={state.preload}
         streamType={state.streamType}
+        targetLiveWindow={state.targetLiveWindow}
+        defaultStreamType={state.defaultStreamType}
         audio={state.audio}
         primaryColor={state.primaryColor}
         secondaryColor={state.secondaryColor}
@@ -423,7 +420,23 @@ function MuxPlayerPage({ location }: Props) {
           value={state.streamType}
           name="streamType"
           onChange={genericOnChange}
-          values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr']}
+          values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr', 'unknown']}
+          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue) 
+            ? <code>{JSON.stringify(enumValue)}</code> 
+            : <><code>{JSON.stringify(enumValue)}</code> (deprecated)</>
+          }
+        />
+        <EnumRenderer
+          value={state.targetLiveWindow}
+          name="targetLiveWindow"
+          onChange={genericOnChange}
+          values={[Infinity, 0, NaN]}
+        />
+        <EnumRenderer
+          value={state.defaultStreamType}
+          name="defaultStreamType"
+          onChange={genericOnChange}
+          values={['on-demand', 'live', 'unknown']}
         />
         <EnumRenderer
           value={getPlayerSize(stylesState.width)}

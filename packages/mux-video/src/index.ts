@@ -17,6 +17,10 @@ import {
   getActiveCuePoint,
   getStartDate,
   getCurrentPdt,
+  getStreamType,
+  getTargetLiveWindow,
+  getLiveEdgeStart,
+  getSeekable,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -39,6 +43,8 @@ type AttributeNames = {
   PREFER_PLAYBACK: 'prefer-playback';
   START_TIME: 'start-time';
   STREAM_TYPE: 'stream-type';
+  TARGET_LIVE_WINDOW: 'target-live-window';
+  LIVE_EDGE_OFFSET: 'live-edge-offset';
   TYPE: 'type';
 };
 
@@ -57,6 +63,8 @@ export const Attributes: AttributeNames = {
   PREFER_PLAYBACK: 'prefer-playback',
   START_TIME: 'start-time',
   STREAM_TYPE: 'stream-type',
+  TARGET_LIVE_WINDOW: 'target-live-window',
+  LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
 };
 
@@ -342,12 +350,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
   }
 
   get streamType(): ValueOf<StreamTypes> | undefined {
-    // getAttribute doesn't know that this attribute is well defined. Should explore extending for MuxVideo (CJP)
-    return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? undefined;
+    // Allow overriding inferred `streamType`
+    return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? getStreamType(this.nativeEl);
   }
 
   set streamType(val: ValueOf<StreamTypes> | undefined) {
-    // dont' cause an infinite loop
+    // don't cause an infinite loop and avoid change event dispatching
     if (val === this.streamType) return;
 
     if (val) {
@@ -355,6 +363,55 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
     }
+  }
+
+  get targetLiveWindow() {
+    // Allow overriding inferred `targetLiveWindow`
+    if (this.hasAttribute(Attributes.TARGET_LIVE_WINDOW)) {
+      return +(this.getAttribute(Attributes.TARGET_LIVE_WINDOW) as string) as number;
+    }
+    return getTargetLiveWindow(this.nativeEl);
+  }
+
+  set targetLiveWindow(val: number | undefined) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val == this.targetLiveWindow) return;
+
+    if (val == null) {
+      this.removeAttribute(Attributes.TARGET_LIVE_WINDOW);
+    } else {
+      this.setAttribute(Attributes.TARGET_LIVE_WINDOW, `${+val}`);
+    }
+  }
+
+  get liveEdgeStart() {
+    if (this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)) {
+      const { liveEdgeOffset } = this;
+      const seekableEnd = this.nativeEl.seekable.end(0) ?? 0;
+      const seekableStart = this.nativeEl.seekable.start(0) ?? 0;
+      return Math.max(seekableStart, seekableEnd - (liveEdgeOffset as number));
+    }
+    return getLiveEdgeStart(this.nativeEl);
+  }
+
+  get liveEdgeOffset() {
+    if (!this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)) return undefined;
+    return +(this.getAttribute(Attributes.LIVE_EDGE_OFFSET) as string) as number;
+  }
+
+  set liveEdgeOffset(val: number | undefined) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val == this.targetLiveWindow) return;
+
+    if (val == null) {
+      this.removeAttribute(Attributes.LIVE_EDGE_OFFSET);
+    } else {
+      this.setAttribute(Attributes.LIVE_EDGE_OFFSET, `${+val}`);
+    }
+  }
+
+  get seekable() {
+    return getSeekable(this.nativeEl);
   }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
@@ -463,7 +520,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
           this.#requestLoad();
         } else if (hadSrc && !hasSrc) {
           this.unload();
-          /** @TODO Test this thoroughly (async?) and confirm unload() necessary (CJP) */
         } else if (hadSrc && hasSrc) {
           this.unload();
           this.#requestLoad();
@@ -484,7 +540,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
         this.#core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
-        /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue ?? undefined, {
           maxResolution: this.maxResolution,
           domain: this.customDomain,
@@ -511,6 +566,19 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
             .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
+      case Attributes.STREAM_TYPE:
+        // If the newValue is unset
+        if (newValue == null || newValue !== oldValue) {
+          this.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
+        }
+        break;
+      case Attributes.TARGET_LIVE_WINDOW:
+        if (newValue == null || newValue !== oldValue) {
+          this.dispatchEvent(
+            new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true, detail: this.targetLiveWindow })
+          );
+        }
+        break;
       default:
         break;
     }
@@ -526,10 +594,8 @@ declare global {
   var MuxVideoElement: MuxVideoElementType; // eslint-disable-line
 }
 
-/** @TODO Refactor once using `globalThis` polyfills */
 if (!globalThis.customElements.get('mux-video')) {
   globalThis.customElements.define('mux-video', MuxVideoElement);
-  /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxVideoElement = MuxVideoElement;
 }
 
