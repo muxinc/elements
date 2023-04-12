@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
+import MuxUploaderFileSelect from './mux-uploader-file-select';
+import MuxUploaderProgress from './mux-uploader-progress';
+import MuxUploaderRetry from './mux-uploader-retry';
+import MuxUploaderStatus from './mux-uploader-status';
 import type MuxUploaderElement from '@mux/mux-uploader';
 import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
@@ -20,17 +24,6 @@ export type MuxUploaderProps = {
   endpoint?: MuxUploaderElement['endpoint'];
   type?: string;
   style?: CSSProperties & {
-    ['--uploader-font-family']?: CSSProperties['fontFamily'];
-    ['--uploader-font-size']?: CSSProperties['fontSize'];
-    ['--uploader-background-color']?: CSSProperties['backgroundColor'];
-    ['--button-background-color']?: CSSProperties['backgroundColor'];
-    ['--button-border-radius']?: CSSProperties['borderRadius'];
-    ['--button-border']?: CSSProperties['border'];
-    ['--button-padding']?: CSSProperties['padding'];
-    ['--button-hover-text']?: CSSProperties['color'];
-    ['--button-hover-background']?: CSSProperties['background'];
-    ['--button-active-text']?: CSSProperties['color'];
-    ['--button-active-background']?: CSSProperties['background'];
     ['--progress-bar-fill-color']?: CSSProperties['background'];
     ['--progress-radial-fill-color']?: CSSProperties['stroke'];
   };
@@ -99,6 +92,6 @@ const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>
   return <MuxUploaderInternal ref={uploaderRef as typeof innerUploaderRef} {...remainingProps} />;
 });
 
-export { MuxUploaderDrop };
+export { MuxUploaderDrop, MuxUploaderFileSelect, MuxUploaderProgress, MuxUploaderRetry, MuxUploaderStatus };
 
 export default MuxUploader;
