@@ -1206,7 +1206,7 @@ describe.skip('Feature: cuePoints', async () => {
   });
 });
 
-describe.only('currentPdt and getStartDate', async () => {
+describe('currentPdt and getStartDate', async () => {
   it('currentPdt and getStartDate work as expected', async function () {
     this.timeout(5000);
 
