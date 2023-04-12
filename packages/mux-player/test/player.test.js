@@ -1211,9 +1211,7 @@ describe.only('currentPdt and getStartDate', async () => {
     this.timeout(5000);
 
     const player = await fixture(`<mux-player
-      playback-id="UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo"
       env-key="ilc02s65tkrc2mk69b7q2qdkf"
-      start-time="60"
       stream-type="on-demand"
       prefer-playback="mse"
       muted
@@ -1221,15 +1219,23 @@ describe.only('currentPdt and getStartDate', async () => {
       preload="auto"
     ></mux-player>`);
 
-    await aTimeout(1000);
+    player.addEventListener('loadstart', async function () {
+      player.currentTime = 60;
 
-    const currentPdt = player.currentPdt;
-    const startDate = player.getStartDate();
+      await aTimeout(50);
 
-    assert.equal(
-      startDate.getTime(),
-      currentPdt.getTime() - player.currentTime * 1000,
-      'currentPdt should be 60 seconds greater than getStartDate'
-    );
+      const currentPdt = player.currentPdt;
+      const startDate = player.getStartDate();
+
+      assert.equal(
+        startDate.getTime(),
+        currentPdt.getTime() - player.currentTime * 1000,
+        'currentPdt should be 60 seconds greater than getStartDate'
+      );
+    });
+
+    await aTimeout(50);
+
+    player.playbackId = 'UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo';
   });
 });

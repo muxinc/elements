@@ -213,6 +213,8 @@ describe('<mux-video>', () => {
 
     player.currentTime = 60;
 
+    await aTimeout(50);
+
     const currentPdt = player.currentPdt;
     const startDate = player.getStartDate();
 
