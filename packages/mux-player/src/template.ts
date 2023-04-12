@@ -5,7 +5,7 @@ import cssStr from './styles.css';
 // @ts-ignore
 import muxTheme from './media-theme-mux.html';
 import './dialog';
-import { getSrcFromPlaybackId } from './helpers';
+import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
 
@@ -23,15 +23,10 @@ export const template = (props: MuxTemplateProps) => html`
   ${content(props)}
 `;
 
-const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
-
-const isDVR = (props: MuxTemplateProps) => [StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
-
-const isLiveOrDVR = (props: MuxTemplateProps) => isLive(props) || isDVR(props);
-
 const getHotKeys = (props: MuxTemplateProps) => {
   let hotKeys = props.hotKeys ? `${props.hotKeys}` : '';
-  if (isLiveOrDVR(props)) {
+  // Applies to any live content, including "dvr". We may want to only apply for non-DVR live.
+  if (getStreamTypeFromAttr(props.streamType) === 'live') {
     hotKeys += ' noarrowleft noarrowright';
   }
   return hotKeys;
@@ -43,10 +38,10 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    stream-type="${isLiveOrDVR(props) ? 'live' : 'on-demand'}"
-    target-live-window="${isDVR(props) ? 1 : false}"
+    default-stream-type="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
+    noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
@@ -64,6 +59,8 @@ export const content = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
+      target-live-window="${props.targetLiveWindow ?? false}"
+      stream-type="${getStreamTypeFromAttr(props.streamType) ?? false}"
       crossorigin="${props.crossOrigin ?? ''}"
       playsinline
       autoplay="${props.autoplay ?? false}"
@@ -79,7 +76,6 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-name="${props.playerSoftwareName ?? false}"
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
-      stream-type="${props.streamType ?? false}"
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src
         ? props.src
@@ -99,7 +95,6 @@ export const content = (props: MuxTemplateProps) => html`
             token: props.tokens.playback,
           })
         : false}"
-      cast-stream-type="${isLive(props) ? 'live' : false}"
       exportparts="video"
     >
       ${props.storyboard

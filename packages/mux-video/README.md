@@ -73,7 +73,6 @@ Now you are free to use this web component in your HTML, just as you would with 
     playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
     metadata-video-title="Big Buck Bunny"
     metadata-viewer-user-id="user-id-1234"
-    stream-type="on-demand"
     controls
   ></mux-video>
 </body>
@@ -91,8 +90,7 @@ Attributes:
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
 - `metadata-*`: This syntax can be used to pass any other Mux Data metadata fields, for example `metadata-sub-property-id="123"`
-- `stream-type`: Enum value: one of `"on-demand"`, `"live"` (HLS live stream), `"ll-live"` (low latency live). Not strictly required, but preferred so that `<mux-video />` can make optimizations based on the type of stream.
-- `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0.
+- `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0 (or the "live edge" for live/"DVR" content).
 
 All the other attributes that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoplay` are available and will work the same as they do with the HTML5 video element. One sidenote about `autoplay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
 
@@ -234,7 +232,7 @@ To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as d
   const muxVideoEl = document.querySelector('mux-video');
   function addCuePointsToElement() {
     const cuePoints = [
-      { time: 1, value: 'Simple Value' }, 
+      { time: 1, value: 'Simple Value' },
       { time: 3, value: { complex: 'Complex Object', duration: 2 } },
       { time: 10, value: true },
       { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
@@ -244,11 +242,11 @@ To add CuePoints via `addCuePoint()`, simply pass in an array of CuePoints (as d
   }
 
   function cuePointChangeListener() {
-    // Do something with the activeCuePoint here. 
+    // Do something with the activeCuePoint here.
     console.log('Active CuePoint!', muxVideoEl.activeCuePoint);
   }
 
-  // 
+  //
   muxVideoEl.addEventListener('cuepointchange', cuePointChangeListener);
   // Here, we're `duration` and `'durationchange'` to determine if the `<mux-video>` element has loaded src. This also gives
   // us the opportunity to compare our intended CuePoints against the duration of the media source.
@@ -292,6 +290,10 @@ declare global {
   }
 }
 ```
+
+### Advanced: Overriding Stream Type
+
+Stream Type is an [extended media ui API](https://github.com/video-dev/media-ui-extensions/blob/main/proposals/0010-stream-type.md) that can be used with UI libraries such as [Media Chrome](https://www.media-chrome.org/en/get-started). By default and in general, you can/should rely on the stream type inferred from the `src`/`playbackId`. However, for some advanced use cases, you may want to override this value or set it in advance of loading media to either `"live"` or `"on-demand"`.
 
 # FAQ
 

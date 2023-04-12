@@ -1,4 +1,5 @@
-import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, type MuxMediaProps } from './types';
+import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, StreamTypes } from './types';
+import type { HlsPlaylistTypes, MuxMediaProps } from './types';
 
 type addEventListenerWithTeardown = <
   K extends keyof HTMLMediaElementEventMap,
@@ -67,6 +68,16 @@ export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => 
   if (!src) return '';
 
   return inferMimeTypeFromURL(src);
+};
+
+export const toStreamTypeFromPlaylistType = (playlistType: HlsPlaylistTypes) => {
+  return playlistType === 'VOD' ? StreamTypes.ON_DEMAND : StreamTypes.LIVE;
+};
+
+export const toTargetLiveWindowFromPlaylistType = (playlistType: HlsPlaylistTypes) => {
+  if (playlistType === 'EVENT') return Number.POSITIVE_INFINITY;
+  if (playlistType === 'VOD') return Number.NaN;
+  return 0;
 };
 
 export const inferMimeTypeFromURL = (url: string) => {

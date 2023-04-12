@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 
 export const toWordsFromCamel = (string: string) => {
   const first = string[0].toUpperCase();
@@ -116,13 +116,23 @@ export const ColorRenderer = ({
   );
 };
 
+/** @TODO Consider refactoring to an actual react (functional) component (CJP) */
+export const DefaultEnumFormatter = (enumValue) => {
+  let renderValue = JSON.stringify(enumValue);
+  if (renderValue === 'null' && enumValue !== null) {
+    renderValue = enumValue?.toString();
+  }
+  return <code>{renderValue}</code>;
+};
+
 export const EnumRenderer = ({
   name,
   value,
   label,
   onChange,
   values,
-}: { name: string; value: any | undefined; label?: string; onChange: (obj: any) => void; values: any[] }) => {
+  formatter = DefaultEnumFormatter
+}: { name: string; value: any | undefined; label?: string; onChange: (obj: any) => void; values: any[], formatter?: (enumValue: any) => ReactNode }) => {
   const labelStr = label ?? toWordsFromCamel(name);
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -142,10 +152,10 @@ export const EnumRenderer = ({
               id={`${name}-${enumValue}-control`}
               type="radio"
               onChange={() => onChange({ [name]: values[i] })}
-              value={enumValue}
+              value={typeof enumValue === 'string' ? enumValue : enumValue?.toString()}
               checked={value === enumValue}
             />
-            <label htmlFor={`${name}-${enumValue}-control`}><code>{JSON.stringify(enumValue)}</code></label>
+            <label htmlFor={`${name}-${enumValue}-control`}>{formatter(enumValue)}</label>
             </Fragment>
           )
         })}

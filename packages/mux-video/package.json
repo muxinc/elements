@@ -50,7 +50,8 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/playback-core": "0.17.1"
+    "@mux/playback-core": "0.17.1",
+    "castable-video": "^0.5.2"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
