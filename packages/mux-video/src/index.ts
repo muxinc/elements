@@ -349,10 +349,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   get streamType(): ValueOf<StreamTypes> | undefined {
     // Allow overriding inferred `streamType`
-    if (this.hasAttribute(Attributes.STREAM_TYPE)) {
-      return this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>;
-    }
-    return getStreamType(this.nativeEl);
+    return (this.getAttribute(Attributes.STREAM_TYPE) as ValueOf<StreamTypes>) ?? getStreamType(this.nativeEl);
   }
 
   set streamType(val: ValueOf<StreamTypes> | undefined) {
