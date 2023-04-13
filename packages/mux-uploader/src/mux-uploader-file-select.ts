@@ -2,46 +2,42 @@ import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
 
-export const fileSelectFragment = /*html*/ `
-  <style>
-  #file-select {
-    cursor: pointer;
-    line-height: 16px;
-    background: #fff;
-    border: 1px solid #000;
-    color: #000000;
-    padding: 16px 24px;
-    border-radius: 4px;
-    -webkit-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-    font-family: inherit;
-    font-size: inherit;
-    position: relative;
-  }
-
-  #file-select:hover {
-    color: #fff;
-    background: #404040;
-  }
-
-  #file-select:active {
-    color: #fff;
-    background: #000;
-  }
-  </style>
-
-  <button id="file-select" type="button">Upload a video</button>
-`;
-
 const template = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
     :host { display: inline-block; }
+
+    slot,
+    button {
+      cursor: pointer;
+      line-height: 16px;
+      background: #fff;
+      border: 1px solid #000;
+      color: #000000;
+      padding: 16px 24px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      font-size: inherit;
+      position: relative;
+    }
+
+    slot:hover,
+    button:hover {
+      color: #fff;
+      background: #404040;
+    }
+
+    slot:active,
+    button:active {
+      color: #fff;
+      background: #000;
+    }
   </style>
 
   <slot>
-    ${fileSelectFragment}
+    <button type="button">Upload a video</button>
   </slot>
 `;
 

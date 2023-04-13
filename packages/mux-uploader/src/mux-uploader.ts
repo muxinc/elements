@@ -2,8 +2,6 @@ import { globalThis, document } from './polyfills';
 
 import * as UpChunk from '@mux/upchunk';
 
-import blockLayout from './layouts/block';
-
 const rootTemplate = document.createElement('template');
 
 rootTemplate.innerHTML = /*html*/ `
@@ -11,11 +9,55 @@ rootTemplate.innerHTML = /*html*/ `
   input[type="file"] {
     display: none;
   }
+
+  slot[name="file-select"] {
+    all: inherit;
+    transition: revert;
+  }
+
+  slot[name="file-select"] > button {
+    all: inherit;
+    appearance: revert;
+    display: revert;
+  }
 </style>
 
 <input id="hidden-file-input" type="file" accept="video/*" />
 <mux-uploader-sr-text></mux-uploader-sr-text>
 `;
+
+function conditionalRender(flag: boolean | undefined, component: string): string {
+  return flag ? '' : component;
+}
+
+function blockLayout(contextElement: MuxUploaderElement): DocumentFragment {
+  const { noDrop, noProgress, noStatus, noRetry } = contextElement;
+  const wrapper = noDrop ? 'div' : 'mux-uploader-drop overlay';
+  const progressElements = conditionalRender(
+    noProgress,
+    `
+      <mux-uploader-progress type="percentage"></mux-uploader-progress>
+      <mux-uploader-progress></mux-uploader-progress>
+    `
+  );
+  const statusElement = conditionalRender(noStatus, '<mux-uploader-status></mux-uploader-status>');
+  const retryElement = conditionalRender(noRetry, '<mux-uploader-retry></mux-uploader-retry>');
+
+  return document.createRange().createContextualFragment(`
+    <${wrapper}>
+      ${statusElement}
+      ${retryElement}
+
+      <mux-uploader-file-select>
+        <slot name="file-select">
+          <button type="button">Upload a video</button>
+        </slot>
+      </mux-uploader-file-select>
+
+      ${progressElements}
+    </${wrapper}>
+  `);
+}
 
 type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
 type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
