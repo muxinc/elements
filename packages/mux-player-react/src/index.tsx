@@ -47,7 +47,10 @@ type MuxMediaPropTypes = {
   customDomain: string;
   playbackId: string;
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
-  streamType: ValueOf<StreamTypes> | 'vod';
+  // NOTE: Explicitly adding deprecated values here for now to avoid fully breaking changes in TS envs (CJP)
+  streamType: ValueOf<StreamTypes> | 'll-live' | 'live:dvr' | 'll-live:dvr';
+  defaultStreamType: ValueOf<StreamTypes>;
+  targetLiveWindow: number;
   startTime: number;
   storyboardSrc: string;
   preferCmcd: ValueOf<CmcdTypes> | undefined;

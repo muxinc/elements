@@ -16,7 +16,14 @@ import {
   setupCuePoints,
   getCuePointsTrack,
 } from './tracks';
-import { inSeekableRange, toPlaybackIdParts, getType } from './util';
+import {
+  inSeekableRange,
+  toPlaybackIdParts,
+  getType,
+  toStreamTypeFromPlaylistType,
+  toTargetLiveWindowFromPlaylistType,
+  addEventListenerWithTeardown,
+} from './util';
 import {
   StreamTypes,
   PlaybackTypes,
@@ -26,6 +33,7 @@ import {
   type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
+  HlsPlaylistTypes,
 } from './types';
 export {
   mux,
@@ -41,9 +49,141 @@ export {
 };
 export * from './types';
 
+export const getMediaPlaylistLinesFromMultivariantPlaylistSrc = async (src: string) => {
+  return fetch(src)
+    .then((resp) => resp.text())
+    .then((multivariantPlaylistStr) => {
+      const mediaPlaylistUrl = multivariantPlaylistStr.split('\n').find((_line, idx, lines) => {
+        return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
+      }) as string;
+
+      return fetch(mediaPlaylistUrl)
+        .then((resp) => resp.text())
+        .then((mediaPlaylistStr) => mediaPlaylistStr.split('\n'));
+    });
+};
+
+export const getStreamInfoFromPlaylistLines = (playlistLines: string[]) => {
+  const typeLine = playlistLines.find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
+  const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
+  const streamType = toStreamTypeFromPlaylistType(playlistType);
+  const targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
+
+  // Computation of the live edge start offset per media-ui-extensions proposal. See: https://github.com/video-dev/media-ui-extensions/blob/main/proposals/0007-live-edge.md#recommended-computation-for-rfc8216bis12-aka-hls (CJP)
+  let liveEdgeStartOffset = undefined;
+
+  if (streamType === StreamTypes.LIVE) {
+    // Required if playlist contains one or more EXT-X-PART tags. See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.3.7 (CJP)
+    const partInfLine = playlistLines.find((line) => line.startsWith('#EXT-X-PART-INF'));
+    const lowLatency = !!partInfLine;
+
+    if (lowLatency) {
+      // The EXT-X-PART-INF only has one in-spec named attribute, PART-TARGET, which is required,
+      // so parsing & casting presumptuously here. See spec link above for more info. (CJP)
+      const partTarget = +partInfLine.split(':')[1].split('=')[1];
+      liveEdgeStartOffset = partTarget * 2;
+    } else {
+      // This is required for all media playlists. See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.3.1 (CJP)
+      const targetDurationLine = playlistLines.find((line) => line.startsWith('#EXT-X-TARGETDURATION')) as string;
+      // EXT-X-TARGETDURATION has exactly one unnamed attribute that represents the target duration value, which is required,
+      // so parsing and casting presumptuously here. See spec link above for more info. (CJP)
+      const targetDuration = +targetDurationLine.split(':')[1];
+      liveEdgeStartOffset = targetDuration * 3;
+    }
+  }
+
+  return {
+    streamType,
+    targetLiveWindow,
+    liveEdgeStartOffset,
+  };
+};
+
+export const updateStreamInfoFromSrc = async (src: string, mediaEl: HTMLMediaElement) => {
+  const playlistLines = await getMediaPlaylistLinesFromMultivariantPlaylistSrc(src);
+
+  const { streamType, targetLiveWindow, liveEdgeStartOffset } = getStreamInfoFromPlaylistLines(playlistLines);
+
+  (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
+
+  (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
+  mediaEl.dispatchEvent(new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true }));
+
+  (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
+};
+
+export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
+  const playlistType: HlsPlaylistTypes = levelDetails.type as HlsPlaylistTypes;
+
+  const streamType = toStreamTypeFromPlaylistType(playlistType);
+  const targetLiveWindow = toTargetLiveWindowFromPlaylistType(playlistType);
+  let liveEdgeStartOffset = undefined;
+  const lowLatency = !!levelDetails.partList?.length;
+  if (streamType === StreamTypes.LIVE) {
+    liveEdgeStartOffset = lowLatency ? levelDetails.partTarget * 2 : levelDetails.targetduration * 3;
+  }
+
+  return {
+    streamType,
+    targetLiveWindow,
+    liveEdgeStartOffset,
+    lowLatency,
+  };
+};
+
+export const updateStreamInfoFromHlsjsLevelDetails = (
+  levelDetails: any,
+  mediaEl: HTMLMediaElement,
+  hls: Pick<Hls, 'config' | 'userConfig' | 'liveSyncPosition'>
+) => {
+  const { streamType, targetLiveWindow, liveEdgeStartOffset, lowLatency } =
+    getStreamInfoFromHlsjsLevelDetails(levelDetails);
+
+  if (streamType === StreamTypes.LIVE) {
+    // Update hls.js config for live/ll-live
+    if (lowLatency) {
+      hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 4;
+      hls.config.maxFragLookUpTolerance = hls.userConfig.maxFragLookUpTolerance ?? 0.001;
+      // For ll-hls, ensure that up switches are weighted the same as down switches to mitigate
+      // cases of getting stuck at lower bitrates.
+      hls.config.abrBandWidthUpFactor = hls.userConfig.abrBandWidthUpFactor ?? hls.config.abrBandWidthFactor;
+    } else {
+      hls.config.backBufferLength = hls.userConfig.backBufferLength ?? 8;
+    }
+
+    // Proxy `seekable.end()` to constrain based on rules in
+    // https://github.com/video-dev/media-ui-extensions/blob/main/proposals/0007-live-edge.md#property-constraint-on-htmlmediaelementseekableend-to-model-seekable-live-edge
+    const seekable: TimeRanges = Object.freeze({
+      get length() {
+        return mediaEl.seekable.length;
+      },
+      start(index: number) {
+        return mediaEl.seekable.start(index);
+      },
+      end(index: number) {
+        if (index > this.length) return mediaEl.seekable.end(index);
+        return hls.liveSyncPosition ?? mediaEl.seekable.end(index);
+      },
+    });
+    (muxMediaState.get(mediaEl) ?? {}).seekable = seekable;
+  }
+
+  (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
+
+  (muxMediaState.get(mediaEl) ?? {}).targetLiveWindow = targetLiveWindow;
+  mediaEl.dispatchEvent(new CustomEvent('targetlivewindowchange', { composed: true, bubbles: true }));
+
+  (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
+  mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
+};
+
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<HTMLMediaElement, Partial<MuxMediaProps>> = new WeakMap();
+const muxMediaState: WeakMap<
+  HTMLMediaElement,
+  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number }
+> = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -87,6 +227,27 @@ const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
+};
+
+export const getStreamType = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.streamType ?? StreamTypes.UNKNOWN;
+};
+
+export const getTargetLiveWindow = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.targetLiveWindow ?? Number.NaN;
+};
+
+export const getSeekable = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.seekable ?? mediaEl.seekable;
+};
+
+export const getLiveEdgeStart = (mediaEl: HTMLMediaElement) => {
+  const liveEdgeStartOffset = muxMediaState.get(mediaEl)?.liveEdgeStartOffset;
+  if (typeof liveEdgeStartOffset !== 'number') return Number.NaN;
+  const seekable = getSeekable(mediaEl);
+  // We aren't guaranteed that seekable is ready before invoking this, so handle that case.
+  if (!seekable.length) return Number.NaN;
+  return seekable.end(seekable.length - 1) - liveEdgeStartOffset;
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
@@ -208,24 +369,9 @@ export const setupHls = (
 
 export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   // for regular live videos, set backBufferLength to 8
-  if ([StreamTypes.LIVE, StreamTypes.DVR].includes(streamType as any)) {
+  if (streamType === StreamTypes.LIVE) {
     const liveConfig = {
       backBufferLength: 8,
-    };
-
-    return liveConfig;
-  }
-
-  // for LL Live videos, set backBufferLenght to 4 and maxFragLookUpTolerance to 0.001
-  if ([StreamTypes.LL_LIVE, StreamTypes.LL_DVR].includes(streamType as any)) {
-    const liveConfig = {
-      backBufferLength: 4,
-      maxFragLookUpTolerance: 0.001,
-      // For ll-hls, we're going to weight the bandwidth for switching to higher levels/renditions
-      // equal to the weight for switching to lower levels/renditions. This may result in a higher
-      // chance of hopping up and back down between levels, but significantly increases the
-      // chances of playing at a higher quality (CJP)
-      abrBandWidthUpFactor: 0.95,
     };
 
     return liveConfig;
@@ -341,12 +487,19 @@ export const loadMedia = (
     | 'liveSyncPosition'
     | 'subtitleTracks'
     | 'subtitleTrack'
+    | 'userConfig'
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
   if (mediaEl && shouldUseNative) {
     if (typeof src === 'string') {
+      if (mediaEl.preload === 'none') {
+        addEventListenerWithTeardown(mediaEl, 'loadstart', () => updateStreamInfoFromSrc(src, mediaEl));
+      } else {
+        updateStreamInfoFromSrc(src, mediaEl);
+      }
+
       mediaEl.setAttribute('src', src);
       if (props.startTime) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
@@ -370,6 +523,9 @@ export const loadMedia = (
       { once: true }
     );
   } else if (hls && src) {
+    hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
+      updateStreamInfoFromHlsjsLevelDetails(data.details, mediaEl, hls);
+    });
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
       //   switch (data.type) {
