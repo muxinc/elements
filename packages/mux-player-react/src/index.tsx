@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import type { StreamTypes, PlaybackTypes, CmcdTypes } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
@@ -194,26 +194,10 @@ const usePlayer = (
       return defaultHasChanged(playerEl, value, propName);
     }
   );
-  // NOTE: Need to handle currentTime differently to manage
-  // 1. Whether the prop value is/was "unset" to e.g. `undefined`
-  //    - To make sure we don't try to update currentTime on these changes
-  // 2. Whether the *prop* value was changed ("from the outside")
-  //    - To only apply the `currentTime` if it actually changed from the last provided value
-  // (CJP)
-  const [internalCurrentTime, setInternalCurrentTime] = useState(currentTime);
-  useEffect(() => {
-    if (internalCurrentTime == currentTime) return;
-    setInternalCurrentTime(currentTime);
-  }, [currentTime, internalCurrentTime]);
-  useObjectPropEffect(
-    'currentTime',
-    internalCurrentTime,
-    ref,
-    (playerEl: HTMLMediaElement, currentTimeVal?: number) => {
-      if (currentTimeVal == null) return;
-      playerEl.currentTime = currentTimeVal;
-    }
-  );
+  useObjectPropEffect('currentTime', currentTime, ref, (playerEl: HTMLMediaElement, currentTimeVal?: number) => {
+    if (currentTimeVal == null) return;
+    playerEl.currentTime = currentTimeVal;
+  });
   useEventCallbackEffect('abort', ref, onAbort);
   useEventCallbackEffect('canplay', ref, onCanPlay);
   useEventCallbackEffect('canplaythrough', ref, onCanPlayThrough);
