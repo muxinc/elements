@@ -1,21 +1,14 @@
-import { document } from './polyfills';
 import 'media-chrome/dist/media-theme-element.js';
 // @ts-ignore
 import cssStr from './styles.css';
-// @ts-ignore
-import muxTheme from './media-theme-mux.html';
 import './dialog';
 import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
-
+import classicTheme from './themes/classic';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
-const muxTemplate = document.createElement('template');
-if ('innerHTML' in muxTemplate) muxTemplate.innerHTML = muxTheme;
-
-// prettier-ignore
 export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
@@ -37,7 +30,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
+    template="${props.themeTemplate ?? classicTheme.template}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
