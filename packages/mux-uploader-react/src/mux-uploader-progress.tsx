@@ -1,7 +1,7 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
-import type MuxUploaderProgressElement from '@mux/mux-uploader';
+import { type MuxUploaderProgressElement } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
@@ -9,6 +9,8 @@ import { useCombinedRefs } from './useCombinedRefs';
 export type MuxUploaderProgressRefAttributes = MuxUploaderProgressElement;
 
 export type MuxUploaderProgressProps = {
+  muxUploader?: string;
+  type?: 'bar' | 'radial' | 'percentage';
   children?: React.ReactNode;
   style?: CSSProperties & {
     ['--progress-bar-height']?: CSSProperties['height'];
