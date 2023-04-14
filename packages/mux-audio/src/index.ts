@@ -10,6 +10,8 @@ import {
   toMuxVideoURL,
   Metadata,
   MediaError,
+  getStartDate,
+  getCurrentPdt,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -229,6 +231,14 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
     } else {
       this.removeAttribute(Attributes.STREAM_TYPE);
     }
+  }
+
+  getStartDate() {
+    return getStartDate(this.nativeEl, this._hls);
+  }
+
+  get currentPdt() {
+    return getCurrentPdt(this.nativeEl, this._hls);
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
