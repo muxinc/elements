@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.9.0...@mux/mux-player@1.10.0) (2023-04-14)
+
+
+### Bug Fixes
+
+* delegate events, lazy controller for cue pos ([#633](https://github.com/muxinc/elements/issues/633)) ([4e45cc0](https://github.com/muxinc/elements/commit/4e45cc07b03d29ed03fe09b94e28591f8ff9b886))
+
+
+### Features
+
+* add currentPdt getter and getStartDate() method ([#661](https://github.com/muxinc/elements/issues/661)) ([530170b](https://github.com/muxinc/elements/commit/530170b789d7734d2b70fde7d59abb1ebf8a582c))
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+
+
+
+
+
 # [1.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.8.0...@mux/mux-player@1.9.0) (2023-03-31)
 
 
