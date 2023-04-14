@@ -15,6 +15,8 @@ import {
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
+  getStartDate,
+  getCurrentPdt,
   getStreamType,
   getTargetLiveWindow,
   getLiveEdgeStart,
@@ -422,6 +424,14 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
 
   get cuePoints() {
     return getCuePoints(this.nativeEl);
+  }
+
+  getStartDate() {
+    return getStartDate(this.nativeEl, this._hls);
+  }
+
+  get currentPdt() {
+    return getCurrentPdt(this.nativeEl, this._hls);
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {
