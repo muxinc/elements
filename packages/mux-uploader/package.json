@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
+    "@open-wc/testing": "^3.0.3",
     "@web/dev-server-import-maps": "^0.0.6",
     "copyfiles": "^2.4.1",
     "downlevel-dts": "^0.11.0",
