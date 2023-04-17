@@ -148,7 +148,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 }
 
 function getThemeTemplate(el: MuxPlayerElement) {
-  let themeName = el.getAttribute(PlayerAttributes.THEME);
+  let themeName = el.theme;
+
   if (themeName) {
     // @ts-ignore
     const templateElement = el.getRootNode()?.getElementById?.(themeName);
