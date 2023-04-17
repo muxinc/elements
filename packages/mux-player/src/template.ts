@@ -5,7 +5,6 @@ import './dialog';
 import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
-import muxTheme from './themes/classic';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
@@ -30,7 +29,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="${props.themeTemplate ?? muxTheme.template.content.children[0]}"
+    template="${props.themeTemplate}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
