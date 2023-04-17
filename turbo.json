@@ -1,6 +1,5 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "baseBranch": "origin/main",
   "pipeline": {
     "i18n": {},
     "clean": {
@@ -30,7 +29,7 @@
       "dependsOn": ["^build"]
     },
     "build": {
-      "outputs": ["dist/**/*", "build/**/*", ".next/**/*", ".svelte-kit/**/*", ".vercel/**/*"],
+      "outputs": ["dist/**/*", "build/**/*", ".next/**/*", "!.next/cache/**", ".svelte-kit/**/*", ".vercel/**/*"],
       "dependsOn": ["build:types", "^build"]
     }
   }
