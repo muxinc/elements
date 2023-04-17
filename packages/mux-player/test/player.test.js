@@ -1266,3 +1266,37 @@ describe.skip('Feature: cuePoints', async () => {
     assert.equal(muxPlayerEl.cuePoints.length, 0, 'cuePoints should be empty');
   });
 });
+
+describe('currentPdt and getStartDate', async () => {
+  it('currentPdt and getStartDate work as expected', async function () {
+    this.timeout(5000);
+
+    const player = await fixture(`<mux-player
+      env-key="ilc02s65tkrc2mk69b7q2qdkf"
+      stream-type="on-demand"
+      prefer-playback="mse"
+      muted
+      title="A title"
+      preload="auto"
+    ></mux-player>`);
+
+    player.addEventListener('loadstart', async function () {
+      player.currentTime = 60;
+
+      await aTimeout(50);
+
+      const currentPdt = player.currentPdt;
+      const startDate = player.getStartDate();
+
+      assert.equal(
+        startDate.getTime(),
+        currentPdt.getTime() - player.currentTime * 1000,
+        'currentPdt should be 60 seconds greater than getStartDate'
+      );
+    });
+
+    await aTimeout(50);
+
+    player.playbackId = 'UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo';
+  });
+});

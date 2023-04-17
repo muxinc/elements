@@ -198,6 +198,33 @@ describe('<mux-video>', () => {
     assert.equal(player.metadata.video_id, playbackId);
   });
 
+  it('currentPdt and getStartDate work as expected', async function () {
+    this.timeout(5000);
+
+    const player = await fixture(`<mux-video
+      src="https://stream.mux.com/UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo.m3u8"
+      env-key="ilc02s65tkrc2mk69b7q2qdkf"
+      prefer-playback="mse"
+      muted
+      preload="auto"
+    ></mux-player>`);
+
+    await aTimeout(1000);
+
+    player.currentTime = 60;
+
+    await aTimeout(50);
+
+    const currentPdt = player.currentPdt;
+    const startDate = player.getStartDate();
+
+    assert.equal(
+      startDate.getTime(),
+      currentPdt.getTime() - player.currentTime * 1000,
+      'currentPdt should be ~60 seconds greater than getStartDate'
+    );
+  });
+
   describe('Feature: cuePoints', async () => {
     it('adds cuepoints', async () => {
       const cuePoints = [

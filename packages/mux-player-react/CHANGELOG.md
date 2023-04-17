@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.9.0...@mux/mux-player-react@1.10.0) (2023-04-14)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Don't "reset" currentTime to 0 unintentionally. ([#663](https://github.com/muxinc/elements/issues/663)) ([6ea8aed](https://github.com/muxinc/elements/commit/6ea8aedbe8e62a33bd8de630eddaadf823a738a6))
+
+
+### Features
+
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+
+
+
+
+
 # [1.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.8.0...@mux/mux-player-react@1.9.0) (2023-03-31)
 
 

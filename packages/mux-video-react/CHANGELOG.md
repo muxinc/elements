@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.9](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.8...@mux/mux-video-react@0.7.9) (2023-04-14)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
 ## [0.7.8](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.7...@mux/mux-video-react@0.7.8) (2023-03-31)
 
 
