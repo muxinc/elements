@@ -23,6 +23,10 @@ export type MuxUploaderProps = {
   id?: string;
   endpoint?: MuxUploaderElement['endpoint'];
   type?: string;
+  noDrop?: boolean;
+  noProgress?: boolean;
+  noStatus?: boolean;
+  noRetry?: boolean;
   style?: CSSProperties & {
     ['--progress-bar-fill-color']?: CSSProperties['background'];
     ['--progress-radial-fill-color']?: CSSProperties['stroke'];

@@ -8,6 +8,7 @@ import { useCombinedRefs } from './useCombinedRefs';
 export type MuxUploaderFileSelectRefAttributes = MuxUploaderFileSelectElement;
 
 export type MuxUploaderFileSelectProps = {
+  muxUploader?: string;
   children?: React.ReactNode;
 };
 

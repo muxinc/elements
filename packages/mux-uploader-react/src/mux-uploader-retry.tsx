@@ -8,7 +8,9 @@ import { useCombinedRefs } from './useCombinedRefs';
 export type MuxUploaderRetryRefAttributes = MuxUploaderRetryElement;
 
 export type MuxUploaderRetryProps = {
-  children?: React.ReactNode;
+  muxUploader?: string;
+  // Currently no slottable children so omitting (CJP)
+  // children?: React.ReactNode;
 };
 
 const MuxUploaderRetryInternal = React.forwardRef<MuxUploaderRetryRefAttributes, MuxUploaderRetryProps>(
