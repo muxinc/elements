@@ -1,5 +1,5 @@
 // @ts-ignore
-import theme from './theme.html';
+import theme from './classic.html';
 import { document } from '../../polyfills';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element';
 import { window } from 'media-chrome/dist/utils/server-safe-globals.js';
