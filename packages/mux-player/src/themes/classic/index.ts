@@ -1,6 +1,6 @@
 // @ts-ignore
 import theme from './classic.html';
-import { document } from '../../polyfills';
+import { document, globalThis } from '../../polyfills';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element';
 
 const template = document.createElement('template');
