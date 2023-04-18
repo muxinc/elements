@@ -29,7 +29,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="${props.themeTemplate}"
+    template="${props.themeTemplate || false}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
