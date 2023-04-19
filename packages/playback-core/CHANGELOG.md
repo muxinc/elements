@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.18.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.17.1...@mux/playback-core@0.18.0) (2023-04-14)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.4.0 rc 1 ([#652](https://github.com/muxinc/elements/issues/652)) ([2e84eb5](https://github.com/muxinc/elements/commit/2e84eb539558d6962305c4e03fe938107c810ba8))
+* upgrade to hls.js 1.4.0 ([#656](https://github.com/muxinc/elements/issues/656)) ([6a88840](https://github.com/muxinc/elements/commit/6a888404aa7ba4aa890f09f5dd43d13731c2881e))
+
+
+### Features
+
+* add currentPdt getter and getStartDate() method ([#661](https://github.com/muxinc/elements/issues/661)) ([530170b](https://github.com/muxinc/elements/commit/530170b789d7734d2b70fde7d59abb1ebf8a582c))
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+
+
+
+
+
 ## [0.17.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.17.0...@mux/playback-core@0.17.1) (2023-03-31)
 
 

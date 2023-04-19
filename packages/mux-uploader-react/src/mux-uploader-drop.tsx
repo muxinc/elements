@@ -11,6 +11,7 @@ export type MuxUploaderDropRefAttributes = MuxUploaderDropElement;
 export type MuxUploaderDropProps = {
   overlay?: boolean;
   overlayText?: string;
+  muxUploader?: string;
   style?: CSSProperties & {
     ['--overlay-background-color']?: CSSProperties['backgroundColor'];
   };

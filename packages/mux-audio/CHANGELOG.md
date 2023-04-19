@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.6...@mux/mux-audio@0.10.0) (2023-04-14)
+
+
+### Features
+
+* add currentPdt getter and getStartDate() method ([#661](https://github.com/muxinc/elements/issues/661)) ([530170b](https://github.com/muxinc/elements/commit/530170b789d7734d2b70fde7d59abb1ebf8a582c))
+
+
+
+
+
 ## [0.9.6](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.5...@mux/mux-audio@0.9.6) (2023-03-31)
 
 
