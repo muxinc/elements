@@ -136,7 +136,7 @@ function canary {
 
   LAST_VERSION=$(npm view $PKG_NAME versions --json |
     jq -r '. - map(select(contains("alpha") or contains("beta")))
-      | map(capture("(?<version>\\d+\\.\\d+\\.\\d+)(-(?<dist>[a-z]+))?(\\.(?<build>\\d+))?"))
+      | map(capture("(?<version>(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+))(-(?<dist>[a-z]+))?(\\.(?<build>\\d+))?"))
       | map(.build? |= (. // 0 | tonumber))
       | map(.patch? |= (. // 0 | tonumber))
       | map(.minor? |= (. // 0 | tonumber))
