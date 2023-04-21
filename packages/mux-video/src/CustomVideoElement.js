@@ -66,7 +66,7 @@ template.innerHTML = `
 
   video::-webkit-media-text-track-container {
     transform: var(--media-webkit-text-track-transform);
-    transition: var(--media-webkit-text-track-transform);
+    transition: var(--media-webkit-text-track-transition);
   }
 </style>
 <video is="castable-video" part="video" crossorigin></video>

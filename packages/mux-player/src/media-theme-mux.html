@@ -71,11 +71,13 @@
     /* 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast. */
     media-controller ::slotted([slot='media']) {
-      --media-webkit-text-track-transform: transform 0.433s 0.15s;
+      --media-webkit-text-track-transition: transform 0.433s ease-out 0.3s;
     }
-    media-controller:is([media-paused],:not([user-inactive])) ::slotted([slot='media']) {
-      --media-webkit-text-track-transform: translateY(-3.25em);
-      --media-webkit-text-track-transition: transform 0.433s;
+    media-controller:is(:not([user-inactive])) ::slotted([slot='media']) {
+      /* 42px is the height of the control bar and progress bar
+       * with an additional 5px as a buffer, to get 47px */
+      --media-webkit-text-track-transform: translateY(-47px);
+      --media-webkit-text-track-transition: transform 0.15s ease;
     }
 
     media-captions-selectmenu {
