@@ -63,6 +63,11 @@ template.innerHTML = `
     object-fit: var(--media-object-fit, contain);
     object-position: var(--media-object-position, 50% 50%);
   }
+
+  video::-webkit-media-text-track-container {
+    transform: var(--media-webkit-text-track-transform);
+    transition: var(--media-webkit-text-track-transition);
+  }
 </style>
 <video is="castable-video" part="video" crossorigin></video>
 <slot></slot>

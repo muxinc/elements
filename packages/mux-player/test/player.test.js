@@ -2,6 +2,7 @@ import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing
 import '../src/index.ts';
 
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
+const isFirefox = /Firefox/i.test(navigator.userAgent);
 
 // Media Chrome uses a ResizeObserver which ends up throwing in Firefox and Safari in some cases
 // so we want to catch those. It is supposedly not a blocker if this error is thrown.
@@ -956,8 +957,8 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
-// skip these cue shifting tests as its disabled in Safari
-(isSafari ? describe.skip : describe)('<mux-player> should move cues up', function () {
+// skip these cue shifting tests except in Firefox
+(isFirefox ? describe : describe.skip)('<mux-player> should move cues up', function () {
   this.timeout(12000);
 
   it('when user the user active', async function () {

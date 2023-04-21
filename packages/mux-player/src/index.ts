@@ -460,8 +460,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   #setUpCaptionsMovement() {
     // Any Safari
     const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
+    const isFirefox = /Firefox/i.test(navigator.userAgent);
 
-    if (isSafari) return;
+    // skip if not firefox
+    if (!isFirefox) return;
 
     let selectedTrack: TextTrack;
     const cuesmap = new WeakMap();
