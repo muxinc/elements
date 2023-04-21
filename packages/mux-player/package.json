@@ -28,8 +28,21 @@
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
       "types": "./dist/types/index.d.ts"
     },
-    "./themes/microvideo": "./themes/microvideo.js",
-    "./themes/minimal": "./themes/minimal.js"
+    "./themes/microvideo": {
+      "import": "./themes/microvideo/index.mjs",
+      "require": "./themes/microvideo/index.cjs.js",
+      "default": "./themes/microvideo/index.cjs.js"
+    },
+    "./themes/minimal": {
+      "import": "./themes/minimal/index.mjs",
+      "require": "./themes/minimal/index.cjs.js",
+      "default": "./themes/minimal/index.cjs.js"
+    },
+    "./themes/classic": {
+      "import": "./themes/classic/index.mjs",
+      "require": "./themes/classic/index.cjs.js",
+      "default": "./themes/classic/index.cjs.js"
+    }
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
@@ -55,6 +68,7 @@
     "build:esm-module": "esbuilder src/index.ts --format=esm-module --outfile=dist/mux-player.mjs",
     "build:iife": "esbuilder src/index.ts --format=iife --outfile=dist/mux-player.js",
     "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
+    "build:themes": "yarn node ./scripts/build-themes.mjs",
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
@@ -78,6 +92,7 @@
     "@web/test-runner": "^0.13.26",
     "@web/test-runner-playwright": "^0.9.0",
     "downlevel-dts": "^0.11.0",
+    "esbuild": "^0.17.17",
     "eslint": "^8.24.0",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
