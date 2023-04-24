@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.10.0...@mux/mux-player@1.10.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* force theme to be ltr direction ([#670](https://github.com/muxinc/elements/issues/670)) ([924fb1f](https://github.com/muxinc/elements/commit/924fb1f76f3563600e121a00ff83bb8deb766d34))
+* use webkit pseudo element for captions movement, where available ([#674](https://github.com/muxinc/elements/issues/674)) ([1f236d4](https://github.com/muxinc/elements/commit/1f236d4b42f83fe40884732305259ff5a1fda679)), closes [#660](https://github.com/muxinc/elements/issues/660)
+
+
+
+
+
 # [1.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.9.0...@mux/mux-player@1.10.0) (2023-04-14)
 
 

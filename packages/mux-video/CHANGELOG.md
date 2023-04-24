@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.0...@mux/mux-video@0.15.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* use webkit pseudo element for captions movement, where available ([#674](https://github.com/muxinc/elements/issues/674)) ([1f236d4](https://github.com/muxinc/elements/commit/1f236d4b42f83fe40884732305259ff5a1fda679)), closes [#660](https://github.com/muxinc/elements/issues/660)
+
+
+
+
+
 # [0.15.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.14.1...@mux/mux-video@0.15.0) (2023-04-14)
 
 
