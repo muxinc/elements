@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.18.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.17.1...@mux/playback-core@0.18.0) (2023-04-14)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.4.0 rc 1 ([#652](https://github.com/muxinc/elements/issues/652)) ([2e84eb5](https://github.com/muxinc/elements/commit/2e84eb539558d6962305c4e03fe938107c810ba8))
+* upgrade to hls.js 1.4.0 ([#656](https://github.com/muxinc/elements/issues/656)) ([6a88840](https://github.com/muxinc/elements/commit/6a888404aa7ba4aa890f09f5dd43d13731c2881e))
+
+
+### Features
+
+* add currentPdt getter and getStartDate() method ([#661](https://github.com/muxinc/elements/issues/661)) ([530170b](https://github.com/muxinc/elements/commit/530170b789d7734d2b70fde7d59abb1ebf8a582c))
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+
+
+
+
+
+## [0.17.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.17.0...@mux/playback-core@0.17.1) (2023-03-31)
+
+
+### Bug Fixes
+
+* Cannot assume activeCues removed precisely in Chromium browsers … ([#616](https://github.com/muxinc/elements/issues/616)) ([c53710c](https://github.com/muxinc/elements/commit/c53710cd2cfd436110232e21cad2d6aa2276cd91))
+* capLevel to player size & on fps drop ([#628](https://github.com/muxinc/elements/issues/628)) ([8c0e776](https://github.com/muxinc/elements/commit/8c0e77655a2c13ae263dabfa81849ebf58aa620b))
+* **playback-core, mux-player:** rte and hlsjs version bump ([#632](https://github.com/muxinc/elements/issues/632)) ([ebaa2b6](https://github.com/muxinc/elements/commit/ebaa2b6bdf7c264bf64320cb529954c7143cfca8))
+* **playback-core:** Tweak hls config for ll-hls to increase likelihood of higher quality playback. Use hls@1.4.0-beta.1 ([#629](https://github.com/muxinc/elements/issues/629)) ([dfc8e9b](https://github.com/muxinc/elements/commit/dfc8e9be1b4f23bb2282d3180af060a90923531f))
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+* use Mux Data player_error_context to get better error grouping in the Mux Data dashboard ([599c052](https://github.com/muxinc/elements/commit/599c052f984cd0d76f061c019872851339775b6a))
+
+
+
+
+
 # [0.17.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.16.2...@mux/playback-core@0.17.0) (2023-02-15)
 
 

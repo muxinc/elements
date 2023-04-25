@@ -198,6 +198,33 @@ describe('<mux-video>', () => {
     assert.equal(player.metadata.video_id, playbackId);
   });
 
+  it('currentPdt and getStartDate work as expected', async function () {
+    this.timeout(5000);
+
+    const player = await fixture(`<mux-video
+      src="https://stream.mux.com/UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo.m3u8"
+      env-key="ilc02s65tkrc2mk69b7q2qdkf"
+      prefer-playback="mse"
+      muted
+      preload="auto"
+    ></mux-player>`);
+
+    await aTimeout(1000);
+
+    player.currentTime = 60;
+
+    await aTimeout(50);
+
+    const currentPdt = player.currentPdt;
+    const startDate = player.getStartDate();
+
+    assert.equal(
+      startDate.getTime(),
+      currentPdt.getTime() - player.currentTime * 1000,
+      'currentPdt should be ~60 seconds greater than getStartDate'
+    );
+  });
+
   describe('Feature: cuePoints', async () => {
     it('adds cuepoints', async () => {
       const cuePoints = [
@@ -254,6 +281,86 @@ describe('<mux-video>', () => {
       muxVideoEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
       await oneEvent(muxVideoEl, 'emptied');
       assert.equal(muxVideoEl.cuePoints.length, 0, 'cuePoints should be empty');
+    });
+  });
+
+  describe('Feature: inferred streamType & related', async () => {
+    it('infers on-demand streamType for on demand content', async () => {
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert.equal(muxVideoEl.streamType, 'on-demand');
+    });
+
+    it('infers targetLiveWindow NaN for on demand content', async () => {
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'targetlivewindowchange');
+      assert(Number.isNaN(muxVideoEl.targetLiveWindow), 'targetLiveWindow should be NaN');
+    });
+
+    it('infers liveEdgeStart NaN for on demand content', async () => {
+      const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      // Wait for this event simply to guarantee inferred values have been computed
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert(Number.isNaN(muxVideoEl.liveEdgeStart), 'liveEdgeStart should be NaN');
+    });
+
+    it('infers live streamType for live content', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert.equal(muxVideoEl.streamType, 'live');
+    });
+
+    it('infers targetLiveWindow 0 for live content', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      await oneEvent(muxVideoEl, 'targetlivewindowchange');
+      assert.equal(muxVideoEl.targetLiveWindow, 0);
+    });
+
+    it('infers liveEdgeStart >= 0 for live content', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+      ></mux-video>`);
+      // Wait for this event simply to guarantee inferred values have been computed
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      assert(muxVideoEl.liveEdgeStart >= 0, 'liveEdgeStart should be a positive number');
+    });
+
+    it('adjusts live seekable for hls.js-based playback', async () => {
+      const playbackId = 'v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM';
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="${playbackId}"
+        preload="metadata"
+        prefer-playback="mse"
+      ></mux-video>`);
+      // Wait for this event simply to guarantee inferred values have been computed
+      await oneEvent(muxVideoEl, 'streamtypechange');
+      // Since hls.js doesn't apply
+      assert(
+        muxVideoEl.seekable.end(0) < muxVideoEl.nativeEl.seekable.end(0),
+        'seekable should be adjusted based on holdback and related'
+      );
     });
   });
 });

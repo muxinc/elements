@@ -168,9 +168,7 @@ export class TemplateResult {
       return;
     }
     const templateInstance = renderedTemplateInstances.get(element);
-    if (templateInstance) {
-      templateInstance.update(this.values as unknown as Record<string, unknown>);
-    }
+    templateInstance?.update?.(this.values as unknown as Record<string, unknown>);
   }
 }
 

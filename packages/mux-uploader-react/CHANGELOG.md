@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.6...@mux/mux-uploader-react@1.0.0-beta.7) (2023-04-24)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+
+
+
 # [1.0.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.5...@mux/mux-uploader-react@1.0.0-beta.6) (2023-02-14)
 
 **Note:** Version bump only for package @mux/mux-uploader-react

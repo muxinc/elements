@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.6...@mux/mux-audio@0.10.0) (2023-04-14)
+
+
+### Features
+
+* add currentPdt getter and getStartDate() method ([#661](https://github.com/muxinc/elements/issues/661)) ([530170b](https://github.com/muxinc/elements/commit/530170b789d7734d2b70fde7d59abb1ebf8a582c))
+
+
+
+
+
+## [0.9.6](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.5...@mux/mux-audio@0.9.6) (2023-03-31)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+
+
+
 ## [0.9.5](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.9.4...@mux/mux-audio@0.9.5) (2023-02-15)
 
 **Note:** Version bump only for package @mux/mux-audio

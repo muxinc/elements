@@ -2,6 +2,7 @@ import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing
 import '../src/index.ts';
 
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
+const isFirefox = /Firefox/i.test(navigator.userAgent);
 
 // Media Chrome uses a ResizeObserver which ends up throwing in Firefox and Safari in some cases
 // so we want to catch those. It is supposedly not a blocker if this error is thrown.
@@ -69,11 +70,7 @@ describe('<mux-player>', () => {
     player.muted = true;
     assert(player.muted, 'is muted');
 
-    try {
-      await player.play();
-    } catch (error) {
-      console.warn(error);
-    }
+    await player.play();
 
     assert(!player.paused, 'is playing after player.play()');
     assert.equal(Math.round(player.duration), 134, `is 134s long`);
@@ -231,7 +228,7 @@ describe('<mux-player>', () => {
       stream-type="on-demand"
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
     ></mux-player>`);
-    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -267,7 +264,7 @@ describe('<mux-player>', () => {
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
     ></mux-player>`);
-    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
 
     assert.equal(
       player.poster,
@@ -346,6 +343,42 @@ describe('<mux-player>', () => {
     const actual = player.media.metadata;
     const expected = { video_id, video_title, viewer_user_id, sub_property_id };
     assert.include(actual, expected, 'has expected metadata entries from attrs');
+  });
+
+  it('should forward theme attributes to the theme element', async () => {
+    const player = await fixture(`<mux-player
+      stream-type="on-demand"
+      theme-control-bar-vertical
+      theme-control-bar-place="self end"
+    ></mux-player>`);
+
+    assert.equal(player.mediaTheme.attributes['control-bar-vertical'].value, '');
+    assert.equal(player.mediaTheme.attributes['control-bar-place'].value, 'self end');
+  });
+
+  it('should forward themeProps to the theme element', async () => {
+    const player = await fixture(`<mux-player
+      stream-type="on-demand"
+      theme-control-bar-vertical
+      theme-control-bar-place="self end"
+    ></mux-player>`);
+
+    assert.deepEqual(player.themeProps, {
+      controlBarVertical: true,
+      controlBarPlace: 'self end',
+    });
+
+    player.themeProps = {};
+
+    assert.deepEqual(player.themeProps, {});
+
+    player.themeProps = {
+      controlBarPlace: 'self end',
+    };
+
+    assert.deepEqual(player.themeProps, {
+      controlBarPlace: 'self end',
+    });
   });
 
   it('muted attribute behaves like expected', async function () {
@@ -466,7 +499,7 @@ describe('<mux-player>', () => {
     ></mux-player>`);
 
     const muxVideo = player.media;
-    const mediaPosterImage = player.mediaTheme.shadowRoot.querySelector('media-poster-image');
+    const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
     assert.equal(
@@ -513,7 +546,7 @@ describe('<mux-player>', () => {
       assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
     });
 
-    it('should have something in the buffer if canplay', async function () {
+    (isSafari ? it.skip : it)('should have something in the buffer if canplay', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
@@ -522,7 +555,7 @@ describe('<mux-player>', () => {
       assert(playerEl.buffered.length >= 1, 'should have a length of at least 1');
     });
 
-    it('should clear the buffer when the media is unset', async function () {
+    (isSafari ? it.skip : it)('should clear the buffer when the media is unset', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
@@ -541,16 +574,16 @@ describe('<mux-player>', () => {
       assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
     });
 
-    it('should have a length of exactly 1 if canplay', async function () {
+    (isSafari ? it.skip : it)('should have a length of exactly 1 if canplay', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
       await oneEvent(playerEl, 'canplay');
-      assert(playerEl.seekable.length >= 1, 'should have a length of at least 1');
+      assert.equal(playerEl.seekable.length, 1, 'should have a length of exactly 1');
     });
 
-    it('should clear the seekable range when the media is unset', async function () {
+    (isSafari ? it.skip : it)('should clear the seekable range when the media is unset', async function () {
       this.timeout(5000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
@@ -570,6 +603,7 @@ describe('<mux-player>', () => {
         muted
       ></mux-player>`);
 
+      await oneEvent(player, 'streamtypechange');
       assert.equal(
         player.storyboard,
         'https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt?format=webp',
@@ -869,6 +903,8 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
+    await oneEvent(playerEl, 'streamtypechange');
+
     const mediaControllerEl = playerEl.mediaController;
     const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     assert.exists(mediaControllerEl);
@@ -876,30 +912,29 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 
   it.skip('should seek to live when seek to live button pressed', async function () {
-    this.timeout(15000);
+    this.timeout(20000);
 
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
-      stream-type="ll-live"
       preload="auto"
     ></mux-player>`);
 
-    // NOTE: Need try catch due to bug in play+autoplay behavior (CJP)
-    try {
-      await playerEl.play();
-    } catch (_e) {}
+    await playerEl.play();
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow', { timeout: 11000 });
     playerEl.pause();
-    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
+    const playbackTime = playerEl.currentTime;
+    const liveEdgeStart = playerEl.media.liveEdgeStart;
+    const maxWaitTime = (playbackTime - liveEdgeStart + 1) * 1000;
+    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: maxWaitTime });
     const seekToLiveEl = playerEl.mediaTheme.shadowRoot.querySelector('media-live-button');
     seekToLiveEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking seek to live did not seek to live window');
   });
 
   it.skip('should seek to live when play button is pressed', async function () {
-    this.timeout(15000);
+    this.timeout(20000);
     const playerEl = await fixture(`<mux-player
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
       muted
@@ -907,14 +942,14 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    try {
-      await playerEl.play();
-    } catch (_e) {}
-
+    await playerEl.play();
     await waitUntil(() => !playerEl.paused, 'play() failed');
     await waitUntil(() => playerEl.inLiveWindow, 'playback did not start inLiveWindow', { timeout: 11000 });
     playerEl.pause();
-    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: 11000 });
+    const playbackTime = playerEl.currentTime;
+    const liveEdgeStart = playerEl.media.liveEdgeStart;
+    const maxWaitTime = (playbackTime - liveEdgeStart + 1) * 1000;
+    await waitUntil(() => !playerEl.inLiveWindow, 'still inLiveWindow after long pause', { timeout: maxWaitTime });
 
     const mcPlayEl = playerEl.mediaTheme.shadowRoot.querySelector('media-play-button');
     mcPlayEl.click();
@@ -922,8 +957,8 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
-// skip these cue shifting tests as its disabled in Safari
-(isSafari ? describe.skip : describe)('<mux-player> should move cues up', function () {
+// skip these cue shifting tests except in Firefox
+(isFirefox ? describe : describe.skip)('<mux-player> should move cues up', function () {
   this.timeout(12000);
 
   it('when user the user active', async function () {
@@ -938,10 +973,7 @@ describe('<mux-player> seek to live behaviors', function () {
       preload="auto"
     ></mux-player>`);
 
-    const mc = player.mediaController;
-    const media = mc.media;
-
-    media.textTracks.addEventListener('addtrack', (e) => {
+    player.textTracks.addEventListener('addtrack', (e) => {
       // wait till subtitles have loaded
       if (e.track.kind === 'subtitles') {
         // pool until cues have loaded
@@ -960,12 +992,12 @@ describe('<mux-player> seek to live behaviors', function () {
             () => {
               const activeCue = e.track.activeCues[0];
               assert.equal(activeCue.line, 'auto', "the active cue's line is set to auto");
-              mc.addEventListener(
+              player.addEventListener(
                 'userinactivechange',
                 () => {
                   assert.equal(activeCue.line, -4, 'the line is now set to -4');
 
-                  mc.addEventListener(
+                  player.addEventListener(
                     'userinactivechange',
                     () => {
                       setTimeout(() => {
@@ -979,18 +1011,18 @@ describe('<mux-player> seek to live behaviors', function () {
                     },
                     { once: true }
                   );
-                  mc.setAttribute('user-inactive', '');
-                  mc.dispatchEvent(new Event('userinactivechange'));
+                  player.mediaController.setAttribute('user-inactive', '');
+                  player.dispatchEvent(new Event('userinactivechange'));
                 },
                 { once: true }
               );
-              mc.removeAttribute('user-inactive');
-              mc.dispatchEvent(new Event('userinactivechange'));
+              player.mediaController.removeAttribute('user-inactive');
+              player.dispatchEvent(new Event('userinactivechange'));
             },
             { once: true }
           );
 
-          media.currentTime = firstCue.startTime + 0.1;
+          player.currentTime = firstCue.startTime + 0.1;
         }, 10);
       }
     });
@@ -1101,6 +1133,69 @@ describe('<mux-player> seek to live behaviors', function () {
   });
 });
 
+// NOTE: When we fully deprecate "old" stream types ("ll-" prefix and "dvr"), we should update these tests accordingly.
+describe('Feature: stream types & related (including non-media-ui-extension types', async () => {
+  it('should set expected default values for stream type on-demand', async () => {
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="on-demand"
+    ></mux-player>`);
+    assert.equal(muxPlayerEl.streamType, 'on-demand');
+    assert(Number.isNaN(muxPlayerEl.targetLiveWindow), 'targetLiveWindow should be NaN for on-demand');
+    assert.equal(muxPlayerEl.media.streamType, 'on-demand');
+  });
+
+  it('should set expected default values for stream type live', async () => {
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="live"
+    ></mux-player>`);
+    assert.equal(muxPlayerEl.streamType, 'live');
+    assert(!muxPlayerEl.targetLiveWindow, '!targetLiveWindow for live');
+    assert.equal(muxPlayerEl.media.streamType, 'live');
+  });
+
+  it('should set expected default values for stream type ll-live', async () => {
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="ll-live"
+    ></mux-player>`);
+    assert.equal(muxPlayerEl.streamType, 'll-live');
+    assert(!muxPlayerEl.targetLiveWindow, '!targetLiveWindow for ll-live');
+    // Apply the "translated" stream type to underlying `<mux-video>` instance.
+    assert.equal(muxPlayerEl.media.streamType, 'live');
+  });
+
+  it('should set expected default values for stream type live:dvr', async () => {
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="live:dvr"
+    ></mux-player>`);
+    assert.equal(muxPlayerEl.streamType, 'live:dvr');
+    assert.equal(muxPlayerEl.targetLiveWindow, Number.POSITIVE_INFINITY);
+    // Apply the "translated" stream type to underlying `<mux-video>` instance.
+    assert.equal(muxPlayerEl.media.streamType, 'live');
+  });
+
+  it('should set expected default values for stream type ll-live:dvr', async () => {
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="ll-live:dvr"
+    ></mux-player>`);
+    assert.equal(muxPlayerEl.streamType, 'll-live:dvr');
+    assert.equal(muxPlayerEl.targetLiveWindow, Number.POSITIVE_INFINITY);
+    // Apply the "translated" stream type to underlying `<mux-video>` instance.
+    assert.equal(muxPlayerEl.media.streamType, 'live');
+  });
+
+  it('should apply noautoseektolive to theme for DVR stream types', async () => {
+    const muxPlayerEl = await fixture(`<mux-player
+    ></mux-player>`);
+    assert(!muxPlayerEl.mediaTheme.hasAttribute('noautoseektolive'));
+    muxPlayerEl.streamType = 'live:dvr';
+    assert(muxPlayerEl.mediaTheme.hasAttribute('noautoseektolive'));
+    muxPlayerEl.streamType = undefined;
+    assert(!muxPlayerEl.mediaTheme.hasAttribute('noautoseektolive'));
+    muxPlayerEl.streamType = 'll-live:dvr';
+    assert(muxPlayerEl.mediaTheme.hasAttribute('noautoseektolive'));
+  });
+});
+
 // skip cuepoint tests on all browsers
 // TODO fixup cuepoint tests and behavior across browsers
 describe.skip('Feature: cuePoints', async () => {
@@ -1170,5 +1265,39 @@ describe.skip('Feature: cuePoints', async () => {
     // Safari needs an extra tick for the cues to clear
     await aTimeout(50);
     assert.equal(muxPlayerEl.cuePoints.length, 0, 'cuePoints should be empty');
+  });
+});
+
+describe('currentPdt and getStartDate', async () => {
+  it('currentPdt and getStartDate work as expected', async function () {
+    this.timeout(5000);
+
+    const player = await fixture(`<mux-player
+      env-key="ilc02s65tkrc2mk69b7q2qdkf"
+      stream-type="on-demand"
+      prefer-playback="mse"
+      muted
+      title="A title"
+      preload="auto"
+    ></mux-player>`);
+
+    player.addEventListener('loadstart', async function () {
+      player.currentTime = 60;
+
+      await aTimeout(50);
+
+      const currentPdt = player.currentPdt;
+      const startDate = player.getStartDate();
+
+      assert.equal(
+        startDate.getTime(),
+        currentPdt.getTime() - player.currentTime * 1000,
+        'currentPdt should be 60 seconds greater than getStartDate'
+      );
+    });
+
+    await aTimeout(50);
+
+    player.playbackId = 'UgKrPYAnjMjP6oMF4Kcs1gWVhtgYDR02EHQGnj022X1Xo';
   });
 });

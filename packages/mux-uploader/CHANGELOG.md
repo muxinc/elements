@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.6...@mux/mux-uploader@1.0.0-beta.7) (2023-04-24)
+
+
+### Bug Fixes
+
+* **mux-uploader:** conditionally render mux-uploader-drop ([#623](https://github.com/muxinc/elements/issues/623)) ([0d260b5](https://github.com/muxinc/elements/commit/0d260b5c7d81c173bec1792f5afe35986d090047))
+* **mux-uploader:** fixing dropzone styling regressions ([#625](https://github.com/muxinc/elements/issues/625)) ([ab2ae48](https://github.com/muxinc/elements/commit/ab2ae486f55c8ee6ca6e4d0618f84f93bafceb91))
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+### Features
+
+* **mux-uploader:** conditional render based on attributes ([#645](https://github.com/muxinc/elements/issues/645)) ([59a0978](https://github.com/muxinc/elements/commit/59a09789fa4a0c03bfae448b44ace03638d83d06))
+* **mux-uploader:** support max file size ([#658](https://github.com/muxinc/elements/issues/658)) fixes [#338](https://github.com/muxinc/elements/issues/338) ([1d79b9e](https://github.com/muxinc/elements/commit/1d79b9e5dec5136a59735b036cbe04495d28814f))
+
+
+
+
+
 # [1.0.0-beta.6](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.5...@mux/mux-uploader@1.0.0-beta.6) (2023-02-14)
 
 

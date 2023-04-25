@@ -47,7 +47,10 @@ type MuxMediaPropTypes = {
   customDomain: string;
   playbackId: string;
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
-  streamType: ValueOf<StreamTypes> | 'vod';
+  // NOTE: Explicitly adding deprecated values here for now to avoid fully breaking changes in TS envs (CJP)
+  streamType: ValueOf<StreamTypes> | 'll-live' | 'live:dvr' | 'll-live:dvr';
+  defaultStreamType: ValueOf<StreamTypes>;
+  targetLiveWindow: number;
   startTime: number;
   storyboardSrc: string;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
@@ -76,6 +79,7 @@ export type MuxPlayerProps = {
   title?: string;
   tokens?: Tokens;
   theme?: string;
+  themeProps?: { [k: string]: any };
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;
@@ -163,10 +167,12 @@ const usePlayer = (
     playbackId,
     playbackRates,
     currentTime,
+    themeProps,
     ...remainingProps
   } = props;
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
+  useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect(
@@ -188,9 +194,10 @@ const usePlayer = (
       return defaultHasChanged(playerEl, value, propName);
     }
   );
-  // NOTE: Somewhere in the codebase, `currentTime` is getting cast to a number, resulting in `NaN` + an error.
-  // This is a bandaid solution for now. (CJP)
-  useObjectPropEffect('currentTime', currentTime ?? 0, ref);
+  useObjectPropEffect('currentTime', currentTime, ref, (playerEl: HTMLMediaElement, currentTimeVal?: number) => {
+    if (currentTimeVal == null) return;
+    playerEl.currentTime = currentTimeVal;
+  });
   useEventCallbackEffect('abort', ref, onAbort);
   useEventCallbackEffect('canplay', ref, onCanPlay);
   useEventCallbackEffect('canplaythrough', ref, onCanPlayThrough);

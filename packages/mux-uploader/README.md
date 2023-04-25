@@ -354,25 +354,15 @@ If an error occurs during the upload, an `uploaderror` event will fire.
 
 #### `<mux-uploader>`
 
-| Name                           | CSS Property       | Default Value       | Description                                             | Notes                                                                                             |
-| ------------------------------ | ------------------ | ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `--uploader-font-family`       | `font-family`      | `Arial`             | font family of the component                            | Applies to other elements as well: upload status and error status                                 |
-| `--uploader-font-size`         | `font-size`        | `16px`              | font size for text within the component                 | Also applies to `<mux-uploader-drop>` i.e. overlay text                                           |
-| `--uploader-background-color`  | `background-color` | `inherit`           | background color of area surrounding the upload         |                                                                                                   |
-| `--button-background-color`    | `background`       | `#fff`              | background color of upload button                       |                                                                                                   |
-| `--button-border-radius`       | `border-radius`    | `4px`               | border radius of the upload button                      |                                                                                                   |
-| `--button-border`              | `border`           | `1px solid #000000` | border of the upload button                             |                                                                                                   |
-| `--button-padding`             | `padding`          | `16px 24px`         | padding of the upload button                            |                                                                                                   |
-| `--button-hover-text`          | `color`            | `#fff`              | text color of upload button on button hover             |                                                                                                   |
-| `--button-hover-background`    | `background`       | `#404040`           | background color of upload button on button hover       |                                                                                                   |
-| `--button-active-text`         | `color`            | `#fff`              | color of upload button text when button is active       |                                                                                                   |
-| `--button-active-background`   | `background`       | `#000000`           | background color of upload button when button is active | Applied via `:active` [pseudo selector](https://developer.mozilla.org/en-US/docs/Web/CSS/:active) |
-| `--progress-bar-fill-color`    | `background`       | `#000000`           | background color for progress bar div                   |                                                                                                   |
-| `--progress-radial-fill-color` | `stroke`           | `black`             | stroke color for circle SVG (wip)                       |                                                                                                   |
-| `--progress-percentage-display`| `display`          | `block`             | display value for percentage progress                   |                                                                                                   |
+| Name                            | CSS Property | Default Value | Description                           | Notes |
+| ------------------------------- | ------------ | ------------- | ------------------------------------- | ----- |
+| `--progress-bar-fill-color`     | `background` | `#000000`     | background color for progress bar div |       |
+| `--progress-bar-height`         | `height`     | `4px`         | height for the progress bar           |       |
+| `--progress-radial-fill-color`  | `stroke`     | `black`       | stroke color for circle SVG (wip)     |       |
+| `--progress-percentage-display` | `display`    | `block`       | display value for percentage progress |       |
 
 #### `<mux-uploader-drop/>`
 
 | Name                         | CSS Property       | Default Value               | Description                         | Notes                                                  |
 | ---------------------------- | ------------------ | --------------------------- | ----------------------------------- | ------------------------------------------------------ |
-| `--overlay-background-color` | `background-color` | `rgba(226, 253, 255, 0.95)` | background color of the overlay div | Visible only when component has `fullscreen` attribute |
+| `--overlay-background-color` | `background-color` | `rgba(226, 253, 255, 0.95)` | background color of the overlay div | |

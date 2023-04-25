@@ -23,6 +23,7 @@ function MuxPlayerPage() {
         ref={mediaElRef}
         playbackId="vJzD4ayErsL3z5qs0201rKHfffmQOMWSk58J6A7FtECKs"
         theme="microvideo"
+        themeProps={{ controlBarVertical: true, controlBarPlace: 'start start' }}
         // metadata={{
         //   video_id: "video-id-12345",
         //   video_title: "Mad Max: Fury Road Trailer",

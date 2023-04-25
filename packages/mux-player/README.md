@@ -30,7 +30,6 @@ yarn add @mux/mux-player
   playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
   metadata-video-title="Big Buck Bunny"
   metadata-viewer-user-id="user-id-1234"
-  stream-type="on-demand"
 ></mux-player>
 ```
 

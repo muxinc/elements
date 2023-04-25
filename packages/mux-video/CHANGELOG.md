@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.0...@mux/mux-video@0.15.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* use webkit pseudo element for captions movement, where available ([#674](https://github.com/muxinc/elements/issues/674)) ([1f236d4](https://github.com/muxinc/elements/commit/1f236d4b42f83fe40884732305259ff5a1fda679)), closes [#660](https://github.com/muxinc/elements/issues/660)
+
+
+
+
+
+# [0.15.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.14.1...@mux/mux-video@0.15.0) (2023-04-14)
+
+
+### Features
+
+* add currentPdt getter and getStartDate() method ([#661](https://github.com/muxinc/elements/issues/661)) ([530170b](https://github.com/muxinc/elements/commit/530170b789d7734d2b70fde7d59abb1ebf8a582c))
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+
+
+
+
+
+## [0.14.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.14.0...@mux/mux-video@0.14.1) (2023-03-31)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+
+
+
 # [0.14.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.13.2...@mux/mux-video@0.14.0) (2023-02-15)
 
 

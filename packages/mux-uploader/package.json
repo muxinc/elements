@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "An uploader elements to be used with Mux Direct Uploads",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
+    "@open-wc/testing": "^3.0.3",
     "@web/dev-server-import-maps": "^0.0.6",
     "copyfiles": "^2.4.1",
     "downlevel-dts": "^0.11.0",

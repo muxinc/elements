@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.10](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.9...@mux/mux-video-react@0.7.10) (2023-04-24)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.9](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.8...@mux/mux-video-react@0.7.9) (2023-04-14)
+
+**Note:** Version bump only for package @mux/mux-video-react
+
+
+
+
+
+## [0.7.8](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.7...@mux/mux-video-react@0.7.8) (2023-03-31)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+
+
+
 ## [0.7.7](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.6...@mux/mux-video-react@0.7.7) (2023-02-15)
 
 **Note:** Version bump only for package @mux/mux-video-react

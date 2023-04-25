@@ -126,7 +126,7 @@ function canary {
 
   # get last published version from NPM without alpha / beta, remove -SHA hash
 
-  # debug jq command at https://jqplay.org/s/Wwjv5hVUCL0
+  # debug jq command at https://jqplay.org/s/Vnz8ioZ2vtm
   #
   #   1. remove alpha or beta versions
   #   2 & 3. convert to { version: 'x.x.x', dist: 'canary', build: x }
@@ -136,9 +136,12 @@ function canary {
 
   LAST_VERSION=$(npm view $PKG_NAME versions --json |
     jq -r '. - map(select(contains("alpha") or contains("beta")))
-      | map(capture("(?<version>\\d+\\.\\d+\\.\\d+)(-(?<dist>[a-z]+))?(\\.(?<build>\\d+))?"))
+      | map(capture("(?<version>(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+))(-(?<dist>[a-z]+))?(\\.(?<build>\\d+))?"))
       | map(.build? |= (. // 0 | tonumber))
-      | sort_by(.version, .build)
+      | map(.patch? |= (. // 0 | tonumber))
+      | map(.minor? |= (. // 0 | tonumber))
+      | map(.major? |= (. // 0 | tonumber))
+      | sort_by(.major, .minor, .patch, .build)
       | map(.version + "-" + (.dist // "latest") + "." + (.build|tostring))
       | last')
 

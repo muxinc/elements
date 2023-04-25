@@ -1,12 +1,11 @@
 import { document } from './polyfills';
 import 'media-chrome/dist/media-theme-element.js';
-import './media-chrome/time-display';
 // @ts-ignore
 import cssStr from './styles.css';
 // @ts-ignore
 import muxTheme from './media-theme-mux.html';
 import './dialog';
-import { getSrcFromPlaybackId } from './helpers';
+import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
 
@@ -24,45 +23,44 @@ export const template = (props: MuxTemplateProps) => html`
   ${content(props)}
 `;
 
-const isLive = (props: MuxTemplateProps) => [StreamTypes.LIVE, StreamTypes.LL_LIVE].includes(props.streamType as any);
-
-const isDVR = (props: MuxTemplateProps) => [StreamTypes.DVR, StreamTypes.LL_DVR].includes(props.streamType as any);
-
-const isLiveOrDVR = (props: MuxTemplateProps) => isLive(props) || isDVR(props);
-
 const getHotKeys = (props: MuxTemplateProps) => {
   let hotKeys = props.hotKeys ? `${props.hotKeys}` : '';
-  if (isLiveOrDVR(props)) {
+  // Applies to any live content, including "dvr". We may want to only apply for non-DVR live.
+  if (getStreamTypeFromAttr(props.streamType) === 'live') {
     hotKeys += ' noarrowleft noarrowright';
   }
   return hotKeys;
 };
 
+// Warning: remember to update `ThemeAttributeNames` in index.ts
+// if you add or remove attributes in <media-theme>.
+
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    stream-type="${isLiveOrDVR(props) ? 'live' : 'on-demand'}"
-    target-live-window="${isDVR(props) ? 1 : false}"
+    default-stream-type="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
+    noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
-      '--primary-color': props.primaryColor,
-      '--secondary-color': props.secondaryColor,
+      '--media-primary-color': props.primaryColor,
+      '--media-secondary-color': props.secondaryColor,
     }) ?? false}"
     default-showing-captions="${!props.defaultHiddenCaptions}"
     forward-seek-offset="${props.forwardSeekOffset ?? false}"
     backward-seek-offset="${props.backwardSeekOffset ?? false}"
     playback-rates="${props.playbackRates ?? false}"
     default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
+    hide-duration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
-    poster="${props.poster === '' ? false : props.poster ?? false}"
-    placeholder="${props.placeholder ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"
+      target-live-window="${props.targetLiveWindow ?? false}"
+      stream-type="${getStreamTypeFromAttr(props.streamType) ?? false}"
       crossorigin="${props.crossOrigin ?? ''}"
       playsinline
       autoplay="${props.autoplay ?? false}"
@@ -78,7 +76,6 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-name="${props.playerSoftwareName ?? false}"
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
-      stream-type="${props.streamType ? (isLiveOrDVR(props) ? 'live' : 'on-demand') : false}"
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src
         ? props.src
@@ -98,13 +95,18 @@ export const content = (props: MuxTemplateProps) => html`
             token: props.tokens.playback,
           })
         : false}"
-      cast-stream-type="${isLive(props) ? 'live' : false}"
       exportparts="video"
     >
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
     </mux-video>
+    <media-poster-image
+      slot="poster"
+      part="poster"
+      src="${props.poster === '' ? false : props.poster ?? false}"
+      placeholder-src="${props.placeholder ?? false}"
+    ></media-poster-image>
     <mxp-dialog
       no-auto-hide
       open="${props.isDialogOpen ?? false}"

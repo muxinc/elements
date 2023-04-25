@@ -3,6 +3,47 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.10.0...@mux/mux-player-react@1.10.1) (2023-04-24)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
+# [1.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.9.0...@mux/mux-player-react@1.10.0) (2023-04-14)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Don't "reset" currentTime to 0 unintentionally. ([#663](https://github.com/muxinc/elements/issues/663)) ([6ea8aed](https://github.com/muxinc/elements/commit/6ea8aedbe8e62a33bd8de630eddaadf823a738a6))
+
+
+### Features
+
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+
+
+
+
+
+# [1.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.8.0...@mux/mux-player-react@1.9.0) (2023-03-31)
+
+
+### Bug Fixes
+
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+
+
+### Features
+
+* add way to set and render MC themes ([#561](https://github.com/muxinc/elements/issues/561)) ([0ac98e9](https://github.com/muxinc/elements/commit/0ac98e9a6fd60c5ea990be3c7d5d8ae7941e447c))
+* **mux-player-react:** mux player react cuepoint handlers ([#605](https://github.com/muxinc/elements/issues/605)) ([df4e6e0](https://github.com/muxinc/elements/commit/df4e6e036f7cd9b5d9dfa52e1adc56bb0a850373))
+
+
+
+
+
 # [1.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.7.2...@mux/mux-player-react@1.8.0) (2023-02-15)
 
 

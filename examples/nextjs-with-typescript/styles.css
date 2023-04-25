@@ -30,9 +30,13 @@ header {
   height: 26px;
 }
 
-h1 {
+header h1 {
   margin: 0;
   margin-left: .9em;
+  margin-right: .9em;
+}
+
+h1 {
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.2em;

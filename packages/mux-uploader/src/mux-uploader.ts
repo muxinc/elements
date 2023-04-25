@@ -8,18 +8,12 @@ const rootTemplate = document.createElement('template');
 
 rootTemplate.innerHTML = /*html*/ `
 <style>
-  :host {
-    font-family: var(--uploader-font-family, Arial);
-    font-size: var(--uploader-font-size, 16px);
-    background-color: var(--uploader-background-color, inherit);
-  }
-
   input[type="file"] {
     display: none;
   }
 </style>
 
-<input id="hidden-file-input" type="file" />
+<input id="hidden-file-input" type="file" accept="video/*" />
 <mux-uploader-sr-text></mux-uploader-sr-text>
 `;
 
@@ -120,7 +114,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   static get observedAttributes() {
-    return ['nodrop'];
+    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
   }
 
   protected get hiddenFileInput() {
@@ -142,12 +136,36 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this._endpoint = value;
   }
 
-  get nodrop(): boolean {
-    return this.hasAttribute('nodrop');
+  get noDrop(): boolean {
+    return this.hasAttribute('no-drop');
   }
 
-  set nodrop(value: boolean) {
-    this.toggleAttribute('nodrop', Boolean(value));
+  set noDrop(value: boolean) {
+    this.toggleAttribute('no-drop', Boolean(value));
+  }
+
+  get noProgress(): boolean {
+    return this.hasAttribute('no-progress');
+  }
+
+  set noProgress(value: boolean) {
+    this.toggleAttribute('no-progress', Boolean(value));
+  }
+
+  get noStatus(): boolean {
+    return this.hasAttribute('no-status');
+  }
+
+  set noStatus(value: boolean) {
+    this.toggleAttribute('no-status', Boolean(value));
+  }
+
+  get noRetry(): boolean {
+    return this.hasAttribute('no-retry');
+  }
+
+  set noRetry(value: boolean) {
+    this.toggleAttribute('no-retry', Boolean(value));
   }
 
   updateLayout() {
@@ -155,7 +173,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     if (oldLayout) {
       oldLayout.remove();
     }
-    const newLayout = blockLayout(this.nodrop);
+    const newLayout = blockLayout(this);
     this.shadowRoot!.appendChild(newLayout);
   }
 
@@ -172,6 +190,24 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get maxFileSize(): number | undefined {
+    const maxFileSize = this.getAttribute('max-file-size');
+    return maxFileSize !== null ? parseInt(maxFileSize) : undefined;
+  }
+
+  set maxFileSize(value: number | undefined) {
+    if (value) {
+      this.setAttribute('max-file-size', value.toString());
+    } else {
+      this.removeAttribute('max-file-size');
+    }
+  }
+
+  setError(message: string) {
+    this.setAttribute('upload-error', '');
+    this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message } }));
+  }
+
   resetState() {
     this.removeAttribute('upload-error');
     this.removeAttribute('upload-in-progress');
@@ -184,48 +220,57 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const dynamicChunkSize = this.dynamicChunkSize;
 
     if (!endpoint) {
-      const invalidUrlMessage = 'No url or endpoint specified -- cannot handleUpload';
-
-      this.setAttribute('upload-error', '');
-      console.error(invalidUrlMessage);
-      this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message: invalidUrlMessage } }));
+      this.setError(`No url or endpoint specified -- cannot handleUpload`);
       // Bail early if no endpoint.
       return;
     } else {
       this.removeAttribute('upload-error');
     }
 
-    this.setAttribute('upload-in-progress', '');
+    try {
+      const upload = UpChunk.createUpload({
+        endpoint,
+        dynamicChunkSize,
+        file: evt.detail,
+        ...(this.maxFileSize !== undefined
+          ? {
+              maxFileSize: this.maxFileSize,
+            }
+          : {}),
+      });
 
-    const upload = UpChunk.createUpload({
-      endpoint,
-      dynamicChunkSize,
-      file: evt.detail,
-    });
+      this.setAttribute('upload-in-progress', '');
 
-    this.dispatchEvent(new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } }));
+      this.dispatchEvent(
+        new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } })
+      );
 
-    upload.on('attempt', (event) => {
-      this.dispatchEvent(new CustomEvent('chunkattempt', event));
-    });
+      upload.on('attempt', (event) => {
+        this.dispatchEvent(new CustomEvent('chunkattempt', event));
+      });
 
-    upload.on('chunkSuccess', (event) => {
-      this.dispatchEvent(new CustomEvent('chunksuccess', event));
-    });
+      upload.on('chunkSuccess', (event) => {
+        this.dispatchEvent(new CustomEvent('chunksuccess', event));
+      });
 
-    upload.on('error', (event) => {
-      this.setAttribute('upload-error', '');
-      console.error(event.detail.message);
-      this.dispatchEvent(new CustomEvent('uploaderror', event));
-    });
+      upload.on('error', (event) => {
+        this.setAttribute('upload-error', '');
+        console.error(event.detail.message);
+        this.dispatchEvent(new CustomEvent('uploaderror', event));
+      });
 
-    upload.on('progress', (event) => {
-      this.dispatchEvent(new CustomEvent('progress', event));
-    });
+      upload.on('progress', (event) => {
+        this.dispatchEvent(new CustomEvent('progress', event));
+      });
 
-    upload.on('success', (event) => {
-      this.dispatchEvent(new CustomEvent('success', event));
-    });
+      upload.on('success', (event) => {
+        this.dispatchEvent(new CustomEvent('success', event));
+      });
+    } catch (err) {
+      if (err instanceof Error) {
+        this.setError(err.message);
+      }
+    }
   }
 }
 

@@ -1,3 +1,5 @@
+import { StreamTypes } from '@mux/playback-core';
+import type { ValueOf } from '@mux/playback-core';
 import { toQuery, camelCase, parseJwt } from './utils';
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -63,6 +65,18 @@ export const getStoryboardURLFromPlaybackId = (
     token,
     format: 'webp',
   })}`;
+};
+
+export const getStreamTypeFromAttr = (streamTypeAttr: string | null | undefined): ValueOf<StreamTypes> | undefined => {
+  // If unset, allow mux-video + media chrome to infer stream-type/streamType
+  if (!streamTypeAttr) return undefined;
+  // If it's a valid streamType based on the media-ui-extensions proposal, use it
+  if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(streamTypeAttr as any))
+    return streamTypeAttr as ValueOf<StreamTypes>;
+  // Otherwise, if it's a valid old stream-type, it should be one of several "live" permutations
+  if (streamTypeAttr?.includes('live')) return StreamTypes.LIVE;
+  // This case should never be met if a valid stream-type was set, but handling here just in case.
+  return undefined;
 };
 
 export function castThemeName(themeName?: string): string | undefined {

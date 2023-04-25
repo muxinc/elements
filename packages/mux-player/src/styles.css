@@ -1,5 +1,7 @@
 :host {
   --media-control-display: var(--controls);
+  --media-loading-indicator-display: var(--loading-indicator);
+  --media-dialog-display: var(--dialog);
   --media-play-button-display: var(--play-button);
   --media-live-button-display: var(--live-button);
   --media-seek-backward-button-display: var(--seek-backward-button);
@@ -36,6 +38,7 @@ a {
 media-theme {
   width: 100%;
   height: 100%;
+  direction: ltr;
 }
 
 ::part(top),
