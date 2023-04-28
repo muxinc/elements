@@ -210,6 +210,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   resetState() {
     this.removeAttribute('upload-error');
     this.removeAttribute('upload-in-progress');
+    this.removeAttribute('upload-complete');
     // Reset file to ensure change/input events will fire, even if selecting the same file (CJP).
     this.hiddenFileInput.value = '';
   }
@@ -263,6 +264,9 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       });
 
       upload.on('success', (event) => {
+        this.removeAttribute('upload-in-progress');
+        this.setAttribute('upload-complete', '');
+
         this.dispatchEvent(new CustomEvent('success', event));
       });
     } catch (err) {
