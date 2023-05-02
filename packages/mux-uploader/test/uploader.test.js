@@ -165,6 +165,8 @@ describe('<mux-uploader>', () => {
     assert.equal(server.lastRequest.url, 'https://mock-upload-endpoint.com', 'request url matches');
 
     await oneEvent(uploader, 'success');
+    assert.equal(uploader.hasAttribute('upload-in-progress'), false, 'upload-in-progress attr is not set');
+    assert.equal(uploader.hasAttribute('upload-complete'), true, 'upload-complete attr is set');
   });
 
   it('completes a mock upload with an asynchronous endpoint function', async function () {
