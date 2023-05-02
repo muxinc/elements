@@ -105,6 +105,26 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
         opts
       );
 
+      this.#uploaderEl.addEventListener('uploadstart', () => this.setAttribute('upload-in-progress', ''), opts);
+
+      this.#uploaderEl.addEventListener(
+        'success',
+        () => {
+          this.removeAttribute('upload-in-progress');
+          this.setAttribute('upload-complete', '');
+        },
+        opts
+      );
+
+      this.#uploaderEl.addEventListener(
+        'reset',
+        () => {
+          this.removeAttribute('upload-in-progress');
+          this.removeAttribute('upload-complete');
+        },
+        opts
+      );
+
       this.setupDragEvents(opts);
     }
   }
