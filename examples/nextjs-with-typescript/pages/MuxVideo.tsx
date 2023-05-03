@@ -45,7 +45,7 @@ function MuxVideoPage() {
           <input
             id="paused-control"
             type="checkbox"
-            onChange={() => setPaused(!paused)}
+            onChange={() => paused ? mediaElRef.current.play() : mediaElRef.current.pause()}
             checked={paused}
           />
         </div>
