@@ -64,6 +64,7 @@ const PlayerAttributes = {
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
+  NO_VOLUME_PREF: 'no-volume-pref',
 };
 
 const ThemeAttributeNames = [
@@ -85,6 +86,7 @@ const ThemeAttributeNames = [
   'target-live-window',
   'template',
   'title',
+  'no-volume-pref',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -137,6 +139,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
+    novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     ...state,
   };
 
@@ -1167,6 +1170,24 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   set envKey(val: string | undefined) {
     this.setAttribute(MuxVideoAttributes.ENV_KEY, `${val}`);
+  }
+
+  /**
+   * Get no-volume-pref flag.
+   */
+  get noVolumePref() {
+    return this.hasAttribute(PlayerAttributes.NO_VOLUME_PREF);
+  }
+
+  /**
+   * Set video engine debug flag.
+   */
+  set noVolumePref(val) {
+    if (val) {
+      this.setAttribute(PlayerAttributes.NO_VOLUME_PREF, '');
+    } else {
+      this.removeAttribute(PlayerAttributes.NO_VOLUME_PREF);
+    }
   }
 
   /**

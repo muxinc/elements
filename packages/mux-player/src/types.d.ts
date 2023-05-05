@@ -23,6 +23,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   backwardSeekOffset: number;
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
+  novolumepref: boolean;
   playbackRates: string;
   defaultShowRemainingTime: boolean;
   hideDuration: boolean;
