@@ -26,7 +26,7 @@ export default function blockLayout(contextElement: MuxUploaderElement): Documen
       ${statusElement}
       ${retryElement}
 
-      <mux-uploader-file-select part="file-select" exportparts="file-select-button">
+      <mux-uploader-file-select part="file-select">
         <slot name="file-select">
           ${fileSelectFragment}
         </slot>
