@@ -35,7 +35,6 @@ function MuxUploaderPage() {
       }} placeholder="https://storage.googleapis.com/..." onChange={handleChange} />
 
       <MuxUploader
-        style={{ display: "block", height: "200px" }}
         id="uploader"
         endpoint={url}
         onUploadStart={onUploadStart}
