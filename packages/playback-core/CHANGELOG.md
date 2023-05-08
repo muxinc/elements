@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.0...@mux/playback-core@0.18.1) (2023-05-08)
+
+
+### Bug Fixes
+
+* upgrade to hls.js 1.4.1 ([#685](https://github.com/muxinc/elements/issues/685)) ([15ca4ac](https://github.com/muxinc/elements/commit/15ca4acc3b5093a409baa938429d9afaa30c80bd))
+
+
+
+
+
 # [0.18.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.17.1...@mux/playback-core@0.18.0) (2023-04-14)
 
 
