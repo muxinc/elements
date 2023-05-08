@@ -14,8 +14,8 @@ export default function blockLayout(contextElement: MuxUploaderElement): Documen
   const progressElements = conditionalRender(
     noProgress,
     `
-      <mux-uploader-progress part="progress" type="percentage"></mux-uploader-progress>
-      <mux-uploader-progress part="progress"></mux-uploader-progress>
+      <mux-uploader-progress part="progress-percentage" type="percentage"></mux-uploader-progress>
+      <mux-uploader-progress part="progress-bar" type="bar"></mux-uploader-progress>
     `
   );
   const statusElement = conditionalRender(noStatus, '<mux-uploader-status part="status"></mux-uploader-status>');
