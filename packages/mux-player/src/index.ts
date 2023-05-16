@@ -29,7 +29,7 @@ import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
-import './themes/classic';
+import './themes/default';
 
 export { MediaError };
 export type Tokens = {
@@ -725,7 +725,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Gets the theme.
    */
   get theme() {
-    return this.getAttribute(PlayerAttributes.THEME) ?? 'classic';
+    return this.getAttribute(PlayerAttributes.THEME) ?? 'default';
   }
 
   /**
