@@ -16,12 +16,14 @@ const muxTemplate = document.createElement('template');
 if ('innerHTML' in muxTemplate) muxTemplate.innerHTML = muxTheme;
 
 // prettier-ignore
-export const template = (props: MuxTemplateProps) => html`
+export const template = (props: MuxTemplateProps) => {
+  console.log('props!', props);
+  return html`
   <style>
     ${cssStr}
   </style>
   ${content(props)}
-`;
+`};
 
 const getHotKeys = (props: MuxTemplateProps) => {
   let hotKeys = props.hotKeys ? `${props.hotKeys}` : '';
@@ -38,7 +40,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    default-stream-type="${props.defaultStreamType ?? false}"
+    defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
@@ -49,12 +51,12 @@ export const content = (props: MuxTemplateProps) => html`
       '--media-primary-color': props.primaryColor,
       '--media-secondary-color': props.secondaryColor,
     }) ?? false}"
-    default-showing-captions="${!props.defaultHiddenCaptions}"
-    forward-seek-offset="${props.forwardSeekOffset ?? false}"
-    backward-seek-offset="${props.backwardSeekOffset ?? false}"
-    playback-rates="${props.playbackRates ?? false}"
-    default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
-    hide-duration="${props.hideDuration ?? false}"
+    defaultshowingcaptions="${!props.defaultHiddenCaptions}"
+    forwardseekoffset="${props.forwardSeekOffset ?? false}"
+    backwardseekoffset="${props.backwardSeekOffset ?? false}"
+    playbackrates="${props.playbackRates ?? false}"
+    defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
+    hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >

@@ -69,24 +69,24 @@ const PlayerAttributes = {
 
 const ThemeAttributeNames = [
   'audio',
-  'backward-seek-offset',
-  'default-show-remaining-time',
-  'default-showing-captions',
+  'backwardseekoffset',
+  'defaultshowremainingtime',
+  'defaultshowingcaptions',
   'noautoseektolive',
   'disabled',
   'exportparts',
-  'forward-seek-offset',
-  'hide-duration',
+  'forwardseekoffset',
+  'hideduration',
   'hotkeys',
   'nohotkeys',
   'playbackrates',
-  'default-stream-type',
-  'stream-type',
+  'defaultstreamtype',
+  'streamtype',
   'style',
-  'target-live-window',
+  'targetlivewindow',
   'template',
   'title',
-  'no-volume-pref',
+  'novolumepref',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
