@@ -1,6 +1,6 @@
 import { globalThis, document } from './polyfills';
 
-import * as UpChunk from '@mux/upchunk';
+import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
 
@@ -17,8 +17,8 @@ rootTemplate.innerHTML = /*html*/ `
 <mux-uploader-sr-text></mux-uploader-sr-text>
 `;
 
-type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
-type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
+type Endpoint = UpChunk['endpoint'] | undefined | null;
+type DynamicChunkSize = UpChunk['dynamicChunkSize'] | undefined;
 
 type ErrorDetail = {
   message: string;
