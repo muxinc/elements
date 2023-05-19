@@ -268,4 +268,14 @@ describe('<mux-uploader>', () => {
     assert.equal(detail.message, 'file size exceeds maximum (1024001 > 1024000)', 'error message matches');
     assert.exists(uploader.getAttribute('upload-error'), 'upload error is true');
   });
+
+  it('should set and get chunkSize property correctly', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+
+    uploader.chunkSize = 1024;
+    assert.equal(uploader.chunkSize, 1024, 'chunkSize matches');
+
+    uploader.chunkSize = undefined;
+    assert.equal(uploader.chunkSize, undefined, 'chunkSize matches');
+  });
 });
