@@ -33,6 +33,8 @@ export type MuxUploaderProps = {
   };
   children?: React.ReactNode;
   dynamicChunkSize?: boolean;
+  maxFileSize?: number;
+  chunkSize?: number;
   onUploadStart?: GenericEventListener<MuxUploaderElementEventMap['uploadstart']>;
   onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap['chunkattempt']>;
   onChunkSuccess?: GenericEventListener<MuxUploaderElementEventMap['chunksuccess']>;
