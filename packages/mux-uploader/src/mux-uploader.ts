@@ -202,6 +202,19 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get chunkSize(): number | undefined {
+    const chunkSize = this.getAttribute('chunk-size');
+    return chunkSize !== null ? parseInt(chunkSize) : undefined;
+  }
+
+  set chunkSize(value: number | undefined) {
+    if (value) {
+      this.setAttribute('chunk-size', value.toString());
+    } else {
+      this.removeAttribute('chunk-size');
+    }
+  }
+
   setError(message: string) {
     this.setAttribute('upload-error', '');
     this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message } }));
@@ -235,6 +248,11 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
         ...(this.maxFileSize !== undefined
           ? {
               maxFileSize: this.maxFileSize,
+            }
+          : {}),
+        ...(this.chunkSize !== undefined
+          ? {
+              chunkSize: this.chunkSize,
             }
           : {}),
       });
