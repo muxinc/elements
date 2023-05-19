@@ -1,6 +1,6 @@
 import { globalThis, document } from './polyfills';
 
-import { UpChunk, UpChunkOptions } from '@mux/upchunk';
+import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
 
@@ -72,7 +72,6 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   protected _endpoint: Endpoint;
-  private _upchunkOptions: UpChunkOptions | {} = {};
 
   constructor() {
     super();
@@ -123,7 +122,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   get endpoint(): Endpoint {
-    return this.getAttribute('endpoint') ?? this._endpoint ?? null;
+    return this.getAttribute('endpoint') ?? this._endpoint;
   }
 
   set endpoint(value: Endpoint) {
@@ -134,14 +133,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       this.removeAttribute('endpoint');
     }
     this._endpoint = value;
-  }
-
-  set upchunkOptions(options: UpChunkOptions) {
-    this._upchunkOptions = options;
-  }
-
-  get upchunkOptions(): UpChunkOptions | {} {
-    return this._upchunkOptions;
   }
 
   get noDrop(): boolean {
@@ -246,7 +237,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
               maxFileSize: this.maxFileSize,
             }
           : {}),
-        ...this._upchunkOptions,
       });
 
       this.setAttribute('upload-in-progress', '');
