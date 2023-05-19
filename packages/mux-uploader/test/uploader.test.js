@@ -245,6 +245,16 @@ describe('<mux-uploader>', () => {
     assert.equal(uploader.maxFileSize, undefined);
   });
 
+  it('should set and get upchunkOptions property correctly', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+
+    uploader.upchunkOptions = { chunkSize: 1024 };
+    assert.deepEqual(uploader.upchunkOptions, { chunkSize: 1024 }, 'upchunkOptions matches');
+
+    uploader.upchunkOptions = {};
+    assert.deepEqual(uploader.upchunkOptions, {}, 'upchunkOptions matches');
+  });
+
   it('throws an error when uploading a file larger than maxFileSize', async function () {
     const uploader = await fixture(`<mux-uploader></mux-uploader>`);
     uploader.endpoint = 'https://example.com/upload';
