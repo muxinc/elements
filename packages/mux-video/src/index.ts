@@ -1,4 +1,4 @@
-import { globalThis } from './polyfills';
+import { globalThis, document } from './polyfills';
 import {
   initialize,
   teardown,
@@ -25,7 +25,13 @@ import {
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
+import 'castable-video';
+import { CustomMediaMixin, Events as VideoEvents } from 'custom-media-element';
+
+const CustomVideoElement = CustomMediaMixin(globalThis.HTMLElement, {
+  tag: 'video',
+  is: 'castable-video',
+});
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -73,7 +79,37 @@ const AttributeNameValues = Object.values(Attributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video';
 
-class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Partial<MuxMediaProps> {
+const template = document.createElement('template');
+template.innerHTML = `
+<style>
+  :host {
+    display: inline-block;
+    line-height: 0;
+  }
+
+  video {
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: var(--media-object-fit, contain);
+    object-position: var(--media-object-position, 50% 50%);
+  }
+
+  video::-webkit-media-text-track-container {
+    transform: var(--media-webkit-text-track-transform);
+    transition: var(--media-webkit-text-track-transition);
+  }
+</style>
+<video is="castable-video" part="video"></video>
+<slot></slot>
+`;
+
+class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProps> {
+  static template = template;
+
+  static Events = [...super.Events, 'castchange', 'entercast', 'leavecast'];
+
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
@@ -492,19 +528,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     this.#core = undefined;
   }
 
-  // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
-  // play() {
-  //   if (this.readyState === 0 && this.networkState < 2) {
-  //     this.load();
-  //     this._hls.on(Hls.Events.MANIFEST_PARSED,function() {
-  //     video.play();
-  //
-  //     return this.nativeEl.play();
-  //   }
-  // }
-
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+    // Only forward the attributes to the native media element that are not handled.
+    const isNativeAttr = CustomVideoElement.observedAttributes.includes(attrName);
+    if (isNativeAttr && !['src', 'autoplay', 'preload'].includes(attrName)) {
+      super.attributeChangedCallback(attrName, oldValue, newValue);
+    }
 
     switch (attrName) {
       case Attributes.PLAYER_SOFTWARE_NAME:
