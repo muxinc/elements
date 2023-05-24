@@ -69,24 +69,24 @@ const PlayerAttributes = {
 
 const ThemeAttributeNames = [
   'audio',
-  'backward-seek-offset',
-  'default-show-remaining-time',
-  'default-showing-captions',
+  'backwardseekoffset',
+  'defaultshowremainingtime',
+  'defaultsubtitles',
   'noautoseektolive',
   'disabled',
   'exportparts',
-  'forward-seek-offset',
-  'hide-duration',
+  'forwardseekoffset',
+  'hideduration',
   'hotkeys',
   'nohotkeys',
   'playbackrates',
-  'default-stream-type',
-  'stream-type',
+  'defaultstreamtype',
+  'streamtype',
   'style',
-  'target-live-window',
+  'targetlivewindow',
   'template',
   'title',
-  'no-volume-pref',
+  'novolumepref',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -298,7 +298,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
-    this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
+    this.#userInactive = this.mediaController?.hasAttribute('userinactive') ?? true;
     this.#setUpCaptionsMovement();
     // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
     // template details get updated appropriately (e.g. thumbnails track) (CJP)
@@ -534,7 +534,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     // this is necessary so that if a cue becomes active while the user is active, we still position it above the control bar
     const cuechangeHandler = () => {
-      toggleLines(selectedTrack, this.mediaController?.hasAttribute('user-inactive') ?? false);
+      toggleLines(selectedTrack, this.mediaController?.hasAttribute('userinactive') ?? false);
     };
 
     const selectTrack = () => {
@@ -571,7 +571,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
 
     this.addEventListener('userinactivechange', () => {
-      const newUserInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
+      const newUserInactive = this.mediaController?.hasAttribute('userinactive') ?? true;
 
       if (this.#userInactive === newUserInactive) {
         return;
