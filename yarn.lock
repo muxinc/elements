@@ -2413,10 +2413,10 @@
     blurhash "^1.1.5"
     sharp "^0.30.7"
 
-"@mux/upchunk@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.2.tgz#5c7dd7cb084ff9ba61a998f7b854610305e1c08e"
-  integrity sha512-IDNwH84hYl6saWDlpfc6QVnEf72xtK6vsoFJTGET4o4aDPba25StMqFQjCN16rz82fy7Y14uepS9hivQP4sbOA==
+"@mux/upchunk@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.2.0.tgz#93b20675e9d03ba595c28ffca68a50fda699fee8"
+  integrity sha512-ndQBrK6hpCNpbMQd2p0g5NqyVEJxaqqIEk9tJ+ETD5AXGbajq2/L3Rrlf4hcOY9K0LW+8mJw/tpNCNpEmkAW1g==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"

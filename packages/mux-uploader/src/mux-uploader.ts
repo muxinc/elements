@@ -1,6 +1,6 @@
 import { globalThis, document } from './polyfills';
 
-import * as UpChunk from '@mux/upchunk';
+import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
 
@@ -17,8 +17,8 @@ rootTemplate.innerHTML = /*html*/ `
 <mux-uploader-sr-text></mux-uploader-sr-text>
 `;
 
-type Endpoint = UpChunk.UpChunk['endpoint'] | undefined | null;
-type DynamicChunkSize = UpChunk.UpChunk['dynamicChunkSize'] | undefined;
+type Endpoint = UpChunk['endpoint'] | undefined | null;
+type DynamicChunkSize = UpChunk['dynamicChunkSize'] | undefined;
 
 type ErrorDetail = {
   message: string;
@@ -202,6 +202,19 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get chunkSize(): number | undefined {
+    const chunkSize = this.getAttribute('chunk-size');
+    return chunkSize !== null ? parseInt(chunkSize) : undefined;
+  }
+
+  set chunkSize(value: number | undefined) {
+    if (value) {
+      this.setAttribute('chunk-size', value.toString());
+    } else {
+      this.removeAttribute('chunk-size');
+    }
+  }
+
   setError(message: string) {
     this.setAttribute('upload-error', '');
     this.dispatchEvent(new CustomEvent('uploaderror', { detail: { message } }));
@@ -235,6 +248,11 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
         ...(this.maxFileSize !== undefined
           ? {
               maxFileSize: this.maxFileSize,
+            }
+          : {}),
+        ...(this.chunkSize !== undefined
+          ? {
+              chunkSize: this.chunkSize,
             }
           : {}),
       });
