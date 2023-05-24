@@ -49,7 +49,7 @@ export const content = (props: MuxTemplateProps) => html`
       '--media-primary-color': props.primaryColor,
       '--media-secondary-color': props.secondaryColor,
     }) ?? false}"
-    defaultshowingcaptions="${!props.defaultHiddenCaptions}"
+    defaultsubtitles="${!props.defaultHiddenCaptions}"
     forwardseekoffset="${props.forwardSeekOffset ?? false}"
     backwardseekoffset="${props.backwardSeekOffset ?? false}"
     playbackrates="${props.playbackRates ?? false}"

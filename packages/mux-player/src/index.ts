@@ -71,7 +71,7 @@ const ThemeAttributeNames = [
   'audio',
   'backwardseekoffset',
   'defaultshowremainingtime',
-  'defaultshowingcaptions',
+  'defaultsubtitles',
   'noautoseektolive',
   'disabled',
   'exportparts',
