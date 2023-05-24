@@ -959,76 +959,50 @@ describe('<mux-player> seek to live behaviors', function () {
 
 // skip these cue shifting tests except in Firefox
 (isFirefox ? describe : describe.skip)('<mux-player> should move cues up', function () {
-  this.timeout(12000);
+  this.timeout(20000);
 
   it('when user the user active', async function () {
-    let done;
-    const promise = new Promise((resolve) => {
-      done = resolve;
-    });
     const player = await fixture(`<mux-player
       playback-id="qP5Eb2cj7MrNnoxBGz012pbZkMHqpIcrKMzd7ykGr01gM"
       stream-type="on-demand"
       muted
+      autoplay
       preload="auto"
     ></mux-player>`);
 
-    player.textTracks.addEventListener('addtrack', (e) => {
-      // wait till subtitles have loaded
-      if (e.track.kind === 'subtitles') {
-        // pool until cues have loaded
-        const poolInterval = setInterval(() => {
-          if (e.track.cues?.length) {
-            clearInterval(poolInterval);
-          } else {
-            return;
-          }
+    // Wait for us to have at least one showing subtitle/caption
+    await oneEvent(player.mediaController, 'mediasubtitlesshowingchange');
+    // Make sure we're playing
+    await waitUntil(() => !player.paused);
+    // Find the currently showing track
+    const track = Array.prototype.find.call(player.textTracks, (track) => track.mode === 'showing');
+    // Wait for it to have cues added
+    await waitUntil(() => track.cues.length, 2000);
+    const firstCue = track.cues[0];
+    assert.equal(firstCue.line, 'auto', 'the first cue.line is set to auto');
 
-          const firstCue = e.track.cues[0];
-          assert.equal(firstCue.line, 'auto', "the first cue's line is set to auto");
+    // Seek to the first Cue so it will be visible/active
+    player.currentTime = firstCue.startTime + 0.1;
+    await waitUntil(() => track.activeCues.length, 2000);
+    const activeCue = track.activeCues[0];
 
-          e.track.addEventListener(
-            'cuechange',
-            () => {
-              const activeCue = e.track.activeCues[0];
-              assert.equal(activeCue.line, 'auto', "the active cue's line is set to auto");
-              player.addEventListener(
-                'userinactivechange',
-                () => {
-                  assert.equal(activeCue.line, -4, 'the line is now set to -4');
+    // Confirm we're inactive initially, as this is a precondition for the test passing.
+    assert(player.mediaController.hasAttribute('userinactive'), 'userinactive is a test precondition');
+    assert.equal(activeCue?.line, 'auto', 'the active cue.line should still be set to auto');
 
-                  player.addEventListener(
-                    'userinactivechange',
-                    () => {
-                      setTimeout(() => {
-                        assert.equal(
-                          activeCue.line,
-                          'auto',
-                          'the line prop was reset to original value after the 500ms wait'
-                        );
-                        done();
-                      }, 500);
-                    },
-                    { once: true }
-                  );
-                  player.mediaController.setAttribute('user-inactive', '');
-                  player.dispatchEvent(new Event('userinactivechange'));
-                },
-                { once: true }
-              );
-              player.mediaController.removeAttribute('user-inactive');
-              player.dispatchEvent(new Event('userinactivechange'));
-            },
-            { once: true }
-          );
+    // Test going from userinactive to user active cue shift
+    player.mediaController.toggleAttribute('userinactive', false);
+    player.dispatchEvent(new Event('userinactivechange'));
+    // Waiting for the condition and then asserting it due to async behavior
+    await waitUntil(() => activeCue.line !== 'auto', 2000);
+    assert.equal(activeCue.line, -4, 'the line is shifted to -4 when user is active');
 
-          player.currentTime = firstCue.startTime + 0.1;
-        }, 10);
-      }
-    });
-
-    player.play().catch(() => {});
-    return promise;
+    // Test going from user active to userinactive active cue unshift
+    player.mediaController.toggleAttribute('userinactive', true);
+    player.dispatchEvent(new Event('userinactivechange'));
+    // Waiting for the condition and then asserting it due to async behavior
+    await waitUntil(() => activeCue.line !== -4, 2000);
+    assert.equal(activeCue.line, 'auto', 'the line is reset to auto when userinactive');
   });
 
   it('when the player is paused even if user is inactive', async function () {
