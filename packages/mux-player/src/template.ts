@@ -16,14 +16,12 @@ const muxTemplate = document.createElement('template');
 if ('innerHTML' in muxTemplate) muxTemplate.innerHTML = muxTheme;
 
 // prettier-ignore
-export const template = (props: MuxTemplateProps) => {
-  console.log('props!', props);
-  return html`
+export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
   </style>
   ${content(props)}
-`};
+`;
 
 const getHotKeys = (props: MuxTemplateProps) => {
   let hotKeys = props.hotKeys ? `${props.hotKeys}` : '';
