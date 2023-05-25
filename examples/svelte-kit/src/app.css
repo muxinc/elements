@@ -23,9 +23,9 @@ footer {
 	align-items: center;
 }
 
-.mux-logo {
+.mux-logo picture {
 	display: inline-block;
-	height: 26px;
+	width: 81px;
 }
 
 .github-logo {
