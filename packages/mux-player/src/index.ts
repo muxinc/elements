@@ -64,27 +64,29 @@ const PlayerAttributes = {
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
+  NO_VOLUME_PREF: 'no-volume-pref',
 };
 
 const ThemeAttributeNames = [
   'audio',
-  'backward-seek-offset',
-  'default-show-remaining-time',
-  'default-showing-captions',
+  'backwardseekoffset',
+  'defaultshowremainingtime',
+  'defaultsubtitles',
   'noautoseektolive',
   'disabled',
   'exportparts',
-  'forward-seek-offset',
-  'hide-duration',
+  'forwardseekoffset',
+  'hideduration',
   'hotkeys',
   'nohotkeys',
   'playbackrates',
-  'default-stream-type',
-  'stream-type',
+  'defaultstreamtype',
+  'streamtype',
   'style',
-  'target-live-window',
+  'targetlivewindow',
   'template',
   'title',
+  'novolumepref',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -137,6 +139,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
+    novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     ...state,
   };
 
@@ -295,7 +298,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
-    this.#userInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
+    this.#userInactive = this.mediaController?.hasAttribute('userinactive') ?? true;
     this.#setUpCaptionsMovement();
     // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
     // template details get updated appropriately (e.g. thumbnails track) (CJP)
@@ -531,7 +534,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     // this is necessary so that if a cue becomes active while the user is active, we still position it above the control bar
     const cuechangeHandler = () => {
-      toggleLines(selectedTrack, this.mediaController?.hasAttribute('user-inactive') ?? false);
+      toggleLines(selectedTrack, this.mediaController?.hasAttribute('userinactive') ?? false);
     };
 
     const selectTrack = () => {
@@ -568,7 +571,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
 
     this.addEventListener('userinactivechange', () => {
-      const newUserInactive = this.mediaController?.hasAttribute('user-inactive') ?? true;
+      const newUserInactive = this.mediaController?.hasAttribute('userinactive') ?? true;
 
       if (this.#userInactive === newUserInactive) {
         return;
@@ -1167,6 +1170,24 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   set envKey(val: string | undefined) {
     this.setAttribute(MuxVideoAttributes.ENV_KEY, `${val}`);
+  }
+
+  /**
+   * Get no-volume-pref flag.
+   */
+  get noVolumePref() {
+    return this.hasAttribute(PlayerAttributes.NO_VOLUME_PREF);
+  }
+
+  /**
+   * Set video engine debug flag.
+   */
+  set noVolumePref(val) {
+    if (val) {
+      this.setAttribute(PlayerAttributes.NO_VOLUME_PREF, '');
+    } else {
+      this.removeAttribute(PlayerAttributes.NO_VOLUME_PREF);
+    }
   }
 
   /**

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.8](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.7...@mux/mux-uploader-react@1.0.0-beta.8) (2023-05-08)
+
+**Note:** Version bump only for package @mux/mux-uploader-react
+
+
+
+
+
 # [1.0.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.6...@mux/mux-uploader-react@1.0.0-beta.7) (2023-04-24)
 
 

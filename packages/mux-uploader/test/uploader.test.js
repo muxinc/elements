@@ -1,5 +1,5 @@
 import { server } from './utils/server';
-import { fixture, assert, oneEvent, aTimeout } from '@open-wc/testing';
+import { fixture, assert, oneEvent, aTimeout, waitUntil } from '@open-wc/testing';
 import '../src/index.ts';
 
 describe('<mux-uploader>', () => {
@@ -165,6 +165,74 @@ describe('<mux-uploader>', () => {
     assert.equal(server.lastRequest.url, 'https://mock-upload-endpoint.com', 'request url matches');
 
     await oneEvent(uploader, 'success');
+    assert.equal(uploader.hasAttribute('upload-in-progress'), false, 'upload-in-progress attr is not set');
+    assert.equal(uploader.hasAttribute('upload-complete'), true, 'upload-complete attr is set');
+  });
+
+  it('completes a mock upload with an asynchronous endpoint function', async function () {
+    const endpointUrl = 'https://mock-upload-endpoint-2.com';
+    server.respondWith('PUT', endpointUrl, [200, { 'Content-Type': 'application/json' }, '{success: true}']);
+
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    const endpoint = () => Promise.resolve(endpointUrl);
+    uploader.endpoint = endpoint;
+
+    assert.equal(uploader.endpoint, endpoint);
+    Promise.resolve(
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      )
+    );
+
+    // It should be in progress and not errored
+    await waitUntil(() => uploader.hasAttribute('upload-in-progress'), 'upload should be in progress');
+    await waitUntil(() => !uploader.hasAttribute('upload-error'), 'upload should not error');
+    await aTimeout(100);
+    server.respond();
+    assert.equal(server.lastRequest.url, endpointUrl, 'request url matches');
+    // NOTE: This didn't work bc the <mux-uploader>'s "upload-in-progress"/"upload-complete" attrs aren't actually updated, only <mux-uploader-progress>
+    // await waitUntil(() => uploader.hasAttribute('upload-complete') && !uploader.hasAttribute('upload-in-progress'));
+    const progressEl = uploader.shadowRoot.querySelector('mux-uploader-progress');
+    // Since we have a chain of awaits, instead of checking for a success event that may have been dispatched between awaits,
+    // we're instead just waiting for expected state changes.
+    await waitUntil(
+      () => progressEl.hasAttribute('upload-complete') && !progressEl.hasAttribute('upload-in-progress'),
+      'upload should eventually complete'
+    );
+  });
+
+  it('should not reset state based on updating the endpoint (since it will not impact the current upload)', async function () {
+    const endpointUrl = 'https://mock-upload-endpoint-2.com';
+    server.respondWith('PUT', endpointUrl, [200, { 'Content-Type': 'application/json' }, '{success: true}']);
+
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+    const endpoint = () => Promise.resolve(endpointUrl);
+    uploader.endpoint = endpoint;
+
+    assert.equal(uploader.endpoint, endpoint);
+    Promise.resolve(
+      uploader.dispatchEvent(
+        new CustomEvent('file-ready', {
+          composed: true,
+          bubbles: true,
+          detail: file,
+        })
+      )
+    );
+
+    // It should be in progress and not errored
+    await waitUntil(() => uploader.hasAttribute('upload-in-progress'), 'upload should be in progress');
+    await waitUntil(() => !uploader.hasAttribute('upload-error'), 'upload should not error');
+    const endpoint2 = () => Promise.resolve(endpointUrl);
+    uploader.endpoint = endpoint2;
+
+    // It should *still* be in progress and not errored
+    await waitUntil(() => uploader.hasAttribute('upload-in-progress'), 'upload should be in progress');
+    await waitUntil(() => !uploader.hasAttribute('upload-error'), 'upload should not error');
   });
 
   it('should set and get maxFileSize attribute correctly', async () => {
@@ -199,5 +267,15 @@ describe('<mux-uploader>', () => {
 
     assert.equal(detail.message, 'file size exceeds maximum (1024001 > 1024000)', 'error message matches');
     assert.exists(uploader.getAttribute('upload-error'), 'upload error is true');
+  });
+
+  it('should set and get chunkSize property correctly', async () => {
+    const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+
+    uploader.chunkSize = 1024;
+    assert.equal(uploader.chunkSize, 1024, 'chunkSize matches');
+
+    uploader.chunkSize = undefined;
+    assert.equal(uploader.chunkSize, undefined, 'chunkSize matches');
   });
 });

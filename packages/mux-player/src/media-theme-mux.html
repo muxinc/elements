@@ -10,7 +10,7 @@
       --media-range-bar-color: var(--_primary-color);
       --media-control-background: var(--_secondary-color);
       --media-control-hover-background: var(--_secondary-color);
-      --media-time-buffered-color: rgba(255, 255, 255, 0.4);
+      --media-time-range-buffered-color: rgba(255, 255, 255, 0.4);
       --media-range-track-background:
         linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
         linear-gradient(rgba(20, 20, 30, 0.7), rgba(20, 20, 30, 0.7));
@@ -53,8 +53,8 @@
       width: 100%;
     }
 
-    [disabled],
-    [aria-disabled='true'] {
+    [disabled]:not(media-live-button),
+    [aria-disabled='true']:not(media-live-button) {
       opacity: 60%;
       cursor: not-allowed;
     }
@@ -63,7 +63,7 @@
       z-index: 10;
     }
 
-    media-controller:not(:is([media-captions-list], [media-subtitles-list])) media-captions-selectmenu {
+    media-controller:not([mediasubtitleslist]) media-captions-selectmenu {
       --captions-selectmenu: none;
     }
 
@@ -73,7 +73,7 @@
     media-controller ::slotted([slot='media']) {
       --media-webkit-text-track-transition: transform 0.433s ease-out 0.3s;
     }
-    media-controller:is([media-paused],:not([user-inactive])) ::slotted([slot='media']) {
+    media-controller:is([mediapaused],:not([userinactive])) ::slotted([slot='media']) {
       /* 42px is the height of the control bar and progress bar
        * with an additional 5px as a buffer, to get 47px */
       --media-webkit-text-track-transform: translateY(-47px);
@@ -88,23 +88,23 @@
       --media-text-color: white;
     }
 
-    media-volume-range[media-volume-unavailable] {
+    media-volume-range[mediavolumeunavailable] {
       --volume-range: none;
     }
 
-    media-airplay-button[media-airplay-unavailable] {
+    media-airplay-button[mediaairplayunavailable] {
       --airplay-button: none;
     }
 
-    media-fullscreen-button[media-fullscreen-unavailable] {
+    media-fullscreen-button[mediafullscreenunavailable] {
       --fullscreen-button: none;
     }
 
-    media-cast-button[media-cast-unavailable] {
+    media-cast-button[mediacastunavailable] {
       --cast-button: none;
     }
 
-    media-pip-button[media-pip-unavailable] {
+    media-pip-button[mediapipunavailable] {
       --pip-button: none;
     }
 
@@ -126,11 +126,11 @@
       --media-control-padding: 4px 3px;
     }
 
-    [breakpoint-sm] media-control-bar {
+    [breakpointsm] media-control-bar {
       --media-control-padding: 9px 5px;
     }
 
-    [breakpoint-md] media-control-bar {
+    [breakpointmd] media-control-bar {
       --media-control-padding: 9px 7px;
     }
 
@@ -179,7 +179,7 @@
       transition: background-color 1s;
     }
 
-    media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
+    media-controller:is([mediapaused], :not([userinactive]))::part(vertical-layer) {
       background-color: var(--controls-backdrop-color, var(--controls, transparent));
       transition: background-color 0.25s;
     }
@@ -243,7 +243,7 @@
       opacity: 1;
     }
 
-    media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
+    media-loading-indicator[medialoading]:not([mediapaused]) ~ div > * {
       opacity: 0;
       transition-delay: 400ms;
     }
@@ -300,7 +300,7 @@
 
   <template partial="SeekBackwardButton">
     <media-seek-backward-button
-      seek-offset="{{backwardSeekOffset}}"
+      seekoffset="{{backwardseekoffset}}"
       part="{{section ?? 'bottom'}} seek-backward button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -308,7 +308,7 @@
       <svg aria-hidden="true" viewBox="0 0 22 24" slot="backward">
         <path d="M11 6V3L5.37 7 11 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 11 6Z" />
         <text class="value" transform="translate(2.5 21)" style="font-size: 8px; font-family: 'ArialMT', 'Arial'">
-          {{backwardSeekOffset}}
+          {{backwardseekoffset}}
         </text>
       </svg>
     </media-seek-backward-button>
@@ -316,7 +316,7 @@
 
   <template partial="SeekForwardButton">
     <media-seek-forward-button
-      seek-offset="{{forwardSeekOffset}}"
+      seekoffset="{{forwardseekoffset}}"
       part="{{section ?? 'bottom'}} seek-forward button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -324,7 +324,7 @@
       <svg aria-hidden="true" viewBox="0 0 22 24" slot="forward">
         <path d="M11 6V3l5.61 4L11 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 11 6Z" />
         <text class="value" transform="translate(10 21)" style="font-size: 8px; font-family: 'ArialMT', 'Arial'">
-          {{forwardSeekOffset}}
+          {{forwardseekoffset}}
         </text>
       </svg>
     </media-seek-forward-button>
@@ -372,7 +372,6 @@
 
   <template partial="CaptionsMenuButton">
     <media-captions-selectmenu
-      default-showing="{{defaultShowingCaptions}}"
       part="bottom captions selectmenu"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -448,7 +447,7 @@
 
   <template partial="PlaybackRateButton">
     <media-playback-rate-button
-      rates="{{playbackRates}}"
+      rates="{{playbackrates}}"
       part="bottom playback-rate button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -465,8 +464,8 @@
 
   <template partial="TimeDisplay">
     <media-time-display
-      remaining="{{defaultShowRemainingTime}}"
-      show-duration="{{!hideDuration}}"
+      remaining="{{defaultshowremainingtime}}"
+      showduration="{{!hideduration}}"
       part="bottom time display"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -482,22 +481,24 @@
   </template>
 
   <media-controller
-    default-stream-type="{{defaultStreamType ?? 'on-demand'}}"
+    defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
     breakpoints="sm:300 md:700"
-    gestures-disabled="{{disabled}}"
+    gesturesdisabled="{{disabled}}"
     hotkeys="{{hotkeys}}"
     nohotkeys="{{nohotkeys}}"
+    novolumepref="{{novolumepref}}"
     audio="{{audio}}"
     noautoseektolive="{{noautoseektolive}}"
+    defaultsubtitles="{{defaultsubtitles}}"
     exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
   >
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
-    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
 
     <template if="audio">
 
-      <template if="streamType == 'on-demand'">
+      <template if="streamtype == 'on-demand'">
         <template if="title">
           <media-control-bar>{{>TitleDisplay}}</media-control-bar>
         </template>
@@ -515,9 +516,9 @@
         </media-control-bar>
       </template>
 
-      <template if="streamType == 'live'">
+      <template if="streamtype == 'live'">
 
-        <template if="targetLiveWindow > 0">
+        <template if="targetlivewindow > 0">
           <template if="title">
             <media-control-bar>{{>TitleDisplay}}</media-control-bar>
           </template>
@@ -536,7 +537,7 @@
           </media-control-bar>
         </template>
 
-        <template if="!targetLiveWindow">
+        <template if="!targetlivewindow">
           <template if="title">
             <media-control-bar>{{>TitleDisplay}}</media-control-bar>
           </template>
@@ -556,9 +557,9 @@
 
     <template if="!audio">
 
-      <template if="streamType == 'on-demand'">
+      <template if="streamtype == 'on-demand'">
 
-        <template if="!breakpointSm">
+        <template if="!breakpointsm">
           {{>TimeRange}}
           <media-control-bar>
             {{>PlayButton}}
@@ -569,8 +570,8 @@
           </media-control-bar>
         </template>
 
-        <template if="breakpointSm">
-          <template if="!breakpointMd">
+        <template if="breakpointsm">
+          <template if="!breakpointmd">
             <media-control-bar slot="top-chrome">
               {{>TitleDisplay}}
             </media-control-bar>
@@ -596,7 +597,7 @@
           </template>
         </template>
 
-        <template if="breakpointMd">
+        <template if="breakpointmd">
           <media-control-bar slot="top-chrome">
             {{>TitleDisplay}}
           </media-control-bar>
@@ -623,11 +624,11 @@
 
       </template>
 
-      <template if="streamType == 'live'">
+      <template if="streamtype == 'live'">
 
-        <template if="!targetLiveWindow">
+        <template if="!targetlivewindow">
 
-          <template if="!breakpointSm">
+          <template if="!breakpointsm">
             <media-control-bar slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
@@ -640,8 +641,8 @@
             </media-control-bar>
           </template>
 
-          <template if="breakpointSm">
-            <template if="!breakpointMd">
+          <template if="breakpointsm">
+            <template if="!breakpointmd">
               <media-control-bar slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
@@ -663,7 +664,7 @@
             </template>
           </template>
 
-          <template if="breakpointMd">
+          <template if="breakpointmd">
             <media-control-bar slot="top-chrome">
               {{>LiveButton}}
               {{>TitleDisplay}}
@@ -685,9 +686,9 @@
           </template>
         </template>
 
-        <template if="targetLiveWindow > 0">
+        <template if="targetlivewindow > 0">
 
-          <template if="!breakpointSm">
+          <template if="!breakpointsm">
             <media-control-bar slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
@@ -701,8 +702,8 @@
             </media-control-bar>
           </template>
 
-          <template if="breakpointSm">
-            <template if="!breakpointMd">
+          <template if="breakpointsm">
+            <template if="!breakpointmd">
               <media-control-bar slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
@@ -727,7 +728,7 @@
             </template>
           </template>
 
-          <template if="breakpointMd">
+          <template if="breakpointmd">
             <media-control-bar slot="top-chrome">
               {{>LiveButton}}
               {{>TitleDisplay}}

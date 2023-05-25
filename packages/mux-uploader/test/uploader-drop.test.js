@@ -56,5 +56,6 @@ describe('<mux-uploader-drop>', () => {
 
     const { detail } = await oneEvent(uploader, 'file-ready');
     assert.equal(detail, file, 'file matches');
+    assert.equal(uploader.hasAttribute('upload-in-progress'), true, 'upload-in-progress attr is set');
   });
 });

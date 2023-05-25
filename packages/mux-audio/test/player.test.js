@@ -119,7 +119,7 @@ describe('<mux-audio>', () => {
 
     player.currentTime = 60;
 
-    await aTimeout(50);
+    await aTimeout(1000);
 
     const currentPdt = player.currentPdt;
     const startDate = player.getStartDate();

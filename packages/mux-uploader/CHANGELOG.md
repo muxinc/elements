@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.8](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.7...@mux/mux-uploader@1.0.0-beta.8) (2023-05-08)
+
+
+### Bug Fixes
+
+* **mux-uploader:** Don't reset state when endpoint is changed. ([#677](https://github.com/muxinc/elements/issues/677)) ([f2e40ac](https://github.com/muxinc/elements/commit/f2e40ac73c8696203060da4393943283b5f2c64d))
+* **mux-uploader:** modify the layout to fix layering ([#684](https://github.com/muxinc/elements/issues/684)) ([9c62cf5](https://github.com/muxinc/elements/commit/9c62cf555f599d72023ebfabf520ba9981268ebc))
+
+
+### Features
+
+* **mux-uploader:** export parts for each default component ([#687](https://github.com/muxinc/elements/issues/687)) ([b7e8abf](https://github.com/muxinc/elements/commit/b7e8abf0d878f45774fa12c273516db7d26e20f9))
+
+
+
+
+
 # [1.0.0-beta.7](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.6...@mux/mux-uploader@1.0.0-beta.7) (2023-04-24)
 
 

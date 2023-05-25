@@ -48,10 +48,6 @@ template.innerHTML = /*html*/ `
   }
 </style>
 
-<div id="overlay">
-  <h1 id="overlay-label"></h1>
-</div>
-
 <slot name="heading" part="heading">
   <span>Drop a video file here to upload</span>
 </slot>
@@ -59,6 +55,10 @@ template.innerHTML = /*html*/ `
   <span>or</span>
 </slot>
 <slot></slot>
+
+<div id="overlay">
+  <h1 id="overlay-label"></h1>
+</div>
 `;
 
 const Attributes = {
@@ -101,6 +101,26 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
           if (this.#separatorEl) {
             this.#separatorEl.style.display = 'none';
           }
+        },
+        opts
+      );
+
+      this.#uploaderEl.addEventListener('uploadstart', () => this.setAttribute('upload-in-progress', ''), opts);
+
+      this.#uploaderEl.addEventListener(
+        'success',
+        () => {
+          this.removeAttribute('upload-in-progress');
+          this.setAttribute('upload-complete', '');
+        },
+        opts
+      );
+
+      this.#uploaderEl.addEventListener(
+        'reset',
+        () => {
+          this.removeAttribute('upload-in-progress');
+          this.removeAttribute('upload-complete');
         },
         opts
       );

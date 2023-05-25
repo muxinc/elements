@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.10.1...@mux/mux-player@1.11.0) (2023-05-08)
+
+
+### Features
+
+* add a no-volume-pref attribute to turn of storing volume in localStorage ([#686](https://github.com/muxinc/elements/issues/686)) ([e9c2150](https://github.com/muxinc/elements/commit/e9c2150ba36615107f05d99baaa8a4432d71138d))
+
+
+
+
+
 ## [1.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.10.0...@mux/mux-player@1.10.1) (2023-04-24)
 
 

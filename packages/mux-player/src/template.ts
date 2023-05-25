@@ -38,22 +38,23 @@ const getHotKeys = (props: MuxTemplateProps) => {
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
-    default-stream-type="${props.defaultStreamType ?? false}"
+    defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
+    novolumepref="${props.novolumepref || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
       '--media-primary-color': props.primaryColor,
       '--media-secondary-color': props.secondaryColor,
     }) ?? false}"
-    default-showing-captions="${!props.defaultHiddenCaptions}"
-    forward-seek-offset="${props.forwardSeekOffset ?? false}"
-    backward-seek-offset="${props.backwardSeekOffset ?? false}"
-    playback-rates="${props.playbackRates ?? false}"
-    default-show-remaining-time="${props.defaultShowRemainingTime ?? false}"
-    hide-duration="${props.hideDuration ?? false}"
+    defaultsubtitles="${!props.defaultHiddenCaptions}"
+    forwardseekoffset="${props.forwardSeekOffset ?? false}"
+    backwardseekoffset="${props.backwardSeekOffset ?? false}"
+    playbackrates="${props.playbackRates ?? false}"
+    defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
+    hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
     exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >

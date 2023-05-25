@@ -2413,10 +2413,10 @@
     blurhash "^1.1.5"
     sharp "^0.30.7"
 
-"@mux/upchunk@3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.0.2.tgz#5c7dd7cb084ff9ba61a998f7b854610305e1c08e"
-  integrity sha512-IDNwH84hYl6saWDlpfc6QVnEf72xtK6vsoFJTGET4o4aDPba25StMqFQjCN16rz82fy7Y14uepS9hivQP4sbOA==
+"@mux/upchunk@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.2.0.tgz#93b20675e9d03ba595c28ffca68a50fda699fee8"
+  integrity sha512-ndQBrK6hpCNpbMQd2p0g5NqyVEJxaqqIEk9tJ+ETD5AXGbajq2/L3Rrlf4hcOY9K0LW+8mJw/tpNCNpEmkAW1g==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
@@ -8504,10 +8504,10 @@ he@^1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
-hls.js@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.4.0.tgz#e73af3e7c8d4310a2bcc92d5ade362dfb781fef7"
-  integrity sha512-VEjg7Rx5FlE9TB3MIn0HPgq3J+vR7EoQnjaqMCk/ISEaCOSZlAFh4g867f1QkSxZiq9kHeUZo+iH16X7VS3jKA==
+hls.js@1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/hls.js/-/hls.js-1.4.3.tgz#9326a680f5905631f86344d0ae155b5ef9d1bad7"
+  integrity sha512-EE1MjIYDNO+ynbmCpAWfhUwQpyG8gUcKKuGDGgYgfRmW/g+inQUQ8sVVVY5WZaCxEGxDMGLbXhXGepkmDIMvdw==
 
 hoopy@^0.1.4:
   version "0.1.4"
@@ -10600,10 +10600,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@0.20.3:
-  version "0.20.3"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.20.3.tgz#596daac1653669bc9bd59d6e86c56cc4be067452"
-  integrity sha512-qJBefXlINLteIwe/+XcpUfpE1jJYQL85DI9I6iEECSrt3iptVsTYYsS8x/2pahqTq9g+Ui5GTelvd2RrJf7ZOQ==
+media-chrome@^1.0.0-rc.4:
+  version "1.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-1.0.0-rc.4.tgz#6fea1f36c1e78a20781a73b6920e48870c31f4c4"
+  integrity sha512-0pF+wjEyeSSsU61Hi97atg2Nu8Ea7lcDGF9igvh01g1vnVO/VcU8ry3NV5O5KWQHI+itXeqdGliC5MY+bWbzpg==
 
 media-typer@0.3.0:
   version "0.3.0"

@@ -30,7 +30,7 @@ export const fileSelectFragment = /*html*/ `
   }
   </style>
 
-  <button id="file-select" type="button">Upload a video</button>
+  <button id="file-select" type="button" part="file-select-button">Upload a video</button>
 `;
 
 const template = document.createElement('template');
@@ -85,6 +85,17 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
           if (this.filePickerEl) {
             this.filePickerEl.style.display = 'none';
           }
+        },
+        opts
+      );
+
+      this.#uploaderEl.addEventListener('uploadstart', () => this.setAttribute('upload-in-progress', ''), opts);
+
+      this.#uploaderEl.addEventListener(
+        'success',
+        () => {
+          this.removeAttribute('upload-in-progress');
+          this.setAttribute('upload-complete', '');
         },
         opts
       );
