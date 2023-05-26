@@ -28,6 +28,9 @@ import { getPlayerVersion } from './env';
 import 'castable-video';
 import { CustomMediaMixin, Events as VideoEvents } from 'custom-media-element';
 
+// Must mutate so the added events are available in custom-media-element.
+VideoEvents.push('castchange', 'entercast', 'leavecast');
+
 const CustomVideoElement = CustomMediaMixin(globalThis.HTMLElement, {
   tag: 'video',
   is: 'castable-video',
@@ -79,37 +82,7 @@ const AttributeNameValues = Object.values(Attributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video';
 
-const template = document.createElement('template');
-template.innerHTML = `
-<style>
-  :host {
-    display: inline-block;
-    line-height: 0;
-  }
-
-  video {
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 100%;
-    min-height: 100%;
-    object-fit: var(--media-object-fit, contain);
-    object-position: var(--media-object-position, 50% 50%);
-  }
-
-  video::-webkit-media-text-track-container {
-    transform: var(--media-webkit-text-track-transform);
-    transition: var(--media-webkit-text-track-transition);
-  }
-</style>
-<video is="castable-video" part="video"></video>
-<slot></slot>
-`;
-
 class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProps> {
-  static template = template;
-
-  static Events = [...super.Events, 'castchange', 'entercast', 'leavecast'];
-
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }

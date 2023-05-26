@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@mux/playback-core": "0.18.1",
-    "custom-media-element": "0.1.9"
+    "custom-media-element": "0.2.0"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
