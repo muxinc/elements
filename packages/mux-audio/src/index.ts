@@ -16,7 +16,7 @@ import {
 import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import CustomAudioElement, { AudioEvents } from './CustomAudioElement';
+import { CustomAudioElement, Events as AudioEvents } from 'custom-media-element';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -50,7 +50,7 @@ const AttributeNameValues = Object.values(Attributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-audio';
 
-class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Partial<MuxMediaProps> {
+class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProps> {
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomAudioElement.observedAttributes ?? [])];
   }
@@ -304,7 +304,11 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElement> implements Pa
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+    // Only forward the attributes to the native media element that are not handled.
+    const isNativeAttr = CustomAudioElement.observedAttributes.includes(attrName);
+    if (isNativeAttr && !['src', 'autoplay', 'preload'].includes(attrName)) {
+      super.attributeChangedCallback(attrName, oldValue, newValue);
+    }
 
     switch (attrName) {
       case 'src': {

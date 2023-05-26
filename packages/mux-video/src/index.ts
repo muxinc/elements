@@ -1,4 +1,4 @@
-import { globalThis } from './polyfills';
+import { globalThis, document } from './polyfills';
 import {
   initialize,
   teardown,
@@ -25,7 +25,16 @@ import {
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import CustomVideoElement, { VideoEvents } from './CustomVideoElement';
+import 'castable-video';
+import { CustomMediaMixin, Events as VideoEvents } from 'custom-media-element';
+
+// Must mutate so the added events are available in custom-media-element.
+VideoEvents.push('castchange', 'entercast', 'leavecast');
+
+const CustomVideoElement = CustomMediaMixin(globalThis.HTMLElement, {
+  tag: 'video',
+  is: 'castable-video',
+});
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -73,7 +82,7 @@ const AttributeNameValues = Object.values(Attributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video';
 
-class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Partial<MuxMediaProps> {
+class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProps> {
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
@@ -492,19 +501,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElement> implements Pa
     this.#core = undefined;
   }
 
-  // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
-  // play() {
-  //   if (this.readyState === 0 && this.networkState < 2) {
-  //     this.load();
-  //     this._hls.on(Hls.Events.MANIFEST_PARSED,function() {
-  //     video.play();
-  //
-  //     return this.nativeEl.play();
-  //   }
-  // }
-
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+    // Only forward the attributes to the native media element that are not handled.
+    const isNativeAttr = CustomVideoElement.observedAttributes.includes(attrName);
+    if (isNativeAttr && !['src', 'autoplay', 'preload'].includes(attrName)) {
+      super.attributeChangedCallback(attrName, oldValue, newValue);
+    }
 
     switch (attrName) {
       case Attributes.PLAYER_SOFTWARE_NAME:
