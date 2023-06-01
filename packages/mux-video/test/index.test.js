@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout, oneEvent } from '@open-wc/testing';
+import { fixture, assert, aTimeout, oneEvent, waitUntil } from '@open-wc/testing';
 import MuxVideoElement, { VideoEvents } from '../src/index.ts';
 
 describe('<mux-video>', () => {
@@ -223,6 +223,45 @@ describe('<mux-video>', () => {
       currentPdt.getTime() - player.currentTime * 1000,
       'currentPdt should be ~60 seconds greater than getStartDate'
     );
+  });
+
+  describe('Feature: mp4 playback', async () => {
+    it('supports mp4 src', async () => {
+      const src = 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M/low.mp4';
+      let muxVideoEl;
+      try {
+        muxVideoEl = await fixture(`<mux-video
+          src="${src}"
+          preload="auto"
+          autoplay
+        ></mux-video>`);
+      } catch (err) {
+        assert.fail(`mux-video threw an error on instantiating with an mp4 src, ${err}`);
+      }
+      waitUntil(() => !muxVideoEl.paused, 'playback should begin for mp4');
+    });
+
+    it('exposes extended media element stream info for mp4s', async () => {
+      const src = 'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M/low.mp4';
+      let muxVideoEl;
+      try {
+        muxVideoEl = await fixture(`<mux-video
+          src="${src}"
+          autoplay
+        ></mux-video>`);
+      } catch (err) {
+        assert.fail(`mux-video threw an error on instantiating with an mp4 src, ${err}`);
+      }
+      waitUntil(() => muxVideoEl.streamType, 'should have a streamType of on-demand');
+      waitUntil(
+        () => Number.isNaN(muxVideoEl.targetLiveWindow),
+        'should have a targetLiveWindow of NaN because mp4s are always on-demand'
+      );
+      waitUntil(
+        () => Number.isNaN(muxVideoEl.liveEdgeStart),
+        'should have a liveEdgeStart of NaN because mp4s are always on-demand'
+      );
+    });
   });
 
   describe('Feature: cuePoints', async () => {

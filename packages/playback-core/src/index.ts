@@ -36,6 +36,7 @@ import {
   type MuxMediaPropsInternal,
   HlsPlaylistTypes,
 } from './types';
+import { MediaTypes } from './types';
 export {
   mux,
   Hls,
@@ -102,10 +103,35 @@ export const getStreamInfoFromPlaylistLines = (playlistLines: string[]) => {
   };
 };
 
-export const updateStreamInfoFromSrc = async (src: string, mediaEl: HTMLMediaElement) => {
-  const playlistLines = await getMediaPlaylistLinesFromMultivariantPlaylistSrc(src);
+export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes | '') => {
+  if (type === ExtensionMimeTypeMap.MP4) {
+    return {
+      streamType: StreamTypes.ON_DEMAND,
+      targetLiveWindow: Number.NaN,
+      liveEdgeStartOffset: undefined,
+    };
+  }
 
-  const { streamType, targetLiveWindow, liveEdgeStartOffset } = getStreamInfoFromPlaylistLines(playlistLines);
+  if (type === ExtensionMimeTypeMap.M3U8) {
+    const playlistLines = await getMediaPlaylistLinesFromMultivariantPlaylistSrc(src);
+    return getStreamInfoFromPlaylistLines(playlistLines);
+  }
+
+  // Unknown or undefined type.
+  console.error(`Media type ${type} is an unrecognized or unsupported type for src ${src}.`);
+  return {
+    streamType: undefined,
+    targetLiveWindow: undefined,
+    liveEdgeStartOffset: undefined,
+  };
+};
+
+export const updateStreamInfoFromSrc = async (
+  src: string,
+  mediaEl: HTMLMediaElement,
+  type: MediaTypes | '' = getType({ src })
+) => {
+  const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
@@ -183,7 +209,9 @@ export const updateStreamInfoFromHlsjsLevelDetails = (
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
-const muxMediaState: WeakMap<
+
+// NOTE: Exporting for testing
+export const muxMediaState: WeakMap<
   HTMLMediaElement,
   Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number }
 > = new WeakMap();
@@ -496,11 +524,12 @@ export const loadMedia = (
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
   if (mediaEl && shouldUseNative) {
+    const type = getType(props);
     if (typeof src === 'string') {
       if (mediaEl.preload === 'none') {
-        addEventListenerWithTeardown(mediaEl, 'loadstart', () => updateStreamInfoFromSrc(src, mediaEl));
+        addEventListenerWithTeardown(mediaEl, 'loadstart', () => updateStreamInfoFromSrc(src, mediaEl, type));
       } else {
-        updateStreamInfoFromSrc(src, mediaEl);
+        updateStreamInfoFromSrc(src, mediaEl, type);
       }
 
       mediaEl.setAttribute('src', src);
