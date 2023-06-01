@@ -1,5 +1,17 @@
 import { assert, aTimeout } from '@open-wc/testing';
-import { toMuxVideoURL, initialize, teardown, MediaError, getError } from '../src/index.ts';
+import {
+  toMuxVideoURL,
+  initialize,
+  teardown,
+  MediaError,
+  getError,
+  updateStreamInfoFromSrc,
+  StreamTypes,
+  getTargetLiveWindow,
+  getLiveEdgeStart,
+  getStreamType,
+  muxMediaState,
+} from '../src/index.ts';
 
 describe('playback core', function () {
   this.timeout(10000);
@@ -188,5 +200,75 @@ describe('playback core', function () {
       toMuxVideoURL('123?redundant_streams=true', { maxResolution: '720p' }),
       `https://stream.mux.com/123.m3u8?redundant_streams=true&max_resolution=720p`
     );
+  });
+
+  describe('updateStreamInfoFromSrc()', () => {
+    let mediaEl;
+
+    beforeEach(() => {
+      mediaEl = document.createElement('video');
+      muxMediaState.set(mediaEl, {});
+    });
+
+    afterEach(() => {
+      muxMediaState.delete(mediaEl);
+      mediaEl = undefined;
+    });
+
+    it('should work for on-demand multivariant m3u8s', async () => {
+      try {
+        await updateStreamInfoFromSrc(
+          'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M.m3u8',
+          mediaEl
+        );
+      } catch (err) {
+        assert.fail(`error thrown: ${err.message}`);
+      }
+      assert.equal(getStreamType(mediaEl), StreamTypes.ON_DEMAND, 'should have a stream type of on-demand');
+      assert(Number.isNaN(getTargetLiveWindow(mediaEl)), 'should have a targetLiveWindow of NaN (because on-demand)');
+      assert(Number.isNaN(getLiveEdgeStart(mediaEl)), 'should have a liveEdgeStart of NaN (because on-demand)');
+    });
+
+    it('should work for low latency live multivariant m3u8s', async () => {
+      try {
+        await updateStreamInfoFromSrc(
+          'https://stream.mux.com/v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM.m3u8',
+          mediaEl
+        );
+      } catch (err) {
+        assert.fail(`error thrown: ${err.message}`);
+      }
+      assert.equal(getStreamType(mediaEl), StreamTypes.LIVE, 'should have a stream type of live (even for ll-live)');
+      assert.equal(getTargetLiveWindow(mediaEl), 0, 'should have a targetLiveWindow === 0 (because non-DVR live)');
+      assert(typeof getLiveEdgeStart(mediaEl) === 'number', 'should have a numeric liveEdgeStart (because live)');
+    });
+
+    it('should work for mp4s', async () => {
+      try {
+        await updateStreamInfoFromSrc(
+          'https://stream.mux.com/a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M/low.mp4',
+          mediaEl
+        );
+      } catch (err) {
+        assert.fail(`error thrown: ${err.message}`);
+      }
+      assert.equal(getStreamType(mediaEl), StreamTypes.ON_DEMAND, 'mp4s should have a stream type of on-demand');
+      assert(
+        Number.isNaN(getTargetLiveWindow(mediaEl)),
+        'mp4s should have a targetLiveWindow of NaN (because on-demand)'
+      );
+      assert(Number.isNaN(getLiveEdgeStart(mediaEl)), 'mp4s should have a liveEdgeStart of NaN (because on-demand)');
+    });
+
+    it('should work for empty src', async () => {
+      try {
+        await updateStreamInfoFromSrc('', mediaEl);
+      } catch (err) {
+        assert.fail(`error thrown: ${err.message}`);
+      }
+      assert.equal(getStreamType(mediaEl), StreamTypes.UNKNOWN, 'should have a default stream type of unknown');
+      assert(Number.isNaN(getTargetLiveWindow(mediaEl)), 'should have a default targetLiveWindow of NaN');
+      assert(Number.isNaN(getLiveEdgeStart(mediaEl)), 'should have a default liveEdgeStart of NaN');
+    });
   });
 });
