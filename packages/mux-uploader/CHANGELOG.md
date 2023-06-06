@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.9](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.8...@mux/mux-uploader@1.0.0-beta.9) (2023-06-06)
+
+
+### Bug Fixes
+
+* **mux-uploader:** Upgrade upchunk. Use static class createUpload met… ([#693](https://github.com/muxinc/elements/issues/693)) ([a25c2c7](https://github.com/muxinc/elements/commit/a25c2c757aa41568f0ea0e1d3b085d8b85d0b65a))
+
+
+### Features
+
+* **mux-uploader:** introduce chunkSize ([#694](https://github.com/muxinc/elements/issues/694)) ([1c29f8f](https://github.com/muxinc/elements/commit/1c29f8f2dac54fcad007e992d41e19d34ff575e6))
+
+
+
+
+
 # [1.0.0-beta.8](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.7...@mux/mux-uploader@1.0.0-beta.8) (2023-05-08)
 
 
