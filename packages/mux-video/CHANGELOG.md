@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.3](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.2...@mux/mux-video@0.15.3) (2023-06-06)
+
+
+### Bug Fixes
+
+* use custom-media-element pkg ([#697](https://github.com/muxinc/elements/issues/697)) ([71c3341](https://github.com/muxinc/elements/commit/71c334157cbb16f88d57b020425534e9dde2b4ca))
+
+
+
+
+
 ## [0.15.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.1...@mux/mux-video@0.15.2) (2023-05-08)
 
 **Note:** Version bump only for package @mux/mux-video
