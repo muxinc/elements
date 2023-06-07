@@ -281,6 +281,18 @@ export const getLiveEdgeStart = (mediaEl: HTMLMediaElement) => {
   return seekable.end(seekable.length - 1) - liveEdgeStartOffset;
 };
 
+const isApproximatelyEqual = (x: number, y: number, moe = 0.001) => Math.abs(x - y) <= moe;
+const isApproximatelyGTE = (x: number, y: number, moe = 0.001) => x > y || isApproximatelyEqual(x, y, moe);
+
+export const isPseudoEnded = (mediaEl: HTMLMediaElement) => {
+  return mediaEl.paused && isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration);
+};
+
+export const getEnded = (mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
+  if (!!hls) return mediaEl.ended;
+  return mediaEl.ended || isPseudoEnded(mediaEl);
+};
+
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
   teardown(mediaEl, core);
@@ -554,6 +566,20 @@ export const loadMedia = (
       },
       { once: true }
     );
+    addEventListenerWithTeardown(mediaEl, 'pause', () => {
+      if (!getEnded(mediaEl)) return;
+      if (mediaEl.ended) return;
+      // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
+      mediaEl.dispatchEvent(new Event('ended'));
+    });
+
+    addEventListenerWithTeardown(mediaEl, 'play', () => {
+      if (mediaEl.ended) return;
+      if (!isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration)) return;
+      // If we were "pseudo-ended" before playback was attempted, seek back to the
+      // beginning to "replay", like "real" ended behavior.
+      mediaEl.currentTime = mediaEl.seekable.start(0);
+    });
   } else if (hls && src) {
     hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
       updateStreamInfoFromHlsjsLevelDetails(data.details, mediaEl, hls);

@@ -12,6 +12,7 @@ import {
   MediaError,
   getStartDate,
   getCurrentPdt,
+  getEnded,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -185,6 +186,12 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     } else {
       this.removeAttribute(Attributes.PLAYBACK_ID);
     }
+  }
+
+  get ended() {
+    // This ensures that edge case media that doesn't properly end will
+    // still announce itself as "ended".
+    return getEnded(this.nativeEl, this._hls);
   }
 
   get envKey(): string | undefined {

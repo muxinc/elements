@@ -21,6 +21,7 @@ import {
   getTargetLiveWindow,
   getLiveEdgeStart,
   getSeekable,
+  getEnded,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -326,6 +327,12 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
     } else {
       this.removeAttribute(Attributes.CUSTOM_DOMAIN);
     }
+  }
+
+  get ended() {
+    // This ensures that edge case media that doesn't properly end will
+    // still announce itself as "ended".
+    return getEnded(this.nativeEl, this._hls);
   }
 
   get envKey(): string | undefined {
