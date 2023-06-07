@@ -22,7 +22,6 @@ import {
   getLiveEdgeStart,
   getSeekable,
   getEnded,
-  getPlayPromise,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
@@ -498,12 +497,6 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
     await (this.#loadRequested = Promise.resolve());
     this.#loadRequested = null;
     this.load();
-  }
-
-  play() {
-    // This accounts for "replay" behavior for edge case media that doesn't properly enter
-    // the "ended" state. See also: get ended(), above.
-    return getPlayPromise(this.nativeEl, this._hls);
   }
 
   load() {

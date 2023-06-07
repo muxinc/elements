@@ -12,7 +12,6 @@ import {
   MediaError,
   getStartDate,
   getCurrentPdt,
-  getPlayPromise,
   getEnded,
 } from '@mux/playback-core';
 import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
@@ -300,12 +299,6 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     await (this.#loadRequested = Promise.resolve());
     this.#loadRequested = null;
     this.load();
-  }
-
-  play() {
-    // This accounts for "replay" behavior for edge case media that doesn't properly enter
-    // the "ended" state. See also: get ended(), above.
-    return getPlayPromise(this.nativeEl, this._hls);
   }
 
   load() {

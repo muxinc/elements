@@ -213,7 +213,7 @@ const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
   HTMLMediaElement,
-  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number; pendingPlayPromise?: Promise<void> }
+  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number }
 > = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -291,31 +291,6 @@ export const isPseudoEnded = (mediaEl: HTMLMediaElement) => {
 export const getEnded = (mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
   if (!!hls) return mediaEl.ended;
   return mediaEl.ended || isPseudoEnded(mediaEl);
-};
-
-export const createPlayPromise = (mediaEl: HTMLMediaElement) => {
-  return new Promise<void>((resolve, reject) => {
-    const seekedListener = () => resolve();
-    const pauseListener = () => {
-      mediaEl.removeEventListener('seeked', seekedListener);
-      reject();
-    };
-    addEventListenerWithTeardown(mediaEl, 'seeked', seekedListener, { once: true });
-    addEventListenerWithTeardown(mediaEl, 'pause', pauseListener, { once: true });
-    mediaEl.currentTime = mediaEl.seekable.start(0);
-  }).then(() => {
-    (muxMediaState.get(mediaEl) ?? {}).pendingPlayPromise = undefined;
-    return mediaEl.play();
-  });
-};
-
-export const getPlayPromise = (mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
-  if (hls || mediaEl.ended || !getEnded(mediaEl, hls)) return mediaEl.play();
-  const mediaState = muxMediaState.get(mediaEl) ?? {};
-  if (!mediaState?.pendingPlayPromise) {
-    mediaState.pendingPlayPromise = createPlayPromise(mediaEl);
-  }
-  return mediaState.pendingPlayPromise;
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
@@ -601,14 +576,9 @@ export const loadMedia = (
     addEventListenerWithTeardown(mediaEl, 'play', () => {
       if (mediaEl.ended) return;
       if (!isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration)) return;
-      // This means we *were* "pseudo-ended". Unlike other use cases, we cannot simply check getEnded(),
-      // since the paused state will have already changed to false.
-      // If we've already got a pending play promise, that means the play() method was invoked
-      const mediaState = muxMediaState.get(mediaEl) ?? {};
-      if (!!mediaState.pendingPlayPromise) return;
-      // Otherwise, someone used the Native UI (e.g. controls, click on the media element), so
-      // we should "force" our custom ended play
-      mediaState.pendingPlayPromise = createPlayPromise(mediaEl);
+      // If we were "pseudo-ended" before playback was attempted, seek back to the
+      // beginning to "replay", like "real" ended behavior.
+      mediaEl.currentTime = mediaEl.seekable.start(0);
     });
   } else if (hls && src) {
     hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
