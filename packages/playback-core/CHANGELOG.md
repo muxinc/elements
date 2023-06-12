@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.2...@mux/playback-core@0.18.3) (2023-06-12)
+
+
+### Bug Fixes
+
+* **playback-core, mux-video:** Handle native playback edge cases wher… ([#705](https://github.com/muxinc/elements/issues/705)) ([16f8941](https://github.com/muxinc/elements/commit/16f8941799a5186f28205a70105b26764f39b295))
+* **playback-core:** bump media-chrome & hls.js version to latest. ([#706](https://github.com/muxinc/elements/issues/706)) ([1683663](https://github.com/muxinc/elements/commit/1683663f05b2e3c64012056391f0df457e627371))
+
+
+
+
+
 ## [0.18.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.1...@mux/playback-core@0.18.2) (2023-06-06)
 
 

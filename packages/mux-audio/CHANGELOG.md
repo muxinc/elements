@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.2...@mux/mux-audio@0.10.3) (2023-06-12)
+
+
+### Bug Fixes
+
+* **playback-core, mux-video:** Handle native playback edge cases wher… ([#705](https://github.com/muxinc/elements/issues/705)) ([16f8941](https://github.com/muxinc/elements/commit/16f8941799a5186f28205a70105b26764f39b295))
+
+
+
+
+
 ## [0.10.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.1...@mux/mux-audio@0.10.2) (2023-06-06)
 
 

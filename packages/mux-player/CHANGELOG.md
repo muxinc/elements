@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.11.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.1...@mux/mux-player@1.11.2) (2023-06-12)
+
+
+### Bug Fixes
+
+* **playback-core:** bump media-chrome & hls.js version to latest. ([#706](https://github.com/muxinc/elements/issues/706)) ([1683663](https://github.com/muxinc/elements/commit/1683663f05b2e3c64012056391f0df457e627371))
+
+
+
+
+
 ## [1.11.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.0...@mux/mux-player@1.11.1) (2023-06-06)
 
 **Note:** Version bump only for package @mux/mux-player
