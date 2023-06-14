@@ -289,7 +289,8 @@ export const isPseudoEnded = (mediaEl: HTMLMediaElement) => {
 };
 
 export const getEnded = (mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
-  if (!!hls) return mediaEl.ended;
+  // Since looping media never truly ends, don't apply pseudo-ended logic
+  if (mediaEl.loop || !!hls) return mediaEl.ended;
   return mediaEl.ended || isPseudoEnded(mediaEl);
 };
 
@@ -566,12 +567,21 @@ export const loadMedia = (
       },
       { once: true }
     );
-    addEventListenerWithTeardown(mediaEl, 'pause', () => {
-      if (!getEnded(mediaEl)) return;
+    const maybeDispatchEndedCallback = () => {
+      // We want to early bail if the underlying media element is already in an ended state,
+      // since that means it will have already fired the ended event.
+      // Do the "cheaper" check first
       if (mediaEl.ended) return;
+      if (!getEnded(mediaEl)) return;
       // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
       mediaEl.dispatchEvent(new Event('ended'));
-    });
+    };
+    addEventListenerWithTeardown(mediaEl, 'pause', maybeDispatchEndedCallback);
+    // NOTE: Browsers do not consistently fire an 'ended' event upon seeking to the
+    // end of the media while already paused. This was due to an ambiguity in the
+    // HTML specification, but is now more explicit.
+    // See: https://html.spec.whatwg.org/multipage/media.html#reaches-the-end (CJP)
+    addEventListenerWithTeardown(mediaEl, 'seeked', maybeDispatchEndedCallback);
 
     addEventListenerWithTeardown(mediaEl, 'play', () => {
       if (mediaEl.ended) return;
