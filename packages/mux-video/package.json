@@ -62,7 +62,8 @@
   "dependencies": {
     "@mux/playback-core": "0.18.5",
     "castable-video": "0.5.2",
-    "custom-media-element": "0.2.0"
+    "custom-media-element": "0.2.0",
+    "media-tracks": "0.1.2"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",

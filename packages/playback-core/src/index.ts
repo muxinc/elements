@@ -6,6 +6,7 @@ import type { HlsInterface } from './hls';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
+import { setupRenditions } from './renditions';
 import {
   setupTracks,
   addTextTrack,
@@ -34,9 +35,10 @@ import {
   type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
+  type MediaTracks,
   HlsPlaylistTypes,
+  MediaTypes,
 } from './types';
-import { MediaTypes } from './types';
 export {
   mux,
   Hls,
@@ -164,7 +166,7 @@ export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
 export const updateStreamInfoFromHlsjsLevelDetails = (
   levelDetails: any,
   mediaEl: HTMLMediaElement,
-  hls: Pick<Hls, 'config' | 'userConfig' | 'liveSyncPosition'>
+  hls: HlsInterface
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset, lowLatency } =
     getStreamInfoFromHlsjsLevelDetails(levelDetails);
@@ -514,26 +516,7 @@ export const setupMux = (
   }
 };
 
-export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
-  mediaEl: HTMLMediaElement,
-  hls?: Pick<
-    Hls,
-    | 'config'
-    | 'on'
-    | 'once'
-    | 'startLoad'
-    | 'stopLoad'
-    | 'recoverMediaError'
-    | 'destroy'
-    | 'loadSource'
-    | 'attachMedia'
-    | 'liveSyncPosition'
-    | 'subtitleTracks'
-    | 'subtitleTrack'
-    | 'userConfig'
-  >
-) => {
+export const loadMedia = (props: Partial<MuxMediaProps>, mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
   if (mediaEl && shouldUseNative) {
@@ -631,6 +614,7 @@ export const loadMedia = (
     });
     mediaEl.addEventListener('error', handleInternalError);
 
+    setupRenditions(props as MediaTracks, hls);
     setupTracks(mediaEl, hls);
 
     hls.attachMedia(mediaEl);
