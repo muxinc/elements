@@ -4,6 +4,8 @@ import type { MediaTracks } from './types';
 import type { TrackEvent } from 'media-tracks';
 
 export function setupRenditions(customMediaEl: MediaTracks, hls: HlsInterface) {
+  if (!('videoTracks' in customMediaEl)) return;
+
   // Create a map to save the unique id's we create for each level and rendition.
   // hls.js uses the levels array index primarily but we'll use the id to have a
   // 1 to 1 relation from rendition to level.
