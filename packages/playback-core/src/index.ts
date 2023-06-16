@@ -166,7 +166,7 @@ export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
 export const updateStreamInfoFromHlsjsLevelDetails = (
   levelDetails: any,
   mediaEl: HTMLMediaElement,
-  hls: HlsInterface
+  hls: Pick<Hls, 'config' | 'userConfig' | 'liveSyncPosition'>
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset, lowLatency } =
     getStreamInfoFromHlsjsLevelDetails(levelDetails);
@@ -516,7 +516,29 @@ export const setupMux = (
   }
 };
 
-export const loadMedia = (props: Partial<MuxMediaProps>, mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
+export const loadMedia = (
+  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
+  mediaEl: HTMLMediaElement,
+  hls?: Pick<
+    Hls,
+    | 'config'
+    | 'on'
+    | 'once'
+    | 'startLoad'
+    | 'stopLoad'
+    | 'recoverMediaError'
+    | 'destroy'
+    | 'loadSource'
+    | 'attachMedia'
+    | 'liveSyncPosition'
+    | 'subtitleTracks'
+    | 'subtitleTrack'
+    | 'userConfig'
+    | 'autoLevelEnabled'
+    | 'nextLevel'
+    | 'levels'
+  >
+) => {
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
   if (mediaEl && shouldUseNative) {

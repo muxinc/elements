@@ -1,9 +1,11 @@
 import Hls from './hls';
-import type { HlsInterface } from './hls';
 import type { MediaTracks } from './types';
 import type { TrackEvent } from 'media-tracks';
 
-export function setupRenditions(customMediaEl: MediaTracks, hls: HlsInterface) {
+export function setupRenditions(
+  customMediaEl: MediaTracks,
+  hls: Pick<Hls, 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once'>
+) {
   if (!('videoTracks' in customMediaEl)) return;
 
   // Create a map to save the unique id's we create for each level and rendition.
