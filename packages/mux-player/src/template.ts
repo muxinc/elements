@@ -5,7 +5,8 @@ import './dialog';
 import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
-import classicTheme from './themes/classic';
+import './themes/classic';
+import './themes/default';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 

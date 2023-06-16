@@ -30,6 +30,7 @@ import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, k
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 import './themes/default';
+import './themes/classic';
 
 export { MediaError };
 export type Tokens = {
