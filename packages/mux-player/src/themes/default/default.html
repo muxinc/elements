@@ -6,7 +6,7 @@
     :host {
       --_primary-color: var(--media-primary-color, #fff);
       --_secondary-color: var(--media-secondary-color, transparent);
-      --_accent-color: #fa50b5;
+      --_accent-color: var(--media-accent-color, #fa50b5);
 
       --media-icon-color: var(--_primary-color);
       --media-control-background: var(--_secondary-color);
@@ -577,41 +577,6 @@
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
     <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
-
-    <template if="audio">
-      <template if="streamtype == 'on-demand'">
-        <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
-        </template>
-        <media-control-bar part="bottom">
-          {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>TimeRange}} {{>MuteButton}}
-          {{>VolumeRange}} {{>PlaybackRateButton}} {{>AirplayButton}} {{>CastButton}}
-        </media-control-bar>
-      </template>
-
-      <template if="streamType == 'live'">
-        <template if="targetLiveWindow > 0">
-          <template if="title">
-            <media-control-bar>{{>TitleDisplay}}</media-control-bar>
-          </template>
-          <media-control-bar part="bottom">
-            {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>TimeRange}}
-            {{>MuteButton}} {{>VolumeRange}} {{>PlaybackRateButton}} {{>AirplayButton}} {{>CastButton}}
-          </media-control-bar>
-        </template>
-
-        <template if="!targetlivewindow">
-          <template if="title">
-            <media-control-bar>{{>TitleDisplay}}</media-control-bar>
-          </template>
-          <media-control-bar part="bottom">
-            {{>PlayButton}} {{>MuteButton}} {{>VolumeRange}}
-            <div class="spacer"></div>
-            {{>AirplayButton}} {{>CastButton}}
-          </media-control-bar>
-        </template>
-      </template>
-    </template>
 
     <template if="!audio">
       <template if="streamtype == 'on-demand'">
