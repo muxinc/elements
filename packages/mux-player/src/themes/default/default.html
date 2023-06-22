@@ -174,13 +174,19 @@
     }
 
     .center-controls media-play-button {
-      --media-control-background: #000;
-      --media-control-hover-background: var(--_accent-color);
-      padding: 24px;
-      border-radius: 50%;
+      --media-control-background: transparent;
+      --media-control-hover-background: transparent;
+      width: 40px;
+    }
+
+    [breakpointsm] .center-controls media-play-button {
       width: 90px;
       height: 90px;
-      transition: all 0.4s;
+      border-radius: 50%;
+      transition: background 0.4s;
+      padding: 24px;
+      --media-control-background: #000;
+      --media-control-hover-background: var(--_accent-color);
     }
 
     .center-controls media-seek-backward-button,
@@ -564,7 +570,7 @@
 
   <media-controller
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
-    breakpoints="sm:300 md:700"
+    breakpoints="sm:500"
     gesturesdisabled="{{disabled}}"
     hotkeys="{{hotkeys}}"
     nohotkeys="{{nohotkeys}}"
@@ -580,44 +586,26 @@
 
     <template if="!audio">
       <template if="streamtype == 'on-demand'">
-        <template if="!breakpointsm">
-          {{>TimeRange}}
-          <media-control-bar part="bottom">
-            {{>PlayButton}} {{>MuteButton}}
-            <div class="spacer"></div>
-            {{>CaptionsMenuButton}} {{>FullscreenButton}}
-          </media-control-bar>
-        </template>
-
         <template if="breakpointsm">
-          <template if="!breakpointmd">
-            <media-control-bar slot="top-chrome"> {{>TitleDisplay}} </media-control-bar>
-            <div slot="centered-chrome" class="center-controls">
-              {{>SeekBackwardButton section="center"}} {{>PlayButton section="center"}} {{>SeekForwardButton
-              section="center"}}
-            </div>
-            {{>TimeRange}}
-            <media-control-bar part="bottom">
-              {{>PlayButton}} {{>TimeDisplay}} {{>MuteButton}} {{>VolumeRange}}
-              <div class="spacer"></div>
-              {{>PlaybackRateButton}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}}
-              {{>FullscreenButton}}
-            </media-control-bar>
+          <media-control-bar slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
+        </template>
+        <div slot="centered-chrome" class="center-controls">
+          <template if="!breakpointsm"> {{>SeekBackwardButton section="center"}} </template>
+          {{>PlayButton section="center"}}
+          <template if="!breakpointsm"> {{>SeekForwardButton section="center"}} </template>
+        </div>
+        {{>TimeRange}}
+        <media-control-bar part="bottom">
+          <template if="breakpointsm">
+            {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}}
           </template>
-        </template>
-
-        <template if="breakpointmd">
-          <media-control-bar slot="top-chrome"> {{>TitleDisplay}} </media-control-bar>
-          <div slot="centered-chrome" class="center-controls">{{>PlayButton section="center"}}</div>
-          {{>TimeRange}}
-          <media-control-bar part="bottom">
-            {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>MuteButton}}
-            {{>VolumeRange}}
-            <div class="spacer"></div>
-            {{>PlaybackRateButton}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}}
-            {{>FullscreenButton}}
-          </media-control-bar>
-        </template>
+          {{>MuteButton}} {{>VolumeRange}}
+          <div class="spacer"></div>
+          <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
+          {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          <template if="breakpointsm"> {{>PipButton}} </template>
+          {{>FullscreenButton}}
+        </media-control-bar>
       </template>
 
       <template if="streamtype == 'live'">
