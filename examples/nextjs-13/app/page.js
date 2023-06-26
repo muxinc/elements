@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import styles from './page.module.css'
-import MuxUploader from '@mux/mux-uploader-react/rsc';
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <MuxUploader />
-      </div>
-    </main>
+    <nav>
+      <ul>
+        <li><Link href="/MuxUploader" className="uploader">&lt;MuxUploader&gt;</Link></li>
+      </ul>
+    </nav>
   )
 }

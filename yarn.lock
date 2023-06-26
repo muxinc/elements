@@ -16028,6 +16028,11 @@ watchpack@2.4.0, watchpack@^2.0.0-beta.10, watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
+water.css@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/water.css/-/water.css-2.1.1.tgz#ee6fe833a313a3a2edb588a57ed62b3e31dedd18"
+  integrity sha512-gkO5byC+pZ7ndEV18hs/RmxKoDtEZXx06tZU4ocI3IBdv4xV64tlhjIFbDjurysRnNkiy2oQTr8PakRyzZWPJw==
+
 wbuf@^1.1.0, wbuf@^1.7.3:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/wbuf/-/wbuf-1.7.3.tgz#c1d8d149316d3ea852848895cb6a0bfe887b87df"
