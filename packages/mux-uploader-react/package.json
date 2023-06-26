@@ -6,9 +6,16 @@
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs.js",
-    "default": "./dist/index.cjs.js"
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./rsc": {
+      "import": "./dist/rsc.mjs",
+      "require": "./dist/rsc.cjs.js",
+      "default": "./dist/rsc.mjs"
+    }
   },
   "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
@@ -29,13 +36,17 @@
     "clean": "shx rm -rf dist/",
     "dev:cjs": "yarn build:cjs --watch=forever",
     "dev:esm": "yarn build:esm --watch=forever",
+    "dev:cjs:rsc": "yarn build:cjs:rsc --watch=forever",
+    "dev:esm:rsc": "yarn build:esm:rsc --watch=forever",
     "dev:types": "yarn build:types -w",
-    "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm",
-    "build:cjs": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --out-extension:.js=.cjs.js --external:react --external:prop-types",
-    "build:esm": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:prop-types",
+    "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:cjs:rsc dev:esm:rsc",
+    "build:cjs": "esbuild src/index.tsx --banner:js='\"use client\";' --target=es2019 --minify --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --out-extension:.js=.cjs.js --external:react --external:prop-types",
+    "build:esm": "esbuild src/index.tsx --banner:js='\"use client\";' --target=es2019 --minify --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:prop-types",
+    "build:cjs:rsc": "esbuild src/rsc.tsx --target=es2019 --format=cjs --outdir=dist --out-extension:.js=.cjs.js",
+    "build:esm:rsc": "esbuild src/rsc.tsx --target=es2019 --format=esm --outdir=dist --out-extension:.js=.mjs",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'",
+    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify' 'build:cjs:rsc --minify' 'build:esm:rsc --minify'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
@@ -53,6 +64,7 @@
     }
   },
   "dependencies": {
+    "@mux/mux-node": "^7.3.0",
     "@mux/mux-uploader": "1.0.0-beta.9",
     "prop-types": "^15.7.2"
   },
