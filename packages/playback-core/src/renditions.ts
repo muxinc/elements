@@ -78,7 +78,7 @@ export function setupRenditions(
     track.renditions.addEventListener('change', () => {
       let level;
       if ([...track.renditions].some((rendition) => !rendition.enabled)) {
-        level = [...track.renditions].find((r) => r.enabled) ?? -1;
+        level = [...track.renditions].findIndex((r) => r.enabled) ?? -1;
       } else {
         level = -1;
       }
