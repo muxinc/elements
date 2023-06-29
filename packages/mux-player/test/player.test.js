@@ -971,7 +971,7 @@ describe('<mux-player> seek to live behaviors', function () {
     ></mux-player>`);
 
     // Wait for us to have at least one showing subtitle/caption
-    await oneEvent(player.mediaController, 'mediasubtitlesshowingchange');
+    await waitUntil(() => Array.prototype.some.call(player.textTracks, (track) => track.mode === 'showing'));
     // Make sure we're playing
     await waitUntil(() => !player.paused);
     // Find the currently showing track
