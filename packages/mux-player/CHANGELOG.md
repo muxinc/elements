@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.11.3](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.2...@mux/mux-player@1.11.3) (2023-06-29)
+
+
+### Bug Fixes
+
+* **mux-player:** media-chrome version bump (occasional ResizeObserver… ([#711](https://github.com/muxinc/elements/issues/711)) ([b33408a](https://github.com/muxinc/elements/commit/b33408ac51c112e215f34aa10f7dd72ba8c2e6b6))
+
+
+
+
+
 ## [1.11.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.1...@mux/mux-player@1.11.2) (2023-06-12)
 
 

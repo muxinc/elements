@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.3...@mux/playback-core@0.18.4) (2023-06-29)
+
+
+### Bug Fixes
+
+* **playback-core:** Apply pseudo-ended logic on seeked, even if paused. ([#707](https://github.com/muxinc/elements/issues/707)) ([924e81c](https://github.com/muxinc/elements/commit/924e81cddb9943d6e3bf9bf107fe7ed72d071b64))
+
+
+
+
+
 ## [0.18.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.2...@mux/playback-core@0.18.3) (2023-06-12)
 
 
