@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.5](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.4...@mux/playback-core@0.18.5) (2023-07-07)
+
+
+### Bug Fixes
+
+* **playback-core, mux-player:** hls.js & media-chrome version bumps (fixes resize observer RTE and hls.js edge case bugs) ([b3a3657](https://github.com/muxinc/elements/commit/b3a36578320b58941509d0feccfaa1272a3dc033))
+* **playback-core:** Switch back to using the unminified hls.js module… ([#718](https://github.com/muxinc/elements/issues/718)) ([c45d462](https://github.com/muxinc/elements/commit/c45d462c6fd18f118d49feea897d8a01eb78ba11))
+
+
+
+
+
 ## [0.18.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.3...@mux/playback-core@0.18.4) (2023-06-29)
 
 

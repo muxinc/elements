@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.11.4](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.3...@mux/mux-player@1.11.4) (2023-07-07)
+
+
+### Bug Fixes
+
+* **playback-core, mux-player:** hls.js & media-chrome version bumps (fixes resize observer RTE and hls.js edge case bugs) ([b3a3657](https://github.com/muxinc/elements/commit/b3a36578320b58941509d0feccfaa1272a3dc033))
+
+
+
+
+
 ## [1.11.3](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.2...@mux/mux-player@1.11.3) (2023-06-29)
 
 
