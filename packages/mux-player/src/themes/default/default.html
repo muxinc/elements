@@ -1,7 +1,18 @@
 <template id="media-theme-default">
   <style>
-    /* TODO: this import doesn't work */
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@300&family=IBM+Plex+Sans:wght@300;500&display=swap');
+    @keyframes pre-play-hide {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      30% {
+        transform: scale(0.7);
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
 
     :host {
       --_primary-color: var(--media-primary-color, #fff);
@@ -180,6 +191,7 @@
       --media-control-hover-background: transparent;
       --media-control-padding: 0;
       width: 40px;
+      transform-origin: center center;
     }
 
     [breakpointsm] .center-controls media-play-button {
@@ -199,6 +211,32 @@
       padding: 0;
       margin: 0 20px;
       width: max(33px, min(8%, 40px));
+    }
+
+    [breakpointsm]:not([audio]) .center-controls.pre-playback {
+      display: grid;
+      align-items: initial;
+      justify-content: initial;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    [breakpointsm]:not([audio]) .center-controls.pre-playback media-play-button {
+      place-self: var(--_pre-playback-place, center);
+      grid-area: 1 / 1;
+      margin: 16px;
+    }
+
+    /* Show and hide controls or pre-playback state */
+
+    [breakpointsm]:is([mediahasplayed], :not([mediapaused])):not([audio])
+      .center-controls.pre-playback
+      media-play-button {
+      animation: 0.3s linear forwards pre-play-hide;
+    }
+
+    media-controller:not([audio]):not([mediahasplayed]) *:is(media-control-bar, media-time-range) {
+      display: none;
     }
 
     media-loading-indicator {
@@ -270,28 +308,27 @@
     media-text-display {
       --media-font-size: 16px;
       --media-control-padding: 14px;
-      --media-font-family: 'IBM Plex Sans', sans-serif; /* TODO: more fallbacks */
       font-weight: 500;
     }
 
-    media-play-button *:is(g, path) {
+    media-play-button.animated *:is(g, path) {
       transition: all 0.3s;
     }
 
-    media-play-button[mediapaused] .pause-icon-pt1 {
+    media-play-button.animated[mediapaused] .pause-icon-pt1 {
       opacity: 0;
     }
 
-    media-play-button[mediapaused] .pause-icon-pt2 {
+    media-play-button.animated[mediapaused] .pause-icon-pt2 {
       transform-origin: center center;
       transform: scaleY(0);
     }
 
-    media-play-button[mediapaused] .play-icon {
+    media-play-button.animated[mediapaused] .play-icon {
       clip-path: inset(0 0 0 0);
     }
 
-    media-play-button:not([mediapaused]) .play-icon {
+    media-play-button.animated:not([mediapaused]) .play-icon {
       clip-path: inset(0 0 0 100%);
     }
 
@@ -333,7 +370,12 @@
   </template>
 
   <template partial="PlayButton">
-    <media-play-button part="{{section ?? 'bottom'}} play button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+    <media-play-button
+      part="{{section ?? 'bottom'}} play button"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+      class="animated"
+    >
       <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon">
         <g class="play-icon">
           <path
@@ -348,6 +390,18 @@
           <path
             class="pause-icon-pt2"
             d="M15.1571 0H12.2189C11.7186 0 11.313 0.405585 11.313 0.9059V13.0941C11.313 13.5944 11.7186 14 12.2189 14H15.1571C15.6574 14 16.063 13.5944 16.063 13.0941V0.9059C16.063 0.405585 15.6574 0 15.1571 0Z"
+          />
+        </g>
+      </svg>
+    </media-play-button>
+  </template>
+
+  <template partial="PrePlayButton">
+    <media-play-button part="{{section}} play button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon">
+        <g>
+          <path
+            d="M15.5987 6.2911L3.45577 0.110898C2.83667 -0.204202 2.06287 0.189698 2.06287 0.819798V13.1802C2.06287 13.8103 2.83667 14.2042 3.45577 13.8891L15.5987 7.7089C16.2178 7.3938 16.2178 6.6061 15.5987 6.2911Z"
           />
         </g>
       </svg>
@@ -580,21 +634,39 @@
     noautoseektolive="{{noautoseektolive}}"
     defaultsubtitles="{{defaultsubtitles}}"
     exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
+    style="--_pre-playback-place:{{preplaybackplace ?? 'center'}}"
   >
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
+
     <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
     <template if="!audio">
+      <!-- Pre-playback UI -->
+      <div slot="centered-chrome" class="center-controls pre-playback">
+        <template if="streamtype == 'on-demand'">
+          <template if="!breakpointsm"> {{>SeekBackwardButton section="center"}} </template>
+          <template if="!breakpointsm"> {{>PlayButton section="center"}} </template>
+          <template if="breakpointsm"> {{>PrePlayButton section="center"}} </template>
+          <template if="!breakpointsm"> {{>SeekForwardButton section="center"}} </template>
+        </template>
+
+        <template if="streamtype == 'live'">
+          <template if="!breakpointsm">
+            <template if="targetlivewindow > 0"> {{>SeekBackwardButton section="center"}} </template>
+          </template>
+          <template if="!breakpointsm"> {{>PlayButton section="center"}} </template>
+          <template if="breakpointsm"> {{>PrePlayButton section="center"}} </template>
+          <template if="!breakpointsm">
+            <template if="targetlivewindow > 0"> {{>SeekForwardButton section="center"}} </template>
+          </template>
+        </template>
+      </div>
+
       <template if="streamtype == 'on-demand'">
         <template if="breakpointsm">
           <media-control-bar slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
         </template>
-        <div slot="centered-chrome" class="center-controls">
-          <template if="!breakpointsm"> {{>SeekBackwardButton section="center"}} </template>
-          {{>PlayButton section="center"}}
-          <template if="!breakpointsm"> {{>SeekForwardButton section="center"}} </template>
-        </div>
         {{>TimeRange}}
         <media-control-bar part="bottom">
           <template if="breakpointsm">
@@ -614,15 +686,6 @@
           {{>LiveButton}}
           <template if="breakpointsm"> {{>TitleDisplay}} </template>
         </media-control-bar>
-        <div slot="centered-chrome" class="center-controls">
-          <template if="!breakpointsm">
-            <template if="targetlivewindow > 0"> {{>SeekBackwardButton section="center"}} </template>
-          </template>
-          {{>PlayButton section="center"}}
-          <template if="!breakpointsm">
-            <template if="targetlivewindow > 0"> {{>SeekForwardButton section="center"}} </template>
-          </template>
-        </div>
         <template if="targetlivewindow > 0">{{>TimeRange}}</template>
         <media-control-bar part="bottom">
           <template if="breakpointsm">
@@ -637,6 +700,7 @@
         </media-control-bar>
       </template>
     </template>
+
     <slot></slot>
   </media-controller>
 </template>
