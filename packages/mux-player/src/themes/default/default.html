@@ -39,6 +39,33 @@
       height: 100%;
     }
 
+    :host([audio]) {
+      --media-preview-time-border-radius: 3px;
+      --media-preview-time-margin: 0 0 5px;
+      --media-preview-time-text-shadow: none;
+    }
+
+    :host([audio]) ::slotted([slot='media']) {
+      height: 0px;
+    }
+
+    :host([audio]) media-loading-indicator,
+    :host([audio]) ::slotted([slot='poster']) {
+      display: none;
+    }
+
+    :host([audio]) media-controller {
+      background: transparent;
+    }
+
+    :host([audio]) media-controller::part(vertical-layer) {
+      background: transparent;
+    }
+
+    :host([audio]) media-control-bar {
+      width: 100%;
+    }
+
     :host(:not([audio])) media-captions-selectmenu::part(listbox) {
       z-index: 10;
     }
@@ -69,6 +96,7 @@
       --media-preview-time-padding: 2px 0 6px;
       --media-preview-thumbnail-max-width: 150px;
       --media-range-track-pointer-border-right: 2px solid #000;
+      --media-control-hover-background: transparent;
       color: var(--_accent-color);
       padding: 0 6px;
     }
@@ -126,7 +154,7 @@
       pointer-events: none;
     }
 
-    :host([title]) media-control-bar[slot='top-chrome']::before {
+    :host([title]):not([audio]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -135,7 +163,7 @@
       opacity: 0.8;
     }
 
-    media-control-bar[part='bottom']::before {
+    :host:not([audio]) media-control-bar[part='bottom']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -697,6 +725,39 @@
           {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm">{{>PipButton}}</template>
           {{>FullscreenButton}}
+        </media-control-bar>
+      </template>
+    </template>
+
+    <template if="audio">
+      <template if="streamtype == 'on-demand'">
+        <template if="title">
+          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+        </template>
+        <media-control-bar part="bottom">
+          {{>PlayButton}}
+          <template if="breakpointsm"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
+          {{>MuteButton}}
+          <template if="breakpointsm">{{>VolumeRange}}</template>
+          {{>TimeDisplay}} {{>TimeRange}}
+          <div class="spacer"></div>
+          <template if="breakpointsm">{{>PlaybackRateButton}}</template>
+          {{>AirplayButton}} {{>CastButton}}
+        </media-control-bar>
+      </template>
+
+      <template if="streamtype == 'live'">
+        <template if="title">
+          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+        </template>
+        <media-control-bar part="bottom">
+          <template if="breakpointsm">
+            {{>PlayButton}} {{>LiveButton section="bottom"}} {{>MuteButton}} {{>VolumeRange}}
+            <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
+          </template>
+          <template if="targetlivewindow > 0"> {{>TimeDisplay}} {{>TimeRange}} </template>
+          <div class="spacer"></div>
+          {{>AirplayButton}} {{>CastButton}}
         </media-control-bar>
       </template>
     </template>
