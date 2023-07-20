@@ -22,6 +22,7 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js",
@@ -29,19 +30,22 @@
       "types": "./dist/types/index.d.ts"
     },
     "./themes/microvideo": {
-      "import": "./themes/microvideo/index.mjs",
-      "require": "./themes/microvideo/index.cjs.js",
-      "default": "./themes/microvideo/index.cjs.js"
+      "import": "./dist/themes/microvideo/index.mjs",
+      "require": "./dist/themes/microvideo/index.cjs.js",
+      "browser": "./dist/themes/microvideo/index.mjs",
+      "default": "./dist/themes/microvideo/index.cjs.js"
     },
     "./themes/minimal": {
-      "import": "./themes/minimal/index.mjs",
-      "require": "./themes/minimal/index.cjs.js",
-      "default": "./themes/minimal/index.cjs.js"
+      "import": "./dist/themes/minimal/index.mjs",
+      "require": "./dist/themes/minimal/index.cjs.js",
+      "browser": "./dist/themes/minimal/index.mjs",
+      "default": "./dist/themes/minimal/index.cjs.js"
     },
     "./themes/classic": {
-      "import": "./themes/classic/index.mjs",
-      "require": "./themes/classic/index.cjs.js",
-      "default": "./themes/classic/index.cjs.js"
+      "import": "./dist/themes/classic/index.mjs",
+      "require": "./dist/themes/classic/index.cjs.js",
+      "browser": "./dist/themes/classic/index.mjs",
+      "default": "./dist/themes/classic/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",

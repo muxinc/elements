@@ -14,30 +14,27 @@ const shared = {
 };
 
 themes.forEach((theme) => {
-  // @ts-ignore
   build({
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'esm',
     outExtension: { '.js': '.mjs' },
-    outdir: `./themes/${theme}`,
+    outdir: `./dist/themes/${theme}`,
   });
 
-  // @ts-ignore
   build({
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'cjs',
     outExtension: { '.js': '.cjs.js' },
-    outdir: `./themes/${theme}`,
+    outdir: `./dist/themes/${theme}`,
   });
 
-  // @ts-ignore
   build({
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'iife',
     globalName: `mediaTheme${theme}`,
-    outdir: `./themes/${theme}`,
+    outdir: `./dist/themes/${theme}`,
   });
 });
