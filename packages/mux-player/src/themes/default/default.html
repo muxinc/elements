@@ -92,13 +92,18 @@
       --media-preview-time-background: var(--_primary-color);
       --media-preview-time-border-radius: 0 0 5px 5px;
       --media-preview-time-margin: 0 0 10px;
-      --media-text-color: #000;
       --media-preview-time-padding: 2px 0 6px;
+      --media-text-color: #000;
       --media-preview-thumbnail-max-width: 150px;
       --media-range-track-pointer-border-right: 2px solid #000;
       --media-control-hover-background: transparent;
       color: var(--_accent-color);
       padding: 0 6px;
+    }
+
+    :host([audio]) media-time-range {
+      --media-preview-time-border-radius: 5px;
+      --media-preview-time-padding: 5px;
     }
 
     media-time-range:hover {
