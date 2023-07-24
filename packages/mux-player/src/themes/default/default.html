@@ -159,7 +159,7 @@
       pointer-events: none;
     }
 
-    :host([title]):not([audio]) media-control-bar[slot='top-chrome']::before {
+    :host([title]:not([audio])) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -168,7 +168,7 @@
       opacity: 0.8;
     }
 
-    :host:not([audio]) media-control-bar[part='bottom']::before {
+    :host(:not([audio])) media-control-bar[part='bottom']::before {
       content: '';
       position: absolute;
       width: 100%;
