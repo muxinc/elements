@@ -16,7 +16,7 @@
     "moduleResolution": "Node",
     "baseUrl": "./packages",
     "esModuleInterop": true,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types"]
   },
