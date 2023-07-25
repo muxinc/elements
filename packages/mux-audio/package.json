@@ -29,7 +29,7 @@
       "types": "./dist/types/index.d.ts"
     }
   },
-  "types": "./dist/types-ts3.4/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
