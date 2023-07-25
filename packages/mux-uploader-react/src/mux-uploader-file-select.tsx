@@ -1,8 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import '@mux/mux-uploader';
 import type MuxUploaderFileSelectElement from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 
 export type MuxUploaderFileSelectRefAttributes = MuxUploaderFileSelectElement;
@@ -20,7 +19,7 @@ const MuxUploaderFileSelectInternal = React.forwardRef<MuxUploaderFileSelectRefA
 
 const MuxUploaderFileSelect = React.forwardRef<MuxUploaderFileSelectRefAttributes, MuxUploaderFileSelectProps>(
   (props, ref) => {
-    const innerUploaderFileSelectRef = useRef<MuxUploaderFileSelectElement>(null);
+    const innerUploaderFileSelectRef = React.useRef<MuxUploaderFileSelectElement>(null);
     const uploaderFileSelectRef = useCombinedRefs(innerUploaderFileSelectRef, ref);
 
     return (

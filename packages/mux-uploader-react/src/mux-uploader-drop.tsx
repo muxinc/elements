@@ -1,9 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import type MuxUploaderDropElement from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 
 export type MuxUploaderDropRefAttributes = MuxUploaderDropElement;
@@ -25,7 +24,7 @@ const MuxUploaderDropInternal = React.forwardRef<MuxUploaderDropRefAttributes, M
 );
 
 const MuxUploaderDrop = React.forwardRef<MuxUploaderDropRefAttributes, MuxUploaderDropProps>((props, ref) => {
-  const innerUploaderDropRef = useRef<MuxUploaderDropElement>(null);
+  const innerUploaderDropRef = React.useRef<MuxUploaderDropElement>(null);
   const uploaderDropRef = useCombinedRefs(innerUploaderDropRef, ref);
 
   return <MuxUploaderDropInternal ref={uploaderDropRef as typeof innerUploaderDropRef} {...props} />;

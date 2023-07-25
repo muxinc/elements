@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Head from 'next/head';
-import { useRef, useState } from "react";
+import * as React from "react";
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import type MuxPlayerElement from "@mux/mux-player";
 
@@ -18,7 +18,7 @@ function addCuePointsToPlayer(playerEl: MuxPlayerElement) {
 }
 
 function MuxPlayerPage() {
-  const [activeCuePoint, setActiveCuePoint] = useState<CuePoint>(undefined)
+  const [activeCuePoint, setActiveCuePoint] = React.useState<CuePoint>(undefined)
   return (
     <>
       <Head>

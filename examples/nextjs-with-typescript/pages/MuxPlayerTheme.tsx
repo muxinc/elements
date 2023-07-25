@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Head from 'next/head';
-import { useRef, useState } from "react";
+import * as React from "react";
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import "@mux/mux-player/themes/microvideo";
 
@@ -8,10 +8,10 @@ const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
 
 function MuxPlayerPage() {
-  const mediaElRef = useRef(null);
-  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
-  const [paused, setPaused] = useState<boolean | undefined>(true);
+  const mediaElRef = React.useRef(null);
+  const [autoplay, setAutoplay] = React.useState<"muted" | boolean>(INITIAL_AUTOPLAY);
+  const [muted, setMuted] = React.useState(INITIAL_MUTED);
+  const [paused, setPaused] = React.useState<boolean | undefined>(true);
 
   return (
     <>

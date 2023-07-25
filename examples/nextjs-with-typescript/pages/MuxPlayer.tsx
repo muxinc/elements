@@ -4,7 +4,7 @@ import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
-import { useEffect, useReducer, useRef, useState } from "react";
+import * as React from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import { useRouter } from "next/router";
 import type { NextParsedUrlQuery } from "next/dist/server/request-meta";
@@ -295,23 +295,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
 
 function MuxPlayerPage({ location }: Props) {
   const router = useRouter();
-  const mediaElRef = useRef(null);
-  const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
-  const [selectedAsset, setSelectedAsset] = useState(undefined);
-  const [state, dispatch] = useReducer(reducer, toInitialState(selectedAsset, mediaAssets, router.query));
-  useEffect(() => {
+  const mediaElRef = React.useRef(null);
+  const [mediaAssets, _setMediaAssets] = React.useState(mediaAssetsJSON);
+  const [selectedAsset, setSelectedAsset] = React.useState(undefined);
+  const [state, dispatch] = React.useReducer(reducer, toInitialState(selectedAsset, mediaAssets, router.query));
+  React.useEffect(() => {
     if (!router.isReady) return;
     dispatch(updateProps(toInitialState(selectedAsset, mediaAssets, router.query)))
   }, [router.query, router.isReady]);
-  const [stylesState, dispatchStyles] = useReducer(reducer, {});
+  const [stylesState, dispatchStyles] = React.useReducer(reducer, {});
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
-  const [optionStyles, optionsDispatchStyles] = useReducer(reducer, {
+  const [optionStyles, optionsDispatchStyles] = React.useReducer(reducer, {
     '--player-height': '450px'
   });
   const optionsGenericOnStyleChange = (obj) => optionsDispatchStyles(updateProps(obj));
-  useEffect(() => {
+  React.useEffect(() => {
     const height = mediaElRef.current.offsetHeight;
     optionsGenericOnStyleChange({'--player-height': height + 'px'});
   }, [mediaElRef]);
@@ -423,8 +423,8 @@ function MuxPlayerPage({ location }: Props) {
           name="streamType"
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr', 'unknown']}
-          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue) 
-            ? <code>{JSON.stringify(enumValue)}</code> 
+          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue)
+            ? <code>{JSON.stringify(enumValue)}</code>
             : <><code>{JSON.stringify(enumValue)}</code> (deprecated)</>
           }
         />

@@ -1,16 +1,16 @@
 import Link from "next/link";
 import Head from 'next/head';
-import { useRef, useState } from "react";
+import * as React from "react";
 import MuxVideo from "@mux/mux-video-react";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
 
 function MuxVideoPage() {
-  const mediaElRef = useRef(null);
-  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
-  const [paused, setPaused] = useState<boolean | undefined>(true);
+  const mediaElRef = React.useRef(null);
+  const [autoplay, setAutoplay] = React.useState<"muted" | boolean>(INITIAL_AUTOPLAY);
+  const [muted, setMuted] = React.useState(INITIAL_MUTED);
+  const [paused, setPaused] = React.useState<boolean | undefined>(true);
 
   return (
     <>

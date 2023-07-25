@@ -1,5 +1,5 @@
 import { useCombinedRefs } from './use-combined-refs';
-import React, { useEffect, useRef, useState } from 'react';
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import {
   allMediaTypes,
@@ -26,17 +26,17 @@ const playerSoftwareName = 'mux-audio-react';
 const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>((props, ref) => {
   const { playbackId, src: outerSrc, children, autoPlay, preload, ...restProps } = props;
 
-  const [playerInitTime] = useState(generatePlayerInitTime());
-  const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
-  const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
-  const innerMediaElRef = useRef<HTMLAudioElement>(null);
+  const [playerInitTime] = React.useState(generatePlayerInitTime());
+  const [src, setSrc] = React.useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
+  const playbackCoreRef = React.useRef<PlaybackCore | undefined>(undefined);
+  const innerMediaElRef = React.useRef<HTMLAudioElement>(null);
   const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setSrc(toMuxVideoURL(playbackId) ?? outerSrc);
   }, [outerSrc, playbackId]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const propsWithState = {
       ...props,
       src,
@@ -59,11 +59,11 @@ const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>(
     };
   }, [src]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     playbackCoreRef.current?.setAutoplay(autoPlay);
   }, [autoPlay]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     playbackCoreRef.current?.setPreload(preload);
   }, [preload]);
 

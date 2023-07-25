@@ -1,8 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import '@mux/mux-uploader';
 import type MuxUploaderStatusElement from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 
 export type MuxUploaderStatusRefAttributes = MuxUploaderStatusElement;
@@ -20,7 +19,7 @@ const MuxUploaderStatusInternal = React.forwardRef<MuxUploaderStatusRefAttribute
 );
 
 const MuxUploaderStatus = React.forwardRef<MuxUploaderStatusRefAttributes, MuxUploaderStatusProps>((props, ref) => {
-  const innerUploaderStatusRef = useRef<MuxUploaderStatusElement>(null);
+  const innerUploaderStatusRef = React.useRef<MuxUploaderStatusElement>(null);
   const uploaderStatusRef = useCombinedRefs(innerUploaderStatusRef, ref);
 
   return <MuxUploaderStatusInternal ref={uploaderStatusRef as typeof innerUploaderStatusRef} {...props} />;

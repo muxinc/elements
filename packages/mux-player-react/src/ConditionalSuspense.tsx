@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import * as React from 'react';
 
 type Props = {
   fallback: React.ReactChild | React.ReactFragment | React.ReactPortal | null;
@@ -7,9 +7,9 @@ type Props = {
 };
 const ConditionalSuspense = ({ condition, fallback, children, ...rest }: Props) => {
   return condition ? (
-    <Suspense fallback={fallback} {...rest}>
+    <React.Suspense fallback={fallback} {...rest}>
       {children}
-    </Suspense>
+    </React.Suspense>
   ) : (
     <>{fallback}</>
   );

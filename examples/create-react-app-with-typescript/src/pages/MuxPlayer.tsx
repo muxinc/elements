@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Link } from "react-router-dom";
 import MuxPlayer from "@mux/mux-player-react";
-import { useRef, useState } from "react";
 
 function MuxPlayerPage() {
   return (

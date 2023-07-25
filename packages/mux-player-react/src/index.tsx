@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import * as React from 'react';
 import type { CSSProperties } from 'react';
 import type { StreamTypes, PlaybackTypes, CmcdTypes } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, MuxPlayerElementEventMap } from '@mux/mux-player';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
@@ -120,7 +119,7 @@ const useEventCallbackEffect = <K extends keyof MuxPlayerElementEventMap>(
   React.MutableRefObject<MuxPlayerElement | null> | null | undefined,
   callback: GenericEventListener<MuxPlayerElementEventMap[K]> | undefined
 ) => {
-  return useEffect(() => {
+  return React.useEffect(() => {
     const eventTarget = ref?.current;
     if (!eventTarget || !callback) return;
     eventTarget.addEventListener(type, callback);
@@ -235,7 +234,7 @@ const MuxPlayer = React.forwardRef<
   MuxPlayerRefAttributes,
   Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>
 >((props, ref) => {
-  const innerPlayerRef = useRef<MuxPlayerElement>(null);
+  const innerPlayerRef = React.useRef<MuxPlayerElement>(null);
   const playerRef = useCombinedRefs(innerPlayerRef, ref);
   const [remainingProps] = usePlayer(innerPlayerRef, props);
 

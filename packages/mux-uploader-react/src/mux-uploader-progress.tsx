@@ -1,9 +1,8 @@
-import React from 'react';
+import * as React from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
 import { type MuxUploaderProgressElement } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 
 export type MuxUploaderProgressRefAttributes = MuxUploaderProgressElement;
@@ -27,7 +26,7 @@ const MuxUploaderProgressInternal = React.forwardRef<MuxUploaderProgressRefAttri
 
 const MuxUploaderProgress = React.forwardRef<MuxUploaderProgressRefAttributes, MuxUploaderProgressProps>(
   (props, ref) => {
-    const innerUploaderProgressRef = useRef<MuxUploaderProgressElement>(null);
+    const innerUploaderProgressRef = React.useRef<MuxUploaderProgressElement>(null);
     const uploaderProgressRef = useCombinedRefs(innerUploaderProgressRef, ref);
 
     return <MuxUploaderProgressInternal ref={uploaderProgressRef as typeof innerUploaderProgressRef} {...props} />;

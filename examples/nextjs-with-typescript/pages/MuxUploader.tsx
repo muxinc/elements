@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Head from 'next/head';
 import MuxUploader, { MuxUploaderDrop } from '@mux/mux-uploader-react';
-import { useState, ChangeEvent } from "react";
+import * as React from "react";
 
 const onUploadStart = console.log.bind(null, 'uploadStart');
 const onChunkAttempt = console.log.bind(null, "chunkAttempt");
@@ -14,10 +14,10 @@ const onUploadError = ({ detail }) => {
 }
 
 function MuxUploaderPage() {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = React.useState("");
 
-  const handleChange = (event: ChangeEvent) => {
-    const target = event.target as HTMLInputElement;
+  const handleChange = (event: React.ChangeEvent<React.ElementRef<"input">>) => {
+    const target = event.target
     setUrl(target.value);
   }
 

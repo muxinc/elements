@@ -1,15 +1,15 @@
 import Link from "next/link";
 import Head from 'next/head';
-import { useRef, useState } from "react";
+import * as React from "react";
 import MuxAudio from "@mux/mux-audio-react";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
 
 function MuxAudioPage() {
-  const mediaElRef = useRef(null);
-  const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
+  const mediaElRef = React.useRef(null);
+  const [autoplay, setAutoplay] = React.useState<"muted" | boolean>(INITIAL_AUTOPLAY);
+  const [muted, setMuted] = React.useState(INITIAL_MUTED);
 
   return (
     <>

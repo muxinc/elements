@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 import type { ValueOf } from '@mux/playback-core';
 
@@ -32,18 +32,18 @@ const Fallback = (props: FallbackProps) => {
   const intersectionRef = React.useRef<HTMLElement>(null);
   const isIntersecting = useIsIntersecting(intersectionRef);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isIntersecting && onIntersection) {
       onIntersection();
     }
   }, [isIntersecting, onIntersection]);
 
   return (
-    /* 
+    /*
     Why do we have a mux-player element before the mux-player bundle is even loaded?
     Before the bundle is loaded, this mux-player element just acts like a div.
     However, by calling this placeholder "mux-player",
-    it now gets the same CSS applied to it that the eventual "real" mux-player element will. 
+    it now gets the same CSS applied to it that the eventual "real" mux-player element will.
     */
     <>
       <mux-player
@@ -111,7 +111,7 @@ const MuxPlayer = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerLazyProps>((
   // 1. We're in a browser (react.lazy doesn't work on the server in react 17)
   const isBrowser = useIsBrowser();
   // 2. The player has entered the viewport, according to the fallback (if enabled).
-  const [isIntersecting, setIsIntersecting] = useState(() => (loading === LoadingType.VIEWPORT ? false : true));
+  const [isIntersecting, setIsIntersecting] = React.useState(() => (loading === LoadingType.VIEWPORT ? false : true));
 
   return (
     <ConditionalSuspense

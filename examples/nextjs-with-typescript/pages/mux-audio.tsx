@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Head from 'next/head';
 import "@mux/mux-audio";
-import { useState } from "react";
+import * as React from "react";
 
 // const INITIAL_DEBUG = true;
 const INITIAL_DEBUG = false;
@@ -12,10 +12,10 @@ const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
 
 function MuxAudioWCPage() {
   // const mediaElRef = useRef(null);
-  const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
-  const [muted, setMuted] = useState(INITIAL_MUTED);
-  const [debug, setDebug] = useState(INITIAL_DEBUG);
-  const [autoplay, setAutoplay] = useState(INITIAL_AUTOPLAY);
+  const [playbackId, setPlaybackId] = React.useState(INITIAL_PLAYBACK_ID);
+  const [muted, setMuted] = React.useState(INITIAL_MUTED);
+  const [debug, setDebug] = React.useState(INITIAL_DEBUG);
+  const [autoplay, setAutoplay] = React.useState(INITIAL_AUTOPLAY);
   const debugObj = debug ? { debug: "" } : {};
   const mutedObj = muted ? { muted: "" } : {};
   const autoplayObj = autoplay ? { autoplay } : {};

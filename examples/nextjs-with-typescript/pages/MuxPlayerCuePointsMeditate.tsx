@@ -1,8 +1,7 @@
 import styles from './MuxPlayerCuePointsMeditate.module.css';
 import Link from "next/link";
 import Head from 'next/head';
-import { useReducer, useRef, useState, useEffect } from "react";
-import type { CSSProperties } from "react";
+import * as React from "react";
 import MuxPlayer from "@mux/mux-player-react";
 import type MuxPlayerElement from "@mux/mux-player";
 
@@ -99,7 +98,7 @@ const CuePointRenderer = ({
   const { time, value } = cuePoint;
   const { description, skip = false } = value;
   const skipInputId = `cuepoint-skip-${time}`;
-  const activeStyle: CSSProperties = active ? { backgroundColor: 'lightgreen' } : {};
+  const activeStyle: React.CSSProperties = active ? { backgroundColor: 'lightgreen' } : {};
   return (<>
     <button
       style={activeStyle}
@@ -246,32 +245,32 @@ const DurationList = ({
 }
 
 function MuxPlayerPage() {
-  const [cuePoints, dispatch] = useReducer(reducer, initialCuePoints);
-  const [abbreviableCuePointIndex, setAbbreviableCuePoint] = useState<number>(undefined);
-  const playerElRef = useRef(null);
-  const [activeCuePoint, setActiveCuePoint] = useState<CuePoint>(undefined);
-  const [startTime, setStartTime] = useState<number>(undefined);
-  const [mediaDuration, setMediaDuration] = useState<number>(Number.NaN);
-  const [meditationDuration, setMeditationDuration] = useState<number>(undefined);
-  const [cuePointsAdded, setCuePointsAdded] = useState(false);
+  const [cuePoints, dispatch] = React.useReducer(reducer, initialCuePoints);
+  const [abbreviableCuePointIndex, setAbbreviableCuePoint] = React.useState<number>(undefined);
+  const playerElRef = React.useRef(null);
+  const [activeCuePoint, setActiveCuePoint] = React.useState<CuePoint>(undefined);
+  const [startTime, setStartTime] = React.useState<number>(undefined);
+  const [mediaDuration, setMediaDuration] = React.useState<number>(Number.NaN);
+  const [meditationDuration, setMeditationDuration] = React.useState<number>(undefined);
+  const [cuePointsAdded, setCuePointsAdded] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const nextStartTime = cuePoints.find(cuePoint => !(cuePoint.value.skip))?.time;
     if (nextStartTime === startTime) return;
     setStartTime(nextStartTime);
   }, [cuePoints, startTime]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const idx = cuePoints.findIndex(({ value: { type }}) => type === 'abbreviable');
     if (idx === abbreviableCuePointIndex) return;
     setAbbreviableCuePoint(idx);
   }, [cuePoints, abbreviableCuePointIndex]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setCurrentTimeOnPlayer(startTime ?? 0, playerElRef.current);
   }, [startTime]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!(Array.isArray(cuePoints) && Number.isFinite(mediaDuration))) return;
     const nextDuration = cuePoints.reduce((sum, cuePoint, i, cuePoints) => {
       if (cuePoint.value.skip) return sum;

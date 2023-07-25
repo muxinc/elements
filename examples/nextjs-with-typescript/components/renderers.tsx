@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import * as React from "react";
 
 export const toWordsFromCamel = (string: string) => {
   const first = string[0].toUpperCase();
@@ -132,7 +132,7 @@ export const EnumRenderer = ({
   onChange,
   values,
   formatter = DefaultEnumFormatter
-}: { name: string; value: any | undefined; label?: string; onChange: (obj: any) => void; values: any[], formatter?: (enumValue: any) => ReactNode }) => {
+}: { name: string; value: any | undefined; label?: string; onChange: (obj: any) => void; values: any[], formatter?: (enumValue: any) => React.ReactNode }) => {
   const labelStr = label ?? toWordsFromCamel(name);
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -147,7 +147,7 @@ export const EnumRenderer = ({
         />
         <label htmlFor={`${name}-none-control`}>None</label>
         {values.map((enumValue, i) => {
-          return (<Fragment key={`${name}-${enumValue}`}>
+          return (<React.Fragment key={`${name}-${enumValue}`}>
             <input
               id={`${name}-${enumValue}-control`}
               type="radio"
@@ -156,7 +156,7 @@ export const EnumRenderer = ({
               checked={value === enumValue}
             />
             <label htmlFor={`${name}-${enumValue}-control`}>{formatter(enumValue)}</label>
-            </Fragment>
+            </React.Fragment>
           )
         })}
       </div>
