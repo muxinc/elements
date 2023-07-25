@@ -2,21 +2,31 @@
   "name": "@mux/mux-video-react",
   "version": "0.7.15",
   "description": "A custom mux video element for React that Just Works™",
+  "type": "module",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
-  "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs.js",
-    "default": "./dist/index.cjs.js"
-  },
-  "types": "dist/types-ts3.4/index.d.ts",
   "typesVersions": {
-    ">=4.3.5": {
-      "*": [
-        "dist/types/index.d.ts"
+    "<4.3.5": {
+      ".": [
+        "./dist/types-ts3.4/index.d.ts"
+      ]
+    },
+    "*": {
+      ".": [
+        "./dist/types/index.d.ts"
       ]
     }
   },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js",
+      "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "types": "./dist/types-ts3.4/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
