@@ -29,6 +29,7 @@ import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
+import './themes/classic';
 
 export { MediaError };
 export type Tokens = {
@@ -147,7 +148,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 }
 
 function getThemeTemplate(el: MuxPlayerElement) {
-  let themeName = el.getAttribute(PlayerAttributes.THEME);
+  let themeName = el.theme;
+
   if (themeName) {
     // @ts-ignore
     const templateElement = el.getRootNode()?.getElementById?.(themeName);
@@ -712,7 +714,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Gets the theme.
    */
   get theme() {
-    return this.getAttribute(PlayerAttributes.THEME) ?? '';
+    return this.getAttribute(PlayerAttributes.THEME) ?? 'classic';
   }
 
   /**
