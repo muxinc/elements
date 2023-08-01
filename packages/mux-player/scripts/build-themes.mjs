@@ -43,7 +43,7 @@ themes.forEach(async (theme) => {
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'iife',
-    globalName: `mediaTheme${theme}`,
+    globalName: `mediaTheme${theme[0].toUpperCase() + theme.slice(1)}`,
     outdir: `./dist/themes/${theme}`,
   });
   await iife.rebuild();
