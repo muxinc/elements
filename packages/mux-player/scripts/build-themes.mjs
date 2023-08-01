@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { context } from 'esbuild';
+import { build } from 'esbuild';
 
 const themes = ['classic', 'microvideo', 'minimal'];
 const devMode = process.argv.includes('--dev');
@@ -12,40 +12,35 @@ const shared = {
     '.css': 'text',
     '.svg': 'text',
   },
+  watch: devMode,
 };
 
 // entryPoints doesn't support glob patterns so we iterate over known themes
-themes.forEach(async (theme) => {
+themes.forEach((theme) => {
   //@ts-ignore
-  const esm = await context({
+  build({
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'esm',
     outExtension: { '.js': '.mjs' },
     outdir: `./dist/themes/${theme}`,
   });
-  await esm.rebuild();
-  devMode ? esm.watch() : await esm.dispose();
 
   //@ts-ignore
-  const cjs = await context({
+  build({
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'cjs',
     outExtension: { '.js': '.cjs.js' },
     outdir: `./dist/themes/${theme}`,
   });
-  await cjs.rebuild();
-  devMode ? cjs.watch() : await cjs.dispose();
 
   //@ts-ignore
-  const iife = await context({
+  build({
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'iife',
     globalName: `mediaTheme${theme[0].toUpperCase() + theme.slice(1)}`,
     outdir: `./dist/themes/${theme}`,
   });
-  await iife.rebuild();
-  devMode ? iife.watch() : await iife.dispose();
 });
