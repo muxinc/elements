@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { context } from 'esbuild';
+import { build } from 'esbuild';
 
 const themes = ['classic', 'microvideo', 'minimal'];
 const devMode = process.argv.includes('--dev');
@@ -25,8 +25,6 @@ themes.forEach((theme) => {
     outExtension: { '.js': '.mjs' },
     outdir: `./dist/themes/${theme}`,
   });
-  await esm.rebuild();
-  devMode ? esm.watch() : await esm.dispose();
 
   //@ts-ignore
   build({
@@ -36,8 +34,6 @@ themes.forEach((theme) => {
     outExtension: { '.js': '.cjs.js' },
     outdir: `./dist/themes/${theme}`,
   });
-  await cjs.rebuild();
-  devMode ? cjs.watch() : await cjs.dispose();
 
   //@ts-ignore
   build({
@@ -47,6 +43,4 @@ themes.forEach((theme) => {
     globalName: `mediaTheme${theme[0].toUpperCase() + theme.slice(1)}`,
     outdir: `./dist/themes/${theme}`,
   });
-  await iife.rebuild();
-  devMode ? iife.watch() : await iife.dispose();
 });
