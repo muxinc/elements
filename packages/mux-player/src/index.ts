@@ -203,7 +203,18 @@ export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
 }
 
-interface MuxPlayerElement extends Omit<HTMLVideoElement, 'poster' | 'textTracks' | 'addTextTrack' | 'src'> {
+interface MuxPlayerElement
+  extends Omit<
+    HTMLVideoElement,
+    | 'poster'
+    | 'textTracks'
+    | 'addTextTrack'
+    | 'src'
+    | 'videoTracks'
+    | 'audioTracks'
+    | 'audioRenditions'
+    | 'videoRenditions'
+  > {
   addEventListener<K extends keyof MuxPlayerElementEventMap>(
     type: K,
     listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,

@@ -229,6 +229,22 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     return this.shadowRoot?.querySelector('mux-video');
   }
 
+  get audioTracks() {
+    return (this.media as HTMLMediaElement).audioTracks;
+  }
+
+  get videoTracks() {
+    return (this.media as HTMLMediaElement).videoTracks;
+  }
+
+  get audioRenditions() {
+    return (this.media as HTMLMediaElement).audioRenditions;
+  }
+
+  get videoRenditions() {
+    return (this.media as HTMLMediaElement).videoRenditions;
+  }
+
   get paused() {
     return this.media?.paused ?? true;
   }
