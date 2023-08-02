@@ -204,7 +204,17 @@ export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
 }
 
 interface MuxPlayerElement
-  extends Omit<HTMLVideoElement, 'poster' | 'textTracks' | 'addTextTrack' | 'src' | 'videoTracks' | 'audioTracks'> {
+  extends Omit<
+    HTMLVideoElement,
+    | 'poster'
+    | 'textTracks'
+    | 'addTextTrack'
+    | 'src'
+    | 'videoTracks'
+    | 'audioTracks'
+    | 'audioRenditions'
+    | 'videoRenditions'
+  > {
   addEventListener<K extends keyof MuxPlayerElementEventMap>(
     type: K,
     listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,

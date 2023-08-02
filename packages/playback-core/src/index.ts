@@ -636,7 +636,7 @@ export const loadMedia = (
     });
     mediaEl.addEventListener('error', handleInternalError);
 
-    setupRenditions(props as MediaTracks, hls);
+    setupRenditions(props as HTMLMediaElement, hls);
     setupTracks(mediaEl, hls);
 
     hls.attachMedia(mediaEl);

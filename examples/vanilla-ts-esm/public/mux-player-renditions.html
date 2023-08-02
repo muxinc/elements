@@ -55,41 +55,30 @@
       <option value="auto">Auto</option>
     </select>
 
-    <span id="qualityselected"></span>
+    <input id="qualityplaying" value="N/A" readonly size="5">
 
     <br>
     <br>
 
     <script type="module">
-      muxPlayer.videoTracks.addEventListener('addtrack', ({ track }) => {
 
-        track.renditions.addEventListener('addrendition', ({ rendition }) => {
-          qualityselect.append(new Option(
-            `${rendition.height}p`,
-            rendition.id,
-          ));
-        });
+      muxPlayer.videoRenditions.addEventListener('addrendition', ({ rendition }) => {
+        qualityselect.append(new Option(
+          `${Math.min(rendition.width, rendition.height)}p`,
+          rendition.id,
+        ));
+      });
 
-        track.renditions.addEventListener('renditionchange', () => {
-          for (let rendition of muxPlayer.videoTracks[0].renditions) {
-            if (rendition.active) {
-              qualityselected.textContent = `${rendition.height}p`;
-            }
-          }
-        });
+      muxPlayer.videoRenditions.addEventListener('removerendition', ({ rendition }) => {
+        qualityselect.querySelector(`[value="${rendition.id}"]`).remove();
+      });
+
+      muxPlayer.addEventListener('resize', () => {
+        qualityplaying.value = `${Math.min(muxPlayer.videoWidth, muxPlayer.videoHeight)}p`;
       });
 
       qualityselect.addEventListener('change', () => {
-        if (qualityselect.value == 'auto') {
-          for (let rendition of muxPlayer.videoTracks[0].renditions) {
-            rendition.enabled = true;
-          }
-        } else {
-          // Select 1 video rendition
-          for (let rendition of muxPlayer.videoTracks[0].renditions) {
-            rendition.enabled = qualityselect.value == rendition.id;
-          }
-        }
+        muxPlayer.videoRenditions.selectedIndex = qualityselect.selectedIndex - 1;
       });
     </script>
 
