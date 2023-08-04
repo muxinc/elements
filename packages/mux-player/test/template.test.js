@@ -14,7 +14,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media"></mux-video><media-poster-image part="poster" exportparts="poster, img" slot="poster"></media-poster-image><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -36,7 +36,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" hotkeys=" noarrowleft noarrowright" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="live" target-live-window="0"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" hotkeys=" noarrowleft noarrowright" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="live" target-live-window="0"></mux-video><media-poster-image part="poster" exportparts="poster, img" slot="poster"></media-poster-image><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -53,7 +53,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><media-poster-image part="poster" exportparts="poster, img" slot="poster"></media-poster-image><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -74,7 +74,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><media-poster-image part="poster" slot="poster"></media-poster-image><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><media-poster-image part="poster" exportparts="poster, img" slot="poster"></media-poster-image><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
