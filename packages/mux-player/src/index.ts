@@ -153,7 +153,10 @@ function getThemeTemplate(el: MuxPlayerElement) {
   if (themeName) {
     // @ts-ignore
     const templateElement = el.getRootNode()?.getElementById?.(themeName);
-    if (templateElement) return templateElement;
+    // NOTE: Since folks may unknowingly use matching ids for elements other than their theme
+    // (intending to use path two for template identification, below), make sure the matching
+    // element is, in fact, an HTMLTemplateElement (CJP)
+    if (templateElement && templateElement instanceof HTMLTemplateElement) return templateElement;
 
     if (!themeName.startsWith('media-theme-')) {
       themeName = `media-theme-${themeName}`;
