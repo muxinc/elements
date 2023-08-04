@@ -1,4 +1,4 @@
-<template id="media-theme-default">
+<template id="media-theme-2023">
   <style>
     @keyframes pre-play-hide {
       0% {
@@ -68,6 +68,10 @@
 
     :host(:not([audio])) media-captions-selectmenu::part(listbox) {
       z-index: 10;
+    }
+
+    :host(:not([audio])) media-captions-selectmenu::part(indicator) {
+      fill: red;
     }
 
     media-time-range {
@@ -554,6 +558,34 @@
           />
         </svg>
       </media-captions-button>
+      <media-captions-listbox slot="“listbox”">
+        <span slot="select-indicator" class="select-icon">
+          <style>
+            .select-icon {
+              box-sizing: border-box;
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+              border: 1.5px solid red;
+              width: 9px;
+              height: 9px;
+              margin-top: -0.14em;
+              vertical-align: middle;
+              border-radius: 50%;
+              visibility: visible;
+            }
+
+            [aria-selected='true'] .select-icon::after {
+              content: '';
+              display: block;
+              width: 4px;
+              height: 4px;
+              border-radius: 8px;
+              background: red;
+            }
+          </style>
+        </span>
+      </media-captions-listbox>
     </media-captions-selectmenu>
   </template>
 
@@ -668,6 +700,7 @@
     defaultsubtitles="{{defaultsubtitles}}"
     exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
     style="--_pre-playback-place:{{preplaybackplace ?? 'center'}}"
+    id="test"
   >
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
