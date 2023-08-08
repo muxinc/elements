@@ -214,7 +214,7 @@
       transition: background-color 1s;
     }
 
-    media-controller:is([media-paused], :not([user-inactive]))::part(vertical-layer) {
+    media-controller:is([mediapaused], :not([userinactive]))::part(vertical-layer) {
       background-color: var(--controls-backdrop-color, var(--controls, transparent));
       transition: background-color 0.25s;
     }
@@ -570,34 +570,6 @@
           />
         </svg>
       </media-captions-button>
-      <media-captions-listbox slot="“listbox”">
-        <span slot="select-indicator" class="select-icon">
-          <style>
-            .select-icon {
-              box-sizing: border-box;
-              display: inline-flex;
-              justify-content: center;
-              align-items: center;
-              border: 1.5px solid red;
-              width: 9px;
-              height: 9px;
-              margin-top: -0.14em;
-              vertical-align: middle;
-              border-radius: 50%;
-              visibility: visible;
-            }
-
-            [aria-selected='true'] .select-icon::after {
-              content: '';
-              display: block;
-              width: 4px;
-              height: 4px;
-              border-radius: 8px;
-              background: red;
-            }
-          </style>
-        </span>
-      </media-captions-listbox>
     </media-captions-selectmenu>
   </template>
 
@@ -675,7 +647,8 @@
       part="bottom playback-rate button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
-    ></media-playback-rate-button>
+    >
+    </media-playback-rate-button>
   </template>
 
   <template partial="VolumeRange">
