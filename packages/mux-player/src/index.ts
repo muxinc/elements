@@ -1,6 +1,6 @@
 import { globalThis, document } from './polyfills';
 import { MediaController } from 'media-chrome';
-import 'media-chrome/dist/experimental/media-captions-selectmenu.js';
+import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
