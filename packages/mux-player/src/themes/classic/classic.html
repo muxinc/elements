@@ -1,5 +1,5 @@
 <!-- prettier-ignore -->
-<template id="media-theme-mux">
+<template id="media-theme-classic">
   <style>
     :host {
       --_primary-color: var(--media-primary-color, white);
@@ -481,6 +481,7 @@
   </template>
 
   <media-controller
+    part="controller"
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
     breakpoints="sm:300 md:700"
     gesturesdisabled="{{disabled}}"

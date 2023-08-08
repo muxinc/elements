@@ -29,7 +29,7 @@
       "types": "./dist/types/index.d.ts"
     }
   },
-  "types": "./dist/types-ts3.4/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "hls.js": "^1.4.8",
+    "media-tracks": "0.2.1",
     "mux-embed": "^4.24.0"
   },
   "devDependencies": {

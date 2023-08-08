@@ -3,6 +3,7 @@
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
 import type { HlsInterface as Hls } from './hls';
+import type { VideoTrack, AudioTrack, VideoTrackList, AudioTrackList } from 'media-tracks';
 
 type KeyTypes = string | number | symbol;
 type Maybe<T> = T | null | undefined;
@@ -143,6 +144,13 @@ export type MuxMediaPropTypes = {
   preferCmcd: ValueOf<CmcdTypes> | undefined;
   error?: HTMLMediaElement['error'] | MediaError;
 };
+
+export interface MediaTracks {
+  videoTracks: VideoTrackList;
+  audioTracks: AudioTrackList;
+  addAudioTrack(kind: string, label?: string, language?: string): AudioTrack;
+  addVideoTrack(kind: string, label?: string, language?: string): VideoTrack;
+}
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;
 

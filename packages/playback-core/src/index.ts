@@ -6,6 +6,7 @@ import type { HlsInterface } from './hls';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
+import { setupRenditions } from './renditions';
 import {
   setupTracks,
   addTextTrack,
@@ -34,9 +35,10 @@ import {
   type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
+  type MediaTracks,
   HlsPlaylistTypes,
+  MediaTypes,
 } from './types';
-import { MediaTypes } from './types';
 export {
   mux,
   Hls,
@@ -532,6 +534,9 @@ export const loadMedia = (
     | 'subtitleTracks'
     | 'subtitleTrack'
     | 'userConfig'
+    | 'autoLevelEnabled'
+    | 'nextLevel'
+    | 'levels'
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
@@ -631,6 +636,7 @@ export const loadMedia = (
     });
     mediaEl.addEventListener('error', handleInternalError);
 
+    setupRenditions(props as HTMLMediaElement, hls);
     setupTracks(mediaEl, hls);
 
     hls.attachMedia(mediaEl);

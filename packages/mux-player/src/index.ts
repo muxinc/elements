@@ -29,6 +29,7 @@ import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
+import './themes/classic';
 
 export { MediaError };
 export type Tokens = {
@@ -147,11 +148,15 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 }
 
 function getThemeTemplate(el: MuxPlayerElement) {
-  let themeName = el.getAttribute(PlayerAttributes.THEME);
+  let themeName = el.theme;
+
   if (themeName) {
     // @ts-ignore
     const templateElement = el.getRootNode()?.getElementById?.(themeName);
-    if (templateElement) return templateElement;
+    // NOTE: Since folks may unknowingly use matching ids for elements other than their theme
+    // (intending to use path two for template identification, below), make sure the matching
+    // element is, in fact, an HTMLTemplateElement (CJP)
+    if (templateElement && templateElement instanceof HTMLTemplateElement) return templateElement;
 
     if (!themeName.startsWith('media-theme-')) {
       themeName = `media-theme-${themeName}`;
@@ -201,7 +206,18 @@ export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
 }
 
-interface MuxPlayerElement extends Omit<HTMLVideoElement, 'poster' | 'textTracks' | 'addTextTrack' | 'src'> {
+interface MuxPlayerElement
+  extends Omit<
+    HTMLVideoElement,
+    | 'poster'
+    | 'textTracks'
+    | 'addTextTrack'
+    | 'src'
+    | 'videoTracks'
+    | 'audioTracks'
+    | 'audioRenditions'
+    | 'videoRenditions'
+  > {
   addEventListener<K extends keyof MuxPlayerElementEventMap>(
     type: K,
     listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
@@ -712,7 +728,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Gets the theme.
    */
   get theme() {
-    return this.getAttribute(PlayerAttributes.THEME) ?? '';
+    return this.getAttribute(PlayerAttributes.THEME) ?? 'classic';
   }
 
   /**

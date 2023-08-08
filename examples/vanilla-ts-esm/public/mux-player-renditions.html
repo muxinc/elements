@@ -2,14 +2,13 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>&lt;mux-player&gt; example</title>
+    <title>&lt;mux-player&gt; renditions example</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" href="./styles.css">
     <script
       defer
       src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
     ></script>
-    <script type="module" src="./dist/mux-player-microvideo-theme.js"></script>
     <script type="module" src="./dist/mux-player.js"></script>
     <style>
       mux-player {
@@ -45,12 +44,43 @@
     </header>
 
     <mux-player
-      theme="microvideo"
-      theme-control-bar-vertical
-      theme-control-bar-place="start start"
+      id="muxPlayer"
       stream-type="on-demand"
-      playback-id="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
     ></mux-player>
+
+    <br>
+
+    <select id="qualityselect">
+      <option value="auto">Auto</option>
+    </select>
+
+    <input id="qualityplaying" value="N/A" readonly size="5">
+
+    <br>
+    <br>
+
+    <script type="module">
+
+      muxPlayer.videoRenditions.addEventListener('addrendition', ({ rendition }) => {
+        qualityselect.append(new Option(
+          `${Math.min(rendition.width, rendition.height)}p`,
+          rendition.id,
+        ));
+      });
+
+      muxPlayer.videoRenditions.addEventListener('removerendition', ({ rendition }) => {
+        qualityselect.querySelector(`[value="${rendition.id}"]`).remove();
+      });
+
+      muxPlayer.addEventListener('resize', () => {
+        qualityplaying.value = `${Math.min(muxPlayer.videoWidth, muxPlayer.videoHeight)}p`;
+      });
+
+      qualityselect.addEventListener('change', () => {
+        muxPlayer.videoRenditions.selectedIndex = qualityselect.selectedIndex - 1;
+      });
+    </script>
 
     <a href="../">Browse Elements</a>
   </body>

@@ -28,10 +28,26 @@
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
       "types": "./dist/types/index.d.ts"
     },
-    "./themes/microvideo": "./themes/microvideo.js",
-    "./themes/minimal": "./themes/minimal.js"
+    "./themes/microvideo": {
+      "import": "./dist/themes/microvideo/index.mjs",
+      "require": "./dist/themes/microvideo/index.cjs.js",
+      "browser": "./dist/themes/microvideo/index.mjs",
+      "default": "./dist/themes/microvideo/index.cjs.js"
+    },
+    "./themes/minimal": {
+      "import": "./dist/themes/minimal/index.mjs",
+      "require": "./dist/themes/minimal/index.cjs.js",
+      "browser": "./dist/themes/minimal/index.mjs",
+      "default": "./dist/themes/minimal/index.cjs.js"
+    },
+    "./themes/classic": {
+      "import": "./dist/themes/classic/index.mjs",
+      "require": "./dist/themes/classic/index.cjs.js",
+      "browser": "./dist/themes/classic/index.mjs",
+      "default": "./dist/themes/classic/index.cjs.js"
+    }
   },
-  "types": "./dist/types-ts3.4/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
@@ -50,22 +66,24 @@
     "dev:esm-module": "yarn build:esm-module --watch=forever",
     "dev:cjs": "yarn build:cjs --watch=forever",
     "dev:types": "yarn build:types -w",
-    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:esm-module dev:iife",
+    "dev:themes": "yarn node ./scripts/build-themes.mjs --dev",
+    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:esm-module dev:iife dev:themes",
     "build:esm": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
     "build:esm-module": "esbuilder src/index.ts --format=esm-module --outfile=dist/mux-player.mjs",
     "build:iife": "esbuilder src/index.ts --format=iife --outfile=dist/mux-player.js",
     "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
+    "build:themes": "yarn node ./scripts/build-themes.mjs",
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify' 'build:themes'",
     "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
     "@mux/mux-video": "0.15.6",
     "@mux/playback-core": "0.18.5",
-    "media-chrome": "^1.1.4"
+    "media-chrome": "^1.2.2"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",
@@ -78,6 +96,7 @@
     "@web/test-runner": "^0.13.26",
     "@web/test-runner-playwright": "^0.9.0",
     "downlevel-dts": "^0.11.0",
+    "esbuild": "^0.15.7",
     "eslint": "^8.24.0",
     "hls.js": "^1.4.8",
     "mux-embed": "^4.24.0",

@@ -1,21 +1,13 @@
-import { document } from './polyfills';
 import 'media-chrome/dist/media-theme-element.js';
 // @ts-ignore
 import cssStr from './styles.css';
-// @ts-ignore
-import muxTheme from './media-theme-mux.html';
 import './dialog';
 import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
-
 import type { MuxTemplateProps } from './types';
 import { StreamTypes } from '@mux/playback-core';
 
-const muxTemplate = document.createElement('template');
-if ('innerHTML' in muxTemplate) muxTemplate.innerHTML = muxTheme;
-
-// prettier-ignore
 export const template = (props: MuxTemplateProps) => html`
   <style>
     ${cssStr}
@@ -37,7 +29,7 @@ const getHotKeys = (props: MuxTemplateProps) => {
 
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
-    template="${props.themeTemplate ?? muxTemplate.content.children[0]}"
+    template="${props.themeTemplate || false}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
@@ -56,7 +48,7 @@ export const content = (props: MuxTemplateProps) => html`
     defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
     hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, controller, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
   >
     <mux-video
       slot="media"
@@ -105,6 +97,7 @@ export const content = (props: MuxTemplateProps) => html`
     <media-poster-image
       slot="poster"
       part="poster"
+      exportparts="poster, img"
       src="${props.poster === '' ? false : props.poster ?? false}"
       placeholder-src="${props.placeholder ?? false}"
     ></media-poster-image>

@@ -29,7 +29,7 @@
       "types": "./dist/types/index.d.ts"
     }
   },
-  "types": "./dist/types-ts3.4/index.d.ts",
+  "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
@@ -62,7 +62,8 @@
   "dependencies": {
     "@mux/playback-core": "0.18.5",
     "castable-video": "0.5.2",
-    "custom-media-element": "0.2.0"
+    "custom-media-element": "0.2.0",
+    "media-tracks": ">=0.2.1"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",

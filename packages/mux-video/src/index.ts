@@ -1,4 +1,4 @@
-import { globalThis, document } from './polyfills';
+import { globalThis } from './polyfills';
 import {
   initialize,
   teardown,
@@ -23,19 +23,29 @@ import {
   getSeekable,
   getEnded,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, Autoplay, ExtensionMimeTypeMap, ValueOf } from '@mux/playback-core';
+import type {
+  PlaybackCore,
+  PlaybackEngine,
+  Autoplay,
+  MediaTracks,
+  ExtensionMimeTypeMap,
+  ValueOf,
+} from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import 'castable-video';
 import { CustomMediaMixin, Events as VideoEvents } from 'custom-media-element';
+import { MediaTracksMixin } from 'media-tracks';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
 
-const CustomVideoElement = CustomMediaMixin(globalThis.HTMLElement, {
-  tag: 'video',
-  is: 'castable-video',
-});
+const CustomVideoElement = MediaTracksMixin(
+  CustomMediaMixin(globalThis.HTMLElement, {
+    tag: 'video',
+    is: 'castable-video',
+  })
+);
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -500,7 +510,7 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
   }
 
   load() {
-    this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
+    this.#core = initialize(this as Partial<MuxMediaProps> & MediaTracks, this.nativeEl, this.#core);
   }
 
   unload() {
