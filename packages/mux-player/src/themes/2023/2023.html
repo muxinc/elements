@@ -74,6 +74,18 @@
       fill: red;
     }
 
+    /*
+     * 0.433s is the transition duration for VTT Regions.
+     * Borrowed here, so the captions don't move too fast.
+     */
+    media-controller ::slotted([slot='media']) {
+      --media-webkit-text-track-transition: transform 0.433s ease-out 0.3s;
+    }
+    media-controller:is([mediapaused], :not([userinactive])) ::slotted([slot='media']) {
+      --media-webkit-text-track-transform: translateY(-50px);
+      --media-webkit-text-track-transition: transform 0.15s ease;
+    }
+
     media-time-range {
       --media-range-bar-color: var(--_accent-color);
       --media-time-range-buffered-color: #fff;
