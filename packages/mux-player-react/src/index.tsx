@@ -17,6 +17,11 @@ interface GenericEventListener<T extends Event = CustomEvent> {
   (evt: T): void;
 }
 
+export interface MuxPlayerCSSProperties extends CSSProperties {
+  // Allow any CSS Custom Properties
+  [index: `--${string}`]: any;
+}
+
 export type MuxPlayerRefAttributes = MuxPlayerElement;
 type VideoApiAttributes = {
   currentTime: number;
@@ -31,7 +36,7 @@ type VideoApiAttributes = {
   autoPlay: boolean | string;
   loop: boolean;
   muted: boolean;
-  style: CSSProperties;
+  style: MuxPlayerCSSProperties;
 };
 
 type MuxMediaPropTypes = {
