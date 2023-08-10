@@ -2,13 +2,14 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>&lt;mux-player audio&gt; example</title>
+    <title>&lt;mux-player&gt; theme 2023</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" href="./styles.css">
     <script
       defer
       src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
     ></script>
+    <script type="module" src="./dist/mux-player-2023-theme.js"></script>
     <script type="module" src="./dist/mux-player.js"></script>
     <style>
       mux-player {
@@ -16,10 +17,11 @@
         width: 100%;
         margin: 1rem 0 2rem;
         background-color: #000;
+        line-height: 0;
       }
 
-      mux-player[title] {
-        height: 88px;
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
       }
     </style>
   </head>
@@ -43,9 +45,16 @@
     </header>
 
     <mux-player
-      audio
+      theme="2023"
       stream-type="on-demand"
-      playback-id="O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g"
+      playback-id="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
+    ></mux-player>
+    
+    <mux-player
+      theme="2023"
+      stream-type="live:dvr"
+      playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+      title="My amazing video"
     ></mux-player>
 
     <a href="../">Browse Elements</a>
