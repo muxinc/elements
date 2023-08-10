@@ -284,6 +284,46 @@
       animation: 0.3s linear forwards pre-play-hide;
     }
 
+    .autoplay-unmute {
+      --media-control-hover-background: transparent;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
+    }
+
+    .autoplay-unmute-btn {
+      --media-control-height: 16px;
+      border-radius: 8px;
+      background: #000;
+      color: var(--_primary-color);
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      font-size: 18px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .autoplay-unmute-btn:hover {
+      background: var(--_accent-color);
+    }
+
+    [breakpointsm] .autoplay-unmute-btn {
+      --media-control-height: 30px;
+      padding: 14px 24px;
+      font-size: 26px;
+    }
+
+    .autoplay-unmute-btn svg {
+      margin: 0 6px 0 0;
+    }
+
+    [breakpointsm] .autoplay-unmute-btn svg {
+      margin: 0 10px 0 0;
+    }
+
     media-controller:not([audio]):not([mediahasplayed]) *:is(media-control-bar, media-time-range) {
       display: none;
     }
@@ -713,6 +753,25 @@
           </template>
         </template>
       </div>
+
+      <!-- Auotplay centered unmute button -->
+      <!--
+        todo: figure out how show this with available state variables
+        needs to show when:
+        - autoplay is enabled
+        - playback has been successful
+        - audio is muted
+        - in place / instead of the pre-plaback play button
+        - not to show again after user has interacted with this button
+          - OR user has interacted with the mute button in the control bar
+      -->
+      <!-- 
+        There should be a >MuteButton to the left of the "Unmute" text, but a templating bug
+        makes it appear even if commented out in the markup, add it back when code is un-commented
+      -->
+      <!-- <div slot="centered-chrome" class="autoplay-unmute">
+        <div role="button" class="autoplay-unmute-btn">Unmute</div>
+      </div> -->
 
       <template if="streamtype == 'on-demand'">
         <template if="breakpointsm">
