@@ -1,2 +1,3 @@
 // @ts-ignore
-export * as ThemeMicrovideo from '@mux/mux-player/themes/microvideo';
+import '@mux/mux-player/themes/microvideo';
+export default 'microvideo';

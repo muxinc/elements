@@ -1,2 +1,3 @@
 // @ts-ignore
-export * as Theme2023 from '@mux/mux-player/themes/2023';
+import '@mux/mux-player/themes/2023';
+export default '2023';

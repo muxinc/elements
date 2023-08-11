@@ -1,2 +1,3 @@
 // @ts-ignore
-export * as ThemeClassic from '@mux/mux-player/themes/classic';
+import '@mux/mux-player/themes/classic';
+export default 'classic';

@@ -1,2 +1,3 @@
 // @ts-ignore
-export * as ThemeMinimal from '@mux/mux-player/themes/minimal';
+import '@mux/mux-player/themes/minimal';
+export default 'minimal';
