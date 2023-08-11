@@ -19,6 +19,7 @@
       --media-preview-time-border-radius: 0 0 2px 2px;
       --media-preview-time-margin: 0 0 8px;
       --media-preview-time-text-shadow: none;
+      --media-listbox-border-radius: 2px;
       --media-listbox-transform-in: translateY(-8px) scale(1);
       --media-listbox-transform-out: translateY(-6px) scale(.99);
       --media-option-hover-background: rgba(255, 255, 255, 0.28);
@@ -60,10 +61,6 @@
     [aria-disabled='true']:not(media-live-button) {
       opacity: 60%;
       cursor: not-allowed;
-    }
-
-    :host(:not([audio])) [part~="listbox"] {
-      border-radius: 2px;
     }
 
     media-controller:not([mediasubtitleslist]) media-captions-selectmenu {
@@ -356,7 +353,9 @@
           <path d="M2.25 14.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
         </svg>
       </media-rendition-button>
-      <media-rendition-listbox slot="listbox" part="bottom rendition listbox"></media-rendition-listbox>
+      <media-rendition-listbox slot="listbox" part="bottom rendition listbox">
+        <div slot="header">Quality</div>
+      </media-rendition-listbox>
     </media-rendition-selectmenu>
   </template>
 
