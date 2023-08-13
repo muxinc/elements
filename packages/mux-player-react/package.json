@@ -10,6 +10,9 @@
       ".": [
         "./dist/types-ts3.4/index.d.ts"
       ],
+      "themes/*": [
+        "./dist/types-ts3.4/themes/*.d.ts"
+      ],
       "lazy": [
         "./dist/types-ts3.4/lazy.d.ts"
       ]
@@ -17,6 +20,9 @@
     "*": {
       ".": [
         "./dist/types/index.d.ts"
+      ],
+      "themes/*": [
+        "./dist/types/themes/*.d.ts"
       ],
       "lazy": [
         "./dist/types/lazy.d.ts"
@@ -37,6 +43,13 @@
       "default": "./dist/lazy.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/lazy.d.ts",
       "types": "./dist/types/lazy.d.ts"
+    },
+    "./themes/*": {
+      "import": "./dist/themes/*.mjs",
+      "require": "./dist/themes/*.cjs.js",
+      "default": "./dist/themes/*.cjs.js",
+      "types@<4.3.5": "./dist/types-ts3.4/themes/*.d.ts",
+      "types": "./dist/types/themes/*.d.ts"
     }
   },
   "types": "./dist/types/index.d.ts",
@@ -55,8 +68,8 @@
     "dev:esm:lazy": "yarn build:esm:lazy --watch=forever",
     "dev:types": "yarn build:types -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:esm:lazy",
-    "build:cjs": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --out-extension:.js=.cjs.js --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:esm": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.tsx src/themes/*.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --out-extension:.js=.cjs.js --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm": "esbuild src/index.tsx src/themes/*.ts --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs:lazy": "echo 'esbuild cjs does not support code-splitting. See https://esbuild.github.io/api/#splitting for details'",
     "build:esm:lazy": "esbuild src/lazy.tsx --splitting --target=es2019 --bundle --sourcemap --metafile=./dist/esm.lazy.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc",
