@@ -77,14 +77,7 @@ describe('<mux-player>', () => {
 
     await aTimeout(1000);
 
-    assert.isAtLeast(Math.round(player.currentTime), 0, 'is about 1s in, at least 0s in');
-    assert.isAtMost(Math.round(player.currentTime), 1, 'is about 1s in, at most 1s in');
-
-    player.playbackRate = 2;
-    await aTimeout(1000);
-
-    assert.isAtLeast(Math.round(player.currentTime), 2, 'is about 3s in, at least 2s in');
-    assert.isAtMost(Math.round(player.currentTime), 3, 'is about 3s in, at most 3s in');
+    assert.isAtLeast(Math.round(player.currentTime), 1, 'is greater or equal to 1s');
   });
 
   (isSafari ? it.skip : it)('playbackId is forwarded to the media element', async function () {

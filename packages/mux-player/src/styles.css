@@ -9,6 +9,7 @@
   --media-mute-button-display: var(--mute-button);
   --media-captions-button-display: var(--captions-button);
   --media-captions-selectmenu-display: var(--captions-selectmenu, var(--media-captions-button-display));
+  --media-rendition-selectmenu-display: var(--rendition-selectmenu);
   --media-airplay-button-display: var(--airplay-button);
   --media-pip-button-display: var(--pip-button);
   --media-fullscreen-button-display: var(--fullscreen-button);
@@ -54,6 +55,7 @@ media-theme {
     --captions-selectmenu,
     var(--media-captions-button-display, var(--top-captions-selectmenu))
   );
+  --media-rendition-selectmenu-display: var(--rendition-selectmenu, var(--top-rendition-selectmenu));
   --media-airplay-button-display: var(--airplay-button, var(--top-airplay-button));
   --media-pip-button-display: var(--pip-button, var(--top-pip-button));
   --media-fullscreen-button-display: var(--fullscreen-button, var(--top-fullscreen-button));
@@ -79,6 +81,7 @@ media-theme {
     --captions-selectmenu,
     var(--media-captions-button-display, var(--center-captions-selectmenu))
   );
+  --media-rendition-selectmenu-display: var(--rendition-selectmenu, var(--center-rendition-selectmenu));
   --media-airplay-button-display: var(--airplay-button, var(--center-airplay-button));
   --media-pip-button-display: var(--pip-button, var(--center-pip-button));
   --media-fullscreen-button-display: var(--fullscreen-button, var(--center-fullscreen-button));
@@ -103,6 +106,7 @@ media-theme {
     --captions-selectmenu,
     var(--media-captions-button-display, var(--bottom-captions-selectmenu))
   );
+  --media-rendition-selectmenu-display: var(--rendition-selectmenu, var(--bottom-rendition-selectmenu));
   --media-airplay-button-display: var(--airplay-button, var(--bottom-airplay-button));
   --media-pip-button-display: var(--pip-button, var(--bottom-pip-button));
   --media-fullscreen-button-display: var(--fullscreen-button, var(--bottom-fullscreen-button));
