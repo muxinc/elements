@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.19.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.5...@mux/playback-core@0.19.0) (2023-08-14)
+
+
+### Features
+
+* implement renditions API ([#708](https://github.com/muxinc/elements/issues/708)) ([f3e8db2](https://github.com/muxinc/elements/commit/f3e8db21fd03c5d5570a628853f49c51d428d26e))
+
+
+
+
+
 ## [0.18.5](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.4...@mux/playback-core@0.18.5) (2023-07-07)
 
 

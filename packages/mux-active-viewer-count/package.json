@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-active-viewer-count",
-  "version": "0.2.0-alpha.0",
+  "version": "0.2.0-alpha.1",
   "description": "A custom Mux element to show the current viewer count for the browser that Just Works™",
   "type": "module",
   "main": "./dist/index.cjs.js",

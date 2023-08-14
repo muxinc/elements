@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.6...@mux/mux-video@0.16.0) (2023-08-14)
+
+
+### Features
+
+* implement renditions API ([#708](https://github.com/muxinc/elements/issues/708)) ([f3e8db2](https://github.com/muxinc/elements/commit/f3e8db21fd03c5d5570a628853f49c51d428d26e))
+
+
+
+
+
 ## [0.15.6](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.5...@mux/mux-video@0.15.6) (2023-07-07)
 
 **Note:** Version bump only for package @mux/mux-video

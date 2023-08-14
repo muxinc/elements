@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.16](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.15...@mux/mux-video-react@0.7.16) (2023-08-14)
+
+
+### Bug Fixes
+
+* **mux-video-react:** Don't spread streamType to video to avoid React warnings ([#721](https://github.com/muxinc/elements/issues/721)) ([7395fca](https://github.com/muxinc/elements/commit/7395fca1b50dbad4fa04cb37b234523b953a2c78)), closes [#602](https://github.com/muxinc/elements/issues/602)
+
+
+
+
+
 ## [0.7.15](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.14...@mux/mux-video-react@0.7.15) (2023-07-07)
 
 **Note:** Version bump only for package @mux/mux-video-react

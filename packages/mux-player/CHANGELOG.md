@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.4...@mux/mux-player@1.12.0) (2023-08-14)
+
+
+### Bug Fixes
+
+* **mux-player:** Adding controller exported part. Marking as fix bc n… ([#732](https://github.com/muxinc/elements/issues/732)) ([0599c71](https://github.com/muxinc/elements/commit/0599c717b56ca3b4cc20e4d977e96a55f76575d3)), closes [#728](https://github.com/muxinc/elements/issues/728) [#727](https://github.com/muxinc/elements/issues/727)
+* **mux-player:** exporting underlying poster img part for advanced styling ([#733](https://github.com/muxinc/elements/issues/733)) ([317ecac](https://github.com/muxinc/elements/commit/317ecac4759903ff2f6c642f98a29e268180aab5)), closes [#717](https://github.com/muxinc/elements/issues/717)
+* **mux-player:** Only match theme by id if element is a template. ([#731](https://github.com/muxinc/elements/issues/731)) ([bb4886c](https://github.com/muxinc/elements/commit/bb4886cca7476800c959922f9c0703f72f189d87))
+
+
+### Features
+
+* add quality selector ([#734](https://github.com/muxinc/elements/issues/734)) ([5d1da39](https://github.com/muxinc/elements/commit/5d1da396a05a08d5c5322e364bc98a693605a497)), closes [#572](https://github.com/muxinc/elements/issues/572)
+* implement renditions API ([#708](https://github.com/muxinc/elements/issues/708)) ([f3e8db2](https://github.com/muxinc/elements/commit/f3e8db21fd03c5d5570a628853f49c51d428d26e))
+* New default theme ([#709](https://github.com/muxinc/elements/issues/709)) ([d69d84e](https://github.com/muxinc/elements/commit/d69d84ea6708c8548d6e5780dfa0a5ad8ed314f8))
+
+
+
+
+
 ## [1.11.4](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.3...@mux/mux-player@1.11.4) (2023-07-07)
 
 
