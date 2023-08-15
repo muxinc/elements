@@ -10610,10 +10610,10 @@ media-chrome@^1.2.4:
   resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-1.2.4.tgz#366c06d8ec25c12b51e2b9f139e2ea512751d16f"
   integrity sha512-FV5vqrS6XaokaaaO3Yule+W1Fmdr72zCSjqeAmQdS6jpajI/fZdCdmpr8/l83cXZnRD89VsfHtBZDePmNfcKaw==
 
-media-tracks@0.2.1, media-tracks@>=0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/media-tracks/-/media-tracks-0.2.1.tgz#60bac586ca23f2d443da8e094e0ed13e943600e9"
-  integrity sha512-Q+NQmQ6CmUlEcmkomYvU1G8UfUPvZW59fsGOJFcQJ8AZTO2UkGCs2ycjPqZb1+K2PyJije5b/NKedVUVI6yPaA==
+media-tracks@0.2.3, media-tracks@>=0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/media-tracks/-/media-tracks-0.2.3.tgz#ba9a23c45e1ee1be2acdd580f985d25b9036fff9"
+  integrity sha512-h5HRl1tIyeV+aF59FAmHmxChmdM/Ewf/twpxZkRme1ny46owD24uTA0BmRuPoO+uzvE0lx9ZIkZj1TbXi2VCng==
 
 media-typer@0.3.0:
   version "0.3.0"
