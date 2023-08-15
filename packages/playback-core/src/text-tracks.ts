@@ -2,7 +2,7 @@ import Hls from './hls';
 import { CuePoint } from './types';
 import { addEventListenerWithTeardown } from './util';
 
-export function setupTracks(
+export function setupTextTracks(
   mediaEl: HTMLMediaElement,
   hls: Pick<Hls, 'on' | 'once' | 'subtitleTracks' | 'subtitleTrack'>
 ) {
