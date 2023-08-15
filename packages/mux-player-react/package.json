@@ -38,8 +38,7 @@
     },
     "./lazy": {
       "import": "./dist/lazy.mjs",
-      "require": "./dist/lazy.cjs.js",
-      "default": "./dist/lazy.cjs.js",
+      "default": "./dist/lazy.mjs",
       "types@<4.3.5": "./dist/types-ts3.4/lazy.d.ts",
       "types": "./dist/types/lazy.d.ts"
     },
