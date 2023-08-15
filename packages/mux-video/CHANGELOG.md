@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.16.0...@mux/mux-video@0.16.1) (2023-08-15)
+
+
+### Bug Fixes
+
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+* upgrade media-tracks ([#744](https://github.com/muxinc/elements/issues/744)) ([af957c2](https://github.com/muxinc/elements/commit/af957c2421715d62e6cef658d0e608a6a3f20968))
+
+
+
+
+
 # [0.16.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.15.6...@mux/mux-video@0.16.0) (2023-08-14)
 
 

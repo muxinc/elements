@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.17](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.16...@mux/mux-audio-react@0.6.17) (2023-08-15)
+
+
+### Bug Fixes
+
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+
+
+
+
+
 ## [0.6.16](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.15...@mux/mux-audio-react@0.6.16) (2023-08-14)
 
 **Note:** Version bump only for package @mux/mux-audio-react

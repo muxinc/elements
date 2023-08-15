@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.12.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.12.0...@mux/mux-player-react@1.12.1) (2023-08-15)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Don't declare lazy exports that don't exist. ([#746](https://github.com/muxinc/elements/issues/746)) ([c0c471a](https://github.com/muxinc/elements/commit/c0c471acbad94e06628c8c2061d09d893b410a51))
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+
+
+
+
+
 # [1.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.11.4...@mux/mux-player-react@1.12.0) (2023-08-14)
 
 

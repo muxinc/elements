@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.12.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.12.0...@mux/mux-player@1.12.1) (2023-08-15)
+
+
+### Bug Fixes
+
+* **mux-player:** version bump for media-chrome (fixes first frame ren… ([#740](https://github.com/muxinc/elements/issues/740)) ([8a9e9ab](https://github.com/muxinc/elements/commit/8a9e9ab94d4515a22a7d294895da7b6f54d53e39))
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+
+
+
+
+
 # [1.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.11.4...@mux/mux-player@1.12.0) (2023-08-14)
 
 

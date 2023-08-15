@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.11](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.10...@mux/mux-uploader-react@1.0.0-beta.11) (2023-08-15)
+
+
+### Bug Fixes
+
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+
+
+
+
+
 # [1.0.0-beta.10](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.9...@mux/mux-uploader-react@1.0.0-beta.10) (2023-08-14)
 
 **Note:** Version bump only for package @mux/mux-uploader-react

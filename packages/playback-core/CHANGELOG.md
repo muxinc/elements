@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.19.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.19.0...@mux/playback-core@0.19.1) (2023-08-15)
+
+
+### Bug Fixes
+
+* upgrade media-tracks ([#744](https://github.com/muxinc/elements/issues/744)) ([af957c2](https://github.com/muxinc/elements/commit/af957c2421715d62e6cef658d0e608a6a3f20968))
+
+
+
+
+
 # [0.19.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.18.5...@mux/playback-core@0.19.0) (2023-08-14)
 
 
