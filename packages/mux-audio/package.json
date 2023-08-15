@@ -2,7 +2,6 @@
   "name": "@mux/mux-audio",
   "version": "0.10.6",
   "description": "A custom mux audio element for the browser that Just Works™",
-  "type": "module",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
