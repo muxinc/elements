@@ -94,14 +94,13 @@ export const content = (props: MuxTemplateProps) => html`
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
     </mux-video>
-    <slot name="poster" slot="poster">
-      <media-poster-image
-        part="poster"
-        exportparts="poster, img"
-        src="${props.poster === '' ? false : props.poster ?? false}"
-        placeholder-src="${props.placeholder ?? false}"
-      ></media-poster-image>
-    </slot>
+    <media-poster-image
+      slot="poster"
+      part="poster"
+      exportparts="poster, img"
+      src="${props.poster === '' ? false : props.poster ?? false}"
+      placeholder-src="${props.placeholder ?? false}"
+    ></media-poster-image>
     <mxp-dialog
       no-auto-hide
       open="${props.isDialogOpen ?? false}"
