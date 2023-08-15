@@ -105,6 +105,8 @@ type PartialHTMLVideoElement = Omit<
   | 'played'
   | 'remote'
   | 'srcObject'
+  | 'audioTracks'
+  | 'videoTracks'
   | 'textTracks'
   | 'addTextTrack'
   | 'canPlayType'
