@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-player&gt; audio tracks example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      mux-player {
+        display: block;
+        width: 100%;
+        margin: 1rem 0 2rem;
+        background-color: #000;
+        line-height: 0;
+      }
+
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/360826/233653989-11cd8603-c20f-4008-8bf7-dc15b743c52b.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+            <img alt="Mux Logo" src="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+          </picture>
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <mux-player
+      id="muxPlayer"
+      stream-type="on-demand"
+      src="https://playertest.longtailvideo.com/adaptive/elephants_dream_v4/index.m3u8"
+    ></mux-player>
+
+    <br>
+
+    <select id="audioselect"></select>
+
+    <br>
+    <br>
+
+    <script type="module">
+
+      muxPlayer.audioTracks.addEventListener('removetrack', ({ track }) => {
+        audioselect.querySelector(`[value="${track.id}"]`).remove();
+      });
+
+      muxPlayer.audioTracks.addEventListener('addtrack', ({ track }) => {
+        audioselect.append(new Option(
+          track.label,
+          track.id,
+          track.enabled,
+          track.enabled
+        ));
+      });
+
+      audioselect.addEventListener('change', () => {
+        for (let track of muxPlayer.audioTracks) {
+          track.enabled = audioselect.value == track.id;
+        }
+      });
+    </script>
+
+    <a href="../">Browse Elements</a>
+  </body>
+</html>
