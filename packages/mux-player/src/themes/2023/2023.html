@@ -66,14 +66,6 @@
       width: 100%;
     }
 
-    :host(:not([audio])) media-captions-selectmenu::part(listbox) {
-      z-index: 10;
-    }
-
-    :host(:not([audio])) media-captions-selectmenu::part(indicator) {
-      fill: red;
-    }
-
     /*
      * 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast.
@@ -140,11 +132,16 @@
       transform: translate(-50%, -10px);
     }
 
-    media-captions-selectmenu {
+    :host(:not([audio])) :is(media-captions-selectmenu, media-rendition-listbox)::part(indicator) {
+      fill: var(--_accent-color);
+    }
+
+    media-captions-selectmenu,
+    media-rendition-selectmenu {
       --media-listbox-background: var(--_primary-color);
-      --media-listbox-selected-background: rgba(0, 0, 0, 0.15);
-      --media-listbox-hover-background: rgba(0, 0, 0, 0.15);
-      --media-listbox-hover-outline: white solid 1px;
+      --media-option-selected-background: transparent;
+      --media-option-hover-background: transparent;
+      --media-option-hover-outline: var(--_accent-color) solid 1px;
       --media-text-color: #000;
     }
 
@@ -713,6 +710,21 @@
     <media-time-range part="bottom time range" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-time-range>
   </template>
 
+  <template partial="RenditionSelect">
+    <media-rendition-selectmenu part="bottom rendition selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <media-rendition-button slot="button" part="bottom rendition button">
+        <svg slot="icon" viewBox="0 0 18 24">
+          <path
+            d="M2.25 14.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+          />
+        </svg>
+      </media-rendition-button>
+      <media-rendition-listbox slot="listbox" part="bottom rendition listbox">
+        <div slot="header">Quality</div>
+      </media-rendition-listbox>
+    </media-rendition-selectmenu>
+  </template>
+
   <media-controller
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
     breakpoints="sm:470"
@@ -784,6 +796,7 @@
           </template>
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
+          {{>RenditionSelect}}
           <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
           {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm"> {{>PipButton}} </template>
@@ -804,7 +817,7 @@
           </template>
           {{>MuteButton}}
           <div class="spacer"></div>
-          {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          {{>RenditionSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm">{{>PipButton}}</template>
           {{>FullscreenButton}}
         </media-control-bar>
