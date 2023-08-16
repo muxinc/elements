@@ -54,7 +54,7 @@ type MuxMediaPropTypes = {
   startTime: number;
   storyboardSrc: string;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
-  children: never[];
+  children?: React.ReactNode;
 };
 
 export type MuxPlayerProps = {
