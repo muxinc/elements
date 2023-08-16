@@ -1,9 +1,9 @@
 import Hls from './hls';
 import type { VideoRenditionList } from 'media-tracks';
 
-export function setupRenditions(
+export function setupMediaTracks(
   customMediaEl: HTMLMediaElement,
-  hls: Pick<Hls, 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once'>
+  hls: Pick<Hls, 'audioTrack' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once'>
 ) {
   if (!('videoTracks' in customMediaEl)) return;
 
@@ -13,7 +13,7 @@ export function setupRenditions(
   const levelIdMap = new WeakMap();
 
   hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-    removeAllVideoTracks();
+    removeAllMediaTracks();
 
     const videoTrack = customMediaEl.addVideoTrack('main');
     videoTrack.selected = true;
@@ -31,6 +31,21 @@ export function setupRenditions(
       levelIdMap.set(level, `${id}`);
       videoRendition.id = `${id}`;
     }
+
+    for (const [id, a] of data.audioTracks.entries()) {
+      // hls.js doesn't return a `kind` property for audio tracks yet.
+      const kind = a.default ? 'main' : 'alternative';
+      const audioTrack = customMediaEl.addAudioTrack(kind, a.name, a.lang);
+      audioTrack.id = `${id}`;
+
+      if (a.default) {
+        audioTrack.enabled = true;
+      }
+    }
+  });
+
+  customMediaEl.audioTracks.addEventListener('change', () => {
+    hls.audioTrack = [...customMediaEl.audioTracks].find((t) => t.enabled).id;
   });
 
   // Fired when a level is removed after calling `removeLevel()`
@@ -61,14 +76,15 @@ export function setupRenditions(
 
   customMediaEl.videoRenditions.addEventListener('change', switchRendition);
 
-  const removeAllVideoTracks = () => {
+  const removeAllMediaTracks = () => {
     for (const videoTrack of customMediaEl.videoTracks) {
       customMediaEl.removeVideoTrack(videoTrack);
+    }
+    for (const audioTrack of customMediaEl.audioTracks) {
+      customMediaEl.removeAudioTrack(audioTrack);
     }
   };
 
   // NOTE: Since this is only relevant for hls, using destroying event (CJP).
-  hls.once(Hls.Events.DESTROYING, () => {
-    removeAllVideoTracks();
-  });
+  hls.once(Hls.Events.DESTROYING, removeAllMediaTracks);
 }
