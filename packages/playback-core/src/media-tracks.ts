@@ -31,12 +31,16 @@ export function setupMediaTracks(
       levelIdMap.set(level, `${id}`);
       videoRendition.id = `${id}`;
     }
+  });
 
-    for (const [id, a] of data.audioTracks.entries()) {
+  hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (event, data) {
+    removeAudioTracks();
+
+    for (const a of data.audioTracks) {
       // hls.js doesn't return a `kind` property for audio tracks yet.
       const kind = a.default ? 'main' : 'alternative';
       const audioTrack = customMediaEl.addAudioTrack(kind, a.name, a.lang);
-      audioTrack.id = `${id}`;
+      audioTrack.id = `${a.id}`;
 
       if (a.default) {
         audioTrack.enabled = true;
@@ -76,13 +80,21 @@ export function setupMediaTracks(
 
   customMediaEl.videoRenditions.addEventListener('change', switchRendition);
 
-  const removeAllMediaTracks = () => {
+  const removeVideoTracks = () => {
     for (const videoTrack of customMediaEl.videoTracks) {
       customMediaEl.removeVideoTrack(videoTrack);
     }
+  };
+
+  const removeAudioTracks = () => {
     for (const audioTrack of customMediaEl.audioTracks) {
       customMediaEl.removeAudioTrack(audioTrack);
     }
+  };
+
+  const removeAllMediaTracks = () => {
+    removeVideoTracks();
+    removeAudioTracks();
   };
 
   // NOTE: Since this is only relevant for hls, using destroying event (CJP).
