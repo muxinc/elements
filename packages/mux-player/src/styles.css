@@ -42,6 +42,15 @@ media-theme {
   direction: ltr;
 }
 
+media-poster-image {
+  width: 100%;
+  height: 100%;
+}
+
+media-poster-image:not([src]) {
+  display: none;
+}
+
 ::part(top),
 [part~='top'] {
   --media-control-display: var(--controls, var(--top-controls));
