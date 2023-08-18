@@ -65,14 +65,6 @@
       width: 100%;
     }
 
-    :host(:not([audio])) media-captions-selectmenu::part(listbox) {
-      z-index: 10;
-    }
-
-    :host(:not([audio])) media-captions-selectmenu::part(indicator) {
-      fill: red;
-    }
-
     /*
      * 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast.
@@ -139,11 +131,34 @@
       transform: translate(-50%, -10px);
     }
 
-    media-captions-selectmenu {
+    :is(media-captions-listbox, media-rendition-listbox)::part(indicator) {
+      fill: var(--_accent-color);
+    }
+
+    :is(media-captions-listbox, media-rendition-listbox)::part(option) {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+    }
+
+    :is(media-captions-listbox, media-rendition-listbox)::part(option-selected) {
+      font-weight: 700;
+    }
+
+    media-captions-listbox,
+    media-rendition-listbox {
+      border-radius: 2px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      bottom: calc(100% + 16px);
+      padding: 10px;
+    }
+
+    media-captions-selectmenu,
+    media-rendition-selectmenu {
       --media-listbox-background: var(--_primary-color);
-      --media-listbox-selected-background: rgba(0, 0, 0, 0.15);
-      --media-listbox-hover-background: rgba(0, 0, 0, 0.15);
-      --media-listbox-hover-outline: white solid 1px;
+      --media-option-selected-background: transparent;
+      --media-option-hover-background: transparent;
+      --media-option-hover-outline: var(--_accent-color) solid 1px;
       --media-text-color: #000;
     }
 
@@ -609,6 +624,29 @@
           />
         </svg>
       </media-captions-button>
+      <media-captions-listbox slot="listbox" part="listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-captions-listbox>
     </media-captions-selectmenu>
   </template>
 
@@ -712,6 +750,47 @@
     <media-time-range part="bottom time range" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-time-range>
   </template>
 
+  <template partial="RenditionSelect">
+    <media-rendition-selectmenu part="bottom rendition selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <media-rendition-button slot="button" part="bottom rendition button">
+        <svg slot="icon" viewBox="0 0 18 14">
+          <path
+            d="M2.25 8.92041C3.35457 8.92041 4.25 8.02498 4.25 6.92041C4.25 5.81584 3.35457 4.92041 2.25 4.92041C1.14543 4.92041 0.25 5.81584 0.25 6.92041C0.25 8.02498 1.14543 8.92041 2.25 8.92041Z"
+          />
+          <path
+            d="M9 8.92041C10.1046 8.92041 11 8.02498 11 6.92041C11 5.81584 10.1046 4.92041 9 4.92041C7.89543 4.92041 7 5.81584 7 6.92041C7 8.02498 7.89543 8.92041 9 8.92041Z"
+          />
+          <path
+            d="M15.75 8.92041C16.8546 8.92041 17.75 8.02498 17.75 6.92041C17.75 5.81584 16.8546 4.92041 15.75 4.92041C14.6454 4.92041 13.75 5.81584 13.75 6.92041C13.75 8.02498 14.6454 8.92041 15.75 8.92041Z"
+          />
+        </svg>
+      </media-rendition-button>
+      <media-rendition-listbox slot="listbox" part="listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-rendition-listbox>
+    </media-rendition-selectmenu>
+  </template>
+
   <media-controller
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
     breakpoints="sm:470"
@@ -783,6 +862,7 @@
           </template>
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
+          {{>RenditionSelect}}
           <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
           {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm"> {{>PipButton}} </template>
@@ -803,7 +883,7 @@
           </template>
           {{>MuteButton}}
           <div class="spacer"></div>
-          {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          {{>RenditionSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm">{{>PipButton}}</template>
           {{>FullscreenButton}}
         </media-control-bar>
