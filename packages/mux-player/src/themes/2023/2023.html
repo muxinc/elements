@@ -136,6 +136,10 @@
       fill: var(--_accent-color);
     }
 
+    :is(media-captions-selectmenu, media-rendition-selectmenu)::part(option-selected) {
+      font-weight: 700;
+    }
+
     :is(media-captions-selectmenu, media-rendition-selectmenu)::part(listbox) {
       border-radius: 2px;
       border: 1px solid rgba(0, 0, 0, 0.1);
