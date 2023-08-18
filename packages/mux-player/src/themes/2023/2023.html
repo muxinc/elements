@@ -132,15 +132,22 @@
       transform: translate(-50%, -10px);
     }
 
-    :is(media-captions-selectmenu, media-rendition-selectmenu)::part(indicator) {
+    :is(media-captions-listbox, media-rendition-listbox)::part(indicator) {
       fill: var(--_accent-color);
     }
 
-    :is(media-captions-selectmenu, media-rendition-selectmenu)::part(option-selected) {
+    :is(media-captions-listbox, media-rendition-listbox)::part(option) {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+    }
+
+    :is(media-captions-listbox, media-rendition-listbox)::part(option-selected) {
       font-weight: 700;
     }
 
-    :is(media-captions-selectmenu, media-rendition-selectmenu)::part(listbox) {
+    media-captions-listbox,
+    media-rendition-listbox {
       border-radius: 2px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       bottom: calc(100% + 16px);
@@ -618,6 +625,29 @@
           />
         </svg>
       </media-captions-button>
+      <media-captions-listbox slot="listbox" part="listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-captions-listbox>
     </media-captions-selectmenu>
   </template>
 
@@ -736,6 +766,29 @@
           />
         </svg>
       </media-rendition-button>
+      <media-rendition-listbox slot="listbox" part="listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-rendition-listbox>
     </media-rendition-selectmenu>
   </template>
 
