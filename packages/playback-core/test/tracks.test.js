@@ -1,5 +1,5 @@
 import { assert, nextFrame, oneEvent, aTimeout, waitUntil } from '@open-wc/testing';
-import { addCuePoints, getCuePoints, getActiveCuePoint } from '../src/tracks.ts';
+import { addCuePoints, getCuePoints, getActiveCuePoint } from '../src/text-tracks.ts';
 
 describe('textTracks', () => {
   describe('cuePoints', () => {

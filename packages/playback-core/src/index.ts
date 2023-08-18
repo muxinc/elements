@@ -6,9 +6,9 @@ import type { HlsInterface } from './hls';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
-import { setupRenditions } from './renditions';
+import { setupMediaTracks } from './media-tracks';
 import {
-  setupTracks,
+  setupTextTracks,
   addTextTrack,
   removeTextTrack,
   addCuePoints,
@@ -16,7 +16,7 @@ import {
   getActiveCuePoint,
   setupCuePoints,
   getCuePointsTrack,
-} from './tracks';
+} from './text-tracks';
 import { getStartDate, getCurrentPdt } from './pdt';
 import {
   inSeekableRange,
@@ -35,7 +35,6 @@ import {
   type PlaybackCore,
   type MuxMediaProps,
   type MuxMediaPropsInternal,
-  type MediaTracks,
   HlsPlaylistTypes,
   MediaTypes,
 } from './types';
@@ -534,6 +533,7 @@ export const loadMedia = (
     | 'subtitleTracks'
     | 'subtitleTrack'
     | 'userConfig'
+    | 'audioTrack'
     | 'autoLevelEnabled'
     | 'nextLevel'
     | 'levels'
@@ -636,8 +636,8 @@ export const loadMedia = (
     });
     mediaEl.addEventListener('error', handleInternalError);
 
-    setupRenditions(props as HTMLMediaElement, hls);
-    setupTracks(mediaEl, hls);
+    setupMediaTracks(props as HTMLMediaElement, hls);
+    setupTextTracks(mediaEl, hls);
 
     hls.attachMedia(mediaEl);
   } else {

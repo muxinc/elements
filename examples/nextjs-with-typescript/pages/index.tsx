@@ -7,6 +7,7 @@ function HomePage() {
         <li><Link href="/MuxVideo"><a className="video">&lt;MuxVideo&gt;</a></Link></li>
         <li><Link href="/MuxAudio"><a className="audio">&lt;MuxAudio&gt;</a></Link></li>
         <li><Link href="/MuxPlayer"><a className="player">&lt;MuxPlayer&gt;</a></Link></li>
+        <li><Link href="/MuxPlayerPosterSlot"><a className="player">&lt;MuxPlayer&gt;<br/>(poster slot)</a></Link></li>
         <li><Link href="/MuxPlayerTheme"><a className="player">&lt;MuxPlayer&gt;<br/>(theme)</a></Link></li>
         <li><Link href="/MuxPlayerCuePoints"><a className="player">&lt;MuxPlayer&gt;<br/>(CuePoints)</a></Link></li>
         <li><Link href="/MuxPlayerCuePointsMeditate"><a className="player">&lt;MuxPlayer&gt;<br/>(CuePoints + Audio Only)</a></Link></li>
