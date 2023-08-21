@@ -348,7 +348,7 @@
   <template partial="RenditionSelect">
     <media-rendition-selectmenu part="bottom rendition selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
       <media-rendition-button slot="button" part="bottom rendition button">
-        <svg slot="icon" viewBox="0 0 18 24">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 18 24">
           <path d="M2.25 14.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
         </svg>
       </media-rendition-button>
@@ -356,6 +356,20 @@
         <div slot="header">Quality</div>
       </media-rendition-listbox>
     </media-rendition-selectmenu>
+  </template>
+
+  <template partial="AudioTrackSelect">
+    <media-audio-track-selectmenu part="bottom audio-track selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <media-audio-track-button slot="button" part="bottom audio-track button">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 24 24">
+          <path d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Zm0 1.5C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10Z"/>
+          <path d="M7.25 9.75a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Zm3-3a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75Zm3 2a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Zm3-1a.75.75 0 0 1 .75.75v7a.75.75 0 0 1-1.5 0v-7a.75.75 0 0 1 .75-.75Z"/>
+        </svg>
+      </media-audio-track-button>
+      <media-audio-track-listbox slot="listbox" part="bottom audio-track listbox">
+        <div slot="header">Audio</div>
+      </media-audio-track-listbox>
+    </media-audio-track-selectmenu>
   </template>
 
   <template partial="CaptionsSelect">
@@ -510,6 +524,7 @@
           {{>MuteButton}}
           {{>VolumeRange}}
           {{>PlaybackRateButton}}
+          {{>AudioTrackSelect}}
           {{>AirplayButton}}
           {{>CastButton}}
         </media-control-bar>
@@ -531,6 +546,7 @@
             {{>MuteButton}}
             {{>VolumeRange}}
             {{>PlaybackRateButton}}
+            {{>AudioTrackSelect}}
             {{>AirplayButton}}
             {{>CastButton}}
           </media-control-bar>
@@ -546,6 +562,7 @@
             {{>MuteButton}}
             {{>VolumeRange}}
             <div class="spacer"></div>
+            {{>AudioTrackSelect}}
             {{>AirplayButton}}
             {{>CastButton}}
           </media-control-bar>
@@ -588,6 +605,7 @@
               <div class="spacer"></div>
               {{>RenditionSelect}}
               {{>PlaybackRateButton}}
+              {{>AudioTrackSelect}}
               {{>CaptionsSelect}}
               {{>AirplayButton}}
               {{>CastButton}}
@@ -615,6 +633,7 @@
             <div class="spacer"></div>
             {{>RenditionSelect}}
             {{>PlaybackRateButton}}
+            {{>AudioTrackSelect}}
             {{>CaptionsSelect}}
             {{>AirplayButton}}
             {{>CastButton}}
@@ -657,6 +676,7 @@
                 {{>VolumeRange}}
                 <div class="spacer"></div>
                 {{>RenditionSelect}}
+                {{>AudioTrackSelect}}
                 {{>CaptionsSelect}}
                 {{>AirplayButton}}
                 {{>CastButton}}
@@ -680,6 +700,7 @@
               {{>VolumeRange}}
               <div class="spacer"></div>
               {{>RenditionSelect}}
+              {{>AudioTrackSelect}}
               {{>CaptionsSelect}}
               {{>AirplayButton}}
               {{>CastButton}}
@@ -723,6 +744,7 @@
                 {{>VolumeRange}}
                 <div class="spacer"></div>
                 {{>RenditionSelect}}
+                {{>AudioTrackSelect}}
                 {{>CaptionsSelect}}
                 {{>AirplayButton}}
                 {{>CastButton}}
@@ -749,6 +771,7 @@
               {{>VolumeRange}}
               <div class="spacer"></div>
               {{>RenditionSelect}}
+              {{>AudioTrackSelect}}
               {{>CaptionsSelect}}
               {{>AirplayButton}}
               {{>CastButton}}
