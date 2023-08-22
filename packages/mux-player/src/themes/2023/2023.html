@@ -255,6 +255,7 @@
       --media-control-padding: 0;
       width: 40px;
       transform-origin: center center;
+      transform: translate(3px, 0);
     }
 
     [breakpointsm] .center-controls media-play-button {
@@ -501,7 +502,7 @@
 
   <template partial="PrePlayButton">
     <media-play-button part="{{section}} play button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
-      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon">
+      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon" style="transform: translate(3px, 0)">
         <g>
           <path
             d="M15.5987 6.2911L3.45577 0.110898C2.83667 -0.204202 2.06287 0.189698 2.06287 0.819798V13.1802C2.06287 13.8103 2.83667 14.2042 3.45577 13.8891L15.5987 7.7089C16.2178 7.3938 16.2178 6.6061 15.5987 6.2911Z"
