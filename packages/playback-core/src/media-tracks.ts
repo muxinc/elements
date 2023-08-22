@@ -3,7 +3,7 @@ import type { VideoRenditionList } from 'media-tracks';
 
 export function setupMediaTracks(
   customMediaEl: HTMLMediaElement,
-  hls: Pick<Hls, 'audioTrack' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once'>
+  hls: Pick<Hls, 'audioTrack' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once' | 'off' | 'trigger'>
 ) {
   if (!('videoTracks' in customMediaEl)) return;
 
@@ -74,7 +74,30 @@ export function setupMediaTracks(
   const switchRendition = (event: Event) => {
     const level = (event.target as VideoRenditionList).selectedIndex;
     if (level != hls.nextLevel) {
-      hls.nextLevel = level;
+      smoothSwitch(level);
+    }
+  };
+
+  // Workaround for issue changing renditions on an alternative audio track.
+  // https://github.com/video-dev/hls.js/issues/5749#issuecomment-1684629437
+  const smoothSwitch = (levelIndex: number) => {
+    const currentTime = customMediaEl.currentTime;
+    let flushedFwdBuffer = false;
+
+    const callback = (event: string, data: { endOffset: number }) => {
+      flushedFwdBuffer ||= !Number.isFinite(data.endOffset);
+    };
+
+    hls.on(Hls.Events.BUFFER_FLUSHING, callback);
+    hls.nextLevel = levelIndex;
+    hls.off(Hls.Events.BUFFER_FLUSHING, callback);
+
+    if (!flushedFwdBuffer) {
+      hls.trigger(Hls.Events.BUFFER_FLUSHING, {
+        startOffset: currentTime + 10,
+        endOffset: Infinity,
+        type: 'video',
+      });
     }
   };
 
