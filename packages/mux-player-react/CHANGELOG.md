@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.13.0...@mux/mux-player-react@1.14.0) (2023-08-23)
+
+
+### Features
+
+* **mux-player-react:** meaningless commit, forced minor version bump ([2e52540](https://github.com/muxinc/elements/commit/2e52540a757b2384c4eb7aaf7ddad2d0a0398391))
+
+
+
+
+
 # [1.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.12.1...@mux/mux-player-react@1.13.0) (2023-08-23)
 
 

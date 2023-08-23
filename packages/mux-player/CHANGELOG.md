@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.13.0...@mux/mux-player@1.14.0) (2023-08-23)
+
+
+### Features
+
+* **mux-player:** 2023 theme style updates and fixes ([#753](https://github.com/muxinc/elements/issues/753)) ([c3dc2ef](https://github.com/muxinc/elements/commit/c3dc2ef01ba4eb0d1506d175ca2188b1d749ac7f))
+
+
+
+
+
 # [1.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.12.1...@mux/mux-player@1.13.0) (2023-08-23)
 
 
