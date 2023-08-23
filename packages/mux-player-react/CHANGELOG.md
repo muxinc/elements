@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.12.1...@mux/mux-player-react@1.13.0) (2023-08-23)
+
+
+### Features
+
+* add poster slot for progressive enhancement ([#747](https://github.com/muxinc/elements/issues/747)) ([e90e096](https://github.com/muxinc/elements/commit/e90e096bc45776776e6fc4a8846aede2ad8ecb7c)), closes [#590](https://github.com/muxinc/elements/issues/590)
+
+
+
+
+
 ## [1.12.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.12.0...@mux/mux-player-react@1.12.1) (2023-08-15)
 
 
