@@ -23,8 +23,6 @@
       --media-control-background: var(--_secondary-color);
       --media-control-hover-background: var(--_accent-color);
       --media-time-buffered-color: rgba(255, 255, 255, 0.4);
-      --media-range-track-background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-        linear-gradient(rgba(20, 20, 30, 0.7), rgba(20, 20, 30, 0.7));
       --media-preview-thumbnail-border: 0;
       --media-preview-thumbnail-border-radius: 2px 2px 0 0;
       --media-preview-time-border-radius: 0 0 2px 2px;
@@ -79,9 +77,9 @@
 
     media-time-range {
       --media-range-bar-color: var(--_accent-color);
-      --media-time-range-buffered-color: #fff;
-      --media-range-track-color: rgba(255, 255, 255, 0.4);
-      --media-range-track-background: transparent;
+      --media-time-range-buffered-color: var(--_primary-color);
+      --media-range-track-color: transparent;
+      --media-range-track-background: rgba(255, 255, 255, 0.4);
       --media-range-thumb-background: radial-gradient(
         circle,
         #000 0%,
@@ -255,6 +253,7 @@
       --media-control-padding: 0;
       width: 40px;
       transform-origin: center center;
+      transform: translate(3px, 0);
     }
 
     [breakpointsm] .center-controls media-play-button {
@@ -484,7 +483,7 @@
 
   <template partial="PrePlayButton">
     <media-play-button part="{{section}} play button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
-      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon">
+      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon" style="transform: translate(3px, 0)">
         <g>
           <path
             d="M15.5987 6.2911L3.45577 0.110898C2.83667 -0.204202 2.06287 0.189698 2.06287 0.819798V13.1802C2.06287 13.8103 2.83667 14.2042 3.45577 13.8891L15.5987 7.7089C16.2178 7.3938 16.2178 6.6061 15.5987 6.2911Z"
@@ -521,7 +520,7 @@
     >
       <svg viewBox="0 0 22 14" aria-hidden="true" slot="icon">
         <g>
-          <text transform="translate(0 12)" style="font-size: 14px; font-family: 'ArialMT', 'Arial'">
+          <text transform="translate(-1 12)" style="font-size: 14px; font-family: 'ArialMT', 'Arial'">
             {{forwardseekoffset}}
           </text>
           <path
