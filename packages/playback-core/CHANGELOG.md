@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.20.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.19.1...@mux/playback-core@0.20.0) (2023-08-23)
+
+
+### Bug Fixes
+
+* **playback-core:** Remove package.json type (defaults to CJS) for co… ([#755](https://github.com/muxinc/elements/issues/755)) ([06a7991](https://github.com/muxinc/elements/commit/06a7991c5ce7b4347356b23e60933428d84dd5e0)), closes [#752](https://github.com/muxinc/elements/issues/752)
+* quality switch on alt audio ([#754](https://github.com/muxinc/elements/issues/754)) ([ca05490](https://github.com/muxinc/elements/commit/ca05490001e91ab0281cfca5090e46668fd23138))
+
+
+### Features
+
+* add audio track select menu ([#750](https://github.com/muxinc/elements/issues/750)) ([04123a8](https://github.com/muxinc/elements/commit/04123a8fbbbfba9059f3a504ad808f858dc07c50))
+* add audio tracks API ([#742](https://github.com/muxinc/elements/issues/742)) ([13bfbdb](https://github.com/muxinc/elements/commit/13bfbdbf474352f998417053285d82cbd3c730be))
+
+
+
+
+
 ## [0.19.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.19.0...@mux/playback-core@0.19.1) (2023-08-15)
 
 

@@ -523,6 +523,8 @@ export const loadMedia = (
     | 'config'
     | 'on'
     | 'once'
+    | 'off'
+    | 'trigger'
     | 'startLoad'
     | 'stopLoad'
     | 'recoverMediaError'

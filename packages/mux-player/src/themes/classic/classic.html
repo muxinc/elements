@@ -62,10 +62,6 @@
       cursor: not-allowed;
     }
 
-    media-controller:not([mediasubtitleslist]) media-captions-selectmenu {
-      --captions-selectmenu: none;
-    }
-
     /* 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast. */
     media-controller ::slotted([slot='media']) {
@@ -76,26 +72,6 @@
        * with an additional 5px as a buffer, to get 47px */
       --media-webkit-text-track-transform: translateY(-47px);
       --media-webkit-text-track-transition: transform 0.15s ease;
-    }
-
-    media-volume-range[mediavolumeunavailable] {
-      --volume-range: none;
-    }
-
-    media-airplay-button[mediaairplayunavailable] {
-      --airplay-button: none;
-    }
-
-    media-fullscreen-button[mediafullscreenunavailable] {
-      --fullscreen-button: none;
-    }
-
-    media-cast-button[mediacastunavailable] {
-      --cast-button: none;
-    }
-
-    media-pip-button[mediapipunavailable] {
-      --pip-button: none;
     }
 
     :host media-time-range {
