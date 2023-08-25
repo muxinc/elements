@@ -4,6 +4,7 @@ import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
+import "@mux/mux-player/themes/2023";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import { useRouter } from "next/router";
@@ -429,8 +430,8 @@ function MuxPlayerPage({ location }: Props) {
           name="streamType"
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr', 'unknown']}
-          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue) 
-            ? <code>{JSON.stringify(enumValue)}</code> 
+          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue)
+            ? <code>{JSON.stringify(enumValue)}</code>
             : <><code>{JSON.stringify(enumValue)}</code> (deprecated)</>
           }
         />
@@ -467,11 +468,11 @@ function MuxPlayerPage({ location }: Props) {
           name="audio"
           onChange={genericOnChange}
         />
-        <EnumMultiSelectRenderer
+        <EnumRenderer
           value={state.theme}
           name="theme"
           onChange={genericOnChange}
-          values={['default', 'microvideo', 'minimal']}
+          values={['default', 'microvideo', 'minimal', '2023']}
         />
         <TextRenderer
           value={state.envKey}
