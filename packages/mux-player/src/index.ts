@@ -179,6 +179,11 @@ function getHideDuration(el: MuxPlayerElement) {
 }
 
 function getMetadataFromAttrs(el: MuxPlayerElement) {
+  // Adding title defaulting, when present, as a seed value here to ensure it's
+  // overridden by metadata-video-title if it is also present. (CJP)
+  const seedValue: { [key: string]: string } = el.hasAttribute(PlayerAttributes.TITLE)
+    ? { video_title: el.getAttribute(PlayerAttributes.TITLE) as string }
+    : {};
   return el
     .getAttributeNames()
     .filter((attrName) => attrName.startsWith('metadata-'))
@@ -188,7 +193,7 @@ function getMetadataFromAttrs(el: MuxPlayerElement) {
         currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_')] = value;
       }
       return currAttrs;
-    }, {} as { [key: string]: string });
+    }, seedValue);
 }
 
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
