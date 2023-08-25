@@ -651,7 +651,7 @@ function MuxPlayerPage({ location }: Props) {
           value={getControlCustomizationCSSVars(stylesState)}
           name='--controls'
           label="Display Controls CSS vars (Hiding usage)"
-          onChange={({ ['--controls']: cssVars }) => {
+          onChange={({ ['--controls']: cssVars = [] }) => {
             const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
               curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
               return curCSSVars;
@@ -671,7 +671,7 @@ function MuxPlayerPage({ location }: Props) {
           name='hotkeys'
           label="Hot Keys"
           onChange={({ hotkeys }) => {
-            genericOnChange({ hotkeys: hotkeys.join(' ') });
+            genericOnChange({ hotkeys: hotkeys?.join(' ') ?? undefined });
           }}
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
         />
