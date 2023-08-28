@@ -4,6 +4,7 @@ import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
+import "@mux/mux-player/themes/2023";
 import { useEffect, useReducer, useRef, useState } from "react";
 import mediaAssetsJSON from "@mux/assets/media-assets.json";
 import { useRouter } from "next/router";
@@ -239,8 +240,11 @@ const ControlCustomizationCSSVars = [
   "--bottom-mute-button",
   "--volume-range",
   "--bottom-volume-range",
+  "--audio-track-selectmenu",
   "--rendition-selectmenu",
+  "--top-audio-track-selectmenu",
   "--top-rendition-selectmenu",
+  "--bottom-audio-track-selectmenu",
   "--bottom-rendition-selectmenu",
   "--playback-rate-button",
   "--bottom-playback-rate-button",
@@ -429,8 +433,8 @@ function MuxPlayerPage({ location }: Props) {
           name="streamType"
           onChange={genericOnChange}
           values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr', 'unknown']}
-          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue) 
-            ? <code>{JSON.stringify(enumValue)}</code> 
+          formatter={(enumValue) => ['on-demand', 'live', 'unknown'].includes(enumValue)
+            ? <code>{JSON.stringify(enumValue)}</code>
             : <><code>{JSON.stringify(enumValue)}</code> (deprecated)</>
           }
         />
@@ -467,11 +471,11 @@ function MuxPlayerPage({ location }: Props) {
           name="audio"
           onChange={genericOnChange}
         />
-        <EnumMultiSelectRenderer
+        <EnumRenderer
           value={state.theme}
           name="theme"
           onChange={genericOnChange}
-          values={['default', 'microvideo', 'minimal']}
+          values={['default', 'microvideo', 'minimal', '2023']}
         />
         <TextRenderer
           value={state.envKey}
@@ -650,7 +654,7 @@ function MuxPlayerPage({ location }: Props) {
           value={getControlCustomizationCSSVars(stylesState)}
           name='--controls'
           label="Display Controls CSS vars (Hiding usage)"
-          onChange={({ ['--controls']: cssVars }) => {
+          onChange={({ ['--controls']: cssVars = [] }) => {
             const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
               curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
               return curCSSVars;
@@ -670,7 +674,7 @@ function MuxPlayerPage({ location }: Props) {
           name='hotkeys'
           label="Hot Keys"
           onChange={({ hotkeys }) => {
-            genericOnChange({ hotkeys: hotkeys.join(' ') });
+            genericOnChange({ hotkeys: hotkeys?.join(' ') ?? undefined });
           }}
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
         />
