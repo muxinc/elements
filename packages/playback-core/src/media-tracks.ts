@@ -36,6 +36,9 @@ export function setupMediaTracks(
   hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (event, data) {
     removeAudioTracks();
 
+    // At least with ll-hls, there is a bug when enabling a single audio track (may be wider)
+    // for now, we can early bail if the `audioTracks` length is <=1. (CJP)
+    if (data.audioTracks.length <= 1) return;
     for (const a of data.audioTracks) {
       // hls.js doesn't return a `kind` property for audio tracks yet.
       const kind = a.default ? 'main' : 'alternative';
@@ -101,7 +104,7 @@ export function setupMediaTracks(
     }
   };
 
-  customMediaEl.videoRenditions.addEventListener('change', switchRendition);
+  customMediaEl.videoRenditions?.addEventListener('change', switchRendition);
 
   const removeVideoTracks = () => {
     for (const videoTrack of customMediaEl.videoTracks) {
