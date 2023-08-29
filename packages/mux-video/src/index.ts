@@ -152,7 +152,7 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
   }
 
   get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
-    return this.nativeEl.mux;
+    return this.nativeEl?.mux;
   }
 
   get error() {
