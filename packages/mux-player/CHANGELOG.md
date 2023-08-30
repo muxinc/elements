@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.14.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.0...@mux/mux-player@1.14.1) (2023-08-30)
+
+
+### Bug Fixes
+
+* **mux-player:** Make sure to use the title as the default value for … ([#758](https://github.com/muxinc/elements/issues/758)) ([57c2fdc](https://github.com/muxinc/elements/commit/57c2fdc77624a7e2c1fd0ce17e069173b909fc74))
+
+
+
+
+
 # [1.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.13.0...@mux/mux-player@1.14.0) (2023-08-23)
 
 
