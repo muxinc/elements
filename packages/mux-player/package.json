@@ -2,6 +2,14 @@
   "name": "@mux/mux-player",
   "version": "1.14.1",
   "description": "An open source Mux player web component that Just Works™",
+  "homepage": "https://mux.com/player",
+  "keywords": [
+    "video",
+    "mux",
+    "player",
+    "hls",
+    "web-component"
+  ],
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",

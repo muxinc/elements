@@ -2,6 +2,14 @@
   "name": "@mux/mux-player-react",
   "version": "1.14.1",
   "description": "An open source Mux player for React that Just Works™",
+  "homepage": "https://mux.com/player",
+  "keywords": [
+    "video",
+    "mux",
+    "player",
+    "hls",
+    "react"
+  ],
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "typesVersions": {
