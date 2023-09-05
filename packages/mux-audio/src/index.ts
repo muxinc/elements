@@ -375,6 +375,13 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     }
   }
 
+  connectedCallback(): void {
+    super.connectedCallback?.();
+    if (this.nativeEl && this.src && !this.#core) {
+      this.#requestLoad();
+    }
+  }
+
   disconnectedCallback() {
     this.unload();
   }
