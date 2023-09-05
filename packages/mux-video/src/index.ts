@@ -603,7 +603,14 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
     }
   }
 
-  disconnectedCallback() {
+  connectedCallback(): void {
+    super.connectedCallback?.();
+    if (this.nativeEl && this.src && !this.#core) {
+      this.#requestLoad();
+    }
+  }
+
+  disconnectedCallback(): void {
     this.unload();
   }
 }
