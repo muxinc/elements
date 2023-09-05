@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio",
-  "version": "0.10.9",
+  "version": "0.10.10",
   "description": "A custom mux audio element for the browser that Just Works™",
   "keywords": [
     "audio",

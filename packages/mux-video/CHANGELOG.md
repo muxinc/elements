@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.4](https://github.com/muxinc/elements/compare/@mux/mux-video@0.16.3...@mux/mux-video@0.16.4) (2023-09-05)
+
+
+### Bug Fixes
+
+* **mux-video,mux-audio:** reload core on DOM connect ([#765](https://github.com/muxinc/elements/issues/765)) ([3b61394](https://github.com/muxinc/elements/commit/3b61394e4a60ded6c2a7f30b85c281f5ef5cea03))
+
+
+
+
+
 ## [0.16.3](https://github.com/muxinc/elements/compare/@mux/mux-video@0.16.2...@mux/mux-video@0.16.3) (2023-08-30)
 
 **Note:** Version bump only for package @mux/mux-video

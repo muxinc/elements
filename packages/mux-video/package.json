@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "A custom mux video element for the browser that Just Works™",
   "keywords": [
     "video",

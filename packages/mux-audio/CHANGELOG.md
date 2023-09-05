@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.10](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.9...@mux/mux-audio@0.10.10) (2023-09-05)
+
+
+### Bug Fixes
+
+* **mux-video,mux-audio:** reload core on DOM connect ([#765](https://github.com/muxinc/elements/issues/765)) ([3b61394](https://github.com/muxinc/elements/commit/3b61394e4a60ded6c2a7f30b85c281f5ef5cea03))
+
+
+
+
+
 ## [0.10.9](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.8...@mux/mux-audio@0.10.9) (2023-08-30)
 
 **Note:** Version bump only for package @mux/mux-audio

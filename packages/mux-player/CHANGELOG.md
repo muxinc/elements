@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.14.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.1...@mux/mux-player@1.14.2) (2023-09-05)
+
+**Note:** Version bump only for package @mux/mux-player
+
+
+
+
+
 ## [1.14.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.0...@mux/mux-player@1.14.1) (2023-08-30)
 
 
