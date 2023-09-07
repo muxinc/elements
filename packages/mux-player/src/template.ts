@@ -99,7 +99,7 @@ export const content = (props: MuxTemplateProps) => html`
         part="poster"
         exportparts="poster, img"
         src="${props.poster === '' ? false : props.poster ?? false}"
-        placeholder-src="${props.placeholder ?? false}"
+        placeholdersrc="${props.placeholder ?? false}"
       ></media-poster-image>
     </slot>
     <mxp-dialog
