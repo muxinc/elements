@@ -18,6 +18,7 @@
       --_primary-color: var(--media-primary-color, #fff);
       --_secondary-color: var(--media-secondary-color, transparent);
       --_accent-color: var(--media-accent-color, #fa50b5);
+      --_text-color: var(--media-text-color, #000);
 
       --media-icon-color: var(--_primary-color);
       --media-control-background: var(--_secondary-color);
@@ -98,7 +99,7 @@
       --media-preview-time-border-radius: 0 0 5px 5px;
       --media-preview-time-margin: 0 0 10px;
       --media-preview-time-padding: 2px 0 6px;
-      --media-text-color: #000;
+      --media-text-color: var(--_text-color);
       --media-preview-thumbnail-max-width: 150px;
       --media-range-track-pointer-border-right: 2px solid #000;
       --media-control-hover-background: transparent;
@@ -159,7 +160,7 @@
       --media-option-selected-background: transparent;
       --media-option-hover-background: transparent;
       --media-option-hover-outline: var(--_accent-color) solid 1px;
-      --media-text-color: #000;
+      --media-text-color: var(--_text-color);
     }
 
     :host(:not([audio])) media-time-range {
