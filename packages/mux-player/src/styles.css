@@ -48,7 +48,7 @@ media-poster-image {
   height: 100%;
 }
 
-media-poster-image:not([src]) {
+media-poster-image:not([src]):not([placeholdersrc]) {
   display: none;
 }
 
