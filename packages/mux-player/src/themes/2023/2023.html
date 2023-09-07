@@ -484,7 +484,11 @@
   </template>
 
   <template partial="PrePlayButton">
-    <media-play-button part="{{section}} play button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+    <media-play-button
+      part="{{section ?? 'center'}} play button pre-play"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
       <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon" style="transform: translate(3px, 0)">
         <g>
           <path
@@ -608,7 +612,7 @@
           />
         </svg>
       </media-captions-button>
-      <media-captions-listbox slot="listbox" part="listbox">
+      <media-captions-listbox slot="listbox" part="bottom captions listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
@@ -791,7 +795,7 @@
           />
         </svg>
       </media-rendition-button>
-      <media-rendition-listbox slot="listbox" part="listbox">
+      <media-rendition-listbox slot="listbox" part="bottom rendition listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
