@@ -47,11 +47,11 @@
       "browser": "./dist/themes/minimal/index.mjs",
       "default": "./dist/themes/minimal/index.cjs.js"
     },
-    "./themes/classic": {
-      "import": "./dist/themes/classic/index.mjs",
-      "require": "./dist/themes/classic/index.cjs.js",
-      "browser": "./dist/themes/classic/index.mjs",
-      "default": "./dist/themes/classic/index.cjs.js"
+    "./themes/daniel": {
+      "import": "./dist/themes/daniel/index.mjs",
+      "require": "./dist/themes/daniel/index.cjs.js",
+      "browser": "./dist/themes/daniel/index.mjs",
+      "default": "./dist/themes/daniel/index.cjs.js"
     },
     "./themes/gerwig": {
       "import": "./dist/themes/gerwig/index.mjs",
