@@ -270,5 +270,20 @@ describe('playback core', function () {
       assert(Number.isNaN(getTargetLiveWindow(mediaEl)), 'should have a default targetLiveWindow of NaN');
       assert(Number.isNaN(getLiveEdgeStart(mediaEl)), 'should have a default liveEdgeStart of NaN');
     });
+
+    it('should set startLevel', async function () {
+      const START_LEVEL = 100;
+
+      const video = document.createElement('video');
+      const core = initialize(
+        {
+          src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+          startLevel: START_LEVEL,
+        },
+        video
+      );
+
+      assert.equal(core.engine.startLevel, START_LEVEL);
+    });
   });
 });

@@ -24,7 +24,7 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video-react';
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>((props, ref) => {
-  const { playbackId, src: outerSrc, children, autoPlay, preload, streamType, ...restProps } = props;
+  const { playbackId, src: outerSrc, children, autoPlay, preload, streamType, startLevel, ...restProps } = props;
 
   const [playerInitTime] = useState(generatePlayerInitTime());
   const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
@@ -89,6 +89,7 @@ MuxVideo.propTypes = {
   type: PropTypes.oneOf(allMediaTypes),
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   startTime: PropTypes.number,
+  startLevel: PropTypes.number,
 };
 
 export default MuxVideo;

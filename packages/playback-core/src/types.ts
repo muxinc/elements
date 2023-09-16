@@ -143,6 +143,7 @@ export type MuxMediaPropTypes = {
   autoplay?: Autoplay;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
   error?: HTMLMediaElement['error'] | MediaError;
+  startLevel?: number;
 };
 
 export interface MediaTracks {
