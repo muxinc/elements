@@ -18,6 +18,7 @@
       --_primary-color: var(--media-primary-color, #fff);
       --_secondary-color: var(--media-secondary-color, transparent);
       --_accent-color: var(--media-accent-color, #fa50b5);
+      --_text-color: var(--media-text-color, #000);
 
       --media-icon-color: var(--_primary-color);
       --media-control-background: var(--_secondary-color);
@@ -98,7 +99,7 @@
       --media-preview-time-border-radius: 0 0 5px 5px;
       --media-preview-time-margin: 0 0 10px;
       --media-preview-time-padding: 2px 0 6px;
-      --media-text-color: #000;
+      --media-text-color: var(--_text-color);
       --media-preview-thumbnail-max-width: 150px;
       --media-range-track-pointer-border-right: 2px solid #000;
       --media-control-hover-background: transparent;
@@ -159,7 +160,7 @@
       --media-option-selected-background: transparent;
       --media-option-hover-background: transparent;
       --media-option-hover-outline: var(--_accent-color) solid 1px;
-      --media-text-color: #000;
+      --media-text-color: var(--_text-color);
     }
 
     :host(:not([audio])) media-time-range {
@@ -578,7 +579,6 @@
       <svg viewBox="0 0 18 14" aria-hidden="true" slot="icon">
         <path
           d="M15.9891 0H2.011C0.9004 0 0 0.9003 0 2.0109V11.989C0 13.0996 0.9004 14 2.011 14H15.9891C17.0997 14 18 13.0997 18 11.9891V2.0109C18 0.9003 17.0997 0 15.9891 0ZM17 11.9891C17 12.5465 16.5465 13 15.9891 13H2.011C1.4536 13 1.0001 12.5465 1.0001 11.9891V2.0109C1.0001 1.4535 1.4536 0.9999 2.011 0.9999H15.9891C16.5465 0.9999 17 1.4535 17 2.0109V11.9891Z"
-          fill="white"
         />
         <path
           d="M15.356 5.67822H8.19523C8.03253 5.67822 7.90063 5.81012 7.90063 5.97282V11.3836C7.90063 11.5463 8.03253 11.6782 8.19523 11.6782H15.356C15.5187 11.6782 15.6506 11.5463 15.6506 11.3836V5.97282C15.6506 5.81012 15.5187 5.67822 15.356 5.67822Z"
@@ -640,7 +640,7 @@
 
   <template partial="AirplayButton">
     <media-airplay-button part="bottom airplay button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
-      <svg viewBox="0 0 18 14" aria-hidden="true" slot="airplay">
+      <svg viewBox="0 0 18 14" aria-hidden="true" slot="icon">
         <path
           d="M16.1383 0H1.8618C0.8335 0 0 0.8335 0 1.8617V10.1382C0 11.1664 0.8335 12 1.8618 12H3.076C3.1204 11.9433 3.1503 11.8785 3.2012 11.826L4.004 11H1.8618C1.3866 11 1 10.6134 1 10.1382V1.8617C1 1.3865 1.3866 0.9999 1.8618 0.9999H16.1383C16.6135 0.9999 17.0001 1.3865 17.0001 1.8617V10.1382C17.0001 10.6134 16.6135 11 16.1383 11H13.9961L14.7989 11.826C14.8499 11.8785 14.8798 11.9432 14.9241 12H16.1383C17.1665 12 18.0001 11.1664 18.0001 10.1382V1.8617C18 0.8335 17.1665 0 16.1383 0Z"
         />
