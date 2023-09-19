@@ -240,11 +240,8 @@ const ControlCustomizationCSSVars = [
   "--bottom-mute-button",
   "--volume-range",
   "--bottom-volume-range",
-  "--audio-track-selectmenu",
   "--rendition-selectmenu",
-  "--top-audio-track-selectmenu",
   "--top-rendition-selectmenu",
-  "--bottom-audio-track-selectmenu",
   "--bottom-rendition-selectmenu",
   "--playback-rate-button",
   "--bottom-playback-rate-button",
@@ -475,7 +472,7 @@ function MuxPlayerPage({ location }: Props) {
           value={state.theme}
           name="theme"
           onChange={genericOnChange}
-          values={['default', 'microvideo', 'minimal', '2023']}
+          values={['classic', 'microvideo', 'minimal', '2023']}
         />
         <TextRenderer
           value={state.envKey}
