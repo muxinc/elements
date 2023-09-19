@@ -163,6 +163,12 @@
       --media-text-color: var(--_text-color);
     }
 
+    /* The icon is a circle so make it 16px high instead of 14px for more balance. */
+    media-audio-track-selectmenu {
+      --media-control-padding: 5px;
+      --media-control-height: 16px;
+    }
+
     :host(:not([audio])) media-time-range {
       --media-range-padding: 0;
       background: transparent;
@@ -745,12 +751,10 @@
       aria-disabled="{{disabled}}"
     >
       <media-audio-track-button slot="button" part="bottom audio-track button">
-        <svg aria-hidden="true" slot="icon" viewBox="0 0 24 24">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 18 16">
+          <path d="M9 15A7 7 0 1 1 9 1a7 7 0 0 1 0 14Zm0 1A8 8 0 1 0 9 0a8 8 0 0 0 0 16Z" />
           <path
-            d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Zm0 1.5C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10Z"
-          />
-          <path
-            d="M7.25 9.75a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Zm3-3a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75Zm3 2a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Zm3-1a.75.75 0 0 1 .75.75v7a.75.75 0 0 1-1.5 0v-7a.75.75 0 0 1 .75-.75Z"
+            d="M5.2 6.3a.5.5 0 0 1 .5.5v2.4a.5.5 0 1 1-1 0V6.8a.5.5 0 0 1 .5-.5Zm2.4-2.4a.5.5 0 0 1 .5.5v7.2a.5.5 0 0 1-1 0V4.4a.5.5 0 0 1 .5-.5ZM10 5.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.4-.8a.5.5 0 0 1 .5.5v5.6a.5.5 0 0 1-1 0V5.2a.5.5 0 0 1 .5-.5Z"
           />
         </svg>
       </media-audio-track-button>
@@ -892,9 +896,9 @@
           </template>
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
-          {{>AudioTrackSelect}} {{>RenditionSelect}}
+          {{>RenditionSelect}}
           <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
-          {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm"> {{>PipButton}} </template>
           {{>FullscreenButton}}
         </media-control-bar>
@@ -913,7 +917,7 @@
           </template>
           {{>MuteButton}}
           <div class="spacer"></div>
-          {{>AudioTrackSelect}} {{>RenditionSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          {{>RenditionSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm">{{>PipButton}}</template>
           {{>FullscreenButton}}
         </media-control-bar>
