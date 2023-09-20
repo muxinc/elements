@@ -48,7 +48,7 @@ export const content = (props: MuxTemplateProps) => html`
     defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
     hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, controller, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display"
+    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, controller, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display, control-bar"
   >
     <mux-video
       slot="media"
