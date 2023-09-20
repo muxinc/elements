@@ -876,10 +876,10 @@
 
       <template if="streamtype == 'on-demand'">
         <template if="breakpointsm">
-          <media-control-bar slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
+          <media-control-bar part="control-bar top" slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
         </template>
         {{>TimeRange}}
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           <template if="breakpointsm">
             {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}}
           </template>
@@ -894,12 +894,12 @@
       </template>
 
       <template if="streamtype == 'live'">
-        <media-control-bar slot="top-chrome">
+        <media-control-bar part="control-bar top" slot="top-chrome">
           {{>LiveButton}}
           <template if="breakpointsm"> {{>TitleDisplay}} </template>
         </media-control-bar>
         <template if="targetlivewindow > 0">{{>TimeRange}}</template>
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           <template if="breakpointsm">
             {{>PlayButton}}
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
@@ -916,9 +916,9 @@
     <template if="audio">
       <template if="streamtype == 'on-demand'">
         <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+          <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           {{>PlayButton}}
           <template if="breakpointsm"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
           {{>MuteButton}}
@@ -932,9 +932,9 @@
 
       <template if="streamtype == 'live'">
         <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+          <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           <template if="breakpointsm">
             {{>PlayButton}} {{>LiveButton section="bottom"}} {{>MuteButton}} {{>VolumeRange}}
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>

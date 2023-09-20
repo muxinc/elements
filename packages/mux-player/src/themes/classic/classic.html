@@ -489,9 +489,9 @@
 
       <template if="streamtype == 'on-demand'">
         <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+          <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
-        <media-control-bar>
+        <media-control-bar part="control-bar bottom">
           {{>PlayButton}}
           {{>SeekBackwardButton}}
           {{>SeekForwardButton}}
@@ -510,9 +510,9 @@
 
         <template if="targetlivewindow > 0">
           <template if="title">
-            <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+            <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
           </template>
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>LiveButton section="bottom"}}
             {{>SeekBackwardButton}}
@@ -530,9 +530,9 @@
 
         <template if="!targetlivewindow">
           <template if="title">
-            <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+            <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
           </template>
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>LiveButton section="bottom"}}
             {{>MuteButton}}
@@ -553,7 +553,7 @@
 
         <template if="!breakpointsm">
           {{>TimeRange}}
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>MuteButton}}
             <div class="spacer"></div>
@@ -564,7 +564,7 @@
 
         <template if="breakpointsm">
           <template if="!breakpointmd">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>TitleDisplay}}
             </media-control-bar>
             <div slot="centered-chrome" class="center-controls">
@@ -573,7 +573,7 @@
               {{>SeekForwardButton section="center"}}
             </div>
             {{>TimeRange}}
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>TimeDisplay}}
               {{>MuteButton}}
@@ -592,14 +592,14 @@
         </template>
 
         <template if="breakpointmd">
-          <media-control-bar slot="top-chrome">
+          <media-control-bar part="control-bar top" slot="top-chrome">
             {{>TitleDisplay}}
           </media-control-bar>
           <div slot="centered-chrome" class="center-controls">
             {{>PlayButton section="center"}}
           </div>
           {{>TimeRange}}
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>SeekBackwardButton}}
             {{>SeekForwardButton}}
@@ -625,10 +625,10 @@
         <template if="!targetlivewindow">
 
           <template if="!breakpointsm">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>MuteButton}}
               <div class="spacer"></div>
@@ -639,14 +639,14 @@
 
           <template if="breakpointsm">
             <template if="!breakpointmd">
-              <media-control-bar slot="top-chrome">
+              <media-control-bar part="control-bar top" slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
               </media-control-bar>
               <div slot="centered-chrome" class="center-controls">
                 {{>PlayButton section="center"}}
               </div>
-              <media-control-bar>
+              <media-control-bar part="control-bar bottom">
                 {{>PlayButton}}
                 {{>MuteButton}}
                 {{>VolumeRange}}
@@ -663,14 +663,14 @@
           </template>
 
           <template if="breakpointmd">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
               {{>TitleDisplay}}
             </media-control-bar>
             <div slot="centered-chrome" class="center-controls">
               {{>PlayButton section="center"}}
             </div>
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>MuteButton}}
               {{>VolumeRange}}
@@ -689,11 +689,11 @@
         <template if="targetlivewindow > 0">
 
           <template if="!breakpointsm">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
             {{>TimeRange}}
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>MuteButton}}
               <div class="spacer"></div>
@@ -704,7 +704,7 @@
 
           <template if="breakpointsm">
             <template if="!breakpointmd">
-              <media-control-bar slot="top-chrome">
+              <media-control-bar part="control-bar top" slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
               </media-control-bar>
@@ -714,7 +714,7 @@
                 {{>SeekForwardButton section="center"}}
               </div>
               {{>TimeRange}}
-              <media-control-bar>
+              <media-control-bar part="control-bar bottom">
                 {{>PlayButton}}
                 {{>MuteButton}}
                 {{>VolumeRange}}
@@ -731,7 +731,7 @@
           </template>
 
           <template if="breakpointmd">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
               {{>TitleDisplay}}
             </media-control-bar>
@@ -739,7 +739,7 @@
               {{>PlayButton section="center"}}
             </div>
             {{>TimeRange}}
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>SeekBackwardButton}}
               {{>SeekForwardButton}}
