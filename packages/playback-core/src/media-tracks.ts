@@ -3,7 +3,10 @@ import type { VideoRenditionList } from 'media-tracks';
 
 export function setupMediaTracks(
   customMediaEl: HTMLMediaElement,
-  hls: Pick<Hls, 'audioTrack' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once' | 'off' | 'trigger'>
+  hls: Pick<
+    Hls,
+    'audioTrack' | 'audioTracks' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once' | 'off' | 'trigger'
+  >
 ) {
   if (!('videoTracks' in customMediaEl)) return;
 
@@ -36,9 +39,6 @@ export function setupMediaTracks(
   hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (event, data) {
     removeAudioTracks();
 
-    // At least with ll-hls, there is a bug when enabling a single audio track (may be wider)
-    // for now, we can early bail if the `audioTracks` length is <=1. (CJP)
-    if (data.audioTracks.length <= 1) return;
     for (const a of data.audioTracks) {
       // hls.js doesn't return a `kind` property for audio tracks yet.
       const kind = a.default ? 'main' : 'alternative';
@@ -52,7 +52,12 @@ export function setupMediaTracks(
   });
 
   customMediaEl.audioTracks.addEventListener('change', () => {
-    hls.audioTrack = [...customMediaEl.audioTracks].find((t) => t.enabled).id;
+    // Cast to number, hls.js uses numeric id's.
+    const audioTrackId = +[...customMediaEl.audioTracks].find((t) => t.enabled)?.id;
+    const availableIds = hls.audioTracks.map((t) => t.id);
+    if (audioTrackId != hls.audioTrack && availableIds.includes(audioTrackId)) {
+      hls.audioTrack = audioTrackId;
+    }
   });
 
   // Fired when a level is removed after calling `removeLevel()`
