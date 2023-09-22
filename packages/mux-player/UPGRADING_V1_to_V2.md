@@ -36,7 +36,9 @@ In the previous version you needed to specify the stream type of a video like th
 ></mux-player>
 ```
 
-This is no longer required as the stream type will be automatically derived by the player. You can remove this property after upgrading.
+This is no longer required as the stream type will be automatically derived by the player. You can remove this property after upgrading when using the new theme.
+
+If you choose to continue using the old theme, or switch to a theme that by default shows controls that differ on page load depending on the stream type, you may want to continue providing the stream type property. This would avoid a possible scenario where one set of controls is shown before quickly switching to a different set of controls after the stream type has been figured out.
 
 ## Upgrading to Mux Player V2 while keeping the old theme
 
