@@ -536,6 +536,7 @@ export const loadMedia = (
     | 'subtitleTrack'
     | 'userConfig'
     | 'audioTrack'
+    | 'audioTracks'
     | 'autoLevelEnabled'
     | 'nextLevel'
     | 'levels'
