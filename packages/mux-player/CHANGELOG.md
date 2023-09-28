@@ -3,6 +3,54 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.14.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.1...@mux/mux-player@1.14.2) (2023-09-05)
+
+**Note:** Version bump only for package @mux/mux-player
+
+
+
+
+
+## [1.14.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.0...@mux/mux-player@1.14.1) (2023-08-30)
+
+
+### Bug Fixes
+
+* **mux-player:** Make sure to use the title as the default value for … ([#758](https://github.com/muxinc/elements/issues/758)) ([57c2fdc](https://github.com/muxinc/elements/commit/57c2fdc77624a7e2c1fd0ce17e069173b909fc74))
+
+
+
+
+
+# [1.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.13.0...@mux/mux-player@1.14.0) (2023-08-23)
+
+
+### Features
+
+* **mux-player:** 2023 theme style updates and fixes ([#753](https://github.com/muxinc/elements/issues/753)) ([c3dc2ef](https://github.com/muxinc/elements/commit/c3dc2ef01ba4eb0d1506d175ca2188b1d749ac7f))
+
+
+
+
+
+# [1.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.12.1...@mux/mux-player@1.13.0) (2023-08-23)
+
+
+### Bug Fixes
+
+* unavailable state for audio track button ([#756](https://github.com/muxinc/elements/issues/756)) ([13f4ef7](https://github.com/muxinc/elements/commit/13f4ef7c77a6d18b330759e06acd975d77431f1b))
+
+
+### Features
+
+* 2023 Theme rendition selector ([#751](https://github.com/muxinc/elements/issues/751)) ([9584c3d](https://github.com/muxinc/elements/commit/9584c3d102d1916952c9f4fc6720a486c42a0b3e))
+* add audio track select menu ([#750](https://github.com/muxinc/elements/issues/750)) ([04123a8](https://github.com/muxinc/elements/commit/04123a8fbbbfba9059f3a504ad808f858dc07c50))
+* add poster slot for progressive enhancement ([#747](https://github.com/muxinc/elements/issues/747)) ([e90e096](https://github.com/muxinc/elements/commit/e90e096bc45776776e6fc4a8846aede2ad8ecb7c)), closes [#590](https://github.com/muxinc/elements/issues/590)
+
+
+
+
+
 ## [1.12.1](https://github.com/muxinc/elements/compare/@mux/mux-player@1.12.0...@mux/mux-player@1.12.1) (2023-08-15)
 
 

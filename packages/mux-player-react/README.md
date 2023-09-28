@@ -63,3 +63,4 @@ If you are generating your pages with a Node.js server (for example, [Next.js](h
 Docs and guides live on [docs.mux.com](https://docs.mux.com/guides/video/mux-player?utm_source=github-mux-player).
 
 API reference lives [on Github](./REFERENCE.md).
+

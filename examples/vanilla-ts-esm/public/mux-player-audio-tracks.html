@@ -46,17 +46,22 @@
     <mux-player
       id="muxPlayer"
       stream-type="on-demand"
-      src="https://playertest.longtailvideo.com/adaptive/elephants_dream_v4/index.m3u8"
+      playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
     ></mux-player>
 
     <br>
 
     <select id="audioselect"></select>
+    <input id="qualityplaying" value="N/A" readonly size="5">
 
     <br>
     <br>
 
     <script type="module">
+
+      muxPlayer.addEventListener('resize', () => {
+        qualityplaying.value = `${Math.min(muxPlayer.videoWidth, muxPlayer.videoHeight)}p`;
+      });
 
       muxPlayer.audioTracks.addEventListener('removetrack', ({ track }) => {
         audioselect.querySelector(`[value="${track.id}"]`).remove();

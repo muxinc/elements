@@ -18,13 +18,12 @@
       --_primary-color: var(--media-primary-color, #fff);
       --_secondary-color: var(--media-secondary-color, transparent);
       --_accent-color: var(--media-accent-color, #fa50b5);
+      --_text-color: var(--media-text-color, #000);
 
       --media-icon-color: var(--_primary-color);
       --media-control-background: var(--_secondary-color);
       --media-control-hover-background: var(--_accent-color);
       --media-time-buffered-color: rgba(255, 255, 255, 0.4);
-      --media-range-track-background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
-        linear-gradient(rgba(20, 20, 30, 0.7), rgba(20, 20, 30, 0.7));
       --media-preview-thumbnail-border: 0;
       --media-preview-thumbnail-border-radius: 2px 2px 0 0;
       --media-preview-time-border-radius: 0 0 2px 2px;
@@ -65,14 +64,6 @@
       width: 100%;
     }
 
-    :host(:not([audio])) media-captions-selectmenu::part(listbox) {
-      z-index: 10;
-    }
-
-    :host(:not([audio])) media-captions-selectmenu::part(indicator) {
-      fill: red;
-    }
-
     /*
      * 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast.
@@ -87,9 +78,9 @@
 
     media-time-range {
       --media-range-bar-color: var(--_accent-color);
-      --media-time-range-buffered-color: #fff;
-      --media-range-track-color: rgba(255, 255, 255, 0.4);
-      --media-range-track-background: transparent;
+      --media-time-range-buffered-color: var(--_primary-color);
+      --media-range-track-color: transparent;
+      --media-range-track-background: rgba(255, 255, 255, 0.4);
       --media-range-thumb-background: radial-gradient(
         circle,
         #000 0%,
@@ -108,7 +99,7 @@
       --media-preview-time-border-radius: 0 0 5px 5px;
       --media-preview-time-margin: 0 0 10px;
       --media-preview-time-padding: 2px 0 6px;
-      --media-text-color: #000;
+      --media-text-color: var(--_text-color);
       --media-preview-thumbnail-max-width: 150px;
       --media-range-track-pointer-border-right: 2px solid #000;
       --media-control-hover-background: transparent;
@@ -139,12 +130,43 @@
       transform: translate(-50%, -10px);
     }
 
-    media-captions-selectmenu {
+    :is(media-captions-listbox, media-rendition-listbox, media-audio-track-listbox)::part(indicator) {
+      fill: var(--_accent-color);
+    }
+
+    :is(media-captions-listbox, media-rendition-listbox, media-audio-track-listbox)::part(option) {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+    }
+
+    :is(media-captions-listbox, media-rendition-listbox, media-audio-track-listbox)::part(option-selected) {
+      font-weight: 700;
+    }
+
+    media-captions-listbox,
+    media-rendition-listbox,
+    media-audio-track-listbox {
+      border-radius: 2px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      bottom: calc(100% + 16px);
+      padding: 10px;
+    }
+
+    media-captions-selectmenu,
+    media-rendition-selectmenu,
+    media-audio-track-selectmenu {
       --media-listbox-background: var(--_primary-color);
-      --media-listbox-selected-background: rgba(0, 0, 0, 0.15);
-      --media-listbox-hover-background: rgba(0, 0, 0, 0.15);
-      --media-listbox-hover-outline: white solid 1px;
-      --media-text-color: #000;
+      --media-option-selected-background: transparent;
+      --media-option-hover-background: transparent;
+      --media-option-hover-outline: var(--_accent-color) solid 1px;
+      --media-text-color: var(--_text-color);
+    }
+
+    /* The icon is a circle so make it 16px high instead of 14px for more balance. */
+    media-audio-track-selectmenu {
+      --media-control-padding: 5px;
+      --media-control-height: 16px;
     }
 
     :host(:not([audio])) media-time-range {
@@ -239,7 +261,6 @@
       --media-control-hover-background: transparent;
       --media-control-padding: 0;
       width: 40px;
-      transform-origin: center center;
     }
 
     [breakpointsm] .center-controls media-play-button {
@@ -369,23 +390,6 @@
       white-space: nowrap;
     }
 
-    /* Hide unavailable controls */
-    media-volume-range[media-volume-unavailable] {
-      --volume-range: none;
-    }
-    media-airplay-button[media-airplay-unavailable] {
-      --airplay-button: none;
-    }
-    media-fullscreen-button[media-fullscreen-unavailable] {
-      --fullscreen-button: none;
-    }
-    media-cast-button[media-cast-unavailable] {
-      --cast-button: none;
-    }
-    media-pip-button[media-pip-unavailable] {
-      --pip-button: none;
-    }
-
     /* Generic style for explicitly disabled controls */
     media-control-bar[part='bottom'] [disabled],
     media-control-bar[part='bottom'] [aria-disabled='true'] {
@@ -485,13 +489,15 @@
   </template>
 
   <template partial="PrePlayButton">
-    <media-play-button part="{{section}} play button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
-      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon">
-        <g>
-          <path
-            d="M15.5987 6.2911L3.45577 0.110898C2.83667 -0.204202 2.06287 0.189698 2.06287 0.819798V13.1802C2.06287 13.8103 2.83667 14.2042 3.45577 13.8891L15.5987 7.7089C16.2178 7.3938 16.2178 6.6061 15.5987 6.2911Z"
-          />
-        </g>
+    <media-play-button
+      part="{{section ?? 'center'}} play button pre-play"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <svg aria-hidden="true" viewBox="0 0 18 14" slot="icon" style="transform: translate(3px, 0)">
+        <path
+          d="M15.5987 6.2911L3.45577 0.110898C2.83667 -0.204202 2.06287 0.189698 2.06287 0.819798V13.1802C2.06287 13.8103 2.83667 14.2042 3.45577 13.8891L15.5987 7.7089C16.2178 7.3938 16.2178 6.6061 15.5987 6.2911Z"
+        />
       </svg>
     </media-play-button>
   </template>
@@ -523,7 +529,7 @@
     >
       <svg viewBox="0 0 22 14" aria-hidden="true" slot="icon">
         <g>
-          <text transform="translate(0 12)" style="font-size: 14px; font-family: 'ArialMT', 'Arial'">
+          <text transform="translate(-1 12)" style="font-size: 14px; font-family: 'ArialMT', 'Arial'">
             {{forwardseekoffset}}
           </text>
           <path
@@ -575,7 +581,6 @@
       <svg viewBox="0 0 18 14" aria-hidden="true" slot="icon">
         <path
           d="M15.9891 0H2.011C0.9004 0 0 0.9003 0 2.0109V11.989C0 13.0996 0.9004 14 2.011 14H15.9891C17.0997 14 18 13.0997 18 11.9891V2.0109C18 0.9003 17.0997 0 15.9891 0ZM17 11.9891C17 12.5465 16.5465 13 15.9891 13H2.011C1.4536 13 1.0001 12.5465 1.0001 11.9891V2.0109C1.0001 1.4535 1.4536 0.9999 2.011 0.9999H15.9891C16.5465 0.9999 17 1.4535 17 2.0109V11.9891Z"
-          fill="white"
         />
         <path
           d="M15.356 5.67822H8.19523C8.03253 5.67822 7.90063 5.81012 7.90063 5.97282V11.3836C7.90063 11.5463 8.03253 11.6782 8.19523 11.6782H15.356C15.5187 11.6782 15.6506 11.5463 15.6506 11.3836V5.97282C15.6506 5.81012 15.5187 5.67822 15.356 5.67822Z"
@@ -609,12 +614,35 @@
           />
         </svg>
       </media-captions-button>
+      <media-captions-listbox slot="listbox" part="bottom captions listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-captions-listbox>
     </media-captions-selectmenu>
   </template>
 
   <template partial="AirplayButton">
     <media-airplay-button part="bottom airplay button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
-      <svg viewBox="0 0 18 14" aria-hidden="true" slot="airplay">
+      <svg viewBox="0 0 18 14" aria-hidden="true" slot="icon">
         <path
           d="M16.1383 0H1.8618C0.8335 0 0 0.8335 0 1.8617V10.1382C0 11.1664 0.8335 12 1.8618 12H3.076C3.1204 11.9433 3.1503 11.8785 3.2012 11.826L4.004 11H1.8618C1.3866 11 1 10.6134 1 10.1382V1.8617C1 1.3865 1.3866 0.9999 1.8618 0.9999H16.1383C16.6135 0.9999 17.0001 1.3865 17.0001 1.8617V10.1382C17.0001 10.6134 16.6135 11 16.1383 11H13.9961L14.7989 11.826C14.8499 11.8785 14.8798 11.9432 14.9241 12H16.1383C17.1665 12 18.0001 11.1664 18.0001 10.1382V1.8617C18 0.8335 17.1665 0 16.1383 0Z"
         />
@@ -712,6 +740,81 @@
     <media-time-range part="bottom time range" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-time-range>
   </template>
 
+  <template partial="AudioTrackSelect">
+    <media-audio-track-selectmenu
+      part="bottom audio-track selectmenu"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <media-audio-track-button slot="button" part="bottom audio-track button">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 18 16">
+          <path d="M9 15A7 7 0 1 1 9 1a7 7 0 0 1 0 14Zm0 1A8 8 0 1 0 9 0a8 8 0 0 0 0 16Z" />
+          <path
+            d="M5.2 6.3a.5.5 0 0 1 .5.5v2.4a.5.5 0 1 1-1 0V6.8a.5.5 0 0 1 .5-.5Zm2.4-2.4a.5.5 0 0 1 .5.5v7.2a.5.5 0 0 1-1 0V4.4a.5.5 0 0 1 .5-.5ZM10 5.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.4-.8a.5.5 0 0 1 .5.5v5.6a.5.5 0 0 1-1 0V5.2a.5.5 0 0 1 .5-.5Z"
+          />
+        </svg>
+      </media-audio-track-button>
+      <media-audio-track-listbox slot="listbox" part="bottom audio-track listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-audio-track-listbox>
+    </media-audio-track-selectmenu>
+  </template>
+
+  <template partial="RenditionSelect">
+    <media-rendition-selectmenu part="bottom rendition selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <media-rendition-button slot="button" part="bottom rendition button">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 18 14">
+          <path
+            d="M2.25 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM9 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+          />
+        </svg>
+      </media-rendition-button>
+      <media-rendition-listbox slot="listbox" part="bottom rendition listbox">
+        <div slot="select-indicator">
+          <style>
+            .listbox-indicator {
+              position: relative;
+              top: 1px;
+              width: 0.9em;
+              height: auto;
+              fill: var(--_accent-color);
+            }
+
+            [aria-selected='false'] .listbox-indicator {
+              display: none;
+            }
+          </style>
+          <svg viewBox="0 0 14 18" class="listbox-indicator">
+            <path
+              d="M12.252 3.48c-.115.033-.301.161-.425.291-.059.063-1.407 1.815-2.995 3.894s-2.897 3.79-2.908 3.802c-.013.014-.661-.616-1.672-1.624-.908-.905-1.702-1.681-1.765-1.723-.401-.27-.783-.211-1.176.183a1.285 1.285 0 0 0-.261.342.582.582 0 0 0-.082.35c0 .165.01.205.08.35.075.153.213.296 2.182 2.271 1.156 1.159 2.17 2.159 2.253 2.222.189.143.338.196.539.194.203-.003.412-.104.618-.299.205-.193 6.7-8.693 6.804-8.903a.716.716 0 0 0 .085-.345c.01-.179.005-.203-.062-.339-.124-.252-.45-.531-.746-.639a.784.784 0 0 0-.469-.027"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </media-rendition-listbox>
+    </media-rendition-selectmenu>
+  </template>
+
   <media-controller
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
     breakpoints="sm:470"
@@ -724,7 +827,6 @@
     defaultsubtitles="{{defaultsubtitles}}"
     exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
     style="--_pre-playback-place:{{preplaybackplace ?? 'center'}}"
-    id="test"
   >
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
@@ -764,7 +866,7 @@
         - not to show again after user has interacted with this button
           - OR user has interacted with the mute button in the control bar
       -->
-      <!-- 
+      <!--
         There should be a >MuteButton to the left of the "Unmute" text, but a templating bug
         makes it appear even if commented out in the markup, add it back when code is un-commented
       -->
@@ -774,36 +876,37 @@
 
       <template if="streamtype == 'on-demand'">
         <template if="breakpointsm">
-          <media-control-bar slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
+          <media-control-bar part="control-bar top" slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
         </template>
         {{>TimeRange}}
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           <template if="breakpointsm">
             {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}}
           </template>
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
+          {{>RenditionSelect}}
           <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
-          {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm"> {{>PipButton}} </template>
           {{>FullscreenButton}}
         </media-control-bar>
       </template>
 
       <template if="streamtype == 'live'">
-        <media-control-bar slot="top-chrome">
+        <media-control-bar part="control-bar top" slot="top-chrome">
           {{>LiveButton}}
           <template if="breakpointsm"> {{>TitleDisplay}} </template>
         </media-control-bar>
         <template if="targetlivewindow > 0">{{>TimeRange}}</template>
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           <template if="breakpointsm">
             {{>PlayButton}}
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
           </template>
           {{>MuteButton}}
           <div class="spacer"></div>
-          {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
+          {{>RenditionSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm">{{>PipButton}}</template>
           {{>FullscreenButton}}
         </media-control-bar>
@@ -813,9 +916,9 @@
     <template if="audio">
       <template if="streamtype == 'on-demand'">
         <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+          <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           {{>PlayButton}}
           <template if="breakpointsm"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
           {{>MuteButton}}
@@ -829,9 +932,9 @@
 
       <template if="streamtype == 'live'">
         <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+          <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
-        <media-control-bar part="bottom">
+        <media-control-bar part="control-bar bottom">
           <template if="breakpointsm">
             {{>PlayButton}} {{>LiveButton section="bottom"}} {{>MuteButton}} {{>VolumeRange}}
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>

@@ -62,10 +62,6 @@
       cursor: not-allowed;
     }
 
-    media-controller:not([mediasubtitleslist]) media-captions-selectmenu {
-      --captions-selectmenu: none;
-    }
-
     /* 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast. */
     media-controller ::slotted([slot='media']) {
@@ -76,26 +72,6 @@
        * with an additional 5px as a buffer, to get 47px */
       --media-webkit-text-track-transform: translateY(-47px);
       --media-webkit-text-track-transition: transform 0.15s ease;
-    }
-
-    media-volume-range[mediavolumeunavailable] {
-      --volume-range: none;
-    }
-
-    media-airplay-button[mediaairplayunavailable] {
-      --airplay-button: none;
-    }
-
-    media-fullscreen-button[mediafullscreenunavailable] {
-      --fullscreen-button: none;
-    }
-
-    media-cast-button[mediacastunavailable] {
-      --cast-button: none;
-    }
-
-    media-pip-button[mediapipunavailable] {
-      --pip-button: none;
     }
 
     :host media-time-range {
@@ -348,7 +324,7 @@
   <template partial="RenditionSelect">
     <media-rendition-selectmenu part="bottom rendition selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
       <media-rendition-button slot="button" part="bottom rendition button">
-        <svg slot="icon" viewBox="0 0 18 24">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 18 24">
           <path d="M2.25 14.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm6.75 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
         </svg>
       </media-rendition-button>
@@ -356,6 +332,20 @@
         <div slot="header">Quality</div>
       </media-rendition-listbox>
     </media-rendition-selectmenu>
+  </template>
+
+  <template partial="AudioTrackSelect">
+    <media-audio-track-selectmenu part="bottom audio-track selectmenu" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <media-audio-track-button slot="button" part="bottom audio-track button">
+        <svg aria-hidden="true" slot="icon" viewBox="0 0 24 24">
+          <path d="M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17Zm0 1.5C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10Z"/>
+          <path d="M7.25 9.75a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3a.75.75 0 0 1 .75-.75Zm3-3a.75.75 0 0 1 .75.75v9a.75.75 0 0 1-1.5 0v-9a.75.75 0 0 1 .75-.75Zm3 2a.75.75 0 0 1 .75.75v5a.75.75 0 0 1-1.5 0v-5a.75.75 0 0 1 .75-.75Zm3-1a.75.75 0 0 1 .75.75v7a.75.75 0 0 1-1.5 0v-7a.75.75 0 0 1 .75-.75Z"/>
+        </svg>
+      </media-audio-track-button>
+      <media-audio-track-listbox slot="listbox" part="bottom audio-track listbox">
+        <div slot="header">Audio</div>
+      </media-audio-track-listbox>
+    </media-audio-track-selectmenu>
   </template>
 
   <template partial="CaptionsSelect">
@@ -499,9 +489,9 @@
 
       <template if="streamtype == 'on-demand'">
         <template if="title">
-          <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+          <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
-        <media-control-bar>
+        <media-control-bar part="control-bar bottom">
           {{>PlayButton}}
           {{>SeekBackwardButton}}
           {{>SeekForwardButton}}
@@ -510,6 +500,7 @@
           {{>MuteButton}}
           {{>VolumeRange}}
           {{>PlaybackRateButton}}
+          {{>AudioTrackSelect}}
           {{>AirplayButton}}
           {{>CastButton}}
         </media-control-bar>
@@ -519,9 +510,9 @@
 
         <template if="targetlivewindow > 0">
           <template if="title">
-            <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+            <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
           </template>
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>LiveButton section="bottom"}}
             {{>SeekBackwardButton}}
@@ -531,6 +522,7 @@
             {{>MuteButton}}
             {{>VolumeRange}}
             {{>PlaybackRateButton}}
+            {{>AudioTrackSelect}}
             {{>AirplayButton}}
             {{>CastButton}}
           </media-control-bar>
@@ -538,14 +530,15 @@
 
         <template if="!targetlivewindow">
           <template if="title">
-            <media-control-bar>{{>TitleDisplay}}</media-control-bar>
+            <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
           </template>
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>LiveButton section="bottom"}}
             {{>MuteButton}}
             {{>VolumeRange}}
             <div class="spacer"></div>
+            {{>AudioTrackSelect}}
             {{>AirplayButton}}
             {{>CastButton}}
           </media-control-bar>
@@ -560,7 +553,7 @@
 
         <template if="!breakpointsm">
           {{>TimeRange}}
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>MuteButton}}
             <div class="spacer"></div>
@@ -571,7 +564,7 @@
 
         <template if="breakpointsm">
           <template if="!breakpointmd">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>TitleDisplay}}
             </media-control-bar>
             <div slot="centered-chrome" class="center-controls">
@@ -580,7 +573,7 @@
               {{>SeekForwardButton section="center"}}
             </div>
             {{>TimeRange}}
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>TimeDisplay}}
               {{>MuteButton}}
@@ -588,6 +581,7 @@
               <div class="spacer"></div>
               {{>RenditionSelect}}
               {{>PlaybackRateButton}}
+              {{>AudioTrackSelect}}
               {{>CaptionsSelect}}
               {{>AirplayButton}}
               {{>CastButton}}
@@ -598,14 +592,14 @@
         </template>
 
         <template if="breakpointmd">
-          <media-control-bar slot="top-chrome">
+          <media-control-bar part="control-bar top" slot="top-chrome">
             {{>TitleDisplay}}
           </media-control-bar>
           <div slot="centered-chrome" class="center-controls">
             {{>PlayButton section="center"}}
           </div>
           {{>TimeRange}}
-          <media-control-bar>
+          <media-control-bar part="control-bar bottom">
             {{>PlayButton}}
             {{>SeekBackwardButton}}
             {{>SeekForwardButton}}
@@ -615,6 +609,7 @@
             <div class="spacer"></div>
             {{>RenditionSelect}}
             {{>PlaybackRateButton}}
+            {{>AudioTrackSelect}}
             {{>CaptionsSelect}}
             {{>AirplayButton}}
             {{>CastButton}}
@@ -630,10 +625,10 @@
         <template if="!targetlivewindow">
 
           <template if="!breakpointsm">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>MuteButton}}
               <div class="spacer"></div>
@@ -644,19 +639,20 @@
 
           <template if="breakpointsm">
             <template if="!breakpointmd">
-              <media-control-bar slot="top-chrome">
+              <media-control-bar part="control-bar top" slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
               </media-control-bar>
               <div slot="centered-chrome" class="center-controls">
                 {{>PlayButton section="center"}}
               </div>
-              <media-control-bar>
+              <media-control-bar part="control-bar bottom">
                 {{>PlayButton}}
                 {{>MuteButton}}
                 {{>VolumeRange}}
                 <div class="spacer"></div>
                 {{>RenditionSelect}}
+                {{>AudioTrackSelect}}
                 {{>CaptionsSelect}}
                 {{>AirplayButton}}
                 {{>CastButton}}
@@ -667,19 +663,20 @@
           </template>
 
           <template if="breakpointmd">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
               {{>TitleDisplay}}
             </media-control-bar>
             <div slot="centered-chrome" class="center-controls">
               {{>PlayButton section="center"}}
             </div>
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>MuteButton}}
               {{>VolumeRange}}
               <div class="spacer"></div>
               {{>RenditionSelect}}
+              {{>AudioTrackSelect}}
               {{>CaptionsSelect}}
               {{>AirplayButton}}
               {{>CastButton}}
@@ -692,11 +689,11 @@
         <template if="targetlivewindow > 0">
 
           <template if="!breakpointsm">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
             </media-control-bar>
             {{>TimeRange}}
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>MuteButton}}
               <div class="spacer"></div>
@@ -707,7 +704,7 @@
 
           <template if="breakpointsm">
             <template if="!breakpointmd">
-              <media-control-bar slot="top-chrome">
+              <media-control-bar part="control-bar top" slot="top-chrome">
                 {{>LiveButton}}
                 {{>TitleDisplay}}
               </media-control-bar>
@@ -717,12 +714,13 @@
                 {{>SeekForwardButton section="center"}}
               </div>
               {{>TimeRange}}
-              <media-control-bar>
+              <media-control-bar part="control-bar bottom">
                 {{>PlayButton}}
                 {{>MuteButton}}
                 {{>VolumeRange}}
                 <div class="spacer"></div>
                 {{>RenditionSelect}}
+                {{>AudioTrackSelect}}
                 {{>CaptionsSelect}}
                 {{>AirplayButton}}
                 {{>CastButton}}
@@ -733,7 +731,7 @@
           </template>
 
           <template if="breakpointmd">
-            <media-control-bar slot="top-chrome">
+            <media-control-bar part="control-bar top" slot="top-chrome">
               {{>LiveButton}}
               {{>TitleDisplay}}
             </media-control-bar>
@@ -741,7 +739,7 @@
               {{>PlayButton section="center"}}
             </div>
             {{>TimeRange}}
-            <media-control-bar>
+            <media-control-bar part="control-bar bottom">
               {{>PlayButton}}
               {{>SeekBackwardButton}}
               {{>SeekForwardButton}}
@@ -749,6 +747,7 @@
               {{>VolumeRange}}
               <div class="spacer"></div>
               {{>RenditionSelect}}
+              {{>AudioTrackSelect}}
               {{>CaptionsSelect}}
               {{>AirplayButton}}
               {{>CastButton}}

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.13](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.12...@mux/mux-uploader@1.0.0-beta.13) (2023-09-05)
+
+**Note:** Version bump only for package @mux/mux-uploader
+
+
+
+
+
+# [1.0.0-beta.12](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.11...@mux/mux-uploader@1.0.0-beta.12) (2023-08-30)
+
+**Note:** Version bump only for package @mux/mux-uploader
+
+
+
+
+
 # [1.0.0-beta.11](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.10...@mux/mux-uploader@1.0.0-beta.11) (2023-08-15)
 
 

@@ -3,7 +3,10 @@ import type { VideoRenditionList } from 'media-tracks';
 
 export function setupMediaTracks(
   customMediaEl: HTMLMediaElement,
-  hls: Pick<Hls, 'audioTrack' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once'>
+  hls: Pick<
+    Hls,
+    'audioTrack' | 'audioTracks' | 'autoLevelEnabled' | 'nextLevel' | 'levels' | 'on' | 'once' | 'off' | 'trigger'
+  >
 ) {
   if (!('videoTracks' in customMediaEl)) return;
 
@@ -31,12 +34,16 @@ export function setupMediaTracks(
       levelIdMap.set(level, `${id}`);
       videoRendition.id = `${id}`;
     }
+  });
 
-    for (const [id, a] of data.audioTracks.entries()) {
+  hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (event, data) {
+    removeAudioTracks();
+
+    for (const a of data.audioTracks) {
       // hls.js doesn't return a `kind` property for audio tracks yet.
       const kind = a.default ? 'main' : 'alternative';
       const audioTrack = customMediaEl.addAudioTrack(kind, a.name, a.lang);
-      audioTrack.id = `${id}`;
+      audioTrack.id = `${a.id}`;
 
       if (a.default) {
         audioTrack.enabled = true;
@@ -45,7 +52,12 @@ export function setupMediaTracks(
   });
 
   customMediaEl.audioTracks.addEventListener('change', () => {
-    hls.audioTrack = [...customMediaEl.audioTracks].find((t) => t.enabled).id;
+    // Cast to number, hls.js uses numeric id's.
+    const audioTrackId = +[...customMediaEl.audioTracks].find((t) => t.enabled)?.id;
+    const availableIds = hls.audioTracks.map((t) => t.id);
+    if (audioTrackId != hls.audioTrack && availableIds.includes(audioTrackId)) {
+      hls.audioTrack = audioTrackId;
+    }
   });
 
   // Fired when a level is removed after calling `removeLevel()`
@@ -70,19 +82,50 @@ export function setupMediaTracks(
   const switchRendition = (event: Event) => {
     const level = (event.target as VideoRenditionList).selectedIndex;
     if (level != hls.nextLevel) {
-      hls.nextLevel = level;
+      smoothSwitch(level);
     }
   };
 
-  customMediaEl.videoRenditions.addEventListener('change', switchRendition);
+  // Workaround for issue changing renditions on an alternative audio track.
+  // https://github.com/video-dev/hls.js/issues/5749#issuecomment-1684629437
+  const smoothSwitch = (levelIndex: number) => {
+    const currentTime = customMediaEl.currentTime;
+    let flushedFwdBuffer = false;
 
-  const removeAllMediaTracks = () => {
+    const callback = (event: string, data: { endOffset: number }) => {
+      flushedFwdBuffer ||= !Number.isFinite(data.endOffset);
+    };
+
+    hls.on(Hls.Events.BUFFER_FLUSHING, callback);
+    hls.nextLevel = levelIndex;
+    hls.off(Hls.Events.BUFFER_FLUSHING, callback);
+
+    if (!flushedFwdBuffer) {
+      hls.trigger(Hls.Events.BUFFER_FLUSHING, {
+        startOffset: currentTime + 10,
+        endOffset: Infinity,
+        type: 'video',
+      });
+    }
+  };
+
+  customMediaEl.videoRenditions?.addEventListener('change', switchRendition);
+
+  const removeVideoTracks = () => {
     for (const videoTrack of customMediaEl.videoTracks) {
       customMediaEl.removeVideoTrack(videoTrack);
     }
+  };
+
+  const removeAudioTracks = () => {
     for (const audioTrack of customMediaEl.audioTracks) {
       customMediaEl.removeAudioTrack(audioTrack);
     }
+  };
+
+  const removeAllMediaTracks = () => {
+    removeVideoTracks();
+    removeAudioTracks();
   };
 
   // NOTE: Since this is only relevant for hls, using destroying event (CJP).
