@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
+import Hls from 'hls.js'
 import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
@@ -69,12 +70,13 @@ const ActionTypes = {
 
 const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   preferCmcd: undefined,
-  muted: undefined,
+  muted: true,
   debug: undefined,
   noVolumePref: undefined,
   disableCookies: undefined,
   autoPlay: undefined,
-  preload: undefined,
+  // preload: 'metadata',
+  preload: 'none',
   startTime: undefined,
   currentTime: undefined,
   paused: undefined,
@@ -83,7 +85,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   defaultShowRemainingTime: undefined,
   defaultHiddenCaptions: undefined,
   primaryColor: undefined,
-  maxResolution: undefined,
+  maxResolution: '2160p',
   secondaryColor: undefined,
   thumbnailTime: undefined,
   title: undefined,
@@ -97,10 +99,11 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   crossOrigin: undefined,
   customDomain: undefined,
   tokens: undefined,
-  playbackId: undefined,
-  streamType: undefined,
+  playbackId: 'tsNq3ueyt96FUHx4fb5cs3AnmswBm00Kz',
+  streamType: 'on-demand',
   storyboardSrc: undefined,
   theme: undefined,
+  lock4k: true,
 });
 
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
@@ -144,7 +147,7 @@ const toValueString = (value: any) => {
 };
 
 const MuxPlayerCodeRenderer = ({ state, component = 'MuxPlayer' }: { state: Partial<MuxPlayerProps>; component?: string; }) => {
-  const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
+  const stateEntries = Object.entries(state).filter(([key, value]) => key !== 'lock4k' && value != undefined);
   const propsStr = stateEntries.length
     ? `\n${stateEntries.map(([key, value]) => `  ${key}={${toValueString(value)}}`).join('\n')}\n`
     : '';
@@ -169,7 +172,7 @@ const UrlPathRenderer = ({
     pathname: './'
   },
 }: { state: Partial<MuxPlayerProps>; location?: Pick<Location, 'origin' | 'pathname'>; }) => {
-  const stateEntries = Object.entries(state).filter(([,value]) => value != undefined);
+  const stateEntries = Object.entries(state).filter(([, value]) => value != undefined);
   const urlSearchParamsStr = stateEntries.length
     ? `?${new URLSearchParams(Object.fromEntries(stateEntries.map(([k, v]) => [k, JSON.stringify(v)]))).toString()}`
     : ''
@@ -209,8 +212,8 @@ function getPlayerSize(width) {
   return width < XSMALL_BREAKPOINT
     ? MediaChromeSizes.XS
     : width < SMALL_BREAKPOINT
-    ? MediaChromeSizes.SM
-    : MediaChromeSizes.LG;
+      ? MediaChromeSizes.SM
+      : MediaChromeSizes.LG;
 }
 
 const ControlCustomizationCSSVars = [
@@ -320,8 +323,19 @@ function MuxPlayerPage({ location }: Props) {
   const optionsGenericOnStyleChange = (obj) => optionsDispatchStyles(updateProps(obj));
   useEffect(() => {
     const height = mediaElRef.current.offsetHeight;
-    optionsGenericOnStyleChange({'--player-height': height + 'px'});
+    optionsGenericOnStyleChange({ '--player-height': height + 'px' });
   }, [mediaElRef]);
+
+  useEffect(() => {
+    if (!mediaElRef.current?._hls) return;
+    if (!state.lock4) {
+      mediaElRef.current._hls.currentLevel = -1;
+    } else if (Array.isArray(mediaElRef.current._hls.levels)) {
+
+    }
+    if (!Array.isArray(mediaElRef.current?._hls?.levels)) return;
+
+  }, [state.lock4k])
 
   return (
     <>
@@ -373,24 +387,20 @@ function MuxPlayerPage({ location }: Props) {
         defaultHiddenCaptions={state.defaultHiddenCaptions}
         playbackRate={state.playbackRate}
         playbackRates={state.playbackRates}
-        onPlay={(evt: Event) => {
-          onPlay(evt);
-          // dispatch(updateProps({ paused: false }));
+        onLoadStart={({ target }) => {
+          const muxPlayerEl = target as MuxPlayerElement;
+          muxPlayerEl._hls.once(Hls.Events.LEVEL_LOADED, () => {
+            if (state.lock4k) {
+              muxPlayerEl._hls.currentLevel = muxPlayerEl._hls.levels.findIndex(level => level.height === 2160);
+            } else {
+              muxPlayerEl._hls.currentLevel = -1;
+            }
+          });
         }}
-        onPause={(evt: Event) => {
-          onPause(evt);
-          // dispatch(updateProps({ paused: true }));
-        }}
-        onVolumeChange={(event) => {
-          // const muxPlayerEl = event.target as MuxPlayerElement
-          // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
-        }}
-        onSeeking={onSeeking}
-        onSeeked={onSeeked}
       />
 
       <div className="options" style={optionStyles}>
-        <MuxPlayerCodeRenderer state={state}/>
+        <MuxPlayerCodeRenderer state={state} />
         <UrlPathRenderer
           state={state}
           location={typeof window !== 'undefined' ? window.location : location}
@@ -448,6 +458,18 @@ function MuxPlayerPage({ location }: Props) {
           values={['on-demand', 'live', 'unknown']}
         />
         <EnumRenderer
+          value={state.maxResolution}
+          name="maxResolution"
+          onChange={genericOnChange}
+          values={['720p', '2160p']}
+        />
+        <BooleanRenderer
+          value={state.lock4k}
+          name="lock4k"
+          label="Lock Rendition to 4k ('2160p')"
+          onChange={genericOnChange}
+        />
+        <EnumRenderer
           value={getPlayerSize(stylesState.width)}
           name="width"
           label="Width Cutoffs for Responsive Player Chrome/UI"
@@ -456,9 +478,9 @@ function MuxPlayerPage({ location }: Props) {
             const height = PlayerSizeHeights[playerSize?.split(' ')[0]];
             dispatchStyles(updateProps({ width }));
             if (height) {
-              optionsGenericOnStyleChange({'--player-height': height + 'px'});
+              optionsGenericOnStyleChange({ '--player-height': height + 'px' });
             } else {
-              optionsGenericOnStyleChange({'--player-height': ''});
+              optionsGenericOnStyleChange({ '--player-height': '' });
             }
           }}
           values={['extra-small', 'small', 'large']}
@@ -586,8 +608,8 @@ function MuxPlayerPage({ location }: Props) {
           name="currentTime"
           onChange={genericOnChange}
           min={0}
-          /** @TODO solve `undefined` error cases (CJP) */
-          // max={mediaElRef.current?.duration}
+        /** @TODO solve `undefined` error cases (CJP) */
+        // max={mediaElRef.current?.duration}
         />
         <NumberRenderer
           value={state.thumbnailTime}
@@ -675,15 +697,9 @@ function MuxPlayerPage({ location }: Props) {
           }}
           values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
         />
-        <EnumRenderer
-          value={state.maxResolution}
-          name="maxResolution"
-          onChange={genericOnChange}
-          values={['720p']}
-        />
       </div>
 
-      <br/>
+      <br />
       <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
