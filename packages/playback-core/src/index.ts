@@ -92,7 +92,10 @@ export const getStreamInfoFromPlaylistLines = (playlistLines: string[]) => {
       const targetDurationLine = playlistLines.find((line) => line.startsWith('#EXT-X-TARGETDURATION')) as string;
       // EXT-X-TARGETDURATION has exactly one unnamed attribute that represents the target duration value, which is required,
       // so parsing and casting presumptuously here. See spec link above for more info. (CJP)
-      const targetDuration = +targetDurationLine.split(':')[1];
+      const targetDurationValue = targetDurationLine?.split(':')?.[1];
+      // NOTE: Defaulting here and using optional chaining above since some people are seeing RTEs on iPhones under edge cases.
+      // Identifying root cause would be ideal, but this will at least avoid the RTE. (CJP)
+      const targetDuration = +(targetDurationValue ?? 6);
       liveEdgeStartOffset = targetDuration * 3;
     }
   }
