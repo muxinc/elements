@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { build } from 'esbuild';
 
-const themes = ['classic', 'microvideo', 'minimal', '2023'];
+const themes = ['classic', 'microvideo', 'minimal', 'gerwig'];
 const devMode = process.argv.includes('--dev');
 
 const shared = {
