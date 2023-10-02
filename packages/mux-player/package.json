@@ -53,11 +53,11 @@
       "browser": "./dist/themes/classic/index.mjs",
       "default": "./dist/themes/classic/index.cjs.js"
     },
-    "./themes/2023": {
-      "import": "./dist/themes/2023/index.mjs",
-      "require": "./dist/themes/2023/index.cjs.js",
-      "browser": "./dist/themes/2023/index.mjs",
-      "default": "./dist/themes/2023/index.cjs.js"
+    "./themes/gerwig": {
+      "import": "./dist/themes/gerwig/index.mjs",
+      "require": "./dist/themes/gerwig/index.cjs.js",
+      "browser": "./dist/themes/gerwig/index.mjs",
+      "default": "./dist/themes/gerwig/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
