@@ -36,7 +36,7 @@ type VideoApiAttributes = {
 
 type MuxMediaPropTypes = {
   audio: boolean;
-  // envKey: Options["data"]["env_key"];
+  //  envKey: Options["data"]["env_key"];
   envKey: string;
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
