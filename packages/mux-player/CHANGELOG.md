@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.15.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.2...@mux/mux-player@1.15.0) (2023-10-03)
+
+
+### Bug Fixes
+
+* Extra spacing underneath player ([#779](https://github.com/muxinc/elements/issues/779)) ([06f6480](https://github.com/muxinc/elements/commit/06f64802ef714e451dc8d3b8ac0781cce8e9f1fe))
+* improve 2023 icons ([#774](https://github.com/muxinc/elements/issues/774)) ([bfbe4f0](https://github.com/muxinc/elements/commit/bfbe4f006888281e7506dfaf1f828ec02c34ed94))
+* **mux-player:** placeholder not applying properly to media-poster-im… ([#769](https://github.com/muxinc/elements/issues/769)) ([2aed830](https://github.com/muxinc/elements/commit/2aed830d34dca5e0a774c2dd0f6e81688c73f1f0))
+
+
+### Features
+
+* export control bars part for styling ([#773](https://github.com/muxinc/elements/issues/773)) ([f444c58](https://github.com/muxinc/elements/commit/f444c58542af8ea0a39fb9d2e1e190c5a45bc7c4)), closes [#767](https://github.com/muxinc/elements/issues/767)
+* **mux-player:** Extra template parts in 2023 theme ([#768](https://github.com/muxinc/elements/issues/768)) ([bc2cd48](https://github.com/muxinc/elements/commit/bc2cd48337861ba487c8bdcc01ff1dd3c401519f))
+* **mux-player:** Theme 2023 icons ([#766](https://github.com/muxinc/elements/issues/766)) ([64259ca](https://github.com/muxinc/elements/commit/64259ca2f48327ddf6bdbff94ec65ce0cc629711))
+* Rename new default theme ([#771](https://github.com/muxinc/elements/issues/771)) ([b91c509](https://github.com/muxinc/elements/commit/b91c5092e005805a801982e15719984965f745e1))
+* Upgrade guide for new theme ([#775](https://github.com/muxinc/elements/issues/775)) ([4f1b684](https://github.com/muxinc/elements/commit/4f1b684ec9d571ed46c66694f29d2ecdea4ef6ee))
+
+
+
+
+
 ## [1.14.2](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.1...@mux/mux-player@1.14.2) (2023-09-05)
 
 **Note:** Version bump only for package @mux/mux-player

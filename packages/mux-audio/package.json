@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio",
-  "version": "0.10.10",
+  "version": "0.10.11",
   "description": "A custom mux audio element for the browser that Just Works™",
   "keywords": [
     "audio",
@@ -65,7 +65,7 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/playback-core": "0.20.1",
+    "@mux/playback-core": "0.20.2",
     "custom-media-element": "0.2.0"
   },
   "devDependencies": {
