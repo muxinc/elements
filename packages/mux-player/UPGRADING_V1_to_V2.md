@@ -62,7 +62,7 @@ and...
 
 ### Or with React
 
-```javascript
+```jsx
 const MyComponent = () => {
   return <MuxPlayer theme="classic"></MuxPlayer>
 }
