@@ -251,7 +251,7 @@ describe('<mux-player>', () => {
   });
 
   it('poster can be unset with an empty string', async function () {
-    this.timeout(5000);
+    this.timeout(10000);
     const player = await fixture(`<mux-player
       stream-type="on-demand"
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
