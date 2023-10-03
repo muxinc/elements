@@ -29,8 +29,8 @@ import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
-import './themes/classic';
-const DefaultThemeName = 'classic';
+import './themes/gerwig';
+const DefaultThemeName = 'gerwig';
 
 export { MediaError };
 export type Tokens = {
