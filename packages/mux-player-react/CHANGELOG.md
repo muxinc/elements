@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.15.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.14.2...@mux/mux-player-react@1.15.0) (2023-10-03)
+
+
+### Features
+
+* Rename new default theme ([#771](https://github.com/muxinc/elements/issues/771)) ([b91c509](https://github.com/muxinc/elements/commit/b91c5092e005805a801982e15719984965f745e1))
+
+
+
+
+
 ## [1.14.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.14.1...@mux/mux-player-react@1.14.2) (2023-09-05)
 
 **Note:** Version bump only for package @mux/mux-player-react
