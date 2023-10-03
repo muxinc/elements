@@ -99,7 +99,6 @@ mux-video:not([audio]),
 video {
   width: 100%;
   display: block;
-  line-height: 0;
   margin-bottom: 1rem;
   background: #000;
   aspect-ratio: 16 / 9;
@@ -111,7 +110,6 @@ mux-audio,
 audio {
   width: 100%;
   display: block;
-  line-height: 0;
   margin-bottom: 1rem;
 }
 
