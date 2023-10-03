@@ -40,6 +40,7 @@ export const content = (props: MuxTemplateProps) => html`
     style="${stylePropsToString({
       '--media-primary-color': props.primaryColor,
       '--media-secondary-color': props.secondaryColor,
+      '--media-accent-color': props.accentColor,
     }) ?? false}"
     defaultsubtitles="${!props.defaultHiddenCaptions}"
     forwardseekoffset="${props.forwardSeekOffset ?? false}"
