@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.15.0...@mux/mux-player-react@2.0.0) (2023-10-03)
+
+
+* feat(mux-player-react)!: bring breaking change in line with mux-player package (#789) ([3d5112e](https://github.com/muxinc/elements/commit/3d5112ea3f90d8329d6d7e8553cbce3f62f334e1)), closes [#789](https://github.com/muxinc/elements/issues/789)
+
+
+### BREAKING CHANGES
+
+* Updates mux-player-react to match mux-player with new theme upgrade
+
+
+
+
+
 # [1.15.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.14.2...@mux/mux-player-react@1.15.0) (2023-10-03)
 
 

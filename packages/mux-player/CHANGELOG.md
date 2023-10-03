@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.15.0...@mux/mux-player@2.0.0) (2023-10-03)
+
+
+### Bug Fixes
+
+* increase poster test timeout ([#786](https://github.com/muxinc/elements/issues/786)) ([08e3e3d](https://github.com/muxinc/elements/commit/08e3e3d159246f16c5e54e86eb06fc5dd2d05dc2))
+* increase some test timeouts ([#785](https://github.com/muxinc/elements/issues/785)) ([13ef21f](https://github.com/muxinc/elements/commit/13ef21f5875ff9ae1b93a6adeb4d18c4704f05c9))
+
+
+* feat(mux-player)!: major version bump (#788) ([78de381](https://github.com/muxinc/elements/commit/78de3813b2a912ad3243fa7e6ff47e79847d0242)), closes [#788](https://github.com/muxinc/elements/issues/788)
+
+
+### BREAKING CHANGES
+
+* Mux Player defaults to new theme
+
+
+
+
+
 # [1.15.0](https://github.com/muxinc/elements/compare/@mux/mux-player@1.14.2...@mux/mux-player@1.15.0) (2023-10-03)
 
 
