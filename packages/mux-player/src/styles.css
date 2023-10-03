@@ -24,6 +24,7 @@
 
   display: inline-block;
   width: 100%;
+  line-height: 0;
 }
 
 /* Hide custom elements that are not defined yet */
