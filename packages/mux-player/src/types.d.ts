@@ -19,6 +19,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   thumbnailTime: number;
   primaryColor: string;
   secondaryColor: string;
+  accentColor: string;
   forwardSeekOffset: number;
   backwardSeekOffset: number;
   isDialogOpen: boolean;

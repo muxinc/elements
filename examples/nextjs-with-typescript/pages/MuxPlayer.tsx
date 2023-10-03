@@ -83,8 +83,9 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   defaultShowRemainingTime: undefined,
   defaultHiddenCaptions: undefined,
   primaryColor: undefined,
-  maxResolution: undefined,
   secondaryColor: undefined,
+  accentColor: undefined,
+  maxResolution: undefined,
   thumbnailTime: undefined,
   title: undefined,
   envKey: undefined,
@@ -369,6 +370,7 @@ function MuxPlayerPage({ location }: Props) {
         audio={state.audio}
         primaryColor={state.primaryColor}
         secondaryColor={state.secondaryColor}
+        accentColor={state.accentColor}
         defaultShowRemainingTime={state.defaultShowRemainingTime}
         defaultHiddenCaptions={state.defaultHiddenCaptions}
         playbackRate={state.playbackRate}
@@ -645,6 +647,11 @@ function MuxPlayerPage({ location }: Props) {
         <ColorRenderer
           value={state.secondaryColor}
           name="secondaryColor"
+          onChange={genericOnChange}
+        />
+        <ColorRenderer
+          value={state.accentColor}
+          name="accentColor"
           onChange={genericOnChange}
         />
         <EnumMultiSelectRenderer
