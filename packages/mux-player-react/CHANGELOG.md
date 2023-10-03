@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.0.0...@mux/mux-player-react@2.0.1) (2023-10-03)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
 # [2.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@1.15.0...@mux/mux-player-react@2.0.0) (2023-10-03)
 
 
