@@ -36,7 +36,7 @@ type VideoApiAttributes = {
 
 type MuxMediaPropTypes = {
   audio: boolean;
-  // envKey: Options["data"]["env_key"];
+  //  envKey: Options["data"]["env_key"];
   envKey: string;
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
@@ -72,6 +72,7 @@ export type MuxPlayerProps = {
   metadataViewerUserId?: string;
   primaryColor?: string;
   secondaryColor?: string;
+  accentColor?: string;
   placeholder?: string;
   playbackRates?: number[];
   defaultShowRemainingTime?: boolean;

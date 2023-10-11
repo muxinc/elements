@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player",
-  "version": "1.14.2",
+  "version": "2.0.1",
   "description": "An open source Mux player web component that Just Works™",
   "homepage": "https://mux.com/player",
   "keywords": [
@@ -53,11 +53,11 @@
       "browser": "./dist/themes/classic/index.mjs",
       "default": "./dist/themes/classic/index.cjs.js"
     },
-    "./themes/2023": {
-      "import": "./dist/themes/2023/index.mjs",
-      "require": "./dist/themes/2023/index.cjs.js",
-      "browser": "./dist/themes/2023/index.mjs",
-      "default": "./dist/themes/2023/index.cjs.js"
+    "./themes/gerwig": {
+      "import": "./dist/themes/gerwig/index.mjs",
+      "require": "./dist/themes/gerwig/index.cjs.js",
+      "browser": "./dist/themes/gerwig/index.mjs",
+      "default": "./dist/themes/gerwig/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
@@ -94,9 +94,9 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/mux-video": "0.16.4",
-    "@mux/playback-core": "0.20.1",
-    "media-chrome": "^1.4.2"
+    "@mux/mux-video": "0.16.5",
+    "@mux/playback-core": "0.20.2",
+    "media-chrome": "^1.4.3"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",

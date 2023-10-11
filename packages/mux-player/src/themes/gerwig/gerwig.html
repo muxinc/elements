@@ -1,13 +1,15 @@
-<template id="media-theme-2023">
+<template id="media-theme-gerwig">
   <style>
     @keyframes pre-play-hide {
       0% {
         transform: scale(1);
         opacity: 1;
       }
+
       30% {
         transform: scale(0.7);
       }
+
       100% {
         transform: scale(1.5);
         opacity: 0;
@@ -191,7 +193,7 @@
       background-color: var(--media-control-background, rgba(20, 20, 30, 0.7));
     }
 
-    media-control-bar[slot='top-chrome'] {
+    media-control-bar[slot~='top-chrome'] {
       min-height: 42px;
       pointer-events: none;
     }
@@ -205,7 +207,7 @@
       opacity: 0.8;
     }
 
-    :host(:not([audio])) media-control-bar[part='bottom']::before {
+    :host(:not([audio])) media-control-bar[part~='bottom']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -217,15 +219,15 @@
       z-index: 1;
     }
 
-    media-control-bar[part='bottom'] > * {
+    media-control-bar[part~='bottom'] > * {
       z-index: 2;
     }
 
-    media-control-bar[part='bottom'] {
+    media-control-bar[part~='bottom'] {
       padding: 6px 6px;
     }
 
-    media-control-bar[slot='top-chrome'] > * {
+    media-control-bar[slot~='top-chrome'] > * {
       --media-control-background: transparent;
       --media-control-hover-background: transparent;
       position: relative;
@@ -391,8 +393,8 @@
     }
 
     /* Generic style for explicitly disabled controls */
-    media-control-bar[part='bottom'] [disabled],
-    media-control-bar[part='bottom'] [aria-disabled='true'] {
+    media-control-bar[part~='bottom'] [disabled],
+    media-control-bar[part~='bottom'] [aria-disabled='true'] {
       opacity: 60%;
       cursor: not-allowed;
     }

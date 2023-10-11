@@ -5,6 +5,10 @@
     <a href="https://www.npmjs.com/package/@mux/mux-player-react"><img src="https://img.shields.io/npm/l/@mux/mux-player-react.svg?sanitize=true" alt="License"></a>
 </p>
 
+# New release: 2.0
+
+Mux Player has recently released 2.0. See the [[https://github.com/muxinc/elements/blob/packages/mux-player/UPGRADING_V1_to_V2.md](https://github.com/muxinc/elements/blob/main/packages/mux-player/UPGRADING_V1_to_V2.md) and the [blog post announcement](https://www.mux.com/blog/mux-player-2-0-for-web-and-coming-soon-for-ios-and-android).
+
 # Introduction
 
 `<MuxPlayer />` is a Mux-flavored React video player component, built on top of our [mux-player web component](../mux-player) and [Media Chrome](https://media-chrome.org).

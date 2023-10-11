@@ -29,8 +29,8 @@ import { getErrorLogs } from './errors';
 import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
-import './themes/classic';
-const DefaultThemeName = 'classic';
+import './themes/gerwig';
+const DefaultThemeName = 'gerwig';
 
 export { MediaError };
 export type Tokens = {
@@ -49,6 +49,7 @@ const PlayerAttributes = {
   DEFAULT_HIDDEN_CAPTIONS: 'default-hidden-captions',
   PRIMARY_COLOR: 'primary-color',
   SECONDARY_COLOR: 'secondary-color',
+  ACCENT_COLOR: 'accent-color',
   FORWARD_SEEK_OFFSET: 'forward-seek-offset',
   BACKWARD_SEEK_OFFSET: 'backward-seek-offset',
   PLAYBACK_TOKEN: 'playback-token',
@@ -133,6 +134,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     streamType: getStreamTypeFromAttr(el.getAttribute(MuxVideoAttributes.STREAM_TYPE)),
     primaryColor: el.primaryColor,
     secondaryColor: el.secondaryColor,
+    accentColor: el.accentColor,
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
@@ -1024,6 +1026,28 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   set secondaryColor(val: string | undefined) {
     this.setAttribute(PlayerAttributes.SECONDARY_COLOR, `${val}`);
+  }
+
+  /**
+   * Get the accent color used by the player.
+   */
+  get accentColor() {
+    let color = this.getAttribute(PlayerAttributes.ACCENT_COLOR);
+    if (color != null) return color;
+
+    // Fallback to computed style if no attribute is set, causes layout.
+    // https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+    if (this.mediaTheme) {
+      color = globalThis.getComputedStyle(this.mediaTheme)?.getPropertyValue('--_accent-color')?.trim();
+      if (color) return color;
+    }
+  }
+
+  /**
+   * Set the accent color used by the player.
+   */
+  set accentColor(val: string | undefined) {
+    this.setAttribute(PlayerAttributes.ACCENT_COLOR, `${val}`);
   }
 
   get defaultShowRemainingTime() {

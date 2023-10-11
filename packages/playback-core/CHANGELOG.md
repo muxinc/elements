@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.20.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.20.1...@mux/playback-core@0.20.2) (2023-10-03)
+
+
+### Bug Fixes
+
+* audio track API for 1 track ([#776](https://github.com/muxinc/elements/issues/776)) ([4222fd1](https://github.com/muxinc/elements/commit/4222fd1994a4d0957cff5e9f9ede2a2b28575fed))
+* **playback-core:** Use optional chaining and nullish defaulting for edge case RTE ([06294a0](https://github.com/muxinc/elements/commit/06294a00239a4444c98f2e10d801bc80bc4f832d))
+
+
+
+
+
 ## [0.20.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.20.0...@mux/playback-core@0.20.1) (2023-08-30)
 
 **Note:** Version bump only for package @mux/playback-core

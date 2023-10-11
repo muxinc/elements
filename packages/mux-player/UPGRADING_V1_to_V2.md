@@ -15,10 +15,12 @@ Accent color mostly affects interactions, like a button background color on hove
 
 You can override the accent color using a new CSS variable:
 
-```css
-mux-player {
-	--media-accent-color: lime;
-}
+```html
+<mux-player accent-color="#f97316"></mux-player>
+```
+
+```jsx
+<MuxPlayer accentColor="#f97316" />
 ```
 
 ## Pre-playback UI
@@ -31,8 +33,8 @@ In the previous version you needed to specify the stream type of a video like th
 
 ```html
 <mux-player
-	playback-id="..."
-	stream-type="on-demand"
+  playback-id="..."
+  stream-type="on-demand"
 ></mux-player>
 ```
 
@@ -60,8 +62,8 @@ and...
 
 ### Or with React
 
-```javascript
+```jsx
 const MyComponent = () => {
-	return <MuxPlayer theme="classic"></MuxPlayer>
+  return <MuxPlayer theme="classic"></MuxPlayer>
 }
 ```
