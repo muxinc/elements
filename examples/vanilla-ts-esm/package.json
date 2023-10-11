@@ -9,19 +9,16 @@
   "scripts": {
     "dev": "yarn esbuild --servedir=public --serve=0.0.0.0:8004",
     "esbuild": "esbuild src/** --bundle --target=es2019 --format=esm --outdir=public/dist",
-    "build": "yarn esbuild --minify",
-    "predeploy": "yarn run build",
-    "deploy": "gh-pages --dist public --dest ./examples/mux-elements/"
+    "build": "yarn esbuild --minify"
   },
   "devDependencies": {
-    "esbuild": "^0.15.7",
-    "gh-pages": "^3.2.3",
+    "esbuild": "^0.19.4",
     "typescript": "^4.9.4"
   },
   "dependencies": {
+    "@mux/mux-active-viewer-count": ">=0.2.0-alpha.0",
     "@mux/mux-audio": ">=0.3.0",
     "@mux/mux-player": ">=1.0.0-beta.0",
-    "@mux/mux-active-viewer-count": ">=0.2.0-alpha.0",
     "@mux/mux-uploader": ">=1.0.0-beta.0",
     "@mux/mux-video": ">=0.3.0"
   }
