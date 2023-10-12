@@ -230,12 +230,66 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN, maxResolution = '' } = {}) => {
+export const MaxResolution = {
+  upTo720p: '720p',
+  upTo1080p: '1080p',
+  upTo1440p: '1440p',
+  upTo2160p: '2160p',
+} as const;
+
+export const MinResolution = {
+  noLessThan480p: '480p',
+  noLessThan540p: '540p',
+  noLessThan720p: '720p',
+  noLessThan1080p: '1080p',
+  noLessThan1440p: '1440p',
+  noLessThan2160p: '2160p',
+} as const;
+
+const RenditionOrder = {
+  DESCENDING: 'desc',
+} as const;
+
+export type MaxResolutionValue = ValueOf<typeof MaxResolution>;
+export type MinResolutionValue = ValueOf<typeof MinResolution>;
+export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
+
+type MuxVideoURLQueryParamProps = Partial<{
+  customDomain: string;
+  maxResolution: ValueOf<typeof MaxResolution>;
+  minResolution: ValueOf<typeof MinResolution>;
+  resolutionOrder: ValueOf<typeof RenditionOrder>;
+}>;
+
+export const toMuxVideoURL = (
+  playbackId?: string,
+  {
+    customDomain: domain = MUX_VIDEO_DOMAIN,
+    maxResolution,
+    minResolution,
+    resolutionOrder,
+  }: MuxVideoURLQueryParamProps = {}
+) => {
   if (!playbackId) return undefined;
   const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   const url = new URL(`https://stream.${domain}/${idPart}.m3u8${queryPart}`);
   if (maxResolution) {
     url.searchParams.set('max_resolution', maxResolution);
+  }
+  if (minResolution) {
+    url.searchParams.set('min_resolution', minResolution);
+    if (maxResolution && +maxResolution.slice(0, -1) < +minResolution.slice(0, -1)) {
+      console.error(
+        'minResolution must be <= maxResolution',
+        'minResolution',
+        minResolution,
+        'maxResolution',
+        maxResolution
+      );
+    }
+  }
+  if (resolutionOrder) {
+    url.searchParams.set('resolution_order', resolutionOrder);
   }
   return url.toString();
 };
