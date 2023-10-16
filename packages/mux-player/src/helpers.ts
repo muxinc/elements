@@ -1,5 +1,5 @@
 import { StreamTypes } from '@mux/playback-core';
-import type { ValueOf } from '@mux/playback-core';
+import type { ValueOf, MaxResolutionValue, MinResolutionValue, RenditionOrderValue } from '@mux/playback-core';
 import { toQuery, camelCase, parseJwt } from './utils';
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -16,19 +16,39 @@ const getEnvPlayerVersion = () => {
 const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
+type MuxVideoURLQueryParamProps = Partial<{
+  customDomain: string;
+  token: string;
+  maxResolution: MaxResolutionValue;
+  minResolution: MinResolutionValue;
+  renditionOrder: RenditionOrderValue;
+}>;
+
 export const getSrcFromPlaybackId = (
   playbackId?: string,
-  { maxResolution, token, domain = MUX_VIDEO_DOMAIN }: { maxResolution?: string; token?: string; domain?: string } = {}
+  {
+    token,
+    customDomain: domain = MUX_VIDEO_DOMAIN,
+    maxResolution,
+    minResolution,
+    renditionOrder,
+  }: MuxVideoURLQueryParamProps = {}
 ) => {
+  const query: Record<string, any> = {};
   /*
-   * `redundant_streams` and `max_resolution` query param can only be added to public
-   * playback IDs, in order to use these features with signed URLs
+   * All identified query params here can only be added to public
+   * playback IDs. In order to use these features with signed URLs
    * the query param must be added to the signing token.
    *
    * */
-  const isSignedUrl = !!token;
-  const maxRes = maxResolution ? { max_resolution: maxResolution } : {};
-  const query = isSignedUrl ? { token } : { redundant_streams: true, ...maxRes };
+  if (!!token) {
+    query.token = token;
+  } else {
+    query.redundant_streams = true;
+    if (maxResolution) query.max_resolution = maxResolution;
+    if (minResolution) query.min_resolution = minResolution;
+    if (renditionOrder) query.rendition_order = renditionOrder;
+  }
   return `https://stream.${domain}/${playbackId}.m3u8${toQuery(query)}`;
 };
 

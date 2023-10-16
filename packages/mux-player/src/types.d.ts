@@ -1,6 +1,12 @@
 import type MuxVideoElement from '@mux/mux-video';
 import type { MediaError } from '@mux/mux-video';
-import type { StreamTypes, ValueOf } from '@mux/playback-core';
+import type {
+  MaxResolutionValue,
+  MinResolutionValue,
+  RenditionOrderValue,
+  StreamTypes,
+  ValueOf,
+} from '@mux/playback-core';
 import type { AttributeTokenList } from './helpers';
 
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
@@ -32,7 +38,9 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   onInitFocusDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
   inLiveWindow: boolean;
-  maxResolution?: string;
+  maxResolution?: MaxResolutionValue;
+  minResolution?: MinResolutionValue;
+  renditionOrder?: RenditionOrderValue;
   tokens: {
     playback?: string;
     thumbnail?: string;

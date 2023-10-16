@@ -76,7 +76,9 @@ export const content = (props: MuxTemplateProps) => html`
         : props.playbackId
         ? getSrcFromPlaybackId(props.playbackId, {
             maxResolution: props.maxResolution,
-            domain: props.customDomain,
+            minResolution: props.minResolution,
+            renditionOrder: props.renditionOrder,
+            customDomain: props.customDomain,
             token: props.tokens.playback,
           })
         : false}"
@@ -85,7 +87,9 @@ export const content = (props: MuxTemplateProps) => html`
         : props.playbackId
         ? getSrcFromPlaybackId(props.playbackId, {
             maxResolution: props.maxResolution,
-            domain: props.customDomain,
+            minResolution: props.minResolution,
+            renditionOrder: props.renditionOrder,
+            customDomain: props.customDomain,
             token: props.tokens.playback,
           })
         : false}"

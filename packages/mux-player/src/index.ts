@@ -4,15 +4,20 @@ import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
-  ValueOf,
-  Metadata,
   StreamTypes,
   PlaybackTypes,
-  PlaybackEngine,
   addTextTrack,
   removeTextTrack,
   CmcdTypes,
   CmcdTypeValues,
+} from '@mux/playback-core';
+import type {
+  ValueOf,
+  Metadata,
+  PlaybackEngine,
+  MaxResolutionValue,
+  MinResolutionValue,
+  RenditionOrderValue,
 } from '@mux/playback-core';
 import VideoApiElement, { initVideoApi } from './video-api';
 import {
@@ -123,6 +128,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     tokens: el.tokens,
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
+    minResolution: el.minResolution,
+    renditionOrder: el.renditionOrder,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
@@ -1170,16 +1177,44 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get maxResolution() {
-    return this.getAttribute(MuxVideoAttributes.MAX_RESOLUTION) ?? undefined;
+    return (this.getAttribute(MuxVideoAttributes.MAX_RESOLUTION) as MaxResolutionValue) ?? undefined;
   }
 
-  set maxResolution(val: string | undefined) {
+  set maxResolution(val: MaxResolutionValue | undefined) {
     if (val === this.maxResolution) return;
 
     if (val) {
       this.setAttribute(MuxVideoAttributes.MAX_RESOLUTION, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.MAX_RESOLUTION);
+    }
+  }
+
+  get minResolution() {
+    return (this.getAttribute(MuxVideoAttributes.MIN_RESOLUTION) as MinResolutionValue) ?? undefined;
+  }
+
+  set minResolution(val: MinResolutionValue | undefined) {
+    if (val === this.minResolution) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.MIN_RESOLUTION, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.MIN_RESOLUTION);
+    }
+  }
+
+  get renditionOrder() {
+    return (this.getAttribute(MuxVideoAttributes.RENDITION_ORDER) as RenditionOrderValue) ?? undefined;
+  }
+
+  set renditionOrder(val: RenditionOrderValue | undefined) {
+    if (val === this.renditionOrder) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.RENDITION_ORDER, val);
+    } else {
+      this.removeAttribute(MuxVideoAttributes.RENDITION_ORDER);
     }
   }
 
