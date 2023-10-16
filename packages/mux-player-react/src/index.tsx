@@ -1,6 +1,14 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import type { StreamTypes, PlaybackTypes, CmcdTypes } from '@mux/playback-core';
+import type {
+  StreamTypes,
+  PlaybackTypes,
+  CmcdTypes,
+  MaxResolutionValue,
+  MinResolutionValue,
+  RenditionOrderValue,
+} from '@mux/playback-core';
+import { MaxResolution, MinResolution, RenditionOrder } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, MuxPlayerElementEventMap } from '@mux/mux-player';
@@ -10,7 +18,7 @@ import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
 
-export { MediaError };
+export { MediaError, MaxResolution, MinResolution, RenditionOrder };
 
 type ValueOf<T> = T[keyof T];
 interface GenericEventListener<T extends Event = CustomEvent> {
@@ -66,7 +74,9 @@ export type MuxPlayerProps = {
   playerSoftwareName?: string;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
-  maxResolution?: string;
+  maxResolution?: MaxResolutionValue;
+  minResolution?: MinResolutionValue;
+  renditionOrder?: RenditionOrderValue;
   metadataVideoId?: string;
   metadataVideoTitle?: string;
   metadataViewerUserId?: string;
