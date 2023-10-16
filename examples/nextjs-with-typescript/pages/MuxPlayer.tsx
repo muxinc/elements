@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
-import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
+import MuxPlayer, { MuxPlayerProps, MaxResolution, MinResolution, RenditionOrder } from "@mux/mux-player-react";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
 import "@mux/mux-player/themes/gerwig";
@@ -86,6 +86,8 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   secondaryColor: undefined,
   accentColor: undefined,
   maxResolution: undefined,
+  minResolution: undefined,
+  renditionOrder: undefined,
   thumbnailTime: undefined,
   title: undefined,
   envKey: undefined,
@@ -301,6 +303,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
   return ({ props: { location } })
 };
 
+const MaxResolutionValues = Object.values(MaxResolution);
+const MinResolutionValues = Object.values(MinResolution);
+const RenditionOrderValues = Object.values(RenditionOrder);
+
 function MuxPlayerPage({ location }: Props) {
   const router = useRouter();
   const mediaElRef = useRef(null);
@@ -363,6 +369,8 @@ function MuxPlayerPage({ location }: Props) {
         paused={state.paused}
         autoPlay={state.autoPlay}
         maxResolution={state.maxResolution}
+        minResolution={state.minResolution}
+        renditionOrder={state.renditionOrder}
         preload={state.preload}
         streamType={state.streamType}
         targetLiveWindow={state.targetLiveWindow}
@@ -686,7 +694,19 @@ function MuxPlayerPage({ location }: Props) {
           value={state.maxResolution}
           name="maxResolution"
           onChange={genericOnChange}
-          values={['720p']}
+          values={MaxResolutionValues}
+        />
+        <EnumRenderer
+          value={state.minResolution}
+          name="minResolution"
+          onChange={genericOnChange}
+          values={MinResolutionValues}
+        />
+        <EnumRenderer
+          value={state.renditionOrder}
+          name="renditionOrder"
+          onChange={genericOnChange}
+          values={RenditionOrderValues}
         />
       </div>
 
