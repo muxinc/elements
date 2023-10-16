@@ -246,7 +246,7 @@ export const MinResolution = {
   noLessThan2160p: '2160p',
 } as const;
 
-const RenditionOrder = {
+export const RenditionOrder = {
   DESCENDING: 'desc',
 } as const;
 
@@ -256,9 +256,9 @@ export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
 
 type MuxVideoURLQueryParamProps = Partial<{
   customDomain: string;
-  maxResolution: ValueOf<typeof MaxResolution>;
-  minResolution: ValueOf<typeof MinResolution>;
-  resolutionOrder: ValueOf<typeof RenditionOrder>;
+  maxResolution: MaxResolutionValue;
+  minResolution: MinResolutionValue;
+  renditionOrder: RenditionOrderValue;
 }>;
 
 export const toMuxVideoURL = (
@@ -267,7 +267,7 @@ export const toMuxVideoURL = (
     customDomain: domain = MUX_VIDEO_DOMAIN,
     maxResolution,
     minResolution,
-    resolutionOrder,
+    renditionOrder,
   }: MuxVideoURLQueryParamProps = {}
 ) => {
   if (!playbackId) return undefined;
@@ -288,8 +288,8 @@ export const toMuxVideoURL = (
       );
     }
   }
-  if (resolutionOrder) {
-    url.searchParams.set('resolution_order', resolutionOrder);
+  if (renditionOrder) {
+    url.searchParams.set('rendition_order', renditionOrder);
   }
   return url.toString();
 };
