@@ -523,10 +523,13 @@ describe('<mux-player>', () => {
     const muxVideo = player.media;
 
     assert.equal(player.maxResolution, '720p');
-    assert.equal(
-      muxVideo.src,
+    const actualSrcUrl = new URL(muxVideo.src);
+    const expectedSrcUrl = new URL(
       'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8?redundant_streams=true&max_resolution=720p'
     );
+    expectedSrcUrl.searchParams.forEach((value, key) => {
+      assert.equal(actualSrcUrl.searchParams.get(key), value);
+    });
 
     player.removeAttribute('max-resolution');
     assert.equal(player.maxResolution, null);

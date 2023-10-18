@@ -1,4 +1,4 @@
-import { StreamTypes } from '@mux/playback-core';
+import { StreamTypes, toMuxVideoURL } from '@mux/playback-core';
 import type { ValueOf, MaxResolutionValue, MinResolutionValue, RenditionOrderValue } from '@mux/playback-core';
 import { toQuery, camelCase, parseJwt } from './utils';
 
@@ -34,34 +34,6 @@ type MuxPosterURLCustomProps = MuxURLCustomProps &
   }>;
 
 type MuxStoryboardURLCustomProps = MuxURLCustomProps;
-
-export const getSrcFromPlaybackId = (
-  playbackId?: string,
-  {
-    token,
-    customDomain: domain = MUX_VIDEO_DOMAIN,
-    maxResolution,
-    minResolution,
-    renditionOrder,
-  }: MuxVideoURLCustomProps = {}
-) => {
-  const query: Record<string, any> = {};
-  /*
-   * All identified query params here can only be added to public
-   * playback IDs. In order to use these features with signed URLs
-   * the query param must be added to the signing token.
-   *
-   * */
-  if (!!token) {
-    query.token = token;
-  } else {
-    query.redundant_streams = true;
-    if (maxResolution) query.max_resolution = maxResolution;
-    if (minResolution) query.min_resolution = minResolution;
-    if (renditionOrder) query.rendition_order = renditionOrder;
-  }
-  return `https://stream.${domain}/${playbackId}.m3u8${toQuery(query)}`;
-};
 
 export const getPosterURLFromPlaybackId = (
   playbackId?: string,

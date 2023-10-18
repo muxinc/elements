@@ -151,6 +151,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
+    extraPlaylistParams: { redundant_streams: true },
     ...state,
   };
 

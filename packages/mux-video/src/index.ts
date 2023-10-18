@@ -571,7 +571,7 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
         this.#core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
-        this.src = toMuxVideoURL(newValue ?? undefined, this) as string;
+        this.src = toMuxVideoURL(this) as string;
         break;
       case Attributes.DEBUG: {
         const debug = this.debug;
