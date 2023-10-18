@@ -26,7 +26,7 @@ describe('helpers', () => {
 
     it('with a custom domain', () => {
       assert.equal(
-        getSrcFromPlaybackId('12345', { domain: 'fake.com' }),
+        getSrcFromPlaybackId('12345', { customDomain: 'fake.com' }),
         'https://stream.fake.com/12345.m3u8?redundant_streams=true'
       );
     });
@@ -60,7 +60,7 @@ describe('helpers', () => {
 
     it('with a custom domain', () => {
       assert.equal(
-        getPosterURLFromPlaybackId('12345', { domain: 'fake.com' }),
+        getPosterURLFromPlaybackId('12345', { customDomain: 'fake.com' }),
         'https://image.fake.com/12345/thumbnail.webp'
       );
     });
@@ -88,7 +88,7 @@ describe('helpers', () => {
 
     it('with a custom domain', () => {
       assert.equal(
-        getStoryboardURLFromPlaybackId('12345', { domain: 'fake.com' }),
+        getStoryboardURLFromPlaybackId('12345', { customDomain: 'fake.com' }),
         'https://image.fake.com/12345/storyboard.vtt?format=webp'
       );
     });

@@ -846,7 +846,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     // Get the derived poster if a playbackId is present.
     if (this.playbackId && !this.audio) {
       return getPosterURLFromPlaybackId(this.playbackId, {
-        domain: this.customDomain,
+        customDomain: this.customDomain,
         thumbnailTime: this.thumbnailTime ?? this.startTime,
         token: this.tokens.thumbnail,
       });
@@ -902,7 +902,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return undefined;
     }
     return getStoryboardURLFromPlaybackId(this.playbackId, {
-      domain: this.customDomain,
+      customDomain: this.customDomain,
       token: this.tokens.storyboard,
     });
   }

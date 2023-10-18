@@ -16,13 +16,24 @@ const getEnvPlayerVersion = () => {
 const player_version = getEnvPlayerVersion();
 export const getPlayerVersion = () => player_version;
 
-type MuxVideoURLQueryParamProps = Partial<{
+type MuxURLCustomProps = Partial<{
   customDomain: string;
   token: string;
-  maxResolution: MaxResolutionValue;
-  minResolution: MinResolutionValue;
-  renditionOrder: RenditionOrderValue;
 }>;
+
+type MuxVideoURLCustomProps = MuxURLCustomProps &
+  Partial<{
+    maxResolution: MaxResolutionValue;
+    minResolution: MinResolutionValue;
+    renditionOrder: RenditionOrderValue;
+  }>;
+
+type MuxPosterURLCustomProps = MuxURLCustomProps &
+  Partial<{
+    thumbnailTime: number;
+  }>;
+
+type MuxStoryboardURLCustomProps = MuxURLCustomProps;
 
 export const getSrcFromPlaybackId = (
   playbackId?: string,
@@ -32,7 +43,7 @@ export const getSrcFromPlaybackId = (
     maxResolution,
     minResolution,
     renditionOrder,
-  }: MuxVideoURLQueryParamProps = {}
+  }: MuxVideoURLCustomProps = {}
 ) => {
   const query: Record<string, any> = {};
   /*
@@ -54,7 +65,7 @@ export const getSrcFromPlaybackId = (
 
 export const getPosterURLFromPlaybackId = (
   playbackId?: string,
-  { token, thumbnailTime, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string; thumbnailTime?: number } = {}
+  { token, customDomain: domain = MUX_VIDEO_DOMAIN, thumbnailTime }: MuxPosterURLCustomProps = {}
 ) => {
   // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
   const time = token == null ? thumbnailTime : undefined;
@@ -73,7 +84,7 @@ export const getPosterURLFromPlaybackId = (
 
 export const getStoryboardURLFromPlaybackId = (
   playbackId?: string,
-  { token, domain = MUX_VIDEO_DOMAIN }: { token?: string; domain?: string } = {}
+  { token, customDomain: domain = MUX_VIDEO_DOMAIN }: MuxStoryboardURLCustomProps = {}
 ) => {
   const { aud } = parseJwt(token);
 
