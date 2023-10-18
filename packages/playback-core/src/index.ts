@@ -228,18 +228,6 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-type MuxVideoURLQueryParamProps = Partial<{
-  customDomain: string;
-  maxResolution: MaxResolutionValue;
-  minResolution: MinResolutionValue;
-  renditionOrder: RenditionOrderValue;
-  tokens: Partial<{
-    playback: string;
-    storyboard: string;
-    thumbnail: string;
-  }>;
-}>;
-
 type MuxVideoURLProps = Partial<{
   playbackId: string;
   customDomain: string;

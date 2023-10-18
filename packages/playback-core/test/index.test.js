@@ -203,6 +203,25 @@ describe('playback core', function () {
       toMuxVideoURL({ playbackId: '123?redundant_streams=true', maxResolution: '720p' }),
       `https://stream.mux.com/123.m3u8?redundant_streams=true&max_resolution=720p`
     );
+    assert.equal(toMuxVideoURL({ customDomain: 'media.example.com', maxResultion: '720p' }), undefined);
+    assert.equal(
+      toMuxVideoURL({
+        playbackId: '123?redundant_streams=true',
+        renditionOrder: 'desc',
+        tokens: { playback: 'PLAYBACK-TOKEN' },
+      }),
+      `https://stream.mux.com/123.m3u8?token=PLAYBACK-TOKEN`
+    );
+    assert.equal(
+      toMuxVideoURL({
+        playbackId: '123?redundant_streams=true',
+        minResolution: '720p',
+        extraPlaylistParams: {
+          extra_extra: 'readallaboutit',
+        },
+      }),
+      `https://stream.mux.com/123.m3u8?redundant_streams=true&min_resolution=720p&extra_extra=readallaboutit`
+    );
   });
 
   describe('updateStreamInfoFromSrc()', () => {
