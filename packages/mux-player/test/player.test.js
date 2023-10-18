@@ -527,6 +527,7 @@ describe('<mux-player>', () => {
     const expectedSrcUrl = new URL(
       'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8?redundant_streams=true&max_resolution=720p'
     );
+    assert.equal(actualSrcUrl.searchParams.size, expectedSrcUrl.searchParams.size);
     expectedSrcUrl.searchParams.forEach((value, key) => {
       assert.equal(actualSrcUrl.searchParams.get(key), value);
     });
