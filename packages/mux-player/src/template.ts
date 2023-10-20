@@ -2,11 +2,11 @@ import 'media-chrome/dist/media-theme-element.js';
 // @ts-ignore
 import cssStr from './styles.css';
 import './dialog';
-import { getSrcFromPlaybackId, getStreamTypeFromAttr } from './helpers';
+import { getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { i18n, stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
-import { StreamTypes } from '@mux/playback-core';
+import { StreamTypes, toMuxVideoURL } from '@mux/playback-core';
 
 export const template = (props: MuxTemplateProps) => html`
   <style>
@@ -71,24 +71,8 @@ export const content = (props: MuxTemplateProps) => html`
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"
       custom-domain="${props.customDomain ?? false}"
-      src="${!!props.src
-        ? props.src
-        : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, {
-            maxResolution: props.maxResolution,
-            domain: props.customDomain,
-            token: props.tokens.playback,
-          })
-        : false}"
-      cast-src="${!!props.src
-        ? props.src
-        : props.playbackId
-        ? getSrcFromPlaybackId(props.playbackId, {
-            maxResolution: props.maxResolution,
-            domain: props.customDomain,
-            token: props.tokens.playback,
-          })
-        : false}"
+      src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
+      cast-src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
       exportparts="video"
     >
       ${props.storyboard

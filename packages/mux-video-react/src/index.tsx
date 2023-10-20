@@ -27,13 +27,13 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
   const { playbackId, src: outerSrc, children, autoPlay, preload, streamType, ...restProps } = props;
 
   const [playerInitTime] = useState(generatePlayerInitTime());
-  const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
+  const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(props) ?? outerSrc);
   const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
   const innerMediaElRef = useRef<HTMLVideoElement>(null);
   const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
 
   useEffect(() => {
-    setSrc(toMuxVideoURL(playbackId) ?? outerSrc);
+    setSrc(toMuxVideoURL(props) ?? outerSrc);
   }, [outerSrc, playbackId]);
 
   useEffect(() => {

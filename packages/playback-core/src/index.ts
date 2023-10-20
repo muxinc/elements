@@ -26,18 +26,16 @@ import {
   toTargetLiveWindowFromPlaylistType,
   addEventListenerWithTeardown,
 } from './util';
-import {
-  StreamTypes,
-  PlaybackTypes,
-  ExtensionMimeTypeMap,
-  CmcdTypes,
-  type ValueOf,
-  type PlaybackCore,
-  type MuxMediaProps,
-  type MuxMediaPropsInternal,
-  HlsPlaylistTypes,
-  MediaTypes,
+import type {
+  ValueOf,
+  PlaybackCore,
+  MuxMediaProps,
+  MuxMediaPropsInternal,
+  MaxResolutionValue,
+  MinResolutionValue,
+  RenditionOrderValue,
 } from './types';
+import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 export {
   mux,
   Hls,
@@ -230,12 +228,66 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-export const toMuxVideoURL = (playbackId?: string, { domain = MUX_VIDEO_DOMAIN, maxResolution = '' } = {}) => {
-  if (!playbackId) return undefined;
-  const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
-  const url = new URL(`https://stream.${domain}/${idPart}.m3u8${queryPart}`);
-  if (maxResolution) {
-    url.searchParams.set('max_resolution', maxResolution);
+type MuxVideoURLProps = Partial<{
+  playbackId: string;
+  customDomain: string;
+  maxResolution: MaxResolutionValue;
+  minResolution: MinResolutionValue;
+  renditionOrder: RenditionOrderValue;
+  tokens: Partial<{
+    playback: string;
+    storyboard: string;
+    thumbnail: string;
+  }>;
+  extraPlaylistParams: Record<string, any>;
+}>;
+
+export const toMuxVideoURL = ({
+  playbackId: playbackIdWithParams,
+  customDomain: domain = MUX_VIDEO_DOMAIN,
+  maxResolution,
+  minResolution,
+  renditionOrder,
+  tokens: { playback: token } = {},
+  extraPlaylistParams = {},
+}: MuxVideoURLProps = {}) => {
+  if (!playbackIdWithParams) return undefined;
+  const [playbackId, queryPart = ''] = toPlaybackIdParts(playbackIdWithParams);
+  const url = new URL(`https://stream.${domain}/${playbackId}.m3u8${queryPart}`);
+  /*
+   * All identified query params here can only be added to public
+   * playback IDs. In order to use these features with signed URLs
+   * the query param must be added to the signing token.
+   *
+   * */
+  if (token || url.searchParams.has('token')) {
+    url.searchParams.forEach((_, key) => {
+      if (key != 'token') url.searchParams.delete(key);
+    });
+    if (token) url.searchParams.set('token', token);
+  } else {
+    if (maxResolution) {
+      url.searchParams.set('max_resolution', maxResolution);
+    }
+    if (minResolution) {
+      url.searchParams.set('min_resolution', minResolution);
+      if (maxResolution && +maxResolution.slice(0, -1) < +minResolution.slice(0, -1)) {
+        console.error(
+          'minResolution must be <= maxResolution',
+          'minResolution',
+          minResolution,
+          'maxResolution',
+          maxResolution
+        );
+      }
+    }
+    if (renditionOrder) {
+      url.searchParams.set('rendition_order', renditionOrder);
+    }
+    Object.entries(extraPlaylistParams).forEach(([k, v]) => {
+      if (v == undefined) return;
+      url.searchParams.set(k, v);
+    });
   }
   return url.toString();
 };
