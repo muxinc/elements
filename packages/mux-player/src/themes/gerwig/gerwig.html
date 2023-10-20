@@ -908,7 +908,7 @@
             {{>PlayButton}}
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
           </template>
-          {{>MuteButton}}
+          {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
           {{>RenditionSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm">{{>PipButton}}</template>
