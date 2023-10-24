@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.1.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.0.1...@mux/mux-player@2.1.0) (2023-10-24)
+
+
+### Bug Fixes
+
+* Don't allow clicks on bg gradients ([#797](https://github.com/muxinc/elements/issues/797)) ([3135e44](https://github.com/muxinc/elements/commit/3135e441bb88a166b48070c4f41c33a3878870d1))
+
+
+### Features
+
+* Add volume slider to live controls ([#800](https://github.com/muxinc/elements/issues/800)) ([5e0c337](https://github.com/muxinc/elements/commit/5e0c33715af190d2c39f8ffc9b2d7ff3d413f602))
+* Manifest manipulation and other media stream query param props. ([954b2c8](https://github.com/muxinc/elements/commit/954b2c80d7df88bb4585c46a15dd1185d56dcf9a))
+
+
+
+
+
 ## [2.0.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.0.0...@mux/mux-player@2.0.1) (2023-10-03)
 
 **Note:** Version bump only for package @mux/mux-player
