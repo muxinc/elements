@@ -720,10 +720,10 @@
     </media-live-button>
   </template>
 
-  <template partial="PlaybackRateButton">
+  <template partial="PlaybackRateSelect">
     <media-playback-rate-selectmenu
       rates="{{playbackrates}}"
-      part="bottom playback-rate button"
+      part="bottom playback-rate selectmenu"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
     >
@@ -922,7 +922,7 @@
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
           {{>RenditionSelect}}
-          <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
+          <template if="breakpointsm"> {{>PlaybackRateSelect}} </template>
           {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
           <template if="breakpointsm"> {{>PipButton}} </template>
           {{>FullscreenButton}}
@@ -961,7 +961,7 @@
           <template if="breakpointsm">{{>VolumeRange}}</template>
           {{>TimeDisplay}} {{>TimeRange}}
           <div class="spacer"></div>
-          <template if="breakpointsm">{{>PlaybackRateButton}}</template>
+          <template if="breakpointsm">{{>PlaybackRateSelect}}</template>
           {{>AirplayButton}} {{>CastButton}}
         </media-control-bar>
       </template>
