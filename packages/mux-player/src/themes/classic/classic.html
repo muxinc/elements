@@ -80,7 +80,8 @@
     }
 
     :host(:not([audio])) media-time-range {
-      --media-range-padding: 0;
+      /* Adding px is required here for calc() */
+      --media-range-padding: 0px;
       background: transparent;
       z-index: 10;
       height: 10px;
@@ -215,6 +216,9 @@
     }
 
     media-volume-range {
+      /* Adding px is required here for calc() */
+      --media-range-padding-left: 10px;
+      --media-range-padding-right: 10px;
       width: min(100%, 100px);
     }
 
