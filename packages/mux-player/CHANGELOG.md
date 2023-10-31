@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.1.0...@mux/mux-player@2.2.0) (2023-10-31)
+
+
+### Bug Fixes
+
+* **mux-player:** Use solid accent color in rate menu ([#804](https://github.com/muxinc/elements/issues/804)) ([7323155](https://github.com/muxinc/elements/commit/7323155837cb611db375d6a907ad05b721f52b91))
+* upgrade MC + style tweaks ([#805](https://github.com/muxinc/elements/issues/805)) ([7a1cf78](https://github.com/muxinc/elements/commit/7a1cf783fd1325b782440db05a6bb67e2d89a58f))
+* upgrade media-chrome 1.4.5 + rate row style ([#803](https://github.com/muxinc/elements/issues/803)) ([0b90bd0](https://github.com/muxinc/elements/commit/0b90bd0764b7b7728d8d754be12aed0c76662b97))
+
+
+### Features
+
+* **mux-player:** use playback rate selectmenu for new player theme. ([#802](https://github.com/muxinc/elements/issues/802)) ([662cd52](https://github.com/muxinc/elements/commit/662cd523295551855372bfdc4000d24a92713e2f))
+
+
+
+
+
 # [2.1.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.0.1...@mux/mux-player@2.1.0) (2023-10-24)
 
 
