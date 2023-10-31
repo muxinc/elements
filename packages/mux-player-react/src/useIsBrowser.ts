@@ -11,4 +11,5 @@ const useIsBrowser = () => {
 
   return isBrowser;
 };
+
 export default useIsBrowser;
