@@ -4,9 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "main": "./esbuilder.js",
-  "bin": {
-    "esbuilder": "./esbuilder.js"
-  },
+  "bin": "./esbuilder.js",
   "dependencies": {
     "esbuild": "^0.15.7"
   }

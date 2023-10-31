@@ -11,20 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for all tags and branches
-      - name: read node version from the .nvmrc file
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
-        shell: bash
-        id: nvmrc
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
+          node-version-file: .nvmrc
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
+      - name: Corepack
+        run: corepack enable
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Clean
         run: yarn clean
       - name: Test
@@ -40,14 +38,14 @@ jobs:
       - name: Create Release Notes
         run: yarn create-release-notes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
       - name: 'Get message'
         id: 'deploy_message'
         run: |
           echo "::set-output name=commit_msg::$(git log -1 --format=%B)"
           echo "::set-output name=commit_sha::$(git log -1 --format=%H)"
       - name: Slack Notify
-        uses: rtCamp/action-slack-notify@v2.2.0
+        uses: rtCamp/action-slack-notify@v2.2.1
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: ${{ steps.deploy_message.outputs.commit_msg }}

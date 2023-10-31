@@ -35,9 +35,10 @@
     "i18n": "turbo run i18n",
     "prepare": "husky install",
     "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
-    "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope @mux/*",
+    "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope '@mux/*'",
     "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
-    "create-release-notes": "lerna run create-release-notes --scope @mux/*",
-    "publish-release": "lerna run publish-release --scope @mux/* --"
-  }
+    "create-release-notes": "lerna run create-release-notes --scope '@mux/*'",
+    "publish-release": "lerna run publish-release --scope '@mux/*' --"
+  },
+  "packageManager": "yarn@4.0.1+sha256.5a9d054e67fbbae8774cd3667736fd74407ffbbb336898523ca1fe87b3fc4ee3"
 }

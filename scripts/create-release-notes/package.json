@@ -7,9 +7,7 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "private": true,
-  "bin": {
-    "create-release-notes": "./create-release-notes.js"
-  },
+  "bin": "./create-release-notes.js",
   "dependencies": {
     "octokit": "^1.7.1"
   }

@@ -13,21 +13,17 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v3
-      - name: read node version from the .nvmrc file
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
-        shell: bash
-        id: nvmrc
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
+          node-version-file: .nvmrc
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
-          cache: yarn
-      - run: yarn install --frozen-lockfile
+      - run: corepack enable
+      - run: yarn install --immutable
       - run: yarn clean
       - run: yarn build:packages
-      - run: npm run publish-release -- canary
+      - run: yarn publish-release -- canary
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -36,35 +32,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - name: read node version from the .nvmrc file
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
-        shell: bash
-        id: nvmrc
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
-          cache: yarn
-      - run: yarn install --frozen-lockfile
+          node-version-file: .nvmrc
+      - run: corepack enable
+      - run: yarn install --immutable
       - run: yarn lint
 
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
-          cache: yarn
+          node-version-file: .nvmrc
+      - run: corepack enable
       # esbuild requires --ignore-scripts to NOT be added here.
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --immutable
       - run: yarn clean
       - name: Install playwright browsers
-        run: npx playwright install --with-deps
+        run: yarn dlx playwright install --with-deps
       # run yarn and pass through `-- --all` to turborepo
       - run: yarn test -- -- --all
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3
         with:
           verbose: true
