@@ -1,6 +1,6 @@
 import { addEventListenerWithTeardown } from './util';
 import { ValueOf, Autoplay, AutoplayTypes, PlaybackEngine } from './types';
-import Hls from './hls';
+import Hls from 'hls.js';
 
 const AutoplayTypeValues = Object.values(AutoplayTypes);
 export const isAutoplayValue = (value: unknown): value is Autoplay => {

@@ -1,6 +1,7 @@
+/// <reference path="../../../node_modules/mux-embed/dist/types/package/mux-embed/mux-embed.d.ts"/>
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
-import type { HlsInterface as Hls } from './hls';
+import type Hls from 'hls.js';
 import type { VideoTrack, AudioTrack, VideoTrackList, AudioTrackList } from 'media-tracks';
 
 type KeyTypes = string | number | symbol;
