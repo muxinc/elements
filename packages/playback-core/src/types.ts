@@ -1,4 +1,4 @@
-/// <reference path="../../../node_modules/mux-embed/dist/types/package/mux-embed/mux-embed.d.ts"/>
+/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts"/>
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
 import type Hls from 'hls.js';

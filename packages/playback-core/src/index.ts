@@ -1,4 +1,4 @@
-/// <reference path="../../../node_modules/mux-embed/dist/types/package/mux-embed/mux-embed.d.ts"/>
+/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts"/>
 import mux from 'mux-embed';
 import type { ErrorEvent } from 'mux-embed';
 import Hls from 'hls.js';
