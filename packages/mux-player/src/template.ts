@@ -27,6 +27,51 @@ const getHotKeys = (props: MuxTemplateProps) => {
 // Warning: remember to update `ThemeAttributeNames` in index.ts
 // if you add or remove attributes in <media-theme>.
 
+// NOTE: Make sure to add/update internal parts here so they're available for Mux Player users for advanced CSS customization!
+export const Parts = {
+  // media container regions
+  TOP: 'top',
+  CENTER: 'center',
+  BOTTOM: 'bottom',
+  // media container layers
+  LAYER: 'layer', // Generic
+  MEDIA_LAYER: 'media-layer',
+  POSTER_LAYER: 'poster-layer',
+  VERTICAL_LAYER: 'vertical-layer',
+  CENTERED_LAYER: 'centered-layer',
+  GESTURE_LAYER: 'gesture-layer',
+  CONTROLLER_LAYER: 'controller',
+  // component/subcomponent types
+  BUTTON: 'button',
+  RANGE: 'range',
+  DISPLAY: 'display',
+  CONTROL_BAR: 'control-bar',
+  SELECTMENU: 'selectmenu',
+  LISTBOX: 'listbox',
+  OPTION: 'option',
+  // component/subcomponent purposes
+  POSTER: 'poster',
+  LIVE: 'live',
+  PLAY: 'play',
+  PRE_PLAY: 'pre-play',
+  SEEK_BACKWARD: 'seek-backward',
+  SEEK_FORWARD: 'seek-forward',
+  MUTE: 'mute',
+  CAPTIONS: 'captions',
+  AIRPLAY: 'airplay',
+  PIP: 'pip',
+  FULLSCREEN: 'fullscreen',
+  CAST: 'cast',
+  PLAYBACK_RATE: 'playback-rate',
+  VOLUME: 'volume',
+  TIME: 'time',
+  TITLE: 'title',
+  AUDIO_TRACK: 'audio-track',
+  RENDITION: 'rendition',
+};
+
+export const partsListStr = Object.values(Parts).join(', ');
+
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate || false}"
@@ -49,7 +94,7 @@ export const content = (props: MuxTemplateProps) => html`
     defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
     hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
-    exportparts="top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, controller, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display, control-bar"
+    exportparts="${partsListStr}"
   >
     <mux-video
       slot="media"

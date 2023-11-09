@@ -642,7 +642,7 @@
           />
         </svg>
       </media-captions-button>
-      <media-captions-listbox slot="listbox" part="bottom captions listbox">
+      <media-captions-listbox slot="listbox" exportparts="option" part="bottom captions listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
@@ -744,7 +744,11 @@
       aria-disabled="{{disabled}}"
     >
       <media-playback-rate-button slot="button" part="bottom playback-rate button"></media-playback-rate-button>
-      <media-playback-rate-listbox slot="listbox" part="bottom playback-rate listbox"></media-playback-rate-listbox>
+      <media-playback-rate-listbox
+        slot="listbox"
+        exportparts="option"
+        part="bottom playback-rate listbox"
+      ></media-playback-rate-listbox>
     </media-playback-rate-selectmenu>
   </template>
 
@@ -784,7 +788,7 @@
           />
         </svg>
       </media-audio-track-button>
-      <media-audio-track-listbox slot="listbox" part="bottom audio-track listbox">
+      <media-audio-track-listbox slot="listbox" exportparts="option" part="bottom audio-track listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
@@ -819,7 +823,7 @@
           />
         </svg>
       </media-rendition-button>
-      <media-rendition-listbox slot="listbox" part="bottom rendition listbox">
+      <media-rendition-listbox slot="listbox" exportparts="option" part="bottom rendition listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
