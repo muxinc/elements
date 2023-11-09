@@ -393,7 +393,7 @@
       opacity: 1;
     }
 
-    media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
+    media-loading-indicator[medialoading]:not([mediapaused]) ~ div > * {
       opacity: 0;
       transition-delay: 400ms;
     }
@@ -865,7 +865,7 @@
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
 
-    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
 
     <template if="!audio">
       <!-- Pre-playback UI -->

@@ -107,6 +107,34 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   theme: undefined,
 });
 
+const SMALL_BREAKPOINT = 700;
+const XSMALL_BREAKPOINT = 300;
+const MediaChromeSizes = {
+  LG: 'large',
+  SM: 'small',
+  XS: 'extra-small',
+};
+
+const PlayerSizeWidths = {
+  [MediaChromeSizes.LG]: 800,
+  [MediaChromeSizes.SM]: 600,
+  [MediaChromeSizes.XS]: 250,
+};
+const PlayerSizeHeights = {
+  [MediaChromeSizes.LG]: 450,
+  [MediaChromeSizes.SM]: 338,
+  [MediaChromeSizes.XS]: 141,
+};
+
+const DEFAULT_INITIAL_STYLES_STATE = {
+  // width: PlayerSizeWidths[MediaChromeSizes.XS] + 'px',
+};
+
+const DEFAULT_INITIAL_OPTION_STYLES_STATE = {
+  '--player-height': PlayerSizeHeights[MediaChromeSizes.LG] + 'px'
+  // '--player-height': PlayerSizeHeights[MediaChromeSizes.XS] + 'px'
+};
+
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
   const { type, value } = action;
   switch (type) {
@@ -187,25 +215,6 @@ const UrlPathRenderer = ({
       <button onClick={copyToClipboard}>Copy URL</button>
     </div>
   );
-};
-
-const SMALL_BREAKPOINT = 700;
-const XSMALL_BREAKPOINT = 300;
-const MediaChromeSizes = {
-  LG: 'large',
-  SM: 'small',
-  XS: 'extra-small',
-};
-
-const PlayerSizeWidths = {
-  [MediaChromeSizes.LG]: 800,
-  [MediaChromeSizes.SM]: 600,
-  [MediaChromeSizes.XS]: 250,
-};
-const PlayerSizeHeights = {
-  [MediaChromeSizes.LG]: 450,
-  [MediaChromeSizes.SM]: 338,
-  [MediaChromeSizes.XS]: 141,
 };
 
 function getPlayerSize(width) {
@@ -318,13 +327,11 @@ function MuxPlayerPage({ location }: Props) {
     if (!router.isReady) return;
     dispatch(updateProps(toInitialState(selectedAsset, mediaAssets, router.query)))
   }, [router.query, router.isReady]);
-  const [stylesState, dispatchStyles] = useReducer(reducer, {});
+  const [stylesState, dispatchStyles] = useReducer(reducer, DEFAULT_INITIAL_STYLES_STATE);
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
-  const [optionStyles, optionsDispatchStyles] = useReducer(reducer, {
-    '--player-height': '450px'
-  });
+  const [optionStyles, optionsDispatchStyles] = useReducer(reducer, DEFAULT_INITIAL_OPTION_STYLES_STATE);
   const optionsGenericOnStyleChange = (obj) => optionsDispatchStyles(updateProps(obj));
   useEffect(() => {
     const height = mediaElRef.current.offsetHeight;
