@@ -2,6 +2,7 @@ import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
 import MuxPlayer, { MuxPlayerProps, MaxResolution, MinResolution, RenditionOrder } from "@mux/mux-player-react";
+import "@mux/mux-player/themes/classic";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
 import "@mux/mux-player/themes/gerwig";
