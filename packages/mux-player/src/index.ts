@@ -1,5 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { MediaController } from 'media-chrome';
+import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
+import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
@@ -330,7 +332,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
-    this.#userInactive = this.mediaController?.hasAttribute('userinactive') ?? true;
+    this.#userInactive = this.mediaController?.hasAttribute(MediaControllerAttributes.USER_INACTIVE) ?? true;
     this.#setUpCaptionsMovement();
     // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
     // template details get updated appropriately (e.g. thumbnails track) (CJP)
@@ -566,7 +568,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     // this is necessary so that if a cue becomes active while the user is active, we still position it above the control bar
     const cuechangeHandler = () => {
-      toggleLines(selectedTrack, this.mediaController?.hasAttribute('userinactive') ?? false);
+      toggleLines(selectedTrack, this.mediaController?.hasAttribute(MediaControllerAttributes.USER_INACTIVE) ?? false);
     };
 
     const selectTrack = () => {
@@ -603,7 +605,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
 
     this.addEventListener('userinactivechange', () => {
-      const newUserInactive = this.mediaController?.hasAttribute('userinactive') ?? true;
+      const newUserInactive = this.mediaController?.hasAttribute(MediaControllerAttributes.USER_INACTIVE) ?? true;
 
       if (this.#userInactive === newUserInactive) {
         return;
@@ -725,11 +727,11 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get hasPlayed() {
-    return this.mediaController?.hasAttribute('media-has-played') ?? false;
+    return this.mediaController?.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED) ?? false;
   }
 
   get inLiveWindow() {
-    return this.mediaController?.hasAttribute('media-time-is-live');
+    return this.mediaController?.hasAttribute(MediaUIAttributes.MEDIA_TIME_IS_LIVE);
   }
 
   get _hls(): PlaybackEngine | undefined {
