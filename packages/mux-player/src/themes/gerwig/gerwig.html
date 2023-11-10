@@ -738,7 +738,6 @@
 
   <template partial="PlaybackRateSelect">
     <media-playback-rate-selectmenu
-      rates="{{playbackrates}}"
       part="bottom playback-rate selectmenu"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -746,6 +745,7 @@
       <media-playback-rate-button slot="button" part="bottom playback-rate button"></media-playback-rate-button>
       <media-playback-rate-listbox
         slot="listbox"
+        rates="{{playbackrates}}"
         exportparts="option"
         part="bottom playback-rate listbox"
       ></media-playback-rate-listbox>
