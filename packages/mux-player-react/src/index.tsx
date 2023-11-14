@@ -63,6 +63,9 @@ type MuxMediaPropTypes = {
   storyboardSrc: string;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
   children?: React.ReactNode;
+  playbackToken?: string;
+  thumbnailToken?: string;
+  storyboardToken?: string;
 };
 
 export type MuxPlayerProps = {
@@ -178,6 +181,9 @@ const usePlayer = (
     paused,
     playbackId,
     playbackRates,
+    playbackToken,
+    thumbnailToken,
+    storyboardToken,
     currentTime,
     themeProps,
     ...remainingProps
@@ -187,6 +193,9 @@ const usePlayer = (
   useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);
+  useObjectPropEffect('playbackToken', playbackToken, ref);
+  useObjectPropEffect('thumbnailToken', thumbnailToken, ref);
+  useObjectPropEffect('storyboardToken', storyboardToken, ref);
   useObjectPropEffect(
     'paused',
     paused,
