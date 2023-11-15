@@ -74,6 +74,7 @@ const PlayerAttributes = {
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
+  EXTRA_PLAYLIST_PARAMS: 'extra-playlist-params',
   NO_VOLUME_PREF: 'no-volume-pref',
 };
 
@@ -153,7 +154,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
-    extraPlaylistParams: { redundant_streams: true },
+    extraPlaylistParams: el.extraPlaylistParams,
     ...state,
   };
 
@@ -218,6 +219,8 @@ const initialState = {
   dialog: undefined,
   isDialogOpen: false,
 };
+
+const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 
 export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointchange: CustomEvent<{ time: number; value: any }>;
@@ -1218,6 +1221,27 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.RENDITION_ORDER, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.RENDITION_ORDER);
+    }
+  }
+
+  get extraPlaylistParams() {
+    // NOTE: the official type definition for the 0th `URLSearchParams` constructor argument is stricter than what is actually
+    // allowed and commonly used (e.g. a key with a boolean or number value). Ignoring to allow these cases. (CJP)
+    // @ts-ignore
+    if (!this.hasAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS)) return DEFAULT_EXTRA_PLAYLIST_PARAMS;
+    return [
+      ...new URLSearchParams(this.getAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS) as string).entries(),
+    ].reduce((paramsObj, [k, v]) => {
+      paramsObj[k] = v;
+      return paramsObj;
+    }, {} as Record<string, any>);
+  }
+
+  set extraPlaylistParams(value: Record<string, any>) {
+    if (value == null) {
+      this.removeAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS);
+    } else {
+      this.setAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS, new URLSearchParams(value).toString());
     }
   }
 
