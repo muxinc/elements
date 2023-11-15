@@ -458,6 +458,17 @@ export const setupHls = (
       debug,
       startPosition,
       cmcd,
+      xhrSetup: (xhr, url) => {
+        if (preferCmcd && preferCmcd !== CmcdTypes.QUERY) return;
+        const urlObj = new URL(url);
+        if (!urlObj.searchParams.has('CMCD')) return;
+        const cmcdVal = (urlObj.searchParams.get('CMCD')?.split(',') ?? [])
+          .filter((cmcdKVStr) => cmcdKVStr.startsWith('sid') || cmcdKVStr.startsWith('cid'))
+          .join(',');
+        urlObj.searchParams.set('CMCD', cmcdVal);
+
+        xhr.open('GET', urlObj);
+      },
       ...defaultConfig,
       ...streamTypeConfig,
     }) as HlsInterface;
