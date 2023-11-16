@@ -481,6 +481,23 @@
     media-mute-button[mediavolumelevel='off'] .muted {
       opacity: 1;
     }
+
+    /**
+     * Our defaults for these buttons are to hide them at small sizes
+     * users can override this with CSS
+     */
+    :not([breakpointsm])
+      media-control-bar[part~='bottom']
+      :is(
+        media-playback-rate-selectmenu,
+        media-pip-button,
+        media-play-button,
+        media-seek-backward-button,
+        media-seek-forward-button,
+        media-time-display
+      ) {
+      display: none;
+    }
   </style>
 
   <template partial="TitleDisplay">
@@ -915,16 +932,11 @@
         </template>
         {{>TimeRange}}
         <media-control-bar part="control-bar bottom">
-          <template if="breakpointsm">
-            {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}}
-          </template>
-          {{>MuteButton}} {{>VolumeRange}}
+          {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>MuteButton}}
+          {{>VolumeRange}}
           <div class="spacer"></div>
-          {{>RenditionSelect}}
-          <template if="breakpointsm"> {{>PlaybackRateSelect}} </template>
-          {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
-          <template if="breakpointsm"> {{>PipButton}} </template>
-          {{>FullscreenButton}}
+          {{>RenditionSelect}} {{>PlaybackRateSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}}
+          {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
         </media-control-bar>
       </template>
 
@@ -935,15 +947,12 @@
         </media-control-bar>
         <template if="targetlivewindow > 0">{{>TimeRange}}</template>
         <media-control-bar part="control-bar bottom">
-          <template if="breakpointsm">
-            {{>PlayButton}}
-            <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
-          </template>
+          {{>PlayButton}}
+          <template if="targetlivewindow > 0">{{>SeekBackwardButton}} {{>SeekForwardButton}}</template>
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
           {{>RenditionSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
-          <template if="breakpointsm">{{>PipButton}}</template>
-          {{>FullscreenButton}}
+          {{>PipButton}} {{>FullscreenButton}}
         </media-control-bar>
       </template>
     </template>
