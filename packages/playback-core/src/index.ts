@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts"/>
 import mux from 'mux-embed';
 import type { ErrorEvent } from 'mux-embed';
