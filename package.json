@@ -1,8 +1,8 @@
 {
   "name": "@mux/elements",
   "engines": {
-    "node": "^14.17.0 || ^16.13.0 || ^18.12.0",
-    "npm": "^7.17.0 || ^8.1.0"
+    "node": "^14.0.0 || ^16.0.0 || ^18.0.0 || >20.0.0",
+    "npm": "^7.0.0 || ^8.0.0"
   },
   "version": "0.1.0",
   "description": "Custom elements for working with media in the browser that Just Work™",
@@ -39,5 +39,6 @@
     "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
     "create-release-notes": "lerna run create-release-notes --scope @mux/*",
     "publish-release": "lerna run publish-release --scope @mux/* --"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha256.dbed5b7e10c552ba0e1a545c948d5473bc6c5a28ce22a8fd27e493e3e5eb6370"
 }
