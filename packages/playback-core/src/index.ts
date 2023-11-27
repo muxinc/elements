@@ -1,8 +1,8 @@
-/* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference path="../dist/types/mux-embed.d.ts" />
-import mux, { ErrorEvent } from 'mux-embed';
-import Hls from './hls';
-import type { HlsInterface } from './hls';
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts"/>
+import mux from 'mux-embed';
+import type { ErrorEvent } from 'mux-embed';
+import Hls from 'hls.js';
 import { MediaError } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -344,7 +344,7 @@ export const isPseudoEnded = (mediaEl: HTMLMediaElement) => {
   return mediaEl.paused && isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration);
 };
 
-export const getEnded = (mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
+export const getEnded = (mediaEl: HTMLMediaElement, hls?: Hls) => {
   // Since looping media never truly ends, don't apply pseudo-ended logic
   if (mediaEl.loop || !!hls) return mediaEl.ended;
   return mediaEl.ended || isPseudoEnded(mediaEl);
@@ -471,7 +471,7 @@ export const setupHls = (
       },
       ...defaultConfig,
       ...streamTypeConfig,
-    }) as HlsInterface;
+    }) as Hls;
 
     return hls;
   }
@@ -525,7 +525,7 @@ export const setupMux = (
     >
   >,
   mediaEl: HTMLMediaElement,
-  hlsjs?: HlsInterface
+  hlsjs?: Hls
 ) => {
   const { envKey: env_key } = props;
   const inferredEnv = isMuxVideoSrc(props);

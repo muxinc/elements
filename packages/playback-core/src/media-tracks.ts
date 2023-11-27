@@ -1,4 +1,4 @@
-import Hls from './hls';
+import Hls from 'hls.js';
 import type { VideoRenditionList } from 'media-tracks';
 
 export function setupMediaTracks(

@@ -1,8 +1,8 @@
-/* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference path="../dist/types/mux-embed.d.ts" />
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts"/>
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
-import type { HlsInterface as Hls } from './hls';
+import type Hls from 'hls.js';
 import type { VideoTrack, AudioTrack, VideoTrackList, AudioTrackList } from 'media-tracks';
 
 type KeyTypes = string | number | symbol;
