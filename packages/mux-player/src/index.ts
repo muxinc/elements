@@ -154,8 +154,10 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
-    extraPlaylistParams: el.extraPlaylistParams,
     ...state,
+    // NOTE: since the attribute value is used as the "source of truth" for the property getter,
+    // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
+    extraPlaylistParams: el.extraPlaylistParams,
   };
 
   return props;
@@ -1225,10 +1227,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get extraPlaylistParams() {
-    // NOTE: the official type definition for the 0th `URLSearchParams` constructor argument is stricter than what is actually
-    // allowed and commonly used (e.g. a key with a boolean or number value). Ignoring to allow these cases. (CJP)
-    // @ts-ignore
-    if (!this.hasAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS)) return DEFAULT_EXTRA_PLAYLIST_PARAMS;
+    if (!this.hasAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS)) {
+      return DEFAULT_EXTRA_PLAYLIST_PARAMS;
+    }
+
     return [
       ...new URLSearchParams(this.getAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS) as string).entries(),
     ].reduce((paramsObj, [k, v]) => {

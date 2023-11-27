@@ -379,6 +379,12 @@ function MuxPlayerPage({ location }: Props) {
         maxResolution={state.maxResolution}
         minResolution={state.minResolution}
         renditionOrder={state.renditionOrder}
+        // To test/apply extra playlist params to resultant src URL (CJP)
+        // extraPlaylistParams={{
+        //   foo: 'str',
+        //   bar: true,
+        //   baz: 1,
+        // }}
         preload={state.preload}
         streamType={state.streamType}
         targetLiveWindow={state.targetLiveWindow}
