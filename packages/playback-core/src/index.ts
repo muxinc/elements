@@ -424,11 +424,14 @@ function useNative(
 
 export const setupHls = (
   props: Partial<
-    Pick<MuxMediaPropsInternal, 'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd'>
+    Pick<
+      MuxMediaPropsInternal,
+      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig'
+    >
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) => {
-  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd } = props;
+  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -471,6 +474,7 @@ export const setupHls = (
       },
       ...defaultConfig,
       ...streamTypeConfig,
+      ..._hlsConfig,
     }) as HlsInterface;
 
     return hls;
