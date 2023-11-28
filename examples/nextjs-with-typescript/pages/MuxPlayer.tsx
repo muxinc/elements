@@ -380,7 +380,7 @@ function MuxPlayerPage({ location }: Props) {
         minResolution={state.minResolution}
         renditionOrder={state.renditionOrder}
         // To test/apply extra playlist params to resultant src URL (CJP)
-        // extraPlaylistParams={{
+        // extraSourceParams={{
         //   foo: 'str',
         //   bar: true,
         //   baz: 1,

@@ -239,7 +239,7 @@ type MuxVideoURLProps = Partial<{
     storyboard: string;
     thumbnail: string;
   }>;
-  extraPlaylistParams: Record<string, any>;
+  extraSourceParams: Record<string, any>;
 }>;
 
 export const toMuxVideoURL = ({
@@ -249,7 +249,7 @@ export const toMuxVideoURL = ({
   minResolution,
   renditionOrder,
   tokens: { playback: token } = {},
-  extraPlaylistParams = {},
+  extraSourceParams = {},
 }: MuxVideoURLProps = {}) => {
   if (!playbackIdWithParams) return undefined;
   const [playbackId, queryPart = ''] = toPlaybackIdParts(playbackIdWithParams);
@@ -284,7 +284,7 @@ export const toMuxVideoURL = ({
     if (renditionOrder) {
       url.searchParams.set('rendition_order', renditionOrder);
     }
-    Object.entries(extraPlaylistParams).forEach(([k, v]) => {
+    Object.entries(extraSourceParams).forEach(([k, v]) => {
       if (v == undefined) return;
       url.searchParams.set(k, v);
     });

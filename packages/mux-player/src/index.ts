@@ -74,7 +74,7 @@ const PlayerAttributes = {
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
-  EXTRA_PLAYLIST_PARAMS: 'extra-playlist-params',
+  EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
 };
 
@@ -157,7 +157,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
-    extraPlaylistParams: el.extraPlaylistParams,
+    extraSourceParams: el.extraSourceParams,
   };
 
   return props;
@@ -1226,24 +1226,25 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
   }
 
-  get extraPlaylistParams() {
-    if (!this.hasAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS)) {
+  get extraSourceParams() {
+    if (!this.hasAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS)) {
       return DEFAULT_EXTRA_PLAYLIST_PARAMS;
     }
 
-    return [
-      ...new URLSearchParams(this.getAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS) as string).entries(),
-    ].reduce((paramsObj, [k, v]) => {
-      paramsObj[k] = v;
-      return paramsObj;
-    }, {} as Record<string, any>);
+    return [...new URLSearchParams(this.getAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS) as string).entries()].reduce(
+      (paramsObj, [k, v]) => {
+        paramsObj[k] = v;
+        return paramsObj;
+      },
+      {} as Record<string, any>
+    );
   }
 
-  set extraPlaylistParams(value: Record<string, any>) {
+  set extraSourceParams(value: Record<string, any>) {
     if (value == null) {
-      this.removeAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS);
+      this.removeAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS);
     } else {
-      this.setAttribute(PlayerAttributes.EXTRA_PLAYLIST_PARAMS, new URLSearchParams(value).toString());
+      this.setAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS, new URLSearchParams(value).toString());
     }
   }
 

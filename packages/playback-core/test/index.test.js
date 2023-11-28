@@ -216,7 +216,7 @@ describe('playback core', function () {
       toMuxVideoURL({
         playbackId: '123?redundant_streams=true',
         minResolution: '720p',
-        extraPlaylistParams: {
+        extraSourceParams: {
           extra_extra: 'readallaboutit',
         },
       }),
