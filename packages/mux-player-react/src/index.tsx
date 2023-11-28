@@ -51,6 +51,7 @@ type MuxMediaPropTypes = {
   disableCookies: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
+  extraSourceParams: Record<string, any>;
   beaconCollectionDomain: string;
   customDomain: string;
   playbackId: string;
@@ -180,10 +181,12 @@ const usePlayer = (
     playbackRates,
     currentTime,
     themeProps,
+    extraSourceParams,
     ...remainingProps
   } = props;
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
+  useObjectPropEffect('extraSourceParams', extraSourceParams, ref);
   useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);

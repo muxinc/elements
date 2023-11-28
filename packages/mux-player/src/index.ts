@@ -74,6 +74,7 @@ const PlayerAttributes = {
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
+  EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
 };
 
@@ -153,8 +154,10 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
-    extraPlaylistParams: { redundant_streams: true },
     ...state,
+    // NOTE: since the attribute value is used as the "source of truth" for the property getter,
+    // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
+    extraSourceParams: el.extraSourceParams,
   };
 
   return props;
@@ -218,6 +221,8 @@ const initialState = {
   dialog: undefined,
   isDialogOpen: false,
 };
+
+const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 
 export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointchange: CustomEvent<{ time: number; value: any }>;
@@ -1218,6 +1223,28 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.RENDITION_ORDER, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.RENDITION_ORDER);
+    }
+  }
+
+  get extraSourceParams() {
+    if (!this.hasAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS)) {
+      return DEFAULT_EXTRA_PLAYLIST_PARAMS;
+    }
+
+    return [...new URLSearchParams(this.getAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS) as string).entries()].reduce(
+      (paramsObj, [k, v]) => {
+        paramsObj[k] = v;
+        return paramsObj;
+      },
+      {} as Record<string, any>
+    );
+  }
+
+  set extraSourceParams(value: Record<string, any>) {
+    if (value == null) {
+      this.removeAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS);
+    } else {
+      this.setAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS, new URLSearchParams(value).toString());
     }
   }
 
