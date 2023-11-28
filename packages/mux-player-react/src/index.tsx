@@ -70,6 +70,7 @@ export type MuxPlayerProps = {
   hotkeys?: string;
   nohotkeys?: boolean;
   defaultHiddenCaptions?: boolean;
+  disablePictureInPicture?: boolean;
   playerSoftwareVersion?: string;
   playerSoftwareName?: string;
   forwardSeekOffset?: number;
