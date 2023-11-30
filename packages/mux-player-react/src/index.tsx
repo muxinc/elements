@@ -49,6 +49,7 @@ type MuxMediaPropTypes = {
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
   disableCookies: boolean;
+  disablePictureInPicture?: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
   beaconCollectionDomain: string;
@@ -70,7 +71,6 @@ export type MuxPlayerProps = {
   hotkeys?: string;
   nohotkeys?: boolean;
   defaultHiddenCaptions?: boolean;
-  disablePictureInPicture?: boolean;
   playerSoftwareVersion?: string;
   playerSoftwareName?: string;
   forwardSeekOffset?: number;
