@@ -351,6 +351,11 @@ function MuxPlayerPage({ location }: Props) {
         theme={state.theme}
         envKey={state.envKey}
         metadata={state.metadata}
+        // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
+        // _hlsConfig={{
+        //   startLevel: 2,
+        //   debug: true,
+        // }}
         title={state.title}
         startTime={state.startTime}
         currentTime={state.currentTime}

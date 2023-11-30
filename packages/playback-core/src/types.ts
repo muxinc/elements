@@ -2,8 +2,9 @@
 /// <reference path="../dist/types/mux-embed.d.ts" />
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
-import type { HlsInterface as Hls } from './hls';
 import type { VideoTrack, AudioTrack, VideoTrackList, AudioTrackList } from 'media-tracks';
+import type { HlsConfig } from 'hls.js';
+import type Hls from 'hls.js';
 
 type KeyTypes = string | number | symbol;
 type Maybe<T> = T | null | undefined;
@@ -174,6 +175,7 @@ export type MuxMediaPropTypes = {
   autoplay?: Autoplay;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
   error?: HTMLMediaElement['error'] | MediaError;
+  _hlsConfig?: Partial<HlsConfig>;
 };
 
 export interface MediaTracks {

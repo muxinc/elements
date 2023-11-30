@@ -37,6 +37,7 @@ import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, k
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 import './themes/gerwig';
+import { HlsConfig } from 'hls.js';
 const DefaultThemeName = 'gerwig';
 
 export { MediaError };
@@ -531,6 +532,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         // - cues that are not at the bottom
         //   - line is less than -5
         //   - line is between 0 and 10
+        // @ts-ignore
         if (!cue.snapToLines || cue.line < -5 || (cue.line >= 0 && cue.line < 10)) {
           return;
         }
@@ -1439,6 +1441,27 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return;
     }
     this.media.metadata = { ...getMetadataFromAttrs(this), ...val };
+  }
+
+  /**
+   * Get the metadata object for Mux Data.
+   */
+  get _hlsConfig() {
+    return this.media?._hlsConfig;
+  }
+
+  /**
+   * Set the metadata object for Mux Data.
+   */
+  set _hlsConfig(val: Readonly<Partial<HlsConfig>> | undefined) {
+    this.#init();
+
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set _hlsConfig. _hlsConfig will not be set.');
+      return;
+    }
+    this.media._hlsConfig = val;
   }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
