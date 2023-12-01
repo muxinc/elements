@@ -37,6 +37,7 @@ import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, k
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 import './themes/gerwig';
+import { HlsConfig } from 'hls.js';
 const DefaultThemeName = 'gerwig';
 
 export { MediaError };
@@ -74,6 +75,7 @@ const PlayerAttributes = {
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
   TARGET_LIVE_WINDOW: 'target-live-window',
+  EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
 };
 
@@ -153,8 +155,10 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
-    extraPlaylistParams: { redundant_streams: true },
     ...state,
+    // NOTE: since the attribute value is used as the "source of truth" for the property getter,
+    // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
+    extraSourceParams: el.extraSourceParams,
   };
 
   return props;
@@ -218,6 +222,8 @@ const initialState = {
   dialog: undefined,
   isDialogOpen: false,
 };
+
+const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 
 export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointchange: CustomEvent<{ time: number; value: any }>;
@@ -526,6 +532,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         // - cues that are not at the bottom
         //   - line is less than -5
         //   - line is between 0 and 10
+        // @ts-ignore
         if (!cue.snapToLines || cue.line < -5 || (cue.line >= 0 && cue.line < 10)) {
           return;
         }
@@ -1221,6 +1228,28 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
   }
 
+  get extraSourceParams() {
+    if (!this.hasAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS)) {
+      return DEFAULT_EXTRA_PLAYLIST_PARAMS;
+    }
+
+    return [...new URLSearchParams(this.getAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS) as string).entries()].reduce(
+      (paramsObj, [k, v]) => {
+        paramsObj[k] = v;
+        return paramsObj;
+      },
+      {} as Record<string, any>
+    );
+  }
+
+  set extraSourceParams(value: Record<string, any>) {
+    if (value == null) {
+      this.removeAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS);
+    } else {
+      this.setAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS, new URLSearchParams(value).toString());
+    }
+  }
+
   /**
    * Get Mux asset custom domain.
    */
@@ -1412,6 +1441,27 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return;
     }
     this.media.metadata = { ...getMetadataFromAttrs(this), ...val };
+  }
+
+  /**
+   * Get the metadata object for Mux Data.
+   */
+  get _hlsConfig() {
+    return this.media?._hlsConfig;
+  }
+
+  /**
+   * Set the metadata object for Mux Data.
+   */
+  set _hlsConfig(val: Readonly<Partial<HlsConfig>> | undefined) {
+    this.#init();
+
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set _hlsConfig. _hlsConfig will not be set.');
+      return;
+    }
+    this.media._hlsConfig = val;
   }
 
   async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {

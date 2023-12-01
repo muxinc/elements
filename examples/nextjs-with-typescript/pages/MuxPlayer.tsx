@@ -351,6 +351,11 @@ function MuxPlayerPage({ location }: Props) {
         theme={state.theme}
         envKey={state.envKey}
         metadata={state.metadata}
+        // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
+        // _hlsConfig={{
+        //   startLevel: 2,
+        //   debug: true,
+        // }}
         title={state.title}
         startTime={state.startTime}
         currentTime={state.currentTime}
@@ -379,6 +384,12 @@ function MuxPlayerPage({ location }: Props) {
         maxResolution={state.maxResolution}
         minResolution={state.minResolution}
         renditionOrder={state.renditionOrder}
+        // To test/apply extra playlist params to resultant src URL (CJP)
+        // extraSourceParams={{
+        //   foo: 'str',
+        //   bar: true,
+        //   baz: 1,
+        // }}
         preload={state.preload}
         streamType={state.streamType}
         targetLiveWindow={state.targetLiveWindow}
