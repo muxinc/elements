@@ -49,6 +49,7 @@ type MuxMediaPropTypes = {
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
   disableCookies: boolean;
+  disablePictureInPicture?: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
   extraSourceParams: Record<string, any>;
