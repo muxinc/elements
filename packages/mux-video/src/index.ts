@@ -39,6 +39,7 @@ import { getPlayerVersion } from './env';
 import 'castable-video';
 import { CustomMediaMixin, Events as VideoEvents } from 'custom-media-element';
 import { MediaTracksMixin } from 'media-tracks';
+import type { HlsConfig } from 'hls.js';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
@@ -86,6 +87,7 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
   #loadRequested?: Promise<void> | null;
   #playerInitTime: number;
   #metadata: Readonly<Metadata> = {};
+  #_hlsConfig?: Partial<HlsConfig>;
   #playerSoftwareVersion?: string;
   #playerSoftwareName?: string;
   #errorTranslator?: (errorEvent: any) => any;
@@ -512,6 +514,14 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
     if (!!this.mux) {
       this.mux.emit('hb', this.#metadata);
     }
+  }
+
+  get _hlsConfig() {
+    return this.#_hlsConfig;
+  }
+
+  set _hlsConfig(val: Readonly<Partial<HlsConfig>> | undefined) {
+    this.#_hlsConfig = val;
   }
 
   async #requestLoad() {

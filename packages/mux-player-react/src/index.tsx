@@ -49,8 +49,11 @@ type MuxMediaPropTypes = {
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
   disableCookies: boolean;
+  disablePictureInPicture?: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
+  extraSourceParams: Record<string, any>;
+  _hlsConfig: MuxPlayerElement['_hlsConfig'];
   beaconCollectionDomain: string;
   customDomain: string;
   playbackId: string;
@@ -180,10 +183,14 @@ const usePlayer = (
     playbackRates,
     currentTime,
     themeProps,
+    extraSourceParams,
+    _hlsConfig,
     ...remainingProps
   } = props;
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
+  useObjectPropEffect('extraSourceParams', extraSourceParams, ref);
+  useObjectPropEffect('_hlsConfig', _hlsConfig, ref);
   useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);

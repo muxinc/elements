@@ -69,7 +69,7 @@
     "@mux/playback-core": "0.21.0",
     "castable-video": "0.5.2",
     "custom-media-element": "0.2.0",
-    "media-tracks": ">=0.2.3"
+    "media-tracks": "0.2.4"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",

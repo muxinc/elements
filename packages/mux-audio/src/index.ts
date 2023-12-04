@@ -18,6 +18,7 @@ import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/pl
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import { CustomAudioElement, Events as AudioEvents } from 'custom-media-element';
+import { HlsConfig } from 'hls.js';
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -60,6 +61,7 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
   #loadRequested?: Promise<void> | null;
   #playerInitTime: number;
   #metadata: Readonly<Metadata> = {};
+  #_hlsConfig?: Partial<HlsConfig>;
 
   constructor() {
     super();
@@ -292,6 +294,14 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
       );
       this.mux.emit('hb', this.#metadata);
     }
+  }
+
+  get _hlsConfig() {
+    return this.#_hlsConfig;
+  }
+
+  set _hlsConfig(val: Readonly<Partial<HlsConfig>> | undefined) {
+    this.#_hlsConfig = val;
   }
 
   async #requestLoad() {

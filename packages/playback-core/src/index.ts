@@ -239,7 +239,7 @@ type MuxVideoURLProps = Partial<{
     storyboard: string;
     thumbnail: string;
   }>;
-  extraPlaylistParams: Record<string, any>;
+  extraSourceParams: Record<string, any>;
 }>;
 
 export const toMuxVideoURL = ({
@@ -249,7 +249,7 @@ export const toMuxVideoURL = ({
   minResolution,
   renditionOrder,
   tokens: { playback: token } = {},
-  extraPlaylistParams = {},
+  extraSourceParams = {},
 }: MuxVideoURLProps = {}) => {
   if (!playbackIdWithParams) return undefined;
   const [playbackId, queryPart = ''] = toPlaybackIdParts(playbackIdWithParams);
@@ -284,7 +284,7 @@ export const toMuxVideoURL = ({
     if (renditionOrder) {
       url.searchParams.set('rendition_order', renditionOrder);
     }
-    Object.entries(extraPlaylistParams).forEach(([k, v]) => {
+    Object.entries(extraSourceParams).forEach(([k, v]) => {
       if (v == undefined) return;
       url.searchParams.set(k, v);
     });
@@ -424,11 +424,14 @@ function useNative(
 
 export const setupHls = (
   props: Partial<
-    Pick<MuxMediaPropsInternal, 'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd'>
+    Pick<
+      MuxMediaPropsInternal,
+      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig'
+    >
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
 ) => {
-  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd } = props;
+  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -471,6 +474,7 @@ export const setupHls = (
       },
       ...defaultConfig,
       ...streamTypeConfig,
+      ..._hlsConfig,
     }) as HlsInterface;
 
     return hls;
