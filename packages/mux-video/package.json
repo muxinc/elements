@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video",
-  "version": "0.16.5",
+  "version": "0.17.0",
   "description": "A custom mux video element for the browser that Just Works™",
   "keywords": [
     "video",
@@ -66,10 +66,10 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/playback-core": "0.20.2",
+    "@mux/playback-core": "0.21.0",
     "castable-video": "0.5.2",
     "custom-media-element": "0.2.0",
-    "media-tracks": ">=0.2.3"
+    "media-tracks": "0.2.4"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",

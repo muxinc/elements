@@ -2,8 +2,9 @@
 /// <reference path="../dist/types/mux-embed.d.ts" />
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
-import type { HlsInterface as Hls } from './hls';
 import type { VideoTrack, AudioTrack, VideoTrackList, AudioTrackList } from 'media-tracks';
+import type { HlsConfig } from 'hls.js';
+import type Hls from 'hls.js';
 
 type KeyTypes = string | number | symbol;
 type Maybe<T> = T | null | undefined;
@@ -122,12 +123,43 @@ export type CuePoint<T = any> = {
   value: T;
 };
 
+export const MaxResolution = {
+  upTo720p: '720p',
+  upTo1080p: '1080p',
+  upTo1440p: '1440p',
+  upTo2160p: '2160p',
+} as const;
+
+export const MinResolution = {
+  noLessThan480p: '480p',
+  noLessThan540p: '540p',
+  noLessThan720p: '720p',
+  noLessThan1080p: '1080p',
+  noLessThan1440p: '1440p',
+  noLessThan2160p: '2160p',
+} as const;
+
+export const RenditionOrder = {
+  DESCENDING: 'desc',
+} as const;
+
+export type MaxResolutionValue = ValueOf<typeof MaxResolution>;
+export type MinResolutionValue = ValueOf<typeof MinResolution>;
+export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
+
 export type MuxMediaPropTypes = {
   envKey: MetaData['env_key'];
   debug: Options['debug'] & Hls['config']['debug'];
   metadata: Partial<Options['data']>;
-  maxResolution: string;
+  maxResolution: MaxResolutionValue;
+  minResolution: MinResolutionValue;
+  renditionOrder: RenditionOrderValue;
   customDomain: string;
+  tokens: Partial<{
+    playback: string;
+    storyboard: string;
+    thumbnail: string;
+  }>;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   errorTranslator: Options['errorTranslator'];
   disableCookies: Options['disableCookies'];
@@ -143,6 +175,7 @@ export type MuxMediaPropTypes = {
   autoplay?: Autoplay;
   preferCmcd: ValueOf<CmcdTypes> | undefined;
   error?: HTMLMediaElement['error'] | MediaError;
+  _hlsConfig?: Partial<HlsConfig>;
 };
 
 export interface MediaTracks {

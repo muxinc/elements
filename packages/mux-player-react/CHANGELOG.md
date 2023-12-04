@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.1.0...@mux/mux-player-react@2.2.0) (2023-10-31)
+
+
+### Features
+
+* **mux-player-react:** Force bump ([#806](https://github.com/muxinc/elements/issues/806)) ([101d04a](https://github.com/muxinc/elements/commit/101d04a00fb85d79fa036a40103bb054f26e0b78))
+
+
+
+
+
+# [2.1.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.0.1...@mux/mux-player-react@2.1.0) (2023-10-24)
+
+
+### Features
+
+* Manifest manipulation and other media stream query param props. ([954b2c8](https://github.com/muxinc/elements/commit/954b2c80d7df88bb4585c46a15dd1185d56dcf9a))
+
+
+
+
+
 ## [2.0.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.0.0...@mux/mux-player-react@2.0.1) (2023-10-03)
 
 **Note:** Version bump only for package @mux/mux-player-react

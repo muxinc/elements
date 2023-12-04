@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { content } from '../src/template.ts';
+import { content, partsListStr } from '../src/template.ts';
 import { render } from '../src/html.ts';
 
 const minify = (html) => html.trim().replace(/>\s+</g, '><');
@@ -7,14 +7,12 @@ const minify = (html) => html.trim().replace(/>\s+</g, '><');
 describe('<mux-player> template render', () => {
   const div = document.createElement('div');
 
-  const exportParts = `top, center, bottom, layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer, controller, poster, live, play, button, seek-backward, seek-forward, mute, captions, airplay, pip, fullscreen, cast, playback-rate, volume, range, time, display, control-bar`;
-
   it('default template without props', function () {
     render(content({}), div);
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${partsListStr}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -36,7 +34,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" hotkeys=" noarrowleft noarrowright" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="live" target-live-window="0"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${partsListStr}" hotkeys=" noarrowleft noarrowright" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="live" target-live-window="0"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -53,7 +51,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${partsListStr}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide=""><p></p></mxp-dialog></media-theme>`
       )
     );
   });
@@ -74,7 +72,7 @@ describe('<mux-player> template render', () => {
     assert.equal(
       normalizeAttributes(minify(div.innerHTML)),
       normalizeAttributes(
-        `<media-theme defaultsubtitles="" disabled="" exportparts="${exportParts}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
+        `<media-theme defaultsubtitles="" disabled="" exportparts="${partsListStr}" nohotkeys=""><mux-video crossorigin="" exportparts="video" playsinline="" slot="media" stream-type="on-demand"></mux-video><slot name="poster" slot="poster"><media-poster-image exportparts="poster, img" part="poster"></media-poster-image></slot><mxp-dialog no-auto-hide="" open=""><h3>Errr</h3><p></p></mxp-dialog></media-theme>`
       )
     );
   });

@@ -1,5 +1,4 @@
 import Hls from './hls';
-import type { VideoRenditionList } from 'media-tracks';
 
 export function setupMediaTracks(
   customMediaEl: HTMLMediaElement,
@@ -80,7 +79,8 @@ export function setupMediaTracks(
   // 2. if 1 of the renditions is disabled we assume a selection was made
   //    and lock it to the first rendition that is enabled.
   const switchRendition = (event: Event) => {
-    const level = (event.target as VideoRenditionList).selectedIndex;
+    // @ts-ignore
+    const level = event.target.selectedIndex as number;
     if (level != hls.nextLevel) {
       smoothSwitch(level);
     }

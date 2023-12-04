@@ -1,10 +1,5 @@
 import { assert } from '@open-wc/testing';
-import {
-  getSrcFromPlaybackId,
-  getPosterURLFromPlaybackId,
-  getStoryboardURLFromPlaybackId,
-  AttributeTokenList,
-} from '../src/helpers.ts';
+import { getPosterURLFromPlaybackId, getStoryboardURLFromPlaybackId, AttributeTokenList } from '../src/helpers.ts';
 
 // token key Key-Must-Be-at-least-32-bytes-in-length!
 // generated via https://dinochiesa.github.io/jwt/
@@ -12,26 +7,6 @@ const THUMBNAIL_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0In0.BUhYQ9GTTFrrqyfT_7
 const STORYBOARD_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJzIn0.aYYPU6VETdQOF04OEbhDYPOCgIxmngVBIfC6BQXbgI8';
 
 describe('helpers', () => {
-  describe('getSrcFromPlaybackId', () => {
-    it('with no token', () => {
-      assert.equal(getSrcFromPlaybackId('12345'), 'https://stream.mux.com/12345.m3u8?redundant_streams=true');
-    });
-
-    it('with a token', () => {
-      assert.equal(
-        getSrcFromPlaybackId('12345', { token: 't-1234' }),
-        'https://stream.mux.com/12345.m3u8?token=t-1234'
-      );
-    });
-
-    it('with a custom domain', () => {
-      assert.equal(
-        getSrcFromPlaybackId('12345', { domain: 'fake.com' }),
-        'https://stream.fake.com/12345.m3u8?redundant_streams=true'
-      );
-    });
-  });
-
   describe('getPosterURLFromPlaybackId', () => {
     it('with no token', () => {
       assert.equal(getPosterURLFromPlaybackId('12345'), 'https://image.mux.com/12345/thumbnail.webp');
@@ -60,7 +35,7 @@ describe('helpers', () => {
 
     it('with a custom domain', () => {
       assert.equal(
-        getPosterURLFromPlaybackId('12345', { domain: 'fake.com' }),
+        getPosterURLFromPlaybackId('12345', { customDomain: 'fake.com' }),
         'https://image.fake.com/12345/thumbnail.webp'
       );
     });
@@ -88,7 +63,7 @@ describe('helpers', () => {
 
     it('with a custom domain', () => {
       assert.equal(
-        getStoryboardURLFromPlaybackId('12345', { domain: 'fake.com' }),
+        getStoryboardURLFromPlaybackId('12345', { customDomain: 'fake.com' }),
         'https://image.fake.com/12345/storyboard.vtt?format=webp'
       );
     });

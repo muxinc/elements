@@ -90,9 +90,10 @@
         var(--_accent-color) 25%,
         var(--_accent-color)
       );
-      --media-range-thumb-width: 0;
-      --media-range-thumb-height: 0;
-      --media-range-thumb-transition: all 0.3s;
+      --media-range-thumb-width: 12px;
+      --media-range-thumb-height: 12px;
+      --media-range-thumb-transform: scale(0);
+      --media-range-thumb-transition: transform 0.3s;
       --media-range-thumb-opacity: 1;
       --media-preview-thumbnail-background: var(--_primary-color);
       --media-preview-thumbnail-border: 5px solid var(--_primary-color);
@@ -115,8 +116,7 @@
     }
 
     media-time-range:hover {
-      --media-range-thumb-width: 12px;
-      --media-range-thumb-height: 12px;
+      --media-range-thumb-transform: scale(1);
     }
 
     media-time-range::part(preview-box)::after {
@@ -132,32 +132,33 @@
       transform: translate(-50%, -10px);
     }
 
-    :is(media-captions-listbox, media-rendition-listbox, media-audio-track-listbox)::part(indicator) {
-      fill: var(--_accent-color);
-    }
-
-    :is(media-captions-listbox, media-rendition-listbox, media-audio-track-listbox)::part(option) {
-      display: flex;
-      align-items: center;
-      padding: 8px 10px;
-    }
-
-    :is(media-captions-listbox, media-rendition-listbox, media-audio-track-listbox)::part(option-selected) {
-      font-weight: 700;
-    }
-
-    media-captions-listbox,
-    media-rendition-listbox,
-    media-audio-track-listbox {
+    [part~='listbox'] {
       border-radius: 2px;
       border: 1px solid rgba(0, 0, 0, 0.1);
       bottom: calc(100% + 16px);
-      padding: 10px;
+      padding: 2.5px 10px;
+    }
+
+    [part~='listbox']::part(indicator) {
+      fill: var(--_accent-color);
+    }
+
+    [part~='listbox']::part(option) {
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      min-height: 34px;
+    }
+
+    [part~='listbox']::part(option-selected) {
+      font-weight: 700;
     }
 
     media-captions-selectmenu,
     media-rendition-selectmenu,
-    media-audio-track-selectmenu {
+    media-audio-track-selectmenu,
+    media-playback-rate-listbox[part~='listbox'] {
       --media-listbox-background: var(--_primary-color);
       --media-option-selected-background: transparent;
       --media-option-hover-background: transparent;
@@ -171,8 +172,29 @@
       --media-control-height: 16px;
     }
 
+    media-playback-rate-button {
+      --media-control-padding: 6px 3px;
+      min-width: 4.4ch;
+    }
+
+    media-playback-rate-listbox[part~='listbox'] {
+      --media-listbox-layout: row;
+      --media-option-selected-background: var(--_accent-color);
+      margin-right: 6px;
+      padding: 0;
+    }
+
+    media-playback-rate-listbox[part~='listbox']::part(option) {
+      padding: 6px 4px;
+    }
+
+    media-playback-rate-listbox[part~='listbox']::part(option-selected) {
+      color: #fff;
+    }
+
     :host(:not([audio])) media-time-range {
-      --media-range-padding: 0;
+      /* Adding px is required here for calc() */
+      --media-range-padding: 0px;
       background: transparent;
       z-index: 10;
       height: 10px;
@@ -205,6 +227,7 @@
       padding-bottom: min(100px, 25%);
       background: linear-gradient(#000, transparent);
       opacity: 0.8;
+      pointer-events: none;
     }
 
     :host(:not([audio])) media-control-bar[part~='bottom']::before {
@@ -217,6 +240,7 @@
       background: linear-gradient(transparent, #000);
       opacity: 0.8;
       z-index: 1;
+      pointer-events: none;
     }
 
     media-control-bar[part~='bottom'] > * {
@@ -369,13 +393,15 @@
       opacity: 1;
     }
 
-    media-loading-indicator[media-loading]:not([media-paused]) ~ div > * {
+    media-loading-indicator[medialoading]:not([mediapaused]) ~ div > * {
       opacity: 0;
       transition-delay: 400ms;
     }
 
     media-volume-range {
       width: min(100%, 100px);
+      --media-range-padding-left: 10px;
+      --media-range-padding-right: 10px;
       --media-range-thumb-width: 12px;
       --media-range-thumb-height: 12px;
       --media-range-thumb-background: radial-gradient(
@@ -454,6 +480,19 @@
 
     media-mute-button[mediavolumelevel='off'] .muted {
       opacity: 1;
+    }
+
+    /**
+     * Our defaults for these buttons are to hide them at small sizes
+     * users can override this with CSS
+     */
+    :not([breakpointsm]) {
+      --bottom-play-button: none;
+      --bottom-seek-backward-button: none;
+      --bottom-seek-forward-button: none;
+      --bottom-time-display: none;
+      --bottom-playback-rate-selectmenu: none;
+      --bottom-pip-button: none;
     }
   </style>
 
@@ -616,7 +655,7 @@
           />
         </svg>
       </media-captions-button>
-      <media-captions-listbox slot="listbox" part="bottom captions listbox">
+      <media-captions-listbox slot="listbox" exportparts="option" part="bottom captions listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
@@ -710,14 +749,20 @@
     </media-live-button>
   </template>
 
-  <template partial="PlaybackRateButton">
-    <media-playback-rate-button
-      rates="{{playbackrates}}"
-      part="bottom playback-rate button"
+  <template partial="PlaybackRateSelect">
+    <media-playback-rate-selectmenu
+      part="bottom playback-rate selectmenu"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
     >
-    </media-playback-rate-button>
+      <media-playback-rate-button slot="button" part="bottom playback-rate button"></media-playback-rate-button>
+      <media-playback-rate-listbox
+        slot="listbox"
+        rates="{{playbackrates}}"
+        exportparts="option"
+        part="bottom playback-rate listbox"
+      ></media-playback-rate-listbox>
+    </media-playback-rate-selectmenu>
   </template>
 
   <template partial="VolumeRange">
@@ -756,7 +801,7 @@
           />
         </svg>
       </media-audio-track-button>
-      <media-audio-track-listbox slot="listbox" part="bottom audio-track listbox">
+      <media-audio-track-listbox slot="listbox" exportparts="option" part="bottom audio-track listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
@@ -791,7 +836,7 @@
           />
         </svg>
       </media-rendition-button>
-      <media-rendition-listbox slot="listbox" part="bottom rendition listbox">
+      <media-rendition-listbox slot="listbox" exportparts="option" part="bottom rendition listbox">
         <div slot="select-indicator">
           <style>
             .listbox-indicator {
@@ -818,6 +863,7 @@
   </template>
 
   <media-controller
+    part="controller"
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
     breakpoints="sm:470"
     gesturesdisabled="{{disabled}}"
@@ -833,7 +879,7 @@
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
 
-    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
 
     <template if="!audio">
       <!-- Pre-playback UI -->
@@ -882,16 +928,11 @@
         </template>
         {{>TimeRange}}
         <media-control-bar part="control-bar bottom">
-          <template if="breakpointsm">
-            {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}}
-          </template>
-          {{>MuteButton}} {{>VolumeRange}}
+          {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>MuteButton}}
+          {{>VolumeRange}}
           <div class="spacer"></div>
-          {{>RenditionSelect}}
-          <template if="breakpointsm"> {{>PlaybackRateButton}} </template>
-          {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
-          <template if="breakpointsm"> {{>PipButton}} </template>
-          {{>FullscreenButton}}
+          {{>RenditionSelect}} {{>PlaybackRateSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}}
+          {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
         </media-control-bar>
       </template>
 
@@ -902,15 +943,12 @@
         </media-control-bar>
         <template if="targetlivewindow > 0">{{>TimeRange}}</template>
         <media-control-bar part="control-bar bottom">
-          <template if="breakpointsm">
-            {{>PlayButton}}
-            <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
-          </template>
-          {{>MuteButton}}
+          {{>PlayButton}}
+          <template if="targetlivewindow > 0">{{>SeekBackwardButton}} {{>SeekForwardButton}}</template>
+          {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
           {{>RenditionSelect}} {{>AudioTrackSelect}} {{>CaptionsMenuButton}} {{>AirplayButton}} {{>CastButton}}
-          <template if="breakpointsm">{{>PipButton}}</template>
-          {{>FullscreenButton}}
+          {{>PipButton}} {{>FullscreenButton}}
         </media-control-bar>
       </template>
     </template>
@@ -927,7 +965,7 @@
           <template if="breakpointsm">{{>VolumeRange}}</template>
           {{>TimeDisplay}} {{>TimeRange}}
           <div class="spacer"></div>
-          <template if="breakpointsm">{{>PlaybackRateButton}}</template>
+          <template if="breakpointsm">{{>PlaybackRateSelect}}</template>
           {{>AirplayButton}} {{>CastButton}}
         </media-control-bar>
       </template>

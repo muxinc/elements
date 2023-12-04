@@ -523,16 +523,63 @@ describe('<mux-player>', () => {
     const muxVideo = player.media;
 
     assert.equal(player.maxResolution, '720p');
-    assert.equal(
-      muxVideo.src,
+    const actualSrcUrl = new URL(muxVideo.src);
+    const expectedSrcUrl = new URL(
       'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8?redundant_streams=true&max_resolution=720p'
     );
+    assert.equal(actualSrcUrl.searchParams.size, expectedSrcUrl.searchParams.size);
+    expectedSrcUrl.searchParams.forEach((value, key) => {
+      assert.equal(actualSrcUrl.searchParams.get(key), value);
+    });
 
     player.removeAttribute('max-resolution');
     assert.equal(player.maxResolution, null);
 
     player.maxResolution = '720p';
     assert.equal(player.maxResolution, '720p');
+  });
+
+  it('should apply extra-playlist-params as arbitrary search params on src', async function () {
+    const player = await fixture(`<mux-player
+      stream-type="on-demand"
+      extra-source-params="foo=str&bar=true&baz=1"
+      playback-id="r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA"
+    ></mux-player>`);
+    const muxVideo = player.media;
+
+    // NOTE: While you may use any value for the setter, the current impl will convert all values to string equivalents (CJP)
+    const expectedExtraPlaylistParams = { foo: 'str', bar: 'true', baz: '1' };
+    assert.deepEqual(
+      player.extraSourceParams,
+      expectedExtraPlaylistParams,
+      'should reflect value when set via attribute'
+    );
+    const actualSrcUrl = new URL(muxVideo.src);
+    const expectedSrcUrl = new URL(
+      'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8?foo=str&bar=true&baz=1'
+    );
+    assert.equal(actualSrcUrl.searchParams.size, expectedSrcUrl.searchParams.size);
+    expectedSrcUrl.searchParams.forEach((value, key) => {
+      assert.equal(actualSrcUrl.searchParams.get(key), value);
+    });
+
+    player.removeAttribute('extra-source-params');
+    assert.deepEqual(
+      player.extraSourceParams,
+      { redundant_streams: true },
+      'should reset to default params when attribute is removed'
+    );
+
+    player.extraSourceParams = {
+      foo: 'str',
+      bar: true,
+      baz: 1,
+    };
+    assert.deepEqual(
+      player.extraSourceParams,
+      expectedExtraPlaylistParams,
+      'should reflect value when set via property'
+    );
   });
 
   describe('buffered behaviors', function () {

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.11...@mux/mux-audio@0.11.0) (2023-10-24)
+
+
+### Features
+
+* Manifest manipulation and other media stream query param props. ([954b2c8](https://github.com/muxinc/elements/commit/954b2c80d7df88bb4585c46a15dd1185d56dcf9a))
+
+
+
+
+
 ## [0.10.11](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.10...@mux/mux-audio@0.10.11) (2023-10-03)
 
 **Note:** Version bump only for package @mux/mux-audio

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Head from "next/head";
 import Script from 'next/script';
-import MuxPlayer, { MuxPlayerProps } from "@mux/mux-player-react";
+import MuxPlayer, { MuxPlayerProps, MaxResolution, MinResolution, RenditionOrder } from "@mux/mux-player-react";
+import "@mux/mux-player/themes/classic";
 import "@mux/mux-player/themes/minimal";
 import "@mux/mux-player/themes/microvideo";
 import "@mux/mux-player/themes/gerwig";
@@ -86,6 +87,8 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   secondaryColor: undefined,
   accentColor: undefined,
   maxResolution: undefined,
+  minResolution: undefined,
+  renditionOrder: undefined,
   thumbnailTime: undefined,
   title: undefined,
   envKey: undefined,
@@ -103,6 +106,34 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   storyboardSrc: undefined,
   theme: undefined,
 });
+
+const SMALL_BREAKPOINT = 700;
+const XSMALL_BREAKPOINT = 300;
+const MediaChromeSizes = {
+  LG: 'large',
+  SM: 'small',
+  XS: 'extra-small',
+};
+
+const PlayerSizeWidths = {
+  [MediaChromeSizes.LG]: 800,
+  [MediaChromeSizes.SM]: 600,
+  [MediaChromeSizes.XS]: 250,
+};
+const PlayerSizeHeights = {
+  [MediaChromeSizes.LG]: 450,
+  [MediaChromeSizes.SM]: 338,
+  [MediaChromeSizes.XS]: 141,
+};
+
+const DEFAULT_INITIAL_STYLES_STATE = {
+  // width: PlayerSizeWidths[MediaChromeSizes.XS] + 'px',
+};
+
+const DEFAULT_INITIAL_OPTION_STYLES_STATE = {
+  '--player-height': PlayerSizeHeights[MediaChromeSizes.LG] + 'px'
+  // '--player-height': PlayerSizeHeights[MediaChromeSizes.XS] + 'px'
+};
 
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
   const { type, value } = action;
@@ -184,25 +215,6 @@ const UrlPathRenderer = ({
       <button onClick={copyToClipboard}>Copy URL</button>
     </div>
   );
-};
-
-const SMALL_BREAKPOINT = 700;
-const XSMALL_BREAKPOINT = 300;
-const MediaChromeSizes = {
-  LG: 'large',
-  SM: 'small',
-  XS: 'extra-small',
-};
-
-const PlayerSizeWidths = {
-  [MediaChromeSizes.LG]: 800,
-  [MediaChromeSizes.SM]: 600,
-  [MediaChromeSizes.XS]: 250,
-};
-const PlayerSizeHeights = {
-  [MediaChromeSizes.LG]: 450,
-  [MediaChromeSizes.SM]: 338,
-  [MediaChromeSizes.XS]: 141,
 };
 
 function getPlayerSize(width) {
@@ -301,6 +313,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async context => {
   return ({ props: { location } })
 };
 
+const MaxResolutionValues = Object.values(MaxResolution);
+const MinResolutionValues = Object.values(MinResolution);
+const RenditionOrderValues = Object.values(RenditionOrder);
+
 function MuxPlayerPage({ location }: Props) {
   const router = useRouter();
   const mediaElRef = useRef(null);
@@ -311,13 +327,11 @@ function MuxPlayerPage({ location }: Props) {
     if (!router.isReady) return;
     dispatch(updateProps(toInitialState(selectedAsset, mediaAssets, router.query)))
   }, [router.query, router.isReady]);
-  const [stylesState, dispatchStyles] = useReducer(reducer, {});
+  const [stylesState, dispatchStyles] = useReducer(reducer, DEFAULT_INITIAL_STYLES_STATE);
   const genericOnChange = (obj) => dispatch(updateProps<MuxPlayerProps>(obj));
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
-  const [optionStyles, optionsDispatchStyles] = useReducer(reducer, {
-    '--player-height': '450px'
-  });
+  const [optionStyles, optionsDispatchStyles] = useReducer(reducer, DEFAULT_INITIAL_OPTION_STYLES_STATE);
   const optionsGenericOnStyleChange = (obj) => optionsDispatchStyles(updateProps(obj));
   useEffect(() => {
     const height = mediaElRef.current.offsetHeight;
@@ -337,6 +351,11 @@ function MuxPlayerPage({ location }: Props) {
         theme={state.theme}
         envKey={state.envKey}
         metadata={state.metadata}
+        // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
+        // _hlsConfig={{
+        //   startLevel: 2,
+        //   debug: true,
+        // }}
         title={state.title}
         startTime={state.startTime}
         currentTime={state.currentTime}
@@ -363,6 +382,14 @@ function MuxPlayerPage({ location }: Props) {
         paused={state.paused}
         autoPlay={state.autoPlay}
         maxResolution={state.maxResolution}
+        minResolution={state.minResolution}
+        renditionOrder={state.renditionOrder}
+        // To test/apply extra playlist params to resultant src URL (CJP)
+        // extraSourceParams={{
+        //   foo: 'str',
+        //   bar: true,
+        //   baz: 1,
+        // }}
         preload={state.preload}
         streamType={state.streamType}
         targetLiveWindow={state.targetLiveWindow}
@@ -686,7 +713,19 @@ function MuxPlayerPage({ location }: Props) {
           value={state.maxResolution}
           name="maxResolution"
           onChange={genericOnChange}
-          values={['720p']}
+          values={MaxResolutionValues}
+        />
+        <EnumRenderer
+          value={state.minResolution}
+          name="minResolution"
+          onChange={genericOnChange}
+          values={MinResolutionValues}
+        />
+        <EnumRenderer
+          value={state.renditionOrder}
+          name="renditionOrder"
+          onChange={genericOnChange}
+          values={RenditionOrderValues}
         />
       </div>
 

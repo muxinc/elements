@@ -24,16 +24,16 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-audio-react';
 
 const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>((props, ref) => {
-  const { playbackId, src: outerSrc, children, autoPlay, preload, ...restProps } = props;
+  const { playbackId, src: outerSrc, children, autoPlay, preload, _hlsConfig, ...restProps } = props;
 
   const [playerInitTime] = useState(generatePlayerInitTime());
-  const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(playbackId) ?? outerSrc);
+  const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(props) ?? outerSrc);
   const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
   const innerMediaElRef = useRef<HTMLAudioElement>(null);
   const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
 
   useEffect(() => {
-    setSrc(toMuxVideoURL(playbackId) ?? outerSrc);
+    setSrc(toMuxVideoURL(props) ?? outerSrc);
   }, [outerSrc, playbackId]);
 
   useEffect(() => {
@@ -82,6 +82,7 @@ MuxAudio.propTypes = {
   // Improve this by adding a full shape() definition for all metadata props
   // metadata: PropTypes.shape({}),
   metadata: PropTypes.any,
+  _hlsConfig: PropTypes.any,
   beaconCollectionDomain: PropTypes.string,
   playbackId: PropTypes.string,
   playerInitTime: PropTypes.number,
