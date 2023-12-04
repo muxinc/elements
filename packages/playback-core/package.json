@@ -60,7 +60,6 @@
   },
   "dependencies": {
     "hls.js": "^1.4.10",
-    "media-tracks": "0.2.3",
     "mux-embed": "^4.27.0"
   },
   "devDependencies": {
