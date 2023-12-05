@@ -1,7 +1,8 @@
 #!/usr/bin/env node
-import path from 'path';
-import { build } from 'esbuild';
-import fs from 'fs';
+import * as process from 'node:process';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import esbuild from 'esbuild';
 
 const camelCase = (name) => {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
@@ -35,6 +36,17 @@ const i18nPlugin = {
   },
 };
 
+const onBuildEnd = {
+  name: 'on-build-end',
+  setup(build) {
+    build.onEnd((result) => {
+      const name = esmScriptModule ? 'module' : options.format;
+      // write-out the metafile
+      fs.writeFileSync(`./dist/${name}.json`, JSON.stringify(result.metafile));
+    });
+  },
+};
+
 const esmScriptModule = args.format === 'esm-module';
 
 const options = {
@@ -45,15 +57,10 @@ const options = {
   target: 'es2019',
   minify: args.minify,
   format: args.format,
-  watch: !!args.watch && {
-    onRebuild(error, result) {
-      if (error) console.error('[watch] build failed:', error);
-      else console.log('[watch] build finished');
-    },
-  },
   outExtension: args.outExtension,
   metafile: true,
-  plugins: [i18nPlugin],
+  logLevel: 'info',
+  plugins: [i18nPlugin, onBuildEnd],
   loader: {
     '.html': 'text',
     '.css': 'text',
@@ -77,18 +84,10 @@ if (esmScriptModule) {
   options.format = 'esm';
 }
 
-build(options).then(
-  (result) => {
-    let name = options.format;
-
-    if (esmScriptModule) {
-      name = 'module';
-    }
-
-    // write-out the metafile
-    fs.writeFileSync(`./dist/${name}.json`, JSON.stringify(result.metafile));
-
-    if (!!args.watch) console.log('[watch] build finished, watching for changes...');
-  },
-  () => process.exit(1)
-);
+if (args.watch) {
+  const context = await esbuild.context(options);
+  await context.rebuild();
+  await context.watch();
+} else {
+  await esbuild.build(options);
+}

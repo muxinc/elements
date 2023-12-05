@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { build } from 'esbuild';
+import esbuild from 'esbuild';
 
 const themes = ['classic', 'microvideo', 'minimal', 'gerwig'];
 const devMode = process.argv.includes('--dev');
@@ -7,40 +7,64 @@ const devMode = process.argv.includes('--dev');
 const shared = {
   bundle: true,
   target: 'es2019',
+  logLevel: 'info',
   loader: {
     '.html': 'text',
     '.css': 'text',
     '.svg': 'text',
   },
-  watch: devMode,
 };
 
 // entryPoints doesn't support glob patterns so we iterate over known themes
-themes.forEach((theme) => {
+for (const theme of themes) {
   //@ts-ignore
-  build({
+  const esm = {
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'esm',
     outExtension: { '.js': '.mjs' },
     outdir: `./dist/themes/${theme}`,
-  });
+  };
+
+  if (devMode) {
+    const context = await esbuild.context(esm);
+    await context.rebuild();
+    await context.watch();
+  } else {
+    await esbuild.build(esm);
+  }
 
   //@ts-ignore
-  build({
+  const cjs = {
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'cjs',
     outExtension: { '.js': '.cjs.js' },
     outdir: `./dist/themes/${theme}`,
-  });
+  };
+
+  if (devMode) {
+    const context = await esbuild.context(cjs);
+    await context.rebuild();
+    await context.watch();
+  } else {
+    await esbuild.build(cjs);
+  }
 
   //@ts-ignore
-  build({
+  const iife = {
     ...shared,
     entryPoints: [`./src/themes/${theme}/index.ts`],
     format: 'iife',
     globalName: `mediaTheme${theme[0].toUpperCase() + theme.slice(1)}`,
     outdir: `./dist/themes/${theme}`,
-  });
-});
+  };
+
+  if (devMode) {
+    const context = await esbuild.context(iife);
+    await context.rebuild();
+    await context.watch();
+  } else {
+    await esbuild.build(iife);
+  }
+}

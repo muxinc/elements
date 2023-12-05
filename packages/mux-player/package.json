@@ -109,7 +109,7 @@
     "@web/test-runner": "^0.13.26",
     "@web/test-runner-playwright": "^0.9.0",
     "downlevel-dts": "^0.11.0",
-    "esbuild": "^0.15.7",
+    "esbuild": "^0.19.8",
     "eslint": "^8.24.0",
     "hls.js": "^1.4.12",
     "mux-embed": "^4.30.0",
