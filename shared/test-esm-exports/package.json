@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "esbuild": "^0.15.7",
-    "hls.js": "^1",
-    "mux-embed": "^4"
+    "hls.js": "^1.4.12",
+    "mux-embed": "^4.30.0"
   }
 }
