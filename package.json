@@ -16,7 +16,7 @@
     "lerna": "^4.0.0",
     "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1",
-    "turbo": "^1.10.6"
+    "turbo": "^1.10.16"
   },
   "workspaces": [
     "packages/*",
