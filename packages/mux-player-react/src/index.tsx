@@ -89,6 +89,7 @@ export type MuxPlayerProps = {
   placeholder?: string;
   playbackRates?: number[];
   defaultShowRemainingTime?: boolean;
+  defaultDuration?: number;
   noVolumePref?: boolean;
   thumbnailTime?: number;
   title?: string;

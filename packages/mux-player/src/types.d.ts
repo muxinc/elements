@@ -33,6 +33,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   novolumepref: boolean;
   playbackRates: string;
   defaultShowRemainingTime: boolean;
+  defaultDuration?: number;
   hideDuration: boolean;
   onCloseErrorDialog: (evt: CustomEvent) => void;
   onInitFocusDialog: (evt: CustomEvent) => void;

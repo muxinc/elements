@@ -92,6 +92,7 @@ export const content = (props: MuxTemplateProps) => html`
     backwardseekoffset="${props.backwardSeekOffset ?? false}"
     playbackrates="${props.playbackRates ?? false}"
     defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
+    defaultduration="${props.defaultDuration ?? false}"
     hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
     exportparts="${partsListStr}"
