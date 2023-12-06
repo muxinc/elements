@@ -36,20 +36,13 @@ import type {
 } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import 'castable-video';
-import { CustomMediaMixin, Events as VideoEvents } from 'custom-media-element';
+import { CustomVideoElement, Events as VideoEvents } from 'custom-media-element';
+import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
-
-const CustomVideoElement = MediaTracksMixin(
-  CustomMediaMixin(globalThis.HTMLElement, {
-    tag: 'video',
-    is: 'castable-video',
-  })
-);
 
 export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
@@ -78,7 +71,7 @@ const AttributeNameValues = Object.values(Attributes);
 const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video';
 
-class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProps> {
+class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMediaProps> {
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
@@ -633,6 +626,9 @@ class MuxVideoElement extends CustomVideoElement implements Partial<MuxMediaProp
     this.unload();
   }
 }
+
+// castable-video should be mixed in last so that it can override load().
+class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {}
 
 type MuxVideoElementType = typeof MuxVideoElement;
 declare global {
