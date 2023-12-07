@@ -96,6 +96,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   playbackRate: undefined,
   forwardSeekOffset: undefined,
   backwardSeekOffset: undefined,
+  defaultDuration: undefined,
   volume: undefined,
   loop: undefined,
   crossOrigin: undefined,
@@ -400,6 +401,7 @@ function MuxPlayerPage({ location }: Props) {
         accentColor={state.accentColor}
         defaultShowRemainingTime={state.defaultShowRemainingTime}
         defaultHiddenCaptions={state.defaultHiddenCaptions}
+        defaultDuration={state.defaultDuration}
         playbackRate={state.playbackRate}
         playbackRates={state.playbackRates}
         onPlay={(evt: Event) => {
@@ -665,6 +667,13 @@ function MuxPlayerPage({ location }: Props) {
           name="playbackRates"
           onChange={genericOnChange}
           values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
+        />
+        <NumberRenderer
+          value={state.defaultDuration}
+          name="defaultDuration"
+          onChange={genericOnChange}
+          min={0}
+          step={1}
         />
         <ColorRenderer
           value={state.primaryColor}
