@@ -41,6 +41,7 @@
     }
 
     :host([audio]) {
+      --_secondary-color: var(--media-secondary-color, black);
       --media-preview-time-border-radius: 3px;
       --media-preview-time-margin: 0 0 5px;
       --media-preview-time-text-shadow: none;
@@ -64,6 +65,7 @@
 
     :host([audio]) media-control-bar {
       width: 100%;
+      background-color: var(--media-control-background);
     }
 
     /*
@@ -487,7 +489,7 @@
      * Our defaults for these buttons are to hide them at small sizes
      * users can override this with CSS
      */
-    :not([breakpointsm]) {
+    media-controller:not([breakpointsm]):not([audio]) {
       --bottom-play-button: none;
       --bottom-seek-backward-button: none;
       --bottom-seek-forward-button: none;
@@ -965,7 +967,6 @@
           {{>MuteButton}}
           <template if="breakpointsm">{{>VolumeRange}}</template>
           {{>TimeDisplay}} {{>TimeRange}}
-          <div class="spacer"></div>
           <template if="breakpointsm">{{>PlaybackRateSelect}}</template>
           {{>AirplayButton}} {{>CastButton}}
         </media-control-bar>
@@ -981,7 +982,7 @@
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
           </template>
           <template if="targetlivewindow > 0"> {{>TimeDisplay}} {{>TimeRange}} </template>
-          <div class="spacer"></div>
+          <template if="!targetlivewindow"><div class="spacer"></div></template>
           {{>AirplayButton}} {{>CastButton}}
         </media-control-bar>
       </template>
