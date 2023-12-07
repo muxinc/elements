@@ -70,6 +70,7 @@ const PlayerAttributes = {
   HOTKEYS: 'hotkeys',
   PLAYBACK_RATES: 'playbackrates',
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
+  DEFAULT_DURATION: 'default-duration',
   TITLE: 'title',
   PLACEHOLDER: 'placeholder',
   THEME: 'theme',
@@ -82,6 +83,7 @@ const PlayerAttributes = {
 const ThemeAttributeNames = [
   'audio',
   'backwardseekoffset',
+  'defaultduration',
   'defaultshowremainingtime',
   'defaultsubtitles',
   'noautoseektolive',
@@ -149,6 +151,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     forwardSeekOffset: el.forwardSeekOffset,
     backwardSeekOffset: el.backwardSeekOffset,
     defaultHiddenCaptions: el.defaultHiddenCaptions,
+    defaultDuration: el.defaultDuration,
     defaultShowRemainingTime: el.defaultShowRemainingTime,
     hideDuration: getHideDuration(el),
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
@@ -1129,6 +1132,25 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.removeAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS);
     } else {
       this.setAttribute(PlayerAttributes.DEFAULT_HIDDEN_CAPTIONS, '');
+    }
+  }
+
+  /**
+   * Get the boolean value of default hidden captions.
+   * By default returns false so captions are enabled on initial load.
+   */
+  get defaultDuration() {
+    return toNumberOrUndefined(this.getAttribute(PlayerAttributes.DEFAULT_DURATION));
+  }
+
+  /**
+   * Set the default hidden captions flag.
+   */
+  set defaultDuration(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(PlayerAttributes.DEFAULT_DURATION);
+    } else {
+      this.setAttribute(PlayerAttributes.DEFAULT_DURATION, `${val}`);
     }
   }
 
