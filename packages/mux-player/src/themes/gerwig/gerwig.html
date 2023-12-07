@@ -1,4 +1,23 @@
 <template id="media-theme-gerwig">
+  <!--
+    NOTE: Using conditional templates here so initial value is as expected due to state update cycling.
+    For more, see: MuxPlayer::secondaryColor getter and its application in template.ts (CJP).
+  -->
+  <template if="!audio">
+    <style>
+      :host {
+        --_secondary-color: var(--media-secondary-color, transparent);
+      }
+    </style>
+  </template>
+  <template if="audio">
+    <style>
+      :host([audio]) media-control-bar {
+        --_secondary-color: var(--media-secondary-color, black);
+        background-color: var(--_secondary-color);
+      }
+    </style>
+  </template>
   <style>
     @keyframes pre-play-hide {
       0% {
@@ -18,10 +37,8 @@
 
     :host {
       --_primary-color: var(--media-primary-color, #fff);
-      --_secondary-color: var(--media-secondary-color, transparent);
       --_accent-color: var(--media-accent-color, #fa50b5);
       --_text-color: var(--media-text-color, #000);
-
       --media-icon-color: var(--_primary-color);
       --media-control-background: var(--_secondary-color);
       --media-control-hover-background: var(--_accent-color);
