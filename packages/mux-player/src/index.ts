@@ -501,11 +501,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   #setUpCaptionsMovement() {
-    // Any Safari
-    const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
     const isFirefox = /Firefox/i.test(navigator.userAgent);
-
-    // skip if not firefox
     if (!isFirefox) return;
 
     let selectedTrack: TextTrack;
@@ -542,11 +538,10 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           // for cues that have more than one line, we want to push the cue further up
           const lines = cue.text.split('\n').length;
           // start at -3 to account for thumbnails as well.
-          // default safari styles are taller than other browsers
-          let offset = isSafari ? -2 : -3;
+          let offset = -3;
 
           if (this.streamType === StreamTypes.LIVE) {
-            offset = isSafari ? -1 : -2;
+            offset = -2;
           }
 
           const setTo = offset - lines;
@@ -562,8 +557,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
             cuesmap.set(cue, cue.line);
           }
 
-          // we have to set line to 0 first due to a chrome bug https://crbug.com/1308892
-          cue.line = setTo - 1;
           cue.line = setTo;
         } else {
           setTimeout(() => {
@@ -598,18 +591,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     // update the selected track as necessary
     this.textTracks?.addEventListener('change', selectTrack);
     this.textTracks?.addEventListener('addtrack', selectTrack);
-
-    if (navigator.userAgent.includes('Chrome/')) {
-      const chromeWorkaround = () => {
-        toggleLines(selectedTrack, this.#userInactive, true);
-        if (!this.paused) {
-          window.requestAnimationFrame(chromeWorkaround);
-        }
-      };
-      this.addEventListener('playing', () => {
-        chromeWorkaround();
-      });
-    }
 
     this.addEventListener('userinactivechange', () => {
       const newUserInactive = this.mediaController?.hasAttribute(MediaControllerAttributes.USER_INACTIVE) ?? true;
