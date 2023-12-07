@@ -71,10 +71,11 @@
      * Borrowed here, so the captions don't move too fast.
      */
     media-controller ::slotted([slot='media']) {
+      --media-webkit-text-track-transform: translateY(0) scale(0.98);
       --media-webkit-text-track-transition: transform 0.433s ease-out 0.3s;
     }
     media-controller:is([mediapaused], :not([userinactive])) ::slotted([slot='media']) {
-      --media-webkit-text-track-transform: translateY(-50px);
+      --media-webkit-text-track-transform: translateY(-50px) scale(0.98);
       --media-webkit-text-track-transition: transform 0.15s ease;
     }
 
