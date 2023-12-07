@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.11.0...@mux/mux-audio@0.11.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* upgrade media-chrome + turbo ([#838](https://github.com/muxinc/elements/issues/838)) ([a7c4948](https://github.com/muxinc/elements/commit/a7c49488ccbc3c1a9d087775d8ee83298acd1e91))
+
+
+
+
+
 # [0.11.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.10.11...@mux/mux-audio@0.11.0) (2023-10-24)
 
 

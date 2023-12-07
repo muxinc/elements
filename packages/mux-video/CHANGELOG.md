@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.0...@mux/mux-video@0.17.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* ts error due to duplicate same dependency ([#837](https://github.com/muxinc/elements/issues/837)) ([411f382](https://github.com/muxinc/elements/commit/411f382ca9d701fae30bdf12d65b7c314f3e9618)), closes [#836](https://github.com/muxinc/elements/issues/836)
+* upgrade media-chrome + turbo ([#838](https://github.com/muxinc/elements/issues/838)) ([a7c4948](https://github.com/muxinc/elements/commit/a7c49488ccbc3c1a9d087775d8ee83298acd1e91))
+* upgrade media-chrome v2 & castable-video v1 ([#840](https://github.com/muxinc/elements/issues/840)) ([7752977](https://github.com/muxinc/elements/commit/775297721575680994ca1b96576080ac1f14c47d))
+
+
+
+
+
 # [0.17.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.16.5...@mux/mux-video@0.17.0) (2023-10-24)
 
 

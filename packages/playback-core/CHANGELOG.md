@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.22.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.21.0...@mux/playback-core@0.22.0) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* **playback-core:** narrow cmcd for cache ([#825](https://github.com/muxinc/elements/issues/825)) ([61a4cfe](https://github.com/muxinc/elements/commit/61a4cfe5d50431e9b38a8b43f8ea1d71c0d1521e))
+* ts error due to duplicate same dependency ([#837](https://github.com/muxinc/elements/issues/837)) ([411f382](https://github.com/muxinc/elements/commit/411f382ca9d701fae30bdf12d65b7c314f3e9618)), closes [#836](https://github.com/muxinc/elements/issues/836)
+* upgrade media-chrome + turbo ([#838](https://github.com/muxinc/elements/issues/838)) ([a7c4948](https://github.com/muxinc/elements/commit/a7c49488ccbc3c1a9d087775d8ee83298acd1e91))
+
+
+### Features
+
+* **mux-player, mux-player-react:** Add extra-source-params/extraSourceParams attr/prop for advanced usage. ([a5ad6ed](https://github.com/muxinc/elements/commit/a5ad6ed3da0aafb52f983c91881126d74c884157))
+
+
+
+
+
 # [0.21.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.20.2...@mux/playback-core@0.21.0) (2023-10-24)
 
 

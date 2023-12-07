@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.2.0...@mux/mux-player@2.3.0) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* audio controls CSS ([#843](https://github.com/muxinc/elements/issues/843)) ([427adbd](https://github.com/muxinc/elements/commit/427adbde79ce2230050fa6b57a0669d5fd06b585))
+* **mux-player:** Add additional parts for export. Use constants. Upda… ([#813](https://github.com/muxinc/elements/issues/813)) ([4ad76a3](https://github.com/muxinc/elements/commit/4ad76a35d32abf02b83cc8feed52db4117c77791))
+* **mux-player:** add controller CSS part  ([#828](https://github.com/muxinc/elements/issues/828)) ([116d6f0](https://github.com/muxinc/elements/commit/116d6f0361c64f0efddae8b35a0af7176ce26e9a)), closes [#728](https://github.com/muxinc/elements/issues/728)
+* **mux-player:** attr mismatch to make sure controls and loading indi… ([#815](https://github.com/muxinc/elements/issues/815)) ([d2b1466](https://github.com/muxinc/elements/commit/d2b14664989d3b8265d52be158b567864e2cd753))
+* **mux-player:** media chrome attr name mismatches ([#816](https://github.com/muxinc/elements/issues/816)) ([c771934](https://github.com/muxinc/elements/commit/c771934e9e22011f8999aa5c848b1f399fd1dc65))
+* **mux-player:** upgrade media chrome to get fix for android tap issue… ([#824](https://github.com/muxinc/elements/issues/824)) ([e46fed4](https://github.com/muxinc/elements/commit/e46fed4feb011303b7111ccc9737a2e769efc485))
+* remove unneeded captions movement code  ([#842](https://github.com/muxinc/elements/issues/842)) ([fb163f6](https://github.com/muxinc/elements/commit/fb163f6be1c8a0113542f317c14da1112be0fb69)), closes [#830](https://github.com/muxinc/elements/issues/830)
+* setting custom playbackrates ([#819](https://github.com/muxinc/elements/issues/819)) ([799d7a5](https://github.com/muxinc/elements/commit/799d7a5d780e004e9868f437a720e69ec9344883)), closes [#812](https://github.com/muxinc/elements/issues/812)
+* upgrade media-chrome + turbo ([#838](https://github.com/muxinc/elements/issues/838)) ([a7c4948](https://github.com/muxinc/elements/commit/a7c49488ccbc3c1a9d087775d8ee83298acd1e91))
+* upgrade media-chrome v2 & castable-video v1 ([#840](https://github.com/muxinc/elements/issues/840)) ([7752977](https://github.com/muxinc/elements/commit/775297721575680994ca1b96576080ac1f14c47d))
+
+
+### Features
+
+* **mux-player, mux-player-react:** Add extra-source-params/extraSourceParams attr/prop for advanced usage. ([a5ad6ed](https://github.com/muxinc/elements/commit/a5ad6ed3da0aafb52f983c91881126d74c884157))
+* **mux-player, mux-player-react:** default duration ([#844](https://github.com/muxinc/elements/issues/844)) ([8d52572](https://github.com/muxinc/elements/commit/8d52572330089076a6d05ff33fa0f596e18799ff))
+* **mux-player:** allow forcibly showing buttons that we usually hide at small sizes ([#827](https://github.com/muxinc/elements/issues/827)) ([f7200e7](https://github.com/muxinc/elements/commit/f7200e71ab691363abc4729691e3c40fee2d7a61))
+
+
+
+
+
 # [2.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.1.0...@mux/mux-player@2.2.0) (2023-10-31)
 
 

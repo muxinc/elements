@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.14](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.13...@mux/mux-uploader@1.0.0-beta.14) (2023-12-07)
+
+
+### Bug Fixes
+
+* upgrade media-chrome + turbo ([#838](https://github.com/muxinc/elements/issues/838)) ([a7c4948](https://github.com/muxinc/elements/commit/a7c49488ccbc3c1a9d087775d8ee83298acd1e91))
+
+
+### Features
+
+* **mux-uploader:** Allow audio files to upload ([#826](https://github.com/muxinc/elements/issues/826)) ([510d54a](https://github.com/muxinc/elements/commit/510d54a544fdba48fcef288524c4ee14fccff2bc))
+
+
+
+
+
 # [1.0.0-beta.13](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.12...@mux/mux-uploader@1.0.0-beta.13) (2023-09-05)
 
 **Note:** Version bump only for package @mux/mux-uploader

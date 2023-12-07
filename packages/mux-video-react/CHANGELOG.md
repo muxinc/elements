@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.8.0...@mux/mux-video-react@0.8.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* **mux-video-react:** Don't spread disableCookies to video to avoid warnings ([#749](https://github.com/muxinc/elements/issues/749)) ([06169be](https://github.com/muxinc/elements/commit/06169bef2c158a02e683839f1bebb8cb1e619c0c)), closes [#602](https://github.com/muxinc/elements/issues/602)
+
+
+
+
+
 # [0.8.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.7.21...@mux/mux-video-react@0.8.0) (2023-10-24)
 
 

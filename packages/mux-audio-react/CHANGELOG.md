@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.7.0...@mux/mux-audio-react@0.7.1) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+
+
+
+
+
 # [0.7.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.6.21...@mux/mux-audio-react@0.7.0) (2023-10-24)
 
 

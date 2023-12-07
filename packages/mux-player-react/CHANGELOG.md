@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.2.0...@mux/mux-player-react@2.3.0) (2023-12-07)
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* **mux-player-react:** add disablePictureInPicture to TS def ([9fd9978](https://github.com/muxinc/elements/commit/9fd99780047d24e3efdb61ddc31ba7e8346415f3)), closes [#831](https://github.com/muxinc/elements/issues/831)
+
+
+### Features
+
+* **mux-player, mux-player-react:** Add extra-source-params/extraSourceParams attr/prop for advanced usage. ([a5ad6ed](https://github.com/muxinc/elements/commit/a5ad6ed3da0aafb52f983c91881126d74c884157))
+* **mux-player, mux-player-react:** default duration ([#844](https://github.com/muxinc/elements/issues/844)) ([8d52572](https://github.com/muxinc/elements/commit/8d52572330089076a6d05ff33fa0f596e18799ff))
+
+
+
+
+
 # [2.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.1.0...@mux/mux-player-react@2.2.0) (2023-10-31)
 
 
