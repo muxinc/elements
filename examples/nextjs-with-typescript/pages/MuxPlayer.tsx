@@ -345,7 +345,6 @@ function MuxPlayerPage({ location }: Props) {
         <title>&lt;MuxPlayer/&gt; Demo</title>
       </Head>
 
-      <Script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1" />
       <MuxPlayer
         ref={mediaElRef}
         style={stylesState}

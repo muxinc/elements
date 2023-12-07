@@ -25,7 +25,6 @@ function MuxPlayerWCPage() {
       </Head>
 
       <div>
-        <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
         <mux-player
           // style={{ aspectRatio: "16 / 9" }}
           playback-id={playbackId}
