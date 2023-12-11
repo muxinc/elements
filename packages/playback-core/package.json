@@ -59,8 +59,8 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "hls.js": "^1.4.12",
-    "mux-embed": "^4.27.0"
+    "hls.js": "~1.4.13",
+    "mux-embed": "~4.30.0"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",
