@@ -684,7 +684,14 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
           // NOTE: For now, since we are continuing support of the deprecated stream types (namely, "dvr" types) and not advertising the
           // new APIs such as `targetLiveWindow`/`target-live-window`, we will (presumpuously) update the `targetLiveWindow` based on the
           // stream type (CJP).
-          this.targetLiveWindow = newValue === StreamTypes.LIVE ? 0 : Number.NaN;
+          if (newValue === StreamTypes.LIVE) {
+            // Don't override if the user has already set a value.
+            if (this.getAttribute(PlayerAttributes.TARGET_LIVE_WINDOW) == null) {
+              this.targetLiveWindow = 0;
+            }
+          } else {
+            this.targetLiveWindow = Number.NaN;
+          }
         }
       }
     }
@@ -1382,7 +1389,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   set targetLiveWindow(val: number | undefined) {
     // don't cause an infinite loop and avoid change event dispatching
-    if (val == this.targetLiveWindow) return;
+    if (val == this.targetLiveWindow || (Number.isNaN(val) && Number.isNaN(this.targetLiveWindow))) return;
 
     if (val == null) {
       this.removeAttribute(PlayerAttributes.TARGET_LIVE_WINDOW);

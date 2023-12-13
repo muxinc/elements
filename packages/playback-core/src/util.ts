@@ -41,7 +41,7 @@ export function inSeekableRange(seekable: TimeRanges, duration: number, time: nu
   if (duration && time > duration) {
     time = duration;
   }
-  for (let i = 0; i < seekable.length ?? 0; i++) {
+  for (let i = 0; i < seekable.length; i++) {
     if (seekable.start(i) <= time && seekable.end(i) >= time) {
       return true;
     }
