@@ -84,10 +84,9 @@ if (esmScriptModule) {
   options.format = 'esm';
 }
 
+await esbuild.build(options);
+
 if (args.watch) {
   const context = await esbuild.context(options);
-  await context.rebuild();
   await context.watch();
-} else {
-  await esbuild.build(options);
 }

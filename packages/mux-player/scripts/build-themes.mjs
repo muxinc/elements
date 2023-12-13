@@ -26,12 +26,11 @@ for (const theme of themes) {
     outdir: `./dist/themes/${theme}`,
   };
 
+  await esbuild.build(esm);
+
   if (devMode) {
     const context = await esbuild.context(esm);
-    await context.rebuild();
     await context.watch();
-  } else {
-    await esbuild.build(esm);
   }
 
   //@ts-ignore
@@ -43,12 +42,11 @@ for (const theme of themes) {
     outdir: `./dist/themes/${theme}`,
   };
 
+  await esbuild.build(cjs);
+
   if (devMode) {
     const context = await esbuild.context(cjs);
-    await context.rebuild();
     await context.watch();
-  } else {
-    await esbuild.build(cjs);
   }
 
   //@ts-ignore
@@ -60,11 +58,10 @@ for (const theme of themes) {
     outdir: `./dist/themes/${theme}`,
   };
 
+  await esbuild.build(iife);
+
   if (devMode) {
     const context = await esbuild.context(iife);
-    await context.rebuild();
     await context.watch();
-  } else {
-    await esbuild.build(iife);
   }
 }
