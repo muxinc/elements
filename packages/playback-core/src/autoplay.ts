@@ -1,6 +1,5 @@
 import { addEventListenerWithTeardown } from './util';
 import { ValueOf, Autoplay, AutoplayTypes, PlaybackEngine } from './types';
-import Hls from './hls';
 
 const AutoplayTypeValues = Object.values(AutoplayTypes);
 export const isAutoplayValue = (value: unknown): value is Autoplay => {
@@ -16,13 +15,8 @@ export const isAutoplayValue = (value: unknown): value is Autoplay => {
 // It works with both the native video element or hls.js.
 // This returns a method UpdateAutoplay, that allows the user to change
 // the value of the autoplay attribute and it will react appropriately.
-export const setupAutoplay = (
-  { autoplay: maybeAutoplay }: { autoplay?: Autoplay },
-  mediaEl: HTMLMediaElement,
-  hls?: PlaybackEngine
-) => {
+export const setupAutoplay = ({ autoplay: maybeAutoplay }: { autoplay?: Autoplay }, mediaEl: HTMLMediaElement) => {
   let hasPlayed = false;
-  let isLive = false;
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
 
   const updateHasPlayed = () => {
@@ -61,55 +55,10 @@ export const setupAutoplay = (
     mediaEl,
     'loadstart',
     () => {
-      // only update isLive here if we're using native playback
-      if (!hls) {
-        isLive = !Number.isFinite(mediaEl.duration);
-      }
       handleAutoplay(mediaEl, autoplay);
     },
     { once: true }
   );
-
-  // determine if we're live for hls.js
-  if (hls) {
-    hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
-      isLive = data.details.live ?? false;
-    });
-  }
-
-  // When we are not auto-playing, we should seek to the live sync position
-  // This will seek first play event of *any* live video including event-type,
-  // which probably shouldn't seek
-  if (!autoplay) {
-    const handleSeek = () => {
-      // don't seek if we're not live
-      if (!isLive) {
-        return;
-      }
-      // seek to either hls.js's liveSyncPosition or the native seekable end
-      if (hls?.liveSyncPosition) {
-        mediaEl.currentTime = hls.liveSyncPosition;
-      } else {
-        if (Number.isFinite(mediaEl.seekable.end(0))) {
-          mediaEl.currentTime = mediaEl.seekable.end(0);
-        }
-      }
-    };
-    if (hls) {
-      addEventListenerWithTeardown(
-        mediaEl,
-        'play',
-        () => {
-          if (mediaEl.preload === 'metadata') {
-            hls.once(Hls.Events.LEVEL_UPDATED, handleSeek);
-          } else {
-            handleSeek();
-          }
-        },
-        { once: true }
-      );
-    }
-  }
 
   // this method allows us to update the value of autoplay
   // and try autoplaying appropriately.
