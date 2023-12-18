@@ -20,5 +20,5 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "../../node_modules/media-tracks/dist/global.d.ts"]
 }

@@ -27,7 +27,6 @@ import type {
   PlaybackCore,
   PlaybackEngine,
   Autoplay,
-  MediaTracks,
   ExtensionMimeTypeMap,
   ValueOf,
   MaxResolutionValue,
@@ -525,7 +524,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   load() {
-    this.#core = initialize(this as Partial<MuxMediaProps> & MediaTracks, this.nativeEl, this.#core);
+    this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
   }
 
   unload() {

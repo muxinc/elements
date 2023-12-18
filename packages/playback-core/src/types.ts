@@ -2,7 +2,6 @@
 /// <reference path="../dist/types/mux-embed.d.ts" />
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
-import type { VideoTrack, AudioTrack, VideoTrackList, AudioTrackList } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
 import type Hls from 'hls.js';
 
@@ -177,13 +176,6 @@ export type MuxMediaPropTypes = {
   error?: HTMLMediaElement['error'] | MediaError;
   _hlsConfig?: Partial<HlsConfig>;
 };
-
-export interface MediaTracks {
-  videoTracks: VideoTrackList;
-  audioTracks: AudioTrackList;
-  addAudioTrack(kind: string, label?: string, language?: string): AudioTrack;
-  addVideoTrack(kind: string, label?: string, language?: string): VideoTrack;
-}
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;
 
