@@ -20,5 +20,5 @@
     "forceConsistentCasingInFileNames": true,
     "typeRoots": ["node_modules/@types", "../../types/media-chrome.d.ts"]
   },
-  "include": ["src/**/*", "../../types/media-chrome.d.ts"]
+  "include": ["src/**/*", "../../types/media-chrome.d.ts", "../../node_modules/media-tracks/dist/global.d.ts"]
 }
