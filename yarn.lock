@@ -5564,12 +5564,12 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==
 
-castable-video@~1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/castable-video/-/castable-video-1.0.5.tgz#10c4da7d17993e7bb9bd8d74572f3b22ba25731c"
-  integrity sha512-B7eWRqarbVw1FiER507GrYBGH9M1cliXAs2nRV2TG5V0IB8ZSMsayqrw8v0pPx4fb3fNZv0NPLthQjl0LJjg9A==
+castable-video@~1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/castable-video/-/castable-video-1.0.6.tgz#eae0d3d2283567a5308efaa45f38d108138c6402"
+  integrity sha512-Ykw2uL4ZQnqX0j9KF9ksbDpyc8I53mFMswCKW9yV5TrwpWkdNqRHLlcU85W30BIw61fgDjgm0Xh5G0rbcmv23g==
   dependencies:
-    custom-media-element "~1.1.3"
+    custom-media-element "~1.2.2"
 
 chai-a11y-axe@^1.3.2:
   version "1.4.0"
@@ -6402,10 +6402,10 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.1.tgz#841b532c45c758ee546a11d5bd7b7b473c8c30b9"
   integrity sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==
 
-custom-media-element@~1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/custom-media-element/-/custom-media-element-1.1.3.tgz#4792527cbf96d5114f621f54c7367cd75f44d23a"
-  integrity sha512-f8z9PMrGNpg6OFwyizYdUD4CvUQwhwygNtCdSY9l76wxNrCmnuPo7C332UL9DkZfWMMlZYwi+kGqiNWqsFX0Qg==
+custom-media-element@~1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/custom-media-element/-/custom-media-element-1.2.2.tgz#048e23509004149d20a46bf773495bb905edd0c5"
+  integrity sha512-tI+NjVRS485QlSxHeM3JIjdEZSJMLOZVp41/vvWukDmIkZSoYG9gLYl9GFZGBpY42UbRVo1eMlF7XkI/IiDHzQ==
 
 damerau-levenshtein@^1.0.8:
   version "1.0.8"
