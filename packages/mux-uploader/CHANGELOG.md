@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.15](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.14...@mux/mux-uploader@1.0.0-beta.15) (2024-01-02)
+
+
+### Bug Fixes
+
+* upgrade external deps, allow patches uniform ([#850](https://github.com/muxinc/elements/issues/850)) ([f72acf4](https://github.com/muxinc/elements/commit/f72acf49199497cb45c186bd4b2bc2a67e5431c0))
+
+
+
+
+
 # [1.0.0-beta.14](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.13...@mux/mux-uploader@1.0.0-beta.14) (2023-12-07)
 
 

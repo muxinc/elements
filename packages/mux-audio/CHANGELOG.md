@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.11.1...@mux/mux-audio@0.11.2) (2024-01-02)
+
+
+### Bug Fixes
+
+* upgrade custom-media-element ([#858](https://github.com/muxinc/elements/issues/858)) ([eb39e54](https://github.com/muxinc/elements/commit/eb39e546073c9c78b385809b27d095f36350737f))
+* upgrade external deps, allow patches uniform ([#850](https://github.com/muxinc/elements/issues/850)) ([f72acf4](https://github.com/muxinc/elements/commit/f72acf49199497cb45c186bd4b2bc2a67e5431c0))
+
+
+
+
+
 ## [0.11.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.11.0...@mux/mux-audio@0.11.1) (2023-12-07)
 
 

@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.1...@mux/mux-video@0.17.2) (2024-01-02)
+
+
+### Bug Fixes
+
+* media-tracks types not polluting global HTMLMediaElement ([#855](https://github.com/muxinc/elements/issues/855)) ([ce7235b](https://github.com/muxinc/elements/commit/ce7235bfab8b3e54d4731aaf944a121163286e6a))
+* upgrade custom-media-element ([#858](https://github.com/muxinc/elements/issues/858)) ([eb39e54](https://github.com/muxinc/elements/commit/eb39e546073c9c78b385809b27d095f36350737f))
+* upgrade external deps, allow patches uniform ([#850](https://github.com/muxinc/elements/issues/850)) ([f72acf4](https://github.com/muxinc/elements/commit/f72acf49199497cb45c186bd4b2bc2a67e5431c0))
+
+
+
+
+
 ## [0.17.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.0...@mux/mux-video@0.17.1) (2023-12-07)
 
 

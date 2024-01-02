@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.0...@mux/playback-core@0.22.1) (2024-01-02)
+
+
+### Bug Fixes
+
+* media-tracks types not polluting global HTMLMediaElement ([#855](https://github.com/muxinc/elements/issues/855)) ([ce7235b](https://github.com/muxinc/elements/commit/ce7235bfab8b3e54d4731aaf944a121163286e6a))
+* target-live-window unneeded sprout ([#852](https://github.com/muxinc/elements/issues/852)) ([5d45a8f](https://github.com/muxinc/elements/commit/5d45a8f1fde45387e58e8ae985514dd303208107)), closes [#748](https://github.com/muxinc/elements/issues/748)
+* upgrade external deps, allow patches uniform ([#850](https://github.com/muxinc/elements/issues/850)) ([f72acf4](https://github.com/muxinc/elements/commit/f72acf49199497cb45c186bd4b2bc2a67e5431c0))
+
+
+
+
+
 # [0.22.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.21.0...@mux/playback-core@0.22.0) (2023-12-07)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-alpha.6](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.5...@mux/mux-active-viewer-count@0.2.0-alpha.6) (2024-01-02)
+
+
+### Bug Fixes
+
+* upgrade external deps, allow patches uniform ([#850](https://github.com/muxinc/elements/issues/850)) ([f72acf4](https://github.com/muxinc/elements/commit/f72acf49199497cb45c186bd4b2bc2a67e5431c0))
+
+
+
+
+
 # [0.2.0-alpha.5](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.4...@mux/mux-active-viewer-count@0.2.0-alpha.5) (2023-12-07)
 
 
