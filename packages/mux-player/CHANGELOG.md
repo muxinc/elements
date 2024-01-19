@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.2](https://github.com/muxinc/elements/compare/@mux/mux-player@2.3.1...@mux/mux-player@2.3.2) (2024-01-19)
+
+
+### Bug Fixes
+
+* **mux-player:** upgrade media chrome to fix subtitles selection edge cases ([#862](https://github.com/muxinc/elements/issues/862)) ([c6e8758](https://github.com/muxinc/elements/commit/c6e8758bbe7431fc55d334ccf96b07f62f7443d6))
+
+
+
+
+
 ## [2.3.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.3.0...@mux/mux-player@2.3.1) (2024-01-02)
 
 
