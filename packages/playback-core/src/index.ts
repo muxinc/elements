@@ -366,7 +366,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
-  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
   return {
@@ -614,8 +614,10 @@ export const loadMedia = (
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
+
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
+
     if (typeof src === 'string') {
       if (mediaEl.preload === 'none') {
         addEventListenerWithTeardown(mediaEl, 'loadstart', () => updateStreamInfoFromSrc(src, mediaEl, type));
@@ -624,7 +626,8 @@ export const loadMedia = (
       }
 
       mediaEl.setAttribute('src', src);
-      if (props.startTime) {
+
+      if (props.startTime != null) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
         // seekable is set to the range of the entire video once durationchange fires
         mediaEl.addEventListener('durationchange', seekInSeekableRange, { once: true });
@@ -722,8 +725,8 @@ export const loadMedia = (
 
 function seekInSeekableRange(event: Event) {
   const mediaEl = event.target as HTMLMediaElement;
-  const startTime = muxMediaState.get(mediaEl)?.startTime;
-  if (!startTime) return;
+  let startTime = muxMediaState.get(mediaEl)?.startTime;
+  if (startTime == null) return;
 
   if (inSeekableRange(mediaEl.seekable, mediaEl.duration, startTime)) {
     // Setting preload to `none` from `auto` was required on iOS to fix a bug
@@ -731,6 +734,12 @@ function seekInSeekableRange(event: Event) {
     const wasAuto = mediaEl.preload === 'auto';
     if (wasAuto) {
       mediaEl.preload = 'none';
+    }
+
+    // If live and startTime is 0 we need to increase it by a small amount
+    // otherwise native HLS will still jump to the live edge.
+    if (mediaEl.duration === Infinity && startTime == 0) {
+      startTime += 0.001;
     }
 
     mediaEl.currentTime = startTime;
