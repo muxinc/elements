@@ -1,0 +1,7 @@
+**/*
+!dist/**
+!LICENSE
+dist/cjs.json
+dist/esm.json
+dist/iife.json
+dist/module.json
