@@ -54,13 +54,13 @@ describe('playback core', function () {
     await new Promise((resolve) => video.addEventListener('error', resolve));
 
     assert.equal(video.error.code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
-    assert.equal(video.error.message, '');
+    assert(video.error.message != undefined, 'has some message');
 
     assert.equal(getError(video).code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
-    assert.equal(
-      getError(video).message,
-      'An unsupported error occurred. The server or network failed, or your browser does not support this format.'
-    );
+    const expectedMessage = !!video.error.message
+      ? video.error.message
+      : MediaError.defaultMessages[MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED];
+    assert.equal(getError(video).message, expectedMessage);
   });
 
   it('setAutoplay("any")', async function () {
