@@ -337,17 +337,73 @@ export const getLiveEdgeStart = (mediaEl: HTMLMediaElement) => {
   return seekable.end(seekable.length - 1) - liveEdgeStartOffset;
 };
 
-const isApproximatelyEqual = (x: number, y: number, moe = 0.001) => Math.abs(x - y) <= moe;
-const isApproximatelyGTE = (x: number, y: number, moe = 0.001) => x > y || isApproximatelyEqual(x, y, moe);
+const DEFAULT_ENDED_MOE = 0.034;
 
-export const isPseudoEnded = (mediaEl: HTMLMediaElement) => {
-  return mediaEl.paused && isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration);
+const isApproximatelyEqual = (x: number, y: number, moe = DEFAULT_ENDED_MOE) => Math.abs(x - y) <= moe;
+const isApproximatelyGTE = (x: number, y: number, moe = DEFAULT_ENDED_MOE) => x > y || isApproximatelyEqual(x, y, moe);
+
+export const isPseudoEnded = (mediaEl: HTMLMediaElement, moe = DEFAULT_ENDED_MOE) => {
+  return mediaEl.paused && isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration, moe);
 };
 
-export const getEnded = (mediaEl: HTMLMediaElement, hls?: HlsInterface) => {
+export const isStuckOnLastFragment = (
+  mediaEl: HTMLMediaElement,
+  hls?: Pick<
+    Hls,
+    /** Should we add audio fragments logic here, too? (CJP) */
+    // | 'audioTrack'
+    // | 'audioTracks'
+    'levels' | 'currentLevel'
+  >
+) => {
+  if (!hls) return undefined;
+  if (mediaEl.readyState > 2) return false;
+  const videoLevelDetails =
+    hls.currentLevel >= 0
+      ? hls.levels?.[hls.currentLevel]?.details
+      : hls.levels.find((level) => !!level.details)?.details;
+
+  // Don't define for live streams (for now).
+  if (!videoLevelDetails || videoLevelDetails.live) return undefined;
+
+  const { fragments } = videoLevelDetails;
+
+  // Don't give a definitive true|false before we have no fragments (for now).
+  if (!fragments?.length) return undefined;
+
+  const lastFragment = fragments[fragments.length - 1];
+
+  // We're not yet playing the last fragment, so we can't be stuck on it.
+  if (mediaEl.currentTime <= lastFragment.start) return false;
+
+  const lastFragmentMidpoint = lastFragment.start + lastFragment.duration / 2;
+  const lastBufferedStart = mediaEl.buffered.start(mediaEl.buffered.length);
+  const lastBufferedEnd = mediaEl.buffered.end(mediaEl.buffered.length);
+
+  // True if we've already buffered (half of) the last fragment
+  const lastFragmentInBuffer = lastFragmentMidpoint > lastBufferedStart && lastFragmentMidpoint < lastBufferedEnd;
+  // If we haven't buffered half already, assume we're still waiting to fetch+buffer the fragment.
+  if (!lastFragmentInBuffer) return false;
+
+  return mediaEl.readyState <= 2;
+};
+
+export const getEnded = (
+  mediaEl: HTMLMediaElement,
+  hls?: Pick<
+    Hls,
+    /** Should we add audio fragments logic here, too? (CJP) */
+    // | 'audioTrack'
+    // | 'audioTracks'
+    'levels' | 'currentLevel'
+  >
+) => {
   // Since looping media never truly ends, don't apply pseudo-ended logic
-  if (mediaEl.loop || !!hls) return mediaEl.ended;
-  return mediaEl.ended || isPseudoEnded(mediaEl);
+  // Also, trust when the HTMLMediaElement says we have ended (only apply pseudo-ended logic when it reports false)
+  if (mediaEl.ended || mediaEl.loop) return mediaEl.ended;
+  // Externalize conversion to boolean for "under-determined cases" here (See isStuckOnLastFragment() for details)
+  if (hls && !!isStuckOnLastFragment(mediaEl, hls)) return true;
+  return isPseudoEnded(mediaEl);
 };
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
@@ -610,6 +666,7 @@ export const loadMedia = (
     | 'autoLevelEnabled'
     | 'nextLevel'
     | 'levels'
+    | 'currentLevel'
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
@@ -650,7 +707,7 @@ export const loadMedia = (
       // since that means it will have already fired the ended event.
       // Do the "cheaper" check first
       if (mediaEl.ended) return;
-      if (!getEnded(mediaEl)) return;
+      if (!getEnded(mediaEl, hls)) return;
       // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
       mediaEl.dispatchEvent(new Event('ended'));
     };
@@ -660,6 +717,12 @@ export const loadMedia = (
     // HTML specification, but is now more explicit.
     // See: https://html.spec.whatwg.org/multipage/media.html#reaches-the-end (CJP)
     addEventListenerWithTeardown(mediaEl, 'seeked', maybeDispatchEndedCallback);
+
+    // NOTE: Only add waiting checks if we're using hls.js instance (CJP)
+    if (!!hls) {
+      /** @TODO Should we actual force a change to the MediaSource::duration for the case accounted for here? (CJP) */
+      addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
+    }
 
     addEventListenerWithTeardown(mediaEl, 'play', () => {
       if (mediaEl.ended) return;
