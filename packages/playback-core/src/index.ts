@@ -371,6 +371,10 @@ export const isStuckOnLastFragment = (
   // Don't give a definitive true|false before we have no fragments (for now).
   if (!fragments?.length) return undefined;
 
+  // Do a cheap check up front to see if we're close to the end.
+  // For more on TARGET_DURATION, see https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-14#section-4.4.3.1 (CJP)
+  if (mediaEl.currentTime < mediaEl.duration - (videoLevelDetails.targetduration + 0.5)) return false;
+
   const lastFragment = fragments[fragments.length - 1];
 
   // We're not yet playing the last fragment, so we can't be stuck on it.
