@@ -692,6 +692,20 @@ export const loadMedia = (
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
+
+  const maybeDispatchEndedCallback = (evt: Event) => {
+    console.log('maybeDispatchEndedCallback evt', evt);
+    // We want to early bail if the underlying media element is already in an ended state,
+    // since that means it will have already fired the ended event.
+    // Do the "cheaper" check first
+    if (mediaEl.ended) return;
+    const pseudoEnded = getEnded(mediaEl, hls);
+    console.log('not ended', pseudoEnded);
+    if (!pseudoEnded) return;
+    // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
+    mediaEl.dispatchEvent(new Event('ended'));
+  };
+
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
     if (typeof src === 'string') {
@@ -723,30 +737,13 @@ export const loadMedia = (
       },
       { once: true }
     );
-    const maybeDispatchEndedCallback = (evt: Event) => {
-      console.log('maybeDispatchEndedCallback evt', evt);
-      // We want to early bail if the underlying media element is already in an ended state,
-      // since that means it will have already fired the ended event.
-      // Do the "cheaper" check first
-      if (mediaEl.ended) return;
-      const pseudoEnded = getEnded(mediaEl, hls);
-      console.log('not ended', pseudoEnded);
-      if (!pseudoEnded) return;
-      // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
-      mediaEl.dispatchEvent(new Event('ended'));
-    };
+
     addEventListenerWithTeardown(mediaEl, 'pause', maybeDispatchEndedCallback);
     // NOTE: Browsers do not consistently fire an 'ended' event upon seeking to the
     // end of the media while already paused. This was due to an ambiguity in the
     // HTML specification, but is now more explicit.
     // See: https://html.spec.whatwg.org/multipage/media.html#reaches-the-end (CJP)
     addEventListenerWithTeardown(mediaEl, 'seeked', maybeDispatchEndedCallback);
-
-    // NOTE: Only add waiting checks if we're using hls.js instance (CJP)
-    if (!!hls) {
-      /** @TODO Should we actual force a change to the MediaSource::duration for the case accounted for here? (CJP) */
-      addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
-    }
 
     addEventListenerWithTeardown(mediaEl, 'play', () => {
       if (mediaEl.ended) return;
@@ -795,6 +792,7 @@ export const loadMedia = (
       );
     });
     mediaEl.addEventListener('error', handleInternalError);
+    addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
 
     setupMediaTracks(props as HTMLMediaElement, hls);
     setupTextTracks(mediaEl, hls);

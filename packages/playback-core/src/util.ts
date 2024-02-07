@@ -29,6 +29,7 @@ export const addEventListenerWithTeardown: addEventListenerWithTeardown = (
   mediaEl.addEventListener(
     'teardown',
     () => {
+      console.log('TEARING DOWN');
       /** @TODO fix types (hard problem due to lack of explicit relationship between Element and EventMap definitions) */
       // @ts-ignore
       target.removeEventListener(type, listener);
