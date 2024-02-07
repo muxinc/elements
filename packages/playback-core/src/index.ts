@@ -356,9 +356,7 @@ export const isStuckOnLastFragment = (
     'levels' | 'currentLevel'
   >
 ) => {
-  console.log('isStuckOnLastFragment');
   if (!hls) return undefined;
-  console.log('has hls. readyState?', mediaEl.readyState);
   if (mediaEl.readyState > 2) return false;
   const videoLevelDetails =
     hls.currentLevel >= 0
@@ -367,46 +365,30 @@ export const isStuckOnLastFragment = (
 
   // Don't define for live streams (for now).
   if (!videoLevelDetails || videoLevelDetails.live) return undefined;
-  console.log('has videoLevelDetails and not live');
 
   const { fragments } = videoLevelDetails;
 
   // Don't give a definitive true|false before we have no fragments (for now).
   if (!fragments?.length) return undefined;
-  console.log('has fragments');
 
   // Do a cheap check up front to see if we're close to the end.
-  console.log(
-    'mediaEl.currentTime < mediaEl.duration - (videoLevelDetails.targetduration + 0.5)',
-    mediaEl.currentTime < mediaEl.duration - (videoLevelDetails.targetduration + 0.5)
-  );
   // For more on TARGET_DURATION, see https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-14#section-4.4.3.1 (CJP)
   if (mediaEl.currentTime < mediaEl.duration - (videoLevelDetails.targetduration + 0.5)) return false;
 
   const lastFragment = fragments[fragments.length - 1];
 
-  console.log('lastFragment', lastFragment, 'mediaEl.currentTime', mediaEl.currentTime);
   // We're not yet playing the last fragment, so we can't be stuck on it.
   if (mediaEl.currentTime <= lastFragment.start) return false;
 
   const lastFragmentMidpoint = lastFragment.start + lastFragment.duration / 2;
-  const lastBufferedStart = mediaEl.buffered.start(mediaEl.buffered.length);
-  const lastBufferedEnd = mediaEl.buffered.end(mediaEl.buffered.length);
+  const lastBufferedStart = mediaEl.buffered.start(mediaEl.buffered.length - 1);
+  const lastBufferedEnd = mediaEl.buffered.end(mediaEl.buffered.length - 1);
 
   // True if we've already buffered (half of) the last fragment
   const lastFragmentInBuffer = lastFragmentMidpoint > lastBufferedStart && lastFragmentMidpoint < lastBufferedEnd;
-  console.log(
-    'lastFragmentMidpoint',
-    lastFragmentMidpoint,
-    'lastBufferedStart',
-    lastBufferedStart,
-    'lastBufferedEnd',
-    lastBufferedEnd
-  );
-  // If we haven't buffered half already, assume we're still waiting to fetch+buffer the fragment.
-  if (!lastFragmentInBuffer) return false;
-
-  return mediaEl.readyState <= 2;
+  // If we haven't buffered half already, assume we're still waiting to fetch+buffer the fragment, otherwise,
+  // since we already checked the ready state, this means we're stuck on the last segment, and should pretend we're ended!
+  return lastFragmentInBuffer;
 };
 
 export const getEnded = (
@@ -694,13 +676,11 @@ export const loadMedia = (
   const { src } = props;
 
   const maybeDispatchEndedCallback = (evt: Event) => {
-    console.log('maybeDispatchEndedCallback evt', evt);
     // We want to early bail if the underlying media element is already in an ended state,
     // since that means it will have already fired the ended event.
     // Do the "cheaper" check first
     if (mediaEl.ended) return;
     const pseudoEnded = getEnded(mediaEl, hls);
-    console.log('not ended', pseudoEnded);
     if (!pseudoEnded) return;
     // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
     mediaEl.dispatchEvent(new Event('ended'));
