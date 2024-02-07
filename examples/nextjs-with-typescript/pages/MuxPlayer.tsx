@@ -417,6 +417,8 @@ function MuxPlayerPage({ location }: Props) {
         }}
         onSeeking={onSeeking}
         onSeeked={onSeeked}
+        onEnded={onEnded}
+        onWaiting={onWaiting}
       />
 
       <div className="options" style={optionStyles}>
