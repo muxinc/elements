@@ -682,7 +682,11 @@ export const loadMedia = (
     if (mediaEl.ended) return;
     const pseudoEnded = getEnded(mediaEl, hls);
     if (!pseudoEnded) return;
-    // This means we've "pseudo-ended". Dispatch an event to notify the outside world.
+
+    if (isStuckOnLastFragment(mediaEl, hls)) {
+      // Nudge the playhead in this case.
+      mediaEl.currentTime = mediaEl.buffered.end(mediaEl.buffered.length - 1);
+    }
     mediaEl.dispatchEvent(new Event('ended'));
   };
 
