@@ -686,8 +686,9 @@ export const loadMedia = (
     if (isStuckOnLastFragment(mediaEl, hls)) {
       // Nudge the playhead in this case.
       mediaEl.currentTime = mediaEl.buffered.end(mediaEl.buffered.length - 1);
+    } else {
+      mediaEl.dispatchEvent(new Event('ended'));
     }
-    mediaEl.dispatchEvent(new Event('ended'));
   };
 
   if (mediaEl && shouldUseNative) {
