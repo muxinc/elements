@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.1...@mux/playback-core@0.22.2) (2024-02-16)
+
+
+### Bug Fixes
+
+* **playback-core:** pseudo ended stalled last frag ([#867](https://github.com/muxinc/elements/issues/867)) ([8990208](https://github.com/muxinc/elements/commit/8990208faddd356f540d05f9bc5fd6d3a39dd57a))
+
+
+
+
+
 ## [0.22.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.0...@mux/playback-core@0.22.1) (2024-01-02)
 
 

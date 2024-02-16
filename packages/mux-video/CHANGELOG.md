@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.3](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.2...@mux/mux-video@0.17.3) (2024-02-16)
+
+
+### Bug Fixes
+
+* **custom-media-element:** fix chapters & metadata tracks ([#871](https://github.com/muxinc/elements/issues/871)) ([4518456](https://github.com/muxinc/elements/commit/4518456b33ed4bb76253477c887939223ec692f0))
+
+
+
+
+
 ## [0.17.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.1...@mux/mux-video@0.17.2) (2024-01-02)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.11.2...@mux/mux-audio@0.11.3) (2024-02-16)
+
+**Note:** Version bump only for package @mux/mux-audio
+
+
+
+
+
 ## [0.11.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.11.1...@mux/mux-audio@0.11.2) (2024-01-02)
 
 
