@@ -10541,10 +10541,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@~2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-2.1.0.tgz#6b5e7c4d497d570fb6540789e9bac879b170cd87"
-  integrity sha512-ceUEE9tHVIe7KNmjtWq4oCOx1oYq09VyL3A9EP1MDGnFot0eOoLuDfaye/koe8+4tzhB4/yGyn8pIGuvzF85lg==
+media-chrome@~2.2.5:
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-2.2.5.tgz#4750716d6195612fb38ca78f7e38537ac5fc42e7"
+  integrity sha512-59peAYFlL9ZlFVkKJmIgIDNMkQr4nauYTwIQhLg3khmGfO6/25VNEI8Yn0aUMLb5IFB2gzjcPmfu1ktfOhQ8Ag==
 
 media-tracks@~0.3.0:
   version "0.3.0"
@@ -10883,6 +10883,11 @@ mux-embed@~4.30.0:
   version "4.30.0"
   resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.30.0.tgz#3820109e153df75d6dc139a9b4d60482dfe9860f"
   integrity sha512-XAgAp4CEvsiZL26GbruzeG1g33OWyrzuskDMavXUxDufTxS0/AxAhwoTTRqEzEJS9vnZa/X9R2GV3xRX1XMp2w==
+
+mux-embed@~5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-5.1.0.tgz#a95fc65f626365f3fb7af9c242d164d78cfcf830"
+  integrity sha512-cmfId+yq1aNb00rYkT+0464NBVbrxSwugBPk6iXsB3GRPBLKmXGMs7J6atDVAHgRDD84od6vRN+RHv0aoa6+xg==
 
 nanocolors@^0.2.1:
   version "0.2.13"
