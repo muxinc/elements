@@ -205,20 +205,12 @@
       pointer-events: none;
     }
 
-    media-control-bar {
-      --gradient-steps: hsl(0 0% 0% / 0) 0%, hsl(0 0% 0% / 0.013) 8.1%, hsl(0 0% 0% / 0.049) 15.5%,
-        hsl(0 0% 0% / 0.104) 22.5%, hsl(0 0% 0% / 0.175) 29%, hsl(0 0% 0% / 0.259) 35.3%, hsl(0 0% 0% / 0.352) 41.2%,
-        hsl(0 0% 0% / 0.45) 47.1%, hsl(0 0% 0% / 0.55) 52.9%, hsl(0 0% 0% / 0.648) 58.8%, hsl(0 0% 0% / 0.741) 64.7%,
-        hsl(0 0% 0% / 0.825) 71%, hsl(0 0% 0% / 0.896) 77.5%, hsl(0 0% 0% / 0.951) 84.5%, hsl(0 0% 0% / 0.987) 91.9%,
-        hsl(0 0% 0%) 100%;
-    }
-
     :host([title]:not([audio])) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
       padding-bottom: min(100px, 25%);
-      background: linear-gradient(to top, var(--gradient-steps));
+      background: linear-gradient(#000, transparent);
       opacity: 0.8;
       pointer-events: none;
     }
@@ -230,7 +222,7 @@
       bottom: 0;
       left: 0;
       padding-bottom: min(100px, 25%);
-      background: linear-gradient(to bottom, var(--gradient-steps));
+      background: linear-gradient(transparent, #000);
       opacity: 0.8;
       z-index: 1;
       pointer-events: none;
@@ -380,7 +372,7 @@
     }
 
     /* Intentionally don't target the div for transition but the children
-     of the div. Prevents messing with media-chrome's autohide feature. */
+		 of the div. Prevents messing with media-chrome's autohide feature. */
     media-loading-indicator + div * {
       transition: opacity 0.15s;
       opacity: 1;
