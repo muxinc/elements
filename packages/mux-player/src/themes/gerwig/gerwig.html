@@ -26,10 +26,6 @@
       --media-control-background: var(--_secondary-color);
       --media-control-hover-background: var(--_accent-color);
       --media-time-buffered-color: rgba(255, 255, 255, 0.4);
-      --media-preview-thumbnail-border: 0;
-      --media-preview-thumbnail-border-radius: 2px 2px 0 0;
-      --media-preview-time-border-radius: 0 0 2px 2px;
-      --media-preview-time-margin: 0 0 8px;
       --media-preview-time-text-shadow: none;
       --media-control-height: 14px;
       --media-control-padding: 6px;
@@ -42,8 +38,6 @@
 
     :host([audio]) {
       --_secondary-color: var(--media-secondary-color, black);
-      --media-preview-time-border-radius: 3px;
-      --media-preview-time-margin: 0 0 5px;
       --media-preview-time-text-shadow: none;
     }
 
@@ -82,6 +76,8 @@
     }
 
     media-time-range {
+      --media-box-padding-left: 6px;
+      --media-box-padding-right: 6px;
       --media-range-bar-color: var(--_accent-color);
       --media-time-range-buffered-color: var(--_primary-color);
       --media-range-track-color: transparent;
@@ -98,41 +94,27 @@
       --media-range-thumb-transform: scale(0);
       --media-range-thumb-transition: transform 0.3s;
       --media-range-thumb-opacity: 1;
-      --media-preview-thumbnail-background: var(--_primary-color);
+      --media-preview-background: var(--_primary-color);
+      --media-box-arrow-background: var(--_primary-color);
       --media-preview-thumbnail-border: 5px solid var(--_primary-color);
-      --media-preview-thumbnail-border-radius: 5px 5px 0 0;
-      --media-preview-time-background: var(--_primary-color);
-      --media-preview-time-border-radius: 0 0 5px 5px;
-      --media-preview-time-margin: 0 0 10px;
-      --media-preview-time-padding: 2px 0 6px;
+      --media-preview-border-radius: 5px;
       --media-text-color: var(--_text-color);
-      --media-preview-thumbnail-max-width: 150px;
-      --media-range-track-pointer-border-right: 2px solid #000;
       --media-control-hover-background: transparent;
       color: var(--_accent-color);
       padding: 0 6px;
     }
 
     :host([audio]) media-time-range {
-      --media-preview-time-border-radius: 5px;
-      --media-preview-time-padding: 5px;
+      --media-preview-time-padding: 1.5px 6px;
+      --media-preview-box-margin: 0 0 -5px;
     }
 
     media-time-range:hover {
       --media-range-thumb-transform: scale(1);
     }
 
-    media-time-range::part(preview-box)::after {
-      position: absolute;
-      content: '';
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-width: 10px 8.5px 0 8.5px;
-      border-color: var(--_primary-color) transparent transparent transparent;
-      top: 100%;
-      left: 50%;
-      transform: translate(-50%, -10px);
+    media-preview-thumbnail {
+      border-bottom-width: 0;
     }
 
     [part~='listbox'] {
@@ -787,7 +769,12 @@
   </template>
 
   <template partial="TimeRange">
-    <media-time-range part="bottom time range" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-time-range>
+    <media-time-range part="bottom time range" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+      <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
+      <media-preview-chapter-display slot="preview"></media-preview-chapter-display>
+      <media-preview-time-display slot="preview"></media-preview-time-display>
+      <div slot="preview" part="arrow"></div>
+    </media-time-range>
   </template>
 
   <template partial="AudioTrackSelect">
