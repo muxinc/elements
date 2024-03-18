@@ -691,13 +691,57 @@ export const loadMedia = (
     }
   };
 
+  let prevSeekableStart: number;
+  let prevSeekableEnd: number;
+
+  const seekableChange = () => {
+    const nextSeekableStart = getSeekable(mediaEl)?.start(0);
+    const nextSeekableEnd = getSeekable(mediaEl)?.end(0);
+    if (prevSeekableEnd !== nextSeekableEnd || prevSeekableStart !== nextSeekableStart) {
+      mediaEl.dispatchEvent(new CustomEvent('seekablechange', { composed: true, bubbles: true }));
+    }
+    prevSeekableStart = nextSeekableStart;
+    prevSeekableEnd = nextSeekableEnd;
+  };
+
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
     if (typeof src === 'string') {
+      // NOTE: This should only be invoked after stream type has been
+      // derived after stream type has been determined.
+      const setupSeekableChangePoll = () => {
+        // Only monitor for seekable updates if StreamType is "live" and duration is not finite.
+        if (getStreamType(mediaEl) !== StreamTypes.LIVE || Number.isFinite(mediaEl.duration)) return;
+
+        // Use 1 second since in this context we don't know what the rate of updates
+        // should/will be.
+        // NOTE: We *could* derive the interval rate if we wanted to add logic to our playlist parsing to
+        // account for the per-spec rate of media playlist GETs. See:
+        // https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-14#section-6.3.4 (CJP)
+        const intervalId = setInterval(seekableChange, 1000);
+
+        // Make sure we clean up after ourselves.
+        mediaEl.addEventListener(
+          'teardown',
+          () => {
+            clearInterval(intervalId);
+          },
+          { once: true }
+        );
+
+        // Assume we're done updating seekable when the duration is finite, which
+        // occurs when e.g. an HLS playlist is ended (`#EXT-X-ENDLIST`).
+        addEventListenerWithTeardown(mediaEl, 'durationchange', () => {
+          if (!Number.isFinite(mediaEl.duration)) return;
+          clearInterval(intervalId);
+        });
+      };
       if (mediaEl.preload === 'none') {
-        addEventListenerWithTeardown(mediaEl, 'loadstart', () => updateStreamInfoFromSrc(src, mediaEl, type));
+        addEventListenerWithTeardown(mediaEl, 'loadstart', () => {
+          updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+        });
       } else {
-        updateStreamInfoFromSrc(src, mediaEl, type);
+        updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
       }
 
       mediaEl.setAttribute('src', src);
@@ -740,7 +784,20 @@ export const loadMedia = (
   } else if (hls && src) {
     hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
       updateStreamInfoFromHlsjsLevelDetails(data.details, mediaEl, hls);
+      seekableChange();
+      // Only monitor for seekable updates if StreamType is "live" and duration is not finite.
+      if (getStreamType(mediaEl) === StreamTypes.LIVE && !Number.isFinite(mediaEl.duration)) {
+        hls.on(Hls.Events.LEVEL_UPDATED, seekableChange);
+
+        // Assume we're done updating seekable when the duration is finite, which
+        // occurs when e.g. an HLS playlist is ended (`#EXT-X-ENDLIST`).
+        addEventListenerWithTeardown(mediaEl, 'durationchange', () => {
+          if (!Number.isFinite(mediaEl.duration)) return;
+          hls.off(Hls.Events.LEVELS_UPDATED, seekableChange);
+        });
+      }
     });
+
     hls.on(Hls.Events.ERROR, (_event, data) => {
       // if (data.fatal) {
       //   switch (data.type) {
