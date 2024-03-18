@@ -698,7 +698,7 @@ export const loadMedia = (
     const nextSeekableStart = getSeekable(mediaEl)?.start(0);
     const nextSeekableEnd = getSeekable(mediaEl)?.end(0);
     if (prevSeekableEnd !== nextSeekableEnd || prevSeekableStart !== nextSeekableStart) {
-      mediaEl.dispatchEvent(new CustomEvent('seekablechange', { composed: true, bubbles: true }));
+      mediaEl.dispatchEvent(new CustomEvent('seekablechange', { composed: true }));
     }
     prevSeekableStart = nextSeekableStart;
     prevSeekableEnd = nextSeekableEnd;
