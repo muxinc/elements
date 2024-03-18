@@ -1,5 +1,5 @@
 import { addEventListenerWithTeardown } from './util';
-import { ValueOf, Autoplay, AutoplayTypes, PlaybackEngine } from './types';
+import { ValueOf, Autoplay, AutoplayTypes, PlaybackEngine, MuxMediaPropsInternal, StreamTypes } from './types';
 import Hls from './hls';
 
 const AutoplayTypeValues = Object.values(AutoplayTypes);
@@ -17,10 +17,11 @@ export const isAutoplayValue = (value: unknown): value is Autoplay => {
 // This returns a method UpdateAutoplay, that allows the user to change
 // the value of the autoplay attribute and it will react appropriately.
 export const setupAutoplay = (
-  { autoplay: maybeAutoplay }: { autoplay?: Autoplay },
+  props: Partial<MuxMediaPropsInternal>,
   mediaEl: HTMLMediaElement,
   hls?: PlaybackEngine
 ) => {
+  const { autoplay: maybeAutoplay } = props;
   let hasPlayed = false;
   let isLive = false;
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
@@ -63,7 +64,12 @@ export const setupAutoplay = (
     () => {
       // only update isLive here if we're using native playback
       if (!hls) {
-        isLive = !Number.isFinite(mediaEl.duration);
+        // defer to streamType if set (including inferred)
+        if (props.streamType && props.streamType !== StreamTypes.UNKNOWN) {
+          isLive = props.streamType === StreamTypes.LIVE;
+        } else {
+          isLive = !Number.isFinite(mediaEl.duration);
+        }
       }
       handleAutoplay(mediaEl, autoplay);
     },
@@ -73,7 +79,12 @@ export const setupAutoplay = (
   // determine if we're live for hls.js
   if (hls) {
     hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
-      isLive = data.details.live ?? false;
+      // defer to streamType if set (including inferred)
+      if (props.streamType && props.streamType !== StreamTypes.UNKNOWN) {
+        isLive = props.streamType === StreamTypes.LIVE;
+      } else {
+        isLive = data.details.live ?? false;
+      }
     });
   }
 
@@ -82,8 +93,8 @@ export const setupAutoplay = (
   // which probably shouldn't seek
   if (!autoplay) {
     const handleSeek = () => {
-      // don't seek if we're not live
-      if (!isLive) {
+      // don't seek if we're not live or if a `startTime` has been explicitly set
+      if (!isLive || Number.isFinite(props.startTime)) {
         return;
       }
       // seek to either hls.js's liveSyncPosition or the native seekable end
