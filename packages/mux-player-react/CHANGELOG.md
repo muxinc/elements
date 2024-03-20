@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.3.3...@mux/mux-player-react@2.4.0) (2024-03-20)
+
+
+### Features
+
+* **mux-player-react:** Remove commented out code (feat to force mino… ([#890](https://github.com/muxinc/elements/issues/890)) ([9d48804](https://github.com/muxinc/elements/commit/9d48804bcc0d7df497caea40505599652596c195))
+
+
+
+
+
 ## [2.3.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.3.2...@mux/mux-player-react@2.3.3) (2024-02-16)
 
 **Note:** Version bump only for package @mux/mux-player-react

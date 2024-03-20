@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.3.3...@mux/mux-player@2.4.0) (2024-03-20)
+
+
+### Bug Fixes
+
+* **mux-player:** More cleanup for DVR in media chrome ([#887](https://github.com/muxinc/elements/issues/887)) ([e54dcdb](https://github.com/muxinc/elements/commit/e54dcdbcec8c7f32f57568021353a398126629f6))
+* polish new time preview w/ shifting arrow ([#884](https://github.com/muxinc/elements/issues/884)) ([a3662c7](https://github.com/muxinc/elements/commit/a3662c7a2076246ed8dbca8c99aaaecce4b2423c))
+* polish, use easing gradients ([#885](https://github.com/muxinc/elements/issues/885)) ([ff68f13](https://github.com/muxinc/elements/commit/ff68f13384badbda9ca8ac3618a8f36b769fa403))
+
+
+### Features
+
+* **mux-player:** Keyboard seek offsets now update with component offset props. ([#888](https://github.com/muxinc/elements/issues/888)) ([b419de9](https://github.com/muxinc/elements/commit/b419de9a3e316a712c36dfdcae1849b55e22eb23))
+* **mux-player:** version bump to Media Chrome v3.1.0. ([#886](https://github.com/muxinc/elements/issues/886)) ([1f9a6ec](https://github.com/muxinc/elements/commit/1f9a6ece2ba07f3042330336f9a0719eab274642))
+
+
+
+
+
 ## [2.3.3](https://github.com/muxinc/elements/compare/@mux/mux-player@2.3.2...@mux/mux-player@2.3.3) (2024-02-16)
 
 **Note:** Version bump only for package @mux/mux-player

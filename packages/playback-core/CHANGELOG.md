@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.2...@mux/playback-core@0.22.3) (2024-03-20)
+
+
+### Bug Fixes
+
+* **playback-core:** live seek and media chrome upgrade ([#883](https://github.com/muxinc/elements/issues/883)) ([94d11d9](https://github.com/muxinc/elements/commit/94d11d9656cf8560853daf6690d7705510fa9ce5))
+
+
+
+
+
 ## [0.22.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.1...@mux/playback-core@0.22.2) (2024-02-16)
 
 
