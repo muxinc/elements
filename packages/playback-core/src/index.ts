@@ -709,7 +709,7 @@ export const loadMedia = (
   };
 
   // Make sure we track transitions from infinite to finite durations for seekable changes as well.
-  mediaEl.addEventListener('durationchange', seekableChange);
+  addEventListenerWithTeardown(mediaEl, 'durationchange', seekableChange);
 
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
