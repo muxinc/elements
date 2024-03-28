@@ -193,7 +193,11 @@ export const updateStreamInfoFromHlsjsLevelDetails = (
         return mediaEl.seekable.start(index);
       },
       end(index: number) {
-        if (index > this.length) return mediaEl.seekable.end(index);
+        // Defer to native seekable for:
+        // 1) "out of range" cases
+        // 2) "finite duration" media (whether live/"DVR" that has ended or on demand)
+        if (index > this.length || index < 0 || Number.isFinite(mediaEl.duration)) return mediaEl.seekable.end(index);
+        // Otherwise rely on the live sync position (but still fall back to native seekable when nullish)
         return hls.liveSyncPosition ?? mediaEl.seekable.end(index);
       },
     });
@@ -703,6 +707,9 @@ export const loadMedia = (
     prevSeekableStart = nextSeekableStart;
     prevSeekableEnd = nextSeekableEnd;
   };
+
+  // Make sure we track transitions from infinite to finite durations for seekable changes as well.
+  addEventListenerWithTeardown(mediaEl, 'durationchange', seekableChange);
 
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
