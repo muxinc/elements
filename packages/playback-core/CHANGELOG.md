@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.22.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.3...@mux/playback-core@0.22.4) (2024-03-29)
+
+
+### Bug Fixes
+
+* **playback-core:** Make sure we do not apply holdback to seekable when live streams have ended. ([#891](https://github.com/muxinc/elements/issues/891)) ([138e83f](https://github.com/muxinc/elements/commit/138e83f5a6ac3040a8fc4c60253302344a2b9b79))
+
+
+
+
+
 ## [0.22.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.2...@mux/playback-core@0.22.3) (2024-03-20)
 
 

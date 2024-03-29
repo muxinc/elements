@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.4.0...@mux/mux-player@2.4.1) (2024-03-29)
+
+**Note:** Version bump only for package @mux/mux-player
+
+
+
+
+
 # [2.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.3.3...@mux/mux-player@2.4.0) (2024-03-20)
 
 

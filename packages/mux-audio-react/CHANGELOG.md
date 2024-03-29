@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.5](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.7.4...@mux/mux-audio-react@0.7.5) (2024-03-29)
+
+**Note:** Version bump only for package @mux/mux-audio-react
+
+
+
+
+
 ## [0.7.4](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.7.3...@mux/mux-audio-react@0.7.4) (2024-03-20)
 
 **Note:** Version bump only for package @mux/mux-audio-react
