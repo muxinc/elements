@@ -10815,11 +10815,6 @@ mux-embed@~4.30.0:
   resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.30.0.tgz#3820109e153df75d6dc139a9b4d60482dfe9860f"
   integrity sha512-XAgAp4CEvsiZL26GbruzeG1g33OWyrzuskDMavXUxDufTxS0/AxAhwoTTRqEzEJS9vnZa/X9R2GV3xRX1XMp2w==
 
-mux-embed@~5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-5.1.0.tgz#a95fc65f626365f3fb7af9c242d164d78cfcf830"
-  integrity sha512-cmfId+yq1aNb00rYkT+0464NBVbrxSwugBPk6iXsB3GRPBLKmXGMs7J6atDVAHgRDD84od6vRN+RHv0aoa6+xg==
-
 nanocolors@^0.2.1:
   version "0.2.13"
   resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.2.13.tgz#dfd1ed0bfab05e9fe540eb6874525f0a1684099b"
