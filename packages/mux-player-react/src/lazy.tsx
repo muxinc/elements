@@ -52,7 +52,7 @@ const Fallback = (props: FallbackProps) => {
         placeholder={placeholder}
         style={
           {
-            '--mux-player-react-lazy-placeholder': placeholder ? `url(${placeholder});` : '',
+            '--mux-player-react-lazy-placeholder': placeholder ? `url('${placeholder}');` : '',
             ...style,
           } as React.CSSProperties
         }
