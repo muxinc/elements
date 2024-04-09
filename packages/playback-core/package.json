@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "hls.js": "~1.4.13",
-    "mux-embed": "~4.30.0"
+    "mux-embed": "~5.2.0"
   },
   "devDependencies": {
     "@mux/test-esm-exports": "0.1.0",

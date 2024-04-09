@@ -10810,10 +10810,10 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mux-embed@~4.30.0:
-  version "4.30.0"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-4.30.0.tgz#3820109e153df75d6dc139a9b4d60482dfe9860f"
-  integrity sha512-XAgAp4CEvsiZL26GbruzeG1g33OWyrzuskDMavXUxDufTxS0/AxAhwoTTRqEzEJS9vnZa/X9R2GV3xRX1XMp2w==
+mux-embed@~5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-5.2.0.tgz#88bd0b047f3b718c6018fec0c149539a75a2a369"
+  integrity sha512-hF9WDXnUu+5cYA36DfrdEKEpcV26dZvGmx2MAqvCg0kJiH/HcjNCk6QRCGJW0Xoe0Jtp2vAF9RbY6eL0uvZTZA==
 
 nanocolors@^0.2.1:
   version "0.2.13"
