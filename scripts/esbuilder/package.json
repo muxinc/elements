@@ -7,7 +7,7 @@
   "bin": {
     "esbuilder": "./esbuilder.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "esbuild": "^0.19.8"
   }
 }
