@@ -9,8 +9,7 @@ export type MuxUploaderStatusRefAttributes = MuxUploaderStatusElement;
 
 export type MuxUploaderStatusProps = {
   muxUploader?: string;
-  // Currently no slottable children so omitting (CJP)
-  // children?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const MuxUploaderStatusInternal = React.forwardRef<MuxUploaderStatusRefAttributes, MuxUploaderStatusProps>(

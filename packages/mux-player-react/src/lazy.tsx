@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import type { DetailedHTMLProps, HTMLAttributes } from 'react';
 import type { ValueOf } from '@mux/playback-core';
 
 import ConditionalSuspense from './ConditionalSuspense';
@@ -7,16 +6,19 @@ import useIsBrowser from './useIsBrowser';
 import useIsIntersecting from './useIsIntersecting';
 
 import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
+import type MuxPlayerElement from '@mux/mux-player';
 
-interface MuxPlayerElement extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
-  nohotkeys?: boolean | undefined;
+interface MuxPlayerElementReact extends Partial<Omit<MuxPlayerElement, 'style' | 'children'>> {
+  ref: React.MutableRefObject<MuxPlayerElement | null> | null | undefined;
+  style: React.CSSProperties;
+  children?: React.ReactNode;
 }
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace JSX {
     interface IntrinsicElements {
-      'mux-player': MuxPlayerElement;
+      'mux-player': MuxPlayerElementReact;
     }
   }
 }
@@ -29,7 +31,7 @@ interface FallbackProps extends MuxPlayerProps {
 const Fallback = (props: FallbackProps) => {
   const { style, className, onIntersection, placeholder } = props;
 
-  const intersectionRef = React.useRef<HTMLElement>(null);
+  const intersectionRef = React.useRef<MuxPlayerElement>(null);
   const isIntersecting = useIsIntersecting(intersectionRef);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ const Fallback = (props: FallbackProps) => {
       <mux-player
         ref={intersectionRef}
         data-mux-player-react-lazy-placeholder
-        placeholder={placeholder}
+        placeholder={placeholder ?? ''}
         style={
           {
             '--mux-player-react-lazy-placeholder': placeholder ? `url('${placeholder}');` : '',
