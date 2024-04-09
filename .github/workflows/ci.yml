@@ -13,12 +13,12 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: read node version from the .nvmrc file
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
         shell: bash
         id: nvmrc
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
           # this line is required for the setup-node action to be able to run the npm publish below.
@@ -36,12 +36,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: read node version from the .nvmrc file
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
         shell: bash
         id: nvmrc
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
           cache: yarn
@@ -52,10 +52,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: yarn
       # esbuild requires --ignore-scripts to NOT be added here.
       - run: yarn install --frozen-lockfile
