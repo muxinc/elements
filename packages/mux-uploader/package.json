@@ -70,7 +70,6 @@
     "@mux/upchunk": "^3.3.0"
   },
   "devDependencies": {
-    "@mux/test-esm-exports": "0.1.0",
     "@open-wc/testing": "^3.0.3",
     "@web/dev-server-esbuild": "^0.3.2",
     "@web/dev-server-import-maps": "^0.0.6",

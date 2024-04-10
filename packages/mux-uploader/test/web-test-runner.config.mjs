@@ -14,7 +14,6 @@ export default {
       inject: {
         importMap: {
           imports: {
-            // see shared/test-esm-exports/README.md for more information on this configuration
             '/test/': '/packages/mux-uploader/test/',
           },
         },
