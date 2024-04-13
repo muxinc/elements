@@ -130,6 +130,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     envKey: el.envKey,
     preferCmcd: el.preferCmcd,
     debug: el.debug,
+    disableTracking: el.disableTracking,
     disableCookies: el.disableCookies,
     tokens: el.tokens,
     beaconCollectionDomain: el.beaconCollectionDomain,
@@ -1332,6 +1333,20 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   /**
+   * Get video engine disable tracking flag.
+   */
+  get disableTracking() {
+    return getVideoAttribute(this, MuxVideoAttributes.DISABLE_TRACKING) != null;
+  }
+
+  /**
+   * Set video engine disable tracking flag.
+   */
+  set disableTracking(val) {
+    this.toggleAttribute(MuxVideoAttributes.DISABLE_TRACKING, !!val);
+  }
+
+  /**
    * Get video engine disable cookies flag.
    */
   get disableCookies() {
@@ -1339,7 +1354,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   /**
-   * Set video engine debug flag.
+   * Set video engine disable cookies flag.
    */
   set disableCookies(val) {
     if (val) {

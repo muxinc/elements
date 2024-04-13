@@ -73,6 +73,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   muted: undefined,
   debug: undefined,
   noVolumePref: undefined,
+  disableTracking: undefined,
   disableCookies: undefined,
   autoPlay: undefined,
   preload: undefined,
@@ -375,6 +376,7 @@ function MuxPlayerPage({ location }: Props) {
         preferCmcd={state.preferCmcd}
         debug={state.debug}
         noVolumePref={state.noVolumePref}
+        disableTracking={state.disableTracking}
         disableCookies={state.disableCookies}
         loop={state.loop}
         muted={state.muted}
@@ -626,6 +628,11 @@ function MuxPlayerPage({ location }: Props) {
           name="thumbnailTime"
           onChange={genericOnChange}
           min={0}
+        />
+        <BooleanRenderer
+          value={state.disableTracking}
+          name="disableTracking"
+          onChange={genericOnChange}
         />
         <BooleanRenderer
           value={state.disableCookies}

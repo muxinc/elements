@@ -1,4 +1,4 @@
-import { StreamTypes, toMuxVideoURL } from '@mux/playback-core';
+import { StreamTypes } from '@mux/playback-core';
 import type { ValueOf, MaxResolutionValue, MinResolutionValue, RenditionOrderValue } from '@mux/playback-core';
 import { toQuery, camelCase, parseJwt } from './utils';
 

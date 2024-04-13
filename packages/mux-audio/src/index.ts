@@ -20,32 +20,19 @@ import { getPlayerVersion } from './env';
 import { CustomAudioElement, Events as AudioEvents } from 'custom-media-element';
 import { HlsConfig } from 'hls.js';
 
-/** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
-type AttributeNames = {
-  ENV_KEY: 'env-key';
-  DEBUG: 'debug';
-  METADATA_URL: 'metadata-url';
-  BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain';
-  DISABLE_COOKIES: 'disable-cookies';
-  PLAYBACK_ID: 'playback-id';
-  PREFER_PLAYBACK: 'prefer-playback';
-  TYPE: 'type';
-  STREAM_TYPE: 'stream-type';
-  START_TIME: 'start-time';
-};
-
-const Attributes: AttributeNames = {
+export const Attributes = {
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
   METADATA_URL: 'metadata-url',
   PREFER_PLAYBACK: 'prefer-playback',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
+  DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
-};
+} as const;
 
 const AttributeNameValues = Object.values(Attributes);
 
@@ -127,11 +114,11 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     }
   }
 
-  get debug(): boolean {
+  get debug() {
     return this.getAttribute(Attributes.DEBUG) != null;
   }
 
-  set debug(val: boolean) {
+  set debug(val) {
     // dont' cause an infinite loop
     if (val === this.debug) return;
 
@@ -142,11 +129,22 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     }
   }
 
-  get disableCookies(): boolean {
+  get disableTracking() {
+    return this.hasAttribute(Attributes.DISABLE_TRACKING);
+  }
+
+  set disableTracking(val) {
+    // dont' cause an infinite loop
+    if (val === this.disableTracking) return;
+
+    this.toggleAttribute(Attributes.DISABLE_TRACKING, !!val);
+  }
+
+  get disableCookies() {
     return this.hasAttribute(Attributes.DISABLE_COOKIES);
   }
 
-  set disableCookies(val: boolean) {
+  set disableCookies(val) {
     // dont' cause an infinite loop
     if (val === this.disableCookies) return;
 
@@ -271,13 +269,16 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
       .filter((attrName) => {
         return attrName.startsWith('metadata-') && !([Attributes.METADATA_URL] as string[]).includes(attrName);
       })
-      .reduce((currAttrs, attrName) => {
-        const value = this.getAttribute(attrName);
-        if (value != null) {
-          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
-        }
-        return currAttrs;
-      }, {} as { [key: string]: string });
+      .reduce(
+        (currAttrs, attrName) => {
+          const value = this.getAttribute(attrName);
+          if (value != null) {
+            currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
+          }
+          return currAttrs;
+        },
+        {} as { [key: string]: string }
+      );
 
     return {
       ...inferredMetadataAttrs,

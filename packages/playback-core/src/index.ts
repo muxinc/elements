@@ -589,15 +589,16 @@ export const setupMux = (
       | 'src'
       | 'customDomain'
       | 'disableCookies'
+      | 'disableTracking'
     >
   >,
   mediaEl: HTMLMediaElement,
   hlsjs?: HlsInterface
 ) => {
-  const { envKey: env_key } = props;
+  const { envKey: env_key, disableTracking } = props;
   const inferredEnv = isMuxVideoSrc(props);
 
-  if (env_key || inferredEnv) {
+  if (!disableTracking && (env_key || inferredEnv)) {
     const {
       playerInitTime: player_init_time,
       playerSoftwareName: player_software_name,
@@ -679,7 +680,7 @@ export const loadMedia = (
   const shouldUseNative = useNative(props, mediaEl);
   const { src } = props;
 
-  const maybeDispatchEndedCallback = (evt: Event) => {
+  const maybeDispatchEndedCallback = () => {
     // We want to early bail if the underlying media element is already in an ended state,
     // since that means it will have already fired the ended event.
     // Do the "cheaper" check first
