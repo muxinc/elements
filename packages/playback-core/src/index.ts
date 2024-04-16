@@ -40,6 +40,7 @@ import type {
   RenditionOrderValue,
 } from './types';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
+import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
   Hls,
@@ -508,7 +509,7 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaPropsInternal,
-      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig'
+      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'drmToken'
     >
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
@@ -528,6 +529,7 @@ export const setupHls = (
       capLevelOnFPSDrop: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
+    const drmConfig = getDRMConfig(props);
     // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
     const cmcd =
       preferCmcd !== CmcdTypes.NONE
@@ -556,6 +558,7 @@ export const setupHls = (
       },
       ...defaultConfig,
       ...streamTypeConfig,
+      ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
 
@@ -575,6 +578,139 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   }
 
   return {};
+};
+
+export const getDRMConfig = ({
+  // Will likely be used to parameterize requests
+  // playbackId,
+  drmToken,
+}: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken'>>) => {
+  if (!drmToken) return {};
+  return {
+    emeEnabled: true,
+    licenseXhrSetup: (
+      xhr: XMLHttpRequest,
+      url: string,
+      keyContext: MediaKeySessionContext,
+      licenseChallenge: Uint8Array
+    ) => {
+      // const payload = licenseChallenge;
+      // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licensexhrsetup
+      console.log('STUB, licenseXhrSetup invoked!', xhr, url, keyContext, licenseChallenge);
+      return Promise.resolve(new Uint8Array());
+    },
+    licenseResponseCallback: (xhr: XMLHttpRequest, url: string, keyContext: MediaKeySessionContext) => {
+      // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licenseresponsecallback
+      console.log('STUB, licenseResponseCallback invoked!', xhr, url, keyContext);
+      return new ArrayBuffer(0);
+    },
+    drmSystems: {
+      'com.apple.fps': {
+        licenseUrl: 'https://your-fps-license-server/path',
+        serverCertificateUrl: 'https://your-fps-license-server/certificate/path',
+      },
+      'com.widevine.alpha': {
+        licenseUrl: 'https://your-widevine-license-server/path',
+      },
+      'com.microsoft.playready': {
+        licenseUrl: 'https://your-playready-license-server/path',
+      },
+    },
+  };
+};
+
+export const getFairPlayAppCertificate = async ({
+  playbackId,
+  drmToken,
+}: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken'>>) => {
+  const url = `https://license.mux.com/app-certificate/${playbackId}?token=${drmToken}`;
+  const resp = await fetch(url);
+  const body = await resp.arrayBuffer();
+  return body;
+};
+
+export const toBase64FromArrayBuffer = (bytes: ArrayBuffer) => {
+  return btoa(
+    new Uint8Array(bytes).reduce((b64Str, byte) => {
+      return b64Str + String.fromCharCode(byte);
+    }, '')
+  );
+};
+
+const getResponse = async (message: ArrayBuffer, license_server_url: string) => {
+  const spc_string = toBase64FromArrayBuffer(message);
+  const licenseResponse = await fetch(license_server_url, {
+    method: 'POST',
+    headers: new Headers({ 'Content-type': 'application/json' }),
+    body: JSON.stringify({
+      spc: spc_string,
+    }),
+  });
+  const responseObject = await licenseResponse.json();
+  return Uint8Array.from(atob(responseObject.ckc), (c) => c.charCodeAt(0));
+};
+
+/** @TODO Pick<> relevant props here (CJP) */
+export const setupNativeFairplayDRM = (props: MuxMediaPropsInternal, mediaEl: HTMLMediaElement) => {
+  /** @TODO Defer applying src until app certificate is set (CJP) */
+  const onFpEncrypted = async (event: MediaEncryptedEvent) => {
+    try {
+      const initDataType = event.initDataType;
+      if (initDataType !== 'skd') {
+        console.error(`Received unexpected initialization data type "${initDataType}"`);
+        return;
+      }
+
+      if (!mediaEl.mediaKeys) {
+        const access = await navigator.requestMediaKeySystemAccess('com.apple.fps', [
+          {
+            initDataTypes: [initDataType],
+            videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
+            distinctiveIdentifier: 'not-allowed',
+            persistentState: 'not-allowed',
+            sessionTypes: ['temporary'],
+          },
+        ]);
+
+        const keys = await access.createMediaKeys();
+
+        const fairPlayAppCert = await getFairPlayAppCertificate(props);
+        await keys.setServerCertificate(fairPlayAppCert);
+        await mediaEl.setMediaKeys(keys);
+      }
+
+      const initData = event.initData;
+      if (initData == null) {
+        /** @TODO Improve error signaling here (CJP) */
+        console.error('THAT AINT RIGHT');
+        return;
+      }
+
+      const session = (mediaEl.mediaKeys as MediaKeys).createSession();
+      session.generateRequest(initDataType, initData);
+      const message = await new Promise<MediaKeyMessageEvent['message']>((resolve) => {
+        session.addEventListener(
+          'message',
+          (event) => {
+            resolve(event.message);
+          },
+          { once: true }
+        );
+      });
+
+      const response = await getResponse(
+        message,
+        `https:license.mux.com/key/${props.playbackId}?token=${props.drmToken}`
+      );
+      await session.update(response);
+      return session;
+    } catch (e) {
+      /** @TODO Improve error signaling here (CJP) */
+      console.error(`Could not start encrypted playback due to exception "${e}"`);
+    }
+  };
+
+  addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
 };
 
 export const isMuxVideoSrc = ({

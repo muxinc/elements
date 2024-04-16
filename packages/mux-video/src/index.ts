@@ -52,6 +52,7 @@ export const Attributes = {
   DEBUG: 'debug',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
+  DRM_TOKEN: 'drm-token',
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
@@ -389,6 +390,21 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.CUSTOM_DOMAIN, val);
     } else {
       this.removeAttribute(Attributes.CUSTOM_DOMAIN);
+    }
+  }
+
+  get drmToken() {
+    return this.getAttribute(Attributes.CUSTOM_DOMAIN) ?? undefined;
+  }
+
+  set drmToken(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.drmToken) return;
+
+    if (val) {
+      this.setAttribute(Attributes.DRM_TOKEN, val);
+    } else {
+      this.removeAttribute(Attributes.DRM_TOKEN);
     }
   }
 
