@@ -580,12 +580,11 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
-export const getDRMConfig = ({
-  // Will likely be used to parameterize requests
-  // playbackId,
-  drmToken,
-}: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken'>>) => {
-  if (!drmToken) return {};
+export const getDRMConfig = (
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>
+) => {
+  const { playbackId, drmToken } = props;
+  if (!drmToken || !playbackId) return {};
   return {
     emeEnabled: true,
     licenseXhrSetup: (
@@ -594,64 +593,49 @@ export const getDRMConfig = ({
       keyContext: MediaKeySessionContext,
       licenseChallenge: Uint8Array
     ) => {
-      // const payload = licenseChallenge;
       // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licensexhrsetup
       console.log('STUB, licenseXhrSetup invoked!', xhr, url, keyContext, licenseChallenge);
-      return Promise.resolve(new Uint8Array());
+      return getLicenseKey(licenseChallenge, url);
     },
-    licenseResponseCallback: (xhr: XMLHttpRequest, url: string, keyContext: MediaKeySessionContext) => {
-      // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licenseresponsecallback
-      console.log('STUB, licenseResponseCallback invoked!', xhr, url, keyContext);
-      return new ArrayBuffer(0);
-    },
+    // licenseResponseCallback: (xhr: XMLHttpRequest, url: string, keyContext: MediaKeySessionContext) => {
+    //   // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licenseresponsecallback
+    //   console.log('STUB, licenseResponseCallback invoked!', xhr, url, keyContext);
+    //   return new ArrayBuffer(0);
+    // },
     drmSystems: {
       'com.apple.fps': {
-        licenseUrl: 'https://your-fps-license-server/path',
-        serverCertificateUrl: 'https://your-fps-license-server/certificate/path',
+        licenseUrl: toLicenseKeyURL(props, 'fairplay'),
+        serverCertificateUrl: toAppCertURL(props, 'fairplay'),
       },
       'com.widevine.alpha': {
-        licenseUrl: 'https://your-widevine-license-server/path',
+        licenseUrl: toLicenseKeyURL(props, 'widevine'),
       },
       'com.microsoft.playready': {
-        licenseUrl: 'https://your-playready-license-server/path',
+        licenseUrl: toLicenseKeyURL(props, 'playready'),
       },
     },
   };
 };
 
-export const getFairPlayAppCertificate = async ({
-  playbackId,
-  drmToken,
-}: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken'>>) => {
-  const url = `https://license.mux.com/app-certificate/${playbackId}?token=${drmToken}`;
-  const resp = await fetch(url);
+export const getAppCertificate = async (appCertificateUrl: string) => {
+  const resp = await fetch(appCertificateUrl);
   const body = await resp.arrayBuffer();
   return body;
 };
 
-export const toBase64FromArrayBuffer = (bytes: ArrayBuffer) => {
-  return btoa(
-    new Uint8Array(bytes).reduce((b64Str, byte) => {
-      return b64Str + String.fromCharCode(byte);
-    }, '')
-  );
-};
-
-const getResponse = async (message: ArrayBuffer, license_server_url: string) => {
-  const spc_string = toBase64FromArrayBuffer(message);
-  const licenseResponse = await fetch(license_server_url, {
+export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: string) => {
+  const licenseResponse = await fetch(licenseServerUrl, {
     method: 'POST',
-    headers: new Headers({ 'Content-type': 'application/json' }),
-    body: JSON.stringify({
-      spc: spc_string,
-    }),
+    /** @TODO determine appropriate content-type (CJP) */
+    // headers: new Headers({ 'Content-type': 'application/json' }),
+    body: message,
   });
-  const responseObject = await licenseResponse.json();
-  return Uint8Array.from(atob(responseObject.ckc), (c) => c.charCodeAt(0));
+  const keyBuffer = await licenseResponse.arrayBuffer();
+  return new Uint8Array(keyBuffer);
 };
 
 /** @TODO Pick<> relevant props here (CJP) */
-export const setupNativeFairplayDRM = (props: MuxMediaPropsInternal, mediaEl: HTMLMediaElement) => {
+export const setupNativeFairplayDRM = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement) => {
   /** @TODO Defer applying src until app certificate is set (CJP) */
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
     try {
@@ -674,7 +658,7 @@ export const setupNativeFairplayDRM = (props: MuxMediaPropsInternal, mediaEl: HT
 
         const keys = await access.createMediaKeys();
 
-        const fairPlayAppCert = await getFairPlayAppCertificate(props);
+        const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay'));
         await keys.setServerCertificate(fairPlayAppCert);
         await mediaEl.setMediaKeys(keys);
       }
@@ -691,17 +675,14 @@ export const setupNativeFairplayDRM = (props: MuxMediaPropsInternal, mediaEl: HT
       const message = await new Promise<MediaKeyMessageEvent['message']>((resolve) => {
         session.addEventListener(
           'message',
-          (event) => {
-            resolve(event.message);
+          (messageEvent) => {
+            resolve(messageEvent.message);
           },
           { once: true }
         );
       });
 
-      const response = await getResponse(
-        message,
-        `https:license.mux.com/key/${props.playbackId}?token=${props.drmToken}`
-      );
+      const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay'));
       await session.update(response);
       return session;
     } catch (e) {
@@ -711,6 +692,28 @@ export const setupNativeFairplayDRM = (props: MuxMediaPropsInternal, mediaEl: HT
   };
 
   addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
+};
+
+export const toLicenseKeyURL = (
+  {
+    playbackId,
+    drmToken: token,
+    customDomain: domain = MUX_VIDEO_DOMAIN,
+  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  scheme: 'widevine' | 'playready' | 'fairplay'
+) => {
+  return `https://license.${domain}/license/${scheme}/${playbackId}?token=${token}`;
+};
+
+export const toAppCertURL = (
+  {
+    playbackId,
+    drmToken: token,
+    customDomain: domain = MUX_VIDEO_DOMAIN,
+  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  scheme: 'widevine' | 'playready' | 'fairplay'
+) => {
+  return `https://license.${domain}/app_certificate/${scheme}/${playbackId}?token=${token}`;
 };
 
 export const isMuxVideoSrc = ({
@@ -805,7 +808,20 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
+  props: Partial<
+    Pick<
+      MuxMediaProps,
+      | 'preferPlayback'
+      | 'src'
+      | 'type'
+      | 'startTime'
+      | 'streamType'
+      | 'autoplay'
+      | 'playbackId'
+      | 'drmToken'
+      | 'customDomain'
+    >
+  >,
   mediaEl: HTMLMediaElement,
   hls?: Pick<
     Hls,
@@ -924,6 +940,11 @@ export const loadMedia = (
         addEventListenerWithTeardown(mediaEl, 'loadedmetadata', loadedMetadataHandler, { once: true });
       } else {
         updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+      }
+
+      // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
+      if (props.drmToken) {
+        setupNativeFairplayDRM(props, mediaEl);
       }
 
       mediaEl.setAttribute('src', src);
