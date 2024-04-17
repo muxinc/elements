@@ -161,6 +161,7 @@ export type MuxMediaPropTypes = {
   }>;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   errorTranslator: Options['errorTranslator'];
+  disableTracking: boolean;
   disableCookies: Options['disableCookies'];
   playbackId: string;
   playerInitTime: MetaData['player_init_time'];

@@ -24,7 +24,18 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video-react';
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>((props, ref) => {
-  const { playbackId, src: outerSrc, children, autoPlay, preload, streamType, disableCookies, _hlsConfig, ...restProps } = props;
+  const {
+    playbackId,
+    src: outerSrc,
+    children,
+    autoPlay,
+    preload,
+    streamType, // eslint-disable-line @typescript-eslint/no-unused-vars
+    disableTracking, // eslint-disable-line @typescript-eslint/no-unused-vars
+    disableCookies, // eslint-disable-line @typescript-eslint/no-unused-vars
+    _hlsConfig, // eslint-disable-line @typescript-eslint/no-unused-vars
+    ...restProps
+  } = props;
 
   const [playerInitTime] = useState(generatePlayerInitTime());
   const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(props) ?? outerSrc);
@@ -78,6 +89,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
 MuxVideo.propTypes = {
   envKey: PropTypes.string,
   debug: PropTypes.bool,
+  disableTracking: PropTypes.bool,
   disableCookies: PropTypes.bool,
   // Improve this by adding a full shape() definition for all metadata props
   // metadata: PropTypes.shape({}),

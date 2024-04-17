@@ -47,6 +47,7 @@ export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
   DEBUG: 'debug',
+  DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
@@ -225,11 +226,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
-  get debug(): boolean {
+  get debug() {
     return this.getAttribute(Attributes.DEBUG) != null;
   }
 
-  set debug(val: boolean) {
+  set debug(val) {
     // dont' cause an infinite loop
     if (val === this.debug) return;
 
@@ -240,11 +241,22 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
-  get disableCookies(): boolean {
+  get disableTracking() {
+    return this.hasAttribute(Attributes.DISABLE_TRACKING);
+  }
+
+  set disableTracking(val) {
+    // dont' cause an infinite loop
+    if (val === this.disableTracking) return;
+
+    this.toggleAttribute(Attributes.DISABLE_TRACKING, !!val);
+  }
+
+  get disableCookies() {
     return this.hasAttribute(Attributes.DISABLE_COOKIES);
   }
 
-  set disableCookies(val: boolean) {
+  set disableCookies(val) {
     // dont' cause an infinite loop
     if (val === this.disableCookies) return;
 
@@ -487,13 +499,16 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       .filter((attrName) => {
         return attrName.startsWith('metadata-') && !([Attributes.METADATA_URL] as string[]).includes(attrName);
       })
-      .reduce((currAttrs, attrName) => {
-        const value = this.getAttribute(attrName);
-        if (value != null) {
-          currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
-        }
-        return currAttrs;
-      }, {} as { [key: string]: string });
+      .reduce(
+        (currAttrs, attrName) => {
+          const value = this.getAttribute(attrName);
+          if (value != null) {
+            currAttrs[attrName.replace(/^metadata-/, '').replace(/-/g, '_') as string] = value;
+          }
+          return currAttrs;
+        },
+        {} as { [key: string]: string }
+      );
 
     return {
       ...inferredMetadataAttrs,

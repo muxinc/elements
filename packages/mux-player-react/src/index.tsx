@@ -48,6 +48,7 @@ type MuxMediaPropTypes = {
   envKey: string;
   // debug: Options["debug"] & Hls["config"]["debug"];
   debug: boolean;
+  disableTracking: boolean;
   disableCookies: boolean;
   disablePictureInPicture?: boolean;
   // metadata: Partial<Options["data"]>;
