@@ -31,6 +31,7 @@ export type MuxUploaderProps = {
     ['--progress-bar-fill-color']?: CSSProperties['background'];
     ['--progress-radial-fill-color']?: CSSProperties['stroke'];
   };
+  // className?: string | undefined;
   children?: React.ReactNode;
   dynamicChunkSize?: boolean;
   maxFileSize?: number;

@@ -10,7 +10,7 @@ export type MuxUploaderFileSelectRefAttributes = MuxUploaderFileSelectElement;
 export type MuxUploaderFileSelectProps = {
   muxUploader?: string;
   children?: React.ReactNode;
-};
+} & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;
 
 const MuxUploaderFileSelectInternal = React.forwardRef<MuxUploaderFileSelectRefAttributes, MuxUploaderFileSelectProps>(
   ({ children, ...props }, ref) => {
