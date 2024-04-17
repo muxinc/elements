@@ -93,6 +93,8 @@ Attributes:
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
 - `metadata-*`: This syntax can be used to pass any other Mux Data metadata fields, for example `metadata-sub-property-id="123"`
 - `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0 (or the "live edge" for live/"DVR" content).
+- `disable-tracking`: Disables Mux Data tracking. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#features)
+- `disable-cookies`: Disables cookies used by Mux Data. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#disable-cookies). 
 
 All the other attributes that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoplay` are available and will work the same as they do with the HTML5 video element. One sidenote about `autoplay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
 
