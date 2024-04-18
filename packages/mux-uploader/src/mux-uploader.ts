@@ -71,6 +71,10 @@ interface MuxUploaderElement extends HTMLElement {
 }
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
+  static get observedAttributes() {
+    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'pausible', 'max-file-size'];
+  }
+
   protected _endpoint: Endpoint;
 
   constructor() {
@@ -111,10 +115,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
   attributeChangedCallback() {
     this.updateLayout();
-  }
-
-  static get observedAttributes() {
-    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
   }
 
   protected get hiddenFileInput() {
@@ -167,15 +167,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.toggleAttribute('no-retry', Boolean(value));
   }
 
-  updateLayout() {
-    const oldLayout = this.shadowRoot!.querySelector('mux-uploader-drop, div');
-    if (oldLayout) {
-      oldLayout.remove();
-    }
-    const newLayout = blockLayout(this);
-    this.shadowRoot!.appendChild(newLayout);
-  }
-
   get dynamicChunkSize(): DynamicChunkSize {
     return this.hasAttribute('dynamic-chunk-size');
   }
@@ -213,6 +204,15 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     } else {
       this.removeAttribute('chunk-size');
     }
+  }
+
+  updateLayout() {
+    const oldLayout = this.shadowRoot!.querySelector('mux-uploader-drop, div');
+    if (oldLayout) {
+      oldLayout.remove();
+    }
+    const newLayout = blockLayout(this);
+    this.shadowRoot!.appendChild(newLayout);
   }
 
   setError(message: string) {
@@ -257,35 +257,45 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
           : {}),
       });
 
-      this.setAttribute('upload-in-progress', '');
-
       this.dispatchEvent(
         new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } })
       );
+      this.setAttribute('upload-in-progress', '');
 
-      upload.on('attempt', (event) => {
+      if (upload.offline) {
+        this.dispatchEvent(new CustomEvent('offline'));
+      }
+
+      upload.on('attempt', (event: any) => {
         this.dispatchEvent(new CustomEvent('chunkattempt', event));
       });
 
-      upload.on('chunkSuccess', (event) => {
+      upload.on('chunkSuccess', (event: any) => {
         this.dispatchEvent(new CustomEvent('chunksuccess', event));
       });
 
-      upload.on('error', (event) => {
+      upload.on('error', (event: any) => {
         this.setAttribute('upload-error', '');
         console.error(event.detail.message);
         this.dispatchEvent(new CustomEvent('uploaderror', event));
       });
 
-      upload.on('progress', (event) => {
+      upload.on('progress', (event: any) => {
         this.dispatchEvent(new CustomEvent('progress', event));
       });
 
-      upload.on('success', (event) => {
+      upload.on('success', (event: any) => {
         this.removeAttribute('upload-in-progress');
         this.setAttribute('upload-complete', '');
 
         this.dispatchEvent(new CustomEvent('success', event));
+      });
+
+      upload.on('offline', (event: any) => {
+        this.dispatchEvent(new CustomEvent('offline', event));
+      });
+      upload.on('online', (event: any) => {
+        this.dispatchEvent(new CustomEvent('online', event));
       });
     } catch (err) {
       if (err instanceof Error) {

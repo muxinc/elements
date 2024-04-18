@@ -46,6 +46,11 @@ template.innerHTML = /*html*/ `
     justify-content: center;
     align-items: center;
   }
+
+  :host([file-ready])::part(heading),
+  :host([file-ready])::part(separator) {
+    display: none;
+  }
 </style>
 
 <slot name="heading" part="heading">
@@ -69,8 +74,6 @@ const Attributes = {
 class MuxUploaderDropElement extends globalThis.HTMLElement {
   #overlayTextEl: HTMLElement;
   #uploaderEl: MuxUploaderElement | null | undefined;
-  #headingEl: HTMLSlotElement | null | undefined;
-  #separatorEl: HTMLSlotElement | null | undefined;
 
   #abortController: AbortController | undefined;
 
@@ -80,8 +83,6 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
     shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.#overlayTextEl = shadowRoot.getElementById('overlay-label') as HTMLElement;
-    this.#headingEl = shadowRoot.querySelector('slot[name="heading"]') as HTMLSlotElement;
-    this.#separatorEl = shadowRoot.querySelector('slot[name="separator"]') as HTMLSlotElement;
   }
 
   connectedCallback() {
@@ -91,36 +92,22 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
     if (this.#uploaderEl) {
       const opts = { signal: this.#abortController.signal };
 
-      this.#uploaderEl.addEventListener(
-        'file-ready',
-        () => {
-          if (this.#headingEl) {
-            this.#headingEl.style.display = 'none';
-          }
-
-          if (this.#separatorEl) {
-            this.#separatorEl.style.display = 'none';
-          }
-        },
-        opts
-      );
-
-      this.#uploaderEl.addEventListener('uploadstart', () => this.setAttribute('upload-in-progress', ''), opts);
-
+      this.#uploaderEl.addEventListener('file-ready', () => this.toggleAttribute('file-ready', true), opts);
+      this.#uploaderEl.addEventListener('uploadstart', () => this.toggleAttribute('upload-in-progress', true), opts);
       this.#uploaderEl.addEventListener(
         'success',
         () => {
-          this.removeAttribute('upload-in-progress');
-          this.setAttribute('upload-complete', '');
+          this.toggleAttribute('upload-in-progress', false);
+          this.toggleAttribute('upload-complete', true);
         },
         opts
       );
-
       this.#uploaderEl.addEventListener(
         'reset',
         () => {
-          this.removeAttribute('upload-in-progress');
-          this.removeAttribute('upload-complete');
+          this.toggleAttribute('file-ready', false);
+          this.toggleAttribute('upload-in-progress', false);
+          this.toggleAttribute('upload-complete', false);
         },
         opts
       );
@@ -137,7 +124,7 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
     if (attributeName === Attributes.OVERLAY_TEXT && oldValue !== newValue) {
       this.#overlayTextEl.innerHTML = newValue ?? '';
     } else if (attributeName === 'active') {
-      if (this.getAttribute('overlay') && newValue != null) {
+      if (this.hasAttribute('overlay') && newValue != null) {
         this._currentDragTarget = this;
       }
     }
@@ -156,7 +143,7 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
         this._currentDragTarget = evt.target as Node;
         evt.preventDefault();
         evt.stopPropagation();
-        this.setAttribute('active', '');
+        this.toggleAttribute('active', true);
       },
       opts
     );
@@ -166,7 +153,7 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
       (evt) => {
         if (this._currentDragTarget === evt.target) {
           this._currentDragTarget = undefined;
-          this.removeAttribute('active');
+          this.toggleAttribute('active', false);
         }
       },
       opts

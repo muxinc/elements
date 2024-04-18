@@ -89,13 +89,13 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
         opts
       );
 
-      this.#uploaderEl.addEventListener('uploadstart', () => this.setAttribute('upload-in-progress', ''), opts);
+      this.#uploaderEl.addEventListener('uploadstart', () => this.toggleAttribute('upload-in-progress', true), opts);
 
       this.#uploaderEl.addEventListener(
         'success',
         () => {
-          this.removeAttribute('upload-in-progress');
-          this.setAttribute('upload-complete', '');
+          this.toggleAttribute('upload-in-progress', false);
+          this.toggleAttribute('upload-complete', true);
         },
         opts
       );
