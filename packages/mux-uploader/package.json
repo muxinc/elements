@@ -67,7 +67,7 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "@mux/upchunk": "^3.3.0"
+    "@mux/upchunk": "^3.3.2"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.3",

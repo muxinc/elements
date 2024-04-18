@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.0.7",
-    "@types/react": "^18.2.75",
-    "@types/react-dom": "^18.2.24"
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25"
   }
 }
