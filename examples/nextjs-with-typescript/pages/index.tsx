@@ -18,6 +18,7 @@ function HomePage() {
         <li><Link href="/MuxPlayerLazyIframe"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + w/o fullscreen)</a></Link></li>
         <li><Link href="/MuxPlayerLazyBlurUp"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + @mux/blurup)</a></Link></li>
         <li><Link href="/MuxUploader"><a className="uploader">&lt;MuxUploader&gt;</a></Link></li>
+        <li><Link href="/MuxUploaderSeparateComponents"><a className="uploader">&lt;MuxUploader&gt; (Separate Components)</a></Link></li>
         <li><Link href="/mux-video"><a className="video">&lt;mux-video&gt;<br/>(Web Component)</a></Link></li>
         <li><Link href="/mux-audio"><a className="audio">&lt;mux-audio&gt;<br/>(Web Component)</a></Link></li>
         <li><Link href="/mux-player"><a className="player">&lt;mux-player&gt;<br/>(Web Component)</a></Link></li>

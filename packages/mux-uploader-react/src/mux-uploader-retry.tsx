@@ -10,7 +10,7 @@ export type MuxUploaderRetryRefAttributes = MuxUploaderRetryElement;
 export type MuxUploaderRetryProps = {
   muxUploader?: string;
   children?: React.ReactNode;
-};
+} & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;
 
 const MuxUploaderRetryInternal = React.forwardRef<MuxUploaderRetryRefAttributes, MuxUploaderRetryProps>(
   ({ children, ...props }, ref) => {

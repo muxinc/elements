@@ -10,7 +10,7 @@ export type MuxUploaderStatusRefAttributes = MuxUploaderStatusElement;
 export type MuxUploaderStatusProps = {
   muxUploader?: string;
   children?: React.ReactNode;
-};
+} & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;
 
 const MuxUploaderStatusInternal = React.forwardRef<MuxUploaderStatusRefAttributes, MuxUploaderStatusProps>(
   ({ children, ...props }, ref) => {
