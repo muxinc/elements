@@ -2512,10 +2512,10 @@
   dependencies:
     image-dimensions "^2.3.0"
 
-"@mux/upchunk@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.3.2.tgz#4d398e1806cadb1f8a69a5418c2962323d726e25"
-  integrity sha512-/k7tVgA2gGafao5/mKvnL/I9T9IKKWnY8sBLOU8a0x0qObJoI/f2/FbhLWP4LuNrVd9ZrOFyOLfiudJe3ME+mg==
+"@mux/upchunk@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.3.3.tgz#45f2293a1773819ae49bd9f6fb6af7847148fb29"
+  integrity sha512-ZSytoi9SDR39XAf4DRI2cNCircq/n6oOvpaSentXga6fQhNwdXs7JQM3qsVFq8KeKCxCc14ZxDunpTa2z5D6Iw==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
