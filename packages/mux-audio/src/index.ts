@@ -18,7 +18,7 @@ import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/pl
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import { CustomAudioElement, Events as AudioEvents } from 'custom-media-element';
-import { HlsConfig } from 'hls.js';
+import type { HlsConfig } from 'hls.js';
 
 export const Attributes = {
   ENV_KEY: 'env-key',

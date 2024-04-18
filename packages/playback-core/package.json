@@ -59,7 +59,7 @@
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
-    "hls.js": "~1.4.13",
+    "hls.js": "~1.5.8",
     "mux-embed": "~5.2.0"
   },
   "devDependencies": {
