@@ -72,7 +72,7 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   static get observedAttributes() {
-    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'pausible', 'max-file-size'];
+    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
   }
 
   protected _endpoint: Endpoint;
