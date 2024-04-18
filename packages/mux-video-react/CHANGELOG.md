@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.8.5...@mux/mux-video-react@0.9.0) (2024-04-18)
+
+
+### Bug Fixes
+
+* upgrade media-chrome, upchunk, React types ([#904](https://github.com/muxinc/elements/issues/904)) ([1090ad6](https://github.com/muxinc/elements/commit/1090ad690261acd7ac1ab68b45801c46be1c2d0c))
+* upgrade mux-embed v5.2.0 & media-chrome v3.2.0 ([#897](https://github.com/muxinc/elements/issues/897)) ([fd91d94](https://github.com/muxinc/elements/commit/fd91d946ee2f8e58e05551fcb247422de6fbb761))
+
+
+### Features
+
+* add `disable-tracking` attribute and prop ([#900](https://github.com/muxinc/elements/issues/900)) ([0f5966e](https://github.com/muxinc/elements/commit/0f5966ec6cdf3cacde017a4ddd9c388bea3168d7))
+
+
+
+
+
 ## [0.8.5](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.8.4...@mux/mux-video-react@0.8.5) (2024-03-29)
 
 **Note:** Version bump only for package @mux/mux-video-react

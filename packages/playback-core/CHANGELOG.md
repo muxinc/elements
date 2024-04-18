@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.23.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.4...@mux/playback-core@0.23.0) (2024-04-18)
+
+
+### Bug Fixes
+
+* add mux-embed types reference ([#899](https://github.com/muxinc/elements/issues/899)) ([2162973](https://github.com/muxinc/elements/commit/2162973f4fa54af882c1fc7be4bab88de6b18ccc))
+* upgrade mux-embed v5.2.0 & media-chrome v3.2.0 ([#897](https://github.com/muxinc/elements/issues/897)) ([fd91d94](https://github.com/muxinc/elements/commit/fd91d946ee2f8e58e05551fcb247422de6fbb761))
+
+
+### Features
+
+* add `disable-tracking` attribute and prop ([#900](https://github.com/muxinc/elements/issues/900)) ([0f5966e](https://github.com/muxinc/elements/commit/0f5966ec6cdf3cacde017a4ddd9c388bea3168d7))
+* **playback-core, mux-video, mux-audio, mux-player:** Upg hls.js ([#902](https://github.com/muxinc/elements/issues/902)) ([a6a76b6](https://github.com/muxinc/elements/commit/a6a76b69e03867cc11c348d2b48e0160ea295309))
+
+
+
+
+
 ## [0.22.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.3...@mux/playback-core@0.22.4) (2024-03-29)
 
 

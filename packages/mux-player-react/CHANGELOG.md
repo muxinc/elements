@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.4.1...@mux/mux-player-react@2.5.0) (2024-04-18)
+
+
+### Bug Fixes
+
+* **mux-player-react/lazy:** display placeholder before JS load ([#895](https://github.com/muxinc/elements/issues/895)) ([3abdbb8](https://github.com/muxinc/elements/commit/3abdbb8653ca9003736a147236723d7d90f3dc9f))
+* upgrade media-chrome, upchunk, React types ([#904](https://github.com/muxinc/elements/issues/904)) ([1090ad6](https://github.com/muxinc/elements/commit/1090ad690261acd7ac1ab68b45801c46be1c2d0c))
+* upgrade mux-embed v5.2.0 & media-chrome v3.2.0 ([#897](https://github.com/muxinc/elements/issues/897)) ([fd91d94](https://github.com/muxinc/elements/commit/fd91d946ee2f8e58e05551fcb247422de6fbb761))
+
+
+### Features
+
+* add `disable-tracking` attribute and prop ([#900](https://github.com/muxinc/elements/issues/900)) ([0f5966e](https://github.com/muxinc/elements/commit/0f5966ec6cdf3cacde017a4ddd9c388bea3168d7))
+
+
+
+
+
 ## [2.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.4.0...@mux/mux-player-react@2.4.1) (2024-03-29)
 
 **Note:** Version bump only for package @mux/mux-player-react

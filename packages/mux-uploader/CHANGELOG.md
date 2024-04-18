@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.16](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.15...@mux/mux-uploader@1.0.0-beta.16) (2024-04-18)
+
+
+### Bug Fixes
+
+* upgrade media-chrome, upchunk, React types ([#904](https://github.com/muxinc/elements/issues/904)) ([1090ad6](https://github.com/muxinc/elements/commit/1090ad690261acd7ac1ab68b45801c46be1c2d0c))
+* upgrade mux-embed v5.2.0 & media-chrome v3.2.0 ([#897](https://github.com/muxinc/elements/issues/897)) ([fd91d94](https://github.com/muxinc/elements/commit/fd91d946ee2f8e58e05551fcb247422de6fbb761))
+
+
+
+
+
 # [1.0.0-beta.15](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.14...@mux/mux-uploader@1.0.0-beta.15) (2024-01-02)
 
 
