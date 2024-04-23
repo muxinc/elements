@@ -293,7 +293,7 @@ export async function addChapters(
   if (!track) {
     // Otherwise, create a new one
     const { label = DEFAULT_CHAPTERS_TRACK_LABEL } = chaptersConfig;
-    track = addTextTrack(mediaEl, 'metadata', label);
+    track = addTextTrack(mediaEl, 'chapters', label);
     track.mode = 'hidden';
     // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
