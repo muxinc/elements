@@ -1521,7 +1521,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return this.media?.addChapters(chapters);
   }
 
-  get activeCchapter() {
+  get activeChapter() {
     return this.media?.activeChapter;
   }
 
