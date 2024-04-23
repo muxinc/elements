@@ -1,5 +1,5 @@
 import Hls from './hls';
-import { CuePoint } from './types';
+import { CuePoint, Chapter } from './types';
 import { addEventListenerWithTeardown } from './util';
 
 export function setupTextTracks(
@@ -185,8 +185,8 @@ export async function addCuePoints<T>(
       const endTime = cueAfter
         ? cueAfter.startTime
         : Number.isFinite(mediaEl.duration)
-        ? mediaEl.duration
-        : Number.MAX_SAFE_INTEGER;
+          ? mediaEl.duration
+          : Number.MAX_SAFE_INTEGER;
 
       // Adjust the endTime of the already added previous cue, if present, so it does not overlap
       // with the newly added cue.
@@ -255,6 +255,109 @@ export async function setupCuePoints(
         {},
         track
       );
+      resolve(track);
+    });
+  });
+}
+
+/**
+ * Chapters handling, similar to cuepoints implementation
+ */
+
+const DEFAULT_CHAPTERS_TRACK_LABEL = 'chapters';
+export type ChaptersConfig = { label: string };
+export const DefaultChaptersConfig: ChaptersConfig = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
+
+const vttCueToChapter = (cue: VTTCue) => ({
+  startTime: cue.startTime,
+  endTime: cue.endTime,
+  value: cue.text,
+});
+
+export const getChaptersTrack = (
+  mediaEl: HTMLMediaElement,
+  { label = DEFAULT_CHAPTERS_TRACK_LABEL }: ChaptersConfig = DefaultChaptersConfig
+) => {
+  return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
+    return trackEl.track.label === label && trackEl.track.kind === 'metadata';
+  })?.track;
+};
+
+export async function addChapters(
+  mediaEl: HTMLMediaElement,
+  chapters: Chapter[],
+  chaptersConfig: ChaptersConfig = DefaultChaptersConfig
+) {
+  // If the track has already been created/added, use it.
+  let track = getChaptersTrack(mediaEl, chaptersConfig);
+  if (!track) {
+    // Otherwise, create a new one
+    const { label = DEFAULT_CHAPTERS_TRACK_LABEL } = chaptersConfig;
+    track = addTextTrack(mediaEl, 'metadata', label);
+    track.mode = 'hidden';
+    // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
+    await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
+  }
+
+  if (track.mode !== 'hidden') {
+    track.mode = 'hidden';
+  }
+
+  chapters.forEach(({ startTime, endTime, value }) => {
+    track?.addCue(new VTTCue(startTime, endTime, value ?? null));
+  });
+
+  return track;
+}
+
+export function getChapters(
+  mediaEl: HTMLMediaElement,
+  chaptersConfig: ChaptersConfig = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
+) {
+  const track = getChaptersTrack(mediaEl, chaptersConfig);
+  if (!track?.cues) return [];
+  return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue));
+}
+
+export function getActiveChapter(
+  mediaEl: HTMLMediaElement,
+  chaptersConfig: ChaptersConfig = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
+) {
+  const track = getChaptersTrack(mediaEl, chaptersConfig);
+  if (!track?.activeCues?.length) return undefined;
+  // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
+  // after the playhead is no longer within their [startTime, endTime) bounds. This
+  // accounts for those cases (CJP)
+  const { currentTime } = mediaEl;
+  const actualActiveCue = Array.prototype.find.call(track.activeCues ?? [], ({ startTime, endTime }) => {
+    return startTime <= currentTime && endTime > currentTime;
+  });
+  return vttCueToChapter(actualActiveCue as VTTCue);
+}
+
+export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: ChaptersConfig = DefaultChaptersConfig) {
+  return new Promise((resolve) => {
+    addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
+      const track = await addChapters(mediaEl, [], chaptersConfig);
+
+      addEventListenerWithTeardown(
+        mediaEl,
+        'cuechange',
+        () => {
+          const activeCuePoint = getActiveChapter(mediaEl);
+          if (activeCuePoint) {
+            const evt = new CustomEvent('chapterchange', {
+              composed: true,
+              bubbles: true,
+              detail: activeCuePoint,
+            });
+            mediaEl.dispatchEvent(evt);
+          }
+        },
+        {},
+        track
+      );
+
       resolve(track);
     });
   });

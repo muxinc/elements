@@ -15,6 +15,8 @@ import {
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
+  addChapters,
+  getActiveChapter,
   getStartDate,
   getCurrentPdt,
   getStreamType,
@@ -22,6 +24,7 @@ import {
   getLiveEdgeStart,
   getSeekable,
   getEnded,
+  getChapters,
 } from '@mux/playback-core';
 import type {
   PlaybackCore,
@@ -468,6 +471,18 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
 
   get cuePoints() {
     return getCuePoints(this.nativeEl);
+  }
+
+  async addChapters(chapters: { startTime: number; endTime: number; value: string }[]) {
+    return addChapters(this.nativeEl, chapters);
+  }
+
+  get activeChapter() {
+    return getActiveChapter(this.nativeEl);
+  }
+
+  get chapters() {
+    return getChapters(this.nativeEl);
   }
 
   getStartDate() {

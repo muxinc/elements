@@ -122,6 +122,12 @@ export type CuePoint<T = any> = {
   value: T;
 };
 
+export type Chapter = {
+  startTime: number; // in seconds
+  endTime: number; // in seconds
+  value: string; // chapter name
+};
+
 export const MaxResolution = {
   upTo720p: '720p',
   upTo1080p: '1080p',
