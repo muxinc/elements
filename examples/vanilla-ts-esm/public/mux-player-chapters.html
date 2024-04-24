@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-player&gt; | Chapters</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      mux-player {
+        display: block;
+        width: 100%;
+        margin: 1rem 0 2rem;
+        background-color: #000;
+      }
+
+      mux-player:not([audio]) {
+        aspect-ratio: 16 / 9;
+      }
+
+      #chapter-renderer {
+        background-color: lightgray;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/360826/233653989-11cd8603-c20f-4008-8bf7-dc15b743c52b.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+            <img alt="Mux Logo" src="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+          </picture>
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <mux-player
+      id="player"
+      stream-type="on-demand"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+      muted
+      preload="auto"
+    ></mux-player>
+    <p>
+      <b>Active Chapter:</b> <pre id="chapter-renderer">Unset</pre>
+    </p>
+    <p>
+      <button onclick="window.player.addChapters([{startTime: 15, endTime: 18, value: 'Extra chapter'}]); this.disabled = true;">Add additional fourth chapter</button>
+    </p>
+    <script>
+      const playerEl = document.querySelector('mux-player');
+
+      function addChapterstoPlayer() {
+        const chapters = [
+          { startTime: 1, endTime: 3, value: 'Chapter 1' },
+          { startTime: 3, endTime: 6, value: 'Chapter 2 (joined)' },
+          { startTime: 10, endTime: 15, value: 'Chapter 3 (after gap)' }
+        ];
+
+        playerEl.addChapters(chapters);
+
+        console.log('Chapters added');
+      }
+
+      function chapterChangeListener() {
+        console.log('Active Chapter', playerEl.activeChapter);
+        document.getElementById('chapter-renderer').innerText = playerEl.activeChapter.value;
+      }
+
+      playerEl.addEventListener('chapterchange', chapterChangeListener);
+
+      // NOTE: Need to wait until the player has loaded metadata before adding cuePoints!
+      if (playerEl.readyState >= 1) {
+        addChapterstoPlayer();
+      } else {
+        playerEl.addEventListener('loadedmetadata', addChapterstoPlayer, { once: true });
+      }
+    </script>
+    <a href="../">Browse Elements</a>
+  </body>
+</html>
