@@ -78,7 +78,7 @@
 
       playerEl.addEventListener('chapterchange', chapterChangeListener);
 
-      // NOTE: Need to wait until the player has loaded metadata before adding cuePoints!
+      // NOTE: Need to wait until the player has loaded metadata before adding chapters!
       if (playerEl.readyState >= 1) {
         addChapterstoPlayer();
       } else {
