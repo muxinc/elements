@@ -1,4 +1,3 @@
-'use client';
 import { useState, useEffect } from 'react';
 
 const useIsIntersecting = (ref: React.RefObject<HTMLElement>, options?: IntersectionObserverInit) => {

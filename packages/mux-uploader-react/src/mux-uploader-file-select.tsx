@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import '@mux/mux-uploader';
 import type MuxUploaderFileSelectElement from '@mux/mux-uploader';

@@ -1,22 +1,23 @@
+import type { Metadata } from 'next';
 import MuxUploader, { MuxUploaderDrop, MuxUploaderFileSelect, MuxUploaderProgress, MuxUploaderRetry, MuxUploaderStatus } from '@mux/mux-uploader-react';
+import MuxAudio from '@mux/mux-audio-react';
 import MuxVideo from "@mux/mux-video-react";
 import MuxPlayer from "@mux/mux-player-react";
 import MuxPlayerLazy from "@mux/mux-player-react/lazy";
 import "@mux/mux-player/themes/classic";
 import "@mux/mux-player/themes/microvideo";
 import muxBlurUp from '@mux/blurup'
-import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'App Directory test'
 }
 export default async function Page() {
-  // because this is a server component, we can run muxBlurUp
+  // because this is a server component, we can run async muxBlurUp
   const playbackId = "OG6Zq19uOjRkjO3bISLWasE2M01Cx8O3o"
   const { blurDataURL, aspectRatio } = await muxBlurUp(playbackId)
   return (
     <main>
-      <p>Mux Uploader React, Mux Video React, and Mux Player React all natively support client components.</p>
+      <p>Mux Uploader React, Mux Audio React, Mux Video React, and Mux Player React all natively support client components.</p>
       <h2>Mux Uploader</h2>
       <MuxUploaderDrop muxUploader="uploader" overlay overlayText="You're doing great!">
           <h2>Enter your upload GCS url:</h2>
@@ -41,6 +42,8 @@ export default async function Page() {
         <MuxUploaderProgress muxUploader="uploader" >What should be here?</MuxUploaderProgress>
         <MuxUploaderRetry muxUploader="uploader" ></MuxUploaderRetry>
         <MuxUploaderStatus muxUploader="uploader" ></MuxUploaderStatus>
+      <h2>Mux Audio</h2>
+      <MuxAudio controls playbackId={playbackId} />
       <h2>Mux Video</h2>
       <MuxVideo
         playbackId={playbackId}
