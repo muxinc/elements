@@ -52,9 +52,6 @@ function MuxAudioPage() {
           />
         </div>
       </div>
-
-      <br/>
-      <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
 }

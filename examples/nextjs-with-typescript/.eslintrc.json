@@ -1,14 +1,7 @@
 {
   "root": true,
-  "extends": ["plugin:@next/next/recommended"],
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
-  "env": {
-    "browser": true,
-    "es2021": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "module"
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "react/no-unescaped-entities": "off"
   }
 }

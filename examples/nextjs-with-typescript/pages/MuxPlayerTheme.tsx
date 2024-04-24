@@ -40,9 +40,6 @@ function MuxPlayerPage() {
           setPaused(true);
         }}
       />
-
-      <br/>
-      <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
 }

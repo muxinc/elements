@@ -77,9 +77,6 @@ function MuxVideoWCPage() {
           />
         </div>
       </div>
-
-      <br/>
-      <Link href="/">Browse Elements</Link>
     </>
   );
 }

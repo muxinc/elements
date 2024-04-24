@@ -294,7 +294,7 @@ function MuxPlayerPage() {
       <UCLAHeader/>
       <section style={{ padding: `0 2.5rem`, margin: `0 0 2.5rem`}}>
         <div className={styles.description} style={{ fontSize: `1rem`, fontWeight: 400, lineHeight: 1.5, }}>
-          <span>The </span><Link href="https://www.uclahealth.org/programs/marc"><a>Mindful Awareness Research Center (MARC)</a></Link>
+          <span>The </span><Link legacyBehavior href="https://www.uclahealth.org/programs/marc"><a>Mindful Awareness Research Center (MARC)</a></Link>
           <span> provides fantastic, free, guided meditations, but wouldn't it be nice if you could just dive right into the meditation
           practice?</span>
           <p>Wouldn't it be even better if you could adjust how long the silent self-practice was based on your level of
@@ -383,34 +383,34 @@ function MuxPlayerPage() {
       <footer>
         <p>
           <span>This application uses </span>
-          <Link href="https://github.com/muxinc/elements/tree/main/packages/mux-player-react">
+          <Link legacyBehavior href="https://github.com/muxinc/elements/tree/main/packages/mux-player-react">
             <a>Mux Player (React)</a>
           </Link>
           <span>, a fully open source media player for </span>
-          <Link href="https://www.mux.com/">
+          <Link legacyBehavior href="https://www.mux.com/">
             <a>Mux, Inc.</a>
           </Link>
           <span> The content is part of UCLA MARC's "Drop in Meditations" series, graciously provided under a Creative Commons License.
             You may find a list of all of their Drop in Meditations </span>
-          <Link href="https://www.uclahealth.org/programs/marc/free-guided-meditations/drop-meditations-hammer-podcast">
+          <Link legacyBehavior href="https://www.uclahealth.org/programs/marc/free-guided-meditations/drop-meditations-hammer-podcast">
             <a>here</a>
           </Link>
           <span>. You can also find information on another great and free resource, the UCLA Mindful mobile application, </span>
-          <Link href="https://www.uclahealth.org/programs/marc/free-programming-resources/ucla-mindful-app">
+          <Link legacyBehavior href="https://www.uclahealth.org/programs/marc/free-programming-resources/ucla-mindful-app">
             <a>here</a>
           </Link>
           <span>.</span>
         </p>
         <p>
           <span>“Drop-in Meditations” created by Diana Winston and others (see above) for the </span>
-          <Link href="http://www.uclahealth.org/marc">
+          <Link legacyBehavior href="http://www.uclahealth.org/marc">
             <a>UCLA Mindful Awareness Research Center (MARC)</a>
           </Link>
           <span>, ©2011- 2021 The Regents of the University of California (The UC Regents).</span>
         </p>
         <p>
           <span>Drop-in Meditations are licensed under a </span>
-          <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+          <Link legacyBehavior href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
             <a>Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>
           </Link>
           <span>.</span>
@@ -418,32 +418,32 @@ function MuxPlayerPage() {
         <ul>
           <li>
             <span><strong>NonCommercial</strong> — You may not use the material for </span>
-            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <Link legacyBehavior href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
               <a>commercial purposes</a>
             </Link>
             <span>.</span>
           </li>
 	        <li>
             <span><strong>NoDerivatives</strong> — If you </span>
-            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <Link legacyBehavior href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
               <a>remix, transform, or build upon</a>
             </Link>
             <span> the material, you may not distribute the modified material.</span>
           </li>
 	        <li>
             <span><strong>No additional restrictions</strong> — You may not apply legal terms or </span>
-            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <Link legacyBehavior href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
               <a>technological measures</a>
             </Link>
             <span> that legally restrict others from doing anything the license permits.</span>
           </li>
 	        <li>
             <span><strong>Attribution</strong> — You must give </span>
-            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <Link legacyBehavior href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
               <a>appropriate credit</a>
             </Link>
             <span>, provide a link to the license, and </span>
-            <Link href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+            <Link legacyBehavior href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
               <a>indicate if changes were made</a>
             </Link>
             <span>. You may do so in any reasonable manner, but not in any way that suggests the licensor (The UC Regents) endorses you or your use.</span>
@@ -459,7 +459,7 @@ export default MuxPlayerPage;
 export async function getServerSideProps(context) {
   return {
     props: {
-      hideDefaultHeader: true
+      hideDefaultLayout: true
     }
   };
 }

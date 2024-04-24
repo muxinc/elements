@@ -44,8 +44,6 @@ function MuxUploaderPage() {
         onUploadError={onUploadError}
         onProgress={onProgress}
       />
-
-      <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
 }

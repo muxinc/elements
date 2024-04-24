@@ -61,9 +61,6 @@ export default MuxPlayerLazyPage;
         style={{ aspectRatio }}
         streamType="on-demand"
       />
-
-      <br/>
-      <Link href="/">Browse Elements</Link>
     </>
   );
 }
