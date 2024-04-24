@@ -4,8 +4,8 @@ import MuxAudio from '@mux/mux-audio-react';
 import MuxVideo from "@mux/mux-video-react";
 import MuxPlayer from "@mux/mux-player-react";
 import MuxPlayerLazy from "@mux/mux-player-react/lazy";
-import "@mux/mux-player/themes/classic";
-import "@mux/mux-player/themes/microvideo";
+import "@mux/mux-player-react/themes/classic";
+import "@mux/mux-player-react/themes/microvideo";
 import muxBlurUp from '@mux/blurup'
 
 export const metadata: Metadata = {
