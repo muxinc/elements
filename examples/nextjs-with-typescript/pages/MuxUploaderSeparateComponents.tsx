@@ -56,8 +56,6 @@ function MuxUploaderPage() {
       <MuxUploaderProgress muxUploader="uploader" >What should be here?</MuxUploaderProgress>
       <MuxUploaderRetry muxUploader="uploader" ></MuxUploaderRetry>
       <MuxUploaderStatus muxUploader="uploader" ></MuxUploaderStatus>
-
-      <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
 }

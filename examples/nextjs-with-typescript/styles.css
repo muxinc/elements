@@ -1,3 +1,5 @@
+@import url('water.css');
+
 :root {
   --links: rgb(223, 40, 104);
 }
@@ -83,6 +85,10 @@ li a.player {
 
 li a.uploader {
   background: rgba(150, 32, 216, .1);
+}
+
+li a.react {
+  background: rgba(128, 128, 128, .1);
 }
 
 @media (prefers-color-scheme:dark) {

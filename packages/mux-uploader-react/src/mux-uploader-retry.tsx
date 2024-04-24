@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import '@mux/mux-uploader';
 import type MuxUploaderRetryElement from '@mux/mux-uploader';

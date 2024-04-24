@@ -1,3 +1,4 @@
+'use client';
 import { useCombinedRefs } from './use-combined-refs';
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';

@@ -48,8 +48,6 @@ function MuxPlayerPage() {
           {activeCuePoint?.value ? JSON.stringify(activeCuePoint?.value, null, 2) : 'Unset'}
         </pre>
       </div>
-      <br />
-      <Link href="/"><a>Browse Elements</a></Link>
     </>
   );
 }

@@ -77,9 +77,6 @@ function MuxAudioWCPage() {
           />
         </div>
       </div>
-
-      <br/>
-      <Link href="/">Browse Elements</Link>
     </>
   );
 }
