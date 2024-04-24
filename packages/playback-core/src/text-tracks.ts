@@ -113,8 +113,7 @@ export function addTextTrack(
   kind: TextTrackKind,
   label: string,
   lang?: string,
-  id?: string,
-  isDefault = false // "default" is a reserved word
+  id?: string
 ): TextTrack {
   const trackEl = document.createElement('track');
   trackEl.kind = kind;
@@ -130,11 +129,6 @@ export function addTextTrack(
 
   // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
   trackEl.setAttribute('data-removeondestroy', '');
-
-  if (isDefault) {
-    trackEl.default = true;
-  }
-
   mediaEl.append(trackEl);
 
   return trackEl.track as TextTrack;
@@ -301,7 +295,7 @@ export async function addChapters(
   if (!track) {
     // Otherwise, create a new one
     const { label = DEFAULT_CHAPTERS_TRACK_LABEL } = chaptersConfig;
-    track = addTextTrack(mediaEl, 'chapters', label, undefined, undefined, true);
+    track = addTextTrack(mediaEl, 'chapters', label);
     track.mode = 'hidden';
     // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
