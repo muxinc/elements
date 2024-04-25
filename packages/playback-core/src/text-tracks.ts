@@ -306,7 +306,7 @@ export async function addChapters(
   }
 
   // we're forcing a mode change so that a change event fires
-  track.mode = 'disabled';
+  track.mode = 'showing';
 
   chapters.forEach(({ startTime, endTime, value }) => {
     track?.addCue(new VTTCue(startTime, endTime, value ?? null));
