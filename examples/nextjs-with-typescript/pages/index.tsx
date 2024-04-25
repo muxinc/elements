@@ -11,6 +11,7 @@ function HomePage() {
         <li><Link legacyBehavior href="/MuxPlayerTheme"><a className="player">&lt;MuxPlayer&gt;<br/>(theme)</a></Link></li>
         <li><Link legacyBehavior href="/MuxPlayerCuePoints"><a className="player">&lt;MuxPlayer&gt;<br/>(CuePoints)</a></Link></li>
         <li><Link legacyBehavior href="/MuxPlayerCuePointsMeditate"><a className="player">&lt;MuxPlayer&gt;<br/>(CuePoints + Audio Only)</a></Link></li>
+        <li><Link legacyBehavior href="/MuxPlayerChapters"><a className="player">&lt;MuxPlayer&gt;<br/>(Chapters)</a></Link></li>
         <li><Link legacyBehavior href="/MuxPlayerLazy"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy)</a></Link></li>
         <li><Link legacyBehavior href="/MuxPlayerDynamic"><a className="player">&lt;MuxPlayer&gt;<br/>(Next.js dynamic)</a></Link></li>
         <li><Link legacyBehavior href="/MuxPlayerLazyDynamic"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + dynamic)</a></Link></li>
