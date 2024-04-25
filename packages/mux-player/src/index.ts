@@ -232,7 +232,6 @@ export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointchange: CustomEvent<{ time: number; value: any }>;
   cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
   chapterchange: CustomEvent<{ startTime: number; endTime: number; value: string }>;
-  chapterschange: CustomEvent<Array<{ startTime: number; endTime: number; value: string }>>;
 }
 
 interface MuxPlayerElement
