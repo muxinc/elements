@@ -19,6 +19,7 @@ function HomePage() {
         <li><Link legacyBehavior href="/MuxPlayerLazyBlurUp"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + @mux/blurup)</a></Link></li>
         <li><Link legacyBehavior href="/MuxUploader"><a className="uploader">&lt;MuxUploader&gt;</a></Link></li>
         <li><Link legacyBehavior href="/MuxUploaderSeparateComponents"><a className="uploader">&lt;MuxUploader&gt; (Separate Components)</a></Link></li>
+        <li><Link legacyBehavior href="/MuxUploaderRSC"><a className="uploader">&lt;MuxUploader&gt; (Server Component)</a></Link></li>
         <li><Link legacyBehavior href="/mux-video"><a className="video">&lt;mux-video&gt;<br/>(Web Component)</a></Link></li>
         <li><Link legacyBehavior href="/mux-audio"><a className="audio">&lt;mux-audio&gt;<br/>(Web Component)</a></Link></li>
         <li><Link legacyBehavior href="/mux-player"><a className="player">&lt;mux-player&gt;<br/>(Web Component)</a></Link></li>
