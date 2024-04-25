@@ -1285,6 +1285,75 @@ describe.skip('Feature: cuePoints', async () => {
   });
 });
 
+describe('Feature: chapters', async () => {
+  it('adds chapters', async () => {
+    const chapters = [
+      { startTime: 0, endTime: 5, value: 'Chapter 1' },
+      { startTime: 5, endTime: 10, value: 'Chapter 2' },
+      { startTime: 10, endTime: 15, value: 'Chapter 3' },
+    ];
+    const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="on-demand"
+      playback-id="${playbackId}"
+    ></mux-player>`);
+
+    await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await muxPlayerEl.addChapters(chapters);
+
+    // need a timeout for Safari/webkit
+    await aTimeout(50);
+
+    assert.deepEqual(muxPlayerEl.chapters, chapters);
+  });
+
+  it('dispatches a chapterchange event when the active chapter changes', async function () {
+    this.timeout(10000);
+    const chapters = [
+      { startTime: 0, endTime: 5, value: 'Chapter 1' },
+      { startTime: 5, endTime: 10, value: 'Chapter 2' },
+      { startTime: 10, endTime: 15, value: 'Chapter 3' },
+    ];
+    const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="on-demand"
+      playback-id="${playbackId}"
+    ></mux-player>`);
+
+    await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await muxPlayerEl.addChapters(chapters);
+    const expectedChapter = chapters[1];
+    muxPlayerEl.currentTime = expectedChapter.startTime + 0.01;
+    const event = await oneEvent(muxPlayerEl, 'chapterchange');
+    assert.equal(event.target, muxPlayerEl, 'event target should be the MuxPlayerElement instance');
+    assert.deepEqual(event.detail, expectedChapter);
+    assert.deepEqual(muxPlayerEl.activeChapter, expectedChapter);
+  });
+
+  it('clears chapters when playback-id is updated', async function () {
+    this.timeout(5000);
+    const chapters = [
+      { startTime: 0, endTime: 5, value: 'Chapter 1' },
+      { startTime: 5, endTime: 10, value: 'Chapter 2' },
+      { startTime: 10, endTime: 15, value: 'Chapter 3' },
+    ];
+    const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+    const muxPlayerEl = await fixture(`<mux-player
+      stream-type="on-demand"
+      playback-id="${playbackId}"
+    ></mux-player>`);
+    await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await muxPlayerEl.addChapters(chapters);
+    muxPlayerEl.currentTime = chapters[1].startTime + 0.01;
+    await oneEvent(muxPlayerEl, 'chapterchange');
+    assert.deepEqual(muxPlayerEl.chapters, chapters, 'chapters were added');
+    muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+    await oneEvent(muxPlayerEl, 'emptied');
+    await aTimeout(50);
+    assert.equal(muxPlayerEl.chapters.length, 0, 'chapters are empty');
+  });
+});
+
 describe('currentPdt and getStartDate', async () => {
   it('currentPdt and getStartDate work as expected', async function () {
     this.timeout(5000);
