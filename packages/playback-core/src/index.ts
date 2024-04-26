@@ -40,7 +40,7 @@ import type {
   RenditionOrderValue,
 } from './types';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
-import { MediaKeySessionContext } from 'hls.js';
+// import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
   Hls,
@@ -322,7 +322,7 @@ const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined)
   return playbackId || undefined;
 };
 
-const toPlaybackIdFromSrc = (src: string | undefined) => {
+export const toPlaybackIdFromSrc = (src: string | undefined) => {
   if (!src || !src.startsWith('https://stream.')) return undefined;
   const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
   // `|| undefined` is here to handle potential invalid cases
@@ -581,22 +581,26 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
 };
 
 export const getDRMConfig = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>
+  props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain'>>
 ) => {
-  const { playbackId, drmToken } = props;
+  const {
+    drmToken,
+    src,
+    playbackId = toPlaybackIdFromSrc(src), // Since Mux Player typically sets `src` instead of `playbackId`, fall back to it here (CJP)
+  } = props;
   if (!drmToken || !playbackId) return {};
   return {
     emeEnabled: true,
-    licenseXhrSetup: (
-      xhr: XMLHttpRequest,
-      url: string,
-      keyContext: MediaKeySessionContext,
-      licenseChallenge: Uint8Array
-    ) => {
-      // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licensexhrsetup
-      console.log('STUB, licenseXhrSetup invoked!', xhr, url, keyContext, licenseChallenge);
-      return getLicenseKey(licenseChallenge, url);
-    },
+    // licenseXhrSetup: (
+    //   xhr: XMLHttpRequest,
+    //   url: string,
+    //   keyContext: MediaKeySessionContext,
+    //   licenseChallenge: Uint8Array
+    // ) => {
+    //   // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licensexhrsetup
+    //   console.log('STUB, licenseXhrSetup invoked!', xhr, url, keyContext, licenseChallenge);
+    //   return getLicenseKey(licenseChallenge, url);
+    // },
     // licenseResponseCallback: (xhr: XMLHttpRequest, url: string, keyContext: MediaKeySessionContext) => {
     //   // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licenseresponsecallback
     //   console.log('STUB, licenseResponseCallback invoked!', xhr, url, keyContext);
@@ -698,10 +702,13 @@ export const toLicenseKeyURL = (
   {
     playbackId,
     drmToken: token,
-    customDomain: domain = MUX_VIDEO_DOMAIN,
+    // NOTE: Interim domain for testing
+    // customDomain: domain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
+  // NOTE: Interim domain for testing
+  const domain = 'gcp-us-west1-vos1.staging.mux.com';
   return `https://license.${domain}/license/${scheme}/${playbackId}?token=${token}`;
 };
 
@@ -709,10 +716,13 @@ export const toAppCertURL = (
   {
     playbackId,
     drmToken: token,
-    customDomain: domain = MUX_VIDEO_DOMAIN,
+    // NOTE: Interim domain for testing
+    // customDomain: domain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
+  // NOTE: Interim domain for testing
+  const domain = 'gcp-us-west1-vos1.staging.mux.com';
   return `https://license.${domain}/app_certificate/${scheme}/${playbackId}?token=${token}`;
 };
 
