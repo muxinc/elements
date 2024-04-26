@@ -2,6 +2,15 @@ import Hls from './hls';
 import { CuePoint, Chapter } from './types';
 import { addEventListenerWithTeardown } from './util';
 
+// Extracts the start time from a cuepoint, considering legacy "time" prop
+const cuePointStart = (cuePoint: CuePoint): number => {
+  if ('time' in cuePoint) {
+    return cuePoint.time;
+  } else {
+    return cuePoint.startTime;
+  }
+};
+
 export function setupTextTracks(
   mediaEl: HTMLMediaElement,
   hls: Pick<Hls, 'on' | 'once' | 'subtitleTracks' | 'subtitleTrack'>
@@ -174,31 +183,45 @@ export async function addCuePoints<T>(
   if (track.mode !== 'hidden') {
     track.mode = 'hidden';
   }
+
+  // we're forcing a mode change so that a change event fires
+  // this is reset at the end of the function...
+  track.mode = 'showing';
+
   // Copy cuePoints to ensure sort is not mutative
   [...cuePoints]
     // Sort descending to ensure last cuepoints are added as cues first. This is done
     // so the track's cue's can be used for reference when determining an appropriate
     // endTime, allowing support of multiple invocations of addCuePoints
-    .sort(({ time: timestampA }, { time: timestampB }) => timestampB - timestampA)
-    .forEach(({ time: startTime, value }) => {
-      // find the cue that starts immediately after the cuePoint's time
-      const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
-      const cueAfter = track?.cues?.[cueAfterIndex];
-      const endTime = cueAfter
-        ? cueAfter.startTime
-        : Number.isFinite(mediaEl.duration)
-          ? mediaEl.duration
-          : Number.MAX_SAFE_INTEGER;
+    .sort((cuePointA, cuePointB) => cuePointStart(cuePointB) - cuePointStart(cuePointA))
+    .forEach((cuePoint) => {
+      const value = cuePoint.value;
+      const startTime = cuePointStart(cuePoint);
 
-      // Adjust the endTime of the already added previous cue, if present, so it does not overlap
-      // with the newly added cue.
-      const previousCue = track?.cues?.[cueAfterIndex - 1];
-      if (previousCue) {
-        previousCue.endTime = startTime;
+      if ('endTime' in cuePoint && cuePoint.endTime != undefined) {
+        track?.addCue(new VTTCue(startTime, cuePoint.endTime, JSON.stringify(value ?? null)));
+      } else {
+        // find the cue that starts immediately after the cuePoint's time
+        const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
+        const cueAfter = track?.cues?.[cueAfterIndex];
+        const endTime = cueAfter
+          ? cueAfter.startTime
+          : Number.isFinite(mediaEl.duration)
+            ? mediaEl.duration
+            : Number.MAX_SAFE_INTEGER;
+
+        // Adjust the endTime of the already added previous cue,
+        // if present, so it does not overlap with the newly added cue.
+        const previousCue = track?.cues?.[cueAfterIndex - 1];
+        if (previousCue) {
+          previousCue.endTime = startTime;
+        }
+        track?.addCue(new VTTCue(startTime, endTime, JSON.stringify(value ?? null)));
       }
-      const cue = new VTTCue(startTime, endTime, JSON.stringify(value ?? null));
-      (track as TextTrack).addCue(cue);
     });
+
+  // setting it back to what it was...
+  track.mode = 'hidden';
 
   return track;
 }

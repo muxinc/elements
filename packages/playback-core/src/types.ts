@@ -117,11 +117,11 @@ export const allMediaTypes = [
   // ...(shorthandKeys.map((k) => k.toLowerCase()) as `${Lowercase<keyof MimeTypeShorthandMap>}`[]),
 ] as MediaTypes[];
 
-export type CuePoint<T = any> = {
-  time: number;
-  value: T;
-};
-
+// Both cuepoints and chapters have optional end times
+// so support both joined and sparse cue placements
+export type CuePoint<T = any> =
+  | { time: number; value: T } // legacy shape, still supported
+  | { startTime: number; endTime?: number; value: T };
 export type Chapter = {
   startTime: number; // in seconds
   endTime?: number; // in seconds
