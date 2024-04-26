@@ -25,6 +25,8 @@ import {
   getSeekable,
   getEnded,
   getChapters,
+  toPlaybackIdFromSrc,
+  // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
   PlaybackCore,
@@ -292,7 +294,14 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   get playbackId(): string | undefined {
-    return this.getAttribute(Attributes.PLAYBACK_ID) ?? undefined;
+    if (this.hasAttribute(Attributes.PLAYBACK_ID)) {
+      return this.getAttribute(Attributes.PLAYBACK_ID) as string;
+    }
+
+    return toPlaybackIdFromSrc(this.src) ?? undefined;
+    // return isMuxVideoSrc(this)
+    //   ? toPlaybackIdFromSrc(this.src)
+    //   : undefined;
   }
 
   set playbackId(val: string | undefined) {
@@ -394,7 +403,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   get drmToken() {
-    return this.getAttribute(Attributes.CUSTOM_DOMAIN) ?? undefined;
+    return this.getAttribute(Attributes.DRM_TOKEN) ?? undefined;
   }
 
   set drmToken(val: string | undefined) {
