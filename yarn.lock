@@ -2531,10 +2531,10 @@
   dependencies:
     image-dimensions "^2.3.0"
 
-"@mux/upchunk@^3.3.3":
-  version "3.3.3"
-  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.3.3.tgz#45f2293a1773819ae49bd9f6fb6af7847148fb29"
-  integrity sha512-ZSytoi9SDR39XAf4DRI2cNCircq/n6oOvpaSentXga6fQhNwdXs7JQM3qsVFq8KeKCxCc14ZxDunpTa2z5D6Iw==
+"@mux/upchunk@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@mux/upchunk/-/upchunk-3.4.0.tgz#e683b8c9daa1552b207063599aefeaa312744ea0"
+  integrity sha512-ZaX4u6xRhmgB4UAmw0lvO0LB1LddbRgSILkjRDnk1F4QDtkCOuY9nOh550TNI7uKYcf6HZQax7QXst6EkpjiyQ==
   dependencies:
     event-target-shim "^6.0.2"
     xhr "^2.6.0"
