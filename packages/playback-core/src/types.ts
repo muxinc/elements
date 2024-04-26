@@ -124,7 +124,7 @@ export type CuePoint<T = any> = {
 
 export type Chapter = {
   startTime: number; // in seconds
-  endTime: number; // in seconds
+  endTime?: number; // in seconds
   value: string; // chapter name
 };
 

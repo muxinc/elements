@@ -306,11 +306,36 @@ export async function addChapters(
   }
 
   // we're forcing a mode change so that a change event fires
+  // this is reset at the end of the function...
   track.mode = 'showing';
 
-  chapters.forEach(({ startTime, endTime, value }) => {
-    track?.addCue(new VTTCue(startTime, endTime, value ?? null));
-  });
+  // work through chapters in descending order
+  // this makes it easier to derive a chapters endTime if it's not provided
+  // which is the start time of the next chapter chronologically
+  [...chapters]
+    .sort(({ startTime: a }, { startTime: b }) => b - a)
+    .forEach(({ startTime, endTime, value }) => {
+      if (endTime != undefined) {
+        track?.addCue(new VTTCue(startTime, endTime, value ?? null));
+      } else {
+        // find the first chapter that has a start time after this one
+        const nextChapterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
+        const nextChapter = track?.cues?.[nextChapterIndex];
+        const derivedEndTime = nextChapter
+          ? nextChapter.startTime
+          : Number.isFinite(mediaEl.duration)
+            ? mediaEl.duration
+            : Number.MAX_SAFE_INTEGER;
+
+        // If needed, Adjust endTime of the previous chapter
+        // so it does not overlap with the newly added chapter
+        const previousChapter = track?.cues?.[nextChapterIndex - 1];
+        if (previousChapter) {
+          previousChapter.endTime = startTime;
+        }
+        track?.addCue(new VTTCue(startTime, derivedEndTime, value ?? null));
+      }
+    });
 
   // setting it back to what it was...
   track.mode = 'hidden';

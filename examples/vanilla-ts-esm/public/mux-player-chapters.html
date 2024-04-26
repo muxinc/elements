@@ -43,8 +43,10 @@
       </div>
     </header>
 
+    <h2>Chapters with explicit end times (with gaps)</h2>
+
     <mux-player
-      id="player"
+      id="playerOne"
       stream-type="on-demand"
       playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
       muted
@@ -54,35 +56,58 @@
       <b>Active Chapter:</b> <pre id="chapter-renderer">Unset</pre>
     </p>
     <p>
-      <button onclick="window.player.addChapters([{startTime: 15, endTime: 18, value: 'Extra chapter'}]); this.disabled = true;">Add additional fourth chapter</button>
+      <button onclick="window.playerOne.addChapters([{startTime: 15, endTime: 18, value: 'Extra chapter'}]); this.disabled = true;">Add additional fourth chapter</button>
     </p>
+
+
+    <h2>Chapters with implicit end times (no gaps)</h2>
+
+    <mux-player
+      id="playerTwo"
+      stream-type="on-demand"
+      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+      muted
+      preload="auto"
+    ></mux-player>
+
+    <p>
+      <button onclick="window.playerTwo.addChapters([{startTime: 6, value: 'Chapter 2.5'}]); this.disabled = true;">Add chapter between 2 and 3</button>
+    </p>
+
     <script>
-      const playerEl = document.querySelector('mux-player');
+      const playerOneEl = document.querySelector('#playerOne');
+      const playerTwoEl = document.querySelector('#playerTwo');
 
       function addChapterstoPlayer() {
-        const chapters = [
+        const chaptersOne = [
           { startTime: 1, endTime: 3, value: 'Chapter 1' },
           { startTime: 3, endTime: 6, value: 'Chapter 2 (joined)' },
           { startTime: 10, endTime: 15, value: 'Chapter 3 (after gap)' }
         ];
+        playerOneEl.addChapters(chaptersOne);
 
-        playerEl.addChapters(chapters);
+        const chaptersTwo = [
+          { startTime: 1, value: 'Chapter 1' },
+          { startTime: 3, value: 'Chapter 2' },
+          { startTime: 10, value: 'Chapter 3 (to the end...)' }
+        ];
+        playerTwoEl.addChapters(chaptersTwo);
 
         console.log('Chapters added');
       }
 
       function chapterChangeListener() {
-        console.log('Active Chapter', playerEl.activeChapter);
-        document.getElementById('chapter-renderer').innerText = playerEl.activeChapter.value;
+        console.log('Active Chapter', playerOneEl.activeChapter);
+        document.getElementById('chapter-renderer').innerText = playerOneEl.activeChapter.value;
       }
 
-      playerEl.addEventListener('chapterchange', chapterChangeListener);
+      playerOneEl.addEventListener('chapterchange', chapterChangeListener);
 
       // NOTE: Need to wait until the player has loaded metadata before adding chapters!
-      if (playerEl.readyState >= 1) {
+      if (playerOneEl.readyState >= 1) {
         addChapterstoPlayer();
       } else {
-        playerEl.addEventListener('loadedmetadata', addChapterstoPlayer, { once: true });
+        playerOneEl.addEventListener('loadedmetadata', addChapterstoPlayer, { once: true });
       }
     </script>
     <a href="../">Browse Elements</a>
