@@ -22,7 +22,7 @@ template.innerHTML = /*html*/ `
   display: none;
 }
 
-#pause-button:hover {
+#pause-button:hover:not(:disabled) {
   color: #fff;
   background: #404040;
 }
@@ -30,6 +30,10 @@ template.innerHTML = /*html*/ `
 #pause-button:active {
   color: #fff;
   background: #000;
+}
+
+#pause-button:disabled {
+  cursor: not-allowed;
 }
 
 :host([upload-in-progress]:not([upload-error])) #pause-button {
@@ -79,9 +83,8 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
             'chunksuccess',
             () => {
               // Recheck paused state just in case state changed while waiting for 'chunksuccess'
-              if (this.#uploaderEl?.paused) {
-                this.pauseButton.innerHTML = 'Resume';
-              }
+              this.pauseButton.innerHTML = this.#uploaderEl?.paused ? 'Resume' : 'Pause';
+              this.pauseButton.disabled = false;
             },
             { once: true }
           );
@@ -102,6 +105,9 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
   triggerPause = () => {
     if (!this.#uploaderEl) {
       console.warn('pausing before a mux-uploader element is associated is unsupported!');
+      return;
+    }
+    if (this.pauseButton.disabled) {
       return;
     }
     this.#uploaderEl.paused = !this.#uploaderEl.paused;
