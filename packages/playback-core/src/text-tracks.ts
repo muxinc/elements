@@ -6,9 +6,8 @@ import { addEventListenerWithTeardown } from './util';
 const cuePointStart = (cuePoint: CuePoint): number => {
   if ('time' in cuePoint) {
     return cuePoint.time;
-  } else {
-    return cuePoint.startTime;
   }
+  return cuePoint.startTime;
 };
 
 export function setupTextTracks(
