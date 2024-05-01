@@ -118,15 +118,16 @@ export const allMediaTypes = [
 ] as MediaTypes[];
 
 // Both cuepoints and chapters have optional end times
-// so support both joined and sparse cue placements
-export type CuePoint<T = any> =
-  | { time: number; value: T } // legacy shape, still supported
-  | { startTime: number; endTime?: number; value: T };
-export type Chapter = {
-  startTime: number; // in seconds
-  endTime?: number; // in seconds
-  value: string; // chapter name
+// so support both joined up and sparse cue placements
+type CueLike<T = any> = {
+  startTime: number;
+  endTime?: number;
+  value: T;
 };
+export type CuePoint<T = any> =
+  | CueLike<T> // new shape
+  | { time: number; value: T }; // legacy shape, still supported for now
+export type Chapter = CueLike<string>;
 
 export const MaxResolution = {
   upTo720p: '720p',
