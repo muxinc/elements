@@ -630,17 +630,17 @@ export const getAppCertificate = async (appCertificateUrl: string) => {
 export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: string) => {
   const licenseResponse = await fetch(licenseServerUrl, {
     method: 'POST',
-    /** @TODO determine appropriate content-type (CJP) */
-    // headers: new Headers({ 'Content-type': 'application/json' }),
+    // headers: new Headers({ 'Content-type': 'application/octet-stream' }),
     body: message,
   });
   const keyBuffer = await licenseResponse.arrayBuffer();
   return new Uint8Array(keyBuffer);
 };
 
-/** @TODO Pick<> relevant props here (CJP) */
-export const setupNativeFairplayDRM = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement) => {
-  /** @TODO Defer applying src until app certificate is set (CJP) */
+export const setupNativeFairplayDRM = (
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  mediaEl: HTMLMediaElement
+) => {
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
     try {
       const initDataType = event.initDataType;
@@ -723,7 +723,7 @@ export const toAppCertURL = (
 ) => {
   // NOTE: Interim domain for testing
   const domain = 'gcp-us-west1-vos1.staging.mux.com';
-  return `https://license.${domain}/app_certificate/${scheme}/${playbackId}?token=${token}`;
+  return `https://license.${domain}/appcert/${scheme}/${playbackId}?token=${token}`;
 };
 
 export const isMuxVideoSrc = ({
