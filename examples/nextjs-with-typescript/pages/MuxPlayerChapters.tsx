@@ -47,7 +47,7 @@ function MuxPlayerPage() {
         </pre>
       </div>
       <br />
-      <Link href="/"><a>Browse Elements</a></Link>
+      <Link href="/">Browse Elements</Link>
     </>
   );
 }

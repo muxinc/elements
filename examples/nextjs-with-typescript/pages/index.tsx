@@ -4,26 +4,26 @@ function HomePage() {
   return (
     <nav>
       <ul>
-        <li><Link legacyBehavior href="/MuxVideo"><a className="video">&lt;MuxVideo&gt;</a></Link></li>
-        <li><Link legacyBehavior href="/MuxAudio"><a className="audio">&lt;MuxAudio&gt;</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayer"><a className="player">&lt;MuxPlayer&gt;</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerPosterSlot"><a className="player">&lt;MuxPlayer&gt;<br/>(poster slot)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerTheme"><a className="player">&lt;MuxPlayer&gt;<br/>(theme)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerCuePoints"><a className="player">&lt;MuxPlayer&gt;<br/>(CuePoints)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerCuePointsMeditate"><a className="player">&lt;MuxPlayer&gt;<br/>(CuePoints + Audio Only)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerChapters"><a className="player">&lt;MuxPlayer&gt;<br/>(Chapters)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerLazy"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerDynamic"><a className="player">&lt;MuxPlayer&gt;<br/>(Next.js dynamic)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerLazyDynamic"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + dynamic)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerIframe"><a className="player">&lt;MuxPlayer&gt;<br/>(w/o fullscreen)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerLazyIframe"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + w/o fullscreen)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxPlayerLazyBlurUp"><a className="player">&lt;MuxPlayer&gt;<br/>(lazy + @mux/blurup)</a></Link></li>
-        <li><Link legacyBehavior href="/MuxUploader"><a className="uploader">&lt;MuxUploader&gt;</a></Link></li>
-        <li><Link legacyBehavior href="/MuxUploaderSeparateComponents"><a className="uploader">&lt;MuxUploader&gt; (Separate Components)</a></Link></li>
-        <li><Link legacyBehavior href="/mux-video"><a className="video">&lt;mux-video&gt;<br/>(Web Component)</a></Link></li>
-        <li><Link legacyBehavior href="/mux-audio"><a className="audio">&lt;mux-audio&gt;<br/>(Web Component)</a></Link></li>
-        <li><Link legacyBehavior href="/mux-player"><a className="player">&lt;mux-player&gt;<br/>(Web Component)</a></Link></li>
-        <li><Link legacyBehavior href="/app-router"><a className="react">App Router</a></Link></li>
+        <li><Link href="/MuxVideo" className="video">&lt;MuxVideo&gt;</Link></li>
+        <li><Link href="/MuxAudio"className="audio">&lt;MuxAudio&gt;</Link></li>
+        <li><Link href="/MuxPlayer" className="player">&lt;MuxPlayer&gt;</Link></li>
+        <li><Link href="/MuxPlayerPosterSlot" className="player"><>&lt;MuxPlayer&gt;<br/>(poster slot)</></Link></li>
+        <li><Link href="/MuxPlayerTheme" className="player"><>&lt;MuxPlayer&gt;<br/>(theme)</></Link></li>
+        <li><Link href="/MuxPlayerCuePoints" className="player"><>&lt;MuxPlayer&gt;<br/>(CuePoints)</></Link></li>
+        <li><Link href="/MuxPlayerCuePointsMeditate" className="player"><>&lt;MuxPlayer&gt;<br/>(CuePoints + Audio Only)</></Link></li>
+        <li><Link href="/MuxPlayerChapters" className="player"><>&lt;MuxPlayer&gt;<br/>(Chapters)</></Link></li>
+        <li><Link href="/MuxPlayerLazy" className="player"><>&lt;MuxPlayer&gt;<br/>(lazy)</></Link></li>
+        <li><Link href="/MuxPlayerDynamic" className="player"><>&lt;MuxPlayer&gt;<br/>(Next.js dynamic)</></Link></li>
+        <li><Link href="/MuxPlayerLazyDynamic" className="player"><>&lt;MuxPlayer&gt;<br/>(lazy + dynamic)</></Link></li>
+        <li><Link href="/MuxPlayerIframe" className="player"><>&lt;MuxPlayer&gt;<br/>(w/o fullscreen)</></Link></li>
+        <li><Link href="/MuxPlayerLazyIframe" className="player"><>&lt;MuxPlayer&gt;<br/>(lazy + w/o fullscreen)</></Link></li>
+        <li><Link href="/MuxPlayerLazyBlurUp" className="player"><>&lt;MuxPlayer&gt;<br/>(lazy + @mux/blurup)</></Link></li>
+        <li><Link href="/MuxUploader" className="uploader"><>&lt;MuxUploader&gt;</></Link></li>
+        <li><Link href="/MuxUploaderSeparateComponents" className="uploader"><>&lt;MuxUploader&gt; (Separate Components)</></Link></li>
+        <li><Link href="/mux-video" className="video"><>&lt;mux-video&gt;<br/>(Web Component)</></Link></li>
+        <li><Link href="/mux-audio" className="audio"><>&lt;mux-audio&gt;<br/>(Web Component)</></Link></li>
+        <li><Link href="/mux-player" className="player"><>&lt;mux-player&gt;<br/>(Web Component)</></Link></li>
+        <li><Link href="/app-router" className="react"><>App Router</></Link></li>
       </ul>
     </nav>
   );
