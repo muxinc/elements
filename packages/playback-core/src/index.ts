@@ -426,11 +426,11 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
+  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
-  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
   return {
     engine: nextHlsInstance,
@@ -745,9 +745,28 @@ export const loadMedia = (
         });
       };
       if (mediaEl.preload === 'none') {
-        addEventListenerWithTeardown(mediaEl, 'loadstart', () => {
+        // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
+        // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
+        // regardless of the preload state and regardless of whether or not fetching of the src media
+        // has, in fact, begun. In order to respect the provided preferences and avoid eager loading
+        // while still attempting to begin fetching playlists for stream info as early as possible when
+        // media *will* be loaded, we will do a "first to the finish line" on both the 'play' event,
+        // which will be dispatched earlier *if* it is the event that initiates media loading, and the
+        // 'loadedmetadata' event, which is dispatched only after the media has finished loading metadata,
+        // but will reliably correlate with media loading. (CJP)
+        // For more, see: Steps 7 & 8 of 'the resource selection algorithm' from §4.8.11.5 Loading the
+        // media resource in the HTML Living Standard
+        // (https://html.spec.whatwg.org/multipage/media.html#concept-media-load-algorithm)
+        const playHandler = () => {
           updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
-        });
+          mediaEl.removeEventListener('loadedmetadata', loadedMetadataHandler);
+        };
+        const loadedMetadataHandler = () => {
+          updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+          mediaEl.removeEventListener('play', playHandler);
+        };
+        addEventListenerWithTeardown(mediaEl, 'play', playHandler, { once: true });
+        addEventListenerWithTeardown(mediaEl, 'loadedmetadata', loadedMetadataHandler, { once: true });
       } else {
         updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
       }
