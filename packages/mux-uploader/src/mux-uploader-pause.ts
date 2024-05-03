@@ -36,7 +36,7 @@ template.innerHTML = /*html*/ `
   cursor: not-allowed;
 }
 
-:host([upload-in-progress]:not([upload-error])) #pause-button {
+:host([upload-in-progress]:not([upload-error], [upload-complete])) #pause-button {
   display: initial;
 }
 </style>
@@ -63,11 +63,18 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
       this.#uploaderEl.addEventListener('uploadstart', () => this.toggleAttribute('upload-in-progress', true), opts);
       this.#uploaderEl.addEventListener('uploaderror', () => {
         this.toggleAttribute('upload-error', true);
+        this.toggleAttribute('upload-complete', false);
+        this.toggleAttribute('upload-in-progress', false);
+      });
+      this.#uploaderEl.addEventListener('success', () => {
+        this.toggleAttribute('upload-complete', true);
+        this.toggleAttribute('upload-error', false);
         this.toggleAttribute('upload-in-progress', false);
       });
       this.#uploaderEl.addEventListener('reset', () => {
         this.toggleAttribute('upload-error', false);
         this.toggleAttribute('upload-in-progress', false);
+        this.toggleAttribute('upload-complete', false);
       });
       /** @TODO Implement a more robust "pausedState" in mux-uploader (plausibly in upchunk) to account for "pausing" (CJP) */
       this.#uploaderEl.addEventListener('pausedchange', () => {
