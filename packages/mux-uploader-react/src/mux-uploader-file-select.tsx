@@ -1,6 +1,6 @@
 import React from 'react';
 import '@mux/mux-uploader';
-import type MuxUploaderFileSelectElement from '@mux/mux-uploader';
+import type { MuxUploaderFileSelectElement } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';

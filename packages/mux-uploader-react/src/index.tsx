@@ -7,6 +7,7 @@ import MuxUploaderDrop from './mux-uploader-drop';
 import MuxUploaderFileSelect from './mux-uploader-file-select';
 import MuxUploaderProgress from './mux-uploader-progress';
 import MuxUploaderRetry from './mux-uploader-retry';
+import MuxUploaderPause from './mux-uploader-pause';
 import MuxUploaderStatus from './mux-uploader-status';
 import type MuxUploaderElement from '@mux/mux-uploader';
 import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
@@ -29,6 +30,7 @@ export type MuxUploaderProps = {
   noProgress?: boolean;
   noStatus?: boolean;
   noRetry?: boolean;
+  pausable?: boolean;
   style?: CSSProperties & {
     ['--progress-bar-fill-color']?: CSSProperties['background'];
     ['--progress-radial-fill-color']?: CSSProperties['stroke'];
@@ -101,6 +103,13 @@ const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>
   return <MuxUploaderInternal ref={uploaderRef as typeof innerUploaderRef} {...remainingProps} />;
 });
 
-export { MuxUploaderDrop, MuxUploaderFileSelect, MuxUploaderProgress, MuxUploaderRetry, MuxUploaderStatus };
+export {
+  MuxUploaderDrop,
+  MuxUploaderFileSelect,
+  MuxUploaderProgress,
+  MuxUploaderRetry,
+  MuxUploaderPause,
+  MuxUploaderStatus,
+};
 
 export default MuxUploader;
