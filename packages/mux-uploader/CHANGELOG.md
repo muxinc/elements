@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.17](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.16...@mux/mux-uploader@1.0.0-beta.17) (2024-05-03)
+
+
+### Bug Fixes
+
+* **mux-uploader:** uploader components state cleanup ([#906](https://github.com/muxinc/elements/issues/906)) ([668f35d](https://github.com/muxinc/elements/commit/668f35d5f5692740b879933cf675a32f9d3fcef7)), closes [#874](https://github.com/muxinc/elements/issues/874)
+
+
+
+
+
 # [1.0.0-beta.16](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0-beta.15...@mux/mux-uploader@1.0.0-beta.16) (2024-04-18)
 
 

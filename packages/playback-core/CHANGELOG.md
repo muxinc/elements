@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.23.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.23.0...@mux/playback-core@0.23.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* passthrough props to native media els ([#912](https://github.com/muxinc/elements/issues/912)) ([88a63db](https://github.com/muxinc/elements/commit/88a63db7dadc9aa3e09402f7c1be79a278b97c06))
+* **playback-core:** preload=none not respected for playlist stream info fetching with native safari playback. ([#916](https://github.com/muxinc/elements/issues/916)) ([33b2c11](https://github.com/muxinc/elements/commit/33b2c117aa230f602383771d08698c682173f144)), closes [#875](https://github.com/muxinc/elements/issues/875)
+
+
+
+
+
 # [0.23.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.22.4...@mux/playback-core@0.23.0) (2024-04-18)
 
 

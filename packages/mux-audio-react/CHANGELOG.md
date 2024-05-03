@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.8.0...@mux/mux-audio-react@0.9.0) (2024-05-03)
+
+
+### Bug Fixes
+
+* passthrough props to native media els ([#912](https://github.com/muxinc/elements/issues/912)) ([88a63db](https://github.com/muxinc/elements/commit/88a63db7dadc9aa3e09402f7c1be79a278b97c06))
+
+
+### Features
+
+* **mux-player-react, mux-uploader-react, mux-audio-react, mux-video-react:** add client component directive ([#911](https://github.com/muxinc/elements/issues/911)) ([76aa003](https://github.com/muxinc/elements/commit/76aa003e9ad9488509650970b971edd3ed463592))
+
+
+
+
+
 # [0.8.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.7.5...@mux/mux-audio-react@0.8.0) (2024-04-18)
 
 

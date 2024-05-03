@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player-react",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "An open source Mux player for React that Just Works™",
   "homepage": "https://mux.com/player",
   "keywords": [
@@ -98,8 +98,8 @@
     }
   },
   "dependencies": {
-    "@mux/mux-player": "2.5.0",
-    "@mux/playback-core": "0.23.0",
+    "@mux/mux-player": "2.6.0",
+    "@mux/playback-core": "0.23.1",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.5.0...@mux/mux-player@2.6.0) (2024-05-03)
+
+
+### Features
+
+* **mux-player:** Clean up TS (but also force minor version bump). ([#917](https://github.com/muxinc/elements/issues/917)) ([f418d8c](https://github.com/muxinc/elements/commit/f418d8c86c5822040e121d50ecbbfca5e59b8211))
+
+
+
+
+
 # [2.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.4.1...@mux/mux-player@2.5.0) (2024-04-18)
 
 

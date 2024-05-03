@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.5.0...@mux/mux-player-react@2.6.0) (2024-05-03)
+
+
+### Features
+
+* **mux-player-react, mux-uploader-react, mux-audio-react, mux-video-react:** add client component directive ([#911](https://github.com/muxinc/elements/issues/911)) ([76aa003](https://github.com/muxinc/elements/commit/76aa003e9ad9488509650970b971edd3ed463592))
+
+
+
+
+
 # [2.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.4.1...@mux/mux-player-react@2.5.0) (2024-04-18)
 
 

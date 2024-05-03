@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.17](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.16...@mux/mux-uploader-react@1.0.0-beta.17) (2024-05-03)
+
+
+### Features
+
+* **mux-player-react, mux-uploader-react, mux-audio-react, mux-video-react:** add client component directive ([#911](https://github.com/muxinc/elements/issues/911)) ([76aa003](https://github.com/muxinc/elements/commit/76aa003e9ad9488509650970b971edd3ed463592))
+
+
+
+
+
 # [1.0.0-beta.16](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.15...@mux/mux-uploader-react@1.0.0-beta.16) (2024-04-18)
 
 

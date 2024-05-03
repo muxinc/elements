@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.18.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.18.0...@mux/mux-video@0.18.1) (2024-05-03)
+
+**Note:** Version bump only for package @mux/mux-video
+
+
+
+
+
 # [0.18.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.5...@mux/mux-video@0.18.0) (2024-04-18)
 
 
