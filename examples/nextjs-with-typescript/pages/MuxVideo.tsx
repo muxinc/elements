@@ -36,6 +36,10 @@ function MuxVideoPage() {
         controls
         autoPlay={autoplay}
         muted={muted}
+        maxResolution="2160p"
+        minResolution="540p"
+        renditionOrder="desc"
+        preferPlayback="native"
         onPlay={() => {
           setPaused(false);
         }}
