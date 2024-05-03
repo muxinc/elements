@@ -172,8 +172,7 @@ function getThemeTemplate(el: MuxPlayerElement) {
   let themeName = el.theme;
 
   if (themeName) {
-    // @ts-ignore
-    const templateElement = el.getRootNode()?.getElementById?.(themeName);
+    const templateElement = (el.getRootNode() as ShadowRoot | Document | null)?.getElementById?.(themeName);
     // NOTE: Since folks may unknowingly use matching ids for elements other than their theme
     // (intending to use path two for template identification, below), make sure the matching
     // element is, in fact, an HTMLTemplateElement (CJP)
