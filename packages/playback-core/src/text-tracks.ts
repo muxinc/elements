@@ -83,6 +83,7 @@ export function setupTextTracks(
     }
   });
 
+  // add a thing
   // NOTE: Since this is only relevant for hls, using destroying event (CJP).
   hls.once(Hls.Events.DESTROYING, () => {
     mediaEl.textTracks.removeEventListener('change', changeHandler);
