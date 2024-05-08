@@ -206,6 +206,7 @@ Here are all of the available components you can use with `<mux-uploader>`:
 | `<mux-uploader-drop>`        | Enables drag-and-drop functionality for handling file input                   |
 | `<mux-uploader-retry>`       | Renders a "retry" button if the upload fails                                  |
 | `<mux-uploader-progress>`    | Displays a progress indicator showing how much of your file has been uploaded |
+| `<mux-uploader-pause>`       | Displays a pause/resume button (with a disabled 'Pausing...' while a requested pause is pending completion of the current chunk upload) |
 
 Check out the [mux-uploader-modal.html](../../examples/vanilla-ts-esm/public/mux-uploader-modal.html) example application to see a real-world example of how these components can be used.
 

@@ -72,10 +72,11 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   static get observedAttributes() {
-    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
+    return ['pausable', 'no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
   }
 
   protected _endpoint: Endpoint;
+  protected _upload?: UpChunk;
 
   constructor() {
     super();
@@ -167,6 +168,14 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.toggleAttribute('no-retry', Boolean(value));
   }
 
+  get pausable() {
+    return this.hasAttribute('pausable');
+  }
+
+  set pausable(value) {
+    this.toggleAttribute('pausable', Boolean(value));
+  }
+
   get dynamicChunkSize(): DynamicChunkSize {
     return this.hasAttribute('dynamic-chunk-size');
   }
@@ -204,6 +213,31 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     } else {
       this.removeAttribute('chunk-size');
     }
+  }
+
+  get upload() {
+    return this._upload;
+  }
+
+  get paused() {
+    return this.upload?.paused ?? false;
+  }
+
+  set paused(value) {
+    if (!this.upload) {
+      console.warn('Pausing before an upload has begun is unsupported');
+      return;
+    }
+    const boolVal = !!value;
+    if (boolVal === this.paused) return;
+    if (boolVal) {
+      console.log('pausing upchunk!');
+      this.upload.pause();
+    } else {
+      this.upload.resume();
+    }
+    this.toggleAttribute('paused', boolVal);
+    this.dispatchEvent(new CustomEvent('pausedchange', { detail: boolVal }));
   }
 
   updateLayout() {
@@ -256,6 +290,8 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
             }
           : {}),
       });
+
+      this._upload = upload;
 
       this.dispatchEvent(
         new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } })

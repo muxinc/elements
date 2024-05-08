@@ -36,6 +36,8 @@ function MuxUploaderPage() {
 
       <MuxUploader
         id="uploader"
+        // You can remove `pausable` if you don't want to expose that UI.
+        pausable={true}
         endpoint={url}
         onUploadStart={onUploadStart}
         onChunkAttempt={onChunkAttempt}

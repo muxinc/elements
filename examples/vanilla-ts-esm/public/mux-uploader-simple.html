@@ -53,11 +53,12 @@
 
     <h2>Enter your upload GCS url:</h2>
     <div>
-      <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+      <input type="text" class="direct-upload-url" placeholder="https://storage.googleapis.com/..."/>
     </div>
 
     <div style="margin: 40px 0;">
-        <mux-uploader></mux-uploader>
+        <!-- You can remove `pausable` attribute if you don't want to expose that UI.  -->
+        <mux-uploader pausable></mux-uploader>
     </div>
 
     <a href="../">Browse Elements</a>
@@ -65,11 +66,17 @@
     <script>
       const input = document.querySelector('input[type="text"]');
       const muxUploader = document.querySelector('mux-uploader');
-      input.addEventListener('change', () => {
+      const updateEndpoint =  () => {
         muxUploader.endpoint = input.value;
         // You can also pass in a function that yields a promise that resolves to a URL.
         // muxUploader.endpoint = (_file) => Promise.resolve(input.value);
-      });
+      };
+
+      if (!!input.value) {
+        updateEndpoint();
+      }
+
+      input.addEventListener('change', updateEndpoint);
     </script>
   </body>
 </html>
