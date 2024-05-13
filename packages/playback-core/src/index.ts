@@ -702,13 +702,10 @@ export const toLicenseKeyURL = (
   {
     playbackId,
     drmToken: token,
-    // NOTE: Interim domain for testing
-    // customDomain: domain = MUX_VIDEO_DOMAIN,
+    customDomain: domain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
-  // NOTE: Interim domain for testing
-  const domain = 'gcp-us-west1-vos1.staging.mux.com';
   return `https://license.${domain}/license/${scheme}/${playbackId}?token=${token}`;
 };
 
@@ -716,13 +713,10 @@ export const toAppCertURL = (
   {
     playbackId,
     drmToken: token,
-    // NOTE: Interim domain for testing
-    // customDomain: domain = MUX_VIDEO_DOMAIN,
+    customDomain: domain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
-  // NOTE: Interim domain for testing
-  const domain = 'gcp-us-west1-vos1.staging.mux.com';
   return `https://license.${domain}/appcert/${scheme}/${playbackId}?token=${token}`;
 };
 
