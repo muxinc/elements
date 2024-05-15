@@ -591,21 +591,6 @@ export const getDRMConfig = (
   if (!drmToken || !playbackId) return {};
   return {
     emeEnabled: true,
-    // licenseXhrSetup: (
-    //   xhr: XMLHttpRequest,
-    //   url: string,
-    //   keyContext: MediaKeySessionContext,
-    //   licenseChallenge: Uint8Array
-    // ) => {
-    //   // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licensexhrsetup
-    //   console.log('STUB, licenseXhrSetup invoked!', xhr, url, keyContext, licenseChallenge);
-    //   return getLicenseKey(licenseChallenge, url);
-    // },
-    // licenseResponseCallback: (xhr: XMLHttpRequest, url: string, keyContext: MediaKeySessionContext) => {
-    //   // https://github.com/video-dev/hls.js/blob/master/docs/API.md#licenseresponsecallback
-    //   console.log('STUB, licenseResponseCallback invoked!', xhr, url, keyContext);
-    //   return new ArrayBuffer(0);
-    // },
     drmSystems: {
       'com.apple.fps': {
         licenseUrl: toLicenseKeyURL(props, 'fairplay'),
@@ -630,7 +615,7 @@ export const getAppCertificate = async (appCertificateUrl: string) => {
 export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: string) => {
   const licenseResponse = await fetch(licenseServerUrl, {
     method: 'POST',
-    // headers: new Headers({ 'Content-type': 'application/octet-stream' }),
+    headers: new Headers({ 'Content-type': 'application/octet-stream' }),
     body: message,
   });
   const keyBuffer = await licenseResponse.arrayBuffer();
@@ -669,8 +654,7 @@ export const setupNativeFairplayDRM = (
 
       const initData = event.initData;
       if (initData == null) {
-        /** @TODO Improve error signaling here (CJP) */
-        console.error('THAT AINT RIGHT');
+        console.error(`Could not start encrypted playback due to missing initData in ${event.type} event`);
         return;
       }
 
@@ -690,7 +674,6 @@ export const setupNativeFairplayDRM = (
       await session.update(response);
       return session;
     } catch (e) {
-      /** @TODO Improve error signaling here (CJP) */
       console.error(`Could not start encrypted playback due to exception "${e}"`);
     }
   };
