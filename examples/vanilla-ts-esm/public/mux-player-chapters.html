@@ -79,7 +79,7 @@
       const playerOneEl = document.querySelector('#playerOne');
       const playerTwoEl = document.querySelector('#playerTwo');
 
-      function addChapterstoPlayer() {
+      function addChapterstoPlayerOne() {
         const chaptersOne = [
           { startTime: 1, endTime: 3, value: 'Chapter 1' },
           { startTime: 3, endTime: 6, value: 'Chapter 2 (joined)' },
@@ -87,6 +87,10 @@
         ];
         playerOneEl.addChapters(chaptersOne);
 
+        console.log('Player one chapters added');
+      }
+
+      function addChapterstoPlayerTwo() {
         const chaptersTwo = [
           { startTime: 1, value: 'Chapter 1' },
           { startTime: 3, value: 'Chapter 2' },
@@ -94,7 +98,7 @@
         ];
         playerTwoEl.addChapters(chaptersTwo);
 
-        console.log('Chapters added');
+        console.log('Player 2 chapters added');
       }
 
       function chapterChangeListener() {
@@ -106,9 +110,15 @@
 
       // NOTE: Need to wait until the player has loaded metadata before adding chapters!
       if (playerOneEl.readyState >= 1) {
-        addChapterstoPlayer();
+        addChapterstoPlayerOne();
       } else {
-        playerOneEl.addEventListener('loadedmetadata', addChapterstoPlayer, { once: true });
+        playerOneEl.addEventListener('loadedmetadata', addChapterstoPlayerOne, { once: true });
+      }
+
+      if (playerTwoEl.readyState >= 1) {
+        addChapterstoPlayerTwo();
+      } else {
+        playerTwoEl.addEventListener('loadedmetadata', addChapterstoPlayerTwo, { once: true });
       }
     </script>
     <a href="../">Browse Elements</a>

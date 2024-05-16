@@ -183,10 +183,6 @@ export async function addCuePoints<T>(
     track.mode = 'hidden';
   }
 
-  // we're forcing a mode change so that a change event fires
-  // this is reset at the end of the function...
-  track.mode = 'showing';
-
   // Copy cuePoints to ensure sort is not mutative
   [...cuePoints]
     // Sort descending to ensure last cuepoints are added as cues first. This is done
@@ -219,8 +215,15 @@ export async function addCuePoints<T>(
       }
     });
 
-  // setting it back to what it was...
-  track.mode = 'hidden';
+  // NOTE: this doesn't naturally fire when we update the list
+  // of cue points (without changing the active cue). We manually
+  // fire this to force the state manager to reflect the new change
+  mediaEl.textTracks.dispatchEvent(
+    new Event('change', {
+      bubbles: true,
+      composed: true,
+    })
+  );
 
   return track;
 }
@@ -327,10 +330,6 @@ export async function addChapters(
     track.mode = 'hidden';
   }
 
-  // we're forcing a mode change so that a change event fires
-  // this is reset at the end of the function...
-  track.mode = 'showing';
-
   // work through chapters in descending order
   // this makes it easier to derive a chapters endTime if it's not provided
   // which is the start time of the next chapter chronologically
@@ -359,8 +358,15 @@ export async function addChapters(
       }
     });
 
-  // setting it back to what it was...
-  track.mode = 'hidden';
+  // NOTE: this doesn't naturally fire when we update the list
+  // of cue points (without changing the active cue). We manually
+  // fire this to force the state manager to reflect the new change
+  mediaEl.textTracks.dispatchEvent(
+    new Event('change', {
+      bubbles: true,
+      composed: true,
+    })
+  );
 
   return track;
 }
