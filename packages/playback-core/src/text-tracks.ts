@@ -2,6 +2,10 @@ import Hls from './hls';
 import { CuePoint, Chapter } from './types';
 import { addEventListenerWithTeardown } from './util';
 
+type Config = { label: string };
+
+// Shared utils
+
 // Extracts the start time from a cuepoint, considering legacy "time" prop
 const cuePointStart = (cuePoint: CuePoint): number => {
   if ('time' in cuePoint) {
@@ -150,18 +154,16 @@ export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
   trackElement?.remove();
 }
 
-const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
-export type CuePointsConfig = { label: string };
-export const DefaultCuePointsConfig: CuePointsConfig = Object.freeze({ label: DEFAULT_CUEPOINTS_TRACK_LABEL });
-
-export const getCuePointsTrack = (
-  mediaEl: HTMLMediaElement,
-  { label = DEFAULT_CUEPOINTS_TRACK_LABEL }: CuePointsConfig = DefaultCuePointsConfig
-) => {
+export function getTextTrack(mediaEl: HTMLMediaElement, label: string, kind: TextTrackKind) {
   return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
-    return trackEl.track.label === label && trackEl.track.kind === 'metadata';
+    return trackEl.track.label === label && trackEl.track.kind === kind;
   })?.track;
-};
+}
+
+// Cuepoints
+
+const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
+export const DefaultCuePointsConfig: Config = Object.freeze({ label: DEFAULT_CUEPOINTS_TRACK_LABEL });
 
 export async function addCuePoints<T>(
   mediaEl: HTMLMediaElement,
@@ -169,7 +171,7 @@ export async function addCuePoints<T>(
   cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
 ) {
   // If the track has already been created/added, use it.
-  let track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  let track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
   if (!track) {
     // Otherwise, create a new one
     const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
@@ -235,18 +237,18 @@ const toCuePoint = (cue: VTTCue) => ({
 
 export function getCuePoints(
   mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+  cuePointsConfig: Config = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
 ) {
-  const track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  const track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
   if (!track?.cues) return [];
   return Array.from(track.cues, (cue) => toCuePoint(cue as VTTCue));
 }
 
 export function getActiveCuePoint(
   mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+  cuePointsConfig: Config = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
 ) {
-  const track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  const track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
   if (!track?.activeCues?.length) return undefined;
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
@@ -258,10 +260,7 @@ export function getActiveCuePoint(
   return toCuePoint(actualActiveCue as VTTCue);
 }
 
-export async function setupCuePoints(
-  mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
-) {
+export async function setupCuePoints(mediaEl: HTMLMediaElement, cuePointsConfig: Config = DefaultCuePointsConfig) {
   return new Promise((resolve) => {
     addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
       const track = await addCuePoints(mediaEl, [], cuePointsConfig);
@@ -288,12 +287,11 @@ export async function setupCuePoints(
 }
 
 /**
- * Chapters handling, similar to cuepoints implementation
+ * Chapters
  */
 
 const DEFAULT_CHAPTERS_TRACK_LABEL = 'chapters';
-export type ChaptersConfig = { label: string };
-export const DefaultChaptersConfig: ChaptersConfig = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
+export const DefaultChaptersConfig: Config = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
 
 const vttCueToChapter = (cue: VTTCue) => ({
   startTime: cue.startTime,
@@ -301,22 +299,13 @@ const vttCueToChapter = (cue: VTTCue) => ({
   value: cue.text,
 });
 
-export const getChaptersTrack = (
-  mediaEl: HTMLMediaElement,
-  { label = DEFAULT_CHAPTERS_TRACK_LABEL }: ChaptersConfig = DefaultChaptersConfig
-) => {
-  return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
-    return trackEl.track.label === label && trackEl.track.kind === 'chapters';
-  })?.track;
-};
-
 export async function addChapters(
   mediaEl: HTMLMediaElement,
   chapters: Chapter[],
-  chaptersConfig: ChaptersConfig = DefaultChaptersConfig
+  chaptersConfig: Config = DefaultChaptersConfig
 ) {
   // If the track has already been created/added, use it.
-  let track = getChaptersTrack(mediaEl, chaptersConfig);
+  let track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track) {
     // Otherwise, create a new one
     const { label = DEFAULT_CHAPTERS_TRACK_LABEL } = chaptersConfig;
@@ -373,18 +362,18 @@ export async function addChapters(
 
 export function getChapters(
   mediaEl: HTMLMediaElement,
-  chaptersConfig: ChaptersConfig = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
+  chaptersConfig: Config = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
 ) {
-  const track = getChaptersTrack(mediaEl, chaptersConfig);
+  const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.cues) return [];
   return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue));
 }
 
 export function getActiveChapter(
   mediaEl: HTMLMediaElement,
-  chaptersConfig: ChaptersConfig = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
+  chaptersConfig: Config = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
 ) {
-  const track = getChaptersTrack(mediaEl, chaptersConfig);
+  const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.activeCues?.length) return undefined;
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
@@ -396,7 +385,7 @@ export function getActiveChapter(
   return vttCueToChapter(actualActiveCue as VTTCue);
 }
 
-export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: ChaptersConfig = DefaultChaptersConfig) {
+export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: Config = DefaultChaptersConfig) {
   return new Promise((resolve) => {
     addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
       const track = await addChapters(mediaEl, [], chaptersConfig);
