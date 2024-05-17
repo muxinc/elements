@@ -192,7 +192,11 @@ export async function addCuesToTextTrack<T = any>(
 
       if ('endTime' in cuePoint && cuePoint.endTime != undefined) {
         track?.addCue(
-          new VTTCue(startTime, cuePoint.endTime, typeof value === 'string' ? value : JSON.stringify(value ?? null))
+          new VTTCue(
+            startTime,
+            cuePoint.endTime,
+            kind === 'chapters' ? (value as string) : JSON.stringify(value ?? null)
+          )
         );
       } else {
         // find the cue that starts immediately after the cuePoint's time
@@ -211,7 +215,7 @@ export async function addCuesToTextTrack<T = any>(
           previousCue.endTime = startTime;
         }
         track?.addCue(
-          new VTTCue(startTime, endTime, typeof value === 'string' ? value : JSON.stringify(value ?? null))
+          new VTTCue(startTime, endTime, kind === 'chapters' ? (value as string) : JSON.stringify(value ?? null))
         );
       }
     });
