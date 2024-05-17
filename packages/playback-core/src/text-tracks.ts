@@ -266,14 +266,18 @@ export function getActiveCuePoint(
 ) {
   const track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
   if (!track?.activeCues?.length) return undefined;
+  if (track.activeCues.length === 1) return toCuePoint(track.activeCues[0] as VTTCue);
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
   // accounts for those cases (CJP)
   const { currentTime } = mediaEl;
   const actualActiveCue = Array.prototype.find.call(track.activeCues ?? [], ({ startTime, endTime }) => {
     return startTime <= currentTime && endTime > currentTime;
-  });
-  return toCuePoint(actualActiveCue as VTTCue);
+  }) as VTTCue | undefined;
+  if (!actualActiveCue) {
+    return toCuePoint(track.activeCues[0] as VTTCue);
+  }
+  return toCuePoint(actualActiveCue);
 }
 
 export async function setupCuePoints(mediaEl: HTMLMediaElement, cuePointsConfig: Config = DefaultCuePointsConfig) {
@@ -328,7 +332,7 @@ export function getChapters(
   chaptersConfig: Config = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
 ) {
   const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
-  if (!track?.cues) return [];
+  if (!track?.cues?.length) return [];
   return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue));
 }
 
@@ -338,14 +342,18 @@ export function getActiveChapter(
 ) {
   const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.activeCues?.length) return undefined;
+  if (track.activeCues.length === 1) return vttCueToChapter(track.activeCues[0] as VTTCue);
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
   // accounts for those cases (CJP)
   const { currentTime } = mediaEl;
   const actualActiveCue = Array.prototype.find.call(track.activeCues ?? [], ({ startTime, endTime }) => {
     return startTime <= currentTime && endTime > currentTime;
-  });
-  return vttCueToChapter(actualActiveCue as VTTCue);
+  }) as VTTCue | undefined;
+  if (!actualActiveCue) {
+    return vttCueToChapter(track.activeCues[0] as VTTCue);
+  }
+  return vttCueToChapter(actualActiveCue);
 }
 
 export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: Config = DefaultChaptersConfig) {
