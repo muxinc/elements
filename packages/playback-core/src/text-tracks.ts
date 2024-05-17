@@ -191,7 +191,9 @@ export async function addCuesToTextTrack<T = any>(
       const startTime = cuePointStart(cuePoint);
 
       if ('endTime' in cuePoint && cuePoint.endTime != undefined) {
-        track?.addCue(new VTTCue(startTime, cuePoint.endTime, JSON.stringify(value ?? null)));
+        track?.addCue(
+          new VTTCue(startTime, cuePoint.endTime, typeof value === 'string' ? value : JSON.stringify(value ?? null))
+        );
       } else {
         // find the cue that starts immediately after the cuePoint's time
         const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
@@ -208,8 +210,9 @@ export async function addCuesToTextTrack<T = any>(
         if (previousCue) {
           previousCue.endTime = startTime;
         }
-        // stringify is redundent for chapters here but has no negative affect
-        track?.addCue(new VTTCue(startTime, endTime, JSON.stringify(value ?? null)));
+        track?.addCue(
+          new VTTCue(startTime, endTime, typeof value === 'string' ? value : JSON.stringify(value ?? null))
+        );
       }
     });
 
