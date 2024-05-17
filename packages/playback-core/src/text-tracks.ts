@@ -160,22 +160,17 @@ export function getTextTrack(mediaEl: HTMLMediaElement, label: string, kind: Tex
   })?.track;
 }
 
-// Cuepoints
-
-const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
-export const DefaultCuePointsConfig: Config = Object.freeze({ label: DEFAULT_CUEPOINTS_TRACK_LABEL });
-
-export async function addCuePoints<T>(
+export async function addCuesToTextTrack<T = any>(
   mediaEl: HTMLMediaElement,
-  cuePoints: CuePoint<T>[],
-  cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
+  cues: CuePoint<T>[] | Chapter[],
+  label: string,
+  kind: TextTrackKind
 ) {
   // If the track has already been created/added, use it.
-  let track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
+  let track = getTextTrack(mediaEl, label, kind);
   if (!track) {
     // Otherwise, create a new one
-    const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
-    track = addTextTrack(mediaEl, 'metadata', label);
+    track = addTextTrack(mediaEl, kind, label);
     track.mode = 'hidden';
     // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
@@ -186,7 +181,7 @@ export async function addCuePoints<T>(
   }
 
   // Copy cuePoints to ensure sort is not mutative
-  [...cuePoints]
+  [...cues]
     // Sort descending to ensure last cuepoints are added as cues first. This is done
     // so the track's cue's can be used for reference when determining an appropriate
     // endTime, allowing support of multiple invocations of addCuePoints
@@ -213,6 +208,7 @@ export async function addCuePoints<T>(
         if (previousCue) {
           previousCue.endTime = startTime;
         }
+        // stringify is redundent for chapters here but has no negative affect
         track?.addCue(new VTTCue(startTime, endTime, JSON.stringify(value ?? null)));
       }
     });
@@ -228,6 +224,19 @@ export async function addCuePoints<T>(
   );
 
   return track;
+}
+
+// Cuepoints
+
+const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
+export const DefaultCuePointsConfig: Config = Object.freeze({ label: DEFAULT_CUEPOINTS_TRACK_LABEL });
+
+export async function addCuePoints<T>(
+  mediaEl: HTMLMediaElement,
+  cuePoints: CuePoint<T>[],
+  cuePointsConfig: Config = DefaultCuePointsConfig
+) {
+  return addCuesToTextTrack(mediaEl, cuePoints, cuePointsConfig.label, 'metadata');
 }
 
 const toCuePoint = (cue: VTTCue) => ({
@@ -304,60 +313,7 @@ export async function addChapters(
   chapters: Chapter[],
   chaptersConfig: Config = DefaultChaptersConfig
 ) {
-  // If the track has already been created/added, use it.
-  let track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
-  if (!track) {
-    // Otherwise, create a new one
-    const { label = DEFAULT_CHAPTERS_TRACK_LABEL } = chaptersConfig;
-    track = addTextTrack(mediaEl, 'chapters', label);
-    track.mode = 'hidden';
-    // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
-    await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
-  }
-
-  if (track.mode !== 'hidden') {
-    track.mode = 'hidden';
-  }
-
-  // work through chapters in descending order
-  // this makes it easier to derive a chapters endTime if it's not provided
-  // which is the start time of the next chapter chronologically
-  [...chapters]
-    .sort(({ startTime: a }, { startTime: b }) => b - a)
-    .forEach(({ startTime, endTime, value }) => {
-      if (endTime != undefined) {
-        track?.addCue(new VTTCue(startTime, endTime, value ?? null));
-      } else {
-        // find the first chapter that has a start time after this one
-        const nextChapterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
-        const nextChapter = track?.cues?.[nextChapterIndex];
-        const derivedEndTime = nextChapter
-          ? nextChapter.startTime
-          : Number.isFinite(mediaEl.duration)
-            ? mediaEl.duration
-            : Number.MAX_SAFE_INTEGER;
-
-        // If needed, Adjust endTime of the previous chapter
-        // so it does not overlap with the newly added chapter
-        const previousChapter = track?.cues?.[nextChapterIndex - 1];
-        if (previousChapter) {
-          previousChapter.endTime = startTime;
-        }
-        track?.addCue(new VTTCue(startTime, derivedEndTime, value ?? null));
-      }
-    });
-
-  // NOTE: this doesn't naturally fire when we update the list
-  // of cue points (without changing the active cue). We manually
-  // fire this to force the state manager to reflect the new change
-  mediaEl.textTracks.dispatchEvent(
-    new Event('change', {
-      bubbles: true,
-      composed: true,
-    })
-  );
-
-  return track;
+  return addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
 }
 
 export function getChapters(
