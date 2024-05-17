@@ -1215,7 +1215,7 @@ describe('Feature: stream types & related (including non-media-ui-extension type
 
 // skip cuepoint tests on all browsers
 // TODO fixup cuepoint tests and behavior across browsers
-describe.skip('Feature: cuePoints', async () => {
+describe('Feature: cuePoints', async () => {
   it('adds cuepoints', async () => {
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
@@ -1227,11 +1227,9 @@ describe.skip('Feature: cuePoints', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-    await muxPlayerEl.addCuePoints(cuePoints);
-
-    // need a timeout for Safari/webkit
     await aTimeout(50);
-
+    // await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await muxPlayerEl.addCuePoints(cuePoints);
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints);
   });
 
@@ -1274,8 +1272,9 @@ describe.skip('Feature: cuePoints', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-    await muxPlayerEl.addCuePoints(cuePoints);
     await aTimeout(50);
+    // await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await muxPlayerEl.addCuePoints(cuePoints);
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints, 'cue points were added as expected');
     muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
     await oneEvent(muxPlayerEl, 'emptied');
@@ -1319,8 +1318,8 @@ describe('Feature: chapters', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-
-    await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await aTimeout(50);
+    // await oneEvent(muxPlayerEl, 'loadedmetadata');
     await muxPlayerEl.addChapters(chapters);
     const expectedChapter = chapters[1];
     muxPlayerEl.currentTime = expectedChapter.startTime + 0.01;
@@ -1342,7 +1341,8 @@ describe('Feature: chapters', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-    await oneEvent(muxPlayerEl, 'loadedmetadata');
+    await aTimeout(50);
+    // await oneEvent(muxPlayerEl, 'loadedmetadata');
     await muxPlayerEl.addChapters(chapters);
     muxPlayerEl.currentTime = chapters[1].startTime + 0.01;
     await oneEvent(muxPlayerEl, 'chapterchange');
