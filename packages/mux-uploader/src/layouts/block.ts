@@ -15,7 +15,7 @@ function conditionalRender(flag: boolean | undefined, component: string): string
 
 export default function blockLayout(contextElement: MuxUploaderElement): DocumentFragment {
   const { noDrop, noProgress, noStatus, noRetry, pausable } = contextElement;
-  const wrapper = noDrop ? 'div' : 'mux-uploader-drop overlay';
+  const wrapper = noDrop ? 'div' : 'mux-uploader-drop overlay part="drop"';
   const progressElements = conditionalRender(
     noProgress,
     `
