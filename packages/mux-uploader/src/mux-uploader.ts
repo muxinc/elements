@@ -8,6 +8,15 @@ const rootTemplate = document.createElement('template');
 
 rootTemplate.innerHTML = /*html*/ `
 <style>
+  :host {
+    display: flex;
+    flex-direction: column;
+  }
+
+  mux-uploader-drop {
+    flex-grow: 1;
+  }
+
   input[type="file"] {
     display: none;
   }
