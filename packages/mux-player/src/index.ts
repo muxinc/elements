@@ -852,6 +852,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return getPosterURLFromPlaybackId(this.playbackId, {
         customDomain: this.customDomain,
         thumbnailTime: this.thumbnailTime ?? this.startTime,
+        programTime: this.programStartTime,
         token: this.tokens.thumbnail,
       });
     }
@@ -908,6 +909,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return getStoryboardURLFromPlaybackId(this.playbackId, {
       customDomain: this.customDomain,
       token: this.tokens.storyboard,
+      programStartTime: this.programStartTime,
+      programEndTime: this.programEndTime,
     });
   }
 
