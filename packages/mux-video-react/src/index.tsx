@@ -99,6 +99,8 @@ MuxVideo.propTypes = {
   playerInitTime: PropTypes.number,
   preferCmcd: PropTypes.oneOf(Object.values(CmcdTypes)),
   preferPlayback: PropTypes.oneOf(Object.values(PlaybackTypes)),
+  programStartTime: PropTypes.number,
+  programEndTime: PropTypes.number,
   renditionOrder: PropTypes.oneOf(['desc']),
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),

@@ -136,6 +136,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
+    programStartTime: el.programStartTime,
+    programEndTime: el.programEndTime,
     renditionOrder: el.renditionOrder,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
@@ -850,6 +852,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return getPosterURLFromPlaybackId(this.playbackId, {
         customDomain: this.customDomain,
         thumbnailTime: this.thumbnailTime ?? this.startTime,
+        programTime: this.programStartTime,
         token: this.tokens.thumbnail,
       });
     }
@@ -906,6 +909,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return getStoryboardURLFromPlaybackId(this.playbackId, {
       customDomain: this.customDomain,
       token: this.tokens.storyboard,
+      programStartTime: this.programStartTime,
+      programEndTime: this.programEndTime,
     });
   }
 
@@ -1236,6 +1241,30 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.RENDITION_ORDER, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.RENDITION_ORDER);
+    }
+  }
+
+  get programStartTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.PROGRAM_START_TIME));
+  }
+
+  set programStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.PROGRAM_START_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.PROGRAM_START_TIME, `${val}`);
+    }
+  }
+
+  get programEndTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.PROGRAM_END_TIME));
+  }
+
+  set programEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.PROGRAM_END_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.PROGRAM_END_TIME, `${val}`);
     }
   }
 

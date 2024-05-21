@@ -56,6 +56,8 @@ export const Attributes = {
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
   RENDITION_ORDER: 'rendition-order',
+  PROGRAM_START_TIME: 'program-start-time',
+  PROGRAM_END_TIME: 'program-end-time',
   METADATA_URL: 'metadata-url',
   PLAYBACK_ID: 'playback-id',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
@@ -342,6 +344,36 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.RENDITION_ORDER, val);
     } else {
       this.removeAttribute(Attributes.RENDITION_ORDER);
+    }
+  }
+
+  get programStartTime() {
+    const val = this.getAttribute(Attributes.PROGRAM_START_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set programStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.PROGRAM_START_TIME);
+    } else {
+      this.setAttribute(Attributes.PROGRAM_START_TIME, `${val}`);
+    }
+  }
+
+  get programEndTime() {
+    const val = this.getAttribute(Attributes.PROGRAM_END_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set programEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.PROGRAM_END_TIME);
+    } else {
+      this.setAttribute(Attributes.PROGRAM_END_TIME, `${val}`);
     }
   }
 

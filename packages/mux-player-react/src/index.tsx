@@ -83,6 +83,8 @@ export type MuxPlayerProps = {
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
   renditionOrder?: RenditionOrderValue;
+  programStartTime?: number;
+  programEndTime?: number;
   metadataVideoId?: string;
   metadataVideoTitle?: string;
   metadataViewerUserId?: string;

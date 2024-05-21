@@ -246,6 +246,8 @@ type MuxVideoURLProps = Partial<{
   maxResolution: MaxResolutionValue;
   minResolution: MinResolutionValue;
   renditionOrder: RenditionOrderValue;
+  programStartTime: number;
+  programEndTime: number;
   tokens: Partial<{
     playback: string;
     storyboard: string;
@@ -260,6 +262,8 @@ export const toMuxVideoURL = ({
   maxResolution,
   minResolution,
   renditionOrder,
+  programStartTime,
+  programEndTime,
   tokens: { playback: token } = {},
   extraSourceParams = {},
 }: MuxVideoURLProps = {}) => {
@@ -295,6 +299,12 @@ export const toMuxVideoURL = ({
     }
     if (renditionOrder) {
       url.searchParams.set('rendition_order', renditionOrder);
+    }
+    if (programStartTime) {
+      url.searchParams.set('program_start_time', `${programStartTime}`);
+    }
+    if (programEndTime) {
+      url.searchParams.set('program_end_time', `${programEndTime}`);
     }
     Object.entries(extraSourceParams).forEach(([k, v]) => {
       if (v == undefined) return;

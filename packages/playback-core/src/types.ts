@@ -173,6 +173,8 @@ export type MuxMediaPropTypes = {
   playerInitTime: MetaData['player_init_time'];
   preferCmcd: ValueOf<CmcdTypes> | undefined;
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
+  programStartTime: number;
+  programEndTime: number;
   renditionOrder: RenditionOrderValue;
   startTime: Hls['config']['startPosition'];
   streamType: ValueOf<StreamTypes>;
