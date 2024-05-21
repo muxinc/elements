@@ -98,6 +98,8 @@ MuxAudio.propTypes = {
   playbackId: PropTypes.string,
   playerInitTime: PropTypes.number,
   preferCmcd: PropTypes.oneOf(Object.values(CmcdTypes)),
+  programStartTime: PropTypes.number,
+  programEndTime: PropTypes.number,
   preferPlayback: PropTypes.oneOf(Object.values(PlaybackTypes)),
   renditionOrder: PropTypes.oneOf(['desc']),
   startTime: PropTypes.number,
