@@ -1,6 +1,18 @@
 import Hls from './hls';
-import { CuePoint } from './types';
+import { CuePoint, Chapter } from './types';
 import { addEventListenerWithTeardown } from './util';
+
+type Config = { label: string };
+
+// Shared utils
+
+// Extracts the start time from a cuepoint, considering legacy "time" prop
+const cuePointStart = (cuePoint: CuePoint): number => {
+  if ('time' in cuePoint) {
+    return cuePoint.time;
+  }
+  return cuePoint.startTime;
+};
 
 export function setupTextTracks(
   mediaEl: HTMLMediaElement,
@@ -126,9 +138,11 @@ export function addTextTrack(
     trackEl.id = id;
   }
   trackEl.track.mode = ['subtitles', 'captions'].includes(kind) ? 'disabled' : 'hidden';
+
   // Add data attribute to identify tracks that should be removed when switching sources/destroying hls.js instance.
   trackEl.setAttribute('data-removeondestroy', '');
   mediaEl.append(trackEl);
+
   return trackEl.track as TextTrack;
 }
 
@@ -140,30 +154,23 @@ export function removeTextTrack(mediaEl: HTMLMediaElement, track: TextTrack) {
   trackElement?.remove();
 }
 
-const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
-export type CuePointsConfig = { label: string };
-export const DefaultCuePointsConfig: CuePointsConfig = Object.freeze({ label: DEFAULT_CUEPOINTS_TRACK_LABEL });
-
-export const getCuePointsTrack = (
-  mediaEl: HTMLMediaElement,
-  { label = DEFAULT_CUEPOINTS_TRACK_LABEL }: CuePointsConfig = DefaultCuePointsConfig
-) => {
+export function getTextTrack(mediaEl: HTMLMediaElement, label: string, kind: TextTrackKind) {
   return Array.from(mediaEl.querySelectorAll('track')).find((trackEl) => {
-    return trackEl.track.label === label && trackEl.track.kind === 'metadata';
+    return trackEl.track.label === label && trackEl.track.kind === kind;
   })?.track;
-};
+}
 
-export async function addCuePoints<T>(
+export async function addCuesToTextTrack<T = any>(
   mediaEl: HTMLMediaElement,
-  cuePoints: CuePoint<T>[],
-  cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
+  cues: CuePoint<T>[] | Chapter[],
+  label: string,
+  kind: TextTrackKind
 ) {
   // If the track has already been created/added, use it.
-  let track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  let track = getTextTrack(mediaEl, label, kind);
   if (!track) {
     // Otherwise, create a new one
-    const { label = DEFAULT_CUEPOINTS_TRACK_LABEL } = cuePointsConfig;
-    track = addTextTrack(mediaEl, 'metadata', label);
+    track = addTextTrack(mediaEl, kind, label);
     track.mode = 'hidden';
     // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
     await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
@@ -172,33 +179,71 @@ export async function addCuePoints<T>(
   if (track.mode !== 'hidden') {
     track.mode = 'hidden';
   }
+
   // Copy cuePoints to ensure sort is not mutative
-  [...cuePoints]
+  [...cues]
     // Sort descending to ensure last cuepoints are added as cues first. This is done
     // so the track's cue's can be used for reference when determining an appropriate
     // endTime, allowing support of multiple invocations of addCuePoints
-    .sort(({ time: timestampA }, { time: timestampB }) => timestampB - timestampA)
-    .forEach(({ time: startTime, value }) => {
-      // find the cue that starts immediately after the cuePoint's time
-      const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
-      const cueAfter = track?.cues?.[cueAfterIndex];
-      const endTime = cueAfter
-        ? cueAfter.startTime
-        : Number.isFinite(mediaEl.duration)
-        ? mediaEl.duration
-        : Number.MAX_SAFE_INTEGER;
+    .sort((cuePointA, cuePointB) => cuePointStart(cuePointB) - cuePointStart(cuePointA))
+    .forEach((cuePoint) => {
+      const value = cuePoint.value;
+      const startTime = cuePointStart(cuePoint);
 
-      // Adjust the endTime of the already added previous cue, if present, so it does not overlap
-      // with the newly added cue.
-      const previousCue = track?.cues?.[cueAfterIndex - 1];
-      if (previousCue) {
-        previousCue.endTime = startTime;
+      if ('endTime' in cuePoint && cuePoint.endTime != undefined) {
+        track?.addCue(
+          new VTTCue(
+            startTime,
+            cuePoint.endTime,
+            kind === 'chapters' ? (value as string) : JSON.stringify(value ?? null)
+          )
+        );
+      } else {
+        // find the cue that starts immediately after the cuePoint's time
+        const cueAfterIndex = Array.prototype.findIndex.call(track?.cues, (cue) => cue.startTime >= startTime);
+        const cueAfter = track?.cues?.[cueAfterIndex];
+        const endTime = cueAfter
+          ? cueAfter.startTime
+          : Number.isFinite(mediaEl.duration)
+            ? mediaEl.duration
+            : Number.MAX_SAFE_INTEGER;
+
+        // Adjust the endTime of the already added previous cue,
+        // if present, so it does not overlap with the newly added cue.
+        const previousCue = track?.cues?.[cueAfterIndex - 1];
+        if (previousCue) {
+          previousCue.endTime = startTime;
+        }
+        track?.addCue(
+          new VTTCue(startTime, endTime, kind === 'chapters' ? (value as string) : JSON.stringify(value ?? null))
+        );
       }
-      const cue = new VTTCue(startTime, endTime, JSON.stringify(value ?? null));
-      (track as TextTrack).addCue(cue);
     });
 
+  // NOTE: this doesn't naturally fire when we update the list
+  // of cue points (without changing the active cue). We manually
+  // fire this to force the state manager to reflect the new change
+  mediaEl.textTracks.dispatchEvent(
+    new Event('change', {
+      bubbles: true,
+      composed: true,
+    })
+  );
+
   return track;
+}
+
+// Cuepoints
+
+const DEFAULT_CUEPOINTS_TRACK_LABEL = 'cuepoints';
+export const DefaultCuePointsConfig: Config = Object.freeze({ label: DEFAULT_CUEPOINTS_TRACK_LABEL });
+
+export async function addCuePoints<T>(
+  mediaEl: HTMLMediaElement,
+  cuePoints: CuePoint<T>[],
+  cuePointsConfig: Config = DefaultCuePointsConfig
+) {
+  return addCuesToTextTrack(mediaEl, cuePoints, cuePointsConfig.label, 'metadata');
 }
 
 const toCuePoint = (cue: VTTCue) => ({
@@ -208,33 +253,34 @@ const toCuePoint = (cue: VTTCue) => ({
 
 export function getCuePoints(
   mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+  cuePointsConfig: Config = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
 ) {
-  const track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  const track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
   if (!track?.cues) return [];
   return Array.from(track.cues, (cue) => toCuePoint(cue as VTTCue));
 }
 
 export function getActiveCuePoint(
   mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
+  cuePointsConfig: Config = { label: DEFAULT_CUEPOINTS_TRACK_LABEL }
 ) {
-  const track = getCuePointsTrack(mediaEl, cuePointsConfig);
+  const track = getTextTrack(mediaEl, cuePointsConfig.label, 'metadata');
   if (!track?.activeCues?.length) return undefined;
+  if (track.activeCues.length === 1) return toCuePoint(track.activeCues[0] as VTTCue);
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
   // accounts for those cases (CJP)
   const { currentTime } = mediaEl;
   const actualActiveCue = Array.prototype.find.call(track.activeCues ?? [], ({ startTime, endTime }) => {
     return startTime <= currentTime && endTime > currentTime;
-  });
-  return toCuePoint(actualActiveCue as VTTCue);
+  }) as VTTCue | undefined;
+  if (!actualActiveCue) {
+    return toCuePoint(track.activeCues[0] as VTTCue);
+  }
+  return toCuePoint(actualActiveCue);
 }
 
-export async function setupCuePoints(
-  mediaEl: HTMLMediaElement,
-  cuePointsConfig: CuePointsConfig = DefaultCuePointsConfig
-) {
+export async function setupCuePoints(mediaEl: HTMLMediaElement, cuePointsConfig: Config = DefaultCuePointsConfig) {
   return new Promise((resolve) => {
     addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
       const track = await addCuePoints(mediaEl, [], cuePointsConfig);
@@ -255,6 +301,84 @@ export async function setupCuePoints(
         {},
         track
       );
+      resolve(track);
+    });
+  });
+}
+
+/**
+ * Chapters
+ */
+
+const DEFAULT_CHAPTERS_TRACK_LABEL = 'chapters';
+export const DefaultChaptersConfig: Config = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
+
+const vttCueToChapter = (cue: VTTCue) => ({
+  startTime: cue.startTime,
+  endTime: cue.endTime,
+  value: cue.text,
+});
+
+export async function addChapters(
+  mediaEl: HTMLMediaElement,
+  chapters: Chapter[],
+  chaptersConfig: Config = DefaultChaptersConfig
+) {
+  return addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
+}
+
+export function getChapters(
+  mediaEl: HTMLMediaElement,
+  chaptersConfig: Config = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
+) {
+  const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (!track?.cues?.length) return [];
+  return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue));
+}
+
+export function getActiveChapter(
+  mediaEl: HTMLMediaElement,
+  chaptersConfig: Config = { label: DEFAULT_CHAPTERS_TRACK_LABEL }
+) {
+  const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (!track?.activeCues?.length) return undefined;
+  if (track.activeCues.length === 1) return vttCueToChapter(track.activeCues[0] as VTTCue);
+  // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
+  // after the playhead is no longer within their [startTime, endTime) bounds. This
+  // accounts for those cases (CJP)
+  const { currentTime } = mediaEl;
+  const actualActiveCue = Array.prototype.find.call(track.activeCues ?? [], ({ startTime, endTime }) => {
+    return startTime <= currentTime && endTime > currentTime;
+  }) as VTTCue | undefined;
+  if (!actualActiveCue) {
+    return vttCueToChapter(track.activeCues[0] as VTTCue);
+  }
+  return vttCueToChapter(actualActiveCue);
+}
+
+export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: Config = DefaultChaptersConfig) {
+  return new Promise((resolve) => {
+    addEventListenerWithTeardown(mediaEl, 'loadstart', async () => {
+      const track = await addChapters(mediaEl, [], chaptersConfig);
+
+      addEventListenerWithTeardown(
+        mediaEl,
+        'cuechange',
+        () => {
+          const activeCuePoint = getActiveChapter(mediaEl);
+          if (activeCuePoint) {
+            const evt = new CustomEvent('chapterchange', {
+              composed: true,
+              bubbles: true,
+              detail: activeCuePoint,
+            });
+            mediaEl.dispatchEvent(evt);
+          }
+        },
+        {},
+        track
+      );
+
       resolve(track);
     });
   });

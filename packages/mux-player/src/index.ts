@@ -231,6 +231,7 @@ const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointchange: CustomEvent<{ time: number; value: any }>;
   cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
+  chapterchange: CustomEvent<{ startTime: number; endTime: number; value: string }>;
 }
 
 interface MuxPlayerElement
@@ -1505,6 +1506,26 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   get cuePoints() {
     return this.media?.cuePoints ?? [];
+  }
+
+  addChapters(chapters: { startTime: number; endTime: number; value: string }[]) {
+    this.#init();
+
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to addChapters. chapters will not be added.');
+      return;
+    }
+
+    return this.media?.addChapters(chapters);
+  }
+
+  get activeChapter() {
+    return this.media?.activeChapter;
+  }
+
+  get chapters() {
+    return this.media?.chapters ?? [];
   }
 
   getStartDate() {

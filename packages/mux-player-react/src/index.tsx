@@ -124,6 +124,7 @@ export type MuxPlayerProps = {
   onError?: GenericEventListener<MuxPlayerElementEventMap['error']>;
   onCuePointChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointchange']>;
   onCuePointsChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointschange']>;
+  onChapterChange?: GenericEventListener<MuxPlayerElementEventMap['chapterchange']>;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
 
@@ -178,6 +179,7 @@ const usePlayer = (
     onError,
     onCuePointChange,
     onCuePointsChange,
+    onChapterChange,
     metadata,
     tokens,
     paused,
@@ -244,6 +246,7 @@ const usePlayer = (
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('cuepointchange', ref, onCuePointChange);
   useEventCallbackEffect('cuepointschange', ref, onCuePointsChange);
+  useEventCallbackEffect('chapterchange', ref, onChapterChange);
   return [remainingProps];
 };
 

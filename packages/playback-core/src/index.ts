@@ -11,11 +11,15 @@ import {
   setupTextTracks,
   addTextTrack,
   removeTextTrack,
+  getTextTrack,
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
   setupCuePoints,
-  getCuePointsTrack,
+  addChapters,
+  getChapters,
+  getActiveChapter,
+  setupChapters,
 } from './text-tracks';
 import { getStartDate, getCurrentPdt } from './pdt';
 import {
@@ -42,11 +46,15 @@ export {
   MediaError,
   addTextTrack,
   removeTextTrack,
+  getTextTrack,
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
-  getCuePointsTrack,
   setupCuePoints,
+  addChapters,
+  getChapters,
+  getActiveChapter,
+  setupChapters,
   getStartDate,
   getCurrentPdt,
 };
@@ -430,6 +438,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
+  setupChapters(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
 
   return {
