@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.18](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.17...@mux/mux-uploader-react@1.0.0-beta.18) (2024-05-28)
+
+
+### Features
+
+* **mux-uploader, mux-uploader-react:** Add pausable functionality and pause button component. ([#918](https://github.com/muxinc/elements/issues/918)) ([9198771](https://github.com/muxinc/elements/commit/919877119d30db5a108e4b0bbe9309ecdce7e646))
+
+
+
+
+
 # [1.0.0-beta.17](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.16...@mux/mux-uploader-react@1.0.0-beta.17) (2024-05-03)
 
 

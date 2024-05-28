@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.10.0...@mux/mux-video-react@0.11.0) (2024-05-28)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video, mux-video-react, mux-audio, mux-audio-react, playback-core:** pdt clipping ([#923](https://github.com/muxinc/elements/issues/923)) ([22e9b06](https://github.com/muxinc/elements/commit/22e9b06e2e0913a6c34ebea53f4bbeded969b5a4))
+
+
+
+
+
 # [0.10.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.9.0...@mux/mux-video-react@0.10.0) (2024-05-03)
 
 
