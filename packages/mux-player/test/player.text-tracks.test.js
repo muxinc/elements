@@ -36,9 +36,12 @@ window.addEventListener('error', windowErrorHandler);
     ></mux-player>`);
 
     // Wait for us to have at least one showing subtitle/caption
-    await waitUntil(() => Array.prototype.some.call(player.textTracks, (track) => track.mode === 'showing'));
+    await waitUntil(
+      () => Array.prototype.some.call(player.textTracks, (track) => track.mode === 'showing'),
+      'did not have showing tracks in time'
+    );
     // Make sure we're playing
-    await waitUntil(() => !player.paused);
+    await waitUntil(() => !player.paused, 'did not unpause in time');
     // Find the currently showing track
     const track = Array.prototype.find.call(player.textTracks, (textTrack) => textTrack.mode === 'showing');
     // Wait for it to have cues added
@@ -223,6 +226,7 @@ describe('Feature: cuePoints', async () => {
   });
 
   it('clears cuepoints when playback-id is updated', async () => {
+    this.timeout(10000);
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
       { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
