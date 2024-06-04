@@ -1,6 +1,8 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent, nextFrame } from '@open-wc/testing';
 import '../src/index.ts';
 
+console.log('this is a test');
+
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 const isFirefox = /Firefox/i.test(navigator.userAgent);
 
