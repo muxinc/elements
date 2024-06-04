@@ -685,10 +685,13 @@ export const toLicenseKeyURL = (
   {
     playbackId,
     drmToken: token,
-    customDomain: domain = MUX_VIDEO_DOMAIN,
+    customDomain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
+  // NOTE: Mux Video currently doesn't support custom domains for license/DRM endpoints, but
+  // customDomain can also be used for internal use cases, so treat that as an exception case for now. (CJP)
+  const domain = customDomain.toLocaleLowerCase().endsWith(MUX_VIDEO_DOMAIN) ? customDomain : MUX_VIDEO_DOMAIN;
   return `https://license.${domain}/license/${scheme}/${playbackId}?token=${token}`;
 };
 
@@ -696,10 +699,13 @@ export const toAppCertURL = (
   {
     playbackId,
     drmToken: token,
-    customDomain: domain = MUX_VIDEO_DOMAIN,
+    customDomain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
+  // NOTE: Mux Video currently doesn't support custom domains for license/DRM endpoints, but
+  // customDomain can also be used for internal use cases, so treat that as an exception case for now. (CJP)
+  const domain = customDomain.toLocaleLowerCase().endsWith(MUX_VIDEO_DOMAIN) ? customDomain : MUX_VIDEO_DOMAIN;
   return `https://license.${domain}/appcert/${scheme}/${playbackId}?token=${token}`;
 };
 
