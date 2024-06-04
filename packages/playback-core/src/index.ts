@@ -615,7 +615,7 @@ export const getAppCertificate = async (appCertificateUrl: string) => {
 export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: string) => {
   const licenseResponse = await fetch(licenseServerUrl, {
     method: 'POST',
-    headers: new Headers({ 'Content-type': 'application/octet-stream' }),
+    headers: { 'Content-type': 'application/octet-stream' },
     body: message,
   });
   const keyBuffer = await licenseResponse.arrayBuffer();

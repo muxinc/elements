@@ -299,9 +299,6 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
 
     return toPlaybackIdFromSrc(this.src) ?? undefined;
-    // return isMuxVideoSrc(this)
-    //   ? toPlaybackIdFromSrc(this.src)
-    //   : undefined;
   }
 
   set playbackId(val: string | undefined) {
