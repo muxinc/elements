@@ -162,6 +162,7 @@ export type MuxMediaPropTypes = {
   debug: Options['debug'] & Hls['config']['debug'];
   disableCookies: Options['disableCookies'];
   disableTracking: boolean;
+  drmToken?: string;
   envKey: MetaData['env_key'];
   error?: HTMLMediaElement['error'] | MediaError;
   errorTranslator: Options['errorTranslator'];
@@ -179,7 +180,7 @@ export type MuxMediaPropTypes = {
   startTime: Hls['config']['startPosition'];
   streamType: ValueOf<StreamTypes>;
   targetLiveWindow: number;
-  tokens: Partial<{ playback: string; storyboard: string; thumbnail: string }>;
+  tokens: Partial<{ drm: string; playback: string; storyboard: string; thumbnail: string }>;
   type: MediaTypes;
 };
 

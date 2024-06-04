@@ -25,6 +25,8 @@ import {
   getSeekable,
   getEnded,
   getChapters,
+  toPlaybackIdFromSrc,
+  // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
   PlaybackCore,
@@ -52,6 +54,7 @@ export const Attributes = {
   DEBUG: 'debug',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
+  DRM_TOKEN: 'drm-token',
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
@@ -291,7 +294,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   get playbackId(): string | undefined {
-    return this.getAttribute(Attributes.PLAYBACK_ID) ?? undefined;
+    if (this.hasAttribute(Attributes.PLAYBACK_ID)) {
+      return this.getAttribute(Attributes.PLAYBACK_ID) as string;
+    }
+
+    return toPlaybackIdFromSrc(this.src) ?? undefined;
   }
 
   set playbackId(val: string | undefined) {
@@ -389,6 +396,21 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.CUSTOM_DOMAIN, val);
     } else {
       this.removeAttribute(Attributes.CUSTOM_DOMAIN);
+    }
+  }
+
+  get drmToken() {
+    return this.getAttribute(Attributes.DRM_TOKEN) ?? undefined;
+  }
+
+  set drmToken(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.drmToken) return;
+
+    if (val) {
+      this.setAttribute(Attributes.DRM_TOKEN, val);
+    } else {
+      this.removeAttribute(Attributes.DRM_TOKEN);
     }
   }
 

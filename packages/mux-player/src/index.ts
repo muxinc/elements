@@ -43,6 +43,7 @@ const DefaultThemeName = 'gerwig';
 export { MediaError };
 export type Tokens = {
   playback?: string;
+  drm?: string;
   thumbnail?: string;
   storyboard?: string;
 };
@@ -63,6 +64,7 @@ const PlayerAttributes = {
   PLAYBACK_TOKEN: 'playback-token',
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
+  DRM_TOKEN: 'drm-token',
   STORYBOARD_SRC: 'storyboard-src',
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
@@ -1570,11 +1572,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   get tokens(): Tokens {
     const playback = this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+    const drm = this.getAttribute(PlayerAttributes.DRM_TOKEN);
     const thumbnail = this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
     const storyboard = this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
     return {
       ...this.#tokens,
       ...(playback != null ? { playback } : {}),
+      ...(drm != null ? { drm } : {}),
       ...(thumbnail != null ? { thumbnail } : {}),
       ...(storyboard != null ? { storyboard } : {}),
     };
@@ -1599,6 +1603,20 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   set playbackToken(val) {
     this.setAttribute(PlayerAttributes.PLAYBACK_TOKEN, `${val}`);
+  }
+
+  /**
+   * Get the playback token for signing the src URL.
+   */
+  get drmToken() {
+    return this.getAttribute(PlayerAttributes.DRM_TOKEN) ?? undefined;
+  }
+
+  /**
+   * Set the playback token for signing the src URL.
+   */
+  set drmToken(val) {
+    this.setAttribute(PlayerAttributes.DRM_TOKEN, `${val}`);
   }
 
   /**
