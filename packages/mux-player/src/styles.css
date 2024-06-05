@@ -14,7 +14,7 @@
   --media-airplay-button-display: var(--airplay-button);
   --media-pip-button-display: var(--pip-button);
   --media-fullscreen-button-display: var(--fullscreen-button);
-  --media-cast-button-display: var(--cast-button);
+  --media-cast-button-display: var(--cast-button, var(--_cast-button-drm-display));
   --media-playback-rate-button-display: var(--playback-rate-button);
   --media-playback-rate-selectmenu-display: var(--playback-rate-selectmenu);
   --media-volume-range-display: var(--volume-range);
@@ -72,7 +72,7 @@ media-poster-image:not([src]):not([placeholdersrc]) {
   --media-airplay-button-display: var(--airplay-button, var(--top-airplay-button));
   --media-pip-button-display: var(--pip-button, var(--top-pip-button));
   --media-fullscreen-button-display: var(--fullscreen-button, var(--top-fullscreen-button));
-  --media-cast-button-display: var(--cast-button, var(--top-cast-button));
+  --media-cast-button-display: var(--cast-button, var(--top-cast-button, var(--_cast-button-drm-display)));
   --media-playback-rate-button-display: var(--playback-rate-button, var(--top-playback-rate-button));
   --media-playback-rate-selectmenu-display: var(
     --captions-selectmenu,
@@ -103,7 +103,7 @@ media-poster-image:not([src]):not([placeholdersrc]) {
   --media-airplay-button-display: var(--airplay-button, var(--center-airplay-button));
   --media-pip-button-display: var(--pip-button, var(--center-pip-button));
   --media-fullscreen-button-display: var(--fullscreen-button, var(--center-fullscreen-button));
-  --media-cast-button-display: var(--cast-button, var(--center-cast-button));
+  --media-cast-button-display: var(--cast-button, var(--center-cast-button, var(--_cast-button-drm-display)));
   --media-playback-rate-button-display: var(--playback-rate-button, var(--center-playback-rate-button));
   --media-playback-rate-selectmenu-display: var(
     --playback-rate-selectmenu,
@@ -133,7 +133,7 @@ media-poster-image:not([src]):not([placeholdersrc]) {
   --media-airplay-button-display: var(--airplay-button, var(--bottom-airplay-button));
   --media-pip-button-display: var(--pip-button, var(--bottom-pip-button));
   --media-fullscreen-button-display: var(--fullscreen-button, var(--bottom-fullscreen-button));
-  --media-cast-button-display: var(--cast-button, var(--bottom-cast-button));
+  --media-cast-button-display: var(--cast-button, var(--bottom-cast-button, var(--_cast-button-drm-display)));
   --media-playback-rate-button-display: var(--playback-rate-button, var(--bottom-playback-rate-button));
   --media-playback-rate-selectmenu-display: var(
     --playback-rate-selectmenu,

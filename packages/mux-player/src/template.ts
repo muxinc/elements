@@ -8,8 +8,16 @@ import { i18n, stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
 import { StreamTypes, toMuxVideoURL } from '@mux/playback-core';
 
+const getPropsCSS = (props: MuxTemplateProps) => {
+  const { tokens } = props;
+  if (!tokens.drm) return '';
+  // See styles.css for usage.
+  return ':host { --_cast-button-drm-display: none; }';
+};
+
 export const template = (props: MuxTemplateProps) => html`
   <style>
+    ${getPropsCSS(props)}
     ${cssStr}
   </style>
   ${content(props)}
