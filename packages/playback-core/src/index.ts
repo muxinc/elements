@@ -379,7 +379,7 @@ export const isStuckOnLastFragment = (
     'levels' | 'currentLevel'
   >
 ) => {
-  if (!hls) return undefined;
+  if (!hls || !mediaEl.buffered.length) return undefined;
   if (mediaEl.readyState > 2) return false;
   const videoLevelDetails =
     hls.currentLevel >= 0
