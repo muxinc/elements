@@ -38,20 +38,21 @@ window.addEventListener('error', windowErrorHandler);
     // Wait for us to have at least one showing subtitle/caption
     await waitUntil(
       () => Array.prototype.some.call(player.textTracks, (track) => track.mode === 'showing'),
-      'did not have showing tracks in time'
+      'did not have showing tracks in time',
+      { timeout: 2000 }
     );
     // Make sure we're playing
     await waitUntil(() => !player.paused, 'did not unpause in time');
     // Find the currently showing track
     const track = Array.prototype.find.call(player.textTracks, (textTrack) => textTrack.mode === 'showing');
     // Wait for it to have cues added
-    await waitUntil(() => track.cues.length, 2000);
+    await waitUntil(() => track.cues.length, 'cues not added in time', { timeout: 2000 });
     const firstCue = track.cues[0];
     assert.equal(firstCue.line, 'auto', 'the first cue.line is set to auto');
 
     // Seek to the first Cue so it will be visible/active
     player.currentTime = firstCue.startTime + 0.1;
-    await waitUntil(() => track.activeCues.length, 2000);
+    await waitUntil(() => track.activeCues.length, 'cues not active in time', { timeout: 2000 });
     const activeCue = track.activeCues[0];
 
     // Confirm we're inactive initially, as this is a precondition for the test passing.
@@ -62,14 +63,14 @@ window.addEventListener('error', windowErrorHandler);
     player.mediaController.toggleAttribute('userinactive', false);
     player.dispatchEvent(new Event('userinactivechange'));
     // Waiting for the condition and then asserting it due to async behavior
-    await waitUntil(() => activeCue.line !== 'auto', 2000);
+    await waitUntil(() => activeCue.line !== 'auto', 'cues not shifted in time', { timeout: 2000 });
     assert.equal(activeCue.line, -4, 'the line is shifted to -4 when user is active');
 
     // Test going from user active to userinactive active cue unshift
     player.mediaController.toggleAttribute('userinactive', true);
     player.dispatchEvent(new Event('userinactivechange'));
     // Waiting for the condition and then asserting it due to async behavior
-    await waitUntil(() => activeCue.line !== -4, 2000);
+    await waitUntil(() => activeCue.line !== -4, 'cues not shifted back in time', { timeout: 2000 });
     assert.equal(activeCue.line, 'auto', 'the line is reset to auto when userinactive');
   });
 
@@ -225,7 +226,7 @@ describe('Feature: cuePoints', async () => {
     assert.deepEqual(muxPlayerEl.activeCuePoint, expectedCuePoint);
   });
 
-  it('clears cuepoints when playback-id is updated', async () => {
+  it('clears cuepoints when playback-id is updated', async function () {
     this.timeout(10000);
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
