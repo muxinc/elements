@@ -81,7 +81,15 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   static get observedAttributes() {
-    return ['pausable', 'no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
+    return [
+      'pausable',
+      'no-drop',
+      'no-progress',
+      'no-status',
+      'no-retry',
+      'max-file-size',
+      'use-large-file-workaround',
+    ];
   }
 
   protected _endpoint: Endpoint;
@@ -198,6 +206,15 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get useLargeFileWorkaround() {
+    return this.hasAttribute('use-large-file-workaround');
+  }
+
+  set useLargeFileWorkaround(value: boolean | undefined) {
+    if (value == this.useLargeFileWorkaround) return;
+    this.toggleAttribute('use-large-file-workaround', !!value);
+  }
+
   get maxFileSize(): number | undefined {
     const maxFileSize = this.getAttribute('max-file-size');
     return maxFileSize !== null ? parseInt(maxFileSize) : undefined;
@@ -288,16 +305,9 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
         endpoint,
         dynamicChunkSize,
         file: evt.detail,
-        ...(this.maxFileSize !== undefined
-          ? {
-              maxFileSize: this.maxFileSize,
-            }
-          : {}),
-        ...(this.chunkSize !== undefined
-          ? {
-              chunkSize: this.chunkSize,
-            }
-          : {}),
+        maxFileSize: this.maxFileSize,
+        chunkSize: this.chunkSize,
+        useLargeFileWorkaround: this.useLargeFileWorkaround,
       });
 
       this._upload = upload;
@@ -321,7 +331,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
       upload.on('error', (event: any) => {
         this.setAttribute('upload-error', '');
-        console.error(event.detail.message);
+        console.error('error handler', event.detail.message);
         this.dispatchEvent(new CustomEvent('uploaderror', event));
       });
 
