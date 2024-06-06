@@ -1,7 +1,7 @@
-import Link from "next/link";
 import Head from 'next/head';
-import MuxUploader, { MuxUploaderDrop } from '@mux/mux-uploader-react';
-import { useState, ChangeEvent } from "react";
+import MuxUploader from '@mux/mux-uploader-react';
+import { useState } from "react";
+import { BooleanRenderer, URLRenderer } from "../components/renderers";
 
 const onUploadStart = console.log.bind(null, 'uploadStart');
 const onChunkAttempt = console.log.bind(null, "chunkAttempt");
@@ -14,31 +14,23 @@ const onUploadError = ({ detail }) => {
 }
 
 function MuxUploaderPage() {
-  const [url, setUrl] = useState("");
-
-  const handleChange = (event: ChangeEvent) => {
-    const target = event.target as HTMLInputElement;
-    setUrl(target.value);
-  }
+  const [endpoint, setEndpoint] = useState<string>();
+  const [pausable, setPausable] = useState(false);
+  const [dynamicChunkSize, setDynamicChunkSize] = useState(false);
+  const [useLargeFileWorkaround, setUseLargeFileWorkaround] = useState(false);
 
   return (
     <>
       <Head>
         <title>&lt;MuxUploader/&gt; Demo</title>
       </Head>
-      <h2>Enter your upload GCS url:</h2>
-
-      <input type="text" style={{
-        marginBottom: "20px",
-        width: "min(100%, 400px)",
-        boxSizing: "border-box"
-      }} placeholder="https://storage.googleapis.com/..." onChange={handleChange} />
 
       <MuxUploader
         id="uploader"
-        // You can remove `pausable` if you don't want to expose that UI.
-        pausable={true}
-        endpoint={url}
+        pausable={pausable}
+        dynamicChunkSize={dynamicChunkSize}
+        useLargeFileWorkaround={useLargeFileWorkaround}
+        endpoint={endpoint}
         onUploadStart={onUploadStart}
         onChunkAttempt={onChunkAttempt}
         onChunkSuccess={onChunkSuccess}
@@ -46,6 +38,38 @@ function MuxUploaderPage() {
         onUploadError={onUploadError}
         onProgress={onProgress}
       />
+      <div className="options" style={{ marginTop: '20px' }}>
+        <URLRenderer
+            value={endpoint}
+            name="endpoint"
+            label="Enter your upload GCS url (required)"
+            onChange={({ endpoint }) => {
+              setEndpoint(endpoint)
+            }}
+            placeholder="https://storage.googleapis.com/..."
+          />
+        <BooleanRenderer
+          value={pausable}
+          name="pausable"
+          onChange={({ pausable }) => {
+            setPausable(pausable)
+          }}
+        />
+        <BooleanRenderer
+          value={dynamicChunkSize}
+          name="dynamicChunkSize"
+          onChange={({ dynamicChunkSize }) => {
+            setDynamicChunkSize(dynamicChunkSize)
+          }}
+        />
+        <BooleanRenderer
+          value={useLargeFileWorkaround}
+          name="useLargeFileWorkaround"
+          onChange={({ useLargeFileWorkaround }) => {
+            setUseLargeFileWorkaround(useLargeFileWorkaround)
+          }}
+        />
+      </div>
     </>
   );
 }
