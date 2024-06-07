@@ -11,10 +11,14 @@ import MuxUploaderPause from './mux-uploader-pause';
 import MuxUploaderStatus from './mux-uploader-status';
 import type MuxUploaderElement from '@mux/mux-uploader';
 import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
+import { constants } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect from './useObjectPropEffect';
+
+export const ProgressTypes = constants.ProgressTypes;
+export type ProgressTypes = typeof ProgressTypes;
 
 export type MuxUploaderRefAttributes = MuxUploaderElement;
 
@@ -25,7 +29,7 @@ interface GenericEventListener<T extends Event = CustomEvent> {
 export type MuxUploaderProps = {
   id?: string;
   endpoint?: MuxUploaderElement['endpoint'];
-  type?: string;
+  type?: ProgressTypes;
   noDrop?: boolean;
   noProgress?: boolean;
   noStatus?: boolean;
