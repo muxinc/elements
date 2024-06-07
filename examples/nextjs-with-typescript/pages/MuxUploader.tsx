@@ -72,8 +72,8 @@ function MuxUploaderPage({ location }: Props) {
             name="useLargeFileWorkaround"
             onChange={genericOnChange}
           />
-          <NumberRenderer value={state.maxFileSize} name="maxFileSize" onChange={genericOnChange} />
-          <NumberRenderer value={state.chunkSize} name="chunkSize" onChange={genericOnChange} />
+          <NumberRenderer value={state.maxFileSize} min={0} name="maxFileSize" onChange={genericOnChange} />
+          <NumberRenderer value={state.chunkSize} min={256} step={256} name="chunkSize" onChange={genericOnChange} />
         </div>
       </main>
     </>
