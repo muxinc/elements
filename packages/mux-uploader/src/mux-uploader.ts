@@ -257,7 +257,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const boolVal = !!value;
     if (boolVal === this.paused) return;
     if (boolVal) {
-      console.log('pausing upchunk!');
       this.upload.pause();
     } else {
       this.upload.resume();
