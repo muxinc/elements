@@ -41,6 +41,10 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
       this.#uploaderEl.addEventListener('uploadstart', this.clearStatusMessage, opts);
       this.#uploaderEl.addEventListener('offline', this.onOffline, opts);
       this.#uploaderEl.addEventListener('online', this.clearStatusMessage, opts);
+
+      this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
+      this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
+      this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
     }
   }
 

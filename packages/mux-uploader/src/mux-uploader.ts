@@ -3,6 +3,7 @@ import { globalThis, document } from './polyfills';
 import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
+import { ProgressTypes } from './constants';
 
 const rootTemplate = document.createElement('template');
 
@@ -83,6 +84,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   static get observedAttributes() {
     return [
       'pausable',
+      'type',
       'no-drop',
       'no-progress',
       'no-status',
@@ -108,6 +110,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
+      this.toggleAttribute('file-ready', !!file);
 
       if (file) {
         this.dispatchEvent(
@@ -151,6 +154,19 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       this.removeAttribute('endpoint');
     }
     this._endpoint = value;
+  }
+
+  get type() {
+    return (this.getAttribute('type') ?? undefined) as ProgressTypes[keyof ProgressTypes] | undefined;
+  }
+
+  set type(val: ProgressTypes[keyof ProgressTypes] | undefined) {
+    if (val == this.type) return;
+    if (!val) {
+      this.removeAttribute('type');
+    } else {
+      this.setAttribute('type', val);
+    }
   }
 
   get noDrop(): boolean {
@@ -266,12 +282,12 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   updateLayout() {
-    const oldLayout = this.shadowRoot!.querySelector('mux-uploader-drop, div');
+    const oldLayout = this.shadowRoot?.querySelector('mux-uploader-drop, div');
     if (oldLayout) {
       oldLayout.remove();
     }
     const newLayout = blockLayout(this);
-    this.shadowRoot!.appendChild(newLayout);
+    this.shadowRoot?.appendChild(newLayout);
   }
 
   setError(message: string) {

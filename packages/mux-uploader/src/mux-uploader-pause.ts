@@ -97,7 +97,12 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
           );
         }
       });
+
       this.pauseButton.addEventListener('click', this.triggerPause, opts);
+
+      this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
+      this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
+      this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
     }
   }
 

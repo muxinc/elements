@@ -113,6 +113,10 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
       );
 
       this.setupDragEvents(opts);
+
+      this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
+      this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
+      this.toggleAttribute('file-ready', this.#uploaderEl.hasAttribute('file-ready'));
     }
   }
 

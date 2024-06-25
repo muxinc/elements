@@ -29,7 +29,7 @@ interface GenericEventListener<T extends Event = CustomEvent> {
 export type MuxUploaderProps = {
   id?: string;
   endpoint?: MuxUploaderElement['endpoint'];
-  type?: ProgressTypes;
+  type?: ProgressTypes[keyof ProgressTypes];
   noDrop?: boolean;
   noProgress?: boolean;
   noStatus?: boolean;

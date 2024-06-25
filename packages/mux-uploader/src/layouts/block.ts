@@ -13,14 +13,20 @@ function conditionalRender(flag: boolean | undefined, component: string): string
   return flag ? '' : component;
 }
 
+const attributeRender = (name: string, value: any): string => {
+  if (value == null || value === false) return '';
+  const valueStr = value === true ? '' : `${value}`;
+  return `${name}="${valueStr}"`;
+};
+
 export default function blockLayout(contextElement: MuxUploaderElement): DocumentFragment {
-  const { noDrop, noProgress, noStatus, noRetry, pausable } = contextElement;
+  const { noDrop, noProgress, noStatus, noRetry, pausable, type } = contextElement;
   const wrapper = noDrop ? 'div' : 'mux-uploader-drop overlay part="drop"';
   const progressElements = conditionalRender(
     noProgress,
     `
       <mux-uploader-progress part="progress progress-percentage" type="percentage"></mux-uploader-progress>
-      <mux-uploader-progress part="progress progress-bar" type="bar"></mux-uploader-progress>
+      <mux-uploader-progress part="progress progress-bar" ${attributeRender('type', type)}></mux-uploader-progress>
     `
   );
   const statusElement = conditionalRender(noStatus, '<mux-uploader-status part="status"></mux-uploader-status>');

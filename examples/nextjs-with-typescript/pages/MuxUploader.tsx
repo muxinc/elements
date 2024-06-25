@@ -40,6 +40,7 @@ function MuxUploaderPage({ location }: Props) {
           noStatus={state.noStatus}
           noRetry={state.noRetry}
           pausable={state.pausable}
+          type={state.type}
           dynamicChunkSize={state.dynamicChunkSize}
           useLargeFileWorkaround={state.useLargeFileWorkaround}
           maxFileSize={state.maxFileSize}
