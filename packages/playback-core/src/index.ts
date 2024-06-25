@@ -40,6 +40,7 @@ import type {
   RenditionOrderValue,
 } from './types';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
+import type { HlsConfig } from 'hls.js';
 // import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
@@ -582,7 +583,7 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
 
 export const getDRMConfig = (
   props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain'>>
-) => {
+): Partial<HlsConfig> => {
   const {
     drmToken,
     src,
@@ -602,6 +603,30 @@ export const getDRMConfig = (
       'com.microsoft.playready': {
         licenseUrl: toLicenseKeyURL(props, 'playready'),
       },
+    },
+    requestMediaKeySystemAccessFunc: (keySystem, supportedConfigurations) => {
+      if (keySystem === 'com.widevine.alpha') {
+        supportedConfigurations = [
+          // NOTE: For widevine, by default we'll duplicate the key system configs but add L1-level
+          // security to the first set of duplicates so the key system will "prefer" that
+          // if/when available. (CJP)
+          // See, e.g.: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/requestMediaKeySystemAccess#supportedconfigurations
+          ...supportedConfigurations.map((mediaKeySystemConfig) => {
+            const videoCapabilities = mediaKeySystemConfig.videoCapabilities?.map((capability) => {
+              return {
+                ...capability,
+                robustness: 'HW_SECURE_ALL',
+              };
+            });
+            return {
+              ...mediaKeySystemConfig,
+              videoCapabilities,
+            };
+          }),
+          ...supportedConfigurations,
+        ];
+      }
+      return navigator.requestMediaKeySystemAccess(keySystem, supportedConfigurations);
     },
   };
 };
