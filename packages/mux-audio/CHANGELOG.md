@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.13.0...@mux/mux-audio@0.13.1) (2024-07-10)
+
+
+### Bug Fixes
+
+* upgrade hls.js, custom-media-element, etc. ([#931](https://github.com/muxinc/elements/issues/931)) ([efb5c51](https://github.com/muxinc/elements/commit/efb5c514f65f017fdeea50682e1cdb15229cfd92)), closes [#927](https://github.com/muxinc/elements/issues/927)
+
+
+
+
+
 # [0.13.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.12.1...@mux/mux-audio@0.13.0) (2024-05-28)
 
 

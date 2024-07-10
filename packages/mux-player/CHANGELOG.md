@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.7.0...@mux/mux-player@2.8.0) (2024-07-10)
+
+
+### Bug Fixes
+
+* **mux-player:** Hide cast button by default when using DRM. ([#930](https://github.com/muxinc/elements/issues/930)) ([367275a](https://github.com/muxinc/elements/commit/367275ad28dc689510e89000f27ccddb9092315e))
+* upgrade hls.js, custom-media-element, etc. ([#931](https://github.com/muxinc/elements/issues/931)) ([efb5c51](https://github.com/muxinc/elements/commit/efb5c514f65f017fdeea50682e1cdb15229cfd92)), closes [#927](https://github.com/muxinc/elements/issues/927)
+
+
+### Features
+
+* basic drm support ([#905](https://github.com/muxinc/elements/issues/905)) ([79acc9d](https://github.com/muxinc/elements/commit/79acc9d8cb520da469f1c72196befc384ee5b4f9))
+
+
+
+
+
 # [2.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.6.0...@mux/mux-player@2.7.0) (2024-05-28)
 
 

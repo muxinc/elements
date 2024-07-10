@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.7.0...@mux/mux-player-react@2.8.0) (2024-07-10)
+
+
+### Features
+
+* basic drm support ([#905](https://github.com/muxinc/elements/issues/905)) ([79acc9d](https://github.com/muxinc/elements/commit/79acc9d8cb520da469f1c72196befc384ee5b4f9))
+
+
+
+
+
 # [2.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.6.0...@mux/mux-player-react@2.7.0) (2024-05-28)
 
 

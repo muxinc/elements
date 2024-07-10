@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.25.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.24.0...@mux/playback-core@0.25.0) (2024-07-10)
+
+
+### Bug Fixes
+
+* **playback-core:** pseudo-ended eval case where media is not attached. ([#932](https://github.com/muxinc/elements/issues/932)) ([7c57cdd](https://github.com/muxinc/elements/commit/7c57cdd5278079ed5672525c48f649e857c3fc84))
+* upgrade hls.js, custom-media-element, etc. ([#931](https://github.com/muxinc/elements/issues/931)) ([efb5c51](https://github.com/muxinc/elements/commit/efb5c514f65f017fdeea50682e1cdb15229cfd92)), closes [#927](https://github.com/muxinc/elements/issues/927)
+
+
+### Features
+
+* basic drm support ([#905](https://github.com/muxinc/elements/issues/905)) ([79acc9d](https://github.com/muxinc/elements/commit/79acc9d8cb520da469f1c72196befc384ee5b4f9))
+* **playback-core:** For widevine, prioritize L1 but fall back to L3. ([#939](https://github.com/muxinc/elements/issues/939)) ([f30dc74](https://github.com/muxinc/elements/commit/f30dc7455474fdca822971f527f953b70d94cd88))
+
+
+
+
+
 # [0.24.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.23.1...@mux/playback-core@0.24.0) (2024-05-28)
 
 

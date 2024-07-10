@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.19](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.18...@mux/mux-uploader-react@1.0.0-beta.19) (2024-07-10)
+
+
+### Bug Fixes
+
+* **mux-uploader, mux-uploader-react:** Minor cleanup ([#935](https://github.com/muxinc/elements/issues/935)) ([3efe356](https://github.com/muxinc/elements/commit/3efe35628465b033ab0bb533fb3dff6d25e5774e))
+
+
+### Features
+
+* clean up type attr. Handle dynamic updates better. ([#937](https://github.com/muxinc/elements/issues/937)) ([4f9e4a7](https://github.com/muxinc/elements/commit/4f9e4a720ddce3f36c04532e26f9860e13f8cccd))
+* mux uploader large file fallback ([#934](https://github.com/muxinc/elements/issues/934)) ([87acf67](https://github.com/muxinc/elements/commit/87acf67024a138d77646332667ea8153e3f4607e)), closes [#892](https://github.com/muxinc/elements/issues/892)
+
+
+
+
+
 # [1.0.0-beta.18](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.17...@mux/mux-uploader-react@1.0.0-beta.18) (2024-05-28)
 
 
