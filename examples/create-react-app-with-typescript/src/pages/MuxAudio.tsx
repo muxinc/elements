@@ -13,7 +13,6 @@ function MuxAudioPage() {
 
       <MuxAudio
         playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-        streamType="on-demand"
         controls
         muted
       />

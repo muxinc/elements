@@ -37,7 +37,6 @@ import MuxPlayer from '@mux/mux-player-react';
     video_title: 'Bick Buck Bunny',
     viewer_user_id: 'user-id-bc-789',
   }}
-  streamType="on-demand"
 />;
 ```
 
@@ -56,7 +55,6 @@ import MuxPlayer from '@mux/mux-player-react/lazy';
     video_title: 'Bick Buck Bunny',
     viewer_user_id: 'user-id-bc-789',
   }}
-  streamType="on-demand"
 />;
 ```
 

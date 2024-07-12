@@ -27,7 +27,6 @@ function MuxPlayerPage() {
 
       <MuxPlayer
         playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
-        streamType="on-demand"
         preload="auto"
         onLoadedMetadata={({ target }) => {
           addChaptersToPlayer(target as MuxPlayerElement);
