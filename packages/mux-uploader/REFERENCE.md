@@ -104,6 +104,7 @@ customization:
 `<mux-uploader>` exposes the follwing [CSS shadow parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) for customization:
 
 | Name | Description |
+| ---- | ----------- |
 | `file-select` | Selector for the `<mux-uploader-file-select>` component. Note that this is the parent of the `file-select` slottable element discussed above. For more, see the `<mux-uploader-file-select>` reference, below. |
 | `pause` | Selector for the optional `<mux-uploader-pause>` component. For more on using this component, see `pausable` attribute or property, above. |
 | `progress` | Generic selector for all `<mux-uploader-progress>` components (e.g. percentage and bar). |
@@ -169,6 +170,7 @@ customization:
 `<mux-uploader-drop>` exposes the follwing [CSS shadow parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) for customization:
 
 | Name | Description |
+| ---- | ----------- |
 | `heading` | Selector for root `<slot>` element used to render the heading. Useful for things like hiding (`display: none;`), font styling, and the like. |
 | `separator` | Selector for root `<slot>` element used to render the separator. Useful for things like hiding (`display: none;`), font styling, and the like. |
 
@@ -216,6 +218,7 @@ None.
 `<mux-uploader-file-select>` exposes the follwing [CSS shadow parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) for customization:
 
 | Name | Description |
+| ---- | ----------- |
 | `file-select-button` | Selector for the default slotted file selection button element. NOTE: not available if you slot your own element (See slots, above) |
 
 # `<mux-uploader-pause>`
