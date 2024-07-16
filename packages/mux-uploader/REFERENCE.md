@@ -174,14 +174,90 @@ customization:
 
 # `<mux-uploader-file-select>`
 
-!!!FILL OUT!!!
+A component element that owns the UI to request browsing for a media file for uploading via `<mux-uploader>`. Displayed before file selection in
+`<mux-uploader>` by default.
+
+## Attributes
+
+In addition to the attributes listed below, `<mux-uploader-file-select>` supports standard `HTMLElement` attributes such as `style` and `class`.
+
+| Attribute      | Type | Description | Default |
+| -------------- | ---- | ----------- | ------- |
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `file-ready` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has been selected. See the `"file-ready"` event, below. | `false` |
+| `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
+| `upload-in-progress` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has begun uploading. | `false` |
+
+## Properties
+
+None.
+
+## Events
+
+None.
+
+**NOTE:** Although `<mux-uploader-file-select>` does not dispatch any custom events directly, it triggers file browsing on `<mux-uploader>` based
+on a `click` event on the slotted (or default slotted) `file-select` element.
+
+# Slots
+
+`<mux-uploader-file-select>` exposes the following [slots](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots) for customization:
+
+| Name | Description |
+| ---- | ----------- |
+| (none) | Default slot for overriding the default button UI and text for file selection. |
+
+## CSS Variables
+
+None.
+
+## CSS Parts
+
+`<mux-uploader-file-select>` exposes the follwing [CSS shadow parts](https://developer.mozilla.org/en-US/docs/Web/CSS/::part) for customization:
+
+| Name | Description |
+| `file-select-button` | Selector for the default slotted file selection button element. NOTE: not available if you slot your own element (See slots, above) |
 
 # `<mux-uploader-pause>`
 
-!!!FILL OUT!!!
+An element that owns the UI to request pausing and resuming uploading via `<mux-uploader>`. Optionally displayed during uploading on
+`<mux-uploader>` by default (See its `pausable` attribute, above).
+
+## Attributes
+
+In addition to the attributes listed below, `<mux-uploader-pause>` supports standard `HTMLElement` attributes such as `style` and `class`.
+
+| Attribute      | Type | Description | Default |
+| -------------- | ---- | ----------- | ------- |
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
+| `upload-error` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that an error occurred while attempting to upload. | `false` |
+| `upload-in-progress` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has begun uploading. | `false` |
+
+## Properties
+
+None.
+
+## Events
+
+None.
+
+# Slots
+
+None.
+
+## CSS Variables
+
+None.
+
+## CSS Parts
+
+None.
+
 # `<mux-uploader-progress>`
 
-!!!FILL OUT!!!
+A component element for rendering the current upload progress. Displayed in two permutations during file upload
+`<mux-uploader>` by default, both as a `type="percentage"` and `type="bar"` (see Attributes, below).
 
 ## Attributes
 
@@ -224,7 +300,37 @@ None.
 
 # `<mux-uploader-retry>`
 
-!!!FILL OUT!!!
+An element that owns the UI to request retrying a failed upload via `<mux-uploader>`. Displayed when an error occurred during upload on
+`<mux-uploader>` by default.
+
+## Attributes
+
+In addition to the attributes listed below, `<mux-uploader-retry>` supports standard `HTMLElement` attributes such as `style` and `class`.
+
+| Attribute      | Type | Description | Default |
+| -------------- | ---- | ----------- | ------- |
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `upload-error` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that an error occurred while attempting to upload. | `false` |
+
+## Properties
+
+None.
+
+## Events
+
+None.
+
+# Slots
+
+None.
+
+## CSS Variables
+
+None.
+
+## CSS Parts
+
+None.
 
 # `<mux-uploader-status>`
 
