@@ -122,11 +122,11 @@ default.
 
 In addition to the attributes listed below, `<mux-uploader-drop>` supports standard `HTMLElement` attributes such as `style` and `class`.
 
-| Attribute      | Type | Description | Default |
-| -------------- | ---- | ----------- | ------- |
-| `overlay`      | `boolean` | Toggles showing an overlay on dragover. | `false` |
+| Attribute | Type | Description | Default |
+| --------- | ---- | ----------- | ------- |
+| `overlay` | `boolean` | Toggles showing an overlay on dragover. | `false` |
 | `overlay-text` | `string`  | Optional text to display on dragover when `overlay` is on. | `''`    |
-| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined` |
 | `active` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that a file is currently dragged over the component. | `false` |
 | `file-ready` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has been selected. See the `"file-ready"` event, below. | `false` |
 | `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
@@ -185,7 +185,7 @@ In addition to the attributes listed below, `<mux-uploader-file-select>` support
 
 | Attribute      | Type | Description | Default |
 | -------------- | ---- | ----------- | ------- |
-| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined` |
 | `file-ready` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has been selected. See the `"file-ready"` event, below. | `false` |
 | `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
 | `upload-in-progress` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has begun uploading. | `false` |
@@ -232,7 +232,7 @@ In addition to the attributes listed below, `<mux-uploader-pause>` supports stan
 
 | Attribute      | Type | Description | Default |
 | -------------- | ---- | ----------- | ------- |
-| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined` |
 | `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
 | `upload-error` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that an error occurred while attempting to upload. | `false` |
 | `upload-in-progress` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has begun uploading. | `false` |
@@ -268,6 +268,7 @@ In addition to the attributes listed below, `<mux-uploader-progress>` supports s
 
 | Attribute | Type | Description | Default |
 | --------- | ---- | ----------- | ------- |
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined` |
 | `type`| `"percentage" \| "bar" \| "radial"` | Render progress as either a numeric percentage, a progress bar, or a radial/circular progress (_Experimental_) | `undefined` |
 | `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
 | `upload-error` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that an error occurred while attempting to upload. | `false` |
@@ -312,7 +313,7 @@ In addition to the attributes listed below, `<mux-uploader-retry>` supports stan
 
 | Attribute      | Type | Description | Default |
 | -------------- | ---- | ----------- | ------- |
-| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined` |
 | `upload-error` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that an error occurred while attempting to upload. | `false` |
 
 ## Properties
@@ -345,7 +346,7 @@ In addition to the attributes listed below, `<mux-uploader-status>` supports sta
 
 | Attribute      | Type | Description | Default |
 | -------------- | ---- | ----------- | ------- |
-| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined`
+| `mux-uploader` | `string` (id) | Associates the component with the `<mux-uploader>` instance via its `id`. Required. | `undefined` |
 | `upload-complete` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that all chunks have been successfully uploaded. | `false` |
 | `upload-error` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that an error occurred while attempting to upload. | `false` |
 | `upload-in-progress` <sub><sup>Read only</sup></sub> | `boolean` | Indicates that the file has begun uploading. | `false` |
