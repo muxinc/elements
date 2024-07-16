@@ -13,7 +13,7 @@ upload state management and UI. For more advanced use cases, you may use the sub
 | `<MuxUploaderRetry>` | Renders a "retry" button if the upload fails. |
 | `<MuxUploaderStatus>` | Displays the upload status (e.g. completed or error statuses). |
 
-Check out the [mux-uploader-modal.html](../../examples/vanilla-ts-esm/public/mux-uploader-modal.html) example application to see a real-world example of how these components can be used individually.
+Check out the [MuxUploaderSeparateComponents.tsx page](../../examples/nextjs-with-typescript/pages/MuxUploaderSeparateComponents.tsx) example Next.JS app page to see a real-world example of how these components can be used individually.
 
 # `<MuxUploader>`
 
