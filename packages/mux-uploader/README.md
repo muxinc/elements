@@ -33,6 +33,6 @@ yarn add @mux/mux-uploader
 
 # Docs
 
-Docs and guides live on [docs.mux.com](https://docs.mux.com/guides/video/mux-uploader?utm_source=github-mux-player).
+Docs and guides live on [docs.mux.com](https://docs.mux.com/guides/video/mux-uploader?utm_source=github-mux-uploader).
 
 API reference lives [on Github](./REFERENCE.md).
