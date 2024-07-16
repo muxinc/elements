@@ -72,19 +72,19 @@ In addition to the props listed below, `<MuxUploaderDrop>`  supports standard pr
 
 ## Callbacks
 
-See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#events-2) for a list of all available events.
+See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#events-1) for a list of all available events.
 
 # Slots
 
-See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#slots-2) for a list of all available slots.
+See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#slots-1) for a list of all available slots.
 
 # CSS Variables
 
-See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#css-variables-2) for a list of all available CSS variables.
+See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#css-variables-1) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#css-parts-2) for a list of all available CSS parts.
+See [mux-uploader-drop's reference](../mux-uploader/REFERENCE.md#css-parts-1) for a list of all available CSS parts.
 
 # `<MuxUploaderFileSelect>`
 
@@ -101,19 +101,19 @@ In addition to the props listed below, `<MuxUploaderFileSelect>`  supports stand
 
 ## Callbacks
 
-See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#events-3) for a list of all available events.
+See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#events-2) for a list of all available events.
 
 # Slots
 
-See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#slots-3) for a list of all available slots.
+See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#slots-2) for a list of all available slots.
 
 # CSS Variables
 
-See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#css-variables-3) for a list of all available CSS variables.
+See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#css-variables-2) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#css-parts-3) for a list of all available CSS parts.
+See [mux-uploader-file-select's reference](../mux-uploader/REFERENCE.md#css-parts-2) for a list of all available CSS parts.
 
 # `<MuxUploaderPause>`
 
@@ -130,19 +130,19 @@ In addition to the props listed below, `<MuxUploaderPause>`  supports standard p
 
 ## Callbacks
 
-See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#events-4) for a list of all available events.
+See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#events-3) for a list of all available events.
 
 # Slots
 
-See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#slots-4) for a list of all available slots.
+See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#slots-3) for a list of all available slots.
 
 # CSS Variables
 
-See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#css-variables-4) for a list of all available CSS variables.
+See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#css-variables-3) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#css-parts-4) for a list of all available CSS parts.
+See [mux-uploader-pause's reference](../mux-uploader/REFERENCE.md#css-parts-3) for a list of all available CSS parts.
 
 # `<MuxUploaderProgress>`
 
@@ -160,19 +160,19 @@ In addition to the props listed below, `<MuxUploaderProgress>`  supports standar
 
 ## Callbacks
 
-See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#events-5) for a list of all available events.
+See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#events-4) for a list of all available events.
 
 # Slots
 
-See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#slots-5) for a list of all available slots.
+See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#slots-4) for a list of all available slots.
 
 # CSS Variables
 
-See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#css-variables-5) for a list of all available CSS variables.
+See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#css-variables-4) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#css-parts-5) for a list of all available CSS parts.
+See [mux-uploader-progress's reference](../mux-uploader/REFERENCE.md#css-parts-4) for a list of all available CSS parts.
 
 # `<MuxUploaderRetry>`
 
@@ -189,19 +189,19 @@ In addition to the props listed below, `<MuxUploaderRetry>`  supports standard p
 
 ## Callbacks
 
-See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#events-6) for a list of all available events.
+See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#events-5) for a list of all available events.
 
 # Slots
 
-See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#slots-6) for a list of all available slots.
+See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#slots-5) for a list of all available slots.
 
 # CSS Variables
 
-See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#css-variables-6) for a list of all available CSS variables.
+See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#css-variables-5) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#css-parts-6) for a list of all available CSS parts.
+See [mux-uploader-retry's reference](../mux-uploader/REFERENCE.md#css-parts-5) for a list of all available CSS parts.
 
 # `<MuxUploaderStatus>`
 
@@ -217,16 +217,16 @@ In addition to the props listed below, `<MuxUploaderStatus>`  supports standard 
 
 ## Callbacks
 
-See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#events-7) for a list of all available events.
+See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#events-6) for a list of all available events.
 
 # Slots
 
-See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#slots-7) for a list of all available slots.
+See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#slots-6) for a list of all available slots.
 
 # CSS Variables
 
-See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#css-variables-7) for a list of all available CSS variables.
+See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#css-variables-6) for a list of all available CSS variables.
 
 # CSS Parts
 
-See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#css-parts-7) for a list of all available CSS parts.
+See [mux-uploader-status's reference](../mux-uploader/REFERENCE.md#css-parts-6) for a list of all available CSS parts.
