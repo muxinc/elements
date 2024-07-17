@@ -66,7 +66,6 @@ const MuxVideoExample = () => {
           video_title: 'Super Interesting Video',
           viewer_user_id: 'user-id-bc-789',
         }}
-        streamType="on-demand"
         controls
         autoPlay
         muted

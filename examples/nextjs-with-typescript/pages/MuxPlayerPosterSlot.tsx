@@ -23,7 +23,6 @@ function MuxPlayerPage() {
       <MuxPlayer
         ref={mediaElRef}
         playbackId="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
-        streamType="on-demand"
         autoPlay={autoplay}
         muted={muted}
         onPlay={() => {
