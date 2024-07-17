@@ -41,7 +41,7 @@ In addition to the props listed below, `<MuxUploader>` supports standard props s
 
 # Callbacks
 
-`<MuxUploader/>` has a number of callbacks associated with events for media loading, playback, and the player itself. For example, a callback for `'uploaderstart'` event is `onUploadStart`. See [mux-uploader's reference](../mux-uploader/REFERENCE.md#events) for a list of events.
+`<MuxUploader/>` has a number of callbacks for monitoring upload state. For example, a callback for `'uploaderstart'` event is `onUploadStart`. See [mux-uploader's reference](../mux-uploader/REFERENCE.md#events) for a list of events.
 
 # Slots
 
