@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">&lt;MuxPlayer/&gt;</h1>
+  <h1 align="center">&lt;MuxUploader/&gt;</h1>
   <a href="https://npmcharts.com/compare/@mux/mux-uploader-react?interval=30"><img src="https://img.shields.io/npm/dm/@mux/mux-uploader-react.svg?sanitize=true" alt="Downloads"></a>
     <a href="https://www.npmjs.com/package/@mux/mux-uploader-react"><img src="https://img.shields.io/npm/v/@mux/mux-uploader-react.svg?sanitize=true" alt="Version"></a>
     <a href="https://www.npmjs.com/package/@mux/mux-uploader-react"><img src="https://img.shields.io/npm/l/@mux/mux-uploader-react.svg?sanitize=true" alt="License"></a>
