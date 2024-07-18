@@ -22,10 +22,10 @@ Elements are written to make it easy to work in a variety of web frameworks. If 
 | [mux-video-react](packages/mux-video-react)                 | Mux React video component          | React         | Public Beta             |
 | [mux-audio](packages/mux-audio)                             | Mux HTML5 audio element            | Web Component | Public Beta             |
 | [mux-audio-react](packages/mux-audio-react)                 | Mux HTML5 audio component          | React         | Public Beta             |
-| [mux-player](packages/mux-player)                           | Mux HTML5 media player component   | Web Component | 1.x.x 🎉                |
-| [mux-player-react](packages/mux-player-react)               | Mux React media player component   | React         | 1.x.x 🎉                |
-| [mux-uploader](packages/mux-uploader)                       | Mux HTML5 media uploader component | Web Component | Public Beta             |
-| [mux-uploader-react](packages/mux-uploader-react)           | Mux React media uploader component | React         | Public Beta             |
+| [mux-player](packages/mux-player)                           | Mux HTML5 media player component   | Web Component | 2.x.x 🎉                |
+| [mux-player-react](packages/mux-player-react)               | Mux React media player component   | React         | 2.x.x 🎉                |
+| [mux-uploader](packages/mux-uploader)                       | Mux HTML5 media uploader component | Web Component | 1.x.x 🎉                |
+| [mux-uploader-react](packages/mux-uploader-react)           | Mux React media uploader component | React         | 1.x.x 🎉                |
 | [mux-active-viewer-count](packages/mux-active-viewer-count) | Mux HTML5 viewer count component   | Web Component | Public Alpha            |
 
 ## Contribution
