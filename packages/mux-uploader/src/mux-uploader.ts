@@ -383,7 +383,6 @@ declare global {
 
 if (!globalThis.customElements.get('mux-uploader')) {
   globalThis.customElements.define('mux-uploader', MuxUploaderElement);
-  /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxUploaderElement = MuxUploaderElement;
 }
 
