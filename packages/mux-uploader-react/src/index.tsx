@@ -3,15 +3,15 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
+import type MuxUploaderElement from '@mux/mux-uploader';
+import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
+import { constants } from '@mux/mux-uploader';
 import MuxUploaderDrop from './mux-uploader-drop';
 import MuxUploaderFileSelect from './mux-uploader-file-select';
 import MuxUploaderProgress from './mux-uploader-progress';
 import MuxUploaderRetry from './mux-uploader-retry';
 import MuxUploaderPause from './mux-uploader-pause';
 import MuxUploaderStatus from './mux-uploader-status';
-import type MuxUploaderElement from '@mux/mux-uploader';
-import type { MuxUploaderElementEventMap } from '@mux/mux-uploader';
-import { constants } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';
