@@ -581,6 +581,19 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   return {};
 };
 
+// Official PSSH System ID for PlayReady key system, represented as Uint8Arrays for use case
+const PlayReadyKeySystemIdByteArray = new Uint8Array([
+  154, 4, 240, 121, 152, 64, 66, 134, 171, 146, 230, 91, 224, 136, 95, 149,
+]);
+const isPlayreadySystemId = (systemId: Uint8Array) => {
+  return (
+    systemId.length === PlayReadyKeySystemIdByteArray.length &&
+    systemId.every((idByte, idx) => {
+      return idByte === PlayReadyKeySystemIdByteArray[idx];
+    })
+  );
+};
+
 export const getDRMConfig = (
   props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain'>>
 ): Partial<HlsConfig> => {
@@ -602,6 +615,38 @@ export const getDRMConfig = (
       },
       'com.microsoft.playready': {
         licenseUrl: toLicenseKeyURL(props, 'playready'),
+        generateRequest: (initDataType, initData: ArrayBuffer | null | Uint8Array) => {
+          // No initData so nothing to do here.
+          if (!initData) return { initDataType, initData };
+
+          // NOTE: At least sometimes (perhaps always), hls.js will invoke with a Uint8Array and *not*
+          // an ArrayBuffer, which is inconsistent with the TS type defs. This ensures we're working
+          // with an ArrayBuffer when intending to do so
+          const initDataArrayBuffer = initData instanceof ArrayBuffer ? initData : initData.buffer;
+
+          // Box Structure for PSSH defined in ISO/IEC 23001-7
+          const view = new DataView(initDataArrayBuffer);
+          // const boxSize = view.getUint32(0);
+          // 'pssh' type, in bytes
+          const psshType = view.getUint32(4) === 0x70737368;
+          const version = view.getUint8(8);
+          // ignore flags for now (24 bit / 3 byte)
+
+          const systemIdArray = new Uint8Array(initDataArrayBuffer, 12, 16);
+
+          const playreadyPsshBox = isPlayreadySystemId(systemIdArray);
+          if (!(psshType && version === 0 && playreadyPsshBox)) return { initDataType, initData };
+          // Make sure there isn't another pssh box inside the EME-signaled pssh box, because that happens...
+          // Clues...
+          // This checks if the pssh "data size" matches the next 4 bytes, which would be the "box size"
+          // of the pssh if the data is *another* pssh box, per ISO-BMFF spec
+          const dataSizesMatch = view.getUint32(28) === view.getUint32(32);
+          if (!(dataSizesMatch && view.getUint32(36) === 0x70737368)) return { initDataType, initData };
+
+          // Looks like we have a "winner"...
+          const innerPssh = new Uint8Array(initDataArrayBuffer, 32);
+          return { initDataType, initData: innerPssh };
+        },
       },
     },
     requestMediaKeySystemAccessFunc: (keySystem, supportedConfigurations) => {
