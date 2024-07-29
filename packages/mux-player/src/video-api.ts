@@ -152,7 +152,10 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
           });
 
           mutation.addedNodes.forEach((node) => {
-            this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, node));
+            const element = node as HTMLElement;
+            if (!element?.slot) {
+              this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, node));
+            }
           });
         }
       }
@@ -175,7 +178,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
    * We might just merge VideoApiElement in MuxPlayerElement and remove this?
    */
   init() {
-    this.querySelectorAll(':scope > *').forEach((child) => {
+    this.querySelectorAll(':scope > :not([slot])').forEach((child) => {
       this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, child));
     });
   }
