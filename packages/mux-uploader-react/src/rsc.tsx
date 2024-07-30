@@ -8,6 +8,7 @@ import MuxUploaderClient, {
   MuxUploaderFileSelect,
   MuxUploaderProgress,
   MuxUploaderRetry,
+  MuxUploaderPause,
   MuxUploaderStatus,
 } from './index';
 import type { MuxUploaderRefAttributes, MuxUploaderProps } from './index';
@@ -68,6 +69,13 @@ const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderServer
   }
 );
 
-export { MuxUploaderDrop, MuxUploaderFileSelect, MuxUploaderProgress, MuxUploaderRetry, MuxUploaderStatus };
+export {
+  MuxUploaderDrop,
+  MuxUploaderFileSelect,
+  MuxUploaderProgress,
+  MuxUploaderRetry,
+  MuxUploaderPause,
+  MuxUploaderStatus,
+};
 
 export default MuxUploader;
