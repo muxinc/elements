@@ -27,9 +27,9 @@ Here's the original error thrown by @mux/mux-node -- ${error}`;
 
 // as our default export, the server component.
 interface MuxUploaderServerProps extends MuxUploaderProps {
-  clientOptions?: ClientOptions;
-  uploadCreateParams?: Partial<Mux.Video.Uploads.UploadCreateParams>;
-  uploadRequestOptions?: Partial<Mux.RequestOptions>;
+  clientOptions?: ClientOptions; // allows you to configure the @mux/mux-node client
+  uploadCreateParams?: Partial<Mux.Video.Uploads.UploadCreateParams>; // allows you to configure the direct upload
+  uploadRequestOptions?: Partial<Mux.RequestOptions>; // allows you to configure the direct upload request
 }
 const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderServerProps>(
   /* @ts-expect-error our version of react/typescript doesn't yet support async components */
