@@ -163,14 +163,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, subtree: true });
-
-    // The video events are dispatched on the VideoApiElement instance.
-    // This makes it possible to add event listeners before the element is upgraded.
-    AllowedVideoEvents.forEach((type) => {
-      this.media?.addEventListener(type, (evt) => {
-        this.dispatchEvent(new Event(evt.type));
-      });
-    });
   }
 
   /**
@@ -180,6 +172,14 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   init() {
     this.querySelectorAll(':scope > :not([slot])').forEach((child) => {
       this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, child));
+    });
+
+    // The video events are dispatched on the VideoApiElement instance.
+    // This makes it possible to add event listeners before the element is upgraded.
+    AllowedVideoEvents.forEach((type) => {
+      this.media?.addEventListener(type, (evt) => {
+        this.dispatchEvent(new Event(evt.type));
+      });
     });
   }
 
