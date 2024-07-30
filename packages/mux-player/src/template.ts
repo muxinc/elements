@@ -139,7 +139,7 @@ export const content = (props: MuxTemplateProps) => html`
       <media-poster-image
         part="poster"
         exportparts="poster, img"
-        src="${props.poster === '' ? false : props.poster ?? false}"
+        src="${!!props.poster ? props.poster : false}"
         placeholdersrc="${props.placeholder ?? false}"
       ></media-poster-image>
     </slot>
