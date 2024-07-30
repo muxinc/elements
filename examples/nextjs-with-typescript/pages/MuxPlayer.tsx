@@ -290,6 +290,7 @@ function MuxPlayerPage({ location }: Props) {
           hotkeys={state.hotkeys}
           // onPlayerReady={() => console.log("ready!")}
           preferCmcd={state.preferCmcd}
+          preferPlayback={state.preferPlayback}
           debug={state.debug}
           noVolumePref={state.noVolumePref}
           disableTracking={state.disableTracking}
@@ -505,6 +506,12 @@ function MuxPlayerPage({ location }: Props) {
             name="preferCmcd"
             onChange={genericOnChange}
             values={['query', 'header', 'none']}
+          />
+          <EnumRenderer
+            value={state.preferPlayback}
+            name="preferPlayback"
+            onChange={genericOnChange}
+            values={['mse', 'native']}
           />
           <BooleanRenderer value={state.loop} name="loop" onChange={genericOnChange} />
           <EnumRenderer
