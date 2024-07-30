@@ -45,6 +45,8 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
       this.#uploaderEl.addEventListener('reset', () => this.toggleAttribute('upload-error', false));
       this.retryButton?.addEventListener('click', this.triggerReset, opts);
       this.retryButton?.addEventListener('keyup', this.handleKeyup, opts);
+
+      this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
     }
   }
 

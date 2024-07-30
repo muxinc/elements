@@ -21,7 +21,6 @@ function MuxPlayerPage() {
           video_title: "Star Wars: Episode 3",
           viewer_user_id: "user-id-6789",
         }}
-        streamType="on-demand"
         muted
       />
 

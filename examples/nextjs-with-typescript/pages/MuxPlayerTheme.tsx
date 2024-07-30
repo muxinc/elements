@@ -30,7 +30,6 @@ function MuxPlayerPage() {
         //   viewer_user_id: "user-id-6789",
         // }}
         // envKey="mux-data-env-key"
-        streamType="on-demand"
         autoPlay={autoplay}
         muted={muted}
         onPlay={() => {

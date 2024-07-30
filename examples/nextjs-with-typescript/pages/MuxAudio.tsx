@@ -26,10 +26,13 @@ function MuxAudioPage() {
         //   viewer_user_id: "user-id-6789",
         // }}
         // envKey="mux-data-env-key"
-        streamType="on-demand"
         controls
         autoPlay={autoplay}
         muted={muted}
+        maxResolution="2160p"
+        minResolution="540p"
+        renditionOrder="desc"
+        preferPlayback="native"
       />
 
       <div className="options">

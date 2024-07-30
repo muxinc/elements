@@ -11,11 +11,15 @@ import {
   setupTextTracks,
   addTextTrack,
   removeTextTrack,
+  getTextTrack,
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
   setupCuePoints,
-  getCuePointsTrack,
+  addChapters,
+  getChapters,
+  getActiveChapter,
+  setupChapters,
 } from './text-tracks';
 import { getStartDate, getCurrentPdt } from './pdt';
 import {
@@ -36,17 +40,23 @@ import type {
   RenditionOrderValue,
 } from './types';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
+import type { HlsConfig } from 'hls.js';
+// import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
   Hls,
   MediaError,
   addTextTrack,
   removeTextTrack,
+  getTextTrack,
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
-  getCuePointsTrack,
   setupCuePoints,
+  addChapters,
+  getChapters,
+  getActiveChapter,
+  setupChapters,
   getStartDate,
   getCurrentPdt,
 };
@@ -238,6 +248,8 @@ type MuxVideoURLProps = Partial<{
   maxResolution: MaxResolutionValue;
   minResolution: MinResolutionValue;
   renditionOrder: RenditionOrderValue;
+  programStartTime: number;
+  programEndTime: number;
   tokens: Partial<{
     playback: string;
     storyboard: string;
@@ -252,6 +264,8 @@ export const toMuxVideoURL = ({
   maxResolution,
   minResolution,
   renditionOrder,
+  programStartTime,
+  programEndTime,
   tokens: { playback: token } = {},
   extraSourceParams = {},
 }: MuxVideoURLProps = {}) => {
@@ -288,6 +302,12 @@ export const toMuxVideoURL = ({
     if (renditionOrder) {
       url.searchParams.set('rendition_order', renditionOrder);
     }
+    if (programStartTime) {
+      url.searchParams.set('program_start_time', `${programStartTime}`);
+    }
+    if (programEndTime) {
+      url.searchParams.set('program_end_time', `${programEndTime}`);
+    }
     Object.entries(extraSourceParams).forEach(([k, v]) => {
       if (v == undefined) return;
       url.searchParams.set(k, v);
@@ -303,7 +323,7 @@ const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined)
   return playbackId || undefined;
 };
 
-const toPlaybackIdFromSrc = (src: string | undefined) => {
+export const toPlaybackIdFromSrc = (src: string | undefined) => {
   if (!src || !src.startsWith('https://stream.')) return undefined;
   const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
   // `|| undefined` is here to handle potential invalid cases
@@ -360,7 +380,7 @@ export const isStuckOnLastFragment = (
     'levels' | 'currentLevel'
   >
 ) => {
-  if (!hls) return undefined;
+  if (!hls || !mediaEl.buffered.length) return undefined;
   if (mediaEl.readyState > 2) return false;
   const videoLevelDetails =
     hls.currentLevel >= 0
@@ -426,11 +446,12 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
+  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
   setupMux(props, mediaEl, nextHlsInstance);
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
+  setupChapters(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
-  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
   return {
     engine: nextHlsInstance,
@@ -489,7 +510,7 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaPropsInternal,
-      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig'
+      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'drmToken'
     >
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
@@ -509,6 +530,7 @@ export const setupHls = (
       capLevelOnFPSDrop: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
+    const drmConfig = getDRMConfig(props);
     // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
     const cmcd =
       preferCmcd !== CmcdTypes.NONE
@@ -537,6 +559,7 @@ export const setupHls = (
       },
       ...defaultConfig,
       ...streamTypeConfig,
+      ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
 
@@ -556,6 +579,159 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
   }
 
   return {};
+};
+
+export const getDRMConfig = (
+  props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain'>>
+): Partial<HlsConfig> => {
+  const {
+    drmToken,
+    src,
+    playbackId = toPlaybackIdFromSrc(src), // Since Mux Player typically sets `src` instead of `playbackId`, fall back to it here (CJP)
+  } = props;
+  if (!drmToken || !playbackId) return {};
+  return {
+    emeEnabled: true,
+    drmSystems: {
+      'com.apple.fps': {
+        licenseUrl: toLicenseKeyURL(props, 'fairplay'),
+        serverCertificateUrl: toAppCertURL(props, 'fairplay'),
+      },
+      'com.widevine.alpha': {
+        licenseUrl: toLicenseKeyURL(props, 'widevine'),
+      },
+      'com.microsoft.playready': {
+        licenseUrl: toLicenseKeyURL(props, 'playready'),
+      },
+    },
+    requestMediaKeySystemAccessFunc: (keySystem, supportedConfigurations) => {
+      if (keySystem === 'com.widevine.alpha') {
+        supportedConfigurations = [
+          // NOTE: For widevine, by default we'll duplicate the key system configs but add L1-level
+          // security to the first set of duplicates so the key system will "prefer" that
+          // if/when available. (CJP)
+          // See, e.g.: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/requestMediaKeySystemAccess#supportedconfigurations
+          ...supportedConfigurations.map((mediaKeySystemConfig) => {
+            const videoCapabilities = mediaKeySystemConfig.videoCapabilities?.map((capability) => {
+              return {
+                ...capability,
+                robustness: 'HW_SECURE_ALL',
+              };
+            });
+            return {
+              ...mediaKeySystemConfig,
+              videoCapabilities,
+            };
+          }),
+          ...supportedConfigurations,
+        ];
+      }
+      return navigator.requestMediaKeySystemAccess(keySystem, supportedConfigurations);
+    },
+  };
+};
+
+export const getAppCertificate = async (appCertificateUrl: string) => {
+  const resp = await fetch(appCertificateUrl);
+  const body = await resp.arrayBuffer();
+  return body;
+};
+
+export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: string) => {
+  const licenseResponse = await fetch(licenseServerUrl, {
+    method: 'POST',
+    headers: { 'Content-type': 'application/octet-stream' },
+    body: message,
+  });
+  const keyBuffer = await licenseResponse.arrayBuffer();
+  return new Uint8Array(keyBuffer);
+};
+
+export const setupNativeFairplayDRM = (
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  mediaEl: HTMLMediaElement
+) => {
+  const onFpEncrypted = async (event: MediaEncryptedEvent) => {
+    try {
+      const initDataType = event.initDataType;
+      if (initDataType !== 'skd') {
+        console.error(`Received unexpected initialization data type "${initDataType}"`);
+        return;
+      }
+
+      if (!mediaEl.mediaKeys) {
+        const access = await navigator.requestMediaKeySystemAccess('com.apple.fps', [
+          {
+            initDataTypes: [initDataType],
+            videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
+            distinctiveIdentifier: 'not-allowed',
+            persistentState: 'not-allowed',
+            sessionTypes: ['temporary'],
+          },
+        ]);
+
+        const keys = await access.createMediaKeys();
+
+        const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay'));
+        await keys.setServerCertificate(fairPlayAppCert);
+        await mediaEl.setMediaKeys(keys);
+      }
+
+      const initData = event.initData;
+      if (initData == null) {
+        console.error(`Could not start encrypted playback due to missing initData in ${event.type} event`);
+        return;
+      }
+
+      const session = (mediaEl.mediaKeys as MediaKeys).createSession();
+      session.generateRequest(initDataType, initData);
+      const message = await new Promise<MediaKeyMessageEvent['message']>((resolve) => {
+        session.addEventListener(
+          'message',
+          (messageEvent) => {
+            resolve(messageEvent.message);
+          },
+          { once: true }
+        );
+      });
+
+      const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay'));
+      await session.update(response);
+      return session;
+    } catch (e) {
+      console.error(`Could not start encrypted playback due to exception "${e}"`);
+    }
+  };
+
+  addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
+};
+
+export const toLicenseKeyURL = (
+  {
+    playbackId,
+    drmToken: token,
+    customDomain = MUX_VIDEO_DOMAIN,
+  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  scheme: 'widevine' | 'playready' | 'fairplay'
+) => {
+  // NOTE: Mux Video currently doesn't support custom domains for license/DRM endpoints, but
+  // customDomain can also be used for internal use cases, so treat that as an exception case for now. (CJP)
+  const domain = customDomain.toLocaleLowerCase().endsWith(MUX_VIDEO_DOMAIN) ? customDomain : MUX_VIDEO_DOMAIN;
+  return `https://license.${domain}/license/${scheme}/${playbackId}?token=${token}`;
+};
+
+export const toAppCertURL = (
+  {
+    playbackId,
+    drmToken: token,
+    customDomain = MUX_VIDEO_DOMAIN,
+  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  scheme: 'widevine' | 'playready' | 'fairplay'
+) => {
+  // NOTE: Mux Video currently doesn't support custom domains for license/DRM endpoints, but
+  // customDomain can also be used for internal use cases, so treat that as an exception case for now. (CJP)
+  const domain = customDomain.toLocaleLowerCase().endsWith(MUX_VIDEO_DOMAIN) ? customDomain : MUX_VIDEO_DOMAIN;
+  return `https://license.${domain}/appcert/${scheme}/${playbackId}?token=${token}`;
 };
 
 export const isMuxVideoSrc = ({
@@ -650,7 +826,20 @@ export const setupMux = (
 };
 
 export const loadMedia = (
-  props: Partial<Pick<MuxMediaProps, 'preferPlayback' | 'src' | 'type' | 'startTime' | 'streamType' | 'autoplay'>>,
+  props: Partial<
+    Pick<
+      MuxMediaProps,
+      | 'preferPlayback'
+      | 'src'
+      | 'type'
+      | 'startTime'
+      | 'streamType'
+      | 'autoplay'
+      | 'playbackId'
+      | 'drmToken'
+      | 'customDomain'
+    >
+  >,
   mediaEl: HTMLMediaElement,
   hls?: Pick<
     Hls,
@@ -745,11 +934,35 @@ export const loadMedia = (
         });
       };
       if (mediaEl.preload === 'none') {
-        addEventListenerWithTeardown(mediaEl, 'loadstart', () => {
+        // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
+        // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
+        // regardless of the preload state and regardless of whether or not fetching of the src media
+        // has, in fact, begun. In order to respect the provided preferences and avoid eager loading
+        // while still attempting to begin fetching playlists for stream info as early as possible when
+        // media *will* be loaded, we will do a "first to the finish line" on both the 'play' event,
+        // which will be dispatched earlier *if* it is the event that initiates media loading, and the
+        // 'loadedmetadata' event, which is dispatched only after the media has finished loading metadata,
+        // but will reliably correlate with media loading. (CJP)
+        // For more, see: Steps 7 & 8 of 'the resource selection algorithm' from §4.8.11.5 Loading the
+        // media resource in the HTML Living Standard
+        // (https://html.spec.whatwg.org/multipage/media.html#concept-media-load-algorithm)
+        const playHandler = () => {
           updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
-        });
+          mediaEl.removeEventListener('loadedmetadata', loadedMetadataHandler);
+        };
+        const loadedMetadataHandler = () => {
+          updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+          mediaEl.removeEventListener('play', playHandler);
+        };
+        addEventListenerWithTeardown(mediaEl, 'play', playHandler, { once: true });
+        addEventListenerWithTeardown(mediaEl, 'loadedmetadata', loadedMetadataHandler, { once: true });
       } else {
         updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+      }
+
+      // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
+      if (props.drmToken) {
+        setupNativeFairplayDRM(props, mediaEl);
       }
 
       mediaEl.setAttribute('src', src);

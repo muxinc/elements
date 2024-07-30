@@ -3,11 +3,21 @@ import { globalThis, document } from './polyfills';
 import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
+import { ProgressTypes } from './constants';
 
 const rootTemplate = document.createElement('template');
 
 rootTemplate.innerHTML = /*html*/ `
 <style>
+  :host {
+    display: flex;
+    flex-direction: column;
+  }
+
+  mux-uploader-drop {
+    flex-grow: 1;
+  }
+
   input[type="file"] {
     display: none;
   }
@@ -72,10 +82,20 @@ interface MuxUploaderElement extends HTMLElement {
 
 class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderElement {
   static get observedAttributes() {
-    return ['no-drop', 'no-progress', 'no-status', 'no-retry', 'max-file-size'];
+    return [
+      'pausable',
+      'type',
+      'no-drop',
+      'no-progress',
+      'no-status',
+      'no-retry',
+      'max-file-size',
+      'use-large-file-workaround',
+    ];
   }
 
   protected _endpoint: Endpoint;
+  protected _upload?: UpChunk;
 
   constructor() {
     super();
@@ -90,6 +110,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
     this.hiddenFileInput?.addEventListener('change', () => {
       const file = this.hiddenFileInput?.files?.[0];
+      this.toggleAttribute('file-ready', !!file);
 
       if (file) {
         this.dispatchEvent(
@@ -135,6 +156,19 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this._endpoint = value;
   }
 
+  get type() {
+    return (this.getAttribute('type') ?? undefined) as ProgressTypes[keyof ProgressTypes] | undefined;
+  }
+
+  set type(val: ProgressTypes[keyof ProgressTypes] | undefined) {
+    if (val == this.type) return;
+    if (!val) {
+      this.removeAttribute('type');
+    } else {
+      this.setAttribute('type', val);
+    }
+  }
+
   get noDrop(): boolean {
     return this.hasAttribute('no-drop');
   }
@@ -167,6 +201,14 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.toggleAttribute('no-retry', Boolean(value));
   }
 
+  get pausable() {
+    return this.hasAttribute('pausable');
+  }
+
+  set pausable(value) {
+    this.toggleAttribute('pausable', Boolean(value));
+  }
+
   get dynamicChunkSize(): DynamicChunkSize {
     return this.hasAttribute('dynamic-chunk-size');
   }
@@ -178,6 +220,15 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     } else {
       this.removeAttribute('dynamic-chunk-size');
     }
+  }
+
+  get useLargeFileWorkaround() {
+    return this.hasAttribute('use-large-file-workaround');
+  }
+
+  set useLargeFileWorkaround(value: boolean | undefined) {
+    if (value == this.useLargeFileWorkaround) return;
+    this.toggleAttribute('use-large-file-workaround', !!value);
   }
 
   get maxFileSize(): number | undefined {
@@ -206,13 +257,37 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get upload() {
+    return this._upload;
+  }
+
+  get paused() {
+    return this.upload?.paused ?? false;
+  }
+
+  set paused(value) {
+    if (!this.upload) {
+      console.warn('Pausing before an upload has begun is unsupported');
+      return;
+    }
+    const boolVal = !!value;
+    if (boolVal === this.paused) return;
+    if (boolVal) {
+      this.upload.pause();
+    } else {
+      this.upload.resume();
+    }
+    this.toggleAttribute('paused', boolVal);
+    this.dispatchEvent(new CustomEvent('pausedchange', { detail: boolVal }));
+  }
+
   updateLayout() {
-    const oldLayout = this.shadowRoot!.querySelector('mux-uploader-drop, div');
+    const oldLayout = this.shadowRoot?.querySelector('mux-uploader-drop, div');
     if (oldLayout) {
       oldLayout.remove();
     }
     const newLayout = blockLayout(this);
-    this.shadowRoot!.appendChild(newLayout);
+    this.shadowRoot?.appendChild(newLayout);
   }
 
   setError(message: string) {
@@ -245,17 +320,12 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
         endpoint,
         dynamicChunkSize,
         file: evt.detail,
-        ...(this.maxFileSize !== undefined
-          ? {
-              maxFileSize: this.maxFileSize,
-            }
-          : {}),
-        ...(this.chunkSize !== undefined
-          ? {
-              chunkSize: this.chunkSize,
-            }
-          : {}),
+        maxFileSize: this.maxFileSize,
+        chunkSize: this.chunkSize,
+        useLargeFileWorkaround: this.useLargeFileWorkaround,
       });
+
+      this._upload = upload;
 
       this.dispatchEvent(
         new CustomEvent('uploadstart', { detail: { file: upload.file, chunkSize: upload.chunkSize } })
@@ -276,7 +346,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
 
       upload.on('error', (event: any) => {
         this.setAttribute('upload-error', '');
-        console.error(event.detail.message);
+        console.error('error handler', event.detail.message);
         this.dispatchEvent(new CustomEvent('uploaderror', event));
       });
 
@@ -313,7 +383,6 @@ declare global {
 
 if (!globalThis.customElements.get('mux-uploader')) {
   globalThis.customElements.define('mux-uploader', MuxUploaderElement);
-  /** @TODO consider externalizing this (breaks standard modularity) */
   globalThis.MuxUploaderElement = MuxUploaderElement;
 }
 

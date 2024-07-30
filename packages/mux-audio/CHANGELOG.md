@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.13.0...@mux/mux-audio@0.13.1) (2024-07-10)
+
+
+### Bug Fixes
+
+* upgrade hls.js, custom-media-element, etc. ([#931](https://github.com/muxinc/elements/issues/931)) ([efb5c51](https://github.com/muxinc/elements/commit/efb5c514f65f017fdeea50682e1cdb15229cfd92)), closes [#927](https://github.com/muxinc/elements/issues/927)
+
+
+
+
+
+# [0.13.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.12.1...@mux/mux-audio@0.13.0) (2024-05-28)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video, mux-video-react, mux-audio, mux-audio-react, playback-core:** pdt clipping ([#923](https://github.com/muxinc/elements/issues/923)) ([22e9b06](https://github.com/muxinc/elements/commit/22e9b06e2e0913a6c34ebea53f4bbeded969b5a4))
+
+
+
+
+
+## [0.12.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.12.0...@mux/mux-audio@0.12.1) (2024-05-03)
+
+**Note:** Version bump only for package @mux/mux-audio
+
+
+
+
+
 # [0.12.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.11.5...@mux/mux-audio@0.12.0) (2024-04-18)
 
 

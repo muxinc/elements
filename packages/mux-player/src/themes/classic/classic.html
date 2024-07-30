@@ -62,14 +62,26 @@
 
     /* 0.433s is the transition duration for VTT Regions.
      * Borrowed here, so the captions don't move too fast. */
-    media-controller ::slotted([slot='media']) {
+    media-controller {
       --media-webkit-text-track-transition: transform 0.433s ease-out 0.3s;
     }
-    media-controller:is([mediapaused],:not([userinactive])) ::slotted([slot='media']) {
+    media-controller:is([mediapaused],:not([userinactive])) {
       /* 42px is the height of the control bar and progress bar
        * with an additional 5px as a buffer, to get 47px */
       --media-webkit-text-track-transform: translateY(-47px);
       --media-webkit-text-track-transition: transform 0.15s ease;
+    }
+
+    /*
+     * CSS specific to iOS devices.
+     * See: https://stackoverflow.com/questions/30102792/css-media-query-to-target-only-ios-devices/60220757#60220757
+     */
+     @supports (-webkit-touch-callout: none) {
+      /* Disable subtitle adjusting for iOS Safari */
+      media-controller[mediaisfullscreen] {
+        --media-webkit-text-track-transform: unset;
+        --media-webkit-text-track-transition: unset;
+      }
     }
 
     :host media-time-range {

@@ -88,13 +88,15 @@ Attributes:
 - `max-resolution`: This can be used to cap or expand the maximum resolution of the video delivered. When using signed URLs this attribute will not work and instead you will need to include the `max_resolution` parameter in your signed token.
 - `min-resolution`: This can be used to to cap or expand the minimum resolution of the video delivered. When using signed URLs this attribute will not work and instead you will need to include the `min_resolution` parameter in your signed token.
 - `rendition-order`: Set to `"desc"` to make the renditions of the video delivered be sorted in descending resolution order, which can impact the initial resolution loaded. When using signed URLs this attribute will not work and instead you will need to include the `rendition_order` parameter in your signed token.
+- `program-start-time`: Apply PDT-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the beginning of the media stream.
+- `program-end-time`: Apply PDT-based [instant clips](https://docs.mux.com/guides/create-instant-clips) to the end of the media stream.
 - `metadata-video-title`: This is an arbitrary title for your video that will be passed in as metadata into Mux Data. Adding a title will give you useful context in your Mux Data dashboard. (optional, but encouraged)
 - `metadata-viewer-user-id`: If you have a logged-in user this should be an anonymized ID value that maps back to the user in your database. Take care to not expose personal identifiable information like names, usernames or email addresses. (optional, but encouraged)
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
 - `metadata-*`: This syntax can be used to pass any other Mux Data metadata fields, for example `metadata-sub-property-id="123"`
 - `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0 (or the "live edge" for live/"DVR" content).
 - `disable-tracking`: Disables Mux Data tracking. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#features)
-- `disable-cookies`: Disables cookies used by Mux Data. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#disable-cookies). 
+- `disable-cookies`: Disables cookies used by Mux Data. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#disable-cookies).
 
 All the other attributes that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoplay` are available and will work the same as they do with the HTML5 video element. One sidenote about `autoplay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
 

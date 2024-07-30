@@ -15,6 +15,8 @@ import {
   addCuePoints,
   getCuePoints,
   getActiveCuePoint,
+  addChapters,
+  getActiveChapter,
   getStartDate,
   getCurrentPdt,
   getStreamType,
@@ -22,6 +24,9 @@ import {
   getLiveEdgeStart,
   getSeekable,
   getEnded,
+  getChapters,
+  toPlaybackIdFromSrc,
+  // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
   PlaybackCore,
@@ -49,10 +54,13 @@ export const Attributes = {
   DEBUG: 'debug',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
+  DRM_TOKEN: 'drm-token',
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
   RENDITION_ORDER: 'rendition-order',
+  PROGRAM_START_TIME: 'program-start-time',
+  PROGRAM_END_TIME: 'program-end-time',
   METADATA_URL: 'metadata-url',
   PLAYBACK_ID: 'playback-id',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
@@ -286,7 +294,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   get playbackId(): string | undefined {
-    return this.getAttribute(Attributes.PLAYBACK_ID) ?? undefined;
+    if (this.hasAttribute(Attributes.PLAYBACK_ID)) {
+      return this.getAttribute(Attributes.PLAYBACK_ID) as string;
+    }
+
+    return toPlaybackIdFromSrc(this.src) ?? undefined;
   }
 
   set playbackId(val: string | undefined) {
@@ -342,6 +354,36 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
+  get programStartTime() {
+    const val = this.getAttribute(Attributes.PROGRAM_START_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set programStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.PROGRAM_START_TIME);
+    } else {
+      this.setAttribute(Attributes.PROGRAM_START_TIME, `${val}`);
+    }
+  }
+
+  get programEndTime() {
+    const val = this.getAttribute(Attributes.PROGRAM_END_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set programEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.PROGRAM_END_TIME);
+    } else {
+      this.setAttribute(Attributes.PROGRAM_END_TIME, `${val}`);
+    }
+  }
+
   get customDomain() {
     return this.getAttribute(Attributes.CUSTOM_DOMAIN) ?? undefined;
   }
@@ -354,6 +396,21 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.CUSTOM_DOMAIN, val);
     } else {
       this.removeAttribute(Attributes.CUSTOM_DOMAIN);
+    }
+  }
+
+  get drmToken() {
+    return this.getAttribute(Attributes.DRM_TOKEN) ?? undefined;
+  }
+
+  set drmToken(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.drmToken) return;
+
+    if (val) {
+      this.setAttribute(Attributes.DRM_TOKEN, val);
+    } else {
+      this.removeAttribute(Attributes.DRM_TOKEN);
     }
   }
 
@@ -468,6 +525,18 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
 
   get cuePoints() {
     return getCuePoints(this.nativeEl);
+  }
+
+  async addChapters(chapters: { startTime: number; endTime: number; value: string }[]) {
+    return addChapters(this.nativeEl, chapters);
+  }
+
+  get activeChapter() {
+    return getActiveChapter(this.nativeEl);
+  }
+
+  get chapters() {
+    return getChapters(this.nativeEl);
   }
 
   getStartDate() {

@@ -24,6 +24,8 @@ export const Attributes = {
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
+  PROGRAM_START_TIME: 'program-start-time',
+  PROGRAM_END_TIME: 'program-end-time',
   METADATA_URL: 'metadata-url',
   PREFER_PLAYBACK: 'prefer-playback',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
@@ -185,6 +187,36 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
       this.setAttribute(Attributes.PLAYBACK_ID, val);
     } else {
       this.removeAttribute(Attributes.PLAYBACK_ID);
+    }
+  }
+
+  get programStartTime() {
+    const val = this.getAttribute(Attributes.PROGRAM_START_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set programStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.PROGRAM_START_TIME);
+    } else {
+      this.setAttribute(Attributes.PROGRAM_START_TIME, `${val}`);
+    }
+  }
+
+  get programEndTime() {
+    const val = this.getAttribute(Attributes.PROGRAM_END_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set programEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.PROGRAM_END_TIME);
+    } else {
+      this.setAttribute(Attributes.PROGRAM_END_TIME, `${val}`);
     }
   }
 

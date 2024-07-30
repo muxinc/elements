@@ -117,10 +117,17 @@ export const allMediaTypes = [
   // ...(shorthandKeys.map((k) => k.toLowerCase()) as `${Lowercase<keyof MimeTypeShorthandMap>}`[]),
 ] as MediaTypes[];
 
-export type CuePoint<T = any> = {
-  time: number;
+// Both cuepoints and chapters have optional end times
+// so support both joined up and sparse cue placements
+type CueLike<T = any> = {
+  startTime: number;
+  endTime?: number;
   value: T;
 };
+export type CuePoint<T = any> =
+  | CueLike<T> // new shape
+  | { time: number; value: T }; // legacy shape, still supported for now
+export type Chapter = CueLike<string>;
 
 export const MaxResolution = {
   upTo720p: '720p',
@@ -147,35 +154,34 @@ export type MinResolutionValue = ValueOf<typeof MinResolution>;
 export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
 
 export type MuxMediaPropTypes = {
-  envKey: MetaData['env_key'];
-  debug: Options['debug'] & Hls['config']['debug'];
-  metadata: Partial<Options['data']>;
-  maxResolution: MaxResolutionValue;
-  minResolution: MinResolutionValue;
-  renditionOrder: RenditionOrderValue;
-  customDomain: string;
-  tokens: Partial<{
-    playback: string;
-    storyboard: string;
-    thumbnail: string;
-  }>;
-  beaconCollectionDomain: Options['beaconCollectionDomain'];
-  errorTranslator: Options['errorTranslator'];
-  disableTracking: boolean;
-  disableCookies: Options['disableCookies'];
-  playbackId: string;
-  playerInitTime: MetaData['player_init_time'];
-  preferPlayback: ValueOf<PlaybackTypes> | undefined;
-  type: MediaTypes;
-  streamType: ValueOf<StreamTypes>;
-  targetLiveWindow: number;
-  liveEdgeStart: number;
-  startTime: Hls['config']['startPosition'];
+  _hlsConfig?: Partial<HlsConfig>;
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
-  preferCmcd: ValueOf<CmcdTypes> | undefined;
+  beaconCollectionDomain: Options['beaconCollectionDomain'];
+  customDomain: string;
+  debug: Options['debug'] & Hls['config']['debug'];
+  disableCookies: Options['disableCookies'];
+  disableTracking: boolean;
+  drmToken?: string;
+  envKey: MetaData['env_key'];
   error?: HTMLMediaElement['error'] | MediaError;
-  _hlsConfig?: Partial<HlsConfig>;
+  errorTranslator: Options['errorTranslator'];
+  liveEdgeStart: number;
+  maxResolution: MaxResolutionValue;
+  metadata: Partial<Options['data']>;
+  minResolution: MinResolutionValue;
+  playbackId: string;
+  playerInitTime: MetaData['player_init_time'];
+  preferCmcd: ValueOf<CmcdTypes> | undefined;
+  preferPlayback: ValueOf<PlaybackTypes> | undefined;
+  programStartTime: number;
+  programEndTime: number;
+  renditionOrder: RenditionOrderValue;
+  startTime: Hls['config']['startPosition'];
+  streamType: ValueOf<StreamTypes>;
+  targetLiveWindow: number;
+  tokens: Partial<{ drm: string; playback: string; storyboard: string; thumbnail: string }>;
+  type: MediaTypes;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;

@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.20.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.19.0...@mux/mux-video@0.20.0) (2024-07-10)
+
+
+### Bug Fixes
+
+* upgrade hls.js, custom-media-element, etc. ([#931](https://github.com/muxinc/elements/issues/931)) ([efb5c51](https://github.com/muxinc/elements/commit/efb5c514f65f017fdeea50682e1cdb15229cfd92)), closes [#927](https://github.com/muxinc/elements/issues/927)
+
+
+### Features
+
+* basic drm support ([#905](https://github.com/muxinc/elements/issues/905)) ([79acc9d](https://github.com/muxinc/elements/commit/79acc9d8cb520da469f1c72196befc384ee5b4f9))
+
+
+
+
+
+# [0.19.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.18.1...@mux/mux-video@0.19.0) (2024-05-28)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video, mux-video-react, mux-audio, mux-audio-react, playback-core:** pdt clipping ([#923](https://github.com/muxinc/elements/issues/923)) ([22e9b06](https://github.com/muxinc/elements/commit/22e9b06e2e0913a6c34ebea53f4bbeded969b5a4))
+* **playback-core, mux-video, mux-player:** addChapters interface ([#909](https://github.com/muxinc/elements/issues/909)) ([84392f1](https://github.com/muxinc/elements/commit/84392f14ee429b63ce26326e84e80e93bbdc70db))
+
+
+
+
+
+## [0.18.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.18.0...@mux/mux-video@0.18.1) (2024-05-03)
+
+**Note:** Version bump only for package @mux/mux-video
+
+
+
+
+
 # [0.18.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.17.5...@mux/mux-video@0.18.0) (2024-04-18)
 
 

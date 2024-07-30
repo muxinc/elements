@@ -32,7 +32,6 @@ function MuxPlayerLazyPage({ playbackId, blurDataURL, aspectRatio }) {
         playbackId={playbackId}
         placeholder={blurDataURL}
         style={{ aspectRatio }}
-        streamType="on-demand"
       />
   );
 }
@@ -59,7 +58,6 @@ export default MuxPlayerLazyPage;
         playbackId={playbackId}
         placeholder={blurDataURL}
         style={{ aspectRatio }}
-        streamType="on-demand"
       />
     </>
   );

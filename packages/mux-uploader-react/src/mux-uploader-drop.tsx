@@ -1,7 +1,7 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
 import '@mux/mux-uploader';
-import type MuxUploaderDropElement from '@mux/mux-uploader';
+import type { MuxUploaderDropElement } from '@mux/mux-uploader';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
 import { useCombinedRefs } from './useCombinedRefs';

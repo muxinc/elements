@@ -34,8 +34,8 @@ header {
 
 header h1 {
   margin: 0;
-  margin-left: .9em;
-  margin-right: .9em;
+  margin-left: 0.9em;
+  margin-right: 0.9em;
 }
 
 h1 {
@@ -72,26 +72,26 @@ nav li a {
 }
 
 li a.video {
-  background: rgba(28, 160, 253, .1);
+  background: rgba(28, 160, 253, 0.1);
 }
 
 li a.audio {
-  background: rgba(251, 80, 29, .08);
+  background: rgba(251, 80, 29, 0.08);
 }
 
 li a.player {
-  background: rgba(31, 195, 168, .1);
+  background: rgba(31, 195, 168, 0.1);
 }
 
 li a.uploader {
-  background: rgba(150, 32, 216, .1);
+  background: rgba(150, 32, 216, 0.1);
 }
 
 li a.react {
-  background: rgba(128, 128, 128, .1);
+  background: rgba(128, 128, 128, 0.1);
 }
 
-@media (prefers-color-scheme:dark) {
+@media (prefers-color-scheme: dark) {
   body {
     background: var(--background-alt);
   }
@@ -101,28 +101,36 @@ li a.react {
 }
 
 mux-player:not([audio]),
-mux-video:not([audio]),
-video {
-  width: 100%;
-  display: block;
-  margin-bottom: 1rem;
-  background: #000;
-  aspect-ratio: 16 / 9;
+mux-video:not([audio]) {
+  max-height: 450px;
 }
 
-mux-player,
-mux-video,
-mux-audio,
-audio {
-  width: 100%;
-  display: block;
-  margin-bottom: 1rem;
+mux-player:not([audio]),
+mux-video:not([audio]),
+video {
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.component-page {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 201px);
+}
+
+.component-page:first-child {
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .options {
   overflow: auto;
-  max-height: calc(100vh - calc(var(--player-height, 450px) + 201px));
-  min-height: 400px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-height: 20vh;
+  margin-top: 1rem;
 }
 
 .options > div {
@@ -140,8 +148,8 @@ audio {
   background-color: #e9e9f9;
 }
 
-input[type=text],
-input[type=url],
+input[type='text'],
+input[type='url'],
 select {
   flex-grow: 1;
 }

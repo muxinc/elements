@@ -45,6 +45,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   extraSourceParams?: Record<string, any>;
   tokens: {
     playback?: string;
+    drm?: string;
     thumbnail?: string;
     storyboard?: string;
   };

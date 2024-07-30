@@ -43,6 +43,7 @@ const DefaultThemeName = 'gerwig';
 export { MediaError };
 export type Tokens = {
   playback?: string;
+  drm?: string;
   thumbnail?: string;
   storyboard?: string;
 };
@@ -63,6 +64,7 @@ const PlayerAttributes = {
   PLAYBACK_TOKEN: 'playback-token',
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
+  DRM_TOKEN: 'drm-token',
   STORYBOARD_SRC: 'storyboard-src',
   THUMBNAIL_TIME: 'thumbnail-time',
   AUDIO: 'audio',
@@ -136,6 +138,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
+    programStartTime: el.programStartTime,
+    programEndTime: el.programEndTime,
     renditionOrder: el.renditionOrder,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
@@ -172,8 +176,7 @@ function getThemeTemplate(el: MuxPlayerElement) {
   let themeName = el.theme;
 
   if (themeName) {
-    // @ts-ignore
-    const templateElement = el.getRootNode()?.getElementById?.(themeName);
+    const templateElement = (el.getRootNode() as ShadowRoot | Document | null)?.getElementById?.(themeName);
     // NOTE: Since folks may unknowingly use matching ids for elements other than their theme
     // (intending to use path two for template identification, below), make sure the matching
     // element is, in fact, an HTMLTemplateElement (CJP)
@@ -232,6 +235,7 @@ const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   cuepointchange: CustomEvent<{ time: number; value: any }>;
   cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
+  chapterchange: CustomEvent<{ startTime: number; endTime: number; value: string }>;
 }
 
 interface MuxPlayerElement
@@ -850,6 +854,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return getPosterURLFromPlaybackId(this.playbackId, {
         customDomain: this.customDomain,
         thumbnailTime: this.thumbnailTime ?? this.startTime,
+        programTime: this.programStartTime,
         token: this.tokens.thumbnail,
       });
     }
@@ -906,6 +911,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return getStoryboardURLFromPlaybackId(this.playbackId, {
       customDomain: this.customDomain,
       token: this.tokens.storyboard,
+      programStartTime: this.programStartTime,
+      programEndTime: this.programEndTime,
     });
   }
 
@@ -1239,6 +1246,30 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
   }
 
+  get programStartTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.PROGRAM_START_TIME));
+  }
+
+  set programStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.PROGRAM_START_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.PROGRAM_START_TIME, `${val}`);
+    }
+  }
+
+  get programEndTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.PROGRAM_END_TIME));
+  }
+
+  set programEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.PROGRAM_END_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.PROGRAM_END_TIME, `${val}`);
+    }
+  }
+
   get extraSourceParams() {
     if (!this.hasAttribute(PlayerAttributes.EXTRA_SOURCE_PARAMS)) {
       return DEFAULT_EXTRA_PLAYLIST_PARAMS;
@@ -1508,6 +1539,26 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return this.media?.cuePoints ?? [];
   }
 
+  addChapters(chapters: { startTime: number; endTime: number; value: string }[]) {
+    this.#init();
+
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to addChapters. chapters will not be added.');
+      return;
+    }
+
+    return this.media?.addChapters(chapters);
+  }
+
+  get activeChapter() {
+    return this.media?.activeChapter;
+  }
+
+  get chapters() {
+    return this.media?.chapters ?? [];
+  }
+
   getStartDate() {
     return this.media?.getStartDate();
   }
@@ -1521,11 +1572,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   get tokens(): Tokens {
     const playback = this.getAttribute(PlayerAttributes.PLAYBACK_TOKEN);
+    const drm = this.getAttribute(PlayerAttributes.DRM_TOKEN);
     const thumbnail = this.getAttribute(PlayerAttributes.THUMBNAIL_TOKEN);
     const storyboard = this.getAttribute(PlayerAttributes.STORYBOARD_TOKEN);
     return {
       ...this.#tokens,
       ...(playback != null ? { playback } : {}),
+      ...(drm != null ? { drm } : {}),
       ...(thumbnail != null ? { thumbnail } : {}),
       ...(storyboard != null ? { storyboard } : {}),
     };
@@ -1550,6 +1603,20 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    */
   set playbackToken(val) {
     this.setAttribute(PlayerAttributes.PLAYBACK_TOKEN, `${val}`);
+  }
+
+  /**
+   * Get the playback token for signing the src URL.
+   */
+  get drmToken() {
+    return this.getAttribute(PlayerAttributes.DRM_TOKEN) ?? undefined;
+  }
+
+  /**
+   * Set the playback token for signing the src URL.
+   */
+  set drmToken(val) {
+    this.setAttribute(PlayerAttributes.DRM_TOKEN, `${val}`);
   }
 
   /**

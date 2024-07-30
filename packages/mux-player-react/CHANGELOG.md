@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.8.0...@mux/mux-player-react@2.8.1) (2024-07-26)
+
+**Note:** Version bump only for package @mux/mux-player-react
+
+
+
+
+
+# [2.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.7.0...@mux/mux-player-react@2.8.0) (2024-07-10)
+
+
+### Features
+
+* basic drm support ([#905](https://github.com/muxinc/elements/issues/905)) ([79acc9d](https://github.com/muxinc/elements/commit/79acc9d8cb520da469f1c72196befc384ee5b4f9))
+
+
+
+
+
+# [2.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.6.0...@mux/mux-player-react@2.7.0) (2024-05-28)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video, mux-video-react, mux-audio, mux-audio-react, playback-core:** pdt clipping ([#923](https://github.com/muxinc/elements/issues/923)) ([22e9b06](https://github.com/muxinc/elements/commit/22e9b06e2e0913a6c34ebea53f4bbeded969b5a4))
+* **playback-core, mux-video, mux-player:** addChapters interface ([#909](https://github.com/muxinc/elements/issues/909)) ([84392f1](https://github.com/muxinc/elements/commit/84392f14ee429b63ce26326e84e80e93bbdc70db))
+
+
+
+
+
+# [2.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.5.0...@mux/mux-player-react@2.6.0) (2024-05-03)
+
+
+### Features
+
+* **mux-player-react, mux-uploader-react, mux-audio-react, mux-video-react:** add client component directive ([#911](https://github.com/muxinc/elements/issues/911)) ([76aa003](https://github.com/muxinc/elements/commit/76aa003e9ad9488509650970b971edd3ed463592))
+
+
+
+
+
 # [2.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.4.1...@mux/mux-player-react@2.5.0) (2024-04-18)
 
 
