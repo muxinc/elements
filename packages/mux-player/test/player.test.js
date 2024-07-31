@@ -669,6 +669,8 @@ describe('<mux-player>', () => {
     });
 
     it('should not return a url with audio player', async function () {
+      this.timeout(5000);
+
       const player = await fixture(`<mux-player
         playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
         audio

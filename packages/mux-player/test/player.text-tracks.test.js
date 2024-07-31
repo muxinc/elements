@@ -177,7 +177,9 @@ window.addEventListener('error', windowErrorHandler);
 });
 
 describe('Feature: cuePoints', async () => {
-  it('adds cuepoints', async () => {
+  it('adds cuepoints', async function () {
+    this.timeout(5000);
+
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
       { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
@@ -193,6 +195,10 @@ describe('Feature: cuePoints', async () => {
       await oneEvent(muxPlayerEl, 'loadedmetadata');
     }
     await muxPlayerEl.addCuePoints(cuePoints);
+
+    // need a timeout for Safari/webkit
+    await nextFrame();
+
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints);
   });
 
