@@ -21,7 +21,7 @@ import type {
   MinResolutionValue,
   RenditionOrderValue,
 } from '@mux/playback-core';
-import VideoApiElement, { initVideoApi } from './video-api';
+import VideoApiElement from './video-api';
 import {
   getPlayerVersion,
   toPropName,
@@ -110,7 +110,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // Give priority to playbackId derrived asset URL's if playbackId is set.
     src: !el.playbackId && el.src,
     playbackId: el.playbackId,
-    hasSrc: !!el.playbackId || !!el.src,
+    hasSrc: !!el.playbackId || !!el.src || !!el.currentSrc,
     poster: el.poster,
     storyboard: el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
@@ -341,18 +341,20 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       logger.error(`<media-controller> failed to upgrade!`);
     }
 
-    initVideoApi(this);
+    this.init();
 
     this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
     this.#userInactive = this.mediaController?.hasAttribute(MediaControllerAttributes.USER_INACTIVE) ?? true;
     this.#setUpCaptionsMovement();
+
     // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
     // template details get updated appropriately (e.g. thumbnails track) (CJP)
-    this.media?.addEventListener('streamtypechange', () => {
-      this.#render();
-    });
+    this.media?.addEventListener('streamtypechange', () => this.#render());
+
+    // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
+    this.media?.addEventListener('loadstart', () => this.#render());
   }
 
   #setupCSSProperties() {

@@ -61,24 +61,6 @@ const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes).filter(
 );
 const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
 
-/**
- * Gets called from mux-player when mux-video is rendered and upgraded.
- * We might just merge VideoApiElement in MuxPlayerElement and remove this?
- */
-export function initVideoApi(el: VideoApiElement) {
-  el.querySelectorAll(':scope > track').forEach((track) => {
-    el.media?.append(track.cloneNode());
-  });
-
-  // The video events are dispatched on the VideoApiElement instance.
-  // This makes it possible to add event listeners before the element is upgraded.
-  AllowedVideoEvents.forEach((type) => {
-    el.media?.addEventListener(type, (evt) => {
-      el.dispatchEvent(new Event(evt.type));
-    });
-  });
-}
-
 // NOTE: Some of these are defined in MuxPlayerElement. We may want to apply a
 // `Pick<>` on these to also enforce consistency (CJP).
 type PartialHTMLVideoElement = Omit<
@@ -96,7 +78,6 @@ type PartialHTMLVideoElement = Omit<
   | 'requestPictureInPicture'
   | 'requestVideoFrameCallback'
   | 'controls'
-  | 'currentSrc'
   | 'disableRemotePlayback'
   | 'mediaKeys'
   | 'networkState'
@@ -148,6 +129,8 @@ interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
 }
 
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
+  #mediaChildrenMap = new WeakMap();
+
   static get observedAttributes() {
     return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
   }
@@ -160,23 +143,19 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
   constructor() {
     super();
 
-    this.querySelectorAll(':scope > track').forEach((track) => {
-      this.media?.append(track.cloneNode());
-    });
-
     // Watch for child adds/removes and update the native element if necessary
-    /** @type {(mutationList: MutationRecord[]) => void} */
     const mutationCallback = (mutationsList: MutationRecord[]) => {
       for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
-          // Child being removed
           mutation.removedNodes.forEach((node) => {
-            const track = this.media?.querySelector(`track[src="${(node as HTMLTrackElement).src}"]`);
-            if (track) this.media?.removeChild(track);
+            this.#mediaChildrenMap.get(node)?.remove();
           });
 
           mutation.addedNodes.forEach((node) => {
-            this.media?.append(node.cloneNode());
+            const element = node as HTMLElement;
+            if (!element?.slot) {
+              this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, node));
+            }
           });
         }
       }
@@ -184,6 +163,24 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, subtree: true });
+  }
+
+  /**
+   * Gets called from mux-player when mux-video is rendered and upgraded.
+   * We might just merge VideoApiElement in MuxPlayerElement and remove this?
+   */
+  init() {
+    this.querySelectorAll(':scope > :not([slot])').forEach((child) => {
+      this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, child));
+    });
+
+    // The video events are dispatched on the VideoApiElement instance.
+    // This makes it possible to add event listeners before the element is upgraded.
+    AllowedVideoEvents.forEach((type) => {
+      this.media?.addEventListener(type, (evt) => {
+        this.dispatchEvent(new Event(evt.type));
+      });
+    });
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
@@ -219,6 +216,10 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
   pause() {
     this.media?.pause();
+  }
+
+  load() {
+    this.media?.load();
   }
 
   requestCast(options: CastOptions) {
@@ -275,6 +276,10 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
   get videoHeight() {
     return this.media?.videoHeight ?? 0;
+  }
+
+  get currentSrc() {
+    return this.media?.currentSrc ?? '';
   }
 
   get currentTime() {
@@ -408,6 +413,15 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
 function getVideoAttribute(el: VideoApiElement, name: string) {
   return el.media ? el.media.getAttribute(name) : el.getAttribute(name);
+}
+
+function getOrInsertNodeClone(map: WeakMap<Node, Node>, node: Node) {
+  let clone = map.get(node);
+  if (!clone) {
+    clone = node.cloneNode();
+    map.set(node, clone);
+  }
+  return clone;
 }
 
 export default VideoApiElement;

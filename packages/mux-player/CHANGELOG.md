@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.8.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.8.0...@mux/mux-player@2.8.1) (2024-07-26)
+
+
+### Bug Fixes
+
+* **mux-player:** use CSS to disable subtitle shifting for iOS in fullscreen. ([#958](https://github.com/muxinc/elements/issues/958)) ([f14249b](https://github.com/muxinc/elements/commit/f14249bc76052c65c2d606cd90edcefe947a7353))
+
+
+
+
+
 # [2.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.7.0...@mux/mux-player@2.8.0) (2024-07-10)
 
 
