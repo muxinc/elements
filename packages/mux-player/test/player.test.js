@@ -593,7 +593,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       assert(playerEl.buffered.length >= 1, 'should have a length of at least 1');
     });
 
@@ -602,7 +604,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
@@ -621,7 +625,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       assert.equal(playerEl.seekable.length, 1, 'should have a length of exactly 1');
     });
 
@@ -630,7 +636,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
