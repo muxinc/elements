@@ -188,6 +188,7 @@ describe('Feature: cuePoints', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
+
     if (muxPlayerEl.readyState === 0) {
       await oneEvent(muxPlayerEl, 'loadedmetadata');
     }
@@ -208,12 +209,15 @@ describe('Feature: cuePoints', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
+
     if (muxPlayerEl.readyState === 0) {
       await oneEvent(muxPlayerEl, 'loadedmetadata');
     }
     await muxPlayerEl.addCuePoints(cuePoints);
+
     const expectedCuePoint = cuePoints[1];
     muxPlayerEl.currentTime = expectedCuePoint.time + 0.1;
+
     let event = await oneEvent(muxPlayerEl, 'cuepointchange');
     // NOTE: For Safari/WebKit, we may actually get an event for
     // the first cue before getting one for the second after the seek.
@@ -228,6 +232,7 @@ describe('Feature: cuePoints', async () => {
 
   it('clears cuepoints when playback-id is updated', async function () {
     this.timeout(10000);
+
     const cuePoints = [
       { time: 0, value: { label: 'CTA 1', showDuration: 10 } },
       { time: 15, value: { label: 'CTA 2', showDuration: 5 } },
@@ -238,21 +243,27 @@ describe('Feature: cuePoints', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
+
     if (muxPlayerEl.readyState === 0) {
       await oneEvent(muxPlayerEl, 'loadedmetadata');
     }
     await muxPlayerEl.addCuePoints(cuePoints);
     assert.deepEqual(muxPlayerEl.cuePoints, cuePoints, 'cue points were added as expected');
+
     muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+
     await oneEvent(muxPlayerEl, 'emptied');
     // Safari needs an extra tick for the cues to clear
     await nextFrame();
+
     assert.equal(muxPlayerEl.cuePoints.length, 0, 'cuePoints should be empty');
   });
 });
 
 describe('Feature: chapters', async () => {
-  it('adds chapters', async () => {
+  it('adds chapters', async function () {
+    this.timeout(5000);
+
     const chapters = [
       { startTime: 0, endTime: 5, value: 'Chapter 1' },
       { startTime: 5, endTime: 10, value: 'Chapter 2' },
@@ -264,7 +275,9 @@ describe('Feature: chapters', async () => {
       playback-id="${playbackId}"
     ></mux-player>`);
 
-    await oneEvent(muxPlayerEl, 'loadedmetadata');
+    if (muxPlayerEl.readyState === 0) {
+      await oneEvent(muxPlayerEl, 'loadedmetadata');
+    }
     await muxPlayerEl.addChapters(chapters);
 
     // need a timeout for Safari/webkit
@@ -275,6 +288,7 @@ describe('Feature: chapters', async () => {
 
   it('dispatches a chapterchange event when the active chapter changes', async function () {
     this.timeout(10000);
+
     const chapters = [
       { startTime: 0, endTime: 5, value: 'Chapter 1' },
       { startTime: 5, endTime: 10, value: 'Chapter 2' },
@@ -285,10 +299,15 @@ describe('Feature: chapters', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-    await oneEvent(muxPlayerEl, 'loadedmetadata');
+
+    if (muxPlayerEl.readyState === 0) {
+      await oneEvent(muxPlayerEl, 'loadedmetadata');
+    }
     await muxPlayerEl.addChapters(chapters);
+
     const expectedChapter = chapters[1];
     muxPlayerEl.currentTime = expectedChapter.startTime + 0.1;
+
     let event = await oneEvent(muxPlayerEl, 'chapterchange');
     // NOTE: For Safari/WebKit, we may actually get an event for
     // the first cue before getting one for the second after the seek.
@@ -296,6 +315,7 @@ describe('Feature: chapters', async () => {
     if (event.detail?.startTime === chapters[0].startTime) {
       event = await oneEvent(muxPlayerEl, 'chapterchange');
     }
+
     assert.equal(event.target, muxPlayerEl, 'event target should be the MuxPlayerElement instance');
     assert.deepEqual(event.detail, expectedChapter);
     assert.deepEqual(muxPlayerEl.activeChapter, expectedChapter);
@@ -303,6 +323,7 @@ describe('Feature: chapters', async () => {
 
   it('clears chapters when playback-id is updated', async function () {
     this.timeout(5000);
+
     const chapters = [
       { startTime: 0, endTime: 5, value: 'Chapter 1' },
       { startTime: 5, endTime: 10, value: 'Chapter 2' },
@@ -313,14 +334,22 @@ describe('Feature: chapters', async () => {
       stream-type="on-demand"
       playback-id="${playbackId}"
     ></mux-player>`);
-    await oneEvent(muxPlayerEl, 'loadedmetadata');
+
+    if (muxPlayerEl.readyState === 0) {
+      await oneEvent(muxPlayerEl, 'loadedmetadata');
+    }
     await muxPlayerEl.addChapters(chapters);
+
     muxPlayerEl.currentTime = chapters[1].startTime + 0.1;
+
     await oneEvent(muxPlayerEl, 'chapterchange');
     assert.deepEqual(muxPlayerEl.chapters, chapters, 'chapters were added');
+
     muxPlayerEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+
     await oneEvent(muxPlayerEl, 'emptied');
     await nextFrame();
+
     assert.equal(muxPlayerEl.chapters.length, 0, 'chapters are empty');
   });
 });
