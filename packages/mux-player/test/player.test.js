@@ -45,7 +45,7 @@ describe('<mux-player>', () => {
     assert.equal(player.title, 'A title', 'title is set');
   });
 
-  (isSafari ? it.skip : it)('has a video like API', async function () {
+  it('has a video like API', async function () {
     this.timeout(10000);
 
     const player = await fixture(`<mux-player
@@ -81,7 +81,7 @@ describe('<mux-player>', () => {
     assert.isAtLeast(Math.round(player.currentTime), 1, 'is greater or equal to 1s');
   });
 
-  (isSafari ? it.skip : it)('playbackId is forwarded to the media element', async function () {
+  it('playbackId is forwarded to the media element', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -297,7 +297,7 @@ describe('<mux-player>', () => {
     );
   });
 
-  (isSafari ? it.skip : it)('src is forwarded to the media element', async function () {
+  it('src is forwarded to the media element', async function () {
     this.timeout(5000);
 
     const player = await fixture(`<mux-player
