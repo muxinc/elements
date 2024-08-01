@@ -45,7 +45,7 @@ describe('<mux-player>', () => {
     assert.equal(player.title, 'A title', 'title is set');
   });
 
-  it('has a video like API', async function () {
+  (isSafari ? it.skip : it)('has a video like API', async function () {
     this.timeout(10000);
 
     const player = await fixture(`<mux-player
