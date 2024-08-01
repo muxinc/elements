@@ -69,6 +69,8 @@ describe('<mux-player>', () => {
     player.muted = true;
     assert(player.muted, 'is muted');
 
+    await aTimeout(1000);
+
     await player.play();
 
     assert(!player.paused, 'is playing after player.play()');
