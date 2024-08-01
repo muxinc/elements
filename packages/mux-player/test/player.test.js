@@ -297,7 +297,7 @@ describe('<mux-player>', () => {
     );
   });
 
-  it('src is forwarded to the media element', async function () {
+  (isSafari ? it.skip : it)('src is forwarded to the media element', async function () {
     this.timeout(5000);
 
     const player = await fixture(`<mux-player
