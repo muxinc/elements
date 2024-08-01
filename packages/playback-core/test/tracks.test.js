@@ -32,7 +32,7 @@ describe('textTracks', () => {
       it('creates non-overlapping serialized cues for the cuepoints', async () => {
         const track = await addCuePoints(mediaEl, cuePoints);
         assert.equal(track.cues.length, cuePoints.length);
-        track.cues.forEach((cue, index, cues) => {
+        Array.from(track.cues).forEach((cue, index, cues) => {
           assert.equal(cue.startTime, cuePoints[index].time);
           const expectedEndTime = cues[index + 1]?.startTime;
           if (expectedEndTime) {
@@ -55,7 +55,7 @@ describe('textTracks', () => {
 
         const track = await addCuePoints(mediaEl, rotatedCuePoints);
         assert.equal(track.cues.length, cuePoints.length);
-        track.cues.forEach((cue, index) => {
+        Array.from(track.cues).forEach((cue, index) => {
           assert.equal(cue.startTime, cuePoints[index].time);
           // Since `undefined` isn't serializable, it is represented as null in JSON.
           const expectedValue = cuePoints[index].value ?? null;

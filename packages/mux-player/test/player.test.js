@@ -45,7 +45,7 @@ describe('<mux-player>', () => {
     assert.equal(player.title, 'A title', 'title is set');
   });
 
-  (isSafari ? it.skip : it)('has a video like API', async function () {
+  it('has a video like API', async function () {
     this.timeout(10000);
 
     const player = await fixture(`<mux-player
@@ -69,6 +69,8 @@ describe('<mux-player>', () => {
     player.muted = true;
     assert(player.muted, 'is muted');
 
+    await aTimeout(1000);
+
     await player.play();
 
     assert(!player.paused, 'is playing after player.play()');
@@ -79,7 +81,7 @@ describe('<mux-player>', () => {
     assert.isAtLeast(Math.round(player.currentTime), 1, 'is greater or equal to 1s');
   });
 
-  (isSafari ? it.skip : it)('playbackId is forwarded to the media element', async function () {
+  it('playbackId is forwarded to the media element', async function () {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
@@ -251,6 +253,7 @@ describe('<mux-player>', () => {
 
   it('poster can be unset with an empty string', async function () {
     this.timeout(10000);
+
     const player = await fixture(`<mux-player
       stream-type="on-demand"
       poster="https://image.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE/thumbnail.jpg?time=0"
@@ -296,33 +299,35 @@ describe('<mux-player>', () => {
 
   it('src is forwarded to the media element', async function () {
     this.timeout(5000);
+
     const player = await fixture(`<mux-player
       stream-type="on-demand"
-      src="https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8"
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
     ></mux-player>`);
     const muxVideo = player.media;
 
-    assert.equal(player.src, 'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8');
-    assert.equal(muxVideo.src, 'https://stream.mux.com/r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA.m3u8');
+    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8');
+    assert.equal(muxVideo.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8');
 
     player.removeAttribute('src');
     assert(!muxVideo.hasAttribute('src'), `has src attr removed`);
 
-    player.setAttribute('src', 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8');
+    player.setAttribute('src', 'https://stream.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA.m3u8');
     assert.equal(
       muxVideo.getAttribute('src'),
-      'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8',
+      'https://stream.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA.m3u8',
       `has src attr added`
     );
     assert.equal(
       muxVideo.src,
-      'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8',
+      'https://stream.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA.m3u8',
       `has src enabled`
     );
   });
 
   it('should forward metadata attributes to the media element', async function () {
     this.timeout(5000);
+
     const video_id = 'test-video-id';
     const video_title = 'test-video-title';
     const viewer_user_id = 'test-viewer-user-id';
@@ -593,7 +598,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       assert(playerEl.buffered.length >= 1, 'should have a length of at least 1');
     });
 
@@ -602,7 +609,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
@@ -621,7 +630,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       assert.equal(playerEl.seekable.length, 1, 'should have a length of exactly 1');
     });
 
@@ -630,7 +641,9 @@ describe('<mux-player>', () => {
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      await oneEvent(playerEl, 'canplay');
+      if (playerEl.readyState < 3) {
+        await oneEvent(playerEl, 'canplay');
+      }
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
@@ -661,6 +674,8 @@ describe('<mux-player>', () => {
     });
 
     it('should not return a url with audio player', async function () {
+      this.timeout(5000);
+
       const player = await fixture(`<mux-player
         playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
         audio
