@@ -22,7 +22,7 @@ export type ProgressTypes = typeof ProgressTypes;
 
 export type MuxUploaderRefAttributes = MuxUploaderElement;
 
-interface GenericEventListener<T extends Event = CustomEvent> {
+export interface GenericEventListener<T extends Event = CustomEvent> {
   (evt: T): void;
 }
 
@@ -108,6 +108,7 @@ const MuxUploader = React.forwardRef<MuxUploaderRefAttributes, MuxUploaderProps>
   return <MuxUploaderInternal ref={uploaderRef as typeof innerUploaderRef} {...remainingProps} />;
 });
 
+// don't forget to also add these exports to ./rsc
 export {
   MuxUploaderDrop,
   MuxUploaderFileSelect,
