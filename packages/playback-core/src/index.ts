@@ -1000,7 +1000,7 @@ export const loadMedia = (
       if (!isApproximatelyGTE(mediaEl.currentTime, mediaEl.duration)) return;
       // If we were "pseudo-ended" before playback was attempted, seek back to the
       // beginning to "replay", like "real" ended behavior.
-      mediaEl.currentTime = mediaEl.seekable.start(0);
+      mediaEl.currentTime = mediaEl.seekable.length ? mediaEl.seekable.start(0) : 0;
     });
   } else if (hls && src) {
     hls.once(Hls.Events.LEVEL_LOADED, (_evt, data) => {
