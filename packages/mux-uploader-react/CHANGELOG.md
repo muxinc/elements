@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0...@mux/mux-uploader-react@1.0.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* mark React 19 as peerdep ([#971](https://github.com/muxinc/elements/issues/971)) ([4f74ea0](https://github.com/muxinc/elements/commit/4f74ea0215407e5c9573d8dd4a91d2a855b864bb))
+
+
+
+
+
 # [1.0.0-beta.19](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.0-beta.18...@mux/mux-uploader-react@1.0.0-beta.19) (2024-07-10)
 
 

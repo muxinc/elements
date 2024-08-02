@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0-alpha.8](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.7...@mux/mux-active-viewer-count@0.2.0-alpha.8) (2024-08-02)
+
+**Note:** Version bump only for package @mux/mux-active-viewer-count
+
+
+
+
+
 # [0.2.0-alpha.7](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.6...@mux/mux-active-viewer-count@0.2.0-alpha.7) (2024-04-18)
 
 

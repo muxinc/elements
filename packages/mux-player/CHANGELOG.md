@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.8.1...@mux/mux-player@2.9.0) (2024-08-02)
+
+
+### Bug Fixes
+
+* attach events on null media property ([#966](https://github.com/muxinc/elements/issues/966)) ([02ac022](https://github.com/muxinc/elements/commit/02ac022f0cb6dea2b8442f615f03cf791d6a8d4f))
+
+
+### Features
+
+* dup track append, add source tag support ([#962](https://github.com/muxinc/elements/issues/962)) ([735cb9b](https://github.com/muxinc/elements/commit/735cb9be8336ab37f3f349b6bcdac413eb8f3fd9)), closes [#944](https://github.com/muxinc/elements/issues/944) [#948](https://github.com/muxinc/elements/issues/948)
+
+
+
+
+
 ## [2.8.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.8.0...@mux/mux-player@2.8.1) (2024-07-26)
 
 

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.25.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.0...@mux/playback-core@0.25.1) (2024-08-02)
+
+**Note:** Version bump only for package @mux/playback-core
+
+
+
+
+
 # [0.25.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.24.0...@mux/playback-core@0.25.0) (2024-07-10)
 
 

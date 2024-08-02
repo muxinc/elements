@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.8.1...@mux/mux-player-react@2.9.0) (2024-08-02)
+
+
+### Bug Fixes
+
+* mark React 19 as peerdep ([#971](https://github.com/muxinc/elements/issues/971)) ([4f74ea0](https://github.com/muxinc/elements/commit/4f74ea0215407e5c9573d8dd4a91d2a855b864bb))
+
+
+### Features
+
+* Lerna bump mux-player-react so versions sync ([56df987](https://github.com/muxinc/elements/commit/56df987c413792aa8e5f762f931587f1c193b2bc))
+
+
+
+
+
 ## [2.8.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.8.0...@mux/mux-player-react@2.8.1) (2024-07-26)
 
 **Note:** Version bump only for package @mux/mux-player-react
