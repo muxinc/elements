@@ -190,4 +190,5 @@ export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareName: MetaData['player_software_name'];
   playerSoftwareVersion: MetaData['player_software_version'];
+  drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
 };

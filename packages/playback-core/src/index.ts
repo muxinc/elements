@@ -62,6 +62,20 @@ export {
 };
 export * from './types';
 
+const DRMType = {
+  FAIRPLAY: 'fairplay',
+  PLAYREADY: 'playready',
+  WIDEVINE: 'widevine',
+} as const;
+
+type DRMTypeValue = (typeof DRMType)[keyof typeof DRMType];
+export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefined => {
+  if (keySystem.includes('fps')) return DRMType.FAIRPLAY;
+  if (keySystem.includes('playready')) return DRMType.PLAYREADY;
+  if (keySystem.includes('widevine')) return DRMType.WIDEVINE;
+  return undefined;
+};
+
 export const getMediaPlaylistLinesFromMultivariantPlaylistSrc = async (src: string) => {
   return fetch(src)
     .then((resp) => resp.text())
@@ -444,6 +458,13 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   metadata.video_id = video_id;
   props.metadata = metadata;
 
+  // Used to signal DRM Type to Mux Data. See, e.g. `getDRMConfig()`
+  const drmTypeCb = (drmType?: string) => {
+    mediaEl.mux?.emit('hb', { view_drm_type: drmType });
+  };
+
+  props.drmTypeCb = drmTypeCb;
+
   muxMediaState.set(mediaEl as HTMLMediaElement, {});
   const nextHlsInstance = setupHls(props, mediaEl);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
@@ -510,7 +531,15 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaPropsInternal,
-      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'drmToken'
+      | 'debug'
+      | 'streamType'
+      | 'type'
+      | 'startTime'
+      | 'metadata'
+      | 'preferCmcd'
+      | '_hlsConfig'
+      | 'drmToken'
+      | 'drmTypeCb'
     >
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
@@ -582,12 +611,13 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
 };
 
 export const getDRMConfig = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain'>>
+  props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain' | 'drmTypeCb'>>
 ): Partial<HlsConfig> => {
   const {
     drmToken,
     src,
     playbackId = toPlaybackIdFromSrc(src), // Since Mux Player typically sets `src` instead of `playbackId`, fall back to it here (CJP)
+    drmTypeCb,
   } = props;
   if (!drmToken || !playbackId) return {};
   return {
@@ -626,7 +656,11 @@ export const getDRMConfig = (
           ...supportedConfigurations,
         ];
       }
-      return navigator.requestMediaKeySystemAccess(keySystem, supportedConfigurations);
+      return navigator.requestMediaKeySystemAccess(keySystem, supportedConfigurations).then((value) => {
+        const drmType = toDRMTypeFromKeySystem(keySystem);
+        drmTypeCb?.(drmType);
+        return value;
+      });
     },
   };
 };
@@ -648,7 +682,7 @@ export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: stri
 };
 
 export const setupNativeFairplayDRM = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain' | 'drmTypeCb'>>,
   mediaEl: HTMLMediaElement
 ) => {
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
@@ -660,15 +694,20 @@ export const setupNativeFairplayDRM = (
       }
 
       if (!mediaEl.mediaKeys) {
-        const access = await navigator.requestMediaKeySystemAccess('com.apple.fps', [
-          {
-            initDataTypes: [initDataType],
-            videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
-            distinctiveIdentifier: 'not-allowed',
-            persistentState: 'not-allowed',
-            sessionTypes: ['temporary'],
-          },
-        ]);
+        const access = await navigator
+          .requestMediaKeySystemAccess('com.apple.fps', [
+            {
+              initDataTypes: [initDataType],
+              videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
+              distinctiveIdentifier: 'not-allowed',
+              persistentState: 'not-allowed',
+              sessionTypes: ['temporary'],
+            },
+          ])
+          .then((value) => {
+            props.drmTypeCb?.(DRMType.FAIRPLAY);
+            return value;
+          });
 
         const keys = await access.createMediaKeys();
 
