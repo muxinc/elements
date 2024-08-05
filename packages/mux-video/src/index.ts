@@ -258,6 +258,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     if (val === this.disableTracking) return;
 
     this.toggleAttribute(Attributes.DISABLE_TRACKING, !!val);
+
+    // @ts-ignore
+    if (this.castCustomData?.mux) {
+      // @ts-ignore
+      this.castCustomData.mux.disableTracking = !!val;
+    }
   }
 
   get disableCookies() {
@@ -272,6 +278,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.DISABLE_COOKIES, '');
     } else {
       this.removeAttribute(Attributes.DISABLE_COOKIES);
+    }
+
+    // @ts-ignore
+    if (this.castCustomData?.mux) {
+      // @ts-ignore
+      this.castCustomData.mux.disableCookies = val;
     }
   }
 
@@ -397,6 +409,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     } else {
       this.removeAttribute(Attributes.CUSTOM_DOMAIN);
     }
+
+    // @ts-ignore
+    if (this.castCustomData?.mux) {
+      // @ts-ignore
+      this.castCustomData.mux.customDomain = val;
+    }
   }
 
   get drmToken() {
@@ -411,6 +429,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.DRM_TOKEN, val);
     } else {
       this.removeAttribute(Attributes.DRM_TOKEN);
+    }
+
+    // @ts-ignore
+    if (this.castCustomData?.mux) {
+      // @ts-ignore
+      this.castCustomData.mux.drmToken = val;
     }
   }
 
@@ -433,6 +457,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     } else {
       this.removeAttribute(Attributes.ENV_KEY);
     }
+
+    // @ts-ignore
+    if (this.castCustomData?.mux) {
+      // @ts-ignore
+      this.castCustomData.mux.envKey = val;
+    }
   }
 
   get beaconCollectionDomain(): string | undefined {
@@ -447,6 +477,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
       this.removeAttribute(Attributes.BEACON_COLLECTION_DOMAIN);
+    }
+
+    // @ts-ignore
+    if (this.castCustomData?.mux) {
+      // @ts-ignore
+      this.castCustomData.mux.envKey = val;
     }
   }
 
@@ -700,6 +736,15 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
 
   connectedCallback(): void {
     super.connectedCallback?.();
+    // NOTE: This is necessary in part because of our mixin architecture
+    // and also because we are missing exhaustive types for things like CastableVideoElement.
+    // Additionally, this cannot occur in the constructor because of our mixin architecture. (CJP)
+    // Has the prop but prop is nullish
+    if ('castCustomData' in this && !this.castCustomData) {
+      this.castCustomData = {
+        mux: {},
+      };
+    }
     if (this.nativeEl && this.src && !this.#core) {
       this.#requestLoad();
     }
