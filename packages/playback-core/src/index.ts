@@ -700,17 +700,23 @@ export const getDRMConfig = (
 
 export const getAppCertificate = async (appCertificateUrl: string) => {
   const resp = await fetch(appCertificateUrl);
+  if (resp.status !== 200) {
+    return Promise.reject(resp);
+  }
   const body = await resp.arrayBuffer();
   return body;
 };
 
 export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: string) => {
-  const licenseResponse = await fetch(licenseServerUrl, {
+  const resp = await fetch(licenseServerUrl, {
     method: 'POST',
     headers: { 'Content-type': 'application/octet-stream' },
     body: message,
   });
-  const keyBuffer = await licenseResponse.arrayBuffer();
+  if (resp.status !== 200) {
+    return Promise.reject(resp);
+  }
+  const keyBuffer = await resp.arrayBuffer();
   return new Uint8Array(keyBuffer);
 };
 
@@ -744,8 +750,23 @@ export const setupNativeFairplayDRM = (
 
         const keys = await access.createMediaKeys();
 
-        const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay'));
-        await keys.setServerCertificate(fairPlayAppCert);
+        try {
+          const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay'));
+          await keys.setServerCertificate(fairPlayAppCert);
+          // @ts-ignore
+          // await keys.setServerCertificate('fairPlayAppCert');
+        } catch (errOrResp: any) {
+          console.log('errOrResp', errOrResp);
+          if (errOrResp instanceof Response) {
+            const { status } = errOrResp;
+            if (status >= 500) {
+              // Make sure we didn't get here because of a malformed JWT and/or claim
+            }
+            /** @TODO move JWT parsing */
+          } else if (errOrResp instanceof Error) {
+            // mediaEl.dispatchEvent(new MediaError())
+          }
+        }
         await mediaEl.setMediaKeys(keys);
       }
 
