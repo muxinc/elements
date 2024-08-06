@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.9.0...@mux/mux-player@2.9.1) (2024-08-06)
+
+
+### Bug Fixes
+
+* css animation forwards causing UI lag ([#973](https://github.com/muxinc/elements/issues/973)) ([ec59cb3](https://github.com/muxinc/elements/commit/ec59cb3a3b9db65d6f761a9c983be85b7c755101)), closes [/stackoverflow.com/questions/12991164/maintaining-the-final-state-at-end-of-a-css-animation#comment118487774_12991203](https://github.com//stackoverflow.com/questions/12991164/maintaining-the-final-state-at-end-of-a-css-animation/issues/comment118487774_12991203)
+
+
+
+
+
 # [2.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.8.1...@mux/mux-player@2.9.0) (2024-08-02)
 
 

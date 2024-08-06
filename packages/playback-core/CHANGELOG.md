@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.25.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.1...@mux/playback-core@0.25.2) (2024-08-06)
+
+
+### Bug Fixes
+
+* Sentry seekable index error ([#972](https://github.com/muxinc/elements/issues/972)) ([05ed19b](https://github.com/muxinc/elements/commit/05ed19b134bd0d5905105f54c539ea7e946c2b45)), closes [#967](https://github.com/muxinc/elements/issues/967)
+
+
+
+
+
 ## [0.25.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.0...@mux/playback-core@0.25.1) (2024-08-02)
 
 **Note:** Version bump only for package @mux/playback-core
