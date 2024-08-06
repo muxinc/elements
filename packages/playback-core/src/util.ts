@@ -97,3 +97,109 @@ export const inferMimeTypeFromURL = (url: string) => {
 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
 };
+
+export const parseJwt = (token: string | undefined) => {
+  const base64Url = (token ?? '').split('.')[1];
+
+  // exit early on invalid value
+  if (!base64Url) return undefined;
+
+  // Account for malformed JWTs
+  try {
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return undefined;
+  }
+};
+
+const lang: { [k: string]: string } = {
+  '(opens in a new window)': '(opens in a new window)',
+  'Network Error': 'Network Error',
+  'Video is not currently available': 'Video is not currently available',
+  'The live stream or video file are not yet ready.': 'The live stream or video file are not yet ready.',
+  'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.':
+    'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.',
+  'Video does not exist': 'Video does not exist',
+  'This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.':
+    'This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.',
+  'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.':
+    'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.',
+  'Invalid playback URL': 'Invalid playback URL',
+  'The video URL or playback-token are formatted with incorrect or incomplete information.':
+    'The video URL or playback-token are formatted with incorrect or incomplete information.',
+  '403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.':
+    '403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.',
+  'Video URL has expired': 'Video URL has expired',
+  'The video’s secured playback-token has expired.': 'The video’s secured playback-token has expired.',
+  'This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.':
+    'This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.',
+  'Video URL is formatted incorrectly': 'Video URL is formatted incorrectly',
+  'The video’s playback ID does not match the one encoded in the playback-token.':
+    'The video’s playback ID does not match the one encoded in the playback-token.',
+  'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.':
+    'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.',
+  'The playback-token is formatted with incorrect information.':
+    'The playback-token is formatted with incorrect information.',
+  'The playback-token has an incorrect aud value: {tokenType}. aud value should be v.':
+    'The playback-token has an incorrect aud value: {tokenType}. aud value should be v.',
+  '403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.':
+    '403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.',
+  'Media Error': 'Media Error',
+  'Source Not Supported': 'Source Not Supported',
+  Error: 'Error',
+  'Your device appears to be offline': 'Your device appears to be offline',
+  'Check your internet connection and try reloading this video.':
+    'Check your internet connection and try reloading this video.',
+  "The provided thumbnail-token should have audience value 't' instead of '{aud}'.":
+    "The provided thumbnail-token should have audience value 't' instead of '{aud}'.",
+  "The provided storyboard-token should have audience value 's' instead of '{aud}'.":
+    "The provided storyboard-token should have audience value 's' instead of '{aud}'.",
+  'No stream-type value supplied. Defaulting to \\': 'No stream-type value supplied. Defaulting to \\',
+  'Invalid stream-type value supplied: \\': 'Invalid stream-type value supplied: \\',
+  'Read more: ': 'Read more: ',
+};
+
+const DEFAULT_LOCALE = 'en';
+
+// NL example
+// lang = {
+//   "Network Error": "Netwerk Fout",
+// };
+export function i18n(str: string, translate = true): any {
+  const message = translate ? lang[str] ?? str : str;
+  const locale = translate ? lang.code : DEFAULT_LOCALE;
+  return new IntlMessageFormat(message, locale);
+}
+
+/**
+ * Poor man's IntlMessageFormat, enrich if need be.
+ * @see https://formatjs.io/docs/intl-messageformat/
+ */
+class IntlMessageFormat {
+  message: string;
+  locale: string;
+
+  constructor(message: string, locale = lang.code ?? DEFAULT_LOCALE) {
+    this.message = message;
+    this.locale = locale;
+  }
+
+  format(values: Record<string, any>): string {
+    return this.message.replace(/\{(\w+)\}/g, (match, key) => {
+      return values[key] ?? '';
+    });
+  }
+
+  toString() {
+    return this.message;
+  }
+}

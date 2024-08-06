@@ -17,6 +17,7 @@ export class MediaError extends Error {
 
   name: string;
   code: number;
+  muxCode?: number;
   context?: string;
   fatal: boolean;
   data?: any;

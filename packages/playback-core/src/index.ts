@@ -39,6 +39,7 @@ import {
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import type { HlsConfig } from 'hls.js';
+import { getErrorCodeFromResponse } from './request-errors';
 // import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
@@ -725,6 +726,7 @@ export const setupNativeFairplayDRM = (
   mediaEl: HTMLMediaElement
 ) => {
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
+    let errorCode: number | undefined;
     try {
       const initDataType = event.initDataType;
       if (initDataType !== 'skd') {
@@ -757,10 +759,19 @@ export const setupNativeFairplayDRM = (
           // await keys.setServerCertificate('fairPlayAppCert');
         } catch (errOrResp: any) {
           console.log('errOrResp', errOrResp);
+          /** @TODO Convert console.error() to mux data errors (CJP) */
           if (errOrResp instanceof Response) {
-            const { status } = errOrResp;
-            if (status >= 500) {
-              // Make sure we didn't get here because of a malformed JWT and/or claim
+            errorCode = getErrorCodeFromResponse(errOrResp, props.playbackId, props.drmToken, 'd');
+            if (errorCode) {
+              /** @TODO Retry & don't mark fatal for error codes that are retriable 500s (CJP) */
+              const error = new MediaError('', MediaError.MEDIA_ERR_NETWORK, true);
+              error.muxCode = errorCode;
+              mediaEl.dispatchEvent(
+                new CustomEvent('error', {
+                  detail: error,
+                })
+              );
+              return;
             }
             /** @TODO move JWT parsing */
           } else if (errOrResp instanceof Error) {
@@ -791,8 +802,27 @@ export const setupNativeFairplayDRM = (
       const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay'));
       await session.update(response);
       return session;
-    } catch (e) {
-      console.error(`Could not start encrypted playback due to exception "${e}"`);
+    } catch (errOrResp) {
+      console.log('errOrResp', errOrResp);
+      /** @TODO Convert console.error() to mux data errors (CJP) */
+      if (errOrResp instanceof Response) {
+        errorCode = getErrorCodeFromResponse(errOrResp, props.playbackId, props.drmToken, 'd');
+        if (errorCode) {
+          /** @TODO Retry & don't mark fatal for error codes that are retriable 500s (CJP) */
+          const error = new MediaError('', MediaError.MEDIA_ERR_NETWORK, true);
+          error.muxCode = errorCode;
+          mediaEl.dispatchEvent(
+            new CustomEvent('error', {
+              detail: error,
+            })
+          );
+          return;
+        }
+        /** @TODO move JWT parsing */
+      } else if (errOrResp instanceof Error) {
+        // mediaEl.dispatchEvent(new MediaError())
+      }
+      console.error(`Could not start encrypted playback due to exception "${errOrResp}"`);
     }
   };
 
