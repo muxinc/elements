@@ -335,7 +335,10 @@
     [breakpointsm]:is([mediahasplayed], :not([mediapaused])):not([audio])
       .center-controls.pre-playback
       media-play-button {
-      animation: 0.3s linear forwards pre-play-hide;
+      /* Using `forwards` would lead to a laggy UI after the animation got in the end state */
+      animation: 0.3s linear pre-play-hide;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .autoplay-unmute {
