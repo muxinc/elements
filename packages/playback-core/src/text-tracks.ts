@@ -101,11 +101,15 @@ export function setupTextTracks(
       if (!track.cues?.length) {
         const trackEl = mediaEl.querySelector('track[label="thumbnails"]');
         // Force a reload of the cues if they've been removed
-        const src = trackEl?.getAttribute('src') ?? '';
-        trackEl?.removeAttribute('src');
-        setTimeout(() => {
-          trackEl?.setAttribute('src', src);
-        }, 0);
+        const src = trackEl?.getAttribute('src');
+        // It's possible src is not set or we just removed it in a previous
+        // execution of this function. Prevent setting an empty src.
+        if (src) {
+          trackEl?.removeAttribute('src');
+          setTimeout(() => {
+            trackEl?.setAttribute('src', src);
+          }, 0);
+        }
       }
       // Force hidden mode if it's not hidden
       if (track.mode !== 'hidden') {
