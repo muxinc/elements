@@ -89,6 +89,7 @@ MuxVideo.propTypes = {
   debug: PropTypes.bool,
   disableCookies: PropTypes.bool,
   disableTracking: PropTypes.bool,
+  drmToken: PropTypes.string,
   envKey: PropTypes.string,
   errorTranslator: PropTypes.any,
   liveEdgeStart: PropTypes.number,
@@ -96,6 +97,7 @@ MuxVideo.propTypes = {
   metadata: PropTypes.any,
   minResolution: PropTypes.oneOf(['480p', '540p', '720p', '1080p', '1440p', '2160p']),
   playbackId: PropTypes.string,
+  playbackToken: PropTypes.string,
   playerInitTime: PropTypes.number,
   preferCmcd: PropTypes.oneOf(Object.values(CmcdTypes)),
   preferPlayback: PropTypes.oneOf(Object.values(PlaybackTypes)),
@@ -105,7 +107,6 @@ MuxVideo.propTypes = {
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   targetLiveWindow: PropTypes.number,
-  tokens: PropTypes.any,
   type: PropTypes.oneOf(allMediaTypes),
 };
 
