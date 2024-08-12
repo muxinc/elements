@@ -39,7 +39,7 @@ import {
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import type { HlsConfig } from 'hls.js';
-import { getErrorCodeFromResponse } from './request-errors';
+import { getErrorFromResponse } from './request-errors';
 // import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
@@ -58,6 +58,7 @@ export {
   setupChapters,
   getStartDate,
   getCurrentPdt,
+  toPlaybackIdParts,
 };
 export * from './types';
 
@@ -649,10 +650,10 @@ export const getDRMConfig = (
 ): Partial<HlsConfig> => {
   const {
     drmToken,
-    src,
-    playbackId = toPlaybackIdFromSrc(src), // Since Mux Player typically sets `src` instead of `playbackId`, fall back to it here (CJP)
+    playbackId: playbackIdWithOptionalParams, // Since Mux Player typically sets `src` instead of `playbackId`, fall back to it here (CJP)
     drmTypeCb,
   } = props;
+  const [playbackId] = playbackIdWithOptionalParams ? toPlaybackIdParts(playbackIdWithOptionalParams) : [];
   if (!drmToken || !playbackId) return {};
   return {
     emeEnabled: true,
@@ -722,11 +723,12 @@ export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: stri
 };
 
 export const setupNativeFairplayDRM = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain' | 'drmTypeCb'>>,
+  props: Partial<
+    Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>
+  >,
   mediaEl: HTMLMediaElement
 ) => {
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
-    let errorCode: number | undefined;
     try {
       const initDataType = event.initDataType;
       if (initDataType !== 'skd') {
@@ -758,22 +760,17 @@ export const setupNativeFairplayDRM = (
           // @ts-ignore
           // await keys.setServerCertificate('fairPlayAppCert');
         } catch (errOrResp: any) {
-          console.log('errOrResp', errOrResp);
-          /** @TODO Convert console.error() to mux data errors (CJP) */
           if (errOrResp instanceof Response) {
-            errorCode = getErrorCodeFromResponse(errOrResp, props.playbackId, props.drmToken, 'd');
-            if (errorCode) {
-              /** @TODO Retry & don't mark fatal for error codes that are retriable 500s (CJP) */
-              const error = new MediaError('', MediaError.MEDIA_ERR_NETWORK, true);
-              error.muxCode = errorCode;
+            const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+            console.error('mediaError', mediaError?.message, mediaError?.context);
+            if (mediaError) {
               mediaEl.dispatchEvent(
                 new CustomEvent('error', {
-                  detail: error,
+                  detail: mediaError,
                 })
               );
               return;
             }
-            /** @TODO move JWT parsing */
           } else if (errOrResp instanceof Error) {
             // mediaEl.dispatchEvent(new MediaError())
           }
@@ -803,22 +800,16 @@ export const setupNativeFairplayDRM = (
       await session.update(response);
       return session;
     } catch (errOrResp) {
-      console.log('errOrResp', errOrResp);
-      /** @TODO Convert console.error() to mux data errors (CJP) */
       if (errOrResp instanceof Response) {
-        errorCode = getErrorCodeFromResponse(errOrResp, props.playbackId, props.drmToken, 'd');
-        if (errorCode) {
-          /** @TODO Retry & don't mark fatal for error codes that are retriable 500s (CJP) */
-          const error = new MediaError('', MediaError.MEDIA_ERR_NETWORK, true);
-          error.muxCode = errorCode;
+        const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+        if (mediaError) {
           mediaEl.dispatchEvent(
             new CustomEvent('error', {
-              detail: error,
+              detail: mediaError,
             })
           );
           return;
         }
-        /** @TODO move JWT parsing */
       } else if (errOrResp instanceof Error) {
         // mediaEl.dispatchEvent(new MediaError())
       }
@@ -831,7 +822,7 @@ export const setupNativeFairplayDRM = (
 
 export const toLicenseKeyURL = (
   {
-    playbackId,
+    playbackId /** @TODO playbackId may contain optional params. Account for this. (CJP) */,
     drmToken: token,
     customDomain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
@@ -845,7 +836,7 @@ export const toLicenseKeyURL = (
 
 export const toAppCertURL = (
   {
-    playbackId,
+    playbackId /** @TODO playbackId may contain optional params. Account for this. (CJP) */,
     drmToken: token,
     customDomain = MUX_VIDEO_DOMAIN,
   }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,

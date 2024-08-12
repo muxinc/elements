@@ -1,3 +1,15 @@
+// Identifies what kind of request was made that resulted in an error
+export const MuxErrorCategory = {
+  VIDEO: 'video',
+  THUMBNAIL: 'thumbnail',
+  STORYBOARD: 'storyboard',
+  DRM: 'drm',
+} as const;
+
+export type MuxErrorCategory = typeof MuxErrorCategory;
+
+export type MuxErrorCategoryValue = MuxErrorCategory[keyof MuxErrorCategory];
+
 export class MediaError extends Error {
   static MEDIA_ERR_ABORTED = 1;
   static MEDIA_ERR_NETWORK = 2;
@@ -17,7 +29,8 @@ export class MediaError extends Error {
 
   name: string;
   code: number;
-  muxCode?: number;
+  public muxCode?: number;
+  public errorCategory?: MuxErrorCategoryValue;
   context?: string;
   fatal: boolean;
   data?: any;

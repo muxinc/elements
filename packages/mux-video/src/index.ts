@@ -26,6 +26,7 @@ import {
   getEnded,
   getChapters,
   toPlaybackIdFromSrc,
+  toPlaybackIdParts,
   // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
@@ -57,6 +58,7 @@ export const Attributes = {
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
   DRM_TOKEN: 'drm-token',
+  PLAYBACK_TOKEN: 'playback-token',
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
@@ -295,6 +297,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
+  // NOTE: playbackId may contain additional query params (e.g. token= for playback token) (CJP)
   get playbackId(): string | undefined {
     if (this.hasAttribute(Attributes.PLAYBACK_ID)) {
       return this.getAttribute(Attributes.PLAYBACK_ID) as string;
@@ -413,6 +416,36 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.setAttribute(Attributes.DRM_TOKEN, val);
     } else {
       this.removeAttribute(Attributes.DRM_TOKEN);
+    }
+  }
+
+  /**
+   * Get the playback token for signing the src URL.
+   */
+  get playbackToken() {
+    if (this.hasAttribute(Attributes.PLAYBACK_TOKEN)) {
+      return this.getAttribute(Attributes.PLAYBACK_TOKEN) ?? undefined;
+    }
+    if (this.hasAttribute(Attributes.PLAYBACK_ID)) {
+      const [, queryParts] = toPlaybackIdParts(this.playbackId ?? '');
+      return new URLSearchParams(queryParts).get('token') ?? undefined;
+    }
+    if (this.src) {
+      return new URLSearchParams(this.src).get('token') ?? undefined;
+    }
+    return undefined;
+  }
+
+  /**
+   * Set the playback token for signing the src URL.
+   */
+  set playbackToken(val: string | undefined) {
+    if (val === this.playbackToken) return;
+
+    if (val) {
+      this.setAttribute(Attributes.PLAYBACK_TOKEN, val);
+    } else {
+      this.removeAttribute(Attributes.PLAYBACK_TOKEN);
     }
   }
 

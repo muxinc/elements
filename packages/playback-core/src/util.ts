@@ -98,7 +98,13 @@ export const inferMimeTypeFromURL = (url: string) => {
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
 };
 
-export const parseJwt = (token: string | undefined) => {
+export type MuxJWT = {
+  sub: string;
+  aud: 'v' | 't' | 'g' | 's' | 'd';
+  exp: number;
+};
+
+export const parseJwt = (token: string | undefined): Partial<MuxJWT> | undefined => {
   const base64Url = (token ?? '').split('.')[1];
 
   // exit early on invalid value
@@ -121,7 +127,25 @@ export const parseJwt = (token: string | undefined) => {
   }
 };
 
-const lang: { [k: string]: string } = {
+export const isJWTExpired = ({ exp }: Partial<Pick<MuxJWT, 'exp'>>, referenceTime: number = Date.now()) => {
+  return !exp || exp * 1000 < referenceTime;
+};
+
+// NOTE: Treating missing sub (and expected sub) as mismatches for now (CJP)
+export const isJWTSubMismatch = ({ sub }: Partial<Pick<MuxJWT, 'sub'>>, expectedSub: string | undefined) => {
+  return sub !== expectedSub;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const isJWTAudMissing = ({ aud }: Partial<Pick<MuxJWT, 'aud'>>, _expectedAud: string | undefined) => {
+  return !aud;
+};
+
+export const isJWTAudMismatch = ({ aud }: Partial<Pick<MuxJWT, 'aud'>>, expectedAud: string | undefined) => {
+  return aud !== expectedAud;
+};
+
+export const lang: { [k: string]: string } = {
   '(opens in a new window)': '(opens in a new window)',
   'Network Error': 'Network Error',
   'Video is not currently available': 'Video is not currently available',

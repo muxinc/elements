@@ -1,18 +1,16 @@
 import { LoaderResponse } from 'hls.js';
-import { parseJwt } from './util';
+import {
+  i18n,
+  isJWTAudMismatch,
+  isJWTAudMissing,
+  isJWTExpired,
+  isJWTSubMismatch,
+  parseJwt,
+  toPlaybackIdParts,
+} from './util';
+import { isKeyOf, MuxMediaPropsInternal } from './types';
+import { MediaError } from './errors';
 
-// 3 digits for mux-specific codes
-// token related = 2xx
-//      generic 0x
-//          missing (but expected) - 01
-//          malformed - 02
-//      expiry - 1x
-//          expired - 10 (generic)
-//      audience - 2x
-//          missing - 21
-//          mismatch - 22
-//      subject - 3x
-//          mismatch - 32
 export const MuxErrorCode = {
   NOT_AN_ERROR: 0,
   UNKNOWN_ERROR: 2000000,
@@ -27,65 +25,183 @@ export const MuxErrorCode = {
   TOKEN_SUB_MISMATCH: 2403232,
 } as const;
 
-export const getErrorCodeFromResponse = (
-  resp: Pick<Response, 'status' | 'headers' | 'url'> | Pick<LoaderResponse, 'code' | 'url'>,
-  playbackId: string | undefined,
-  token?: string | undefined,
-  expectedAud?: string | undefined
+export const MuxJWTAud = {
+  VIDEO: 'v',
+  // NOTE: These are not "built in" for mux-video/mux-audio (only mux-player) (CJP)
+  THUMBNAIL: 't',
+  STORYBOARD: 's',
+  // GIF: 'g', // currently unused
+  DRM: 'd',
+} as const;
+
+// Identifies what kind of request was made that resulted in an error
+export const MuxErrorCategory = {
+  VIDEO: 'video',
+  // NOTE: These are not "built in" for mux-video/mux-audio (only mux-player) (CJP)
+  THUMBNAIL: 'thumbnail',
+  STORYBOARD: 'storyboard',
+  DRM: 'drm',
+} as const;
+
+export type MuxErrorCategory = typeof MuxErrorCategory;
+
+export type MuxErrorCategoryValue = MuxErrorCategory[keyof MuxErrorCategory];
+
+export const categoryToTokenNameOrPrefix = (category: MuxErrorCategoryValue) => {
+  if (category === MuxErrorCategory.VIDEO) return 'playback';
+  return category;
+};
+
+export const categoryToAud = (category: MuxErrorCategoryValue) => {
+  if (category === MuxErrorCategory.VIDEO) return MuxJWTAud.VIDEO;
+  if (category === MuxErrorCategory.DRM) return MuxJWTAud.DRM;
+};
+
+export const getErrorFromResponse = (
+  resp: Pick<Response, 'status' | 'url'> | Pick<LoaderResponse, 'code' | 'url'>,
+  category: MuxErrorCategoryValue,
+  muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken'>>,
+  translate = false
 ) => {
   const status = 'status' in resp ? resp.status : resp.code;
-  const requestDate = 'headers' in resp ? new Date(resp.headers.get('date') as string) : new Date();
+  const requestTime = Date.now();
+  const mediaErrorCode = MediaError.MEDIA_ERR_NETWORK;
   // Not an error. WHAT ARE YOU EVEN DOING HERE?!?
-  if (status === 200) return MuxErrorCode.NOT_AN_ERROR;
+  if (status === 200) return undefined;
+  const tokenNamePrefix = categoryToTokenNameOrPrefix(category);
+  const tokenName = `${tokenNamePrefix}Token` as const;
+  const token = isKeyOf(tokenName, muxMediaEl) ? muxMediaEl[tokenName] : undefined;
+  const expectedAud = categoryToAud(category);
+  const [playbackId] = toPlaybackIdParts(muxMediaEl.playbackId ?? '');
   /** @TODO How to handle this case (CJP) */
-  if (!status) return MuxErrorCode.NO_STATUS;
+  // NOTE: *should* have playback id when reaching here
+  // if (!status) return MuxErrorCode.NO_STATUS;
+  if (!status || !playbackId) return undefined;
 
   const jwtObj = parseJwt(token);
+  // Make sure we didn't get here because of a malformed JWT and/or claim
+  if (!!token && !jwtObj) {
+    console.error('malformed compact JWT DRM token string!');
+    /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
+    const mediaError = new MediaError();
+    mediaError.errorCategory = category;
+    mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
+    return mediaError;
+  }
+
   if (status >= 500) {
-    // Make sure we didn't get here because of a malformed JWT and/or claim
-    if (!!token && !jwtObj) {
-      console.error('malformed compact JWT DRM token string!');
-      return MuxErrorCode.TOKEN_MALFORMED;
-    } else {
-      /**
-       * @TODO We plausibly should have some basic retry logic for all other 500 status
-       * cases (CJP)
-       **/
-      console.error('generic server error!');
-      return MuxErrorCode.GENERIC_SERVER_FAIL;
-    }
-  } else if (status === 403 || status === 400) {
+    /**
+     * @TODO We plausibly should have some basic retry logic for all other 500 status
+     * cases (CJP)
+     **/
+    console.error('generic server error!');
+    const mediaError = new MediaError('', mediaErrorCode, true);
+    mediaError.errorCategory = category;
+    mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
+    /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
+    return mediaError;
+  }
+
+  if (status === 403 || status === 400) {
     if (jwtObj) {
-      /** @TODO aud mismatches are 403 for video URL responses but 400 here. Should change this for consistency (CJP) */
-      // Everything was "valid" but auth failed somehow
-      const { exp, aud, sub } = jwtObj;
-      if (exp * 1000 < requestDate.getTime()) {
-        console.error('DRM token expired!');
-        return MuxErrorCode.TOKEN_EXPIRED;
-      } else if (sub !== playbackId) {
-        console.error('DRM token Playback ID mismatch!');
-        return MuxErrorCode.TOKEN_SUB_MISMATCH;
-      } else if (!aud) {
-        console.error('missing JWT audience!');
-        return MuxErrorCode.TOKEN_AUD_MISSING;
-      } else if (aud !== expectedAud) {
-        console.error('incorrect JWT audience!');
-        return MuxErrorCode.TOKEN_AUD_MISMATCH;
+      if (isJWTExpired(jwtObj, requestTime)) {
+        const dateOptions: any = {
+          timeStyle: 'medium',
+          dateStyle: 'medium',
+        };
+        const message = i18n(`The video’s secured ${tokenNamePrefix}-token has expired.`, translate);
+        /** @TODO move lang build crud from mux-player to playback-core (See: esbuilder.js) (CJP) */
+        const context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
+          // expiredDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(tokenExpiry * 1000),
+          // currentDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(Date.now()),
+          expiredDate: new Intl.DateTimeFormat('en', dateOptions).format(jwtObj.exp ?? 0 * 1000),
+          currentDate: new Intl.DateTimeFormat('en', dateOptions).format(requestTime),
+        });
+        const mediaError = new MediaError(message, mediaErrorCode, true, context);
+        mediaError.errorCategory = category;
+        mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
+        return mediaError;
       }
-    } else {
-      /** @TODO omitted tokens are 403 for video URL responses but 400 here. Should change this for consistency (CJP) */
-      // NOTE: This *should* not happen, since the drm token
+      if (isJWTSubMismatch(jwtObj, playbackId)) {
+        const message = i18n(
+          `The video’s playback ID does not match the one encoded in the ${tokenNamePrefix}-token.`,
+          translate
+        );
+        const context = i18n(
+          `Specified playback ID: {playbackId} and the playback ID encoded in the ${tokenNamePrefix}-token: {tokenPlaybackId}`,
+          translate
+        ).format({
+          playbackId,
+          tokenPlaybackId: jwtObj.sub,
+        });
+        const mediaError = new MediaError(message, mediaErrorCode, true, context);
+        mediaError.errorCategory = category;
+        mediaError.muxCode = MuxErrorCode.TOKEN_SUB_MISMATCH;
+        return mediaError;
+      }
+      /** @TODO aud mismatches are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
+      if (isJWTAudMissing(jwtObj, expectedAud)) {
+        const message = i18n(`The ${tokenNamePrefix}-token is formatted with incorrect information.`, translate);
+        const context = i18n(
+          `The ${tokenNamePrefix}-token has no aud value. aud value should be ${expectedAud}.`,
+          translate
+        );
+        const mediaError = new MediaError(message, mediaErrorCode, true, context);
+        mediaError.errorCategory = category;
+        mediaError.muxCode = MuxErrorCode.TOKEN_AUD_MISSING;
+        return mediaError;
+      }
+      /** @TODO aud mismatches are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
+      if (isJWTAudMismatch(jwtObj, expectedAud)) {
+        const message = i18n(`The ${tokenNamePrefix}-token is formatted with incorrect information.`, translate);
+        const context = i18n(
+          `The ${tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be ${expectedAud}.`,
+          translate
+        ).format({
+          tokenType: jwtObj.aud,
+        });
+        const mediaError = new MediaError(message, mediaErrorCode, true, context);
+        mediaError.errorCategory = category;
+        mediaError.muxCode = MuxErrorCode.TOKEN_AUD_MISMATCH;
+        return mediaError;
+      }
+
+      /**
+       * @TODO invalid playback URLs and playback IDs are 404 for video URL responses but 400 for DRM. Should change this for consistency (CJP)
+       */
+
+      /** @TODO omitted tokens are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
+      // NOTE: This *should* not happen for DRM, since the drm token
       // is currently used to detect whether or not DRM should
       // be setup at all. Including for exhaustiveness. (CJP)
-      console.error('no DRM token provided!');
-      return MuxErrorCode.TOKEN_MISSING;
+    } else {
+      const message = i18n(
+        `${status ?? 403} error trying to access this ${category} URL. If this is a signed URL, you might need to provide a ${category} token.`,
+        translate
+      );
+      const mediaError = new MediaError(message, mediaErrorCode, true);
+      mediaError.errorCategory = category;
+      mediaError.muxCode = MuxErrorCode.TOKEN_MISSING;
+      return mediaError;
     }
-  } else if (status === 404) {
+  }
+
+  /**
+   * @TODO invalid playback URLs and playback IDs are 404 for video URL responses but 400 for DRM. Should change this for consistency (CJP)
+   */
+  if (status === 404) {
     // NOTE: This *should* not happen, since the URL should never be invalid if code
     // is correct. Aka if we end up here it's almost definitely a bug.
     // Including for exhaustiveness. (CJP)
-    console.error('url incorrect!');
-    return MuxErrorCode.NOT_FOUND;
+    const message = i18n(
+      `This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.`,
+      translate
+    );
+    const context = i18n(`Specified playback ID: ${playbackId}`, translate);
+    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    mediaError.errorCategory = category;
+    mediaError.muxCode = MuxErrorCode.NOT_FOUND;
+    return mediaError;
   }
-  return MuxErrorCode.UNKNOWN_ERROR;
+  return new MediaError('', mediaErrorCode, true); // MuxErrorCode.UNKNOWN_ERROR;
 };
