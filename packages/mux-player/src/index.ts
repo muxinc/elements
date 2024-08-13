@@ -80,6 +80,7 @@ const PlayerAttributes = {
   TARGET_LIVE_WINDOW: 'target-live-window',
   EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
+  CAST_RECEIVER: 'cast-receiver',
 };
 
 const ThemeAttributeNames = [
@@ -163,6 +164,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
+    castReceiver: el.castReceiver,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -1691,6 +1693,34 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   get textTracks() {
     return this.media?.textTracks;
+  }
+
+  get castReceiver(): string | undefined {
+    return this.getAttribute(PlayerAttributes.CAST_RECEIVER) ?? undefined;
+  }
+
+  set castReceiver(val: string | undefined) {
+    if (val === this.castReceiver) return;
+    if (val) {
+      this.setAttribute(PlayerAttributes.CAST_RECEIVER, val);
+    } else {
+      this.removeAttribute(PlayerAttributes.CAST_RECEIVER);
+    }
+  }
+
+  get castCustomData() {
+    return this.media?.castCustomData;
+  }
+
+  set castCustomData(val) {
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error(
+        'underlying media element missing when trying to set castCustomData. castCustomData will not be set.'
+      );
+      return;
+    }
+    this.media.castCustomData = val;
   }
 }
 

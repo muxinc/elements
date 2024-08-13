@@ -54,6 +54,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   hotKeys: AttributeTokenList;
   title: string;
   defaultStreamType?: ValueOf<StreamTypes>;
+  castReceiver: string | undefined;
 };
 
 export type DialogOptions = {
