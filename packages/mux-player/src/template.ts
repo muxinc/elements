@@ -128,7 +128,7 @@ export const content = (props: MuxTemplateProps) => html`
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
       cast-src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
-      cast-receiver="${!!props.castReceiver ?? false}"
+      cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
       exportparts="video"
     >
