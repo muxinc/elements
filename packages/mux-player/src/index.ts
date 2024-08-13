@@ -80,6 +80,7 @@ const PlayerAttributes = {
   TARGET_LIVE_WINDOW: 'target-live-window',
   EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
+  CAST_RECEIVER: 'cast-receiver',
 };
 
 const ThemeAttributeNames = [
@@ -163,6 +164,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
+    castReceiver: el.castReceiver,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -636,20 +638,35 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         break;
       }
       case PlayerAttributes.THUMBNAIL_TOKEN: {
-        const { aud } = parseJwt(newValue);
-        if (newValue && aud !== 't') {
-          logger.warn(
-            i18n(`The provided thumbnail-token should have audience value 't' instead of '{aud}'.`).format({ aud })
-          );
+        if (newValue) {
+          const { aud } = parseJwt(newValue);
+          if (aud !== 't') {
+            logger.warn(
+              i18n(`The provided thumbnail-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
+            );
+          }
         }
         break;
       }
       case PlayerAttributes.STORYBOARD_TOKEN: {
-        const { aud } = parseJwt(newValue);
-        if (newValue && aud !== 's') {
-          logger.warn(
-            i18n(`The provided storyboard-token should have audience value 's' instead of '{aud}'.`).format({ aud })
-          );
+        if (newValue) {
+          const { aud } = parseJwt(newValue);
+          if (aud !== 's') {
+            logger.warn(
+              i18n(`The provided storyboard-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
+            );
+          }
+        }
+        break;
+      }
+      case PlayerAttributes.DRM_TOKEN: {
+        if (newValue) {
+          const { aud } = parseJwt(newValue);
+          if (aud !== 'd') {
+            logger.warn(
+              i18n(`The provided drm-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
+            );
+          }
         }
         break;
       }
@@ -850,6 +867,14 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   get poster() {
     const val = this.getAttribute(VideoAttributes.POSTER);
     if (val != null) return val;
+    // If a playback token but no thumbnail token is provided,
+    // assume a token is required for the thumbnail/poster URL and
+    // simply avoid requesting it in this case.
+    const { tokens } = this;
+    if (tokens.playback && !tokens.thumbnail) {
+      logger.warn('Missing expected thumbnail token. No poster image will be shown');
+      return undefined;
+    }
 
     // Get the derived poster if a playbackId is present.
     if (this.playbackId && !this.audio) {
@@ -857,7 +882,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         customDomain: this.customDomain,
         thumbnailTime: this.thumbnailTime ?? this.startTime,
         programTime: this.programStartTime,
-        token: this.tokens.thumbnail,
+        token: tokens.thumbnail,
       });
     }
 
@@ -898,21 +923,26 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * we aren't an audio player and the stream-type isn't live.
    */
   get storyboard() {
+    const { tokens } = this;
     // If the storyboardSrc has been explicitly set, assume it should be used
-    if (this.storyboardSrc && !this.tokens.storyboard) return this.storyboardSrc;
+    if (this.storyboardSrc && !tokens.storyboard) return this.storyboardSrc;
     if (
       // NOTE: Some audio use cases may have a storyboard (e.g. it's an audio+video stream being played *as* audio)
       // Consider supporting cases (CJP)
       this.audio ||
       !this.playbackId ||
       !this.streamType ||
-      [StreamTypes.LIVE, StreamTypes.UNKNOWN].includes(this.streamType as any)
+      [StreamTypes.LIVE, StreamTypes.UNKNOWN].includes(this.streamType as any) ||
+      // If a playback token but no storyboard token is provided,
+      // assume a token is required for the storyboard URL URL and
+      // simply avoid requesting it in this case.
+      (tokens.playback && !tokens.storyboard)
     ) {
       return undefined;
     }
     return getStoryboardURLFromPlaybackId(this.playbackId, {
       customDomain: this.customDomain,
-      token: this.tokens.storyboard,
+      token: tokens.storyboard,
       programStartTime: this.programStartTime,
       programEndTime: this.programEndTime,
     });
@@ -1663,6 +1693,34 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   get textTracks() {
     return this.media?.textTracks;
+  }
+
+  get castReceiver(): string | undefined {
+    return this.getAttribute(PlayerAttributes.CAST_RECEIVER) ?? undefined;
+  }
+
+  set castReceiver(val: string | undefined) {
+    if (val === this.castReceiver) return;
+    if (val) {
+      this.setAttribute(PlayerAttributes.CAST_RECEIVER, val);
+    } else {
+      this.removeAttribute(PlayerAttributes.CAST_RECEIVER);
+    }
+  }
+
+  get castCustomData() {
+    return this.media?.castCustomData;
+  }
+
+  set castCustomData(val) {
+    // NOTE: This condition should never be met. If it is, there is a bug (CJP)
+    if (!this.media) {
+      logger.error(
+        'underlying media element missing when trying to set castCustomData. castCustomData will not be set.'
+      );
+      return;
+    }
+    this.media.castCustomData = val;
   }
 }
 

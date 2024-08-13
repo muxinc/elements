@@ -128,6 +128,7 @@ export const content = (props: MuxTemplateProps) => html`
       custom-domain="${props.customDomain ?? false}"
       src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
       cast-src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
+      cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
       exportparts="video"
     >
@@ -139,7 +140,7 @@ export const content = (props: MuxTemplateProps) => html`
       <media-poster-image
         part="poster"
         exportparts="poster, img"
-        src="${props.poster === '' ? false : props.poster ?? false}"
+        src="${!!props.poster ? props.poster : false}"
         placeholdersrc="${props.placeholder ?? false}"
       ></media-poster-image>
     </slot>

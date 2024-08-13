@@ -711,7 +711,48 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
 }
 
 // castable-video should be mixed in last so that it can override load().
-class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {}
+class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {
+  // NOTE: CastableMediaMixin needs to be a subclass of whatever implements the load() method
+  // (i.e. MuxVideoBaseElement), but we're overriding castCustomData to provide mux-specific
+  // values by default, so it needs to be defined here (i.e. in the composed subclass of
+  // CastableMediaMixin). (CJP)
+  #castCustomData: Record<string, any> | undefined;
+
+  get muxCastCustomData() {
+    return {
+      mux: {
+        // Mux Video values
+        playbackId: this.playbackId,
+        minResolution: this.minResolution,
+        maxResolution: this.maxResolution,
+        renditionOrder: this.renditionOrder,
+        customDomain: this.customDomain,
+        /** @TODO Add this.tokens to MuxVideoElement (CJP) */
+        tokens: {
+          drm: this.drmToken,
+        },
+        // Mux Data values
+        envKey: this.envKey,
+        metadata: this.metadata,
+        disableCookies: this.disableCookies,
+        disableTracking: this.disableTracking,
+        beaconCollectionDomain: this.beaconCollectionDomain,
+        // Playback values
+        startTime: this.startTime,
+        // Other values
+        preferCmcd: this.preferCmcd,
+      },
+    } as const;
+  }
+
+  get castCustomData() {
+    return this.#castCustomData ?? this.muxCastCustomData;
+  }
+
+  set castCustomData(val: Record<string, any> | undefined) {
+    this.#castCustomData = val;
+  }
+}
 
 type MuxVideoElementType = typeof MuxVideoElement;
 declare global {

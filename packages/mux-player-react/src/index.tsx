@@ -75,6 +75,8 @@ export type MuxPlayerProps = {
   className?: string;
   hotkeys?: string;
   nohotkeys?: boolean;
+  castReceiver?: string | undefined;
+  castCustomData?: Record<string, any> | undefined;
   defaultHiddenCaptions?: boolean;
   playerSoftwareVersion?: string;
   playerSoftwareName?: string;
@@ -190,6 +192,7 @@ const usePlayer = (
     currentTime,
     themeProps,
     extraSourceParams,
+    castCustomData,
     _hlsConfig,
     ...remainingProps
   } = props;
@@ -200,6 +203,7 @@ const usePlayer = (
   useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('playbackId', playbackId, ref);
+  useObjectPropEffect('castCustomData', castCustomData, ref);
   useObjectPropEffect(
     'paused',
     paused,

@@ -52,6 +52,7 @@
 | `default-show-remaining-time` | `boolean`                                                                                                   | Show remaining playback time (instead of current playback time) by default                                                                                                                                                                                                                                                                                                                       | `false`       |
 | `title`                       | `string`                                                                                                    | Title text to show for your content in the Mux Player UI.                                                                                                                                                                                                                                                                                                                                        | `""`          |
 | `placeholder`                 | `string` (URI)                                                                                              | Image to show as various assets load. Typically a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs) when used                                                                                                                                                                                                                                               | N/A           |
+| `cast-receiver` | `string` (Receiver ID) | The app ID to use for a custom [Google cast receiver](https://developers.google.com/cast/docs/web_receiver/basic). If none is provided, the default receiver app will be used. | N/A |
 
 <!-- UNDOCUMENTED
 // NEW STREAM TYPE VALUES
@@ -150,6 +151,8 @@
 | `chapters` <sub><sup>Read only</sup></sub> | `Array<{ startTime: number; endTime?: number, value: string; }>` | The array of Chapters for the current media, added via `addChapters(chapters)`. | `[]` |
 | `activeCuePoint` <sub><sup>Read only</sup></sub> | `{ startTime: number; endTime?: number, value: any; }` | The current active CuePoint, determined based on the player's `currentTime`. | `undefined` |
 | `activeChapter` <sub><sup>Read only</sup></sub> | `{ startTime: number; endTime?: number, value: string; }` | The current active Chapter, determined based on the player's `currentTime`. | `undefined` |
+| `castReceiver` | `string` (Receiver ID) | The app ID to use for a custom [Google cast receiver](https://developers.google.com/cast/docs/web_receiver/basic). If none is provided, the default receiver app will be used. | `undefined` |
+| `castCustomData` | `object` (JSON-serializable) | [Custom Data](https://developers.google.com/cast/docs/reference/web_sender/chrome.cast.media.MediaInfo#customData) to send to your Google cast receiver on initial load. If none is provided, various Mux key/value pairs will be sent. | Mux-specific object |
 
 <!-- UNDOCUMENTED
 // NEW STREAM TYPE VALUES
