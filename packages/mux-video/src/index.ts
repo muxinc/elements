@@ -725,6 +725,7 @@ class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseEl
         playbackId: this.playbackId,
         minResolution: this.minResolution,
         maxResolution: this.maxResolution,
+        renditionOrder: this.renditionOrder,
         customDomain: this.customDomain,
         /** @TODO Add this.tokens to MuxVideoElement (CJP) */
         tokens: {
