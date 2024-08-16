@@ -163,20 +163,23 @@ export const lang: { [k: string]: string } = {
   '403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.':
     '403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.',
   'Video URL has expired': 'Video URL has expired',
-  'The video’s secured playback-token has expired.': 'The video’s secured playback-token has expired.',
+  'The video’s secured {tokenNamePrefix}-token has expired.':
+    'The video’s secured {tokenNamePrefix}-token has expired.',
   'This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.':
     'This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.',
   'Video URL is formatted incorrectly': 'Video URL is formatted incorrectly',
-  'The video’s playback ID does not match the one encoded in the playback-token.':
-    'The video’s playback ID does not match the one encoded in the playback-token.',
+  'The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.':
+    'The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.',
   'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.':
     'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.',
-  'The playback-token is formatted with incorrect information.':
-    'The playback-token is formatted with incorrect information.',
-  'The playback-token has an incorrect aud value: {tokenType}. aud value should be v.':
-    'The playback-token has an incorrect aud value: {tokenType}. aud value should be v.',
-  '403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.':
-    '403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.',
+  'The {tokenNamePrefix}-token is formatted with incorrect information.':
+    'The {tokenNamePrefix}-token is formatted with incorrect information.',
+  'The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.':
+    'The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.',
+  'The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.':
+    'The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.',
+  'Authorization error trying to access this {category} URL. If this is a signed playback ID, you might need to provide a {category} token.':
+    'Authorization error trying to access this {category} URL. If this is a signed playback ID, you might need to provide a {category} token.',
   'Media Error': 'Media Error',
   'Source Not Supported': 'Source Not Supported',
   Error: 'Error',

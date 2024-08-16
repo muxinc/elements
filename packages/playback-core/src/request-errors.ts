@@ -109,7 +109,9 @@ export const getErrorFromResponse = (
           timeStyle: 'medium',
           dateStyle: 'medium',
         };
-        const message = i18n(`The video’s secured ${tokenNamePrefix}-token has expired.`, translate);
+        const message = i18n(`The video’s secured {tokenNamePrefix}-token has expired.`, translate).format({
+          tokenNamePrefix,
+        });
         /** @TODO move lang build crud from mux-player to playback-core (See: esbuilder.js) (CJP) */
         const context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
           // expiredDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(tokenExpiry * 1000),
@@ -124,13 +126,16 @@ export const getErrorFromResponse = (
       }
       if (isJWTSubMismatch(jwtObj, playbackId)) {
         const message = i18n(
-          `The video’s playback ID does not match the one encoded in the ${tokenNamePrefix}-token.`,
-          translate
-        );
-        const context = i18n(
-          `Specified playback ID: {playbackId} and the playback ID encoded in the ${tokenNamePrefix}-token: {tokenPlaybackId}`,
+          `The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.`,
           translate
         ).format({
+          tokenNamePrefix,
+        });
+        const context = i18n(
+          `Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}`,
+          translate
+        ).format({
+          tokenNamePrefix,
           playbackId,
           tokenPlaybackId: jwtObj.sub,
         });
@@ -141,11 +146,16 @@ export const getErrorFromResponse = (
       }
       /** @TODO aud mismatches are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
       if (isJWTAudMissing(jwtObj, expectedAud)) {
-        const message = i18n(`The ${tokenNamePrefix}-token is formatted with incorrect information.`, translate);
+        const message = i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
+          tokenNamePrefix,
+        });
         const context = i18n(
-          `The ${tokenNamePrefix}-token has no aud value. aud value should be ${expectedAud}.`,
+          `The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.`,
           translate
-        );
+        ).format({
+          tokenNamePrefix,
+          expectedAud,
+        });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
         mediaError.muxCode = MuxErrorCode.TOKEN_AUD_MISSING;
@@ -153,11 +163,15 @@ export const getErrorFromResponse = (
       }
       /** @TODO aud mismatches are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
       if (isJWTAudMismatch(jwtObj, expectedAud)) {
-        const message = i18n(`The ${tokenNamePrefix}-token is formatted with incorrect information.`, translate);
+        const message = i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
+          tokenNamePrefix,
+        });
         const context = i18n(
-          `The ${tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be ${expectedAud}.`,
+          `The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.`,
           translate
         ).format({
+          tokenNamePrefix,
+          expectedAud,
           tokenType: jwtObj.aud,
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
@@ -176,9 +190,12 @@ export const getErrorFromResponse = (
       // be setup at all. Including for exhaustiveness. (CJP)
     } else {
       const message = i18n(
-        `Authorization error trying to access this ${category} URL. If this is a signed URL, you might need to provide a ${category} token.`,
+        `Authorization error trying to access this {category} URL. If this is a signed URL, you might need to provide a {category} token.`,
         translate
-      );
+      ).format({
+        tokenNamePrefix,
+        category,
+      });
       const mediaError = new MediaError(message, mediaErrorCode, true);
       mediaError.errorCategory = category;
       mediaError.muxCode = MuxErrorCode.TOKEN_MISSING;
@@ -197,7 +214,7 @@ export const getErrorFromResponse = (
       `This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.`,
       translate
     );
-    const context = i18n(`Specified playback ID: ${playbackId}`, translate);
+    const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
     const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NOT_FOUND;
