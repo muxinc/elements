@@ -57,10 +57,20 @@ export const categoryToAud = (category: MuxErrorCategoryValue) => {
   if (category === MuxErrorCategory.DRM) return MuxJWTAud.DRM;
 };
 
+export const categoryToToken = (
+  category: MuxErrorCategoryValue,
+  muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'drmToken' | 'playbackToken' | 'tokens'>>
+) => {
+  const nameOrPrefix = categoryToTokenNameOrPrefix(category);
+  const tokenName = `${nameOrPrefix}Token` as const;
+  if (muxMediaEl.tokens?.[nameOrPrefix]) return muxMediaEl.tokens?.[nameOrPrefix];
+  return isKeyOf(tokenName, muxMediaEl) ? muxMediaEl[tokenName] : undefined;
+};
+
 export const getErrorFromResponse = (
   resp: Pick<Response, 'status' | 'url'> | Pick<LoaderResponse, 'code' | 'url'>,
   category: MuxErrorCategoryValue,
-  muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken'>>,
+  muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>,
   translate = false
 ) => {
   const status = 'status' in resp ? resp.status : resp.code;
@@ -69,8 +79,7 @@ export const getErrorFromResponse = (
   // Not an error. WHAT ARE YOU EVEN DOING HERE?!?
   if (status === 200) return undefined;
   const tokenNamePrefix = categoryToTokenNameOrPrefix(category);
-  const tokenName = `${tokenNamePrefix}Token` as const;
-  const token = isKeyOf(tokenName, muxMediaEl) ? muxMediaEl[tokenName] : undefined;
+  const token = categoryToToken(category, muxMediaEl);
   const expectedAud = categoryToAud(category);
   const [playbackId] = toPlaybackIdParts(muxMediaEl.playbackId ?? '');
   /** @TODO How to handle this case (CJP) */
@@ -81,6 +90,7 @@ export const getErrorFromResponse = (
   const jwtObj = parseJwt(token);
   // Make sure we didn't get here because of a malformed JWT and/or claim
   if (!!token && !jwtObj) {
+    // 403 for DRM
     console.error('malformed compact JWT DRM token string!');
     /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
     const mediaError = new MediaError();
@@ -104,6 +114,7 @@ export const getErrorFromResponse = (
 
   if (status === 403 || status === 400) {
     if (jwtObj) {
+      // 403 for DRM
       if (isJWTExpired(jwtObj, requestTime)) {
         const dateOptions: any = {
           timeStyle: 'medium',
@@ -112,7 +123,6 @@ export const getErrorFromResponse = (
         const message = i18n(`The video’s secured {tokenNamePrefix}-token has expired.`, translate).format({
           tokenNamePrefix,
         });
-        /** @TODO move lang build crud from mux-player to playback-core (See: esbuilder.js) (CJP) */
         const context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
           expiredDate: new Intl.DateTimeFormat('en', dateOptions).format(jwtObj.exp ?? 0 * 1000),
           currentDate: new Intl.DateTimeFormat('en', dateOptions).format(requestTime),
@@ -122,6 +132,7 @@ export const getErrorFromResponse = (
         mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
         return mediaError;
       }
+      // 403 for DRM
       if (isJWTSubMismatch(jwtObj, playbackId)) {
         const message = i18n(
           `The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.`,
@@ -142,7 +153,7 @@ export const getErrorFromResponse = (
         mediaError.muxCode = MuxErrorCode.TOKEN_SUB_MISMATCH;
         return mediaError;
       }
-      /** @TODO aud mismatches are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
+      // 403 for DRM
       if (isJWTAudMissing(jwtObj, expectedAud)) {
         const message = i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
           tokenNamePrefix,
@@ -159,7 +170,7 @@ export const getErrorFromResponse = (
         mediaError.muxCode = MuxErrorCode.TOKEN_AUD_MISSING;
         return mediaError;
       }
-      /** @TODO aud mismatches are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
+      // 403 for DRM
       if (isJWTAudMismatch(jwtObj, expectedAud)) {
         const message = i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
           tokenNamePrefix,
