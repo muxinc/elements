@@ -12,6 +12,7 @@ import {
   removeTextTrack,
   CmcdTypes,
   CmcdTypeValues,
+  i18n,
 } from '@mux/playback-core';
 import type {
   ValueOf,
@@ -36,7 +37,7 @@ import {
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
-import { toNumberOrUndefined, i18n, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
+import { toNumberOrUndefined, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 import './themes/gerwig';
@@ -636,9 +637,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       case PlayerAttributes.THUMBNAIL_TIME: {
         if (newValue != null && this.tokens.thumbnail) {
           logger.warn(
-            i18n(`Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`).format(
-              {}
-            )
+            i18n(`Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`)
           );
         }
         break;

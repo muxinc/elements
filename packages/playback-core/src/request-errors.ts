@@ -114,8 +114,6 @@ export const getErrorFromResponse = (
         });
         /** @TODO move lang build crud from mux-player to playback-core (See: esbuilder.js) (CJP) */
         const context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
-          // expiredDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(tokenExpiry * 1000),
-          // currentDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(Date.now()),
           expiredDate: new Intl.DateTimeFormat('en', dateOptions).format(jwtObj.exp ?? 0 * 1000),
           currentDate: new Intl.DateTimeFormat('en', dateOptions).format(requestTime),
         });
@@ -190,7 +188,7 @@ export const getErrorFromResponse = (
       // be setup at all. Including for exhaustiveness. (CJP)
     } else {
       const message = i18n(
-        `Authorization error trying to access this {category} URL. If this is a signed URL, you might need to provide a {category} token.`,
+        `Authorization error trying to access this {category} URL. If this is a signed URL, you might need to provide a {tokenNamePrefix}-token.`,
         translate
       ).format({
         tokenNamePrefix,

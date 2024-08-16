@@ -1,8 +1,9 @@
 import { MediaError } from '@mux/mux-video';
 // @ts-ignore
 import lang from '../lang/en.json';
-import { i18n, parseJwt } from './utils';
+import { parseJwt } from './utils';
 import type { DialogOptions, DevlogOptions } from './types';
+import { i18n } from '@mux/playback-core';
 
 export function getErrorLogs(
   error: MediaError,

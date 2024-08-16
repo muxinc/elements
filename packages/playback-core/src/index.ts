@@ -34,6 +34,7 @@ import {
   toStreamTypeFromPlaylistType,
   toTargetLiveWindowFromPlaylistType,
   addEventListenerWithTeardown,
+  i18n,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import type { HlsConfig } from 'hls.js';
@@ -57,6 +58,7 @@ export {
   getStartDate,
   getCurrentPdt,
   toPlaybackIdParts,
+  i18n,
 };
 export * from './types';
 

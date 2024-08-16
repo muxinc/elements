@@ -153,8 +153,8 @@ export const lang: { [k: string]: string } = {
   'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.':
     'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.',
   'Video does not exist': 'Video does not exist',
-  'This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.':
-    'This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.',
+  'This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.':
+    'This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.',
   'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.':
     'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.',
   'Invalid playback URL': 'Invalid playback URL',
@@ -165,11 +165,12 @@ export const lang: { [k: string]: string } = {
   'Video URL has expired': 'Video URL has expired',
   'The video’s secured {tokenNamePrefix}-token has expired.':
     'The video’s secured {tokenNamePrefix}-token has expired.',
-  'This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.':
-    'This playback is using signed URLs and the playback-token has expired. Expired at: {expiredDate}. Current time: {currentDate}.',
+  'Expired at: {expiredDate}. Current time: {currentDate}.': 'Expired at: {expiredDate}. Current time: {currentDate}.',
   'Video URL is formatted incorrectly': 'Video URL is formatted incorrectly',
   'The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.':
     'The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.',
+  'Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}':
+    'Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}',
   'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.':
     'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.',
   'The {tokenNamePrefix}-token is formatted with incorrect information.':
@@ -178,8 +179,8 @@ export const lang: { [k: string]: string } = {
     'The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.',
   'The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.':
     'The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.',
-  'Authorization error trying to access this {category} URL. If this is a signed playback ID, you might need to provide a {category} token.':
-    'Authorization error trying to access this {category} URL. If this is a signed playback ID, you might need to provide a {category} token.',
+  'Authorization error trying to access this {category} URL. If this is a signed URL, you might need to provide a {tokenNamePrefix}-token.':
+    'Authorization error trying to access this {category} URL. If this is a signed URL, you might need to provide a {tokenNamePrefix}-token.',
   'Media Error': 'Media Error',
   'Source Not Supported': 'Source Not Supported',
   Error: 'Error',
