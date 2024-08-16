@@ -40,6 +40,7 @@ import type {
   RenditionOrderValue,
   Chapter,
   CuePoint,
+  Tokens,
 } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
@@ -92,6 +93,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   #loadRequested?: Promise<void> | null;
   #playerInitTime: number;
   #metadata: Readonly<Metadata> = {};
+  #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;
   #playerSoftwareVersion?: string;
   #playerSoftwareName?: string;
@@ -447,6 +449,20 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     } else {
       this.removeAttribute(Attributes.PLAYBACK_TOKEN);
     }
+  }
+
+  get tokens() {
+    const playback = this.getAttribute(Attributes.PLAYBACK_TOKEN);
+    const drm = this.getAttribute(Attributes.DRM_TOKEN);
+    return {
+      ...this.#tokens,
+      ...(playback != null ? { playback } : {}),
+      ...(drm != null ? { drm } : {}),
+    };
+  }
+
+  set tokens(val) {
+    this.#tokens = val ?? {};
   }
 
   get ended() {

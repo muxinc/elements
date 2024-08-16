@@ -153,6 +153,13 @@ export type MaxResolutionValue = ValueOf<typeof MaxResolution>;
 export type MinResolutionValue = ValueOf<typeof MinResolution>;
 export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
 
+export type Tokens = {
+  playback?: string;
+  drm?: string;
+  thumbnail?: string;
+  storyboard?: string;
+};
+
 export type MuxMediaPropTypes = {
   _hlsConfig?: Partial<HlsConfig>;
   autoPlay?: Autoplay;
@@ -181,7 +188,9 @@ export type MuxMediaPropTypes = {
   startTime: Hls['config']['startPosition'];
   streamType: ValueOf<StreamTypes>;
   targetLiveWindow: number;
+  tokens: Tokens;
   type: MediaTypes;
+  extraSourceParams: Record<string, any>;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;

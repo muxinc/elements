@@ -27,7 +27,20 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-video-react';
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>((props, ref) => {
-  const { playbackId, src: outerSrc, children, autoPlay, preload, ...restProps } = props;
+  const {
+    playbackId,
+    src: outerSrc,
+    children,
+    autoPlay,
+    preload,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    tokens,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    playbackToken,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    drmToken,
+    ...restProps
+  } = props;
 
   const nativeVideoProps = Object.fromEntries(
     Object.entries(restProps).filter(([key]) => !Object.keys(MuxVideo.propTypes as any).includes(key))
@@ -91,7 +104,7 @@ MuxVideo.propTypes = {
   disableTracking: PropTypes.bool,
   drmToken: PropTypes.string,
   envKey: PropTypes.string,
-  errorTranslator: PropTypes.any,
+  errorTranslator: PropTypes.func,
   liveEdgeStart: PropTypes.number,
   maxResolution: PropTypes.oneOf(['720p', '1080p', '1440p', '2160p']),
   metadata: PropTypes.any,
@@ -107,6 +120,7 @@ MuxVideo.propTypes = {
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   targetLiveWindow: PropTypes.number,
+  tokens: PropTypes.object,
   type: PropTypes.oneOf(allMediaTypes),
 };
 

@@ -1,4 +1,4 @@
-import { LoaderResponse } from 'hls.js';
+import type { LoaderResponse } from 'hls.js';
 import {
   i18n,
   isJWTAudMismatch,
@@ -176,7 +176,7 @@ export const getErrorFromResponse = (
       // be setup at all. Including for exhaustiveness. (CJP)
     } else {
       const message = i18n(
-        `${status ?? 403} error trying to access this ${category} URL. If this is a signed URL, you might need to provide a ${category} token.`,
+        `Authorization error trying to access this ${category} URL. If this is a signed URL, you might need to provide a ${category} token.`,
         translate
       );
       const mediaError = new MediaError(message, mediaErrorCode, true);

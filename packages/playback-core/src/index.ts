@@ -3,9 +3,7 @@ import type {
   PlaybackCore,
   MuxMediaProps,
   MuxMediaPropsInternal,
-  MaxResolutionValue,
-  MinResolutionValue,
-  RenditionOrderValue,
+  MuxMediaPropTypes,
 } from './types';
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
@@ -291,21 +289,21 @@ export const generatePlayerInitTime = () => {
 
 export const generateUUID = mux.utils.generateUUID;
 
-type MuxVideoURLProps = Partial<{
-  playbackId: string;
-  customDomain: string;
-  maxResolution: MaxResolutionValue;
-  minResolution: MinResolutionValue;
-  renditionOrder: RenditionOrderValue;
-  programStartTime: number;
-  programEndTime: number;
-  tokens: Partial<{
-    playback: string;
-    storyboard: string;
-    thumbnail: string;
-  }>;
-  extraSourceParams: Record<string, any>;
-}>;
+type MuxVideoURLProps = Partial<
+  Pick<
+    MuxMediaPropTypes,
+    | 'playbackId'
+    | 'customDomain'
+    | 'maxResolution'
+    | 'minResolution'
+    | 'renditionOrder'
+    | 'programStartTime'
+    | 'programEndTime'
+    | 'tokens'
+    | 'playbackToken'
+    | 'extraSourceParams'
+  >
+>;
 
 export const toMuxVideoURL = ({
   playbackId: playbackIdWithParams,
@@ -315,10 +313,13 @@ export const toMuxVideoURL = ({
   renditionOrder,
   programStartTime,
   programEndTime,
-  tokens: { playback: token } = {},
+  // Normalizes different ways of providing playback token
+  playbackToken,
+  tokens: { playback: token = playbackToken } = {},
   extraSourceParams = {},
 }: MuxVideoURLProps = {}) => {
   if (!playbackIdWithParams) return undefined;
+  // Normalizes different ways of providing playback id
   const [playbackId, queryPart = ''] = toPlaybackIdParts(playbackIdWithParams);
   const url = new URL(`https://stream.${domain}/${playbackId}.m3u8${queryPart}`);
   /*
@@ -566,15 +567,7 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaPropsInternal,
-      | 'debug'
-      | 'streamType'
-      | 'type'
-      | 'startTime'
-      | 'metadata'
-      | 'preferCmcd'
-      | '_hlsConfig'
-      | 'drmToken'
-      | 'drmTypeCb'
+      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'tokens' | 'drmTypeCb'
     >
   >,
   mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
@@ -646,14 +639,14 @@ export const getStreamTypeConfig = (streamType?: ValueOf<StreamTypes>) => {
 };
 
 export const getDRMConfig = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'drmToken' | 'customDomain' | 'drmTypeCb'>>
+  props: Partial<Pick<MuxMediaPropsInternal, 'src' | 'playbackId' | 'tokens' | 'customDomain' | 'drmTypeCb'>>
 ): Partial<HlsConfig> => {
   const {
-    drmToken,
+    tokens: { drm: drmToken } = {},
     playbackId: playbackIdWithOptionalParams, // Since Mux Player typically sets `src` instead of `playbackId`, fall back to it here (CJP)
     drmTypeCb,
   } = props;
-  const [playbackId] = playbackIdWithOptionalParams ? toPlaybackIdParts(playbackIdWithOptionalParams) : [];
+  const playbackId = toPlaybackIdFromParameterized(playbackIdWithOptionalParams);
   if (!drmToken || !playbackId) return {};
   return {
     emeEnabled: true,
@@ -723,9 +716,7 @@ export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: stri
 };
 
 export const setupNativeFairplayDRM = (
-  props: Partial<
-    Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>
-  >,
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
   mediaEl: HTMLMediaElement
 ) => {
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
@@ -822,12 +813,13 @@ export const setupNativeFairplayDRM = (
 
 export const toLicenseKeyURL = (
   {
-    playbackId /** @TODO playbackId may contain optional params. Account for this. (CJP) */,
-    drmToken: token,
+    playbackId: playbackIdWithParams,
+    tokens: { drm: token } = {},
     customDomain = MUX_VIDEO_DOMAIN,
-  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
+  const playbackId = toPlaybackIdFromParameterized(playbackIdWithParams);
   // NOTE: Mux Video currently doesn't support custom domains for license/DRM endpoints, but
   // customDomain can also be used for internal use cases, so treat that as an exception case for now. (CJP)
   const domain = customDomain.toLocaleLowerCase().endsWith(MUX_VIDEO_DOMAIN) ? customDomain : MUX_VIDEO_DOMAIN;
@@ -836,12 +828,13 @@ export const toLicenseKeyURL = (
 
 export const toAppCertURL = (
   {
-    playbackId /** @TODO playbackId may contain optional params. Account for this. (CJP) */,
-    drmToken: token,
+    playbackId: playbackIdWithParams,
+    tokens: { drm: token } = {},
     customDomain = MUX_VIDEO_DOMAIN,
-  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'customDomain'>>,
+  }: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'customDomain'>>,
   scheme: 'widevine' | 'playready' | 'fairplay'
 ) => {
+  const playbackId = toPlaybackIdFromParameterized(playbackIdWithParams);
   // NOTE: Mux Video currently doesn't support custom domains for license/DRM endpoints, but
   // customDomain can also be used for internal use cases, so treat that as an exception case for now. (CJP)
   const domain = customDomain.toLocaleLowerCase().endsWith(MUX_VIDEO_DOMAIN) ? customDomain : MUX_VIDEO_DOMAIN;
@@ -950,7 +943,7 @@ export const loadMedia = (
       | 'streamType'
       | 'autoplay'
       | 'playbackId'
-      | 'drmToken'
+      | 'tokens'
       | 'customDomain'
     >
   >,
@@ -1075,7 +1068,7 @@ export const loadMedia = (
       }
 
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
-      if (props.drmToken) {
+      if (props.tokens?.drm) {
         setupNativeFairplayDRM(props, mediaEl);
       }
 

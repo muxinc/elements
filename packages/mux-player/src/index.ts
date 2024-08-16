@@ -22,6 +22,7 @@ import type {
   RenditionOrderValue,
   Chapter,
   CuePoint,
+  Tokens,
 } from '@mux/playback-core';
 import VideoApiElement from './video-api';
 import {
@@ -42,13 +43,9 @@ import './themes/gerwig';
 import { HlsConfig } from 'hls.js';
 const DefaultThemeName = 'gerwig';
 
+export type { Tokens };
+
 export { MediaError };
-export type Tokens = {
-  playback?: string;
-  drm?: string;
-  thumbnail?: string;
-  storyboard?: string;
-};
 
 const VideoAttributes = {
   SRC: 'src',
@@ -281,7 +278,7 @@ interface MuxPlayerElement
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   #isInit = false;
-  #tokens = {};
+  #tokens: Tokens = {};
   #userInactive = true;
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
   #state: Partial<MuxTemplateProps> = {

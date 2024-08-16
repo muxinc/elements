@@ -27,7 +27,8 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-audio-react';
 
 const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>((props, ref) => {
-  const { playbackId, src: outerSrc, children, autoPlay, preload, ...restProps } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { playbackId, src: outerSrc, children, autoPlay, preload, tokens, playbackToken, ...restProps } = props;
 
   const nativeAudioProps = Object.fromEntries(
     Object.entries(restProps).filter(([key]) => !Object.keys(MuxAudio.propTypes as any).includes(key))
@@ -89,7 +90,6 @@ MuxAudio.propTypes = {
   debug: PropTypes.bool,
   disableCookies: PropTypes.bool,
   disableTracking: PropTypes.bool,
-  drmToken: PropTypes.string,
   envKey: PropTypes.string,
   errorTranslator: PropTypes.any,
   liveEdgeStart: PropTypes.number,
@@ -107,6 +107,7 @@ MuxAudio.propTypes = {
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   targetLiveWindow: PropTypes.number,
+  tokens: PropTypes.object,
   type: PropTypes.oneOf(allMediaTypes),
 };
 
