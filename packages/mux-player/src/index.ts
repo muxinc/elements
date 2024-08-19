@@ -13,6 +13,7 @@ import {
   CmcdTypes,
   CmcdTypeValues,
   i18n,
+  parseJwt,
 } from '@mux/playback-core';
 import type {
   ValueOf,
@@ -37,7 +38,7 @@ import {
 import { template } from './template';
 import { render } from './html';
 import { getErrorLogs } from './errors';
-import { toNumberOrUndefined, parseJwt, containsComposedNode, camelCase, kebabCase } from './utils';
+import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
 import './themes/gerwig';
@@ -644,7 +645,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       }
       case PlayerAttributes.THUMBNAIL_TOKEN: {
         if (newValue) {
-          const { aud } = parseJwt(newValue);
+          const { aud } = parseJwt(newValue) ?? {};
           if (aud !== 't') {
             logger.warn(
               i18n(`The provided thumbnail-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
@@ -655,7 +656,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       }
       case PlayerAttributes.STORYBOARD_TOKEN: {
         if (newValue) {
-          const { aud } = parseJwt(newValue);
+          const { aud } = parseJwt(newValue) ?? {};
           if (aud !== 's') {
             logger.warn(
               i18n(`The provided storyboard-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
@@ -666,7 +667,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       }
       case PlayerAttributes.DRM_TOKEN: {
         if (newValue) {
-          const { aud } = parseJwt(newValue);
+          const { aud } = parseJwt(newValue) ?? {};
           if (aud !== 'd') {
             logger.warn(
               i18n(`The provided drm-token should have audience value 'd' instead of '{aud}'.`).format({ aud })

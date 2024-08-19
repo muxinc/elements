@@ -8,7 +8,7 @@ import type {
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import { MediaError } from './errors';
+import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
 import { setupMediaTracks } from './media-tracks';
@@ -35,15 +35,19 @@ import {
   toTargetLiveWindowFromPlaylistType,
   addEventListenerWithTeardown,
   i18n,
+  parseJwt,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
-import type { HlsConfig } from 'hls.js';
+import { ErrorDetails, ErrorTypes, type ErrorData, type HlsConfig } from 'hls.js';
 import { getErrorFromResponse } from './request-errors';
 // import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
   Hls,
   MediaError,
+  MuxErrorCategory,
+  MuxErrorCode,
+  errorCategoryToTokenNameOrPrefix,
   addTextTrack,
   removeTextTrack,
   getTextTrack,
@@ -59,6 +63,7 @@ export {
   getCurrentPdt,
   toPlaybackIdParts,
   i18n,
+  parseJwt,
 };
 export * from './types';
 
@@ -1129,37 +1134,50 @@ export const loadMedia = (
     });
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      // if (data.fatal) {
-      //   switch (data.type) {
-      //     case Hls.ErrorTypes.NETWORK_ERROR:
-      //       // try to recover network error
-      //       console.error("fatal network error encountered, try to recover");
-      //       hls.startLoad();
-      //       break;
-      //     case Hls.ErrorTypes.MEDIA_ERROR:
-      //       console.error("fatal media error encountered, try to recover");
-      //       hls.recoverMediaError();
-      //       break;
-      //     default:
-      //       // cannot recover
-      //       console.error(
-      //         "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
-      //       );
-      //       hls.destroy();
-      //       break;
-      //   }
-      // }
-
-      const errorCodeMap: Record<string, number> = {
+      const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
         [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
         [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+      } as const;
+
+      // eslint-disable-next-line no-shadow
+      const hlsErrorDataToErrorCode = (data: ErrorData) => {
+        if (
+          [
+            ErrorDetails.KEY_SYSTEM_LICENSE_REQUEST_FAILED,
+            ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_REQUEST_FAILED,
+          ].includes(data.details)
+        ) {
+          return MediaError.MEDIA_ERR_NETWORK;
+        }
+        return ErrorCodeMap[data.type];
       };
-      const error = new MediaError('', errorCodeMap[data.type]);
-      error.fatal = data.fatal;
-      error.data = data;
+
+      // eslint-disable-next-line no-shadow
+      const hlsErrorDataToCategory = (data: ErrorData) => {
+        if (data.type === ErrorTypes.KEY_SYSTEM_ERROR) return MuxErrorCategory.DRM;
+        if (data.type === ErrorTypes.NETWORK_ERROR) return MuxErrorCategory.VIDEO;
+      };
+
+      let mediaError: MediaError;
+      const errorCode = hlsErrorDataToErrorCode(data);
+      if (errorCode === MediaError.MEDIA_ERR_NETWORK && data.response) {
+        const category = hlsErrorDataToCategory(data) ?? MuxErrorCategory.VIDEO;
+        mediaError = getErrorFromResponse(data.response, category, props) ?? new MediaError('', errorCode);
+      } else {
+        mediaError = new MediaError('', errorCode);
+      }
+      mediaError.fatal = data.fatal;
+      mediaError.data = data;
+      console.log(
+        '!!!hls error',
+        mediaError.errorCategory,
+        ...(Object.entries(MuxErrorCode).find(([, value]) => value === mediaError.muxCode) ?? []),
+        mediaError.message,
+        mediaError.context
+      );
       mediaEl.dispatchEvent(
         new CustomEvent('error', {
-          detail: error,
+          detail: mediaError,
         })
       );
     });

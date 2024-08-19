@@ -43,24 +43,6 @@ export function toParams(obj: Record<string, any>) {
   return new URLSearchParams(params);
 }
 
-export function parseJwt(token: string | undefined) {
-  const base64Url = (token ?? '').split('.')[1];
-
-  // exit early on invalid value
-  if (!base64Url) return {};
-
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split('')
-      .map(function (c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join('')
-  );
-  return JSON.parse(jsonPayload);
-}
-
 export const containsComposedNode = (rootNode: Node, childNode?: Node | Element | null): boolean => {
   if (!rootNode || !childNode) return false;
   if (rootNode.contains(childNode)) return true;

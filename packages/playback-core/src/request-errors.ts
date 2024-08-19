@@ -9,21 +9,8 @@ import {
   toPlaybackIdParts,
 } from './util';
 import { isKeyOf, MuxMediaPropsInternal } from './types';
-import { MediaError } from './errors';
-
-export const MuxErrorCode = {
-  NOT_AN_ERROR: 0,
-  UNKNOWN_ERROR: 2000000,
-  NOT_FOUND: 2404000,
-  NO_STATUS: 2000001,
-  GENERIC_SERVER_FAIL: 2500000,
-  TOKEN_MISSING: 2403201,
-  TOKEN_MALFORMED: 2412202,
-  TOKEN_EXPIRED: 2403210,
-  TOKEN_AUD_MISSING: 2403221,
-  TOKEN_AUD_MISMATCH: 2403222,
-  TOKEN_SUB_MISMATCH: 2403232,
-} as const;
+import type { MuxErrorCategoryValue } from './errors';
+import { errorCategoryToTokenNameOrPrefix, MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
 
 export const MuxJWTAud = {
   VIDEO: 'v',
@@ -34,24 +21,6 @@ export const MuxJWTAud = {
   DRM: 'd',
 } as const;
 
-// Identifies what kind of request was made that resulted in an error
-export const MuxErrorCategory = {
-  VIDEO: 'video',
-  // NOTE: These are not "built in" for mux-video/mux-audio (only mux-player) (CJP)
-  THUMBNAIL: 'thumbnail',
-  STORYBOARD: 'storyboard',
-  DRM: 'drm',
-} as const;
-
-export type MuxErrorCategory = typeof MuxErrorCategory;
-
-export type MuxErrorCategoryValue = MuxErrorCategory[keyof MuxErrorCategory];
-
-export const categoryToTokenNameOrPrefix = (category: MuxErrorCategoryValue) => {
-  if (category === MuxErrorCategory.VIDEO) return 'playback';
-  return category;
-};
-
 export const categoryToAud = (category: MuxErrorCategoryValue) => {
   if (category === MuxErrorCategory.VIDEO) return MuxJWTAud.VIDEO;
   if (category === MuxErrorCategory.DRM) return MuxJWTAud.DRM;
@@ -61,7 +30,7 @@ export const categoryToToken = (
   category: MuxErrorCategoryValue,
   muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'drmToken' | 'playbackToken' | 'tokens'>>
 ) => {
-  const nameOrPrefix = categoryToTokenNameOrPrefix(category);
+  const nameOrPrefix = errorCategoryToTokenNameOrPrefix(category);
   const tokenName = `${nameOrPrefix}Token` as const;
   if (muxMediaEl.tokens?.[nameOrPrefix]) return muxMediaEl.tokens?.[nameOrPrefix];
   return isKeyOf(tokenName, muxMediaEl) ? muxMediaEl[tokenName] : undefined;
@@ -78,24 +47,28 @@ export const getErrorFromResponse = (
   const mediaErrorCode = MediaError.MEDIA_ERR_NETWORK;
   // Not an error. WHAT ARE YOU EVEN DOING HERE?!?
   if (status === 200) return undefined;
-  const tokenNamePrefix = categoryToTokenNameOrPrefix(category);
+  const tokenNamePrefix = errorCategoryToTokenNameOrPrefix(category);
   const token = categoryToToken(category, muxMediaEl);
   const expectedAud = categoryToAud(category);
   const [playbackId] = toPlaybackIdParts(muxMediaEl.playbackId ?? '');
   /** @TODO How to handle this case (CJP) */
   // NOTE: *should* have playback id when reaching here
-  // if (!status) return MuxErrorCode.NO_STATUS;
+  // if (!status) return MuxErrorCode.NETWORK_NO_STATUS;
   if (!status || !playbackId) return undefined;
 
   const jwtObj = parseJwt(token);
   // Make sure we didn't get here because of a malformed JWT and/or claim
   if (!!token && !jwtObj) {
     // 403 for DRM
-    console.error('malformed compact JWT DRM token string!');
-    /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
-    const mediaError = new MediaError();
+    const message = i18n(`The {tokenNamePrefix}-token provided is invalid or malformed.`, translate).format({
+      tokenNamePrefix,
+    });
+    const context = i18n(`Compact JWT string: {token}`, translate).format({
+      token,
+    });
+    const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
-    mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
+    mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MALFORMED;
     return mediaError;
   }
 
@@ -107,19 +80,20 @@ export const getErrorFromResponse = (
     console.error('generic server error!');
     const mediaError = new MediaError('', mediaErrorCode, true);
     mediaError.errorCategory = category;
-    mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
+    mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MALFORMED;
     /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
     return mediaError;
   }
 
-  if (status === 403 || status === 400) {
+  if (status === 403) {
     if (jwtObj) {
-      // 403 for DRM
       if (isJWTExpired(jwtObj, requestTime)) {
         const dateOptions: any = {
           timeStyle: 'medium',
           dateStyle: 'medium',
         };
+        // E.g. for DRM: "The video’s secured drm-token has expired."
+        // E.g. for Video: "The video’s secured playback-token has expired."
         const message = i18n(`The video’s secured {tokenNamePrefix}-token has expired.`, translate).format({
           tokenNamePrefix,
         });
@@ -129,10 +103,9 @@ export const getErrorFromResponse = (
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
-        mediaError.muxCode = MuxErrorCode.TOKEN_MALFORMED;
+        mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_EXPIRED;
         return mediaError;
       }
-      // 403 for DRM
       if (isJWTSubMismatch(jwtObj, playbackId)) {
         const message = i18n(
           `The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.`,
@@ -150,10 +123,9 @@ export const getErrorFromResponse = (
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
-        mediaError.muxCode = MuxErrorCode.TOKEN_SUB_MISMATCH;
+        mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_SUB_MISMATCH;
         return mediaError;
       }
-      // 403 for DRM
       if (isJWTAudMissing(jwtObj, expectedAud)) {
         const message = i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
           tokenNamePrefix,
@@ -167,10 +139,9 @@ export const getErrorFromResponse = (
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
-        mediaError.muxCode = MuxErrorCode.TOKEN_AUD_MISSING;
+        mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_AUD_MISSING;
         return mediaError;
       }
-      // 403 for DRM
       if (isJWTAudMismatch(jwtObj, expectedAud)) {
         const message = i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
           tokenNamePrefix,
@@ -185,15 +156,10 @@ export const getErrorFromResponse = (
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
-        mediaError.muxCode = MuxErrorCode.TOKEN_AUD_MISMATCH;
+        mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_AUD_MISMATCH;
         return mediaError;
       }
 
-      /**
-       * @TODO invalid playback URLs and playback IDs are 404 for video URL responses but 400 for DRM. Should change this for consistency (CJP)
-       */
-
-      /** @TODO omitted tokens are 403 for video URL responses but 400 for DRM. Should change this for consistency (CJP) */
       // NOTE: This *should* not happen for DRM, since the drm token
       // is currently used to detect whether or not DRM should
       // be setup at all. Including for exhaustiveness. (CJP)
@@ -207,18 +173,33 @@ export const getErrorFromResponse = (
       });
       const mediaError = new MediaError(message, mediaErrorCode, true);
       mediaError.errorCategory = category;
-      mediaError.muxCode = MuxErrorCode.TOKEN_MISSING;
+      mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MISSING;
       return mediaError;
     }
   }
 
+  if (status === 412) {
+    /** @TODO Make message clearer. Move this to context even if not parameterized (CJP) */
+    const message = i18n(
+      `This playback-id may belong to a live stream that is not currently active or an asset that is not ready.`,
+      translate
+    );
+    const mediaError = new MediaError(message, mediaErrorCode, true);
+    mediaError.errorCategory = category;
+    mediaError.muxCode = MuxErrorCode.NETWORK_NOT_READY;
+    return mediaError;
+  }
+
   /**
-   * @TODO invalid playback URLs and playback IDs are 404 for video URL responses but 400 for DRM. Should change this for consistency (CJP)
+   * NOTE: When using a "structurally valid but non-existent" playback id for a DRM (license or app certificate) request, this will result in a 403 status.
+   * However, since we will only currently make a DRM request after successfully loading the media, this case should not need
+   * to be accounted for. If we ever eagerly fetch FPS app certs prior to or in parallel to media requests, we would potentially
+   * want to account for that case (either by normalizing statuses, in our messaging for generic 403 above, or through more complex
+   * solutions like waiting for the media response). (CJP)
    */
   if (status === 404) {
-    // NOTE: This *should* not happen, since the URL should never be invalid if code
+    // NOTE: This *should* not happen for DRM (only playback/media requests), since the URL should never be invalid if code
     // is correct. Aka if we end up here it's almost definitely a bug.
-    // Including for exhaustiveness. (CJP)
     const message = i18n(
       `This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.`,
       translate
@@ -226,8 +207,26 @@ export const getErrorFromResponse = (
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
     const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
-    mediaError.muxCode = MuxErrorCode.NOT_FOUND;
+    mediaError.muxCode = MuxErrorCode.NETWORK_NOT_FOUND;
     return mediaError;
   }
-  return new MediaError('', mediaErrorCode, true); // MuxErrorCode.UNKNOWN_ERROR;
+
+  /**
+   * NOTE: Omitting a token for a DRM (license or app certificate) request results in a 400 status, unlike playback/media requests,
+   * which are a 403 status (See above).
+   * However, since we will only currently setup Mux Player for DRM if a drm token is provided, this case should not need
+   * to be accounted for. If we ever change this, we would potentially
+   * want to account for that case (either by normalizing statuses, in our messaging for generic 400 above, or through more complex
+   * solutions like checking the category before deciding on error details here). (CJP)
+   */
+  if (status === 400) {
+    /** @TODO Move to labels object/i18n crud (CJP) */
+    const message = 'The URL or playback-id was invalid. You may have used an invalid value as a playback-id';
+    const context = `Playback ID: ${playbackId}`;
+    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    mediaError.errorCategory = category;
+    mediaError.muxCode = MuxErrorCode.NETWORK_INVALID_URL;
+    return mediaError;
+  }
+  return new MediaError('', mediaErrorCode, true); // MuxErrorCode.NETWORK_UNKNOWN_ERROR;
 };
