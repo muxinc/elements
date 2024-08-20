@@ -7,7 +7,7 @@ const template = document.createElement('template');
 if ('innerHTML' in template) template.innerHTML = theme;
 
 class MediaThemeClassic extends MediaThemeElement {
-  static template = template.content?.children?.[0];
+  static template = template.content?.children?.[0] as HTMLTemplateElement;
 }
 
 if (!globalThis.customElements.get('media-theme-classic')) {

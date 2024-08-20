@@ -1,1 +1,1 @@
-export * from 'media-chrome/dist/themes/microvideo.js';
+export * from 'player.style/themes/microvideo';

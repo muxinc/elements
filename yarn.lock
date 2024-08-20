@@ -3185,6 +3185,51 @@
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
+"@player.style/demuxed-2022@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@player.style/demuxed-2022/-/demuxed-2022-0.0.7.tgz#2d41773ed2e75b3cddacd2254718075537b17fc0"
+  integrity sha512-qTHzeLtpeaqzoD27bhCe5Mu+2UwrBk9w9CEginJ642tRMuEACruSBwivPVfNimdMx9+LdyO0v3iogtwxZ9Dygg==
+
+"@player.style/instaplay@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@player.style/instaplay/-/instaplay-0.0.2.tgz#0e9ee2c1def0abe237dd973ea6bf01dcf3fa9878"
+  integrity sha512-mFMb7UHbQURQpUjX5zGECuOD0rji+DxrWZBtaukBLPpRE0RBM0YYWVwXR2qwDUP3087rVK2/b/bMSWYRFEjcqQ==
+
+"@player.style/microvideo@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@player.style/microvideo/-/microvideo-0.0.6.tgz#99451e25639f0ec660e23bc1f86ef44a6ec0e891"
+  integrity sha512-XoMWqxaRKp4ghxihNT8Df13rfH8mAxNylbJ7tVKPVRqbIToINLXyUwHeNr01kdQ3xrBdd7USd4IylQBXzQoGlA==
+
+"@player.style/minimal@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@player.style/minimal/-/minimal-0.0.6.tgz#54b1887300769afbce02b329b4cae9e0e6d0d55f"
+  integrity sha512-TsmWGZZqs9DQw58h2BRSoCMloEsQwa/WUXqFeEGyOw0Stovd4nXtzTfuUgedukyd5dJ/64GEjsl4MCRVLYnrMg==
+
+"@player.style/sutro@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@player.style/sutro/-/sutro-0.0.2.tgz#16ef9380a3c5952041f2eba38dfa92bcd5a61bda"
+  integrity sha512-HTcox9mbWVV7jPp0ak0t+P34lVnYQclM6zB1R5JmSETsRt7v3UKPULjvHnfIzAovGgwuuj8JhiIBoWyX3BhEUA==
+
+"@player.style/tailwind-audio@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@player.style/tailwind-audio/-/tailwind-audio-0.0.6.tgz#c1f6ef59fcd502501fab757dc4f8f203a16d9523"
+  integrity sha512-R//HVVWB1COPEyaOKksTNPlYuQ9OnzDJkLbedF/180zDIDnl894KkEzfTX+N9nxH18hvfX2VCir5hgjqobBoPQ==
+
+"@player.style/vimeonova@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@player.style/vimeonova/-/vimeonova-0.0.6.tgz#9f9c4a0784f79c51df8519ce58ccb5e8c920b39d"
+  integrity sha512-JNWAn6MyKQx6OnukkgOyt/2Yj49pIw4rqi4Odt0sDcn9UOEgU+qmbeA8GWyY1Sq4P99QD794anqycGrzCBpgcw==
+
+"@player.style/winamp@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@player.style/winamp/-/winamp-0.0.6.tgz#74db8d4803641f3af34bfa5d08bba304e3aee765"
+  integrity sha512-3kGUnSf0oAyYoiTHM8Sn0gJipaiS6f/yDOI+ez6KFYidwNsLBJnAjCXeJOxkEs6EDm2gO6SryKal4GWMxnuN0Q==
+
+"@player.style/yt@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@player.style/yt/-/yt-0.0.6.tgz#46f63bda77500f49c8edfabddc25c0bdcb77701a"
+  integrity sha512-8orTa9qEGDtjdohBGkvECMyvacTHnKlClbUSvZYD7VH8FOP4COKD2yaFdfmMnOvOd4RuKSrDV2AGO30Tm4V5eg==
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.10"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.10.tgz#2eba163b8e7dbabb4ce3609ab5e32ab63dda3ef8"
@@ -11578,10 +11623,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@~3.2.5:
-  version "3.2.5"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-3.2.5.tgz#657722a216e3c0f877d9522fce7425e25da7e137"
-  integrity sha512-tTsgS7x77Bn4p/wca/Si/7A+Q3z9DzKq0SOkroQvrNMXBVyQasMayDcsKg5Ur5NGsymZfttnJi7tXvVr/tPj8g==
+media-chrome@^4.0.0, media-chrome@~4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.0.tgz#d3db5f7010311f3cea2483e4d703f518cd365c4b"
+  integrity sha512-rzuYoXiCvn+3vRim9pXcdIIXZmPAZHZbN9AUl0crdUOSv2tdEFJ6v/IxlJ8T3o4+YrHsrUCUNnu2Yai6mY6Qqg==
 
 media-tracks@~0.3.2:
   version "0.3.2"
@@ -12900,6 +12945,22 @@ pkg-up@^3.1.0:
   integrity sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==
   dependencies:
     find-up "^3.0.0"
+
+player.style@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/player.style/-/player.style-0.0.7.tgz#3c32e8bc4ffa95cda4b4f9ecc73e816a998d2181"
+  integrity sha512-aZehbALTnVxweTQUuJkFOm2SB2EgRdt7GWF3cqUG/VJ7k4O6S/+cFbQfwAd9wWnp2qBZL9CgkcysN3m1myG9Xg==
+  dependencies:
+    "@player.style/demuxed-2022" "0.0.7"
+    "@player.style/instaplay" "0.0.2"
+    "@player.style/microvideo" "0.0.6"
+    "@player.style/minimal" "0.0.6"
+    "@player.style/sutro" "0.0.2"
+    "@player.style/tailwind-audio" "0.0.6"
+    "@player.style/vimeonova" "0.0.6"
+    "@player.style/winamp" "0.0.6"
+    "@player.style/yt" "0.0.6"
+    media-chrome "^4.0.0"
 
 playwright-core@1.45.3:
   version "1.45.3"
