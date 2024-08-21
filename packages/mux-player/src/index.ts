@@ -20,6 +20,8 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  Chapter,
+  CuePoint,
 } from '@mux/playback-core';
 import VideoApiElement from './video-api';
 import {
@@ -1552,7 +1554,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     this.media._hlsConfig = val;
   }
 
-  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+  async addCuePoints<T = any>(cuePoints: CuePoint<T>[]) {
     this.#init();
 
     // NOTE: This condition should never be met. If it is, there is a bug (CJP)
@@ -1571,7 +1573,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     return this.media?.cuePoints ?? [];
   }
 
-  addChapters(chapters: { startTime: number; endTime: number; value: string }[]) {
+  addChapters(chapters: Chapter[]) {
     this.#init();
 
     // NOTE: This condition should never be met. If it is, there is a bug (CJP)
