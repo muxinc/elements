@@ -16,7 +16,7 @@ function MuxPlayerPage() {
   const [activeChapter, setActiveChapter] = useState<Chapter>(undefined);
 
   function addChaptersToPlayer(playerEl: MuxPlayerElement) {
-	playerEl.addChapters(chapters);
+	  playerEl.addChapters(chapters);
   }
 
   return (
