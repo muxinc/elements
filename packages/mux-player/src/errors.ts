@@ -139,6 +139,7 @@ const muxMediaErrorToDevlogFile = (mediaError: MediaError) => {
   return '';
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const muxMediaErrorToDevLog = (mediaError: MediaError, _translate?: boolean | undefined): DevlogOptions => {
   const file = muxMediaErrorToDevlogFile(mediaError);
   return {
@@ -150,10 +151,8 @@ const muxMediaErrorToDevLog = (mediaError: MediaError, _translate?: boolean | un
 
 export function getErrorLogs(
   error: MediaError,
-  offline?: boolean,
-  playbackId?: string,
-  playbackToken?: string,
-  translate?: boolean
+  translate = false,
+  offline = !globalThis.navigator?.onLine // NOTE: Passing this in for testing purposes
 ): { dialog: DialogOptions; devlog: DevlogOptions } {
   const dialog: DialogOptions = muxMediaErrorToDialog(error, translate);
   const devlog: DevlogOptions = muxMediaErrorToDevLog(error, translate);

@@ -40,8 +40,12 @@ export const getErrorFromResponse = (
   resp: Pick<Response, 'status' | 'url'> | Pick<LoaderResponse, 'code' | 'url'>,
   category: MuxErrorCategoryValue,
   muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>,
-  translate = false
+  translate = false,
+  offline = !globalThis.navigator?.onLine // NOTE: Passing this in for testing purposes
 ) => {
+  if (offline) {
+    /** @TODO FINISH THIS!! */
+  }
   const status = 'status' in resp ? resp.status : resp.code;
   const requestTime = Date.now();
   const mediaErrorCode = MediaError.MEDIA_ERR_NETWORK;

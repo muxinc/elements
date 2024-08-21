@@ -443,6 +443,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       let { detail: error }: { detail: any } = event as CustomEvent;
 
       if (!(error instanceof MediaError)) {
+        console.error('!!!!!!non MediaError error!', error);
         error = new MediaError(error.message, error.code, error.fatal);
       }
 
@@ -455,7 +456,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         return;
       }
 
-      const { dialog, devlog } = getErrorLogs(error, !window.navigator.onLine, this.playbackId, this.playbackToken);
+      const { dialog, devlog } = getErrorLogs(error, false);
 
       if (devlog.message) {
         logger.devlog(devlog);
@@ -473,17 +474,12 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', onError);
 
+    /** @TODO Push errorTranslator logic down to playback-core. Should be able to use MediaError message + context + code (muxCode?) (CJP) */
     if (this.media) {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
         if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
-        const { devlog } = getErrorLogs(
-          this.media?.error,
-          !window.navigator.onLine,
-          this.playbackId,
-          this.playbackToken,
-          false
-        );
+        const { devlog } = getErrorLogs(this.media?.error, false);
 
         return {
           player_error_code: this.media?.error.code,

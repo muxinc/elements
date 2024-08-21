@@ -83,14 +83,24 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
 
 export const getMediaPlaylistLinesFromMultivariantPlaylistSrc = async (src: string) => {
   return fetch(src)
-    .then((resp) => resp.text())
+    .then((resp) => {
+      if (resp.status !== 200) {
+        return Promise.reject(resp);
+      }
+      return resp.text();
+    })
     .then((multivariantPlaylistStr) => {
       const mediaPlaylistUrl = multivariantPlaylistStr.split('\n').find((_line, idx, lines) => {
         return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
       }) as string;
 
       return fetch(mediaPlaylistUrl)
-        .then((resp) => resp.text())
+        .then((resp) => {
+          if (resp.status !== 200) {
+            return Promise.reject(resp);
+          }
+          return resp.text();
+        })
         .then((mediaPlaylistStr) => mediaPlaylistStr.split('\n'));
     });
 };
@@ -757,7 +767,7 @@ export const setupNativeFairplayDRM = (
           await keys.setServerCertificate(fairPlayAppCert);
           // @ts-ignore
           // await keys.setServerCertificate('fairPlayAppCert');
-        } catch (errOrResp: any) {
+        } catch (errOrResp: Response | Error) {
           if (errOrResp instanceof Response) {
             const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
             console.error('mediaError', mediaError?.message, mediaError?.context);
@@ -1061,17 +1071,68 @@ export const loadMedia = (
         // media resource in the HTML Living Standard
         // (https://html.spec.whatwg.org/multipage/media.html#concept-media-load-algorithm)
         const playHandler = () => {
-          updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+          updateStreamInfoFromSrc(src, mediaEl, type)
+            .then(setupSeekableChangePoll)
+            .catch((errOrResp: Response | Error) => {
+              if (errOrResp instanceof Response) {
+                const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+                console.error('mediaError', mediaError?.message, mediaError?.context);
+                if (mediaError) {
+                  mediaEl.dispatchEvent(
+                    new CustomEvent('error', {
+                      detail: mediaError,
+                    })
+                  );
+                  return;
+                }
+              } else if (errOrResp instanceof Error) {
+                // mediaEl.dispatchEvent(new MediaError())
+              }
+            });
           mediaEl.removeEventListener('loadedmetadata', loadedMetadataHandler);
         };
         const loadedMetadataHandler = () => {
-          updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+          updateStreamInfoFromSrc(src, mediaEl, type)
+            .then(setupSeekableChangePoll)
+            .catch((errOrResp: Response | Error) => {
+              if (errOrResp instanceof Response) {
+                const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+                console.error('mediaError', mediaError?.message, mediaError?.context);
+                if (mediaError) {
+                  mediaEl.dispatchEvent(
+                    new CustomEvent('error', {
+                      detail: mediaError,
+                    })
+                  );
+                  return;
+                }
+              } else if (errOrResp instanceof Error) {
+                // mediaEl.dispatchEvent(new MediaError())
+              }
+            });
           mediaEl.removeEventListener('play', playHandler);
         };
         addEventListenerWithTeardown(mediaEl, 'play', playHandler, { once: true });
         addEventListenerWithTeardown(mediaEl, 'loadedmetadata', loadedMetadataHandler, { once: true });
       } else {
-        updateStreamInfoFromSrc(src, mediaEl, type).then(setupSeekableChangePoll);
+        updateStreamInfoFromSrc(src, mediaEl, type)
+          .then(setupSeekableChangePoll)
+          .catch((errOrResp: Response | Error) => {
+            if (errOrResp instanceof Response) {
+              const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+              console.error('mediaError', mediaError?.message, mediaError?.context);
+              if (mediaError) {
+                mediaEl.dispatchEvent(
+                  new CustomEvent('error', {
+                    detail: mediaError,
+                  })
+                );
+                return;
+              }
+            } else if (errOrResp instanceof Error) {
+              // mediaEl.dispatchEvent(new MediaError())
+            }
+          });
       }
 
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
@@ -1231,10 +1292,37 @@ async function handleNativeError(event: Event) {
   const { message, code } = mediaEl.error;
   const error = new MediaError(message, code);
 
+  // This accounts for cases where native playback is being used but
+  // a non-200 response occurs on the request for the playback-id's playlist.
+  // In this case, we currently already fetch the playlist in parallel (for
+  // things like inferring the stream type, live edge start window, etc.),
+  // so we'll wait briefly for that response to translate to a more accurate
+  // error.
+  if (
+    mediaEl.src &&
+    code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED &&
+    mediaEl.readyState === HTMLMediaElement.HAVE_NOTHING
+  ) {
+    setTimeout(() => {
+      const ourError = getError(mediaEl);
+      // If the code is (still) MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED,
+      // assume it's an (unlikely) case where we did, in fact, encounter
+      // media that is unsupported.
+      if (ourError?.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
+        mediaEl.dispatchEvent(
+          new CustomEvent('error', {
+            detail: error,
+          })
+        );
+      }
+    }, 500);
+    return;
+  }
+
   if (mediaEl.src && (code !== MediaError.MEDIA_ERR_DECODE || code !== undefined)) {
     // Attempt to get the response code from the video src url.
     try {
-      const { status } = await fetch(mediaEl.src as RequestInfo);
+      const { status } = await fetch(mediaEl.src);
       // Use the same hls.js data structure.
       error.data = { response: { code: status } };
     } catch {}

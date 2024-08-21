@@ -8,6 +8,7 @@ export const MuxErrorCategory = {
 
 export const MuxErrorCode = {
   NOT_AN_ERROR: 0,
+  NETWORK_OFFLINE: 2000002,
   NETWORK_UNKNOWN_ERROR: 2000000,
   NETWORK_NO_STATUS: 2000001,
   NETWORK_INVALID_URL: 2400000,
