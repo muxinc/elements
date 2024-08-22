@@ -1,1 +1,2 @@
-export * from 'player.style/themes/microvideo';
+/* @ts-ignore */
+export * from 'player.style/microvideo';

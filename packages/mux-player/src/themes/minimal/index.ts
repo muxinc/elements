@@ -1,1 +1,2 @@
-export * from 'player.style/themes/minimal';
+/* @ts-ignore */
+export * from 'player.style/minimal';
