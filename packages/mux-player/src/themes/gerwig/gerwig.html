@@ -29,6 +29,8 @@
       --media-preview-time-text-shadow: none;
       --media-control-height: 14px;
       --media-control-padding: 6px;
+      --media-tooltip-container-margin: 6px;
+      --media-tooltip-distance: 18px;
 
       color: var(--_primary-color);
       display: inline-block;
@@ -250,7 +252,7 @@
     }
 
     media-control-bar[part~='bottom'] > * {
-      z-index: 2;
+      z-index: 20;
     }
 
     media-control-bar[part~='bottom'] {
