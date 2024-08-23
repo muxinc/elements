@@ -55,7 +55,6 @@ export const getErrorFromResponse = (
   const token = categoryToToken(category, muxMediaEl);
   const expectedAud = categoryToAud(category);
   const [playbackId] = toPlaybackIdParts(muxMediaEl.playbackId ?? '');
-  /** @TODO How to handle this case (CJP) */
   // NOTE: *should* have playback id when reaching here
   // if (!status) return MuxErrorCode.NETWORK_NO_STATUS;
   if (!status || !playbackId) return undefined;

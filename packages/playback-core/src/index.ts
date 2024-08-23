@@ -1229,13 +1229,6 @@ export const loadMedia = (
       }
       mediaError.fatal = data.fatal;
       mediaError.data = data;
-      console.log(
-        '!!!hls error',
-        mediaError.errorCategory,
-        ...(Object.entries(MuxErrorCode).find(([, value]) => value === mediaError.muxCode) ?? []),
-        mediaError.message,
-        mediaError.context
-      );
       mediaEl.dispatchEvent(
         new CustomEvent('error', {
           detail: mediaError,
@@ -1315,6 +1308,13 @@ async function handleNativeError(event: Event) {
           })
         );
       }
+      // Since a parallel request for the source should be initiated to determine
+      // stream info (e.g. streamType) at roughly the same time as when the source
+      // is loaded by the media element, we should be able to keep this timeout short.
+      // NOTE: Although there is a case where the parallel request may happen later
+      // (namely, after metadata is loaded), this should be mutually exclusive from
+      // the case we're accounting for here, since unsupported media should not
+      // ever get metadata loaded in the first place. (CJP)
     }, 500);
     return;
   }
