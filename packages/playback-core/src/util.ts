@@ -193,6 +193,8 @@ export const lang: { [k: string]: string } = {
     "The provided storyboard-token should have audience value 's' instead of '{aud}'.",
   'No stream-type value supplied. Defaulting to \\': 'No stream-type value supplied. Defaulting to \\',
   'Invalid stream-type value supplied: \\': 'Invalid stream-type value supplied: \\',
+  'The URL or playback-id was invalid. You may have used an invalid value as a playback-id.':
+    'The URL or playback-id was invalid. You may have used an invalid value as a playback-id.',
   'Read more: ': 'Read more: ',
 };
 

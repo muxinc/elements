@@ -44,7 +44,14 @@ export const getErrorFromResponse = (
   offline = !globalThis.navigator?.onLine // NOTE: Passing this in for testing purposes
 ) => {
   if (offline) {
-    /** @TODO FINISH THIS!! */
+    const message = i18n(`Your device appears to be offline`, translate);
+    const context = undefined;
+    const mediaErrorCode = MediaError.MEDIA_ERR_NETWORK;
+    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    mediaError.errorCategory = category;
+    mediaError.muxCode = MuxErrorCode.NETWORK_OFFLINE;
+    mediaError.data = resp;
+    return mediaError;
   }
   const status = 'status' in resp ? resp.status : resp.code;
   const requestTime = Date.now();
@@ -72,6 +79,7 @@ export const getErrorFromResponse = (
     const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MALFORMED;
+    mediaError.data = resp;
     return mediaError;
   }
 
@@ -80,10 +88,9 @@ export const getErrorFromResponse = (
      * @TODO We plausibly should have some basic retry logic for all other 500 status
      * cases (CJP)
      **/
-    console.error('generic server error!');
     const mediaError = new MediaError('', mediaErrorCode, true);
     mediaError.errorCategory = category;
-    mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MALFORMED;
+    mediaError.muxCode = MuxErrorCode.NETWORK_UNKNOWN_ERROR;
     /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
     return mediaError;
   }
@@ -107,6 +114,7 @@ export const getErrorFromResponse = (
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
         mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_EXPIRED;
+        mediaError.data = resp;
         return mediaError;
       }
       if (isJWTSubMismatch(jwtObj, playbackId)) {
@@ -127,6 +135,7 @@ export const getErrorFromResponse = (
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
         mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_SUB_MISMATCH;
+        mediaError.data = resp;
         return mediaError;
       }
       if (isJWTAudMissing(jwtObj, expectedAud)) {
@@ -143,6 +152,7 @@ export const getErrorFromResponse = (
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
         mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_AUD_MISSING;
+        mediaError.data = resp;
         return mediaError;
       }
       if (isJWTAudMismatch(jwtObj, expectedAud)) {
@@ -160,6 +170,7 @@ export const getErrorFromResponse = (
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
         mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_AUD_MISMATCH;
+        mediaError.data = resp;
         return mediaError;
       }
 
@@ -174,22 +185,25 @@ export const getErrorFromResponse = (
         tokenNamePrefix,
         category,
       });
-      const mediaError = new MediaError(message, mediaErrorCode, true);
+      const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
+      const mediaError = new MediaError(message, mediaErrorCode, true, context);
       mediaError.errorCategory = category;
       mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MISSING;
+      mediaError.data = resp;
       return mediaError;
     }
   }
 
   if (status === 412) {
-    /** @TODO Make message clearer. Move this to context even if not parameterized (CJP) */
     const message = i18n(
       `This playback-id may belong to a live stream that is not currently active or an asset that is not ready.`,
       translate
     );
-    const mediaError = new MediaError(message, mediaErrorCode, true);
+    const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
+    const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_READY;
+    mediaError.data = resp;
     return mediaError;
   }
 
@@ -211,6 +225,7 @@ export const getErrorFromResponse = (
     const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_FOUND;
+    mediaError.data = resp;
     return mediaError;
   }
 
@@ -223,13 +238,18 @@ export const getErrorFromResponse = (
    * solutions like checking the category before deciding on error details here). (CJP)
    */
   if (status === 400) {
-    /** @TODO Move to labels object/i18n crud (CJP) */
-    const message = 'The URL or playback-id was invalid. You may have used an invalid value as a playback-id';
-    const context = `Playback ID: ${playbackId}`;
+    const message = i18n(`The URL or playback-id was invalid. You may have used an invalid value as a playback-id.`);
+    const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
     const mediaError = new MediaError(message, mediaErrorCode, true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_INVALID_URL;
+    mediaError.data = resp;
     return mediaError;
   }
-  return new MediaError('', mediaErrorCode, true); // MuxErrorCode.NETWORK_UNKNOWN_ERROR;
+
+  const mediaError = new MediaError('', mediaErrorCode, true);
+  mediaError.errorCategory = category;
+  mediaError.muxCode = MuxErrorCode.NETWORK_UNKNOWN_ERROR;
+  mediaError.data = resp;
+  return mediaError;
 };
