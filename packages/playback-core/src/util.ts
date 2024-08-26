@@ -148,35 +148,31 @@ export const isJWTAudMismatch = ({ aud }: Partial<Pick<MuxJWT, 'aud'>>, expected
 export const lang: { [k: string]: string } = {
   '(opens in a new window)': '(opens in a new window)',
   'Network Error': 'Network Error',
-  'Video is not currently available': 'Video is not currently available',
+  '{category} is not currently available': '{category} is not currently available',
   'The live stream or video file are not yet ready.': 'The live stream or video file are not yet ready.',
   'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.':
     'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.',
-  'Video does not exist': 'Video does not exist',
+  '{category} does not exist': '{category} does not exist',
   'This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.':
     'This URL or playback-id does not exist. You may have used an Asset ID or an ID from a different resource.',
   'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.':
     'The specificed playback ID {playbackId} contains a token which must be provided via the playback-token attribute.',
-  'Invalid playback URL': 'Invalid playback URL',
-  'The video URL or playback-token are formatted with incorrect or incomplete information.':
-    'The video URL or playback-token are formatted with incorrect or incomplete information.',
-  '403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.':
-    '403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.',
-  'Video URL has expired': 'Video URL has expired',
+  'Invalid {categoryName} URL': 'Invalid {categoryName} URL',
+  'The video URL or {tokenNamePrefix}-token are formatted with incorrect or incomplete information.':
+    'The video URL or {tokenNamePrefix}-token are formatted with incorrect or incomplete information.',
+  '{category} URL has expired': '{category} URL has expired',
   'The video’s secured {tokenNamePrefix}-token has expired.':
     'The video’s secured {tokenNamePrefix}-token has expired.',
   'Expired at: {expiredDate}. Current time: {currentDate}.': 'Expired at: {expiredDate}. Current time: {currentDate}.',
-  'Video URL is formatted incorrectly': 'Video URL is formatted incorrectly',
+  '{category} URL is formatted incorrectly': '{category} URL is formatted incorrectly',
   'The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.':
     'The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.',
   'Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}':
     'Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}',
-  'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.':
-    'The specified playback ID {playbackId} and the playback ID encoded in the playback-token {tokenPlaybackId} do not match.',
   'The {tokenNamePrefix}-token is formatted with incorrect information.':
     'The {tokenNamePrefix}-token is formatted with incorrect information.',
-  'The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.':
-    'The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.',
+  'The {tokenNamePrefix}-token has an incorrect aud value: {aud}. aud value should be {expectedAud}.':
+    'The {tokenNamePrefix}-token has an incorrect aud value: {aud}. aud value should be {expectedAud}.',
   'The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.':
     'The {tokenNamePrefix}-token has no aud value. aud value should be {expectedAud}.',
   'Authorization error trying to access this {category} URL. If this is a signed URL, you might need to provide a {tokenNamePrefix}-token.':
@@ -187,12 +183,8 @@ export const lang: { [k: string]: string } = {
   'Your device appears to be offline': 'Your device appears to be offline',
   'Check your internet connection and try reloading this video.':
     'Check your internet connection and try reloading this video.',
-  "The provided thumbnail-token should have audience value 't' instead of '{aud}'.":
-    "The provided thumbnail-token should have audience value 't' instead of '{aud}'.",
-  "The provided storyboard-token should have audience value 's' instead of '{aud}'.":
-    "The provided storyboard-token should have audience value 's' instead of '{aud}'.",
-  'No stream-type value supplied. Defaulting to \\': 'No stream-type value supplied. Defaulting to \\',
-  'Invalid stream-type value supplied: \\': 'Invalid stream-type value supplied: \\',
+  'Invalid stream-type value supplied: `{streamType}`. Please provide stream-type as either: `on-demand` or `live`':
+    'Invalid stream-type value supplied: `{streamType}`. Please provide stream-type as either: `on-demand` or `live`',
   'The URL or playback-id was invalid. You may have used an invalid value as a playback-id.':
     'The URL or playback-id was invalid. You may have used an invalid value as a playback-id.',
   'Read more: ': 'Read more: ',

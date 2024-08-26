@@ -160,12 +160,12 @@ export const getErrorFromResponse = (
           tokenNamePrefix,
         });
         const context = i18n(
-          `The {tokenNamePrefix}-token has an incorrect aud value: {tokenType}. aud value should be {expectedAud}.`,
+          `The {tokenNamePrefix}-token has an incorrect aud value: {aud}. aud value should be {expectedAud}.`,
           translate
         ).format({
           tokenNamePrefix,
           expectedAud,
-          tokenType: jwtObj.aud,
+          aud: jwtObj.aud,
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;

@@ -39,7 +39,7 @@ import {
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { ErrorDetails, ErrorTypes, type ErrorData, type HlsConfig } from 'hls.js';
-import { getErrorFromResponse } from './request-errors';
+import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 // import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
@@ -48,6 +48,7 @@ export {
   MuxErrorCategory,
   MuxErrorCode,
   errorCategoryToTokenNameOrPrefix,
+  MuxJWTAud,
   addTextTrack,
   removeTextTrack,
   getTextTrack,
