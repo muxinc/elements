@@ -14,6 +14,7 @@ import {
   CmcdTypeValues,
   i18n,
   parseJwt,
+  MuxJWTAud,
 } from '@mux/playback-core';
 import type {
   ValueOf,
@@ -641,33 +642,57 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       }
       case PlayerAttributes.THUMBNAIL_TOKEN: {
         if (newValue) {
-          const { aud } = parseJwt(newValue) ?? {};
-          if (aud !== 't') {
-            logger.warn(
-              i18n(`The provided thumbnail-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
-            );
+          const jwtObj = parseJwt(newValue);
+          /** @TODO refactor to account for other JWT-based errors (CJP) */
+          if (jwtObj) {
+            const { aud } = jwtObj;
+            const expectedAud = MuxJWTAud.THUMBNAIL;
+            const tokenNamePrefix = 'thumbnail';
+            if (aud !== expectedAud) {
+              logger.warn(
+                i18n(
+                  `The {tokenNamePrefix}-token has an incorrect aud value: {aud}. aud value should be {expectedAud}.`
+                ).format({ aud, expectedAud, tokenNamePrefix })
+              );
+            }
           }
         }
         break;
       }
       case PlayerAttributes.STORYBOARD_TOKEN: {
         if (newValue) {
-          const { aud } = parseJwt(newValue) ?? {};
-          if (aud !== 's') {
-            logger.warn(
-              i18n(`The provided storyboard-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
-            );
+          const jwtObj = parseJwt(newValue);
+          /** @TODO refactor to account for other JWT-based errors (CJP) */
+          if (jwtObj) {
+            const { aud } = jwtObj;
+            const expectedAud = MuxJWTAud.STORYBOARD;
+            const tokenNamePrefix = 'storyboard';
+            if (aud !== expectedAud) {
+              logger.warn(
+                i18n(
+                  `The {tokenNamePrefix}-token has an incorrect aud value: {aud}. aud value should be {expectedAud}.`
+                ).format({ aud, expectedAud, tokenNamePrefix })
+              );
+            }
           }
         }
         break;
       }
       case PlayerAttributes.DRM_TOKEN: {
         if (newValue) {
-          const { aud } = parseJwt(newValue) ?? {};
-          if (aud !== 'd') {
-            logger.warn(
-              i18n(`The provided drm-token should have audience value 'd' instead of '{aud}'.`).format({ aud })
-            );
+          const jwtObj = parseJwt(newValue);
+          /** @TODO refactor to account for other JWT-based errors (CJP) */
+          if (jwtObj) {
+            const { aud } = jwtObj;
+            const expectedAud = MuxJWTAud.DRM;
+            const tokenNamePrefix = 'drm';
+            if (aud !== expectedAud) {
+              logger.warn(
+                i18n(
+                  `The {tokenNamePrefix}-token has an incorrect aud value: {aud}. aud value should be {expectedAud}.`
+                ).format({ aud, expectedAud, tokenNamePrefix })
+              );
+            }
           }
         }
         break;
@@ -702,7 +727,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
             logger.devlog({
               file: 'invalid-stream-type.md',
               message: i18n(
-                `Invalid stream-type value supplied: \`{streamType}\`. Please provide stream-type as either: \`on-demand\` or \`live\``
+                'Invalid stream-type value supplied: `{streamType}`. Please provide stream-type as either: `on-demand` or `live`'
               ).format({ streamType: this.streamType }),
             });
           }
