@@ -770,7 +770,7 @@ export const setupNativeFairplayDRM = (
           // await keys.setServerCertificate('fairPlayAppCert');
         } catch (errOrResp: Response | Error) {
           if (errOrResp instanceof Response) {
-            const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+            const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
             console.error('mediaError', mediaError?.message, mediaError?.context);
             if (mediaError) {
               mediaEl.dispatchEvent(
@@ -810,7 +810,7 @@ export const setupNativeFairplayDRM = (
       return session;
     } catch (errOrResp) {
       if (errOrResp instanceof Response) {
-        const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
+        const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
         if (mediaError) {
           mediaEl.dispatchEvent(
             new CustomEvent('error', {
@@ -1076,8 +1076,7 @@ export const loadMedia = (
             .then(setupSeekableChangePoll)
             .catch((errOrResp: Response | Error) => {
               if (errOrResp instanceof Response) {
-                const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
-                console.error('mediaError', mediaError?.message, mediaError?.context);
+                const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
                 if (mediaError) {
                   mediaEl.dispatchEvent(
                     new CustomEvent('error', {
@@ -1097,8 +1096,7 @@ export const loadMedia = (
             .then(setupSeekableChangePoll)
             .catch((errOrResp: Response | Error) => {
               if (errOrResp instanceof Response) {
-                const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
-                console.error('mediaError', mediaError?.message, mediaError?.context);
+                const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
                 if (mediaError) {
                   mediaEl.dispatchEvent(
                     new CustomEvent('error', {
@@ -1120,8 +1118,7 @@ export const loadMedia = (
           .then(setupSeekableChangePoll)
           .catch((errOrResp: Response | Error) => {
             if (errOrResp instanceof Response) {
-              const mediaError = getErrorFromResponse(errOrResp, 'drm', props);
-              console.error('mediaError', mediaError?.message, mediaError?.context);
+              const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
               if (mediaError) {
                 mediaEl.dispatchEvent(
                   new CustomEvent('error', {
@@ -1226,9 +1223,8 @@ export const loadMedia = (
         const category = hlsErrorDataToCategory(data) ?? MuxErrorCategory.VIDEO;
         mediaError = getErrorFromResponse(data.response, category, props) ?? new MediaError('', errorCode);
       } else {
-        mediaError = new MediaError('', errorCode);
+        mediaError = new MediaError('', errorCode, data.fatal);
       }
-      mediaError.fatal = data.fatal;
       mediaError.data = data;
       mediaEl.dispatchEvent(
         new CustomEvent('error', {
