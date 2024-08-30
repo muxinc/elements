@@ -53,6 +53,7 @@
 | `title`                       | `string`                                                                                                    | Title text to show for your content in the Mux Player UI.                                                                                                                                                                                                                                                                                                                                        | `""`          |
 | `placeholder`                 | `string` (URI)                                                                                              | Image to show as various assets load. Typically a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs) when used                                                                                                                                                                                                                                               | N/A           |
 | `cast-receiver` | `string` (Receiver ID) | The app ID to use for a custom [Google cast receiver](https://developers.google.com/cast/docs/web_receiver/basic). If none is provided, the default receiver app will be used. | N/A |
+| `no-tooltips` | `boolean` | Toggles disabling tooltips in the UI | `false` |
 
 <!-- UNDOCUMENTED
 // NEW STREAM TYPE VALUES
