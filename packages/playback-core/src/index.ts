@@ -8,7 +8,13 @@ import type {
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
+import {
+  MediaError,
+  MuxErrorCategory,
+  MuxErrorCategoryValue,
+  MuxErrorCode,
+  errorCategoryToTokenNameOrPrefix,
+} from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
 import { setupMediaTracks } from './media-tracks';
@@ -759,7 +765,7 @@ export const setupNativeFairplayDRM = (
           .then((value) => {
             props.drmTypeCb?.(DRMType.FAIRPLAY);
             return value;
-          });
+          }); /** @TODO catch exceptions here "Unsupported keySystem or supportedConfigurations." */
 
         const keys = await access.createMediaKeys();
 
@@ -1136,6 +1142,25 @@ export const loadMedia = (
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
       if (props.tokens?.drm) {
         setupNativeFairplayDRM(props, mediaEl);
+      } else {
+        // If we end up receiving an encrypted event in this case, that means the media is DRM-protected
+        // but a token was not provided.
+        addEventListenerWithTeardown(
+          mediaEl,
+          'encrypted',
+          () => {
+            const message = i18n('Attempting to play DRM-protected content without providing a DRM token.');
+            const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+            mediaError.errorCategory = MuxErrorCategory.DRM;
+            mediaError.muxCode = MuxErrorCode.ENCRYPTED_MISSING_TOKEN;
+            mediaEl.dispatchEvent(
+              new CustomEvent('error', {
+                detail: mediaError,
+              })
+            );
+          },
+          { once: true }
+        );
       }
 
       mediaEl.setAttribute('src', src);
@@ -1193,42 +1218,9 @@ export const loadMedia = (
     });
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
-        [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
-        [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
-      } as const;
-
-      // eslint-disable-next-line no-shadow
-      const hlsErrorDataToErrorCode = (data: ErrorData) => {
-        if (
-          [
-            ErrorDetails.KEY_SYSTEM_LICENSE_REQUEST_FAILED,
-            ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_REQUEST_FAILED,
-          ].includes(data.details)
-        ) {
-          return MediaError.MEDIA_ERR_NETWORK;
-        }
-        return ErrorCodeMap[data.type];
-      };
-
-      // eslint-disable-next-line no-shadow
-      const hlsErrorDataToCategory = (data: ErrorData) => {
-        if (data.type === ErrorTypes.KEY_SYSTEM_ERROR) return MuxErrorCategory.DRM;
-        if (data.type === ErrorTypes.NETWORK_ERROR) return MuxErrorCategory.VIDEO;
-      };
-
-      let mediaError: MediaError;
-      const errorCode = hlsErrorDataToErrorCode(data);
-      if (errorCode === MediaError.MEDIA_ERR_NETWORK && data.response) {
-        const category = hlsErrorDataToCategory(data) ?? MuxErrorCategory.VIDEO;
-        mediaError = getErrorFromResponse(data.response, category, props) ?? new MediaError('', errorCode);
-      } else {
-        mediaError = new MediaError('', errorCode, data.fatal);
-      }
-      mediaError.data = data;
       mediaEl.dispatchEvent(
         new CustomEvent('error', {
-          detail: mediaError,
+          detail: getErrorFromHlsErrorData(data, props),
         })
       );
     });
@@ -1337,7 +1329,7 @@ async function handleNativeError(event: Event) {
  * event so consumers are still able to disable or intercept this error event.
  * @param {Event} event
  */
-function handleInternalError(event: Event) {
+function handleInternalError(event: Event | CustomEvent<MediaError>) {
   if (!(event instanceof CustomEvent) || !(event.detail instanceof MediaError)) return;
 
   const mediaEl = event.target as HTMLMediaElement;
@@ -1354,3 +1346,119 @@ function handleInternalError(event: Event) {
     player_error_context: error.context,
   });
 }
+
+const getErrorFromHlsErrorData = (
+  data: ErrorData,
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>
+) => {
+  console.error('getErrorFromHlsErrorData()', data);
+  const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
+    [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
+    [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
+    [Hls.ErrorTypes.KEY_SYSTEM_ERROR]: MediaError.MEDIA_ERR_ENCRYPTED,
+  } as const;
+
+  // eslint-disable-next-line no-shadow
+  const hlsErrorDataToErrorCode = (data: ErrorData) => {
+    if (
+      [
+        ErrorDetails.KEY_SYSTEM_LICENSE_REQUEST_FAILED,
+        ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_REQUEST_FAILED,
+      ].includes(data.details)
+    ) {
+      return MediaError.MEDIA_ERR_NETWORK;
+    }
+    return ErrorCodeMap[data.type];
+  };
+
+  // eslint-disable-next-line no-shadow
+  const hlsErrorDataToCategory = (data: ErrorData) => {
+    if (data.type === ErrorTypes.KEY_SYSTEM_ERROR) return MuxErrorCategory.DRM;
+    if (data.type === ErrorTypes.NETWORK_ERROR) return MuxErrorCategory.VIDEO;
+  };
+
+  let mediaError: MediaError;
+  const errorCode = hlsErrorDataToErrorCode(data);
+  if (errorCode === MediaError.MEDIA_ERR_NETWORK && data.response) {
+    const category = hlsErrorDataToCategory(data) ?? MuxErrorCategory.VIDEO;
+    mediaError = getErrorFromResponse(data.response, category, props) ?? new MediaError('', errorCode);
+  } else if (errorCode === MediaError.MEDIA_ERR_ENCRYPTED) {
+    if (data.details === ErrorDetails.KEY_SYSTEM_NO_CONFIGURED_LICENSE) {
+      const message = i18n('Attempting to play DRM-protected content without providing a DRM token.');
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_MISSING_TOKEN;
+    } else if (data.details === ErrorDetails.KEY_SYSTEM_NO_ACCESS) {
+      /** @TODO For UI message add suggestion to try another browser */
+      const message = i18n(
+        'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.'
+      );
+      // Should we flag this as a business exception?
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_UNSUPPORTED_KEY_SYSTEM;
+    } else if (data.details === ErrorDetails.KEY_SYSTEM_NO_SESSION) {
+      const message = i18n(
+        'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
+      );
+      // NOTE: For some reason, perhaps due to issues with EXT-X-KEY parsing, hls.js defines this as a non-fatal error.
+      // For us, we should be able to assume it is instead fatal. (CJP)
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
+    } else if (data.details === ErrorDetails.KEY_SYSTEM_SESSION_UPDATE_FAILED) {
+      const message = i18n(
+        'Failed to update DRM license. This may be an issue with the player or your protected content.'
+      );
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
+    } else if (data.details === ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_UPDATE_FAILED) {
+      const message = i18n(
+        'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.'
+      );
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_SERVER_CERT_FAILED;
+    } else if (data.details === ErrorDetails.KEY_SYSTEM_STATUS_INTERNAL_ERROR) {
+      const message = i18n(
+        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+      );
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
+    } else if (data.details === ErrorDetails.KEY_SYSTEM_STATUS_OUTPUT_RESTRICTED) {
+      const message = i18n(
+        'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
+      );
+      // NOTE: When encountered, this is a non-fatal error (though it's certainly interruptive of standard playback experience). (CJP)
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_OUTPUT_RESTRICTED;
+    } else {
+      mediaError = new MediaError(data.error.message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_ERROR;
+    }
+  } else {
+    mediaError = new MediaError('', errorCode, data.fatal);
+  }
+  if (!mediaError.context) {
+    mediaError.context =
+      `${data.url ? `url: ${data.url}\n` : ''}` +
+      `${
+        data.response && (data.response.code || data.response.text)
+          ? `response: ${data.response.code}, ${data.response.text}\n`
+          : ''
+      }` +
+      `${data.reason ? `failure reason: ${data.reason}\n` : ''}` +
+      `${data.level ? `level: ${data.level}\n` : ''}` +
+      `${data.parent ? `parent stream controller: ${data.parent}\n` : ''}` +
+      `${data.buffer ? `buffer length: ${data.buffer}\n` : ''}` +
+      `${data.error ? `error: ${data.error}\n` : ''}` +
+      `${data.event ? `event: ${data.event}\n` : ''}` +
+      `${data.err ? `error message: ${data.err?.message}\n` : ''}`;
+  }
+  mediaError.data = data;
+  return mediaError;
+};

@@ -149,6 +149,20 @@ export const lang: { [k: string]: string } = {
   '(opens in a new window)': '(opens in a new window)',
   'Network Error': 'Network Error',
   '{category} is not currently available': '{category} is not currently available',
+  'Attempting to play DRM-protected content without providing a DRM token.':
+    'Attempting to play DRM-protected content without providing a DRM token.',
+  'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.':
+    'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.',
+  'Failed to generate a DRM license request. This may be an issue with the player or your protected content.':
+    'Failed to generate a DRM license request. This may be an issue with the player or your protected content.',
+  'Failed to update DRM license. This may be an issue with the player or your protected content.':
+    'Failed to update DRM license. This may be an issue with the player or your protected content.',
+  'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.':
+    'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.',
+  'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.':
+    'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.',
+  'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.':
+    'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.',
   'The live stream or video file are not yet ready.': 'The live stream or video file are not yet ready.',
   'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.':
     'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.',
