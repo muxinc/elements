@@ -81,6 +81,7 @@ const PlayerAttributes = {
   EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
   CAST_RECEIVER: 'cast-receiver',
+  NO_TOOLTIPS: 'no-tooltips',
 };
 
 const ThemeAttributeNames = [
@@ -1721,6 +1722,18 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return;
     }
     this.media.castCustomData = val;
+  }
+
+  get noTooltips() {
+    return this.hasAttribute(PlayerAttributes.NO_TOOLTIPS);
+  }
+
+  set noTooltips(val: boolean) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.NO_TOOLTIPS);
+      return;
+    }
+    this.setAttribute(PlayerAttributes.NO_TOOLTIPS, '');
   }
 }
 
