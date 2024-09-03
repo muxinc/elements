@@ -765,30 +765,56 @@ export const setupNativeFairplayDRM = (
           .then((value) => {
             props.drmTypeCb?.(DRMType.FAIRPLAY);
             return value;
-          }); /** @TODO catch exceptions here "Unsupported keySystem or supportedConfigurations." */
+          })
+          .catch(() => {
+            const message = i18n(
+              'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.'
+            );
+            // Should we flag this as a business exception?
+            const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+            mediaError.errorCategory = MuxErrorCategory.DRM;
+            mediaError.muxCode = MuxErrorCode.ENCRYPTED_UNSUPPORTED_KEY_SYSTEM;
+            mediaEl.dispatchEvent(
+              new CustomEvent('error', {
+                detail: mediaError,
+              })
+            );
+          });
+
+        if (!access) return;
 
         const keys = await access.createMediaKeys();
 
         try {
-          const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay'));
-          await keys.setServerCertificate(fairPlayAppCert);
-          // @ts-ignore
-          // await keys.setServerCertificate('fairPlayAppCert');
-        } catch (errOrResp: Response | Error) {
-          if (errOrResp instanceof Response) {
-            const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
-            console.error('mediaError', mediaError?.message, mediaError?.context);
-            if (mediaError) {
-              mediaEl.dispatchEvent(
-                new CustomEvent('error', {
-                  detail: mediaError,
-                })
-              );
-              return;
+          const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
+            if (errOrResp instanceof Response) {
+              const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
+              console.error('mediaError', mediaError?.message, mediaError?.context);
+              if (mediaError) {
+                return Promise.reject(mediaError);
+              }
+              // NOTE: This should never happen. Adding for exhaustiveness (CJP).
+              return Promise.reject(new Error('Unexpected error in app cert request'));
             }
-          } else if (errOrResp instanceof Error) {
-            // mediaEl.dispatchEvent(new MediaError())
-          }
+            return Promise.reject(errOrResp);
+          });
+          await keys.setServerCertificate(fairPlayAppCert).catch(() => {
+            const message = i18n(
+              'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.'
+            );
+            const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+            mediaError.errorCategory = MuxErrorCategory.DRM;
+            mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_SERVER_CERT_FAILED;
+            return Promise.reject(mediaError);
+          });
+          // @ts-ignore
+        } catch (error: Error | MediaError) {
+          mediaEl.dispatchEvent(
+            new CustomEvent('error', {
+              detail: error,
+            })
+          );
+          return;
         }
         await mediaEl.setMediaKeys(keys);
       }
@@ -800,35 +826,95 @@ export const setupNativeFairplayDRM = (
       }
 
       const session = (mediaEl.mediaKeys as MediaKeys).createSession();
-      session.generateRequest(initDataType, initData);
-      const message = await new Promise<MediaKeyMessageEvent['message']>((resolve) => {
-        session.addEventListener(
-          'message',
-          (messageEvent) => {
-            resolve(messageEvent.message);
-          },
-          { once: true }
-        );
-      });
+      session.addEventListener('keystatuseschange', () => {
+        // recheck key statuses
+        // NOTE: As an improvement, we could also add checks for a status of 'expired' and
+        // attempt to renew the license here (CJP)
+        session.keyStatuses.forEach((mediaKeyStatus) => {
+          let mediaError;
+          if (mediaKeyStatus === 'internal-error') {
+            const message = i18n(
+              'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+            );
+            mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+            mediaError.errorCategory = MuxErrorCategory.DRM;
+            mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
+          } else if (mediaKeyStatus === 'output-restricted' || mediaKeyStatus === 'output-downscaled') {
+            const message = i18n(
+              'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
+            );
+            // NOTE: When encountered, this is a non-fatal error (though it's certainly interruptive of standard playback experience). (CJP)
+            mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, false);
+            mediaError.errorCategory = MuxErrorCategory.DRM;
+            mediaError.muxCode = MuxErrorCode.ENCRYPTED_OUTPUT_RESTRICTED;
+          }
 
-      const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay'));
-      await session.update(response);
-      return session;
-    } catch (errOrResp) {
-      if (errOrResp instanceof Response) {
-        const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
-        if (mediaError) {
+          if (mediaError) {
+            mediaEl.dispatchEvent(
+              new CustomEvent('error', {
+                detail: mediaError,
+              })
+            );
+          }
+        });
+      });
+      const message = await Promise.all([
+        session.generateRequest(initDataType, initData).catch(() => {
+          // eslint-disable-next-line no-shadow
+          const message = i18n(
+            'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
+          );
+          const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+          mediaError.errorCategory = MuxErrorCategory.DRM;
+          mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
           mediaEl.dispatchEvent(
             new CustomEvent('error', {
               detail: mediaError,
             })
           );
-          return;
+        }),
+        new Promise<MediaKeyMessageEvent['message']>((resolve) => {
+          session.addEventListener(
+            'message',
+            (messageEvent) => {
+              resolve(messageEvent.message);
+            },
+            { once: true }
+          );
+        }),
+      ]).then(([, messageEventMsg]) => messageEventMsg);
+      session.generateRequest(initDataType, initData);
+
+      const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
+        if (errOrResp instanceof Response) {
+          const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
+          console.error('mediaError', mediaError?.message, mediaError?.context);
+          if (mediaError) {
+            return Promise.reject(mediaError);
+          }
+          // NOTE: This should never happen. Adding for exhaustiveness (CJP).
+          return Promise.reject(new Error('Unexpected error in license key request'));
         }
-      } else if (errOrResp instanceof Error) {
-        // mediaEl.dispatchEvent(new MediaError())
-      }
-      console.error(`Could not start encrypted playback due to exception "${errOrResp}"`);
+        return Promise.reject(errOrResp);
+      });
+      await session.update(response).catch(() => {
+        // eslint-disable-next-line no-shadow
+        const message = i18n(
+          'Failed to update DRM license. This may be an issue with the player or your protected content.'
+        );
+        const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+        mediaError.errorCategory = MuxErrorCategory.DRM;
+        mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
+        return Promise.reject(mediaError);
+      });
+      // @ts-ignore
+    } catch (error: Error | MediaError) {
+      mediaEl.dispatchEvent(
+        new CustomEvent('error', {
+          detail: error,
+        })
+      );
+      return;
     }
   };
 
@@ -1432,7 +1518,7 @@ const getErrorFromHlsErrorData = (
         'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
       );
       // NOTE: When encountered, this is a non-fatal error (though it's certainly interruptive of standard playback experience). (CJP)
-      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
+      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, false);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_OUTPUT_RESTRICTED;
     } else {
