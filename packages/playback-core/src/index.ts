@@ -8,13 +8,7 @@ import type {
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import {
-  MediaError,
-  MuxErrorCategory,
-  MuxErrorCategoryValue,
-  MuxErrorCode,
-  errorCategoryToTokenNameOrPrefix,
-} from './errors';
+import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
 import { setupMediaTracks } from './media-tracks';
