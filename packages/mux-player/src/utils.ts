@@ -1,6 +1,3 @@
-// @ts-ignore
-// import lang from '../lang/en.json';
-
 export function stylePropsToString(props: any) {
   let style = '';
   Object.entries(props).forEach(([key, value]) => {
