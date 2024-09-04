@@ -68,8 +68,8 @@ export function getErrorLogs(
             dialog.message = i18n(`The video’s secured playback-token has expired.`, translate);
             devlog.message = i18n(`The video’s secured playback-token has expired.`, translate);
             devlog.context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
-              expiredDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(tokenExpiry * 1000),
-              currentDate: new Intl.DateTimeFormat(lang.code, dateOptions).format(Date.now()),
+              expiredDate: new Intl.DateTimeFormat((lang as any).code, dateOptions).format(tokenExpiry * 1000),
+              currentDate: new Intl.DateTimeFormat((lang as any).code, dateOptions).format(Date.now()),
             });
             devlog.file = '403-expired-token.md';
             break;

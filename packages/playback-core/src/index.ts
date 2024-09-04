@@ -1,5 +1,12 @@
-/* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" />
+import type {
+  ValueOf,
+  PlaybackCore,
+  MuxMediaProps,
+  MuxMediaPropsInternal,
+  MaxResolutionValue,
+  MinResolutionValue,
+  RenditionOrderValue,
+} from './types';
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
@@ -30,15 +37,6 @@ import {
   toTargetLiveWindowFromPlaylistType,
   addEventListenerWithTeardown,
 } from './util';
-import type {
-  ValueOf,
-  PlaybackCore,
-  MuxMediaProps,
-  MuxMediaPropsInternal,
-  MaxResolutionValue,
-  MinResolutionValue,
-  RenditionOrderValue,
-} from './types';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import type { HlsConfig } from 'hls.js';
 // import { MediaKeySessionContext } from 'hls.js';

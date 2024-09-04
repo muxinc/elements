@@ -105,6 +105,7 @@ type PartialHTMLVideoElement = Omit<
   | 'mux' // NOTE: Because of our global types extension of HTMLMediaElement, `mux` is a property that also needs to be omitted (CJP)
 >;
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
   addEventListener<K extends keyof HTMLVideoElementEventMap>(
     type: K,
@@ -128,6 +129,7 @@ interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
   ): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
   #mediaChildrenMap = new WeakMap();
 

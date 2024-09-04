@@ -13,7 +13,7 @@
   "license": "MIT",
   "scripts": {
     "clean": "shx rm -rf dist/",
-    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
     "dev:esm": "yarn build:esm --watch=forever",
     "dev:types": "yarn build:types -w --preserveWatchOutput",
     "dev": "npm-run-all --parallel dev:types dev:esm",
@@ -31,14 +31,14 @@
   "devDependencies": {
     "@types/minimist": "^1.2.2",
     "@types/shelljs": "^0.8.11",
-    "@typescript-eslint/eslint-plugin": "^5.48.0",
-    "@typescript-eslint/parser": "^5.48.0",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
     "downlevel-dts": "^0.11.0",
     "esbuild": "^0.19.8",
-    "eslint": "^8.24.0",
+    "eslint": "^9.9.1",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
     "shx": "^0.3.4",
-    "typescript": "^4.9.4"
+    "typescript": "^5.5.4"
   }
 }

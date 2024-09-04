@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // @ts-ignore
-import TheWelcome from "@/components/TheWelcome.vue";
+import TheWelcome from "../components/TheWelcome.vue";
 </script>
 
 <template>

@@ -8,8 +8,8 @@ const DEFAULT_LOCALE = 'en';
 //   "Network Error": "Netwerk Fout",
 // };
 export function i18n(str: string, translate = true): any {
-  const message = translate ? lang?.[str] ?? str : str;
-  const locale = translate ? lang.code : DEFAULT_LOCALE;
+  const message = translate ? (lang as any)?.[str] ?? str : str;
+  const locale = translate ? (lang as any).code : DEFAULT_LOCALE;
   return new IntlMessageFormat(message, locale);
 }
 
@@ -21,7 +21,7 @@ class IntlMessageFormat {
   message: string;
   locale: string;
 
-  constructor(message: string, locale = lang.code ?? DEFAULT_LOCALE) {
+  constructor(message: string, locale = (lang as any).code ?? DEFAULT_LOCALE) {
     this.message = message;
     this.locale = locale;
   }

@@ -98,6 +98,7 @@ class MediaDialog extends globalThis.HTMLElement {
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
     if (attrName === 'open' && oldValue !== newValue) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       newValue != null ? this.show() : this.close();
     }
   }

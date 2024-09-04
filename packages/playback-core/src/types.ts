@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" />
+/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" preserve="true" />
 import type { Options } from 'mux-embed';
 import type { MediaError } from './errors';
 import type { HlsConfig } from 'hls.js';
@@ -11,7 +11,7 @@ type Maybe<T> = T | null | undefined;
 const isNil = (x: unknown): x is null | undefined => x == undefined;
 
 // Type Guard to determine if a given key is actually a key of some object of type T
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export const isKeyOf = <T extends {} = any>(k: KeyTypes, o: Maybe<T>): k is keyof T => {
   if (isNil(o)) return false;
   return k in o;

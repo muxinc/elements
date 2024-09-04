@@ -1,11 +1,11 @@
-import MuxPlayerView from "@/views/MuxPlayerView.vue";
-import MuxVideoView from "@/views/MuxVideoView.vue";
-import MuxAudioView from "@/views/MuxAudioView.vue";
+import MuxPlayerView from "../views/MuxPlayerView.vue";
+import MuxVideoView from "../views/MuxVideoView.vue";
+import MuxAudioView from "../views/MuxAudioView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: "/",
