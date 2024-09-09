@@ -5,6 +5,8 @@ import { Dispatch, Reducer, useEffect, useReducer } from 'react';
 
 const DEFAULT_INITIAL_STATE = Object.freeze({}) as Readonly<Record<string, any>>;
 
+export const isObject = (x: unknown): x is object => (x && typeof x === 'object' && !Array.isArray(x));
+
 export const defaultToInitialState = <T extends Record<string, any> = Record<string, any>>(
   query: NextParsedUrlQuery,
   ..._additionalArgs: any[]
@@ -42,10 +44,30 @@ export const reducer = <T extends Record<string, any> = Record<string, any>>(
   const { type, value } = action;
   switch (type) {
     case ActionType.UPDATE: {
-      return {
-        ...state,
-        ...value,
+      const updateFn = typeof value === 'function' ? value : (prevState) => {
+        return Object.entries(value).reduce((nextState, [name, value]) => {
+          let nextValue = value;
+          if (isObject(value) && isObject(nextState[name])) {
+            // nextValue = { ...nextState[name], ...value };
+            nextValue = Object.entries(value).reduce((nextValue, [newValueKey, newValueValue]) => {
+              // Treat undefined (but not null) as a removal/delete condition
+              if (newValueValue === undefined) {
+                delete nextValue[newValueKey];
+              } else {
+                nextValue[newValueKey] = newValueValue;
+              }
+              return nextValue;
+            }, { ...nextState[name] });
+            // Also remove empty objects (aka no remaining keys after prior logic)
+            if (!Object.keys(nextValue).length) {
+              nextValue = undefined;
+            }
+          }
+          nextState[name] = nextValue;
+          return nextState;
+        }, { ...prevState });
       };
+      return updateFn(state);
     }
     default: {
       return state;
