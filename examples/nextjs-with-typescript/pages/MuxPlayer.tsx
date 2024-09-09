@@ -116,6 +116,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   loop: undefined,
   crossOrigin: undefined,
   customDomain: undefined,
+  beaconCollectionDomain: undefined,
   tokens: undefined,
   playbackId: undefined,
   streamType: undefined,
@@ -484,6 +485,7 @@ function MuxPlayerPage({ location }: Props) {
           <TextRenderer value={state.metadata?.video_id} name="metadata.video_id" onChange={genericOnChange} />
           <TextRenderer value={state.metadata?.video_title} name="metadata.video_title" onChange={genericOnChange} />
           <TextRenderer value={state.metadata?.viewer_user_id} name="metadata.viewer_user_id" onChange={genericOnChange} />
+          <URLRenderer value={state.beaconCollectionDomain} name="beaconCollectionDomain" onChange={genericOnChange} />
           <BooleanRenderer value={state.disableTracking} name="disableTracking" onChange={genericOnChange} />
           <BooleanRenderer value={state.disableCookies} name="disableCookies" onChange={genericOnChange} />
           {/* These are all playback state properties */}
