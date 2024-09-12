@@ -74,7 +74,7 @@ In addition to the attributes listed below, `<mux-uploader>` supports standard `
 | `pausedchange` | `boolean` `paused` state | Dispatched when the `paused` upload state changes. Note that pausing will wait until the currently uploading chunk finishes. |
 | `progress` | The `number` percent | Dispatched whenever the chunked upload progress changes, including mid-chunk. Provides the percent of the file uploaded thus far. |
 | `reset` | N/A | Dispatched to notify that the uploader's UI and state should be reset, e.g. when a user clicks "retry". As such, manually dispatching this event on `<mux-uploader>` will also prompt a reset (though you should only do this if an upload has failed). |
-| `success` | `detail type` | Dispatched when all chunks have been successfully uploaded. |
+| `success` | `null` | Dispatched when all chunks have been successfully uploaded. |
 | `uploadstart` | `{ file: File; chunkSize: number; }` | Dispatched when uploading the file begins. |
 | `uploaderror` | `{ message: string; chunkNumber: number; attempts: number; }` | Dispatched when an error occurs while attempting to upload. Provides the number of (failed) attempts to upload a chunk, the chunk number, and the corresponding error message as a `detail`. |
 
