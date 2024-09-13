@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import MuxPlayer, { MuxPlayerProps, MaxResolution, MinResolution, RenditionOrder } from '@mux/mux-player-react';
+// Hack way to "unapply"/override specific global style sheet styles
+import '../harness-style-overrides.css';
 import '@mux/mux-player/themes/classic';
 import '@mux/mux-player/themes/minimal';
 import '@mux/mux-player/themes/microvideo';
@@ -25,6 +27,8 @@ import {
   updateProps,
   usePageStateReducer,
 } from '../app/page-state';
+import { Accordion, AccordionDetails, AccordionSummary, Box } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const onLoadStart = console.log.bind(null, 'loadstart');
 const onLoadedMetadata = console.log.bind(null, 'loadedmetadata');
@@ -144,7 +148,8 @@ const PlayerSizeHeights = {
 };
 
 const DEFAULT_INITIAL_STYLES_STATE = {
-  width: `${PlayerSizeWidths[MediaChromeSizes.LG] + 1} + px`,
+  width: '50%',
+  // width: `${PlayerSizeWidths[MediaChromeSizes.LG] + 1} + px`,
   // width: PlayerSizeWidths[MediaChromeSizes.LG] + 'px',
   // height: PlayerSizeHeights[MediaChromeSizes.LG] + 'px',
 };
@@ -260,372 +265,429 @@ function MuxPlayerPage({ location }: Props) {
       <Head>
         <title>&lt;MuxPlayer/&gt; Demo</title>
       </Head>
-      <main className="component-page">
-        <MuxPlayer
-          // ref={mediaElRef}
-          style={stylesState}
-          theme={state.theme}
-          envKey={state.envKey}
-          metadata={state.metadata}
-          // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
-          // _hlsConfig={{
-          //   startLevel: 2,
-          //   debug: true,
-          // }}
-          title={state.title}
-          startTime={state.startTime}
-          currentTime={state.currentTime}
-          thumbnailTime={state.thumbnailTime}
-          poster={state.poster}
-          placeholder={state.placeholder}
-          playbackId={state.playbackId}
-          tokens={state.tokens}
-          storyboardSrc={state.storyboardSrc}
-          customDomain={state.customDomain}
-          forwardSeekOffset={state.forwardSeekOffset}
-          backwardSeekOffset={state.backwardSeekOffset}
-          crossOrigin={state.crossOrigin}
-          nohotkeys={state.nohotkeys}
-          hotkeys={state.hotkeys}
-          // onPlayerReady={() => console.log("ready!")}
-          preferCmcd={state.preferCmcd}
-          preferPlayback={state.preferPlayback}
-          debug={state.debug}
-          noVolumePref={state.noVolumePref}
-          disableTracking={state.disableTracking}
-          disableCookies={state.disableCookies}
-          loop={state.loop}
-          muted={state.muted}
-          volume={state.volume}
-          paused={state.paused}
-          autoPlay={state.autoPlay}
-          maxResolution={state.maxResolution}
-          minResolution={state.minResolution}
-          renditionOrder={state.renditionOrder}
-          programStartTime={state.programStartTime}
-          programEndTime={state.programEndTime}
-          // To test/apply extra playlist params to resultant src URL (CJP)
-          // extraSourceParams={{
-          //   foo: 'str',
-          //   bar: true,
-          //   baz: 1,
-          // }}
-          preload={state.preload}
-          streamType={state.streamType}
-          targetLiveWindow={state.targetLiveWindow}
-          defaultStreamType={state.defaultStreamType}
-          audio={state.audio}
-          primaryColor={state.primaryColor}
-          secondaryColor={state.secondaryColor}
-          accentColor={state.accentColor}
-          defaultShowRemainingTime={state.defaultShowRemainingTime}
-          defaultHiddenCaptions={state.defaultHiddenCaptions}
-          defaultDuration={state.defaultDuration}
-          playbackRate={state.playbackRate}
-          playbackRates={state.playbackRates}
-          onPlay={(evt: Event) => {
-            onPlay(evt);
-            // dispatch(updateProps({ paused: false }));
-          }}
-          onPause={(evt: Event) => {
-            onPause(evt);
-            // dispatch(updateProps({ paused: true }));
-          }}
-          onVolumeChange={(event) => {
-            // const muxPlayerEl = event.target as MuxPlayerElement
-            // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
-          }}
-          onSeeking={onSeeking}
-          onSeeked={onSeeked}
-          onEnded={onEnded}
-          onWaiting={onWaiting}
-        />
-        <div className="options">
-          <ComponentCodeRenderer state={state} component="MuxPlayer" />
-          <URLPathRenderer state={state} location={typeof window !== 'undefined' ? window.location : location} />
-          <div>
-            <label htmlFor="assets-control">Select from one of our example assets</label>
-            <select
-              id="assets-control"
-              onChange={({ target: { value } }) => {
-                setSelectedAsset(mediaAssets[value]);
-                dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(mediaAssets[value], mediaAssets)));
-              }}
-              value={mediaAssets.indexOf(selectedAsset)}
-            >
-              <option value="-1">None</option>
-              {mediaAssets.map((value, i) => {
-                const { description, error } = value;
-                const label = `${error ? '👎 ' : ''}${description}`;
-                return (
-                  <option key={i} value={i}>
-                    {label}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div>
-            <h2>Manual Config</h2>
-          </div>
+      {/* @ts-ignore */}
+      {/* <main className="component-page" style={{ '--focus': 'initial' }}> */}
+      {/* @ts-ignore */}
+      <Box component="main" style={{ '--focus': 'initial' }}>
+        <Box style={{ display: 'flex', flexFlow: 'row wrap' }}>
+          <MuxPlayer
+            // ref={mediaElRef}
+            style={stylesState}
+            theme={state.theme}
+            envKey={state.envKey}
+            metadata={state.metadata}
+            // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
+            // _hlsConfig={{
+            //   startLevel: 2,
+            //   debug: true,
+            // }}
+            title={state.title}
+            startTime={state.startTime}
+            currentTime={state.currentTime}
+            thumbnailTime={state.thumbnailTime}
+            poster={state.poster}
+            placeholder={state.placeholder}
+            playbackId={state.playbackId}
+            tokens={state.tokens}
+            storyboardSrc={state.storyboardSrc}
+            customDomain={state.customDomain}
+            forwardSeekOffset={state.forwardSeekOffset}
+            backwardSeekOffset={state.backwardSeekOffset}
+            crossOrigin={state.crossOrigin}
+            nohotkeys={state.nohotkeys}
+            hotkeys={state.hotkeys}
+            // onPlayerReady={() => console.log("ready!")}
+            preferCmcd={state.preferCmcd}
+            preferPlayback={state.preferPlayback}
+            debug={state.debug}
+            noVolumePref={state.noVolumePref}
+            disableTracking={state.disableTracking}
+            disableCookies={state.disableCookies}
+            loop={state.loop}
+            muted={state.muted}
+            volume={state.volume}
+            paused={state.paused}
+            autoPlay={state.autoPlay}
+            maxResolution={state.maxResolution}
+            minResolution={state.minResolution}
+            renditionOrder={state.renditionOrder}
+            programStartTime={state.programStartTime}
+            programEndTime={state.programEndTime}
+            // To test/apply extra playlist params to resultant src URL (CJP)
+            // extraSourceParams={{
+            //   foo: 'str',
+            //   bar: true,
+            //   baz: 1,
+            // }}
+            preload={state.preload}
+            streamType={state.streamType}
+            targetLiveWindow={state.targetLiveWindow}
+            defaultStreamType={state.defaultStreamType}
+            audio={state.audio}
+            primaryColor={state.primaryColor}
+            secondaryColor={state.secondaryColor}
+            accentColor={state.accentColor}
+            defaultShowRemainingTime={state.defaultShowRemainingTime}
+            defaultHiddenCaptions={state.defaultHiddenCaptions}
+            defaultDuration={state.defaultDuration}
+            playbackRate={state.playbackRate}
+            playbackRates={state.playbackRates}
+            onPlay={(evt: Event) => {
+              onPlay(evt);
+              // dispatch(updateProps({ paused: false }));
+            }}
+            onPause={(evt: Event) => {
+              onPause(evt);
+              // dispatch(updateProps({ paused: true }));
+            }}
+            onVolumeChange={(event) => {
+              // const muxPlayerEl = event.target as MuxPlayerElement
+              // dispatch(updateProps({ muted: muxPlayerEl.muted, volume: muxPlayerEl.volume }));
+            }}
+            onSeeking={onSeeking}
+            onSeeked={onSeeked}
+            onEnded={onEnded}
+            onWaiting={onWaiting}
+          />
+          <Box style={{ width: '50%' }}>
+            <ComponentCodeRenderer state={state} component="MuxPlayer" />
+            <URLPathRenderer state={state} location={typeof window !== 'undefined' ? window.location : location} />
+          </Box>
+        </Box>
+        <div>
+          <label htmlFor="assets-control">Select from one of our example assets</label>
+          <select
+            id="assets-control"
+            onChange={({ target: { value } }) => {
+              setSelectedAsset(mediaAssets[value]);
+              dispatch(updateProps<MuxPlayerProps>(toPlayerPropsFromJSON(mediaAssets[value], mediaAssets)));
+            }}
+            value={mediaAssets.indexOf(selectedAsset)}
+          >
+            <option value="-1">None</option>
+            {mediaAssets.map((value, i) => {
+              const { description, error } = value;
+              const label = `${error ? '👎 ' : ''}${description}`;
+              return (
+                <option key={i} value={i}>
+                  {label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div>
+          <h2>Manual Config</h2>
+        </div>
+        {/* <div className="options"> */}
+        <Box style={{ display: 'flex', flexFlow: 'row wrap', alignItems: 'flex-start' }}>
           {/* These are all properties that effect how media assets are requested */}
-          {/* Props for the main media stream playback */}
-          <TextRenderer value={state.playbackId} name="playbackId" onChange={genericOnChange} />
-          <TextRenderer value={state.tokens?.playback} name="tokens.playback" onChange={genericOnChange} />
-          <TextRenderer value={state.tokens?.drm} name="tokens.drm" onChange={genericOnChange} />
-          <EnumRenderer
-            value={state.maxResolution}
-            name="maxResolution"
-            onChange={genericOnChange}
-            values={MaxResolutionValues}
-          />
-          <EnumRenderer
-            value={state.minResolution}
-            name="minResolution"
-            onChange={genericOnChange}
-            values={MinResolutionValues}
-          />
-          <EnumRenderer
-            value={state.renditionOrder}
-            name="renditionOrder"
-            onChange={genericOnChange}
-            values={RenditionOrderValues}
-          />
-          <NumberRenderer
-            value={state.programStartTime}
-            name="programStartTime"
-            onChange={genericOnChange}
-            min={0}
-            step={1}
-          />
-          <NumberRenderer
-            value={state.programEndTime}
-            name="programEndTime"
-            onChange={genericOnChange}
-            min={0}
-            step={1}
-          />
-          <URLRenderer
-            value={state.customDomain}
-            name="customDomain"
-            onChange={genericOnChange}
-            placeholder="my.customdomain.com"
-          />
-          <EnumRenderer
-            value={state.preferCmcd}
-            name="preferCmcd"
-            onChange={genericOnChange}
-            values={['query', 'header', 'none']}
-          />
-          {/* Props for the thumbnail (aka poster) */}
-          <TextRenderer value={state.tokens?.thumbnail} name="tokens.thumbnail" onChange={genericOnChange} />
-          <NumberRenderer value={state.thumbnailTime} name="thumbnailTime" onChange={genericOnChange} min={0} />
-          <URLRenderer
-            value={state.poster}
-            name="poster"
-            onChange={genericOnChange}
-            placeholder={`Inferred from playbackId`}
-          />
-          {/* Props for the storyboard */}
-          <TextRenderer value={state.tokens?.storyboard} name="tokens.storyboard" onChange={genericOnChange} />
-          <URLRenderer
-            value={state.storyboardSrc}
-            name="storyboardSrc"
-            onChange={genericOnChange}
-            placeholder={`Inferred from playbackId`}
-          />
+          <Accordion style={{ maxWidth: '50%' }} defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Media Asset Props</AccordionSummary>
+            <AccordionDetails>
+              {/* Props for the main media stream playback */}
+              <TextRenderer value={state.playbackId} name="playbackId" onChange={genericOnChange} />
+              <TextRenderer value={state.tokens?.playback} name="tokens.playback" onChange={genericOnChange} />
+              <TextRenderer value={state.tokens?.drm} name="tokens.drm" onChange={genericOnChange} />
+              <EnumRenderer
+                value={state.maxResolution}
+                name="maxResolution"
+                onChange={genericOnChange}
+                values={MaxResolutionValues}
+              />
+              <EnumRenderer
+                value={state.minResolution}
+                name="minResolution"
+                onChange={genericOnChange}
+                values={MinResolutionValues}
+              />
+              <EnumRenderer
+                value={state.renditionOrder}
+                name="renditionOrder"
+                onChange={genericOnChange}
+                values={RenditionOrderValues}
+              />
+              <NumberRenderer
+                value={state.programStartTime}
+                name="programStartTime"
+                onChange={genericOnChange}
+                min={0}
+                step={1}
+              />
+              <NumberRenderer
+                value={state.programEndTime}
+                name="programEndTime"
+                onChange={genericOnChange}
+                min={0}
+                step={1}
+              />
+              <URLRenderer
+                value={state.customDomain}
+                name="customDomain"
+                onChange={genericOnChange}
+                placeholder="my.customdomain.com"
+              />
+              <EnumRenderer
+                value={state.preferCmcd}
+                name="preferCmcd"
+                onChange={genericOnChange}
+                values={['query', 'header', 'none']}
+              />
+              {/* Props for the thumbnail (aka poster) */}
+              <TextRenderer value={state.tokens?.thumbnail} name="tokens.thumbnail" onChange={genericOnChange} />
+              <NumberRenderer value={state.thumbnailTime} name="thumbnailTime" onChange={genericOnChange} min={0} />
+              <URLRenderer
+                value={state.poster}
+                name="poster"
+                onChange={genericOnChange}
+                placeholder={`Inferred from playbackId`}
+              />
+              {/* Props for the storyboard */}
+              <TextRenderer value={state.tokens?.storyboard} name="tokens.storyboard" onChange={genericOnChange} />
+              <URLRenderer
+                value={state.storyboardSrc}
+                name="storyboardSrc"
+                onChange={genericOnChange}
+                placeholder={`Inferred from playbackId`}
+              />
+            </AccordionDetails>
+          </Accordion>
           {/* These are all properties that effect playback/initial load behavior */}
-          <EnumRenderer
-            value={state.autoPlay}
-            name="autoPlay"
-            onChange={genericOnChange}
-            values={[true, false, 'any', 'muted']}
-          />
-          <NumberRenderer
-            value={state.playbackRate}
-            name="playbackRate"
-            onChange={genericOnChange}
-            min={0}
-            max={3}
-            step={0.25}
-          />
-          <BooleanRenderer value={state.loop} name="loop" onChange={genericOnChange} />
-          <BooleanRenderer
-            value={state.defaultHiddenCaptions}
-            name="defaultHiddenCaptions"
-            onChange={genericOnChange}
-          />
-          <EnumRenderer
-            value={state.preload}
-            name="preload"
-            onChange={genericOnChange}
-            values={['none', 'metadata', 'auto']}
-          />
-          <EnumRenderer
-            value={state.crossOrigin}
-            name="crossOrigin"
-            onChange={genericOnChange}
-            values={['anonymous', 'use-credentials']}
-          />
-          <EnumRenderer
-            value={state.preferPlayback}
-            name="preferPlayback"
-            onChange={genericOnChange}
-            values={['mse', 'native']}
-          />
-          <NumberRenderer value={state.startTime} name="startTime" onChange={genericOnChange} min={0} />
+          <Accordion style={{ maxWidth: '50%' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Load & Playback Behavior Props</AccordionSummary>
+            <AccordionDetails>
+              <EnumRenderer
+                value={state.autoPlay}
+                name="autoPlay"
+                onChange={genericOnChange}
+                values={[true, false, 'any', 'muted']}
+              />
+              <NumberRenderer
+                value={state.playbackRate}
+                name="playbackRate"
+                onChange={genericOnChange}
+                min={0}
+                max={3}
+                step={0.25}
+              />
+              <BooleanRenderer value={state.loop} name="loop" onChange={genericOnChange} />
+              <BooleanRenderer
+                value={state.defaultHiddenCaptions}
+                name="defaultHiddenCaptions"
+                onChange={genericOnChange}
+              />
+              <EnumRenderer
+                value={state.preload}
+                name="preload"
+                onChange={genericOnChange}
+                values={['none', 'metadata', 'auto']}
+              />
+              <EnumRenderer
+                value={state.crossOrigin}
+                name="crossOrigin"
+                onChange={genericOnChange}
+                values={['anonymous', 'use-credentials']}
+              />
+              <EnumRenderer
+                value={state.preferPlayback}
+                name="preferPlayback"
+                onChange={genericOnChange}
+                values={['mse', 'native']}
+              />
+              <NumberRenderer value={state.startTime} name="startTime" onChange={genericOnChange} min={0} />
+            </AccordionDetails>
+          </Accordion>
           {/* These are all Mux Data-related properties */}
-          <TextRenderer
-            value={state.envKey}
-            name="envKey"
-            label="Env Key (Mux Data)"
-            onChange={genericOnChange}
-            placeholder={`Inferred from playbackId`}
-          />
-          <TextRenderer value={state.metadata?.video_id} name="metadata.video_id" onChange={genericOnChange} />
-          <TextRenderer value={state.metadata?.video_title} name="metadata.video_title" onChange={genericOnChange} />
-          <TextRenderer value={state.metadata?.viewer_user_id} name="metadata.viewer_user_id" onChange={genericOnChange} />
-          <URLRenderer value={state.beaconCollectionDomain} name="beaconCollectionDomain" onChange={genericOnChange} />
-          <BooleanRenderer value={state.disableTracking} name="disableTracking" onChange={genericOnChange} />
-          <BooleanRenderer value={state.disableCookies} name="disableCookies" onChange={genericOnChange} />
+          <Accordion style={{ maxWidth: '50%' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Mux Data Props</AccordionSummary>
+            <AccordionDetails>
+              <TextRenderer
+                value={state.envKey}
+                name="envKey"
+                label="Env Key (Mux Data)"
+                onChange={genericOnChange}
+                placeholder={`Inferred from playbackId`}
+              />
+              <TextRenderer value={state.metadata?.video_id} name="metadata.video_id" onChange={genericOnChange} />
+              <TextRenderer
+                value={state.metadata?.video_title}
+                name="metadata.video_title"
+                onChange={genericOnChange}
+              />
+              <TextRenderer
+                value={state.metadata?.viewer_user_id}
+                name="metadata.viewer_user_id"
+                onChange={genericOnChange}
+              />
+              <URLRenderer
+                value={state.beaconCollectionDomain}
+                name="beaconCollectionDomain"
+                onChange={genericOnChange}
+              />
+              <BooleanRenderer value={state.disableTracking} name="disableTracking" onChange={genericOnChange} />
+              <BooleanRenderer value={state.disableCookies} name="disableCookies" onChange={genericOnChange} />
+            </AccordionDetails>
+          </Accordion>
           {/* These are all playback state properties */}
-          <BooleanRenderer value={state.paused} name="paused" onChange={genericOnChange} />
-          <NumberRenderer
-            value={state.currentTime}
-            name="currentTime"
-            onChange={genericOnChange}
-            min={0}
-            /** @TODO solve `undefined` error cases (CJP) */
-            // max={mediaElRef.current?.duration}
-          />
-          {/* Audio */}
-          <BooleanRenderer value={state.muted} name="muted" onChange={genericOnChange} />
-          <NumberRenderer value={state.volume} name="volume" onChange={genericOnChange} min={0} max={1} step={0.05} />
-          <BooleanRenderer value={state.noVolumePref} name="noVolumePref" onChange={genericOnChange} />
-          <EnumRenderer
-            value={state.streamType}
-            name="streamType"
-            onChange={genericOnChange}
-            values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr', 'unknown']}
-            formatter={(enumValue) =>
-              ['on-demand', 'live', 'unknown'].includes(enumValue) ? (
-                <code>{JSON.stringify(enumValue)}</code>
-              ) : (
-                <>
-                  <code>{JSON.stringify(enumValue)}</code> (deprecated)
-                </>
-              )
-            }
-          />
+          <Accordion style={{ maxWidth: '50%' }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>Player Playback State Props</AccordionSummary>
+            <AccordionDetails>
+              <BooleanRenderer value={state.paused} name="paused" onChange={genericOnChange} />
+              <NumberRenderer
+                value={state.currentTime}
+                name="currentTime"
+                onChange={genericOnChange}
+                min={0}
+                /** @TODO solve `undefined` error cases (CJP) */
+                // max={mediaElRef.current?.duration}
+              />
+              {/* Audio */}
+              <BooleanRenderer value={state.muted} name="muted" onChange={genericOnChange} />
+              <NumberRenderer
+                value={state.volume}
+                name="volume"
+                onChange={genericOnChange}
+                min={0}
+                max={1}
+                step={0.05}
+              />
+              <BooleanRenderer value={state.noVolumePref} name="noVolumePref" onChange={genericOnChange} />
+              <EnumRenderer
+                value={state.streamType}
+                name="streamType"
+                onChange={genericOnChange}
+                values={['on-demand', 'live', 'll-live', 'live:dvr', 'll-live:dvr', 'unknown']}
+                formatter={(enumValue) =>
+                  ['on-demand', 'live', 'unknown'].includes(enumValue) ? (
+                    <code>{JSON.stringify(enumValue)}</code>
+                  ) : (
+                    <>
+                      <code>{JSON.stringify(enumValue)}</code> (deprecated)
+                    </>
+                  )
+                }
+              />
+            </AccordionDetails>
+          </Accordion>
           {/* These are all cosmetic/UI related properties */}
-          {/* Props for general UI/Chrome */}
-          <EnumRenderer
-            value={getPlayerSize(stylesState.width)}
-            name="width"
-            label="Width Cutoffs for Responsive Player Chrome/UI"
-            onChange={({ width: playerSize }) => {
-              const width = PlayerSizeWidths[playerSize?.split(' ')[0]];
-              dispatchStyles(updateProps({ width }));
-            }}
-            values={['extra-small', 'small', 'large']}
-          />
-          <BooleanRenderer value={state.audio} name="audio" onChange={genericOnChange} />
-          <EnumRenderer
-            value={state.theme}
-            name="theme"
-            onChange={genericOnChange}
-            values={['classic', 'microvideo', 'minimal', 'gerwig']}
-          />
-          <EnumRenderer
-            value={state.defaultStreamType}
-            name="defaultStreamType"
-            onChange={genericOnChange}
-            values={['on-demand', 'live', 'unknown']}
-          />
-          <EnumRenderer
-            value={state.targetLiveWindow}
-            name="targetLiveWindow"
-            onChange={genericOnChange}
-            values={[Infinity, 0, NaN]}
-          />
-          {/* Props for UI component config */}
-          <TextRenderer value={state.title} name="title" onChange={genericOnChange} />
-          <NumberRenderer
-            value={state.forwardSeekOffset}
-            name="forwardSeekOffset"
-            onChange={genericOnChange}
-            min={1}
-            max={99}
-          />
-          <NumberRenderer
-            value={state.backwardSeekOffset}
-            name="backwardSeekOffset"
-            onChange={genericOnChange}
-            min={1}
-            max={99}
-          />
-          <EnumMultiSelectRenderer
-            value={state.playbackRates}
-            name="playbackRates"
-            onChange={genericOnChange}
-            values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
-          />
-          <NumberRenderer
-            value={state.defaultDuration}
-            name="defaultDuration"
-            onChange={genericOnChange}
-            min={0}
-            step={1}
-          />
-          <BooleanRenderer
-            value={state.defaultShowRemainingTime}
-            name="defaultShowRemainingTime"
-            onChange={genericOnChange}
-          />
-          <TextRenderer
-            value={state.placeholder}
-            name="placeholder"
-            label="Placeholder Image"
-            onChange={genericOnChange}
-          />
-          {/* Props for color and custom styles (including hiding default components) */}
-          <ColorRenderer value={state.primaryColor} name="primaryColor" onChange={genericOnChange} />
-          <ColorRenderer value={state.secondaryColor} name="secondaryColor" onChange={genericOnChange} />
-          <ColorRenderer value={state.accentColor} name="accentColor" onChange={genericOnChange} />
-          <EnumMultiSelectRenderer
-            value={getControlCustomizationCSSVars(stylesState)}
-            name="--controls"
-            label="Display Controls CSS vars (Hiding usage)"
-            onChange={({ ['--controls']: cssVars = [] }) => {
-              const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
-                curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
-                return curCSSVars;
-              }, {});
-              genericOnStyleChange(nextCSSVars);
-            }}
-            values={ControlCustomizationCSSVars}
-          />
-          <ColorRenderer
-            value={stylesState['--controls-backdrop-color']}
-            name="--controls-backdrop-color"
-            label="Controls Backdrop Color"
-            onChange={genericOnStyleChange}
-          />
-          {/* Hotkeys props */}
-          <BooleanRenderer value={state.nohotkeys} name="nohotkeys" label="No Hot Keys" onChange={genericOnChange} />
-          <EnumMultiSelectRenderer
-            value={state.hotkeys?.split(' ')}
-            name="hotkeys"
-            label="Hot Keys"
-            onChange={({ hotkeys }) => {
-              genericOnChange({ hotkeys: hotkeys?.join(' ') ?? undefined });
-            }}
-            values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
-          />
+          <Accordion style={{ maxWidth: '50%' }}>
+            <AccordionSummary>User Interface Props</AccordionSummary>
+            <AccordionDetails>
+              {/* Props for general UI/Chrome */}
+              <EnumRenderer
+                value={getPlayerSize(stylesState.width)}
+                name="width"
+                label="Width Cutoffs for Responsive Player Chrome/UI"
+                onChange={({ width: playerSize }) => {
+                  const width = PlayerSizeWidths[playerSize?.split(' ')[0]];
+                  dispatchStyles(updateProps({ width }));
+                }}
+                values={['extra-small', 'small', 'large']}
+              />
+              <BooleanRenderer value={state.audio} name="audio" onChange={genericOnChange} />
+              <EnumRenderer
+                value={state.theme}
+                name="theme"
+                onChange={genericOnChange}
+                values={['classic', 'microvideo', 'minimal', 'gerwig']}
+              />
+              <EnumRenderer
+                value={state.defaultStreamType}
+                name="defaultStreamType"
+                onChange={genericOnChange}
+                values={['on-demand', 'live', 'unknown']}
+              />
+              <EnumRenderer
+                value={state.targetLiveWindow}
+                name="targetLiveWindow"
+                onChange={genericOnChange}
+                values={[Infinity, 0, NaN]}
+              />
+              {/* Props for UI component config */}
+              <TextRenderer value={state.title} name="title" onChange={genericOnChange} />
+              <NumberRenderer
+                value={state.forwardSeekOffset}
+                name="forwardSeekOffset"
+                onChange={genericOnChange}
+                min={1}
+                max={99}
+              />
+              <NumberRenderer
+                value={state.backwardSeekOffset}
+                name="backwardSeekOffset"
+                onChange={genericOnChange}
+                min={1}
+                max={99}
+              />
+              <EnumMultiSelectRenderer
+                value={state.playbackRates}
+                name="playbackRates"
+                onChange={genericOnChange}
+                values={[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3]}
+              />
+              <NumberRenderer
+                value={state.defaultDuration}
+                name="defaultDuration"
+                onChange={genericOnChange}
+                min={0}
+                step={1}
+              />
+              <BooleanRenderer
+                value={state.defaultShowRemainingTime}
+                name="defaultShowRemainingTime"
+                onChange={genericOnChange}
+              />
+              <TextRenderer
+                value={state.placeholder}
+                name="placeholder"
+                label="Placeholder Image"
+                onChange={genericOnChange}
+              />
+              {/* Props for color and custom styles (including hiding default components) */}
+              <ColorRenderer value={state.primaryColor} name="primaryColor" onChange={genericOnChange} />
+              <ColorRenderer value={state.secondaryColor} name="secondaryColor" onChange={genericOnChange} />
+              <ColorRenderer value={state.accentColor} name="accentColor" onChange={genericOnChange} />
+              <EnumMultiSelectRenderer
+                value={getControlCustomizationCSSVars(stylesState)}
+                name="--controls"
+                label="Display Controls CSS vars (Hiding usage)"
+                onChange={({ ['--controls']: cssVars = [] }) => {
+                  const nextCSSVars = ControlCustomizationCSSVars.reduce((curCSSVars, cssVarName) => {
+                    curCSSVars[cssVarName] = cssVars.includes(cssVarName) ? 'none' : undefined;
+                    return curCSSVars;
+                  }, {});
+                  genericOnStyleChange(nextCSSVars);
+                }}
+                values={ControlCustomizationCSSVars}
+              />
+              <ColorRenderer
+                value={stylesState['--controls-backdrop-color']}
+                name="--controls-backdrop-color"
+                label="Controls Backdrop Color"
+                onChange={genericOnStyleChange}
+              />
+              {/* Hotkeys props */}
+              <BooleanRenderer
+                value={state.nohotkeys}
+                name="nohotkeys"
+                label="No Hot Keys"
+                onChange={genericOnChange}
+              />
+              <EnumMultiSelectRenderer
+                value={state.hotkeys?.split(' ')}
+                name="hotkeys"
+                label="Hot Keys"
+                onChange={({ hotkeys }) => {
+                  genericOnChange({ hotkeys: hotkeys?.join(' ') ?? undefined });
+                }}
+                values={['noc', 'nof', 'nok', 'nom', 'nospace', 'noarrowleft', 'noarrowright']}
+              />
+            </AccordionDetails>
+          </Accordion>
           {/* Debug (where to put?) */}
           <BooleanRenderer value={state.debug} name="debug" onChange={genericOnChange} />
-        </div>
-      </main>
+        </Box>
+      </Box>
     </>
   );
 }
@@ -638,7 +700,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       ...locationProps,
-      // hideDefaultLayout: true
-    }
+      hideDefaultLayout: true,
+    },
   };
 }

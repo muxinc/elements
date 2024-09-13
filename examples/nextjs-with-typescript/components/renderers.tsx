@@ -1,4 +1,21 @@
-import { Fragment, ReactNode } from 'react';
+import {
+  Box,
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  NativeSelect,
+  TextField,
+  Chip,
+  OutlinedInput,
+  MenuItem,
+  Select,
+} from '@mui/material';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { useTheme } from '@mui/material/styles';
+import type { SelectChangeEvent } from '@mui/material/Select';
+import type { ReactNode } from 'react';
+import type { Theme } from '@mui/material/styles';
 
 export const toWordsFromKeyName = (string: string) => {
   if (string.includes('.')) {
@@ -27,20 +44,19 @@ export const BooleanRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <div>
-      <label htmlFor={`${name}-control`}>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <input
-        id={`${name}-control`}
-        type="checkbox"
-        onChange={({ target: { checked } }) => {
-          const changeValue = removeFalse && !checked ? undefined : checked
-          onChange(toChangeObject(name, changeValue));
-        }}
-        checked={value ?? false}
-      />
-    </div>
+    <FormControlLabel
+      control={
+        <Checkbox
+          id={`${name}-control`}
+          defaultChecked={value}
+          onChange={({ target: { checked } }) => {
+            const changeValue = removeFalse && !checked ? undefined : checked;
+            onChange(toChangeObject(name, changeValue));
+          }}
+        />
+      }
+      label={labelStr}
+    />
   );
 };
 
@@ -52,6 +68,7 @@ export const NumberRenderer = ({
   min,
   max,
   step,
+  placeholder,
 }: {
   name: string;
   value: number | undefined;
@@ -60,26 +77,28 @@ export const NumberRenderer = ({
   min?: number;
   max?: number;
   step?: number;
+  placeholder?: string;
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <div>
-      <label htmlFor={`${name}-control`}>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <input
-        id={`${name}-control`}
-        type="number"
-        min={min}
-        max={max}
-        step={step}
-        onChange={({ target: { value } }) => {
-          const changeValue = value ? +value : undefined
-          onChange(toChangeObject(name, changeValue));
-        }}
-        value={value ?? ''}
-      />
-    </div>
+    <TextField
+      id={`${name}-control`}
+      type="number"
+      label={labelStr}
+      defaultValue={value}
+      placeholder={placeholder}
+      slotProps={{
+        htmlInput: {
+          min,
+          max,
+          step,
+        },
+      }}
+      onChange={({ target: { value } }) => {
+        const changeValue = value ? +value : undefined;
+        onChange(toChangeObject(name, changeValue));
+      }}
+    />
   );
 };
 
@@ -98,21 +117,17 @@ export const TextRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <div>
-      <label htmlFor={`${name}-control`}>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <input
-        id={`${name}-control`}
-        type="text"
-        onChange={({ target: { value } }) => {
-          const changeValue = value ? value : undefined;
-          onChange(toChangeObject(name, changeValue));
-        }}
-        value={value ?? ''}
-        placeholder={placeholder}
-      />
-    </div>
+    <TextField
+      id={`${name}-control`}
+      type="text"
+      label={labelStr}
+      defaultValue={value}
+      placeholder={placeholder}
+      onChange={({ target: { value } }) => {
+        const changeValue = value ? value : undefined;
+        onChange(toChangeObject(name, changeValue));
+      }}
+    />
   );
 };
 
@@ -131,21 +146,17 @@ export const URLRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <div>
-      <label htmlFor={`${name}-control`}>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <input
-        id={`${name}-control`}
-        type="url"
-        onChange={({ target: { value } }) => {
-          const changeValue = value ? value : undefined;
-          onChange(toChangeObject(name, changeValue));
-        }}
-        value={value ?? ''}
-        placeholder={placeholder}
-      />
-    </div>
+    <TextField
+      id={`${name}-control`}
+      type="url"
+      label={labelStr}
+      defaultValue={value}
+      placeholder={placeholder}
+      onChange={({ target: { value } }) => {
+        const changeValue = value ? value : undefined;
+        onChange(toChangeObject(name, changeValue));
+      }}
+    />
   );
 };
 
@@ -162,20 +173,17 @@ export const ColorRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <div>
-      <label htmlFor={`${name}-control`}>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <input
-        id={`${name}-control`}
-        type="color"
-        onChange={({ target: { value } }) => {
-          const changeValue = value ? value : undefined;
-          onChange(toChangeObject(name, changeValue));
-        }}
-        value={value ?? '#000000'}
-      />
-    </div>
+    <TextField
+      id={`${name}-control`}
+      type="color"
+      style={{ minWidth: 100 }}
+      label={labelStr}
+      defaultValue={value ?? '#000000'}
+      onChange={({ target: { value } }) => {
+        const changeValue = value ? value : undefined;
+        onChange(toChangeObject(name, changeValue));
+      }}
+    />
   );
 };
 
@@ -205,44 +213,57 @@ export const EnumRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-      <label>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <div>
-        <input
-          id={`${name}-none-control`}
-          type="radio"
-          onChange={() => onChange({ [name]: undefined })}
-          value=""
-          checked={value == undefined}
-        />
-        <label htmlFor={`${name}-none-control`}>None</label>
-        {values.map((enumValue, i) => {
+    <FormControl>
+      <InputLabel variant="standard" htmlFor={`${name}-uncontrolled-native`} shrink>
+        {labelStr}
+      </InputLabel>
+      <NativeSelect
+        inputProps={{
+          name,
+          id: `${name}-uncontrolled-native`,
+        }}
+        defaultValue={value ?? ''}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
+      >
+        <option id={`${name}-none-control`} value="">
+          (None)
+        </option>
+        {values.map((enumValue) => {
           return (
-            <Fragment key={`${name}-${enumValue}`}>
-              <input
-                id={`${name}-${enumValue}-control`}
-                type="radio"
-                onChange={() => {
-                  const changeValue = values[i];
-                  onChange(toChangeObject(name, changeValue));
-                }}
-                value={typeof enumValue === 'string' ? enumValue : enumValue?.toString()}
-                checked={value === enumValue}
-              />
-              <label htmlFor={`${name}-${enumValue}-control`}>{formatter(enumValue)}</label>
-            </Fragment>
+            <option key={`${name}-${enumValue}`} id={`${name}-${enumValue}-control`} value={enumValue}>
+              {formatter(enumValue)}
+            </option>
           );
         })}
-      </div>
-    </div>
+      </NativeSelect>
+    </FormControl>
   );
 };
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+function getStyles(name: string, personName: readonly string[], theme: Theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1 ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium,
+  };
+}
+
 export const EnumMultiSelectRenderer = ({
   name,
-  value,
+  value = [],
   label,
   onChange,
   values,
@@ -254,37 +275,67 @@ export const EnumMultiSelectRenderer = ({
   values: any[];
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
+  const theme = useTheme();
+
+  const handleChange = (event: SelectChangeEvent<any[]>) => {
+    const {
+      target: { value },
+    } = event;
+    let changeValue = typeof value === 'string' ? value.split(',') : value;
+    if (Array.isArray(changeValue)) {
+      changeValue = changeValue.filter((x) => !!x);
+      if (!changeValue.length) {
+        changeValue = undefined;
+      }
+    }
+    onChange(toChangeObject(name, changeValue));
+  };
+
   return (
     <div>
-      <label htmlFor={`${name}-control`}>
-        {labelStr} (<code>{name}</code>)
-      </label>
-      <select
-        id={`${name}-control`}
-        multiple
-        size={values.length}
-        defaultValue={value ?? []}
-        onChange={({ target: { selectedOptions } }) => {
-          const changeValue =selectedOptions?.length
-            ? Array.from(selectedOptions, ({ value }) => values.find((enumValue) => enumValue.toString() === value))
-            : undefined;
-          onChange(toChangeObject(name, changeValue));
-        }}
-      >
-        {values.map((enumValue) => {
-          return (
-            <option key={`${name}-${enumValue}-option`} value={enumValue}>
+      <FormControl sx={{ m: 1, width: 300 }}>
+        <InputLabel id="demo-multiple-chip-label">{labelStr}</InputLabel>
+        <Select
+          labelId="demo-multiple-chip-label"
+          id="demo-multiple-chip"
+          multiple
+          value={value}
+          onChange={handleChange}
+          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+          renderValue={(selected) => {
+            return (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected
+                  .filter((x) => !!x)
+                  .map((selectedEnumValue) => (
+                    <Chip
+                      key={selectedEnumValue}
+                      label={selectedEnumValue}
+                      deleteIcon={<CancelIcon onMouseDown={(event) => event.stopPropagation()} />}
+                      onDelete={() => {
+                        const changeValue = value.filter((enumValue) => enumValue != selectedEnumValue);
+                        onChange(toChangeObject(name, changeValue.length ? changeValue : undefined));
+                      }}
+                    />
+                  ))}
+              </Box>
+            );
+          }}
+          MenuProps={MenuProps}
+        >
+          {values.map((enumValue) => (
+            <MenuItem key={`${name}-${enumValue}-option`} value={enumValue} style={getStyles(enumValue, value, theme)}>
               {`${enumValue}`}
-            </option>
-          );
-        })}
-      </select>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </div>
   );
 };
 
 // NOTE: Placing this function at the bottom bc generic syntax messes up code highlighting in VSCode. This at least keeps the jank narrow. (CJP)
-export const toChangeObject = <T = undefined>(name: string, value: T) => {
+export const toChangeObject = <T = undefined,>(name: string, value: T) => {
   // NOTE: Currently only support depth=1
   if (name.includes('.')) {
     const [name1, name2] = name.split('.');

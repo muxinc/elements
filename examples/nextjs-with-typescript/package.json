@@ -10,6 +10,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.0.2",
+    "@mui/material": "^6.0.2",
     "@mux/assets": ">=0.1.0",
     "@mux/blurup": "^0.2.3",
     "@mux/mux-audio": ">=0.2.0",
@@ -21,6 +25,7 @@
     "@mux/mux-video-react": ">=0.3.0",
     "next": "^14.2.2",
     "react": "^18.2.0",
+    "react-collapsed": "^4.1.2",
     "react-dom": "^18.2.0",
     "water.css": "2"
   },
