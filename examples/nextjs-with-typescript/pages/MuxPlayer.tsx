@@ -384,7 +384,7 @@ function MuxPlayerPage({ location }: Props) {
           {/* These are all properties that effect how media assets are requested */}
           <Accordion style={{ maxWidth: '50%' }} defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>Media Asset Props</AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ display: 'flex', flexFlow: 'row wrap' }}>
               {/* Props for the main media stream playback */}
               <TextRenderer value={state.playbackId} name="playbackId" onChange={genericOnChange} />
               <TextRenderer value={state.tokens?.playback} name="tokens.playback" onChange={genericOnChange} />
@@ -455,7 +455,7 @@ function MuxPlayerPage({ location }: Props) {
           {/* These are all properties that effect playback/initial load behavior */}
           <Accordion style={{ maxWidth: '50%' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>Load & Playback Behavior Props</AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ display: 'flex', flexFlow: 'row wrap' }}>
               <EnumRenderer
                 value={state.autoPlay}
                 name="autoPlay"
@@ -500,7 +500,7 @@ function MuxPlayerPage({ location }: Props) {
           {/* These are all Mux Data-related properties */}
           <Accordion style={{ maxWidth: '50%' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>Mux Data Props</AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ display: 'flex', flexFlow: 'row wrap' }}>
               <TextRenderer
                 value={state.envKey}
                 name="envKey"
@@ -531,7 +531,7 @@ function MuxPlayerPage({ location }: Props) {
           {/* These are all playback state properties */}
           <Accordion style={{ maxWidth: '50%' }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>Player Playback State Props</AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ display: 'flex', flexFlow: 'row wrap' }}>
               <BooleanRenderer value={state.paused} name="paused" onChange={genericOnChange} />
               <NumberRenderer
                 value={state.currentTime}
@@ -571,8 +571,8 @@ function MuxPlayerPage({ location }: Props) {
           </Accordion>
           {/* These are all cosmetic/UI related properties */}
           <Accordion style={{ maxWidth: '50%' }}>
-            <AccordionSummary>User Interface Props</AccordionSummary>
-            <AccordionDetails>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>User Interface Props</AccordionSummary>
+            <AccordionDetails sx={{ display: 'flex', flexFlow: 'row wrap' }}>
               {/* Props for general UI/Chrome */}
               <EnumRenderer
                 value={getPlayerSize(stylesState.width)}

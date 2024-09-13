@@ -10,6 +10,7 @@ import {
   OutlinedInput,
   MenuItem,
   Select,
+  Container,
 } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useTheme } from '@mui/material/styles';
@@ -44,19 +45,21 @@ export const BooleanRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <FormControlLabel
-      control={
-        <Checkbox
-          id={`${name}-control`}
-          defaultChecked={value}
-          onChange={({ target: { checked } }) => {
-            const changeValue = removeFalse && !checked ? undefined : checked;
-            onChange(toChangeObject(name, changeValue));
-          }}
-        />
-      }
-      label={labelStr}
-    />
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            id={`${name}-control`}
+            defaultChecked={value}
+            onChange={({ target: { checked } }) => {
+              const changeValue = removeFalse && !checked ? undefined : checked;
+              onChange(toChangeObject(name, changeValue));
+            }}
+          />
+        }
+        label={labelStr}
+      />
+    </Container>
   );
 };
 
@@ -81,24 +84,27 @@ export const NumberRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <TextField
-      id={`${name}-control`}
-      type="number"
-      label={labelStr}
-      defaultValue={value}
-      placeholder={placeholder}
-      slotProps={{
-        htmlInput: {
-          min,
-          max,
-          step,
-        },
-      }}
-      onChange={({ target: { value } }) => {
-        const changeValue = value ? +value : undefined;
-        onChange(toChangeObject(name, changeValue));
-      }}
-    />
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <TextField
+        sx={{ width: 1, display: 'inline-block' }}
+        id={`${name}-control`}
+        type="number"
+        label={labelStr}
+        defaultValue={value}
+        placeholder={placeholder}
+        slotProps={{
+          htmlInput: {
+            min,
+            max,
+            step,
+          },
+        }}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? +value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
+      />
+    </Container>
   );
 };
 
@@ -117,17 +123,19 @@ export const TextRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <TextField
-      id={`${name}-control`}
-      type="text"
-      label={labelStr}
-      defaultValue={value}
-      placeholder={placeholder}
-      onChange={({ target: { value } }) => {
-        const changeValue = value ? value : undefined;
-        onChange(toChangeObject(name, changeValue));
-      }}
-    />
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <TextField
+        id={`${name}-control`}
+        type="text"
+        label={labelStr}
+        defaultValue={value}
+        placeholder={placeholder}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
+      />
+    </Container>
   );
 };
 
@@ -146,17 +154,19 @@ export const URLRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <TextField
-      id={`${name}-control`}
-      type="url"
-      label={labelStr}
-      defaultValue={value}
-      placeholder={placeholder}
-      onChange={({ target: { value } }) => {
-        const changeValue = value ? value : undefined;
-        onChange(toChangeObject(name, changeValue));
-      }}
-    />
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <TextField
+        id={`${name}-control`}
+        type="url"
+        label={labelStr}
+        defaultValue={value}
+        placeholder={placeholder}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
+      />
+    </Container>
   );
 };
 
@@ -173,17 +183,19 @@ export const ColorRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <TextField
-      id={`${name}-control`}
-      type="color"
-      style={{ minWidth: 100 }}
-      label={labelStr}
-      defaultValue={value ?? '#000000'}
-      onChange={({ target: { value } }) => {
-        const changeValue = value ? value : undefined;
-        onChange(toChangeObject(name, changeValue));
-      }}
-    />
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <TextField
+        id={`${name}-control`}
+        type="color"
+        style={{ minWidth: 100 }}
+        label={labelStr}
+        defaultValue={value ?? '#000000'}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
+      />
+    </Container>
   );
 };
 
@@ -213,33 +225,35 @@ export const EnumRenderer = ({
 }) => {
   const labelStr = label ?? toWordsFromKeyName(name);
   return (
-    <FormControl>
-      <InputLabel variant="standard" htmlFor={`${name}-uncontrolled-native`} shrink>
-        {labelStr}
-      </InputLabel>
-      <NativeSelect
-        inputProps={{
-          name,
-          id: `${name}-uncontrolled-native`,
-        }}
-        defaultValue={value ?? ''}
-        onChange={({ target: { value } }) => {
-          const changeValue = value ? value : undefined;
-          onChange(toChangeObject(name, changeValue));
-        }}
-      >
-        <option id={`${name}-none-control`} value="">
-          (None)
-        </option>
-        {values.map((enumValue) => {
-          return (
-            <option key={`${name}-${enumValue}`} id={`${name}-${enumValue}-control`} value={enumValue}>
-              {formatter(enumValue)}
-            </option>
-          );
-        })}
-      </NativeSelect>
-    </FormControl>
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <FormControl>
+        <InputLabel variant="standard" htmlFor={`${name}-uncontrolled-native`} shrink>
+          {labelStr}
+        </InputLabel>
+        <NativeSelect
+          inputProps={{
+            name,
+            id: `${name}-uncontrolled-native`,
+          }}
+          defaultValue={value ?? ''}
+          onChange={({ target: { value } }) => {
+            const changeValue = value ? value : undefined;
+            onChange(toChangeObject(name, changeValue));
+          }}
+        >
+          <option id={`${name}-none-control`} value="">
+            (None)
+          </option>
+          {values.map((enumValue) => {
+            return (
+              <option key={`${name}-${enumValue}`} id={`${name}-${enumValue}-control`} value={enumValue}>
+                {formatter(enumValue)}
+              </option>
+            );
+          })}
+        </NativeSelect>
+      </FormControl>
+    </Container>
   );
 };
 
@@ -292,8 +306,8 @@ export const EnumMultiSelectRenderer = ({
   };
 
   return (
-    <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
+    <Container sx={{ p: 1, flexGrow: 1, flexShrink: 0, flexBasis: 0, border: '1px dashed grey' }}>
+      <FormControl sx={{ width: 300 }}>
         <InputLabel id="demo-multiple-chip-label">{labelStr}</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
@@ -330,7 +344,7 @@ export const EnumMultiSelectRenderer = ({
           ))}
         </Select>
       </FormControl>
-    </div>
+    </Container>
   );
 };
 
