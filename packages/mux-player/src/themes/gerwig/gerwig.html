@@ -912,24 +912,10 @@
 
     <template if="!audio">
       <!-- Pre-playback UI -->
+      <!-- same for both on-demand and live -->
       <div slot="centered-chrome" class="center-controls pre-playback">
-        <template if="streamtype == 'on-demand'">
-          <template if="!breakpointsm"> {{>SeekBackwardButton section="center"}} </template>
-          <template if="!breakpointsm"> {{>PlayButton section="center"}} </template>
-          <template if="breakpointsm"> {{>PrePlayButton section="center"}} </template>
-          <template if="!breakpointsm"> {{>SeekForwardButton section="center"}} </template>
-        </template>
-
-        <template if="streamtype == 'live'">
-          <template if="!breakpointsm">
-            <template if="targetlivewindow > 0"> {{>SeekBackwardButton section="center"}} </template>
-          </template>
-          <template if="!breakpointsm"> {{>PlayButton section="center"}} </template>
-          <template if="breakpointsm"> {{>PrePlayButton section="center"}} </template>
-          <template if="!breakpointsm">
-            <template if="targetlivewindow > 0"> {{>SeekForwardButton section="center"}} </template>
-          </template>
-        </template>
+        <template if="!breakpointsm">{{>PlayButton section="center"}}</template>
+        <template if="breakpointsm">{{>PrePlayButton section="center"}}</template>
       </div>
 
       <!-- Auotplay centered unmute button -->
