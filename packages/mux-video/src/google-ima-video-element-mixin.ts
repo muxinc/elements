@@ -218,6 +218,8 @@ video::-webkit-media-text-track-container {
         // google.ima.AdEvent.Type.MIDPOINT,
         // google.ima.AdEvent.Type.PAUSED,
         google.ima.AdEvent.Type.STARTED,
+        google.ima.AdEvent.Type.VOLUME_CHANGED,
+        google.ima.AdEvent.Type.VOLUME_MUTED,
         // google.ima.AdEvent.Type.THIRD_QUARTILE,
       ];
       for (const index in events) {
@@ -260,6 +262,14 @@ video::-webkit-media-text-track-container {
             this.dispatchEvent(new Event('durationchange'));
           }
           this.dispatchEvent(new Event('timeupdate'));
+        },
+        false
+      );
+
+      adsManager.addEventListener(
+        google.ima.AdEvent.Type.VOLUME_CHANGED,
+        () => {
+          this.dispatchEvent(new Event('volumechange'));
         },
         false
       );
@@ -378,6 +388,34 @@ video::-webkit-media-text-track-container {
         return;
       }
       super.currentTime = val;
+    }
+
+    get volume() {
+      if (this.#adBreak) {
+        return this.#adsManager?.getVolume() ?? 0;
+      }
+      return super.volume;
+    }
+
+    set volume(val) {
+      if (this.#adBreak) {
+        this.#adsManager?.setVolume(val);
+      }
+      super.volume = val;
+    }
+
+    get muted() {
+      if (this.#adBreak) {
+        return !this.#adsManager?.getVolume();
+      }
+      return super.muted;
+    }
+
+    set muted(val: boolean) {
+      if (this.#adBreak) {
+        this.#adsManager?.setVolume(val ? 0 : this.volume);
+      }
+      super.muted = val;
     }
 
     /** @TODO Translate these to actual text track cues? (CJP) */
