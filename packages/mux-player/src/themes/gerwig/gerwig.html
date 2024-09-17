@@ -989,8 +989,9 @@
           <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
         </template>
         <media-control-bar part="control-bar bottom">
+          {{>PlayButton}} {{>LiveButton section="bottom"}} {{>MuteButton}}
           <template if="breakpointsm">
-            {{>PlayButton}} {{>LiveButton section="bottom"}} {{>MuteButton}} {{>VolumeRange}}
+            {{>VolumeRange}}
             <template if="targetlivewindow > 0"> {{>SeekBackwardButton}} {{>SeekForwardButton}} </template>
           </template>
           <template if="targetlivewindow > 0"> {{>TimeDisplay}} {{>TimeRange}} </template>
