@@ -88,8 +88,8 @@ const AttributeNameValues = Object.values(Attributes);
 export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-video';
 
-<<<<<<< HEAD
-class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMediaProps> {
+/** @TODO POC - THIS SHOULD PROBABLY BE SPLIT OUT AS A SEPARATE IMPORT/MODULE FOR-ADS-FLAVORED MUX-VIDEO (CJP) */
+export class MuxVideoBaseElement extends GoogleIMAVideoMixin(CustomVideoElement) implements Partial<MuxMediaProps> {
   static get NAME() {
     return playerSoftwareName;
   }
@@ -98,11 +98,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return playerSoftwareVersion;
   }
 
-=======
-/** @TODO POC - THIS SHOULD PROBABLY BE SPLIT OUT AS A SEPARATE IMPORT/MODULE FOR-ADS-FLAVORED MUX-VIDEO (CJP) */
-export class MuxVideoBaseElement extends GoogleIMAVideoMixin(CustomVideoElement) implements Partial<MuxMediaProps> {
   // export class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMediaProps> {
->>>>>>> 7d667c79 (WIP mux-video + google ima)
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
@@ -537,6 +533,8 @@ export class MuxVideoBaseElement extends GoogleIMAVideoMixin(CustomVideoElement)
     this.#tokens = val ?? {};
   }
 
+  /** @TODO There is a type mismatch (readonly property vs. accessor here... May be related to some type defs in elements monorepo defs (CJP)) */
+  /** @ts-ignore */
   get ended() {
     // This ensures that edge case media that doesn't properly end will
     // still announce itself as "ended".

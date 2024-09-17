@@ -86,6 +86,8 @@ const PlayerAttributes = {
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  AD_TAG_URL: 'adtagurl',
 };
 
 const ThemeAttributeNames = [
@@ -179,6 +181,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
     extraSourceParams: el.extraSourceParams,
+    /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+    adTagUrl: el.adTagUrl,
   };
 
   return props;
@@ -447,7 +451,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   connectedCallback() {
-    const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
+    const muxVideo = this.shadowRoot?.querySelector('mux-video') as unknown as MuxVideoElement;
     if (muxVideo) {
       muxVideo.metadata = getMetadataFromAttrs(this);
     }
@@ -1860,6 +1864,22 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.removeAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE);
     } else {
       this.setAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE, '');
+    }
+  }
+
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  get adTagUrl() {
+    return this.media?.adTagUrl ?? this.getAttribute(PlayerAttributes.AD_TAG_URL) ?? undefined;
+  }
+
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  set adTagUrl(val: string | undefined) {
+    if (val === this.adTagUrl) return;
+
+    if (val) {
+      this.setAttribute(PlayerAttributes.AD_TAG_URL, val);
+    } else {
+      this.removeAttribute(PlayerAttributes.AD_TAG_URL);
     }
   }
 }
