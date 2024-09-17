@@ -1241,7 +1241,7 @@ export type ViewMode = {
 };
 
 declare global {
-  type Google = {
+  const google: {
     ima: {
       /**
        * A string containing the full version of the SDK.
@@ -1265,5 +1265,4 @@ declare global {
       AdDisplayContainer: typeof AdDisplayContainer;
     };
   };
-  const google: Google;
 }
