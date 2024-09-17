@@ -1,5 +1,6 @@
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { importMapsPlugin } from '@web/dev-server-import-maps';
+import { chromeLauncher } from '@web/test-runner';
 import { playwrightLauncher } from '@web/test-runner-playwright';
 
 const config = {
@@ -25,6 +26,7 @@ const config = {
     include: ['src/**/*'],
   },
   testsFinishTimeout: 600000,
+  browsers: [chromeLauncher({ launchOptions: { args: ['--headless=old'] } })],
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
