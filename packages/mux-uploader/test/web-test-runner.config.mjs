@@ -1,5 +1,6 @@
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { importMapsPlugin } from '@web/dev-server-import-maps';
+import { chromeLauncher } from '@web/test-runner';
 
 export default {
   testFramework: {
@@ -29,4 +30,5 @@ export default {
     report: true,
     include: ['src/**/*'],
   },
+  browsers: [chromeLauncher({ launchOptions: { args: ['--headless=old'] } })],
 };
