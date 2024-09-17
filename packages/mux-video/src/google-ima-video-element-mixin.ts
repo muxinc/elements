@@ -173,7 +173,18 @@ video::-webkit-media-text-track-container {
           },
           { once: true }
         );
-        // this.#adDisplayContainer && !this.#adsManager
+
+        /** @TODO Account for resetting of src as well (emptied evt?) (CJP) */
+        /** @TODO Account for disconnectedCallback as well (instance method?) (CJP) */
+        this.addEventListener(
+          'ended',
+          () => {
+            if (this.adTagUrl && this.#adsLoader && this.#adsManager) {
+              this.#adsLoader.contentComplete();
+            }
+          },
+          { once: true }
+        );
       }
     }
 
@@ -206,7 +217,8 @@ video::-webkit-media-text-track-container {
           console.log('CONTENT_RESUME_REQUESTED', contentResumeRequestedEvent);
           this.#adBreak = false;
           this.#adData = undefined;
-          if (this.nativeEl.paused) {
+          this.#adProgressData = undefined;
+          if (this.nativeEl.paused && (!this.ended || this.loop)) {
             this.toggleAttribute(Attributes.AD_BREAK, false);
             this.play();
           }
@@ -221,8 +233,6 @@ video::-webkit-media-text-track-container {
 
       adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, console.log.bind(null, 'AD_ERROR'), false);
       const events = [
-        google.ima.AdEvent.Type.AD_PROGRESS,
-        google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
         google.ima.AdEvent.Type.CLICK,
         google.ima.AdEvent.Type.COMPLETE,
         // google.ima.AdEvent.Type.FIRST_QUARTILE,
@@ -238,7 +248,6 @@ video::-webkit-media-text-track-container {
         adsManager.addEventListener(
           events[index],
           (adEvent) => {
-            if (events[index] === 'adProgress') return;
             console.log(events[index], adEvent);
             console.log('ad data', adEvent?.getAdData());
             console.log('ad ', adEvent?.getAd());
@@ -281,6 +290,16 @@ video::-webkit-media-text-track-container {
         google.ima.AdEvent.Type.VOLUME_CHANGED,
         () => {
           this.dispatchEvent(new Event('volumechange'));
+        },
+        false
+      );
+
+      adsManager.addEventListener(
+        google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+        () => {
+          if (this.ended && !this.loop) {
+            this.dispatchEvent(new Event('pause'));
+          }
         },
         false
       );
