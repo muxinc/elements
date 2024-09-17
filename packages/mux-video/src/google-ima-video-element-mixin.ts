@@ -157,6 +157,9 @@ declare global {
      * @returns True if the ad is linear, false otherwise.
      */
     isLinear(): boolean;
+
+    // Ad data
+    data: any;
   }
 
   /**
@@ -1367,20 +1370,23 @@ video::-webkit-media-text-track-container {
           adPodInfo: {
             adPosition: number; // Which ad is currently active in a given ad pod/break
             isBumper: boolean;
-            maxDuration: number;
+            maxDuration: number; // Total duration of the whole ad pod. NOTE: may end up being shorter if bids were unavailable to fill target duration.
             podIndex: number;
-            timeOffset: number;
-            totalAds: number;
+            timeOffset: number; // When this ad will play wrt the media's presentation timeline
+            totalAds: number; // Total number of ads in the pod/break
           };
         }
       | undefined;
 
+    /**
+     * Stores the latest progress data of ad playback. Retrieved from the AD_PROGRESS event
+     */
     #adProgressData:
       | {
-          adBreakDuration: number;
-          adPosition: number;
-          currentTime: number;
-          duration: number;
+          adBreakDuration: number; // Actual duration of the ad pod/break
+          adPosition: number; // Which ad in the ad pod/break is currently playing
+          currentTime: number; // The current time of the current ad's playhead
+          duration: number; // The duration of the specific ad playing
         }
       | undefined;
 
@@ -1434,8 +1440,8 @@ video::-webkit-media-text-track-container {
       // Attach the pause/resume events.
       adsManager.addEventListener(
         google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
-        (contentPauseRequestedEvent: any) => {
-          console.log('CONTENT_PAUSE_REQUESTED', contentPauseRequestedEvent.ad?.data);
+        (contentPauseRequestedEvent) => {
+          console.log('CONTENT_PAUSE_REQUESTED', contentPauseRequestedEvent.getAd());
           if (!this.nativeEl.paused) {
             this.nativeEl.pause();
           }
@@ -1443,7 +1449,8 @@ video::-webkit-media-text-track-container {
           this.#adBreak = true;
           this.toggleAttribute(Attributes.AD_BREAK, true);
           this.#adPaused = false;
-          this.#adData = contentPauseRequestedEvent.ad?.data;
+          this.#adData = contentPauseRequestedEvent.getAd()?.data ?? undefined;
+          console.log('AD DATA', this.#adData);
           this.dispatchEvent(new Event('durationchange'));
           this.dispatchEvent(new Event('timeupdate'));
           this.dispatchEvent(new Event('playing'));
@@ -1635,6 +1642,8 @@ video::-webkit-media-text-track-container {
     set currentTime(val: number) {
       if (this.#adBreak) {
         console.error('CANNOT SEEK DURING AD BREAK');
+        // NOTE: re-dispatch timeupdate for observers who may presumptuously think time will have changed. (CJP)
+        this.dispatchEvent(new Event('timeupdate'));
         return;
       }
       super.currentTime = val;
