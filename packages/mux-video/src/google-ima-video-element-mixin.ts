@@ -157,6 +157,7 @@ video::-webkit-media-text-track-container {
             adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
             this.#adsManager = adsManagerLoadedEvent.getAdsManager(this.nativeEl, adsRenderingSettings);
             console.log('this.#adsManager', this.#adsManager);
+            console.log('cuePoints avail?', this.#adsManager.getCuePoints());
             this.#startAdsManager(this.#adsManager);
           },
           false,
@@ -256,13 +257,13 @@ video::-webkit-media-text-track-container {
         google.ima.AdEvent.Type.COMPLETE,
         /** @TODO Define global namespace ima (likely use a module for abstractions) (CJP) */
         /** @ts-ignore */
-        google.ima.AdEvent.Type.FIRST_QUARTILE,
+        // google.ima.AdEvent.Type.FIRST_QUARTILE,
         /** @TODO Define global namespace ima (likely use a module for abstractions) (CJP) */
         /** @ts-ignore */
         google.ima.AdEvent.Type.LOADED,
         /** @TODO Define global namespace ima (likely use a module for abstractions) (CJP) */
         /** @ts-ignore */
-        google.ima.AdEvent.Type.MIDPOINT,
+        // google.ima.AdEvent.Type.MIDPOINT,
         /** @TODO Define global namespace ima (likely use a module for abstractions) (CJP) */
         /** @ts-ignore */
         // google.ima.AdEvent.Type.PAUSED,
@@ -271,7 +272,7 @@ video::-webkit-media-text-track-container {
         google.ima.AdEvent.Type.STARTED,
         /** @TODO Define global namespace ima (likely use a module for abstractions) (CJP) */
         /** @ts-ignore */
-        google.ima.AdEvent.Type.THIRD_QUARTILE,
+        // google.ima.AdEvent.Type.THIRD_QUARTILE,
       ];
       for (const index in events) {
         adsManager.addEventListener(
@@ -444,6 +445,16 @@ video::-webkit-media-text-track-container {
         return;
       }
       super.currentTime = val;
+    }
+
+    /** @TODO Translate these to actual text track cues? (CJP) */
+    get adCuePoints() {
+      return (this.#adsManager?.getCuePoints() ?? []).map((startTime: number) => {
+        return {
+          startTime,
+          value: 'AD_BREAK', // What should this be?
+        };
+      });
     }
   }
 
