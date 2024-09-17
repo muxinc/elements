@@ -127,7 +127,7 @@ video::-webkit-media-text-track-container {
 
     connectedCallback() {
       super.connectedCallback();
-      /** @TODO figure out why this doesn't work (CJP) */
+      /** @TODO figure out why TS doesn't like this (CJP) */
       /** @ts-ignore */
       if (!('google' in globalThis && 'ima' in globalThis['google'])) {
         console.error('Missing google.ima SDK. Make sure you include it via a script tag.');
@@ -142,16 +142,12 @@ video::-webkit-media-text-track-container {
           // this.customClickEl
         );
         this.#adsLoader = new google.ima.AdsLoader(this.#adDisplayContainer);
-        console.log('adsLoader created!', this.#adsLoader);
         this.#adsLoader.addEventListener(
           google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
           (adsManagerLoadedEvent) => {
-            console.log('ADS_MANAGER_LOADED', adsManagerLoadedEvent);
             const adsRenderingSettings = new google.ima.AdsRenderingSettings();
             adsRenderingSettings.restoreCustomPlaybackStateOnAdBreakComplete = true;
             this.#adsManager = adsManagerLoadedEvent.getAdsManager(this.nativeEl, adsRenderingSettings);
-            console.log('this.#adsManager', this.#adsManager);
-            console.log('cuePoints avail?', this.#adsManager?.getCuePoints());
             this.#startAdsManager(this.#adsManager as AdsManager);
           },
           false
@@ -161,6 +157,23 @@ video::-webkit-media-text-track-container {
           console.log.bind(null, 'AD_ERROR'),
           false
         );
+
+        /** @TODO Account for resetting of src as well (emptied evt?) (CJP) */
+        /** @TODO Account for disconnectedCallback as well (instance method?) (CJP) */
+        this.addEventListener(
+          'loadedmetadata',
+          () => {
+            if (this.adTagUrl && this.#adDisplayContainer && !this.#adsManager) {
+              this.#adDisplayContainer.initialize();
+              if (!this.nativeEl.paused) {
+                this.nativeEl.pause();
+              }
+              this.#requestAds(this.adTagUrl);
+            }
+          },
+          { once: true }
+        );
+        // this.#adDisplayContainer && !this.#adsManager
       }
     }
 
@@ -184,7 +197,6 @@ video::-webkit-media-text-track-container {
           console.log('AD DATA', this.#adData);
           this.dispatchEvent(new Event('durationchange'));
           this.dispatchEvent(new Event('timeupdate'));
-          this.dispatchEvent(new Event('playing'));
         },
         false
       );
@@ -237,16 +249,15 @@ video::-webkit-media-text-track-container {
 
       adsManager.addEventListener(
         google.ima.AdEvent.Type.STARTED,
-        (adEvent) => {
-          console.log('STARTED', adEvent);
+        () => {
+          this.dispatchEvent(new Event('playing'));
         },
         false
       );
 
       adsManager.addEventListener(
         google.ima.AdEvent.Type.PAUSED,
-        (adPausedEvent) => {
-          console.log('pause', adPausedEvent);
+        () => {
           this.#adPaused = true;
           this.dispatchEvent(new Event('pause'));
         },
@@ -416,6 +427,14 @@ video::-webkit-media-text-track-container {
         this.#adsManager?.setVolume(val ? 0 : this.volume);
       }
       super.muted = val;
+    }
+
+    get readyState() {
+      /** @TODO use different ima sdk events and model readyState more accurately (CJP) */
+      if (this.#adBreak) {
+        return 4;
+      }
+      return super.readyState;
     }
 
     /** @TODO Translate these to actual text track cues? (CJP) */
