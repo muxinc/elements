@@ -134,8 +134,7 @@ export const content = (props: MuxTemplateProps) => html`
       cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
       exportparts="video"
-      ${/** @TODO Move to separate/extended, ads-only impl/module? (CJP) */ ''}
-      adtagurl="${props.adTagUrl ?? false}"
+      adtagurl="${/** @TODO Move to separate/extended, ads-only impl/module? (CJP) */ props.adTagUrl ?? false}"
     >
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
