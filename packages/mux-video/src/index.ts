@@ -48,6 +48,7 @@ import { CustomVideoElement, Events as VideoEvents } from 'custom-media-element'
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
+import { GoogleIMAVideoMixin } from './google-ima-video-element-mixin';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
@@ -87,6 +88,7 @@ const AttributeNameValues = Object.values(Attributes);
 export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-video';
 
+<<<<<<< HEAD
 class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMediaProps> {
   static get NAME() {
     return playerSoftwareName;
@@ -96,6 +98,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return playerSoftwareVersion;
   }
 
+=======
+/** @TODO POC - THIS SHOULD PROBABLY BE SPLIT OUT AS A SEPARATE IMPORT/MODULE FOR-ADS-FLAVORED MUX-VIDEO (CJP) */
+export class MuxVideoBaseElement extends GoogleIMAVideoMixin(CustomVideoElement) implements Partial<MuxMediaProps> {
+  // export class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMediaProps> {
+>>>>>>> 7d667c79 (WIP mux-video + google ima)
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
@@ -167,10 +174,14 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return this.#core?.engine;
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   get mux(): Readonly<HTMLVideoElement['mux']> | undefined {
     return this.nativeEl?.mux;
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   get error() {
     return getError(this.nativeEl) ?? null;
   }
@@ -183,6 +194,8 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     this.#errorTranslator = value;
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   get src() {
     // Use the attribute value as the source of truth.
     // No need to store it in two places.
@@ -190,6 +203,8 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return this.getAttribute('src') as string;
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   set src(val: string) {
     // If being set by attributeChangedCallback,
     // dont' cause an infinite loop
@@ -244,6 +259,8 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   get preload() {
     const val = this.getAttribute('preload') as HTMLMediaElement['preload'];
     if (val === '') return 'auto';
@@ -251,6 +268,8 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return super.preload;
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   set preload(val) {
     // don't cause an infinite loop
     // check the attribute because an empty string maps to the `auto` prop
@@ -615,6 +634,8 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
+  /** @TODO Figure out Issues with types when using google ima mixin (CJP)  */
+  /** @ts-ignore */
   get seekable() {
     return getSeekable(this.nativeEl);
   }
@@ -815,7 +836,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
 }
 
 // castable-video should be mixed in last so that it can override load().
-class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {
+export class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {
   // NOTE: CastableMediaMixin needs to be a subclass of whatever implements the load() method
   // (i.e. MuxVideoBaseElement), but we're overriding castCustomData to provide mux-specific
   // values by default, so it needs to be defined here (i.e. in the composed subclass of
@@ -858,7 +879,7 @@ class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseEl
   }
 }
 
-type MuxVideoElementType = typeof MuxVideoElement;
+export type MuxVideoElementType = typeof MuxVideoElement;
 declare global {
   var MuxVideoElement: MuxVideoElementType; // eslint-disable-line
 }
