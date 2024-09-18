@@ -145,3 +145,7 @@ media-poster-image:not([src]):not([placeholdersrc]) {
   --media-duration-display-display: var(--duration-display, var(--bottom-duration-display));
   --media-title-display-display: var(--title-display, var(--bottom-title-display));
 }
+
+:host([no-tooltips]) {
+  --media-tooltip-display: none;
+}

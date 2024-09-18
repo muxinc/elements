@@ -12,7 +12,7 @@
     "composite": true,
     "strict": true,
     "noImplicitAny": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "baseUrl": "./packages",
     "esModuleInterop": true,
     "skipLibCheck": true,

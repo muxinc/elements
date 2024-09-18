@@ -3,7 +3,7 @@ import type { HlsPlaylistTypes, MuxMediaProps } from './types';
 
 type addEventListenerWithTeardown = <
   K extends keyof HTMLMediaElementEventMap,
-  T extends EventTarget = HTMLMediaElement
+  T extends EventTarget = HTMLMediaElement,
 >(
   mediaEl: HTMLMediaElement,
   type: K,
@@ -84,7 +84,8 @@ export const inferMimeTypeFromURL = (url: string) => {
   let pathname = '';
   try {
     pathname = new URL(url).pathname;
-  } catch (e) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_e) {
     console.error('invalid url');
   }
 

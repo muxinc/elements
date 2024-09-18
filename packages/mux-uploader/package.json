@@ -81,6 +81,6 @@
     "replace": "^1.2.1",
     "shx": "^0.3.4",
     "sinon": "^15.0.1",
-    "typescript": "^4.9.4"
+    "typescript": "^5.5.4"
   }
 }

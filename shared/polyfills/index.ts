@@ -23,6 +23,9 @@ const customElements: CustomElementRegistry = {
     return undefined;
   },
   define(_name, _constructor, _options) {},
+  getName(_constructor) {
+    return null;
+  },
   upgrade(_root) {},
   whenDefined(_name) {
     return Promise.resolve(HTMLElement as unknown as CustomElementConstructor);

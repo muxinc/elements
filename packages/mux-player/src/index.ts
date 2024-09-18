@@ -83,6 +83,7 @@ const PlayerAttributes = {
   EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
   CAST_RECEIVER: 'cast-receiver',
+  NO_TOOLTIPS: 'no-tooltips',
 };
 
 const ThemeAttributeNames = [
@@ -242,6 +243,7 @@ export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
   chapterchange: CustomEvent<{ startTime: number; endTime: number; value: string }>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 interface MuxPlayerElement
   extends Omit<
     HTMLVideoElement,
@@ -276,6 +278,7 @@ interface MuxPlayerElement
   ): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   #isInit = false;
   #tokens = {};
@@ -327,6 +330,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       customElements.upgrade(this.mediaTheme as Node);
       if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       logger.error(`<media-theme> failed to upgrade!`);
     }
@@ -334,6 +338,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       customElements.upgrade(this.media as Node);
       if (!(this.media instanceof MuxVideoElement)) throw '';
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       logger.error('<mux-video> failed to upgrade!');
     }
@@ -341,6 +346,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       customElements.upgrade(this.mediaController as Node);
       if (!(this.mediaController instanceof MediaController)) throw '';
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       logger.error(`<media-controller> failed to upgrade!`);
     }
@@ -378,6 +384,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         syntax: '<color>',
         inherits: true,
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {}
   }
 
@@ -1723,6 +1730,18 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return;
     }
     this.media.castCustomData = val;
+  }
+
+  get noTooltips() {
+    return this.hasAttribute(PlayerAttributes.NO_TOOLTIPS);
+  }
+
+  set noTooltips(val: boolean) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.NO_TOOLTIPS);
+      return;
+    }
+    this.setAttribute(PlayerAttributes.NO_TOOLTIPS, '');
   }
 }
 

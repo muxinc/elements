@@ -1,1 +1,1 @@
-export * from 'media-chrome/dist/themes/minimal.js';
+export * from 'player.style/minimal';
