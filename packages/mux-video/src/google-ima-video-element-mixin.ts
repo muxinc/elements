@@ -39,15 +39,8 @@ export const GoogleIMAVideoMixin = (superclass: typeof CustomVideoElement) => {
   right: 0px;
 }
 
-:host(:not([adbreak])) {
-  pointer-events: none;
-}
-
-#contentElement {
-  overflow: hidden;
-}
-
 video {
+  overflow: hidden;
   max-width: 100%;
   max-height: 100%;
   min-width: 100%;
@@ -78,7 +71,7 @@ video::-webkit-media-text-track-container {
     /**
      * Indicates that playback is currently in an ad break (whether or not a given ad is paused)
      */
-    #adBreak = false;
+    // #adBreak = false;
     /**
      * Indicates that ad playback is currently paused
      */
@@ -202,7 +195,6 @@ video::-webkit-media-text-track-container {
           }
           /** @TODO Consider moving to STARTED event. 'play' vs. 'playing' evts? (CJP) */
           this.#adBreak = true;
-          this.toggleAttribute(Attributes.AD_BREAK, true);
           this.#adPaused = false;
           this.#adData = contentPauseRequestedEvent.getAd()?.data ?? undefined;
           console.log('AD DATA', this.#adData);
@@ -219,7 +211,6 @@ video::-webkit-media-text-track-container {
           this.#adData = undefined;
           this.#adProgressData = undefined;
           if (this.nativeEl.paused && (!this.ended || this.loop)) {
-            this.toggleAttribute(Attributes.AD_BREAK, false);
             this.play();
           }
 
@@ -349,6 +340,10 @@ video::-webkit-media-text-track-container {
       return this.shadowRoot?.getElementById('adContainer') as HTMLElement;
     }
 
+    get #mainContainer() {
+      return this.shadowRoot?.getElementById('mainContainer') as HTMLElement;
+    }
+
     #requestAds(adTagUrl: string) {
       const adsRequest = new google.ima.AdsRequest();
       adsRequest.adTagUrl = adTagUrl;
@@ -454,6 +449,19 @@ video::-webkit-media-text-track-container {
         return 4;
       }
       return super.readyState;
+    }
+
+    /** @TODO getter should be public consider moving attr to host el (CJP) */
+    get #adBreak() {
+      return this.#mainContainer.hasAttribute(Attributes.AD_BREAK);
+    }
+
+    set #adBreak(val: boolean | undefined) {
+      if (val == this.#adBreak) return;
+      this.#mainContainer.toggleAttribute(Attributes.AD_BREAK, !!val);
+      /** @TODO dispatch here or closer to actual transition (aka in IMA events?) (CJP) */
+      /** @TODO start/end events or single? (CJP) */
+      this.dispatchEvent(new Event('adbreakchange'));
     }
 
     /** @TODO Translate these to actual text track cues? (CJP) */
