@@ -235,8 +235,43 @@ export const updateStreamInfoFromHlsjsLevelDetails = (
   mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
 };
 
+declare global {
+  interface NavigatorUAData {
+    platform: string;
+    mobile: boolean;
+    brands: Array<{ brand: string; version: string }>;
+  }
+
+  interface Navigator {
+    userAgentData?: NavigatorUAData;
+  }
+}
+
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
-const isAndroid = userAgentStr.toLowerCase().indexOf('android') !== -1;
+const userAgentPlatform = globalThis?.navigator?.userAgentData?.platform ?? '';
+
+// NOTE: Our primary *goal* with this is to detect "non-Apple-OS" platforms which may also support
+// native HLS playback. Our primary concern with any check for this is "false negatives" where we
+// identify an "Apple-OS" as a "non-Apple-OS". As such, instead of having logic to attempt to identify
+// "!isAppleOS", we opt to target known platforms that can support both native playback and MSE/hls.js.
+// For now, these are "Android or Android-like" platforms. If we end up matching platforms other than
+// Android (or e.g. forks thereof), this is fine so long as it doesn't include Apple-OS platforms.
+// Below are two strategies:
+// 1. UA string parsing - here, we're extra cautious to only match if the UA string explicitly includes 'android'.
+//   This is prone to false negatives (aka "Android or Android-like" platforms that yield false), since
+//   detection using UA strings is intentionally and notoriously unreliable (See: https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent)
+//   and Google is even officially attempting to lock this down even more for security and privacy reasons
+//   (See: https://developers.google.com/privacy-sandbox/blog/user-agent-reduction-android-model-and-version)
+// 2. userAgentData.platform checking - here, we're matching either 'android' or 'x11', and could add more matches in the future
+//    While still prone to false negatives, we can be a bit more aggressive with matches here for a few reasons.
+//    First, navigator.userAgentData is still experimental, is only supported on a subset of Chromium browsers,
+//    and neither Mozilla nor Webkit have even established an official browser support position. In other words,
+//    Apple-OS Safari and even other Apple-OS browsers (including Chrome) will typically not even support this
+//    feature, and, if and when they do, the purpose of this new API is to avoid obfuscatory information, so
+//    we should be able to better trust userAgentData.platform to not result in erroneous matches.
+const isAndroidLike =
+  userAgentStr.toLowerCase().includes('android') ||
+  ['x11', 'android'].some((platformStr) => userAgentPlatform.toLowerCase().includes(platformStr));
 
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
@@ -246,7 +281,7 @@ export const muxMediaState: WeakMap<
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
-const DEFAULT_PREFER_MSE = isAndroid;
+const DEFAULT_PREFER_MSE = isAndroidLike;
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();

@@ -37,6 +37,8 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  Chapter,
+  CuePoint,
 } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
@@ -515,7 +517,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return getSeekable(this.nativeEl);
   }
 
-  async addCuePoints<T = any>(cuePoints: { time: number; value: T }[]) {
+  async addCuePoints<T = any>(cuePoints: CuePoint<T>[]) {
     return addCuePoints(this.nativeEl, cuePoints);
   }
 
@@ -527,7 +529,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     return getCuePoints(this.nativeEl);
   }
 
-  async addChapters(chapters: { startTime: number; endTime: number; value: string }[]) {
+  async addChapters(chapters: Chapter[]) {
     return addChapters(this.nativeEl, chapters);
   }
 
