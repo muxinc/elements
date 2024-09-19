@@ -71,7 +71,7 @@ video::-webkit-media-text-track-container {
     /**
      * Indicates that playback is currently in an ad break (whether or not a given ad is paused)
      */
-    // #adBreak = false;
+    // adBreak = false;
     /**
      * Indicates that ad playback is currently paused
      */
@@ -153,15 +153,20 @@ video::-webkit-media-text-track-container {
 
         /** @TODO Account for resetting of src as well (emptied evt?) (CJP) */
         /** @TODO Account for disconnectedCallback as well (instance method?) (CJP) */
+        /** @TODO Optimization - eagerly fetch based on preload value (CJP) */
         this.addEventListener(
           'loadedmetadata',
           () => {
             if (this.adTagUrl && this.#adDisplayContainer && !this.#adsManager) {
               this.#adDisplayContainer.initialize();
+              const prevPaused = this.nativeEl.paused;
               if (!this.nativeEl.paused) {
                 this.nativeEl.pause();
               }
-              this.#requestAds(this.adTagUrl);
+              // Only start playback if we weren't paused
+              if (!prevPaused) {
+                this.#requestAds(this.adTagUrl);
+              }
             }
           },
           { once: true }
@@ -189,24 +194,22 @@ video::-webkit-media-text-track-container {
       adsManager.addEventListener(
         google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
         (contentPauseRequestedEvent) => {
-          console.log('CONTENT_PAUSE_REQUESTED', contentPauseRequestedEvent.getAd());
           if (!this.nativeEl.paused) {
             this.nativeEl.pause();
           }
-          /** @TODO Consider moving to STARTED event. 'play' vs. 'playing' evts? (CJP) */
+          /** @TODO Consider moving to STARTED or LOADED event. 'play' vs. 'playing' evts? (CJP) */
           this.#adBreak = true;
           this.#adPaused = false;
           this.#adData = contentPauseRequestedEvent.getAd()?.data ?? undefined;
-          console.log('AD DATA', this.#adData);
           this.dispatchEvent(new Event('durationchange'));
           this.dispatchEvent(new Event('timeupdate'));
+          this.dispatchEvent(new Event('adbreaktotaladschange'));
         },
         false
       );
       adsManager.addEventListener(
         google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
         (contentResumeRequestedEvent) => {
-          console.log('CONTENT_RESUME_REQUESTED', contentResumeRequestedEvent);
           this.#adBreak = false;
           this.#adData = undefined;
           this.#adProgressData = undefined;
@@ -227,7 +230,7 @@ video::-webkit-media-text-track-container {
         google.ima.AdEvent.Type.CLICK,
         google.ima.AdEvent.Type.COMPLETE,
         // google.ima.AdEvent.Type.FIRST_QUARTILE,
-        google.ima.AdEvent.Type.LOADED,
+        // google.ima.AdEvent.Type.LOADED,
         // google.ima.AdEvent.Type.MIDPOINT,
         // google.ima.AdEvent.Type.PAUSED,
         google.ima.AdEvent.Type.STARTED,
@@ -239,18 +242,27 @@ video::-webkit-media-text-track-container {
         adsManager.addEventListener(
           events[index],
           (adEvent) => {
-            console.log(events[index], adEvent);
-            console.log('ad data', adEvent?.getAdData());
-            console.log('ad ', adEvent?.getAd());
+            // console.log(events[index], adEvent);
+            // console.log('ad data', adEvent?.getAdData());
+            // console.log('ad ', adEvent?.getAd());
           },
           false
         );
       }
 
       adsManager.addEventListener(
+        google.ima.AdEvent.Type.LOADED,
+        (adEvent) => {
+          // console.log(google.ima.AdEvent.Type.LOADED, 'adData', adEvent.getAdData(), 'ad', adEvent.getAd());
+        },
+        false
+      );
+
+      adsManager.addEventListener(
         google.ima.AdEvent.Type.STARTED,
         () => {
           this.dispatchEvent(new Event('playing'));
+          this.dispatchEvent(new Event('adbreakadpositionchange'));
         },
         false
       );
@@ -309,7 +321,6 @@ video::-webkit-media-text-track-container {
       // adsManager.init(initWidth, initHeight, google.ima.ViewMode.NORMAL);
 
       const elementDims = this.getBoundingClientRect();
-      console.log('elementDims', elementDims);
       adsManager.init(elementDims.width, elementDims.height, google.ima.ViewMode.NORMAL);
 
       adsManager.start();
@@ -355,7 +366,7 @@ video::-webkit-media-text-track-container {
     }
 
     get paused() {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         return this.#adPaused;
       }
       return super.paused;
@@ -382,7 +393,7 @@ video::-webkit-media-text-track-container {
     }
 
     pause() {
-      if (this.#adsManager && this.#adBreak) {
+      if (this.#adsManager && this.adBreak) {
         this.#adsManager.pause();
         return;
       }
@@ -390,7 +401,7 @@ video::-webkit-media-text-track-container {
     }
 
     get duration() {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         return this.#adProgressData?.duration ?? this.#adData?.duration ?? 0;
       }
 
@@ -398,7 +409,7 @@ video::-webkit-media-text-track-container {
     }
 
     get currentTime() {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         return this.#adProgressData?.currentTime ?? 0;
       }
 
@@ -406,7 +417,7 @@ video::-webkit-media-text-track-container {
     }
 
     set currentTime(val: number) {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         console.error('CANNOT SEEK DURING AD BREAK');
         // NOTE: re-dispatch timeupdate for observers who may presumptuously think time will have changed. (CJP)
         this.dispatchEvent(new Event('timeupdate'));
@@ -416,28 +427,28 @@ video::-webkit-media-text-track-container {
     }
 
     get volume() {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         return this.#adsManager?.getVolume() ?? 0;
       }
       return super.volume;
     }
 
     set volume(val) {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         this.#adsManager?.setVolume(val);
       }
       super.volume = val;
     }
 
     get muted() {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         return !this.#adsManager?.getVolume();
       }
       return super.muted;
     }
 
     set muted(val: boolean) {
-      if (this.#adBreak) {
+      if (this.adBreak) {
         this.#adsManager?.setVolume(val ? 0 : this.volume);
       }
       super.muted = val;
@@ -445,34 +456,45 @@ video::-webkit-media-text-track-container {
 
     get readyState() {
       /** @TODO use different ima sdk events and model readyState more accurately (CJP) */
-      if (this.#adBreak) {
+      if (this.adBreak) {
         return 4;
       }
       return super.readyState;
     }
 
-    /** @TODO getter should be public consider moving attr to host el (CJP) */
-    get #adBreak() {
+    /** @TODO consider moving attr to host el (CJP) */
+    get adBreak() {
       return this.#mainContainer.hasAttribute(Attributes.AD_BREAK);
     }
 
     set #adBreak(val: boolean | undefined) {
-      if (val == this.#adBreak) return;
+      if (val == this.adBreak) return;
       this.#mainContainer.toggleAttribute(Attributes.AD_BREAK, !!val);
       /** @TODO dispatch here or closer to actual transition (aka in IMA events?) (CJP) */
       /** @TODO start/end events or single? (CJP) */
       this.dispatchEvent(new Event('adbreakchange'));
     }
 
+    get adBreakTotalAds() {
+      return this.#adData?.adPodInfo.totalAds ?? 0;
+    }
+
+    get adBreakAdPosition() {
+      return this.#adProgressData?.adPosition ?? this.#adData?.adPodInfo.adPosition;
+    }
+
     /** @TODO Translate these to actual text track cues? (CJP) */
     get adCuePoints() {
-      return (this.#adsManager?.getCuePoints() ?? []).map((startTime: number) => {
+      return (this.#adsManager?.getCuePoints() ?? []).map((time: number) => {
+        const startTime = time === -1 ? this.nativeEl.duration : time;
         return {
           startTime,
           value: 'AD_BREAK', // What should this be?
         };
       });
     }
+
+    // get ad
   }
 
   return GoogleIMAVideoElement;
