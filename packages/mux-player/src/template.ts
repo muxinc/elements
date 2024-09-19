@@ -1,6 +1,7 @@
 import 'media-chrome/dist/media-theme-element.js';
 // @ts-ignore
 import cssStr from './styles.css';
+import './media-chrome/ads/media-ad-count-display';
 import { getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { stylePropsToString } from './utils';
@@ -82,6 +83,13 @@ export const partsListStr = Object.values(Parts).join(', ');
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate || false}"
+    mediaadbreak="${/** @TODO Move to separate/extended, ads-only impl/module? (CJP) */ props.adBreak ?? false}"
+    mediaadbreaktotalads="${
+      /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */ props.adBreakTotalAds ?? false
+    }"
+    mediaadbreakadposition="${
+      /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */ props.adBreakAdPosition ?? false
+    }"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || false}"

@@ -183,6 +183,12 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     extraSourceParams: el.extraSourceParams,
     /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
     adTagUrl: el.adTagUrl,
+    /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+    adBreak: el.adBreak,
+    /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+    adBreakTotalAds: el.adBreakTotalAds,
+    /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+    adBreakAdPosition: el.adBreakAdPosition,
   };
 
   return props;
@@ -420,6 +426,17 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
     this.media?.addEventListener('loadstart', () => this.#render());
+
+    /** @TODO remove me when migrated to media chrome */
+    this.media?.addEventListener('adbreakchange', () => {
+      this.#render();
+    });
+    this.media?.addEventListener('adbreakadpositionchange', () => {
+      this.#render();
+    });
+    this.media?.addEventListener('adbreaktotaladschange', () => {
+      this.#render();
+    });
   }
 
   #setupCSSProperties() {
@@ -1881,6 +1898,21 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     } else {
       this.removeAttribute(PlayerAttributes.AD_TAG_URL);
     }
+  }
+
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  get adBreak() {
+    return this.media?.adBreak ?? false;
+  }
+
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  get adBreakTotalAds() {
+    return this.media?.adBreakTotalAds;
+  }
+
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  get adBreakAdPosition() {
+    return this.media?.adBreakAdPosition;
   }
 }
 
