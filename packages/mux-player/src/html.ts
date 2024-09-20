@@ -1,5 +1,4 @@
 import { document } from './polyfills';
-// @ts-ignore
 import { TemplateInstance, ChildNodePart, AttrPart, Part } from 'media-chrome/dist/media-theme-element.js';
 
 // NOTE: These are either direct ports or significantly based off of github's jtml template part processing logic. For more, see: https://github.com/github/jtml
