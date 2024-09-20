@@ -13,6 +13,15 @@ Examples:
   - include `--scope '*-esm'` in the dev script
   - Run `npx lerna run dev --scope '*-esm'` locally after running `yarn dev`
 
+## Testing your changes to see what affect they have on version updates
+
+You can do a dry-run locally of the `version:update` script by doing the following:
+
+1. Create a new branch from `main`
+2. Cherry pick commits from your working branch to it, including any needed footer e.g. "BREAKING CHANGE: ..."
+3. Push new branch to remote
+4. Run the script `yarn version:update` and select 'n' (no) for committing to the changes
+
 # Media Chrome Canaries
 
 It's helpful to point at Media Chrome canaries for developing PRs and having all the live examples work; however, we should not merge any PRs that point at a Media Chrome Canary release.
