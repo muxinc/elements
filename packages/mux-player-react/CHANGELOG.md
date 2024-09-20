@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.9.1...@mux/mux-player-react@3.0.0) (2024-09-20)
+
+
+* chore(mux-player, mux-player-react)!: breaking change take 2 (#994) ([668403a](https://github.com/muxinc/elements/commit/668403adf97aae14e3acba667e42965f03d9ec97)), closes [#994](https://github.com/muxinc/elements/issues/994)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video:** cast custom data ([2722b6e](https://github.com/muxinc/elements/commit/2722b6ea6c5497c0bd0a28fd1732bd0b9c2474b6))
+
+
+### BREAKING CHANGES
+
+* Retrospective breaking change for tooltips pr
+
+
+
+
+
 ## [2.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@2.9.0...@mux/mux-player-react@2.9.1) (2024-08-06)
 
 **Note:** Version bump only for package @mux/mux-player-react

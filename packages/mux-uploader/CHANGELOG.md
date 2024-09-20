@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.1...@mux/mux-uploader@1.0.2) (2024-09-20)
+
+**Note:** Version bump only for package @mux/mux-uploader
+
+
+
+
+
 ## [1.0.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.0...@mux/mux-uploader@1.0.1) (2024-08-02)
 
 **Note:** Version bump only for package @mux/mux-uploader

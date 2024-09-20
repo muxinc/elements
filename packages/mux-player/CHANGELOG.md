@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.9.1...@mux/mux-player@3.0.0) (2024-09-20)
+
+
+### Bug Fixes
+
+* chapters and cuepoints interface doesnt reflect internal types ([#977](https://github.com/muxinc/elements/issues/977)) ([e3eadec](https://github.com/muxinc/elements/commit/e3eadec050160ed44f01b91b4a49e84cce9188fc)), closes [#947](https://github.com/muxinc/elements/issues/947)
+* **mux-player, mux-player-react:** Remove seek buttons from mobile pre-playback UI ([#982](https://github.com/muxinc/elements/issues/982)) ([840a0be](https://github.com/muxinc/elements/commit/840a0be0b8b9feccee3cd0cb69c7156f81b1b8cc))
+* **mux-player:** add buttons to mobile live audio view ([#985](https://github.com/muxinc/elements/issues/985)) ([3437ced](https://github.com/muxinc/elements/commit/3437ced3fd01c7078cd32ee585fd69378aec0620))
+* upgrade media-chrome ([#990](https://github.com/muxinc/elements/issues/990)) ([e6e5598](https://github.com/muxinc/elements/commit/e6e559870e44ada3953dc7c5caef06d1986655ca))
+
+
+* chore(mux-player, mux-player-react)!: breaking change take 2 (#994) ([668403a](https://github.com/muxinc/elements/commit/668403adf97aae14e3acba667e42965f03d9ec97)), closes [#994](https://github.com/muxinc/elements/issues/994)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video:** cast custom data ([2722b6e](https://github.com/muxinc/elements/commit/2722b6ea6c5497c0bd0a28fd1732bd0b9c2474b6))
+
+
+### BREAKING CHANGES
+
+* Retrospective breaking change for tooltips pr
+
+
+
+
+
 ## [2.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.9.0...@mux/mux-player@2.9.1) (2024-08-06)
 
 

@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.26.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.2...@mux/playback-core@0.26.0) (2024-09-20)
+
+
+### Bug Fixes
+
+* **playback-core:** upgrade mux-embed ([#989](https://github.com/muxinc/elements/issues/989)) ([5190c23](https://github.com/muxinc/elements/commit/5190c235e1e39cfd6a555855b2f57abd76631146))
+* **playback-core:** Use userAgentData API to improve android-like platform detection for preferPlayback MSE cases. ([#979](https://github.com/muxinc/elements/issues/979)) ([f6f99b3](https://github.com/muxinc/elements/commit/f6f99b3536ca266ea83f944498366a13059afa7b))
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video:** cast custom data ([2722b6e](https://github.com/muxinc/elements/commit/2722b6ea6c5497c0bd0a28fd1732bd0b9c2474b6))
+
+
+
+
+
 ## [0.25.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.1...@mux/playback-core@0.25.2) (2024-08-06)
 
 
