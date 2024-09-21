@@ -11803,10 +11803,15 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@^4.1.0, media-chrome@~4.1.0:
+media-chrome@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.0.tgz#d3db5f7010311f3cea2483e4d703f518cd365c4b"
   integrity sha512-rzuYoXiCvn+3vRim9pXcdIIXZmPAZHZbN9AUl0crdUOSv2tdEFJ6v/IxlJ8T3o4+YrHsrUCUNnu2Yai6mY6Qqg==
+
+media-chrome@~4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.1.tgz#4617b2f084bd42ac8b8e01e5835f7e92dc6516fc"
+  integrity sha512-3L2S8ZF0aGM99ULW9bKftgjsrZLK07+ExzRAaephRPOfO+8ann+1iQ+CimuQ+UY6xqlON6Acm5jKi0u13buaLQ==
 
 media-tracks@~0.3.2:
   version "0.3.2"
@@ -12161,10 +12166,10 @@ mute-stream@0.0.8, mute-stream@~0.0.4:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.8.tgz#1630c42b2251ff81e2a283de96a5497ea92e5e0d"
   integrity sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==
 
-mux-embed@~5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-5.2.0.tgz#88bd0b047f3b718c6018fec0c149539a75a2a369"
-  integrity sha512-hF9WDXnUu+5cYA36DfrdEKEpcV26dZvGmx2MAqvCg0kJiH/HcjNCk6QRCGJW0Xoe0Jtp2vAF9RbY6eL0uvZTZA==
+mux-embed@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/mux-embed/-/mux-embed-5.3.0.tgz#1e0c272c3167d53611c934ab6fe374545abaaf09"
+  integrity sha512-d9dMFKL2Opcv6P/+VjdzafWLdzHN4APtWoszkAOJ5b3p2qvZJ0HW9OgybKrJ+ggk9tQfE0yL5GrPeebSkUG7UA==
 
 nanocolors@^0.2.1:
   version "0.2.13"

@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.21.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.20.2...@mux/mux-video@0.21.0) (2024-09-20)
+
+
+### Bug Fixes
+
+* chapters and cuepoints interface doesnt reflect internal types ([#977](https://github.com/muxinc/elements/issues/977)) ([e3eadec](https://github.com/muxinc/elements/commit/e3eadec050160ed44f01b91b4a49e84cce9188fc)), closes [#947](https://github.com/muxinc/elements/issues/947)
+
+
+### Features
+
+* **mux-player, mux-player-react, mux-video:** cast custom data ([2722b6e](https://github.com/muxinc/elements/commit/2722b6ea6c5497c0bd0a28fd1732bd0b9c2474b6))
+
+
+
+
+
 ## [0.20.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.20.1...@mux/mux-video@0.20.2) (2024-08-06)
 
 **Note:** Version bump only for package @mux/mux-video
