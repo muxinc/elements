@@ -437,6 +437,13 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     this.media?.addEventListener('adbreaktotaladschange', () => {
       this.#render();
     });
+    this.mediaController?.addEventListener('mediaisfullscreen', () => {
+      const { mediaIsFullscreen = false } = this.mediaController?.mediaStore.getState() ?? {};
+      /** @TODO Figure out API design (CJP) */
+      if (this.media) {
+        this.media.mediaIsFullscreen = mediaIsFullscreen;
+      }
+    });
   }
 
   #setupCSSProperties() {

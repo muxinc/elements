@@ -1,5 +1,6 @@
 import { CustomVideoElement } from 'custom-media-element';
 import type { AdDisplayContainer, AdsLoader, AdsManager } from './google-ima-html5-sdk';
+import { observeResize } from './resize-observer';
 
 /** @TODO Add export of serializeAttributers from custom-media-element package for reuse/maintainability (CJP) */
 const serializeAttributes = (attrs = {}) => {
@@ -114,6 +115,8 @@ video::-webkit-media-text-track-container {
         }
       | undefined;
 
+    #mediaIsFullscreen = false;
+
     constructor() {
       super();
     }
@@ -183,6 +186,11 @@ video::-webkit-media-text-track-container {
           },
           { once: true }
         );
+
+        observeResize(this, () => {
+          const elementDims = this.getBoundingClientRect();
+          this.#adsManager?.resize(elementDims.width, elementDims.height, this.#viewMode);
+        });
       }
     }
 
@@ -307,21 +315,8 @@ video::-webkit-media-text-track-container {
         false
       );
 
-      //   let initWidth, initHeight;
-      /** @TODO Re-implement correctly (CJP) */
-      // if (this.application_.fullscreen) {
-      //   initWidth = this.application_.fullscreenWidth;
-      //   initHeight = this.application_.fullscreenHeight;
-      // } else {
-      //   initWidth = this.videoPlayer_.width;
-      //   initHeight = this.videoPlayer_.height;
-      // }
-      //   initWidth = this.videoPlayer_.width;
-      //   initHeight = this.videoPlayer_.height;
-      // adsManager.init(initWidth, initHeight, google.ima.ViewMode.NORMAL);
-
       const elementDims = this.getBoundingClientRect();
-      adsManager.init(elementDims.width, elementDims.height, google.ima.ViewMode.NORMAL);
+      adsManager.init(elementDims.width, elementDims.height, this.#viewMode);
 
       adsManager.start();
     }
@@ -460,6 +455,20 @@ video::-webkit-media-text-track-container {
         return 4;
       }
       return super.readyState;
+    }
+
+    /** @TODO Design API */
+    get mediaIsFullscreen() {
+      return this.#mediaIsFullscreen;
+    }
+
+    set mediaIsFullscreen(val: boolean) {
+      if (val == this.mediaIsFullscreen) return;
+      this.#mediaIsFullscreen = val;
+    }
+
+    get #viewMode() {
+      return this.mediaIsFullscreen ? google.ima.ViewMode.FULLSCREEN : google.ima.ViewMode.NORMAL;
     }
 
     /** @TODO consider moving attr to host el (CJP) */
