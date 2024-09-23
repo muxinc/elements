@@ -223,17 +223,15 @@ video::-webkit-media-text-track-container {
       // Attach the pause/resume events.
       adsManager.addEventListener(
         google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
-        (contentPauseRequestedEvent) => {
+        (/*contentPauseRequestedEvent*/) => {
           if (!this.nativeEl.paused) {
             this.nativeEl.pause();
           }
           /** @TODO Consider moving to STARTED or LOADED event. 'play' vs. 'playing' evts? (CJP) */
           this.#adBreak = true;
           this.#adPaused = false;
-          this.#adData = contentPauseRequestedEvent.getAd()?.data ?? undefined;
           this.dispatchEvent(new Event('durationchange'));
           this.dispatchEvent(new Event('timeupdate'));
-          this.dispatchEvent(new Event('adbreaktotaladschange'));
         },
         false
       );
@@ -283,6 +281,7 @@ video::-webkit-media-text-track-container {
       adsManager.addEventListener(
         google.ima.AdEvent.Type.LOADED,
         (/*adEvent*/) => {
+          this.dispatchEvent(new Event('adbreaktotaladschange'));
           // console.log(google.ima.AdEvent.Type.LOADED, 'adData', adEvent.getAdData(), 'ad', adEvent.getAd());
         },
         false
@@ -290,7 +289,8 @@ video::-webkit-media-text-track-container {
 
       adsManager.addEventListener(
         google.ima.AdEvent.Type.STARTED,
-        () => {
+        (adEvent) => {
+          this.#adData = adEvent.getAd()?.data;
           this.dispatchEvent(new Event('playing'));
           this.dispatchEvent(new Event('adbreakadpositionchange'));
         },
@@ -524,7 +524,7 @@ video::-webkit-media-text-track-container {
     }
 
     get adBreakAdPosition() {
-      return this.#adProgressData?.adPosition ?? this.#adData?.adPodInfo.adPosition;
+      return this.#adData?.adPodInfo.adPosition;
     }
 
     /** @TODO Translate these to actual text track cues? (CJP) */
