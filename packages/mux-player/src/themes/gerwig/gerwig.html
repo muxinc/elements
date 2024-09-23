@@ -589,6 +589,15 @@
     media-controller[mediahasplayed][mediapaused] [part='mux-badge'] {
       bottom: calc(28px + var(--media-control-height, 0px) + var(--media-control-padding, 0px) * 2);
     }
+
+    /**
+     * @TODO This is needed because media-container disables pointer-events on gestures-layer by default (CJP)
+     * @TODO This means the ad container is no longer clickable. Likely needed for mobile anyway, but this means
+     * Click div needs to be implemented for ad click through (CJP)
+     */
+    :host([mediaadbreak]) media-controller::part(gesture-layer) {
+      pointer-events: auto;
+    }
   </style>
 
   <template partial="TitleDisplay">
@@ -996,14 +1005,12 @@
   </template>
 
   <template partial="AdCountDisplay">
-    <!-- <template if="mediaadbreaktotalads"> -->
     <media-ad-count-display
       part="top title display"
       class="title-display"
       mediaadbreaktotalads="{{mediaadbreaktotalads}}"
       mediaadbreakadposition="{{mediaadbreakadposition}}"
     ></media-ad-count-display>
-    <!-- </template> -->
   </template>
 
   <media-controller

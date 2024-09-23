@@ -446,6 +446,15 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         this.media.mediaIsFullscreen = mediaIsFullscreen;
       }
     });
+
+    /** @TODO Tests for user inactive crud. remove before merging (CJP) */
+    // this.media?.addEventListener('pointermove', () => {
+    //   console.log('POINTER MOVING MEDIA');
+    // });
+
+    // this.mediaController?.addEventListener('pointermove', () => {
+    //   console.log('POINTER MOVING MEDIA CONTROLLER');
+    // });
   }
 
   #setupCSSProperties() {
