@@ -594,10 +594,15 @@
      * @TODO This is needed because media-container disables pointer-events on gestures-layer by default (CJP)
      * @TODO This means the ad container is no longer clickable. Likely needed for mobile anyway, but this means
      * Click div needs to be implemented for ad click through (CJP)
+     * @TODO This solution is mutually exclusive from use of Google IMA baked in skip ads UI (CJP)
      */
-    :host([mediaadbreak]) media-controller::part(gesture-layer) {
+    /* media-controller::part(gesture-layer) {
       pointer-events: auto;
     }
+
+    media-controller::part(media-layer) {
+      pointer-events: none;
+    } */
   </style>
 
   <template partial="TitleDisplay">

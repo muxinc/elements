@@ -1,6 +1,6 @@
 import { CustomVideoElement } from 'custom-media-element';
 import type { AdDisplayContainer, AdsLoader, AdsManager } from './google-ima-html5-sdk';
-import { observeResize } from './resize-observer';
+import { observeResize, unobserveResize } from './resize-observer';
 
 /** @TODO Add export of serializeAttributers from custom-media-element package for reuse/maintainability (CJP) */
 const serializeAttributes = (attrs = {}) => {
@@ -40,6 +40,11 @@ export const GoogleIMAVideoMixin = (superclass: typeof CustomVideoElement) => {
   right: 0px;
 }
 
+/* Ensures pointer events bubble while ad is not playing */
+#mainContainer:not([adbreak]) #adContainer {
+  pointer-events: none;
+}
+
 video {
   overflow: hidden;
   max-width: 100%;
@@ -48,6 +53,8 @@ video {
   min-height: 100%;
   object-fit: var(--media-object-fit, contain);
   object-position: var(--media-object-position, 50% 50%);
+  /* Don't allow context menu for ads to avoid circumventing lock down of playback scenarios */
+  pointer-events: none;
 }
 
 video::-webkit-media-text-track-container {
@@ -131,6 +138,14 @@ video::-webkit-media-text-track-container {
       }
 
       if (!this.#adDisplayContainer) {
+        // NOTE: Since we have no way to programmatically account for PiP in FireFox, gate it altogether (CJP)
+        if (!this.nativeEl.requestPictureInPicture) {
+          this.nativeEl.disablePictureInPicture = true;
+        }
+
+        // NOTE: CSAI is incompatible with remote playback, so disabling (CJP)
+        this.nativeEl.disableRemotePlayback = true;
+
         this.#adDisplayContainer = new google.ima.AdDisplayContainer(
           this.#adContainer,
           this.nativeEl
@@ -187,12 +202,19 @@ video::-webkit-media-text-track-container {
           { once: true }
         );
 
-        observeResize(this, () => {
-          const elementDims = this.getBoundingClientRect();
-          this.#adsManager?.resize(elementDims.width, elementDims.height, this.#viewMode);
-        });
+        observeResize(this, this.#resize);
       }
     }
+
+    disconnectedCallback(): void {
+      unobserveResize(this, this.#resize);
+    }
+
+    // NOTE: Using arrow function for closure scope of this var ("binding") (CJP)
+    #resize = () => {
+      const elementDims = this.getBoundingClientRect();
+      this.#adsManager?.resize(elementDims.width, elementDims.height, this.#viewMode);
+    };
 
     #startAdsManager(adsManager: AdsManager) {
       // if (adsManager.isCustomClickTrackingUsed() && this.customClickDiv_) {
@@ -491,6 +513,11 @@ video::-webkit-media-text-track-container {
       /** @TODO start/end events or single? (CJP) */
       this.dispatchEvent(new Event('adbreakchange'));
     }
+
+    // NOTE: Will need some hackrobatics to account for IMA UI capturing pointer events (e.g. pointermove) (CJP)
+    // #pointerEventHandler = (evt: PointerEvent) => {
+    //   console.log('pointerEventHandler', evt);
+    // }
 
     get adBreakTotalAds() {
       return this.#adData?.adPodInfo.totalAds ?? 0;
