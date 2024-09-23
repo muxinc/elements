@@ -217,7 +217,7 @@ video::-webkit-media-text-track-container {
       );
       adsManager.addEventListener(
         google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-        (contentResumeRequestedEvent) => {
+        (/*contentResumeRequestedEvent*/) => {
           this.#adBreak = false;
           this.#adData = undefined;
           this.#adProgressData = undefined;
@@ -249,7 +249,7 @@ video::-webkit-media-text-track-container {
       for (const index in events) {
         adsManager.addEventListener(
           events[index],
-          (adEvent) => {
+          (/*adEvent*/) => {
             // console.log(events[index], adEvent);
             // console.log('ad data', adEvent?.getAdData());
             // console.log('ad ', adEvent?.getAd());
@@ -260,7 +260,7 @@ video::-webkit-media-text-track-container {
 
       adsManager.addEventListener(
         google.ima.AdEvent.Type.LOADED,
-        (adEvent) => {
+        (/*adEvent*/) => {
           // console.log(google.ima.AdEvent.Type.LOADED, 'adData', adEvent.getAdData(), 'ad', adEvent.getAd());
         },
         false
