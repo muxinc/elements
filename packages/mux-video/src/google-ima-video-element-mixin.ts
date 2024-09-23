@@ -457,6 +457,14 @@ video::-webkit-media-text-track-container {
       return super.readyState;
     }
 
+    requestPictureInPicture() {
+      if (this.adBreak) {
+        return Promise.reject(new Error('Cannot use PiP while ads are playing!'));
+      }
+
+      return super.requestPictureInPicture();
+    }
+
     /** @TODO Design API */
     get mediaIsFullscreen() {
       return this.#mediaIsFullscreen;

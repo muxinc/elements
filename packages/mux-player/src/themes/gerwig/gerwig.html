@@ -1069,8 +1069,8 @@
             {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>MuteButton}}
             {{>VolumeRange}}
             <div class="spacer"></div>
-            {{>RenditionMenu}} {{>PlaybackRateMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}}
-            {{>AirplayButton}} {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
+            {{>RenditionMenu}} {{>PlaybackRateMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}}
+            {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
           </media-control-bar>
         </template>
 
@@ -1085,8 +1085,8 @@
             <template if="targetlivewindow > 0">{{>SeekBackwardButton}} {{>SeekForwardButton}}</template>
             {{>MuteButton}} {{>VolumeRange}}
             <div class="spacer"></div>
-            {{>RenditionMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}} {{>CastButton}}
-            {{>PipButton}} {{>FullscreenButton}}
+            {{>RenditionMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}}
+            {{>FullscreenButton}}
           </media-control-bar>
         </template>
       </template>
@@ -1095,7 +1095,7 @@
         <media-control-bar part="control-bar bottom">
           {{>PlayButton}} {{>TimeDisplay}} {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
-          {{>PipButton}} {{>FullscreenButton}}
+          {{>FullscreenButton}}
         </media-control-bar>
       </template>
     </template>

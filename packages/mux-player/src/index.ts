@@ -429,6 +429,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     /** @TODO remove me when migrated to media chrome */
     this.media?.addEventListener('adbreakchange', () => {
+      // MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
+      this.mediaController?.dispatchEvent(new CustomEvent('mediaexitpiprequest'));
       this.#render();
     });
     this.media?.addEventListener('adbreakadpositionchange', () => {
