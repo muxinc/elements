@@ -63,7 +63,11 @@ jobs:
       - name: Install playwright browsers
         run: npx playwright install --with-deps
       # run yarn and pass through `-- --all` to turborepo
-      - run: yarn test -- -- --all
+      - name: Test
+        run: yarn test -- -- --all
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:

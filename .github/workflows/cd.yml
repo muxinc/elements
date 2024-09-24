@@ -29,6 +29,9 @@ jobs:
         run: yarn clean
       - name: Test
         run: yarn test
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       - name: Clean
         run: yarn clean
       - name: Build
