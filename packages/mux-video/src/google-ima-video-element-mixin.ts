@@ -138,13 +138,15 @@ video::-webkit-media-text-track-container {
       }
 
       if (!this.#adDisplayContainer) {
-        // NOTE: Since we have no way to programmatically account for PiP in FireFox, gate it altogether (CJP)
+        // NOTE: Since we have no way to programmatically account for PiP in Firefox, gate it altogether (CJP)
         if (!this.nativeEl.requestPictureInPicture) {
           this.nativeEl.disablePictureInPicture = true;
         }
 
         // NOTE: CSAI is incompatible with remote playback, so disabling (CJP)
         this.nativeEl.disableRemotePlayback = true;
+
+        /** @TODO Consider conditionally adding `playsinline` for mobile cases (CJP) */
 
         this.#adDisplayContainer = new google.ima.AdDisplayContainer(
           this.#adContainer,
@@ -230,8 +232,6 @@ video::-webkit-media-text-track-container {
           /** @TODO Consider moving to STARTED or LOADED event. 'play' vs. 'playing' evts? (CJP) */
           this.#adBreak = true;
           this.#adPaused = false;
-          this.dispatchEvent(new Event('durationchange'));
-          this.dispatchEvent(new Event('timeupdate'));
         },
         false
       );
@@ -244,10 +244,6 @@ video::-webkit-media-text-track-container {
           if (this.nativeEl.paused && (!this.ended || this.loop)) {
             this.play();
           }
-
-          // Notify these values have changed back (CJP)
-          this.dispatchEvent(new Event('durationchange'));
-          this.dispatchEvent(new Event('timeupdate'));
         },
         false
       );
@@ -280,7 +276,10 @@ video::-webkit-media-text-track-container {
 
       adsManager.addEventListener(
         google.ima.AdEvent.Type.LOADED,
-        (/*adEvent*/) => {
+        (adEvent) => {
+          this.#adData = adEvent.getAd()?.data;
+          this.dispatchEvent(new Event('durationchange'));
+          this.dispatchEvent(new Event('timeupdate'));
           this.dispatchEvent(new Event('adbreaktotaladschange'));
           // console.log(google.ima.AdEvent.Type.LOADED, 'adData', adEvent.getAdData(), 'ad', adEvent.getAd());
         },
@@ -538,7 +537,18 @@ video::-webkit-media-text-track-container {
       });
     }
 
-    // get ad
+    /** @TODO Remove these after done testing/before merge (CJP) */
+    get adsManager() {
+      return this.#adsManager;
+    }
+
+    get adsLoader() {
+      return this.#adsLoader;
+    }
+
+    get adDisplayContainer() {
+      return this.#adDisplayContainer;
+    }
   }
 
   return GoogleIMAVideoElement;
