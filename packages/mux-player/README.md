@@ -11,7 +11,7 @@ Mux Player recently released 3.0. The most visible change in this is new tooltip
 
 ## Previous version: 2.0
 
-For changes relating to the previos major release, 2.0, see the [V1 to V2 upgrade guide](https://github.com/muxinc/elements/blob/main/packages/mux-player/UPGRADING_V1_to_V2.md) and the [blog post announcement](https://www.mux.com/blog/mux-player-2-0-for-web-and-coming-soon-for-ios-and-android).
+For changes relating to the previous major release, 2.0, see the [V1 to V2 upgrade guide](https://github.com/muxinc/elements/blob/main/packages/mux-player/UPGRADING_V1_to_V2.md) and the [blog post announcement](https://www.mux.com/blog/mux-player-2-0-for-web-and-coming-soon-for-ios-and-android).
 
 # Introduction
 
