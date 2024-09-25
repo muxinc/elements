@@ -7,6 +7,7 @@ const user = process.env.SAUCE_USERNAME;
 const key = process.env.SAUCE_ACCESS_KEY;
 
 console.log('CI_CD?', process.env.CI_CD);
+console.log('MY_TEST_SECRET?', process.env.MY_TEST_SECRET);
 if (!(user && key)) {
   const exitStatus = process.env.CI_CD ? 1 : 0;
   console.warn('No saucelabs credentials available in this environment. Skipping');
