@@ -3,7 +3,6 @@ name: CI
 on: [push, pull_request]
 
 env:
-  CI_CD: true
   # To use Turborepo Remote Caching, set the following environment variables.
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
@@ -65,7 +64,7 @@ jobs:
         run: npx playwright install --with-deps
       # run yarn and pass through `-- --all` to turborepo
       - name: Test
-        run: CI_CD=true SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} yarn test -- -- --all
+        run: CI_CD=true SAUCE_USERNAME=${{secrets.SAUCE_USERNAME}} SAUCE_ACCESS_KEY=${{secrets.SAUCE_ACCESS_KEY}} yarn test -- -- --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:

@@ -28,7 +28,7 @@ jobs:
       - name: Clean
         run: yarn clean
       - name: Test
-        run: CI_CD=true SAUCE_USERNAME=${{ secrets.SAUCE_USERNAME }} SAUCE_ACCESS_KEY=${{ secrets.SAUCE_ACCESS_KEY }} yarn test
+        run: CI_CD=true SAUCE_USERNAME=${{secrets.SAUCE_USERNAME}} SAUCE_ACCESS_KEY=${{secrets.SAUCE_ACCESS_KEY}} yarn test
       - name: Clean
         run: yarn clean
       - name: Build
