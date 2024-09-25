@@ -159,6 +159,13 @@ export interface Ad {
   data: any;
 }
 
+export interface AdProgressData {
+  adBreakDuration: number;
+  adPosition: number;
+  currentTime: number;
+  duration: number;
+  totalAds: number;
+}
 /**
  * This class represents a container for displaying ads. The SDK will automatically create structures inside the containerElement parameter to house video and overlay ads.
  *

@@ -1,5 +1,5 @@
 import { CustomVideoElement } from 'custom-media-element';
-import type { AdDisplayContainer, AdsLoader, AdsManager } from './google-ima-html5-sdk';
+import type { Ad, AdDisplayContainer, AdProgressData, AdsLoader, AdsManager } from './google-ima-html5-sdk';
 import { observeResize, unobserveResize } from './resize-observer';
 
 /** @TODO Add export of serializeAttributers from custom-media-element package for reuse/maintainability (CJP) */
@@ -76,51 +76,18 @@ video::-webkit-media-text-track-container {
     #adDisplayContainer: AdDisplayContainer | undefined;
     #adsLoader: AdsLoader | undefined;
     #adsManager: AdsManager | undefined;
-    /**
-     * Indicates that playback is currently in an ad break (whether or not a given ad is paused)
-     */
-    // adBreak = false;
+
     /**
      * Indicates that ad playback is currently paused
      */
     #adPaused = false;
-    /**
-     * Stores the currently loaded ad data. NOTE: TS def is non-exhaustive and may be inaccurate under conditions if polymorphic based on ad type
-     */
-    #adData:
-      | {
-          duration: number;
-          skippable: boolean;
-          skipTimeOffset: number; // -1 for non-skippable
-          description: string;
-          title: string;
-          clickThroughUrl: string;
-          vastMediaBitrate: number;
-          vastMediaHeight: number;
-          vastMediaWidth: number;
-          vpaid: boolean;
-          adPodInfo: {
-            adPosition: number; // Which ad is currently active in a given ad pod/break
-            isBumper: boolean;
-            maxDuration: number; // Total duration of the whole ad pod. NOTE: may end up being shorter if bids were unavailable to fill target duration.
-            podIndex: number;
-            timeOffset: number; // When this ad will play wrt the media's presentation timeline
-            totalAds: number; // Total number of ads in the pod/break
-          };
-        }
-      | undefined;
+
+    #ad: Ad | undefined | null;
 
     /**
      * Stores the latest progress data of ad playback. Retrieved from the AD_PROGRESS event
      */
-    #adProgressData:
-      | {
-          adBreakDuration: number; // Actual duration of the ad pod/break
-          adPosition: number; // Which ad in the ad pod/break is currently playing
-          currentTime: number; // The current time of the current ad's playhead
-          duration: number; // The duration of the specific ad playing
-        }
-      | undefined;
+    #adProgressData: AdProgressData | undefined | null;
 
     #mediaIsFullscreen = false;
 
@@ -239,8 +206,8 @@ video::-webkit-media-text-track-container {
         google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
         (/*contentResumeRequestedEvent*/) => {
           this.#adBreak = false;
-          this.#adData = undefined;
           this.#adProgressData = undefined;
+          this.#ad = undefined;
           if (this.nativeEl.paused && (!this.ended || this.loop)) {
             this.play();
           }
@@ -257,8 +224,6 @@ video::-webkit-media-text-track-container {
         // google.ima.AdEvent.Type.LOADED,
         // google.ima.AdEvent.Type.MIDPOINT,
         // google.ima.AdEvent.Type.PAUSED,
-        google.ima.AdEvent.Type.STARTED,
-        google.ima.AdEvent.Type.VOLUME_CHANGED,
         google.ima.AdEvent.Type.VOLUME_MUTED,
         // google.ima.AdEvent.Type.THIRD_QUARTILE,
       ];
@@ -277,11 +242,10 @@ video::-webkit-media-text-track-container {
       adsManager.addEventListener(
         google.ima.AdEvent.Type.LOADED,
         (adEvent) => {
-          this.#adData = adEvent.getAd()?.data;
+          this.#ad = adEvent.getAd();
           this.dispatchEvent(new Event('durationchange'));
           this.dispatchEvent(new Event('timeupdate'));
           this.dispatchEvent(new Event('adbreaktotaladschange'));
-          // console.log(google.ima.AdEvent.Type.LOADED, 'adData', adEvent.getAdData(), 'ad', adEvent.getAd());
         },
         false
       );
@@ -289,7 +253,7 @@ video::-webkit-media-text-track-container {
       adsManager.addEventListener(
         google.ima.AdEvent.Type.STARTED,
         (adEvent) => {
-          this.#adData = adEvent.getAd()?.data;
+          this.#ad = adEvent.getAd();
           this.dispatchEvent(new Event('playing'));
           this.dispatchEvent(new Event('adbreakadpositionchange'));
         },
@@ -374,10 +338,6 @@ video::-webkit-media-text-track-container {
     #requestAds(adTagUrl: string) {
       const adsRequest = new google.ima.AdsRequest();
       adsRequest.adTagUrl = adTagUrl;
-      // adsRequest.linearAdSlotWidth = this.videoPlayer_.width;
-      // adsRequest.linearAdSlotHeight = this.videoPlayer_.height;
-      // adsRequest.nonLinearAdSlotWidth = this.videoPlayer_.width;
-      // adsRequest.nonLinearAdSlotHeight = this.videoPlayer_.height;
       this.#adsLoader?.requestAds(adsRequest);
     }
 
@@ -418,7 +378,7 @@ video::-webkit-media-text-track-container {
 
     get duration() {
       if (this.adBreak) {
-        return this.#adProgressData?.duration ?? this.#adData?.duration ?? 0;
+        return this.#adProgressData?.duration ?? this.#ad?.getDuration() ?? 0;
       }
 
       return super.duration;
@@ -500,7 +460,9 @@ video::-webkit-media-text-track-container {
       return this.mediaIsFullscreen ? google.ima.ViewMode.FULLSCREEN : google.ima.ViewMode.NORMAL;
     }
 
-    /** @TODO consider moving attr to host el (CJP) */
+    /**
+     * Indicates that playback is currently in an ad break (whether or not a given ad is paused)
+     */
     get adBreak() {
       return this.#mainContainer.hasAttribute(Attributes.AD_BREAK);
     }
@@ -513,20 +475,14 @@ video::-webkit-media-text-track-container {
       this.dispatchEvent(new Event('adbreakchange'));
     }
 
-    // NOTE: Will need some hackrobatics to account for IMA UI capturing pointer events (e.g. pointermove) (CJP)
-    // #pointerEventHandler = (evt: PointerEvent) => {
-    //   console.log('pointerEventHandler', evt);
-    // }
-
     get adBreakTotalAds() {
-      return this.#adData?.adPodInfo.totalAds ?? 0;
+      return this.#adProgressData?.totalAds ?? this.#ad?.getAdPodInfo().getTotalAds() ?? 0;
     }
 
     get adBreakAdPosition() {
-      return this.#adData?.adPodInfo.adPosition;
+      return this.#adProgressData?.adPosition ?? this.#ad?.getAdPodInfo().getAdPosition() ?? 0;
     }
 
-    /** @TODO Translate these to actual text track cues? (CJP) */
     get adCuePoints() {
       return (this.#adsManager?.getCuePoints() ?? []).map((time: number) => {
         const startTime = time === -1 ? this.nativeEl.duration : time;
