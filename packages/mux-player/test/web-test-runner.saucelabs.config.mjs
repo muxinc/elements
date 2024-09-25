@@ -6,9 +6,11 @@ import { legacyPlugin } from '@web/dev-server-legacy';
 const user = process.env.SAUCE_USERNAME;
 const key = process.env.SAUCE_ACCESS_KEY;
 
+console.log('CI_CD?', process.env.CI_CD);
 if (!(user && key)) {
+  const exitStatus = process.env.CI_CD ? 1 : 0;
   console.warn('No saucelabs credentials available in this environment. Skipping');
-  process.exit(1);
+  process.exit(exitStatus);
 }
 
 // configure the local Sauce Labs proxy, use the returned function to define the

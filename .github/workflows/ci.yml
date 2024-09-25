@@ -2,8 +2,9 @@ name: CI
 
 on: [push, pull_request]
 
-# To use Turborepo Remote Caching, set the following environment variables.
 env:
+  CI_CD: true
+  # To use Turborepo Remote Caching, set the following environment variables.
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
@@ -50,6 +51,10 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      # Credentials required for Sauce Labs tests
+      SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+      SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
 
     steps:
       - uses: actions/checkout@v4
@@ -65,9 +70,6 @@ jobs:
       # run yarn and pass through `-- --all` to turborepo
       - name: Test
         run: yarn test -- -- --all
-        env:
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:

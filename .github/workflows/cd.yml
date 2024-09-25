@@ -10,6 +10,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    env:
+      CI_CD: true
+      # Credentials required for Sauce Labs tests
+      SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+      SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,9 +34,6 @@ jobs:
         run: yarn clean
       - name: Test
         run: yarn test
-        env:
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       - name: Clean
         run: yarn clean
       - name: Build
