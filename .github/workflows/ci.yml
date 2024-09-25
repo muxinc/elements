@@ -64,7 +64,7 @@ jobs:
         run: npx playwright install --with-deps
       # run yarn and pass through `-- --all` to turborepo
       - name: Test
-        run: CI_CD=true SAUCE_USERNAME=${{secrets.SAUCE_USERNAME}} SAUCE_ACCESS_KEY=${{secrets.SAUCE_ACCESS_KEY}} yarn test -- -- --all
+        run: MY_TEST_SECRET=${{secrets.MY_TEST_SECRET}} CI_CD=true SAUCE_USERNAME=${{secrets.SAUCE_USERNAME}} SAUCE_ACCESS_KEY=${{secrets.SAUCE_ACCESS_KEY}} yarn test -- -- --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
