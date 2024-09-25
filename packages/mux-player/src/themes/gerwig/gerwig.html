@@ -1104,7 +1104,7 @@
       </template>
       <template if="mediaadbreak">
         <media-control-bar noautohide part="control-bar top" slot="top-chrome"> {{>AdCountDisplay}} </media-control-bar>
-        <media-control-bar part="control-bar bottom">
+        <media-control-bar noautohide part="control-bar bottom">
           {{>PlayButton}} {{>TimeDisplay}} {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
           {{>FullscreenButton}}
