@@ -5,9 +5,13 @@
     <a href="https://www.npmjs.com/package/@mux/mux-player"><img src="https://img.shields.io/npm/l/@mux/mux-player.svg?sanitize=true" alt="License"></a>
 </p>
 
-# New release: 2.0
+# New release: 3.0
 
-Mux Player has recently released 2.0. See the [[https://github.com/muxinc/elements/blob/packages/mux-player/UPGRADING_V1_to_V2.md](https://github.com/muxinc/elements/blob/main/packages/mux-player/UPGRADING_V1_to_V2.md) and the [blog post announcement](https://www.mux.com/blog/mux-player-2-0-for-web-and-coming-soon-for-ios-and-android).
+Mux Player recently released 3.0. The most visible change in this is new tooltips that are enabled by default, as well as [other fixes and changes](https://docs.mux.com/guides/player-releases-web#300).
+
+## Previous version: 2.0
+
+For changes relating to the previos major release, 2.0, see the [V1 to V2 upgrade guide](https://github.com/muxinc/elements/blob/main/packages/mux-player/UPGRADING_V1_to_V2.md) and the [blog post announcement](https://www.mux.com/blog/mux-player-2-0-for-web-and-coming-soon-for-ios-and-android).
 
 # Introduction
 
