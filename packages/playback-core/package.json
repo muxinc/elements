@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "hls.js": "~1.5.11",
-    "mux-embed": "^5.3.0"
+    "mux-embed": "^5.3.1"
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
