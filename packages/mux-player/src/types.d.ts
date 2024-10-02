@@ -55,6 +55,14 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   title: string;
   defaultStreamType?: ValueOf<StreamTypes>;
   castReceiver: string | undefined;
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  adTagUrl: string | undefined;
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  adBreak: boolean;
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  adBreakTotalAds: number | undefined;
+  /** @TODO Move to separate/extended, ads-only impl/module? (CJP) */
+  adBreakAdPosition: number | undefined;
 };
 
 export type DialogOptions = {
