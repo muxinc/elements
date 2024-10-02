@@ -9,9 +9,30 @@ const camelCase = (name) => {
 };
 
 const args = process.argv.slice(3).reduce((processArgs, val) => {
-  let [key, value] = val.split('=');
+  let [key, value = true] = val.split('=');
   let [name, prop] = key.replace(/^--?/g, '').split(':');
-  processArgs[camelCase(name)] = prop ? { [prop]: value } : value ?? true;
+  const processArgsKey = camelCase(name);
+  const processArgsValue = prop ? { [prop]: value } : value;
+
+  // Already has an entry, assume this is an array or complex object of K:V pairs
+  if (processArgs[processArgsKey]) {
+    // If it's already an array, assume all values are elements of the array
+    if (Array.isArray(processArgs[processArgsKey])) {
+      processArgs[processArgsKey].push(processArgsValue);
+      // If it's an (non-array) object and the value is also an object,
+      // assume it's a K:V object
+    } else if (typeof processArgs[processArgsKey] === 'object' && typeof processArgsValue === 'object') {
+      processArgs[processArgsKey] = {
+        ...processArgs[processArgsKey],
+        ...processArgsValue,
+      };
+      // Otherwise, assume it needs to be converted to an array of simple values
+    } else {
+      processArgs[processArgsKey] = [processArgs[processArgsKey], processArgsValue];
+    }
+  } else {
+    processArgs[processArgsKey] = processArgsValue;
+  }
   return processArgs;
 }, {});
 
@@ -56,8 +77,10 @@ const options = {
   bundle: true,
   target: 'es2019',
   minify: args.minify,
+  sourcemap: args.sourcemap ?? false,
   format: args.format,
   outExtension: args.outExtension,
+  external: !args.external ? [] : typeof args.external !== 'object' ? [args.external] : Object.keys(args.external),
   metafile: true,
   logLevel: 'info',
   plugins: [i18nPlugin, onBuildEnd],
@@ -72,7 +95,7 @@ const options = {
 };
 
 if (options.format === 'esm' || options.format === 'cjs') {
-  options.external = ['@mux/*'];
+  options.external.push('@mux/*');
 }
 
 if (options.format === 'esm') {

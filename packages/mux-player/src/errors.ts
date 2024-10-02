@@ -1,166 +1,182 @@
-import { MediaError } from '@mux/mux-video';
-// @ts-ignore
-import lang from '../lang/en.json';
-import { i18n, parseJwt } from './utils';
+// import lang from '../lang/en.json';
 import type { DialogOptions, DevlogOptions } from './types';
+import { errorCategoryToTokenNameOrPrefix, i18n, MediaError, MuxErrorCategory, MuxErrorCode } from '@mux/playback-core';
 
-export function getErrorLogs(
-  error: MediaError,
-  offline?: boolean,
-  playbackId?: string,
-  playbackToken?: string,
-  translate?: boolean
-): { dialog: DialogOptions; devlog: DevlogOptions } {
-  let dialog: DialogOptions = {};
-  let devlog: DevlogOptions = {};
+const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1);
+// NOTE: Since playback-core and mux-video have no devlog or dialog, these translations should still live in Mux Player (at least for now).
 
-  switch (error.code) {
-    case MediaError.MEDIA_ERR_NETWORK: {
-      dialog.title = i18n(`Network Error`, translate);
-      dialog.message = error.message;
-
-      switch (error.data?.response.code) {
-        case 412: {
-          dialog.title = i18n(`Video is not currently available`, translate);
-          dialog.message = i18n(`The live stream or video file are not yet ready.`, translate);
-          devlog.message = i18n(
-            `This playback-id may belong to a live stream that is not currently active or an asset that is not ready.`,
-            translate
-          );
-          devlog.file = '412-not-playable.md';
-          break;
-        }
-        case 404: {
-          dialog.title = i18n(`Video does not exist`, translate);
-          dialog.message = '';
-          devlog.message = i18n(
-            `This playback-id does not exist. You may have used an Asset ID or an ID from a different resource.`,
-            translate
-          );
-          devlog.file = '404-not-found.md';
-          break;
-        }
-        case 403: {
-          dialog.title = i18n(`Invalid playback URL`, translate);
-          dialog.message = i18n(
-            `The video URL or playback-token are formatted with incorrect or incomplete information.`,
-            translate
-          );
-          devlog.message = i18n(
-            `403 error trying to access this playback URL. If this is a signed URL, you might need to provide a playback-token.`,
-            translate
-          );
-          devlog.file = 'missing-signed-tokens.md';
-
-          if (!playbackToken) break;
-
-          const { exp: tokenExpiry, aud: tokenType, sub: tokenPlaybackId } = parseJwt(playbackToken);
-          const tokenExpired = Date.now() > tokenExpiry * 1000;
-          const playbackIdMismatch = tokenPlaybackId !== playbackId;
-          const badTokenType = tokenType !== 'v';
-          const dateOptions: any = {
-            timeStyle: 'medium',
-            dateStyle: 'medium',
-          };
-
-          if (tokenExpired) {
-            dialog.title = i18n(`Video URL has expired`, translate);
-            dialog.message = i18n(`The video’s secured playback-token has expired.`, translate);
-            devlog.message = i18n(`The video’s secured playback-token has expired.`, translate);
-            devlog.context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
-              expiredDate: new Intl.DateTimeFormat((lang as any).code, dateOptions).format(tokenExpiry * 1000),
-              currentDate: new Intl.DateTimeFormat((lang as any).code, dateOptions).format(Date.now()),
-            });
-            devlog.file = '403-expired-token.md';
-            break;
-          }
-
-          if (playbackIdMismatch) {
-            dialog.title = i18n(`Video URL is formatted incorrectly`, translate);
-            dialog.message = i18n(
-              `The video’s playback ID does not match the one encoded in the playback-token.`,
-              translate
-            );
-            devlog.message = i18n(
-              `The video’s playback ID does not match the one encoded in the playback-token.`,
-              translate
-            );
-            devlog.context = i18n(
-              `Specified playback ID: {playbackId} and the playback ID encoded in the playback-token: {tokenPlaybackId}`,
-              translate
-            ).format({
-              playbackId,
-              tokenPlaybackId,
-            });
-            devlog.file = '403-playback-id-mismatch.md';
-            break;
-          }
-
-          if (badTokenType) {
-            dialog.title = i18n(`Video URL is formatted incorrectly`, translate);
-            dialog.message = i18n(`The playback-token is formatted with incorrect information.`, translate);
-            devlog.message = i18n(`The playback-token is formatted with incorrect information.`, translate);
-            devlog.context = i18n(
-              `The playback-token has an incorrect aud value: {tokenType}. aud value should be v.`,
-              translate
-            ).format({
-              tokenType,
-            });
-            devlog.file = '403-incorrect-aud-value.md';
-            break;
-          }
-
-          devlog.message = i18n(
-            `403 error trying to access this playback URL. If this is a signed playback ID, the token might not have been generated correctly.`,
-            translate
-          );
-          devlog.file = '403-malformatted-token.md';
-          break;
-        }
-      }
-      break;
+const muxMediaErrorToDialogTitle = (mediaError: MediaError, translate = false) => {
+  if (mediaError.muxCode) {
+    const category = capitalizeFirstLetter(mediaError.errorCategory ?? 'video');
+    const categoryName = errorCategoryToTokenNameOrPrefix(mediaError.errorCategory ?? MuxErrorCategory.VIDEO);
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_OFFLINE) {
+      return i18n(`Your device appears to be offline`, translate);
     }
-    case MediaError.MEDIA_ERR_DECODE: {
-      const { message } = error;
-      dialog = {
-        title: i18n(`Media Error`, translate),
-        message,
-      };
-      devlog.file = 'media-decode-error.md';
-      break;
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_EXPIRED) {
+      return i18n(`{category} URL has expired`, translate).format({
+        category,
+      });
     }
-    case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED: {
-      // If native HLS is used on Safari, M3U8 response errors cause media src not supported errors.
-      // If the response returns an error code, fix the MediaError.code and get detailed error logs.
-      const status = error.data?.response?.code;
-      if (status >= 400 && status < 500) {
-        error.code = MediaError.MEDIA_ERR_NETWORK;
-        error.data = { response: { code: status } };
-        ({ dialog, devlog } = getErrorLogs(error, offline, playbackId, playbackToken));
-        break;
-      }
-
-      dialog = {
-        title: i18n(`Source Not Supported`, translate),
-        message: error.message,
-      };
-      devlog.file = 'media-src-not-supported.md';
-      break;
+    if (
+      [
+        MuxErrorCode.NETWORK_TOKEN_SUB_MISMATCH,
+        MuxErrorCode.NETWORK_TOKEN_AUD_MISMATCH,
+        MuxErrorCode.NETWORK_TOKEN_AUD_MISSING,
+        MuxErrorCode.NETWORK_TOKEN_MALFORMED,
+        // @ts-ignore
+      ].includes(mediaError.muxCode)
+    ) {
+      return i18n(`{category} URL is formatted incorrectly`, translate).format({ category });
     }
-    default:
-      dialog = {
-        title: i18n(`Error`, translate),
-        message: error.message,
-      };
-      break;
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_MISSING) {
+      return i18n(`Invalid {categoryName} URL`, translate).format({ categoryName });
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_FOUND) {
+      return i18n(`{category} does not exist`, translate).format({ category });
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
+      return i18n(`{category} is not currently available`, translate).format({ category });
+    }
   }
 
-  if (offline) {
-    dialog = {
-      title: i18n(`Your device appears to be offline`, translate),
-      message: i18n(`Check your internet connection and try reloading this video.`, translate),
-    };
+  if (mediaError.code) {
+    if (mediaError.code === MediaError.MEDIA_ERR_NETWORK) return i18n(`Network Error`, translate);
+    if (mediaError.code === MediaError.MEDIA_ERR_DECODE) return i18n(`Media Error`, translate);
+    if (mediaError.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) return i18n(`Source Not Supported`, translate);
   }
 
+  return i18n(`Error`, translate);
+};
+
+const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false) => {
+  if (mediaError.muxCode) {
+    const category = capitalizeFirstLetter(mediaError.errorCategory ?? 'video');
+    const tokenNamePrefix = errorCategoryToTokenNameOrPrefix(mediaError.errorCategory ?? MuxErrorCategory.VIDEO);
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_OFFLINE) {
+      return i18n(`Check your internet connection and try reloading this video.`, translate);
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_EXPIRED) {
+      return i18n(`The video’s secured {tokenNamePrefix}-token has expired.`, translate).format({
+        tokenNamePrefix,
+      });
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_SUB_MISMATCH) {
+      return i18n(
+        `The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.`,
+        translate
+      ).format({
+        tokenNamePrefix,
+      });
+    }
+
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_MALFORMED) {
+      return i18n(`{category} URL is formatted incorrectly`, translate).format({ category });
+    }
+    if (
+      [
+        MuxErrorCode.NETWORK_TOKEN_AUD_MISMATCH,
+        MuxErrorCode.NETWORK_TOKEN_AUD_MISSING,
+        // @ts-ignore
+      ].includes(mediaError.muxCode)
+    ) {
+      return i18n(`The {tokenNamePrefix}-token is formatted with incorrect information.`, translate).format({
+        tokenNamePrefix,
+      });
+      //
+    }
+    if (
+      [
+        MuxErrorCode.NETWORK_TOKEN_MISSING,
+        MuxErrorCode.NETWORK_INVALID_URL,
+        // @ts-ignore
+      ].includes(mediaError.muxCode)
+    ) {
+      return i18n(
+        `The video URL or {tokenNamePrefix}-token are formatted with incorrect or incomplete information.`,
+        translate
+      ).format({
+        tokenNamePrefix,
+      });
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_FOUND) {
+      return '';
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
+      return i18n(`The live stream or video file are not yet ready.`, translate);
+    }
+    return mediaError.message;
+  }
+
+  if (mediaError.code) {
+    if (mediaError.code === MediaError.MEDIA_ERR_NETWORK) return mediaError.message;
+    if (mediaError.code === MediaError.MEDIA_ERR_DECODE) return mediaError.message;
+    if (mediaError.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) return mediaError.message;
+  }
+
+  return mediaError.message;
+};
+
+const muxMediaErrorToDialog = (mediaError: MediaError, translate = false): DialogOptions => {
+  const title = muxMediaErrorToDialogTitle(mediaError, translate);
+  const message = muxMediaErrorToDialogMessage(mediaError, translate);
+  return {
+    title,
+    message,
+  };
+};
+
+const muxMediaErrorToDevlogFile = (mediaError: MediaError) => {
+  if (mediaError.muxCode) {
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_EXPIRED) {
+      return '403-expired-token.md';
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_MALFORMED) {
+      return '403-malformatted-token.md';
+    }
+    if (
+      [
+        MuxErrorCode.NETWORK_TOKEN_AUD_MISMATCH,
+        MuxErrorCode.NETWORK_TOKEN_AUD_MISSING,
+        // @ts-ignore
+      ].includes(mediaError.muxCode)
+    ) {
+      return '403-incorrect-aud-value.md';
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_SUB_MISMATCH) {
+      return '403-playback-id-mismatch.md';
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_MISSING) {
+      return 'missing-signed-tokens.md';
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_FOUND) {
+      return '404-not-found.md';
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
+      return '412-not-playable.md';
+    }
+  }
+
+  if (mediaError.code) {
+    if (mediaError.code === MediaError.MEDIA_ERR_NETWORK) return '';
+    if (mediaError.code === MediaError.MEDIA_ERR_DECODE) return 'media-decode-error.md';
+    if (mediaError.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) return 'media-src-not-supported.md';
+  }
+
+  return '';
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const muxMediaErrorToDevLog = (mediaError: MediaError, _translate?: boolean | undefined): DevlogOptions => {
+  const file = muxMediaErrorToDevlogFile(mediaError);
+  return {
+    message: mediaError.message,
+    context: mediaError.context,
+    file,
+  };
+};
+
+export function getErrorLogs(error: MediaError, translate = false): { dialog: DialogOptions; devlog: DevlogOptions } {
+  const dialog: DialogOptions = muxMediaErrorToDialog(error, translate);
+  const devlog: DevlogOptions = muxMediaErrorToDevLog(error, translate);
   return { dialog, devlog };
 }

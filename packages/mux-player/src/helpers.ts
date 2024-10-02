@@ -1,6 +1,6 @@
-import { StreamTypes } from '@mux/playback-core';
+import { StreamTypes, parseJwt } from '@mux/playback-core';
 import type { ValueOf, MaxResolutionValue, MinResolutionValue, RenditionOrderValue } from '@mux/playback-core';
-import { toQuery, camelCase, parseJwt } from './utils';
+import { toQuery, camelCase } from './utils';
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 
@@ -52,7 +52,7 @@ export const getPosterURLFromPlaybackId = (
   // NOTE: thumbnailTime is not supported when using a signedURL/token. Remove under these cases. (CJP)
   const time = token == null ? thumbnailTime : undefined;
 
-  const { aud } = parseJwt(token);
+  const { aud } = parseJwt(token) ?? {};
 
   if (token && aud !== 't') {
     return;
@@ -74,7 +74,7 @@ export const getStoryboardURLFromPlaybackId = (
     programEndTime: program_end_time,
   }: MuxStoryboardURLCustomProps = {}
 ) => {
-  const { aud } = parseJwt(token);
+  const { aud } = parseJwt(token) ?? {};
 
   if (token && aud !== 's') {
     return;
