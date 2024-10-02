@@ -16,8 +16,8 @@ export async function extractLog(changeLogPath) {
   changeLogPath = !changeLogPath
     ? path.resolve(process.cwd(), 'CHANGELOG.md')
     : path.isAbsolute(changeLogPath)
-    ? changeLogPath
-    : path.resolve(process.cwd(), changeLogPath);
+      ? changeLogPath
+      : path.resolve(process.cwd(), changeLogPath);
 
   if (!existsSync(changeLogPath)) throw new Error(`Cannot resolve file: ${changeLogPath}`);
 
