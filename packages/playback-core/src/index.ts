@@ -1,10 +1,4 @@
-import type {
-  ValueOf,
-  PlaybackCore,
-  MuxMediaProps,
-  MuxMediaPropsInternal,
-  MuxMediaPropTypes,
-} from './types';
+import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMediaPropTypes } from './types';
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
@@ -1144,63 +1138,8 @@ export const loadMedia = (
           clearInterval(intervalId);
         });
       };
-      if (mediaEl.preload === 'none') {
-        // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
-        // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
-        // regardless of the preload state and regardless of whether or not fetching of the src media
-        // has, in fact, begun. In order to respect the provided preferences and avoid eager loading
-        // while still attempting to begin fetching playlists for stream info as early as possible when
-        // media *will* be loaded, we will do a "first to the finish line" on both the 'play' event,
-        // which will be dispatched earlier *if* it is the event that initiates media loading, and the
-        // 'loadedmetadata' event, which is dispatched only after the media has finished loading metadata,
-        // but will reliably correlate with media loading. (CJP)
-        // For more, see: Steps 7 & 8 of 'the resource selection algorithm' from §4.8.11.5 Loading the
-        // media resource in the HTML Living Standard
-        // (https://html.spec.whatwg.org/multipage/media.html#concept-media-load-algorithm)
-        const playHandler = () => {
-          updateStreamInfoFromSrc(src, mediaEl, type)
-            .then(setupSeekableChangePoll)
-            .catch((errOrResp: Response | Error) => {
-              if (errOrResp instanceof Response) {
-                const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
-                if (mediaError) {
-                  mediaEl.dispatchEvent(
-                    new CustomEvent('error', {
-                      detail: mediaError,
-                    })
-                  );
-                  return;
-                }
-              } else if (errOrResp instanceof Error) {
-                // mediaEl.dispatchEvent(new MediaError())
-              }
-            });
-          mediaEl.removeEventListener('loadedmetadata', loadedMetadataHandler);
-        };
-        const loadedMetadataHandler = () => {
-          updateStreamInfoFromSrc(src, mediaEl, type)
-            .then(setupSeekableChangePoll)
-            .catch((errOrResp: Response | Error) => {
-              if (errOrResp instanceof Response) {
-                const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
-                if (mediaError) {
-                  mediaEl.dispatchEvent(
-                    new CustomEvent('error', {
-                      detail: mediaError,
-                    })
-                  );
-                  return;
-                }
-              } else if (errOrResp instanceof Error) {
-                // mediaEl.dispatchEvent(new MediaError())
-              }
-            });
-          mediaEl.removeEventListener('play', playHandler);
-        };
-        addEventListenerWithTeardown(mediaEl, 'play', playHandler, { once: true });
-        addEventListenerWithTeardown(mediaEl, 'loadedmetadata', loadedMetadataHandler, { once: true });
-      } else {
-        updateStreamInfoFromSrc(src, mediaEl, type)
+      const setupNativeStreamInfo = async () => {
+        return updateStreamInfoFromSrc(src, mediaEl, type)
           .then(setupSeekableChangePoll)
           .catch((errOrResp: Response | Error) => {
             if (errOrResp instanceof Response) {
@@ -1217,6 +1156,32 @@ export const loadMedia = (
               // mediaEl.dispatchEvent(new MediaError())
             }
           });
+      };
+      if (mediaEl.preload === 'none') {
+        // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
+        // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
+        // regardless of the preload state and regardless of whether or not fetching of the src media
+        // has, in fact, begun. In order to respect the provided preferences and avoid eager loading
+        // while still attempting to begin fetching playlists for stream info as early as possible when
+        // media *will* be loaded, we will do a "first to the finish line" on both the 'play' event,
+        // which will be dispatched earlier *if* it is the event that initiates media loading, and the
+        // 'loadedmetadata' event, which is dispatched only after the media has finished loading metadata,
+        // but will reliably correlate with media loading. (CJP)
+        // For more, see: Steps 7 & 8 of 'the resource selection algorithm' from §4.8.11.5 Loading the
+        // media resource in the HTML Living Standard
+        // (https://html.spec.whatwg.org/multipage/media.html#concept-media-load-algorithm)
+        const playHandler = () => {
+          setupNativeStreamInfo();
+          mediaEl.removeEventListener('loadedmetadata', loadedMetadataHandler);
+        };
+        const loadedMetadataHandler = () => {
+          setupNativeStreamInfo();
+          mediaEl.removeEventListener('play', playHandler);
+        };
+        addEventListenerWithTeardown(mediaEl, 'play', playHandler, { once: true });
+        addEventListenerWithTeardown(mediaEl, 'loadedmetadata', loadedMetadataHandler, { once: true });
+      } else {
+        setupNativeStreamInfo();
       }
 
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
@@ -1366,7 +1331,7 @@ async function handleNativeError(event: Event) {
     mediaEl.readyState === HTMLMediaElement.HAVE_NOTHING
   ) {
     setTimeout(() => {
-      const ourError = getError(mediaEl);
+      const ourError = getError(mediaEl) ?? mediaEl.error;
       // If the code is (still) MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED,
       // assume it's an (unlikely) case where we did, in fact, encounter
       // media that is unsupported.
