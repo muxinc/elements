@@ -444,7 +444,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       let { detail: error }: { detail: any } = event as CustomEvent;
 
       if (!(error instanceof MediaError)) {
-        console.error('!!!!!!non MediaError error!', error);
         error = new MediaError(error.message, error.code, error.fatal);
       }
 
