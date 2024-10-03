@@ -43,11 +43,15 @@ export function setupTextTracks(
 
     if (!showingTrack) return;
 
+    const currentHlsTrack = hls.subtitleTracks[hls.subtitleTrack];
+
     // If hls.subtitleTrack is -1 or its id changed compared to the one that is showing load the new subtitle track.
-    const hlsTrackId =
-      showingTrack.id === 'default'
+    const hlsTrackId = !currentHlsTrack
+      ? undefined
+      : currentHlsTrack.default
         ? 'default'
-        : `${hls.subtitleTracks[hls.subtitleTrack]?.type.toLowerCase()}${hls.subtitleTrack}`;
+        : `${hls.subtitleTracks[hls.subtitleTrack].type.toLowerCase()}${hls.subtitleTrack}`;
+
     if (hls.subtitleTrack < 0 || showingTrack?.id !== hlsTrackId) {
       const idx = hls.subtitleTracks.findIndex(({ lang, name, type, default: defaultTrack }) => {
         return (
