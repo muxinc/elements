@@ -25,13 +25,12 @@ export function setupTextTracks(
         return lang == baseTrackObj?.lang && name === trackObj.label && type.toLowerCase() === trackObj.kind;
       });
 
-      addTextTrack(
-        mediaEl,
-        trackObj.kind as TextTrackKind,
-        trackObj.label,
-        baseTrackObj?.lang,
-        `${trackObj.kind}${idx}`
-      );
+      // NOTE: Undocumented method for determining identifier by hls.js. Relied on for
+      // ensuring CUES_PARSED events can identify and apply cues to the appropriate track (CJP).
+      // See: https://github.com/video-dev/hls.js/blob/master/src/controller/timeline-controller.ts#L640
+      const id = trackObj._id ?? trackObj.default ? 'default' : `${trackObj.kind}${idx}`;
+
+      addTextTrack(mediaEl, trackObj.kind as TextTrackKind, trackObj.label, baseTrackObj?.lang, id, trackObj.default);
     });
   });
 
@@ -125,7 +124,8 @@ export function addTextTrack(
   kind: TextTrackKind,
   label: string,
   lang?: string,
-  id?: string
+  id?: string,
+  defaultTrack?: boolean
 ): TextTrack {
   const trackEl = document.createElement('track');
   trackEl.kind = kind;
@@ -136,6 +136,9 @@ export function addTextTrack(
   }
   if (id) {
     trackEl.id = id;
+  }
+  if (!!defaultTrack) {
+    trackEl.default = true;
   }
   trackEl.track.mode = ['subtitles', 'captions'].includes(kind) ? 'disabled' : 'hidden';
 
