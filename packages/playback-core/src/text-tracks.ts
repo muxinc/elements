@@ -104,13 +104,16 @@ export function setupTextTracks(
     });
   });
 
-  const forceHiddenThumbnails = () => {
+  const forceHiddenTracks = () => {
     // Keeping this a forEach in case we want to expand the scope of this.
     Array.from(mediaEl.textTracks).forEach((track) => {
       if (['subtitles', 'caption'].includes(track.kind)) return;
-      if (track.label !== 'thumbnails') return;
+      if (!(track.label === 'thumbnails' || track.kind === 'chapters')) return;
       if (!track.cues?.length) {
-        const trackEl = mediaEl.querySelector('track[label="thumbnails"]');
+        let selector = 'track';
+        if (track.kind) selector += `[kind="${track.kind}"]`;
+        if (track.label) selector += `[label="${track.label}"]`;
+        const trackEl = mediaEl.querySelector(selector);
         // Force a reload of the cues if they've been removed
         const src = trackEl?.getAttribute('src') ?? '';
         trackEl?.removeAttribute('src');
@@ -127,8 +130,8 @@ export function setupTextTracks(
 
   // hls.js will forcibly clear all cues from tracks on manifest loads or media attaches.
   // This ensures that we re-load them after it's done that.
-  hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenThumbnails);
-  hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenThumbnails);
+  hls.once(Hls.Events.MANIFEST_LOADED, forceHiddenTracks);
+  hls.once(Hls.Events.MEDIA_ATTACHED, forceHiddenTracks);
 }
 
 export function addTextTrack(
