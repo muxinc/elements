@@ -108,7 +108,7 @@ export function setupTextTracks(
     // Keeping this a forEach in case we want to expand the scope of this.
     Array.from(mediaEl.textTracks).forEach((track) => {
       if (['subtitles', 'caption'].includes(track.kind)) return;
-      if (track.label !== 'thumbnails' && track.kind !== 'chapters') return;
+      if (!(track.label === 'thumbnails' || track.kind === 'chapters')) return;
       if (!track.cues?.length) {
         let selector = 'track';
         if (track.kind) selector += `[kind="${track.kind}"]`;
