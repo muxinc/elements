@@ -153,6 +153,13 @@ export type MaxResolutionValue = ValueOf<typeof MaxResolution>;
 export type MinResolutionValue = ValueOf<typeof MinResolution>;
 export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
 
+export type Tokens = {
+  playback?: string;
+  drm?: string;
+  thumbnail?: string;
+  storyboard?: string;
+};
+
 export type MuxMediaPropTypes = {
   _hlsConfig?: Partial<HlsConfig>;
   autoPlay?: Autoplay;
@@ -163,6 +170,7 @@ export type MuxMediaPropTypes = {
   disableCookies: Options['disableCookies'];
   disableTracking: boolean;
   drmToken?: string;
+  playbackToken?: string;
   envKey: MetaData['env_key'];
   error?: HTMLMediaElement['error'] | MediaError;
   errorTranslator: Options['errorTranslator'];
@@ -180,8 +188,9 @@ export type MuxMediaPropTypes = {
   startTime: Hls['config']['startPosition'];
   streamType: ValueOf<StreamTypes>;
   targetLiveWindow: number;
-  tokens: Partial<{ drm: string; playback: string; storyboard: string; thumbnail: string }>;
+  tokens: Tokens;
   type: MediaTypes;
+  extraSourceParams: Record<string, any>;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;

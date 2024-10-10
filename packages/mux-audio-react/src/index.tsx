@@ -27,7 +27,8 @@ const playerSoftwareVersion = getPlayerVersion();
 const playerSoftwareName = 'mux-audio-react';
 
 const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>((props, ref) => {
-  const { playbackId, src: outerSrc, children, autoPlay, preload, ...restProps } = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { playbackId, src: outerSrc, children, autoPlay, preload, tokens, playbackToken, ...restProps } = props;
 
   const nativeAudioProps = Object.fromEntries(
     Object.entries(restProps).filter(([key]) => !Object.keys(MuxAudio.propTypes as any).includes(key))
@@ -96,6 +97,7 @@ MuxAudio.propTypes = {
   metadata: PropTypes.any,
   minResolution: PropTypes.oneOf(['480p', '540p', '720p', '1080p', '1440p', '2160p']),
   playbackId: PropTypes.string,
+  playbackToken: PropTypes.string,
   playerInitTime: PropTypes.number,
   preferCmcd: PropTypes.oneOf(Object.values(CmcdTypes)),
   programStartTime: PropTypes.number,
@@ -105,7 +107,7 @@ MuxAudio.propTypes = {
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   targetLiveWindow: PropTypes.number,
-  tokens: PropTypes.any,
+  tokens: PropTypes.object,
   type: PropTypes.oneOf(allMediaTypes),
 };
 

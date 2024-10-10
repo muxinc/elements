@@ -1,4 +1,4 @@
-import { assert, aTimeout } from '@open-wc/testing';
+import { assert, aTimeout, oneEvent } from '@open-wc/testing';
 import {
   toMuxVideoURL,
   initialize,
@@ -46,13 +46,14 @@ describe('playback core', function () {
     initialize(
       {
         src: 'https://mux.com/', // not working src url
+        preferPlayback: 'native',
       },
       video
     );
+
+    await oneEvent(video, 'error');
     // error event must be attached after initialize(), otherwise the
     // native error will not be stopped propagating in playback core.
-    await new Promise((resolve) => video.addEventListener('error', resolve));
-
     assert.equal(video.error.code, MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED);
     assert(video.error.message != undefined, 'has some message');
 

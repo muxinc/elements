@@ -1,4 +1,4 @@
-import { i18n } from './utils';
+import { i18n } from '@mux/playback-core';
 import { getPlayerVersion } from './helpers';
 import type { DevlogOptions } from './types';
 

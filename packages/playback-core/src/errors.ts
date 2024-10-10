@@ -1,9 +1,53 @@
+// Identifies what kind of request was made that resulted in an error
+export const MuxErrorCategory = {
+  VIDEO: 'video',
+  THUMBNAIL: 'thumbnail',
+  STORYBOARD: 'storyboard',
+  DRM: 'drm',
+} as const;
+
+export const MuxErrorCode = {
+  NOT_AN_ERROR: 0,
+  NETWORK_OFFLINE: 2000002,
+  NETWORK_UNKNOWN_ERROR: 2000000,
+  NETWORK_NO_STATUS: 2000001,
+  NETWORK_INVALID_URL: 2400000,
+  NETWORK_NOT_FOUND: 2404000,
+  NETWORK_NOT_READY: 2412000,
+  NETWORK_GENERIC_SERVER_FAIL: 2500000,
+  NETWORK_TOKEN_MISSING: 2403201,
+  NETWORK_TOKEN_MALFORMED: 2412202,
+  NETWORK_TOKEN_EXPIRED: 2403210,
+  NETWORK_TOKEN_AUD_MISSING: 2403221,
+  NETWORK_TOKEN_AUD_MISMATCH: 2403222,
+  NETWORK_TOKEN_SUB_MISMATCH: 2403232,
+  ENCRYPTED_ERROR: 5000000, // Generic
+  ENCRYPTED_UNSUPPORTED_KEY_SYSTEM: 5000001,
+  ENCRYPTED_GENERATE_REQUEST_FAILED: 5000002,
+  ENCRYPTED_UPDATE_LICENSE_FAILED: 5000003,
+  ENCRYPTED_UPDATE_SERVER_CERT_FAILED: 5000004,
+  ENCRYPTED_CDM_ERROR: 5000005,
+  ENCRYPTED_OUTPUT_RESTRICTED: 5000006,
+  ENCRYPTED_MISSING_TOKEN: 5000002,
+} as const;
+
+export type MuxErrorCategory = typeof MuxErrorCategory;
+export type MuxErrorCode = typeof MuxErrorCode;
+
+export type MuxErrorCategoryValue = MuxErrorCategory[keyof MuxErrorCategory];
+export type MuxErrorCodeValue = MuxErrorCode[keyof MuxErrorCode];
+
+export const errorCategoryToTokenNameOrPrefix = (category: MuxErrorCategoryValue) => {
+  if (category === MuxErrorCategory.VIDEO) return 'playback';
+  return category;
+};
+
 export class MediaError extends Error {
-  static MEDIA_ERR_ABORTED = 1;
-  static MEDIA_ERR_NETWORK = 2;
-  static MEDIA_ERR_DECODE = 3;
-  static MEDIA_ERR_SRC_NOT_SUPPORTED = 4;
-  static MEDIA_ERR_ENCRYPTED = 5;
+  static MEDIA_ERR_ABORTED = 1 as const;
+  static MEDIA_ERR_NETWORK = 2 as const;
+  static MEDIA_ERR_DECODE = 3 as const;
+  static MEDIA_ERR_SRC_NOT_SUPPORTED = 4 as const;
+  static MEDIA_ERR_ENCRYPTED = 5 as const;
   // @see https://docs.mux.com/guides/data/monitor-html5-video-element#customize-error-tracking-behavior
   static MEDIA_ERR_CUSTOM = 100;
 
@@ -17,6 +61,8 @@ export class MediaError extends Error {
 
   name: string;
   code: number;
+  public muxCode?: MuxErrorCodeValue;
+  public errorCategory?: MuxErrorCategoryValue;
   context?: string;
   fatal: boolean;
   data?: any;

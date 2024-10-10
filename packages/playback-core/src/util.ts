@@ -1,5 +1,7 @@
 import { isKeyOf, ExtensionMimeTypeMap, MimeTypeShorthandMap, StreamTypes } from './types';
 import type { HlsPlaylistTypes, MuxMediaProps } from './types';
+// @ts-ignore
+import lang from '../lang/en.json';
 
 type addEventListenerWithTeardown = <
   K extends keyof HTMLMediaElementEventMap,
@@ -97,3 +99,87 @@ export const inferMimeTypeFromURL = (url: string) => {
 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
 };
+
+export type MuxJWT = {
+  sub: string;
+  aud: 'v' | 't' | 'g' | 's' | 'd';
+  exp: number;
+};
+
+export const parseJwt = (token: string | undefined): Partial<MuxJWT> | undefined => {
+  const base64Url = (token ?? '').split('.')[1];
+
+  // exit early on invalid value
+  if (!base64Url) return undefined;
+
+  // Account for malformed JWTs
+  try {
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map(function (c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return undefined;
+  }
+};
+
+export const isJWTExpired = ({ exp }: Partial<Pick<MuxJWT, 'exp'>>, referenceTime: number = Date.now()) => {
+  return !exp || exp * 1000 < referenceTime;
+};
+
+// NOTE: Treating missing sub (and expected sub) as mismatches for now (CJP)
+export const isJWTSubMismatch = ({ sub }: Partial<Pick<MuxJWT, 'sub'>>, expectedSub: string | undefined) => {
+  return sub !== expectedSub;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const isJWTAudMissing = ({ aud }: Partial<Pick<MuxJWT, 'aud'>>, _expectedAud: string | undefined) => {
+  return !aud;
+};
+
+export const isJWTAudMismatch = ({ aud }: Partial<Pick<MuxJWT, 'aud'>>, expectedAud: string | undefined) => {
+  return aud !== expectedAud;
+};
+
+const DEFAULT_LOCALE = 'en';
+
+// NL example
+// lang = {
+//   "Network Error": "Netwerk Fout",
+// };
+export function i18n(str: string, translate = true): any {
+  const message = translate ? (lang as unknown as any)?.[str] ?? str : str;
+  const locale = translate ? (lang as unknown as any).code : DEFAULT_LOCALE;
+  return new IntlMessageFormat(message, locale);
+}
+
+/**
+ * Poor man's IntlMessageFormat, enrich if need be.
+ * @see https://formatjs.io/docs/intl-messageformat/
+ */
+class IntlMessageFormat {
+  message: string;
+  locale: string;
+
+  /** @TODO re-implement esbuild custom plugin for code usage (CJP) */
+  constructor(message: string, locale = (lang as unknown as any) ?? DEFAULT_LOCALE) {
+    this.message = message;
+    this.locale = locale;
+  }
+
+  format(values: Record<string, any>): string {
+    return this.message.replace(/\{(\w+)\}/g, (match, key) => {
+      return values[key] ?? '';
+    });
+  }
+
+  toString() {
+    return this.message;
+  }
+}

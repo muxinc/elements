@@ -3,18 +3,24 @@ import {
   initialize,
   teardown,
   generatePlayerInitTime,
-  MuxMediaProps,
-  StreamTypes,
   PlaybackTypes,
-  ValueOf,
   toMuxVideoURL,
-  Metadata,
   MediaError,
   getStartDate,
   getCurrentPdt,
   getEnded,
+  toPlaybackIdParts,
 } from '@mux/playback-core';
-import type { PlaybackCore, PlaybackEngine, ExtensionMimeTypeMap } from '@mux/playback-core';
+import type {
+  ExtensionMimeTypeMap,
+  Metadata,
+  MuxMediaProps,
+  PlaybackCore,
+  PlaybackEngine,
+  StreamTypes,
+  Tokens,
+  ValueOf,
+} from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
 import { CustomAudioElement, Events as AudioEvents } from 'custom-media-element';
@@ -24,10 +30,12 @@ export const Attributes = {
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
+  PLAYBACK_TOKEN: 'playback-token',
   PROGRAM_START_TIME: 'program-start-time',
   PROGRAM_END_TIME: 'program-end-time',
   METADATA_URL: 'metadata-url',
   PREFER_PLAYBACK: 'prefer-playback',
+  CUSTOM_DOMAIN: 'custom-domain',
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
@@ -50,6 +58,7 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
   #loadRequested?: Promise<void> | null;
   #playerInitTime: number;
   #metadata: Readonly<Metadata> = {};
+  #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;
 
   constructor() {
@@ -218,6 +227,63 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     } else {
       this.setAttribute(Attributes.PROGRAM_END_TIME, `${val}`);
     }
+  }
+
+  get customDomain() {
+    return this.getAttribute(Attributes.CUSTOM_DOMAIN) ?? undefined;
+  }
+
+  set customDomain(val: string | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.customDomain) return;
+
+    if (val) {
+      this.setAttribute(Attributes.CUSTOM_DOMAIN, val);
+    } else {
+      this.removeAttribute(Attributes.CUSTOM_DOMAIN);
+    }
+  }
+
+  /**
+   * Get the playback token for signing the src URL.
+   */
+  get playbackToken() {
+    if (this.hasAttribute(Attributes.PLAYBACK_TOKEN)) {
+      return this.getAttribute(Attributes.PLAYBACK_TOKEN) ?? undefined;
+    }
+    if (this.hasAttribute(Attributes.PLAYBACK_ID)) {
+      const [, queryParts] = toPlaybackIdParts(this.playbackId ?? '');
+      return new URLSearchParams(queryParts).get('token') ?? undefined;
+    }
+    if (this.src) {
+      return new URLSearchParams(this.src).get('token') ?? undefined;
+    }
+    return undefined;
+  }
+
+  /**
+   * Set the playback token for signing the src URL.
+   */
+  set playbackToken(val: string | undefined) {
+    if (val === this.playbackToken) return;
+
+    if (val) {
+      this.setAttribute(Attributes.PLAYBACK_TOKEN, val);
+    } else {
+      this.removeAttribute(Attributes.PLAYBACK_TOKEN);
+    }
+  }
+
+  get tokens() {
+    const playback = this.getAttribute(Attributes.PLAYBACK_TOKEN);
+    return {
+      ...this.#tokens,
+      ...(playback != null ? { playback } : {}),
+    };
+  }
+
+  set tokens(val) {
+    this.#tokens = val ?? {};
   }
 
   get ended() {

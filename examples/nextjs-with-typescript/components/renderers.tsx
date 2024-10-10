@@ -1,6 +1,12 @@
 import { Fragment, ReactNode } from 'react';
 
-export const toWordsFromCamel = (string: string) => {
+export const toWordsFromKeyName = (string: string) => {
+  if (string.includes('.')) {
+    return string.split('.').map(toWordsFromKeyName).join(': ');
+  }
+  if (string.includes('_')) {
+    return string.split('_').map(toWordsFromKeyName).join(' ');
+  }
   const first = string[0].toUpperCase();
   const rest = string.slice(1);
   return `${first}${rest.replace(/[A-Z]/g, (match) => ` ${match}`)}`;
@@ -19,7 +25,7 @@ export const BooleanRenderer = ({
   removeFalse?: boolean;
   onChange: (obj: any) => void;
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div>
       <label htmlFor={`${name}-control`}>
@@ -28,7 +34,10 @@ export const BooleanRenderer = ({
       <input
         id={`${name}-control`}
         type="checkbox"
-        onChange={({ target: { checked } }) => onChange({ [name]: removeFalse && !checked ? undefined : checked })}
+        onChange={({ target: { checked } }) => {
+          const changeValue = removeFalse && !checked ? undefined : checked;
+          onChange(toChangeObject(name, changeValue));
+        }}
         checked={value ?? false}
       />
     </div>
@@ -52,7 +61,7 @@ export const NumberRenderer = ({
   max?: number;
   step?: number;
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div>
       <label htmlFor={`${name}-control`}>
@@ -64,7 +73,10 @@ export const NumberRenderer = ({
         min={min}
         max={max}
         step={step}
-        onChange={({ target: { value } }) => onChange({ [name]: value ? +value : undefined })}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? +value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
         value={value ?? ''}
       />
     </div>
@@ -84,7 +96,7 @@ export const TextRenderer = ({
   onChange: (obj: any) => void;
   placeholder?: string;
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div>
       <label htmlFor={`${name}-control`}>
@@ -93,7 +105,10 @@ export const TextRenderer = ({
       <input
         id={`${name}-control`}
         type="text"
-        onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
         value={value ?? ''}
         placeholder={placeholder}
       />
@@ -114,7 +129,7 @@ export const URLRenderer = ({
   onChange: (obj: any) => void;
   placeholder?: string;
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div>
       <label htmlFor={`${name}-control`}>
@@ -123,7 +138,10 @@ export const URLRenderer = ({
       <input
         id={`${name}-control`}
         type="url"
-        onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
         value={value ?? ''}
         placeholder={placeholder}
       />
@@ -142,7 +160,7 @@ export const ColorRenderer = ({
   label?: string;
   onChange: (obj: any) => void;
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div>
       <label htmlFor={`${name}-control`}>
@@ -151,7 +169,10 @@ export const ColorRenderer = ({
       <input
         id={`${name}-control`}
         type="color"
-        onChange={({ target: { value } }) => onChange({ [name]: value ? value : undefined })}
+        onChange={({ target: { value } }) => {
+          const changeValue = value ? value : undefined;
+          onChange(toChangeObject(name, changeValue));
+        }}
         value={value ?? '#000000'}
       />
     </div>
@@ -182,7 +203,7 @@ export const EnumRenderer = ({
   values: any[];
   formatter?: (enumValue: any) => ReactNode;
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
       <label>
@@ -192,7 +213,7 @@ export const EnumRenderer = ({
         <input
           id={`${name}-none-control`}
           type="radio"
-          onChange={() => onChange({ [name]: undefined })}
+          onChange={() => onChange(toChangeObject(name, undefined))}
           value=""
           checked={value == undefined}
         />
@@ -203,7 +224,10 @@ export const EnumRenderer = ({
               <input
                 id={`${name}-${enumValue}-control`}
                 type="radio"
-                onChange={() => onChange({ [name]: values[i] })}
+                onChange={() => {
+                  const changeValue = values[i] ? values[i] : undefined;
+                  onChange(toChangeObject(name, changeValue));
+                }}
                 value={typeof enumValue === 'string' ? enumValue : enumValue?.toString()}
                 checked={value === enumValue}
               />
@@ -229,7 +253,7 @@ export const EnumMultiSelectRenderer = ({
   onChange: (obj: any) => void;
   values: any[];
 }) => {
-  const labelStr = label ?? toWordsFromCamel(name);
+  const labelStr = label ?? toWordsFromKeyName(name);
   return (
     <div>
       <label htmlFor={`${name}-control`}>
@@ -241,10 +265,10 @@ export const EnumMultiSelectRenderer = ({
         size={values.length}
         defaultValue={value ?? []}
         onChange={({ target: { selectedOptions } }) => {
-          const currentValues = selectedOptions?.length
+          const changeValue = selectedOptions?.length
             ? Array.from(selectedOptions, ({ value }) => values.find((enumValue) => enumValue.toString() === value))
             : undefined;
-          onChange({ [name]: currentValues });
+          onChange(toChangeObject(name, changeValue));
         }}
       >
         {values.map((enumValue) => {
@@ -257,4 +281,14 @@ export const EnumMultiSelectRenderer = ({
       </select>
     </div>
   );
+};
+
+// NOTE: Placing this function at the bottom bc generic syntax messes up code highlighting in VSCode. This at least keeps the jank narrow. (CJP)
+export const toChangeObject = <T = undefined,>(name: string, value: T) => {
+  // NOTE: Currently only support depth=1
+  if (name.includes('.')) {
+    const [name1, name2] = name.split('.');
+    return { [name1]: { [name2]: value } };
+  }
+  return { [name]: value };
 };

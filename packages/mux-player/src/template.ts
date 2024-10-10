@@ -4,9 +4,9 @@ import cssStr from './styles.css';
 import './dialog';
 import { getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
-import { i18n, stylePropsToString } from './utils';
+import { stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
-import { StreamTypes, toMuxVideoURL } from '@mux/playback-core';
+import { i18n, StreamTypes, toMuxVideoURL } from '@mux/playback-core';
 
 const getPropsCSS = (props: MuxTemplateProps) => {
   const { tokens } = props;
@@ -54,7 +54,7 @@ export const Parts = {
   RANGE: 'range',
   DISPLAY: 'display',
   CONTROL_BAR: 'control-bar',
-  SELECTMENU: 'selectmenu',
+  MENU_BUTTON: 'menu-button',
   LISTBOX: 'listbox',
   OPTION: 'option',
   // component/subcomponent purposes
