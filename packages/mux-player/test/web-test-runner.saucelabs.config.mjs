@@ -6,8 +6,6 @@ import { legacyPlugin } from '@web/dev-server-legacy';
 const user = process.env.SAUCE_USERNAME;
 const key = process.env.SAUCE_ACCESS_KEY;
 
-console.log('CI_CD?', process.env.CI_CD);
-console.log('MY_TEST_SECRET?', process.env.MY_TEST_SECRET);
 if (!(user && key)) {
   const exitStatus = process.env.CI_CD ? 1 : 0;
   console.warn('No saucelabs credentials available in this environment. Skipping');
@@ -17,7 +15,7 @@ if (!(user && key)) {
 // configure the local Sauce Labs proxy, use the returned function to define the
 // browsers to test
 const sauceLabsLauncher = createSauceLabsLauncher({
-  // your username and key for Sauce Labs, you can get this from your Sauce Labs account
+  // Your username and key for Sauce Labs. You can get this from your Sauce Labs account
   // it's recommended to store these as environment variables
   // Example for macOS/Linux:
   // export SAUCE_USERNAME=my_username
@@ -76,12 +74,13 @@ export default {
   browserStartTimeout: 1000 * 30 * 5,
   sessionStartTimeout: 1000 * 30 * 5,
   sessionFinishTimeout: 1000 * 30 * 5,
+  testsStartTimeout: 1000 * 30 * 5,
   browsers: [
     sauceLabsLauncher({
       ...sharedCapabilities,
       browserName: 'chrome',
       browserVersion: 'latest',
-      platformName: 'Windows 10',
+      platformName: 'Windows 11',
     }),
     // sauceLabsLauncher({
     //   ...sharedCapabilities,
@@ -93,13 +92,19 @@ export default {
       ...sharedCapabilities,
       browserName: 'firefox',
       browserVersion: 'latest',
-      platformName: 'Windows 10',
+      platformName: 'Windows 11',
     }),
     sauceLabsLauncher({
       ...sharedCapabilities,
       browserName: 'MicrosoftEdge',
       browserVersion: 'latest',
-      platformName: 'Windows 10',
+      platformName: 'Windows 11',
+    }),
+    sauceLabsLauncher({
+      ...sharedCapabilities,
+      browserName: 'chrome',
+      browserVersion: 'latest',
+      platformName: 'Linux',
     }),
     // sauceLabsLauncher({
     //   ...sharedCapabilities,
@@ -113,12 +118,12 @@ export default {
     //   browserVersion: '11.0',
     //   platformName: 'Windows 7',
     // }),
-    sauceLabsLauncher({
-      ...sharedCapabilities,
-      browserName: 'safari',
-      browserVersion: 'latest',
-      platformName: 'macOS 10.15',
-    }),
+    // sauceLabsLauncher({
+    //   ...sharedCapabilities,
+    //   browserName: 'safari',
+    //   browserVersion: 'latest',
+    //   platformName: 'macOS 10.15',
+    // }),
   ],
   // NOTE: Could consider a deep merge to avoid unintentional overwrites using simple spread (CJP)
   plugins: [...config.plugins, legacyPlugin()],
