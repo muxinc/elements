@@ -66,6 +66,8 @@ export const Attributes = {
   RENDITION_ORDER: 'rendition-order',
   PROGRAM_START_TIME: 'program-start-time',
   PROGRAM_END_TIME: 'program-end-time',
+  ASSET_START_TIME: 'asset-start-time',
+  ASSET_END_TIME: 'asset-end-time',
   METADATA_URL: 'metadata-url',
   PLAYBACK_ID: 'playback-id',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
@@ -388,6 +390,36 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.removeAttribute(Attributes.PROGRAM_END_TIME);
     } else {
       this.setAttribute(Attributes.PROGRAM_END_TIME, `${val}`);
+    }
+  }
+
+  get assetStartTime() {
+    const val = this.getAttribute(Attributes.ASSET_START_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set assetStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.ASSET_START_TIME);
+    } else {
+      this.setAttribute(Attributes.ASSET_START_TIME, `${val}`);
+    }
+  }
+
+  get assetEndTime() {
+    const val = this.getAttribute(Attributes.ASSET_END_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set assetEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.ASSET_END_TIME);
+    } else {
+      this.setAttribute(Attributes.ASSET_END_TIME, `${val}`);
     }
   }
 

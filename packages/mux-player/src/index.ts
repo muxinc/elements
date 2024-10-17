@@ -144,6 +144,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     minResolution: el.minResolution,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
+    assetStartTime: el.assetStartTime,
+    assetEndTime: el.assetEndTime,
     renditionOrder: el.renditionOrder,
     metadata: el.metadata,
     playerSoftwareName: el.playerSoftwareName,
@@ -1325,6 +1327,30 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.removeAttribute(MuxVideoAttributes.PROGRAM_END_TIME);
     } else {
       this.setAttribute(MuxVideoAttributes.PROGRAM_END_TIME, `${val}`);
+    }
+  }
+
+  get assetStartTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.ASSET_START_TIME));
+  }
+
+  set assetStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.ASSET_START_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.ASSET_START_TIME, `${val}`);
+    }
+  }
+
+  get assetEndTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.ASSET_END_TIME));
+  }
+
+  set assetEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.ASSET_END_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.ASSET_END_TIME, `${val}`);
     }
   }
 
