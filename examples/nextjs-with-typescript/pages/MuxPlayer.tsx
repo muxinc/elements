@@ -105,6 +105,8 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   renditionOrder: undefined,
   programStartTime: undefined,
   programEndTime: undefined,
+  assetStartTime: undefined,
+  assetEndTime: undefined,
   thumbnailTime: undefined,
   title: undefined,
   envKey: undefined,
@@ -306,6 +308,8 @@ function MuxPlayerPage({ location }: Props) {
           renditionOrder={state.renditionOrder}
           programStartTime={state.programStartTime}
           programEndTime={state.programEndTime}
+          assetStartTime={state.assetStartTime}
+          assetEndTime={state.assetEndTime}
           // To test/apply extra playlist params to resultant src URL (CJP)
           // extraSourceParams={{
           //   foo: 'str',
@@ -606,6 +610,20 @@ function MuxPlayerPage({ location }: Props) {
           <NumberRenderer
             value={state.programEndTime}
             name="programEndTime"
+            onChange={genericOnChange}
+            min={0}
+            step={1}
+          />
+          <NumberRenderer
+            value={state.assetStartTime}
+            name="assetStartTime"
+            onChange={genericOnChange}
+            min={0}
+            step={1}
+          />
+          <NumberRenderer
+            value={state.assetEndTime}
+            name="assetEndTime"
             onChange={genericOnChange}
             min={0}
             step={1}
