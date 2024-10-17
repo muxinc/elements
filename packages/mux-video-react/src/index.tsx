@@ -116,6 +116,8 @@ MuxVideo.propTypes = {
   preferPlayback: PropTypes.oneOf(Object.values(PlaybackTypes)),
   programStartTime: PropTypes.number,
   programEndTime: PropTypes.number,
+  assetStartTime: PropTypes.number,
+  assetEndTime: PropTypes.number,
   renditionOrder: PropTypes.oneOf(['desc']),
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),

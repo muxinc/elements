@@ -311,6 +311,8 @@ type MuxVideoURLProps = Partial<
     | 'renditionOrder'
     | 'programStartTime'
     | 'programEndTime'
+    | 'assetStartTime'
+    | 'assetEndTime'
     | 'tokens'
     | 'playbackToken'
     | 'extraSourceParams'
@@ -325,6 +327,8 @@ export const toMuxVideoURL = ({
   renditionOrder,
   programStartTime,
   programEndTime,
+  assetStartTime,
+  assetEndTime,
   // Normalizes different ways of providing playback token
   playbackToken,
   tokens: { playback: token = playbackToken } = {},
@@ -369,6 +373,12 @@ export const toMuxVideoURL = ({
     }
     if (programEndTime) {
       url.searchParams.set('program_end_time', `${programEndTime}`);
+    }
+    if (assetStartTime) {
+      url.searchParams.set('asset_start_time', `${assetStartTime}`);
+    }
+    if (assetEndTime) {
+      url.searchParams.set('asset_end_time', `${assetEndTime}`);
     }
     Object.entries(extraSourceParams).forEach(([k, v]) => {
       if (v == undefined) return;

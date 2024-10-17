@@ -86,6 +86,8 @@ export type MuxPlayerProps = {
   renditionOrder?: RenditionOrderValue;
   programStartTime?: number;
   programEndTime?: number;
+  assetStartTime?: number;
+  assetEndTime?: number;
   metadataVideoId?: string;
   metadataVideoTitle?: string;
   metadataViewerUserId?: string;
