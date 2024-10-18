@@ -11808,10 +11808,10 @@ media-chrome@^4.1.0:
   resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.0.tgz#d3db5f7010311f3cea2483e4d703f518cd365c4b"
   integrity sha512-rzuYoXiCvn+3vRim9pXcdIIXZmPAZHZbN9AUl0crdUOSv2tdEFJ6v/IxlJ8T3o4+YrHsrUCUNnu2Yai6mY6Qqg==
 
-media-chrome@~4.1.5:
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.5.tgz#6af4926988e244c2e6844a0f7a2335060d5da419"
-  integrity sha512-wfUUREB+IoDQwB0GAYgCz0aLWiUAJpqEQaMMqAJvf6CX2sUKev8kC6TXuMsH4zj8TgyODD+Uj1FZP2RBtl2vUg==
+media-chrome@~4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.2.1.tgz#9fb2e272b67afcd1ca3eaed04e8ca9c47533fb76"
+  integrity sha512-ZKtERx6SQVbHSK3+yLNbB38uJ1Qw/Hd/pKJ/WcUecsPH83CowkH+j0OAqVXnWrSiRmcJXGa0g6GIljS2ywucsQ==
 
 media-tracks@~0.3.2:
   version "0.3.2"
