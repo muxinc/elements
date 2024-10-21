@@ -1100,12 +1100,17 @@ export const loadMedia = (
     }
   };
 
-  let prevSeekableStart: number;
-  let prevSeekableEnd: number;
+  let prevSeekableStart: number | undefined;
+  let prevSeekableEnd: number | undefined;
 
   const seekableChange = () => {
-    const nextSeekableStart = getSeekable(mediaEl)?.start(0);
-    const nextSeekableEnd = getSeekable(mediaEl)?.end(0);
+    const seekableTimeRanges = getSeekable(mediaEl);
+    let nextSeekableStart: number | undefined;
+    let nextSeekableEnd: number | undefined;
+    if (seekableTimeRanges.length > 0) {
+      nextSeekableStart = seekableTimeRanges.start(0);
+      nextSeekableEnd = seekableTimeRanges.end(0);
+    }
     if (prevSeekableEnd !== nextSeekableEnd || prevSeekableStart !== nextSeekableStart) {
       mediaEl.dispatchEvent(new CustomEvent('seekablechange', { composed: true }));
     }
