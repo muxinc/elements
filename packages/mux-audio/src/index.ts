@@ -33,6 +33,8 @@ export const Attributes = {
   PLAYBACK_TOKEN: 'playback-token',
   PROGRAM_START_TIME: 'program-start-time',
   PROGRAM_END_TIME: 'program-end-time',
+  ASSET_START_TIME: 'asset-start-time',
+  ASSET_END_TIME: 'asset-end-time',
   METADATA_URL: 'metadata-url',
   PREFER_PLAYBACK: 'prefer-playback',
   CUSTOM_DOMAIN: 'custom-domain',
@@ -226,6 +228,36 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
       this.removeAttribute(Attributes.PROGRAM_END_TIME);
     } else {
       this.setAttribute(Attributes.PROGRAM_END_TIME, `${val}`);
+    }
+  }
+
+  get assetStartTime() {
+    const val = this.getAttribute(Attributes.ASSET_START_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set assetStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.ASSET_START_TIME);
+    } else {
+      this.setAttribute(Attributes.ASSET_START_TIME, `${val}`);
+    }
+  }
+
+  get assetEndTime() {
+    const val = this.getAttribute(Attributes.ASSET_END_TIME);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set assetEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.ASSET_END_TIME);
+    } else {
+      this.setAttribute(Attributes.ASSET_END_TIME, `${val}`);
     }
   }
 
