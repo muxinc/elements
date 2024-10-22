@@ -12,8 +12,20 @@ Examples:
 - To only run `vanilla-ts-esm` demo
   - include `--scope '*-esm'` in the dev script
   - Run `npx lerna run dev --scope '*-esm'` locally after running `yarn dev`
+  - Alternatively, run `yarn dev` and then, from another terminal, `cd ./examples/vanilla-ts-esm` and `yarn dev`
 
-## Testing your changes to see what affect they have on version updates
+## Testing your changes
+
+To run tests for the entire monorepo, run `yarn test` from the monorepo root. In addition, you can:
+
+- Run tests across multiple browsers via `yarn test -- -- --all`
+- Run tests for a particular package by navigating to that package and running its `yarn test` (with or without the `--all` flag)
+  - Example: for `playback-core`, `cd ./packages/playback-core` and `yarn test`
+- Run tests on Sauce Labs from your local machine (where available) by going to the relevant package and running `yarn test:saucelabs`
+  - **NOTE**: This is only available for core contributors and requires `SAUCE_USERNAME` + `SAUCE_ACCESS_KEY` env variables setup. Reach out to relevant team members for assistance.
+  - **NOTE**: Currently only implemented for the `mux-player` package.
+
+## Validating how your changes will affect version updates
 
 You can do a dry-run locally of the `version:update` script by doing the following:
 
