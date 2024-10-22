@@ -234,11 +234,12 @@ describe('<mux-video>', () => {
           src="${src}"
           preload="auto"
           autoplay
+          muted
         ></mux-video>`);
       } catch (err) {
         assert.fail(`mux-video threw an error on instantiating with an mp4 src, ${err}`);
       }
-      waitUntil(() => !muxVideoEl.paused, 'playback should begin for mp4');
+      await waitUntil(() => !muxVideoEl.paused, 'playback should begin for mp4');
     });
 
     it('exposes extended media element stream info for mp4s', async () => {
@@ -252,12 +253,12 @@ describe('<mux-video>', () => {
       } catch (err) {
         assert.fail(`mux-video threw an error on instantiating with an mp4 src, ${err}`);
       }
-      waitUntil(() => muxVideoEl.streamType, 'should have a streamType of on-demand');
-      waitUntil(
+      await waitUntil(() => muxVideoEl.streamType, 'should have a streamType of on-demand');
+      await waitUntil(
         () => Number.isNaN(muxVideoEl.targetLiveWindow),
         'should have a targetLiveWindow of NaN because mp4s are always on-demand'
       );
-      waitUntil(
+      await waitUntil(
         () => Number.isNaN(muxVideoEl.liveEdgeStart),
         'should have a liveEdgeStart of NaN because mp4s are always on-demand'
       );

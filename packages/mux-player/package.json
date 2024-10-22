@@ -71,6 +71,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "test:saucelabs": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.saucelabs.config.mjs --root-dir ../..",
     "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info --silent",
     "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
@@ -106,8 +107,10 @@
     "@typescript-eslint/parser": "^8.3.0",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/dev-server-import-maps": "^0.2.1",
+    "@web/dev-server-legacy": "^2.1.1",
     "@web/test-runner": "^0.18.2",
     "@web/test-runner-playwright": "^0.11.0",
+    "@web/test-runner-saucelabs": "^0.11.2",
     "downlevel-dts": "^0.11.0",
     "esbuild": "^0.19.8",
     "eslint": "^9.9.1",
