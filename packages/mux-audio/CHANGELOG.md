@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.13.4...@mux/mux-audio@0.14.0) (2024-10-24)
+
+
+### Features
+
+* **playback-core, mux-video, mux-audio, mux-video-react, mux-audio-react, mux-player, mux-player-react:** Add asset start and end time props and attrs. ([#1002](https://github.com/muxinc/elements/issues/1002)) ([99a0726](https://github.com/muxinc/elements/commit/99a07268cfa78ee026a0ee7b7f9af90fcf3feb4c))
+* **playback-core:** error handling rearchitecture (including more granular and DRM error cases)  ([4d0b670](https://github.com/muxinc/elements/commit/4d0b670eacb57f44891fab781941dab6e97e06fe))
+
+
+
+
+
 ## [0.13.4](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.13.3...@mux/mux-audio@0.13.4) (2024-09-20)
 
 **Note:** Version bump only for package @mux/mux-audio

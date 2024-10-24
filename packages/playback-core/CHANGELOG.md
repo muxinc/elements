@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.27.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.26.0...@mux/playback-core@0.27.0) (2024-10-24)
+
+
+### Bug Fixes
+
+* chapters disappearing after preload none ([#998](https://github.com/muxinc/elements/issues/998)) ([0f9d0fb](https://github.com/muxinc/elements/commit/0f9d0fb732a592115bfb162e56b27246000252b5))
+* **playback-core:** Explicitly moving minimum version of mux-embed to 5.3.1 due to build issues in more complex build setups. ([#996](https://github.com/muxinc/elements/issues/996)) ([2577b78](https://github.com/muxinc/elements/commit/2577b78bd05bac544b62f07dae2e6d980ef24c23)), closes [#908](https://github.com/muxinc/elements/issues/908)
+* **playback-core:** Handle cases where subs or cc media playlist is default (based on hls.js assumptions). ([#997](https://github.com/muxinc/elements/issues/997)) ([1088443](https://github.com/muxinc/elements/commit/10884436604bfe323552d85319c848d037859178))
+* **playback-core:** Make sure seekable TimeRanges is populated when updating state. ([#1004](https://github.com/muxinc/elements/issues/1004)) ([b53b1ba](https://github.com/muxinc/elements/commit/b53b1ba19112817b295abc8f90918345bc2da0b2))
+
+
+### Features
+
+* **playback-core, mux-video, mux-audio, mux-video-react, mux-audio-react, mux-player, mux-player-react:** Add asset start and end time props and attrs. ([#1002](https://github.com/muxinc/elements/issues/1002)) ([99a0726](https://github.com/muxinc/elements/commit/99a07268cfa78ee026a0ee7b7f9af90fcf3feb4c))
+* **playback-core:** error handling rearchitecture (including more granular and DRM error cases)  ([4d0b670](https://github.com/muxinc/elements/commit/4d0b670eacb57f44891fab781941dab6e97e06fe))
+
+
+
+
+
 # [0.26.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.2...@mux/playback-core@0.26.0) (2024-09-20)
 
 

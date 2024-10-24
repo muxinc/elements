@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.1.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.0.0...@mux/mux-player@3.1.0) (2024-10-24)
+
+
+### Bug Fixes
+
+* menu CSS vars to hide menu button ([#999](https://github.com/muxinc/elements/issues/999)) ([4375d6f](https://github.com/muxinc/elements/commit/4375d6f0cb3c56eaee291521ad14c8eb5feb5d59))
+* upgrade Media Chrome v4.2.1 ([#1001](https://github.com/muxinc/elements/issues/1001)) ([46e38b5](https://github.com/muxinc/elements/commit/46e38b5504ce2738c9b896e7424e3cb506e62fdf))
+
+
+### Features
+
+* **playback-core, mux-video, mux-audio, mux-video-react, mux-audio-react, mux-player, mux-player-react:** Add asset start and end time props and attrs. ([#1002](https://github.com/muxinc/elements/issues/1002)) ([99a0726](https://github.com/muxinc/elements/commit/99a07268cfa78ee026a0ee7b7f9af90fcf3feb4c))
+* **playback-core:** error handling rearchitecture (including more granular and DRM error cases)  ([4d0b670](https://github.com/muxinc/elements/commit/4d0b670eacb57f44891fab781941dab6e97e06fe))
+
+
+
+
+
 # [3.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player@2.9.1...@mux/mux-player@3.0.0) (2024-09-20)
 
 
