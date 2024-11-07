@@ -423,6 +423,14 @@ function MuxPlayerPage({ location }: Props) {
             }}
             values={['extra-small', 'small', 'large']}
           />
+          <NumberRenderer
+            value={stylesState.width}
+            name="width"
+            label="Explicit Width"
+            onChange={({ width }) => {
+              dispatchStyles(updateProps({ width }));
+            }}
+          />
           <BooleanRenderer value={state.audio} name="audio" onChange={genericOnChange} />
           <EnumRenderer
             value={state.theme}
