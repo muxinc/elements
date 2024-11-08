@@ -28,7 +28,7 @@ class MinCapLevelController extends CapLevelController {
       validLevels[baseMaxLevel] &&
       // If the default CapLevelController's maxLevel selection is <= 480p (portrait or landscape),
       // let the playback engine still have the option of the next higher resolution
-      Math.max(validLevels[baseMaxLevel].width, validLevels[baseMaxLevel].height) <= 480 &&
+      Math.min(validLevels[baseMaxLevel].width, validLevels[baseMaxLevel].height) <= 480 &&
       baseMaxLevel < validLevels.length - 2
     ) {
       return baseMaxLevel + 1;
