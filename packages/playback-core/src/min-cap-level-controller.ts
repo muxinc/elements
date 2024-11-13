@@ -1,5 +1,5 @@
 import type Hls from 'hls.js';
-import type { ILogger, Level } from 'hls.js';
+import type { Level } from 'hls.js';
 import { CapLevelController } from 'hls.js';
 
 /**
@@ -32,7 +32,7 @@ class MinCapLevelController extends CapLevelController {
     const baseMaxLevel = super.getMaxLevel(capLevelIndex);
     const validLevels = this.getValidLevels(capLevelIndex);
 
-    // Default maxLevel selection ended up out of bounds to indicate (e.g. -1), so use it
+    // Default maxLevel selection ended up out of bounds to indicate e.g. no capping/no levels available (yet), so use it
     if (!validLevels[baseMaxLevel]) return baseMaxLevel;
 
     const baseMaxLevelResolution = Math.min(validLevels[baseMaxLevel].width, validLevels[baseMaxLevel].height);
