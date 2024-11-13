@@ -36,8 +36,7 @@ class MinCapLevelController extends CapLevelController {
     if (!validLevels[baseMaxLevel]) return baseMaxLevel;
 
     const baseMaxLevelResolution = Math.min(validLevels[baseMaxLevel].width, validLevels[baseMaxLevel].height);
-    // Use this syntax to grab static on the off chance of subclassing/best practice
-    const preferredMinMaxResolution = (this.constructor as typeof MinCapLevelController).minMaxResolution;
+    const preferredMinMaxResolution = MinCapLevelController.minMaxResolution;
 
     // Default maxLevel selection already meets our conditions, so use it
     if (baseMaxLevelResolution >= preferredMinMaxResolution) return baseMaxLevel;
