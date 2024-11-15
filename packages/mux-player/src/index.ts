@@ -1,5 +1,5 @@
 import { globalThis, document } from './polyfills';
-import { MediaController } from 'media-chrome';
+import { MediaController, MediaErrorDialog } from 'media-chrome';
 import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
 import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
@@ -179,6 +179,34 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return props;
 }
 
+MediaErrorDialog.formatErrorMessage = (error: { code?: number; message?: string }) => {
+  if (error instanceof MediaError) {
+    const { dialog } = getErrorLogs(error, false);
+    return `
+      ${dialog?.title ? `<h3>${dialog.title}</h3>` : ''}
+      ${
+        dialog?.message || dialog?.linkUrl
+          ? `<p>
+        ${dialog?.message}
+        ${
+          dialog?.linkUrl
+            ? `<a
+              href="${dialog.linkUrl}"
+              target="_blank"
+              rel="external noopener"
+              aria-label="${dialog.linkText ?? ''} ${i18n(`(opens in a new window)`)}"
+              >${dialog.linkText ?? dialog.linkUrl}</a
+            >`
+            : ''
+        }
+      </p>`
+          : ''
+      }
+    `;
+  }
+  return error.message ?? '';
+};
+
 function getThemeTemplate(el: MuxPlayerElement) {
   let themeName = el.theme;
 
@@ -234,7 +262,6 @@ export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-player';
 
 const initialState = {
-  dialog: undefined,
   isDialogOpen: false,
 };
 
@@ -289,10 +316,18 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
-    onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
-    onInitFocusDialog: (e) => {
+    onCloseErrorDialog: (event) => {
+      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+      if (localName !== 'media-error-dialog') return;
+
+      this.#setState({ isDialogOpen: false });
+    },
+    onFocusInErrorDialog: (event) => {
+      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+      if (localName !== 'media-error-dialog') return;
+
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
-      if (!isFocusedElementInPlayer) e.preventDefault();
+      if (!isFocusedElementInPlayer) event.preventDefault();
     },
   };
 
@@ -467,7 +502,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         return;
       }
 
-      const { dialog, devlog } = getErrorLogs(error, false);
+      const { devlog } = getErrorLogs(error, false);
 
       if (devlog.message) {
         logger.devlog(devlog);
@@ -478,7 +513,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         logger.error(`${error.name} data:`, error.data);
       }
 
-      this.#setState({ isDialogOpen: true, dialog });
+      this.#setState({ isDialogOpen: true });
     };
 
     // Keep this event listener on mux-player instead of calling onError directly
