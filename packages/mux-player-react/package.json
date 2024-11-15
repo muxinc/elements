@@ -40,22 +40,22 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.cjs.js"
     },
     "./lazy": {
       "import": "./dist/lazy.mjs",
-      "default": "./dist/lazy.mjs",
       "types@<4.3.5": "./dist/types-ts3.4/lazy.d.ts",
-      "types": "./dist/types/lazy.d.ts"
+      "types": "./dist/types/lazy.d.ts",
+      "default": "./dist/lazy.mjs"
     },
     "./themes/*": {
       "import": "./dist/themes/*.mjs",
       "require": "./dist/themes/*.cjs.js",
-      "default": "./dist/themes/*.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/themes/*.d.ts",
-      "types": "./dist/types/themes/*.d.ts"
+      "types": "./dist/types/themes/*.d.ts",
+      "default": "./dist/themes/*.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
