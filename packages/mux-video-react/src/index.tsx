@@ -23,8 +23,8 @@ export type Props = Omit<
 > &
   MuxMediaProps;
 
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-video-react';
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-video-react';
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>((props, ref) => {
   const {
