@@ -257,8 +257,8 @@ const usePlayer = (
   return [remainingProps];
 };
 
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-player-react';
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-player-react';
 
 const MuxPlayer = React.forwardRef<
   MuxPlayerRefAttributes,

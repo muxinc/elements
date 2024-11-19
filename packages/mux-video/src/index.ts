@@ -83,10 +83,18 @@ export const Attributes = {
 
 const AttributeNameValues = Object.values(Attributes);
 
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-video';
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-video';
 
 class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMediaProps> {
+  static get NAME() {
+    return playerSoftwareName;
+  }
+
+  static get VERSION() {
+    return playerSoftwareVersion;
+  }
+
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }

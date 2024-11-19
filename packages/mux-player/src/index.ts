@@ -229,8 +229,9 @@ function getMetadataFromAttrs(el: MuxPlayerElement) {
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
 const VideoAttributeNames = Object.values(VideoAttributes);
 const PlayerAttributeNames = Object.values(PlayerAttributes);
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-player';
+
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-player';
 
 const initialState = {
   dialog: undefined,
@@ -294,6 +295,14 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       if (!isFocusedElementInPlayer) e.preventDefault();
     },
   };
+
+  static get NAME() {
+    return playerSoftwareName;
+  }
+
+  static get VERSION() {
+    return playerSoftwareVersion;
+  }
 
   static get observedAttributes() {
     return [

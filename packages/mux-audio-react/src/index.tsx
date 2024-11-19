@@ -23,8 +23,8 @@ export type Props = Omit<
 > &
   MuxMediaProps;
 
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-audio-react';
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-audio-react';
 
 const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>((props, ref) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

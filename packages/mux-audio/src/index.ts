@@ -48,10 +48,18 @@ export const Attributes = {
 
 const AttributeNameValues = Object.values(Attributes);
 
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-audio';
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-audio';
 
 class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProps> {
+  static get NAME() {
+    return playerSoftwareName;
+  }
+
+  static get VERSION() {
+    return playerSoftwareVersion;
+  }
+
   static get observedAttributes() {
     return [...AttributeNameValues, ...(CustomAudioElement.observedAttributes ?? [])];
   }
