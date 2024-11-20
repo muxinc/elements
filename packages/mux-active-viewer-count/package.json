@@ -27,9 +27,9 @@
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs.js",
-    "default": "./dist/index.cjs.js",
     "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-    "types": "./dist/types/index.d.ts"
+    "types": "./dist/types/index.d.ts",
+    "default": "./dist/index.cjs.js"
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
