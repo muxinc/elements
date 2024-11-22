@@ -34,6 +34,7 @@ import {
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { ErrorDetails, ErrorTypes, type ErrorData, type HlsConfig } from 'hls.js';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
+import MinCapLevelController from './min-cap-level-controller';
 // import { MediaKeySessionContext } from 'hls.js';
 export {
   mux,
@@ -636,6 +637,7 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
+      capLevelController: MinCapLevelController,
       ...defaultConfig,
       ...streamTypeConfig,
       ...drmConfig,
