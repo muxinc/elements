@@ -165,7 +165,6 @@ const muxMediaErrorToDevlogFile = (mediaError: MediaError) => {
   return '';
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const muxMediaErrorToDevlog = (mediaError: MediaError, _translate?: boolean | undefined): DevlogOptions => {
   const file = muxMediaErrorToDevlogFile(mediaError);
   return {

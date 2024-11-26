@@ -376,24 +376,21 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       customElements.upgrade(this.mediaTheme as Node);
       if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error(`<media-theme> failed to upgrade!`);
     }
 
     try {
       customElements.upgrade(this.media as Node);
       if (!(this.media instanceof MuxVideoElement)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error('<mux-video> failed to upgrade!');
     }
 
     try {
       customElements.upgrade(this.mediaController as Node);
       if (!(this.mediaController instanceof MediaController)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error(`<media-controller> failed to upgrade!`);
     }
 
@@ -430,8 +427,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         syntax: '<color>',
         inherits: true,
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {}
+    } catch (_error) {}
   }
 
   get mediaTheme(): Element | null | undefined {

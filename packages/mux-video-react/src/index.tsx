@@ -33,11 +33,8 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     children,
     autoPlay,
     preload,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tokens,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     playbackToken,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     drmToken,
     ...restProps
   } = props;
