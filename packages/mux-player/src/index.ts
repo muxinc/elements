@@ -38,7 +38,7 @@ import {
 } from './helpers';
 import { template } from './template';
 import { render } from './html';
-import { getErrorLogs } from './errors';
+import { muxMediaErrorToDialog, muxMediaErrorToDevlog } from './errors';
 import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
@@ -181,7 +181,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 
 MediaErrorDialog.formatErrorMessage = (error: { code?: number; message?: string }) => {
   if (error instanceof MediaError) {
-    const { dialog } = getErrorLogs(error, false);
+    const dialog = muxMediaErrorToDialog(error, false);
     return `
       ${dialog?.title ? `<h3>${dialog.title}</h3>` : ''}
       ${
@@ -502,7 +502,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         return;
       }
 
-      const { devlog } = getErrorLogs(error, false);
+      const devlog = muxMediaErrorToDevlog(error, false);
 
       if (devlog.message) {
         logger.devlog(devlog);
@@ -525,7 +525,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
         if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
-        const { devlog } = getErrorLogs(this.media?.error, false);
+        const devlog = muxMediaErrorToDevlog(this.media?.error, false);
 
         return {
           player_error_code: this.media?.error.code,
