@@ -84,7 +84,7 @@ export const content = (props: MuxTemplateProps) => html`
     template="${props.themeTemplate || false}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
-    nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
+    nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     novolumepref="${props.novolumepref || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
