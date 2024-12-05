@@ -179,7 +179,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return props;
 }
 
-MediaErrorDialog.formatErrorMessage = (error: { code?: number; message?: string }) => {
+const baseFormatErrorMessage = MediaErrorDialog.formatErrorMessage;
+MediaErrorDialog.formatErrorMessage = (error: { code: number; message: string }) => {
   if (error instanceof MediaError) {
     const dialog = muxMediaErrorToDialog(error, false);
     return `
@@ -204,7 +205,7 @@ MediaErrorDialog.formatErrorMessage = (error: { code?: number; message?: string 
       }
     `;
   }
-  return error.message ?? '';
+  return baseFormatErrorMessage(error);
 };
 
 function getThemeTemplate(el: MuxPlayerElement) {
