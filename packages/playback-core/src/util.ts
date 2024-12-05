@@ -172,7 +172,7 @@ class IntlMessageFormat {
   }
 
   format(values: Record<string, any>): string {
-    return this.message.replace(/\{(\w+)\}/g, (match, key) => {
+    return this.message.replace(/\{(\w+)\}/g, (_match, key) => {
       return values[key] ?? '';
     });
   }
