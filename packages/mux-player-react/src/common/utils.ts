@@ -19,7 +19,7 @@ type Maybe<T> = T | null | undefined;
 export const isNil = (x: unknown): x is null | undefined => x == undefined;
 
 // Type Guard to determine if a given key is actually a key of some object of type T
-export const isKeyOf = <T extends {} = any>(k: KeyTypes, o: Maybe<T>): k is keyof T => {
+export const isKeyOf = <T extends object = any>(k: KeyTypes, o: Maybe<T>): k is keyof T => {
   if (isNil(o)) return false;
   return k in o;
 };
@@ -29,13 +29,13 @@ const toKebabCase = (string: string) => string.replace(/[A-Z]/g, (match) => `-${
 export const toNativeAttrName = (propName: string, propValue: any): string | undefined => {
   if (typeof propValue === 'boolean' && !propValue) return undefined;
   if (isKeyOf(propName, ReactPropToAttrNameMap)) return ReactPropToAttrNameMap[propName];
-  if (typeof propValue == undefined) return undefined;
+  if (typeof propValue == 'undefined') return undefined;
   if (/[A-Z]/.test(propName)) return toKebabCase(propName);
   return propName;
 };
 export const toStyleAttr = <T>(x: T) => x;
 
-export const toNativeAttrValue = (propValue: any, propName: string) => {
+export const toNativeAttrValue = (propValue: any, _propName: string) => {
   if (typeof propValue === 'boolean') return '';
   return propValue;
 };
