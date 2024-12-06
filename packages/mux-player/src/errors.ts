@@ -116,7 +116,7 @@ const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false)
   return mediaError.message;
 };
 
-const muxMediaErrorToDialog = (mediaError: MediaError, translate = false): DialogOptions => {
+export const muxMediaErrorToDialog = (mediaError: MediaError, translate = false): DialogOptions => {
   const title = muxMediaErrorToDialogTitle(mediaError, translate);
   const message = muxMediaErrorToDialogMessage(mediaError, translate);
   return {
@@ -165,8 +165,7 @@ const muxMediaErrorToDevlogFile = (mediaError: MediaError) => {
   return '';
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const muxMediaErrorToDevLog = (mediaError: MediaError, _translate?: boolean | undefined): DevlogOptions => {
+export const muxMediaErrorToDevlog = (mediaError: MediaError, _translate?: boolean | undefined): DevlogOptions => {
   const file = muxMediaErrorToDevlogFile(mediaError);
   return {
     message: mediaError.message,
@@ -177,6 +176,6 @@ const muxMediaErrorToDevLog = (mediaError: MediaError, _translate?: boolean | un
 
 export function getErrorLogs(error: MediaError, translate = false): { dialog: DialogOptions; devlog: DevlogOptions } {
   const dialog: DialogOptions = muxMediaErrorToDialog(error, translate);
-  const devlog: DevlogOptions = muxMediaErrorToDevLog(error, translate);
+  const devlog: DevlogOptions = muxMediaErrorToDevlog(error, translate);
   return { dialog, devlog };
 }
