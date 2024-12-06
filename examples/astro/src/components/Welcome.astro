@@ -1,0 +1,45 @@
+---
+import astroLogo from '../assets/astro.svg';
+import background from '../assets/background.svg';
+---
+
+<nav>
+  <ul>
+    <li><a href="./mux-player-react" class="player">&lt;MuxPlayer&gt;</a></li>
+    <li><a href="./mux-player-react-lazy" class="player">&lt;MuxPlayer&gt; (lazy)</a></li>
+  </ul>
+</nav>
+
+<style>
+  nav ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-gap: 1.5rem;
+  }
+
+  nav li a {
+    color: var(--text-main);
+    font-family: monospace;
+    font-size: 16px;
+    display: block;
+    padding: 2rem;
+  }
+
+  li a.video {
+    background: rgba(28, 160, 253, .1);
+  }
+
+  li a.audio {
+    background: rgba(251, 80, 29, .08);
+  }
+
+  li a.player {
+    background: rgba(31, 195, 168, .1);
+  }
+
+  li a.uploader {
+    background: rgba(150, 32, 216, .1);
+  }
+</style>
