@@ -14,7 +14,7 @@ export function setupMediaTracks(
   // 1 to 1 relation from rendition to level.
   const levelIdMap = new WeakMap();
 
-  hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+  hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
     removeAllMediaTracks();
 
     const videoTrack = customMediaEl.addVideoTrack('main');
@@ -35,7 +35,7 @@ export function setupMediaTracks(
     }
   });
 
-  hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (event, data) {
+  hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, function (_event, data) {
     removeAudioTracks();
 
     for (const a of data.audioTracks) {
@@ -60,7 +60,7 @@ export function setupMediaTracks(
   });
 
   // Fired when a level is removed after calling `removeLevel()`
-  hls.on(Hls.Events.LEVELS_UPDATED, function (event, data) {
+  hls.on(Hls.Events.LEVELS_UPDATED, function (_event, data) {
     const videoTrack = customMediaEl.videoTracks[customMediaEl.videoTracks.selectedIndex ?? 0];
     if (!videoTrack) return;
 
@@ -92,7 +92,7 @@ export function setupMediaTracks(
     const currentTime = customMediaEl.currentTime;
     let flushedFwdBuffer = false;
 
-    const callback = (event: string, data: { endOffset: number }) => {
+    const callback = (_event: string, data: { endOffset: number }) => {
       flushedFwdBuffer ||= !Number.isFinite(data.endOffset);
     };
 

@@ -78,7 +78,7 @@ export const setupAutoplay = (
 
   // determine if we're live for hls.js
   if (hls) {
-    hls.once(Hls.Events.LEVEL_LOADED, (e: any, data: any) => {
+    hls.once(Hls.Events.LEVEL_LOADED, (_event: any, data: any) => {
       // defer to streamType if set (including inferred)
       if (props.streamType && props.streamType !== StreamTypes.UNKNOWN) {
         isLive = props.streamType === StreamTypes.LIVE;

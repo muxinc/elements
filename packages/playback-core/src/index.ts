@@ -774,11 +774,7 @@ export const setupNativeFairplayDRM = (
             const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
             mediaError.errorCategory = MuxErrorCategory.DRM;
             mediaError.muxCode = MuxErrorCode.ENCRYPTED_UNSUPPORTED_KEY_SYSTEM;
-            mediaEl.dispatchEvent(
-              new CustomEvent('error', {
-                detail: mediaError,
-              })
-            );
+            saveAndDispatchError(mediaEl, mediaError);
           });
 
         if (!access) return;
@@ -809,11 +805,7 @@ export const setupNativeFairplayDRM = (
           });
           // @ts-ignore
         } catch (error: Error | MediaError) {
-          mediaEl.dispatchEvent(
-            new CustomEvent('error', {
-              detail: error,
-            })
-          );
+          saveAndDispatchError(mediaEl, error);
           return;
         }
         await mediaEl.setMediaKeys(keys);
@@ -850,11 +842,7 @@ export const setupNativeFairplayDRM = (
           }
 
           if (mediaError) {
-            mediaEl.dispatchEvent(
-              new CustomEvent('error', {
-                detail: mediaError,
-              })
-            );
+            saveAndDispatchError(mediaEl, mediaError);
           }
         });
       });
@@ -867,11 +855,7 @@ export const setupNativeFairplayDRM = (
           const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
           mediaError.errorCategory = MuxErrorCategory.DRM;
           mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-          mediaEl.dispatchEvent(
-            new CustomEvent('error', {
-              detail: mediaError,
-            })
-          );
+          saveAndDispatchError(mediaEl, mediaError);
         }),
         new Promise<MediaKeyMessageEvent['message']>((resolve) => {
           session.addEventListener(
@@ -909,11 +893,7 @@ export const setupNativeFairplayDRM = (
       });
       // @ts-ignore
     } catch (error: Error | MediaError) {
-      mediaEl.dispatchEvent(
-        new CustomEvent('error', {
-          detail: error,
-        })
-      );
+      saveAndDispatchError(mediaEl, error);
       return;
     }
   };
@@ -1162,11 +1142,7 @@ export const loadMedia = (
             if (errOrResp instanceof Response) {
               const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
               if (mediaError) {
-                mediaEl.dispatchEvent(
-                  new CustomEvent('error', {
-                    detail: mediaError,
-                  })
-                );
+                saveAndDispatchError(mediaEl, mediaError);
                 return;
               }
             } else if (errOrResp instanceof Error) {
@@ -1215,11 +1191,7 @@ export const loadMedia = (
             const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
             mediaError.errorCategory = MuxErrorCategory.DRM;
             mediaError.muxCode = MuxErrorCode.ENCRYPTED_MISSING_TOKEN;
-            mediaEl.dispatchEvent(
-              new CustomEvent('error', {
-                detail: mediaError,
-              })
-            );
+            saveAndDispatchError(mediaEl, mediaError);
           },
           { once: true }
         );
@@ -1280,11 +1252,7 @@ export const loadMedia = (
     });
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      mediaEl.dispatchEvent(
-        new CustomEvent('error', {
-          detail: getErrorFromHlsErrorData(data, props),
-        })
-      );
+      saveAndDispatchError(mediaEl, getErrorFromHlsErrorData(data, props));
     });
     mediaEl.addEventListener('error', handleInternalError);
     addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
@@ -1353,11 +1321,7 @@ async function handleNativeError(event: Event) {
       // assume it's an (unlikely) case where we did, in fact, encounter
       // media that is unsupported.
       if (ourError?.code === MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED) {
-        mediaEl.dispatchEvent(
-          new CustomEvent('error', {
-            detail: error,
-          })
-        );
+        saveAndDispatchError(mediaEl, error);
       }
       // Since a parallel request for the source should be initiated to determine
       // stream info (e.g. streamType) at roughly the same time as when the source
@@ -1378,6 +1342,15 @@ async function handleNativeError(event: Event) {
       error.data = { response: { code: status } };
     } catch {}
   }
+
+  saveAndDispatchError(mediaEl, error);
+}
+
+function saveAndDispatchError(mediaEl: HTMLMediaElement, error: MediaError) {
+  // Prevent dispatching non-fatal errors.
+  if (!error.fatal) return;
+
+  (muxMediaState.get(mediaEl) ?? {}).error = error as unknown as HTMLMediaElement['error'];
 
   mediaEl.dispatchEvent(
     new CustomEvent('error', {

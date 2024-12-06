@@ -12,7 +12,7 @@ export function kebabCase(name: string) {
 }
 
 export function camelCase(name: string) {
-  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
+  return name.replace(/[-_]([a-z])/g, (_$0, $1) => $1.toUpperCase());
 }
 
 let idCounter = 0;

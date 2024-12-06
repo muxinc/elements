@@ -1,5 +1,5 @@
 import { globalThis, document } from './polyfills';
-import { MediaController } from 'media-chrome';
+import { MediaController, MediaErrorDialog } from 'media-chrome';
 import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
 import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
@@ -38,7 +38,7 @@ import {
 } from './helpers';
 import { template } from './template';
 import { render } from './html';
-import { getErrorLogs } from './errors';
+import { muxMediaErrorToDialog, muxMediaErrorToDevlog } from './errors';
 import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
@@ -179,6 +179,35 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
   return props;
 }
 
+const baseFormatErrorMessage = MediaErrorDialog.formatErrorMessage;
+MediaErrorDialog.formatErrorMessage = (error: { code: number; message: string }) => {
+  if (error instanceof MediaError) {
+    const dialog = muxMediaErrorToDialog(error, false);
+    return `
+      ${dialog?.title ? `<h3>${dialog.title}</h3>` : ''}
+      ${
+        dialog?.message || dialog?.linkUrl
+          ? `<p>
+        ${dialog?.message}
+        ${
+          dialog?.linkUrl
+            ? `<a
+              href="${dialog.linkUrl}"
+              target="_blank"
+              rel="external noopener"
+              aria-label="${dialog.linkText ?? ''} ${i18n(`(opens in a new window)`)}"
+              >${dialog.linkText ?? dialog.linkUrl}</a
+            >`
+            : ''
+        }
+      </p>`
+          : ''
+      }
+    `;
+  }
+  return baseFormatErrorMessage(error);
+};
+
 function getThemeTemplate(el: MuxPlayerElement) {
   let themeName = el.theme;
 
@@ -234,7 +263,6 @@ export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-player';
 
 const initialState = {
-  dialog: undefined,
   isDialogOpen: false,
 };
 
@@ -289,10 +317,18 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
-    onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
-    onInitFocusDialog: (e) => {
+    onCloseErrorDialog: (event) => {
+      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+      if (localName !== 'media-error-dialog') return;
+
+      this.#setState({ isDialogOpen: false });
+    },
+    onFocusInErrorDialog: (event) => {
+      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+      if (localName !== 'media-error-dialog') return;
+
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
-      if (!isFocusedElementInPlayer) e.preventDefault();
+      if (!isFocusedElementInPlayer) event.preventDefault();
     },
   };
 
@@ -341,24 +377,21 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       customElements.upgrade(this.mediaTheme as Node);
       if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error(`<media-theme> failed to upgrade!`);
     }
 
     try {
       customElements.upgrade(this.media as Node);
       if (!(this.media instanceof MuxVideoElement)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error('<mux-video> failed to upgrade!');
     }
 
     try {
       customElements.upgrade(this.mediaController as Node);
       if (!(this.mediaController instanceof MediaController)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error(`<media-controller> failed to upgrade!`);
     }
 
@@ -395,8 +428,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         syntax: '<color>',
         inherits: true,
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {}
+    } catch (_error) {}
   }
 
   get mediaTheme(): Element | null | undefined {
@@ -467,7 +499,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         return;
       }
 
-      const { dialog, devlog } = getErrorLogs(error, false);
+      const devlog = muxMediaErrorToDevlog(error, false);
 
       if (devlog.message) {
         logger.devlog(devlog);
@@ -478,7 +510,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         logger.error(`${error.name} data:`, error.data);
       }
 
-      this.#setState({ isDialogOpen: true, dialog });
+      this.#setState({ isDialogOpen: true });
     };
 
     // Keep this event listener on mux-player instead of calling onError directly
@@ -490,7 +522,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
         if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
-        const { devlog } = getErrorLogs(this.media?.error, false);
+        const devlog = muxMediaErrorToDevlog(this.media?.error, false);
 
         return {
           player_error_code: this.media?.error.code,

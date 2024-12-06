@@ -860,7 +860,9 @@ describe('<mux-player> playbackId transitions', () => {
     assert(!muxVideo.hasAttribute('src'), `muxVideo has no src attribute`);
   });
 
-  it('loads the new playbackId and clears dialog state', async function () {
+  it('loads the new playbackId and hides error dialog', async function () {
+    this.timeout(10000);
+
     const oldLogError = console.error;
     const oldLogWarn = console.warn;
 
@@ -869,31 +871,31 @@ describe('<mux-player> playbackId transitions', () => {
     // eslint-disable-next-line
     console.warn = () => {};
 
+    // correct playback-id is DS00Spx1CV902MCtPj5WknGlR102V5HFkDe
     const player = await fixture(`<mux-player
-      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkD"
       stream-type="on-demand"
       muted
     ></mux-player>`);
 
-    assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
+    assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkD');
 
-    player.dispatchEvent(
-      new CustomEvent('error', {
-        detail: { code: MediaError.MEDIA_ERR_NETWORK },
-      })
-    );
+    const errorDialog = player.mediaTheme.shadowRoot.querySelector('media-error-dialog');
 
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3').textContent, 'Network Error');
+    await waitUntil(() => errorDialog.open, 'error dialog never opened');
+    assert.equal(errorDialog.shadowRoot.querySelector('h3').textContent, 'Video does not exist');
 
     player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';
-
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+    await aTimeout(100);
+    assert(!errorDialog.open);
 
     console.error = oldLogError;
     console.warn = oldLogWarn;
   });
 
-  it('loads the new src and clears dialog state', async function () {
+  it('loads the new src and hides error dialog', async function () {
+    this.timeout(10000);
+
     const oldLogError = console.error;
     const oldLogWarn = console.warn;
 
@@ -902,25 +904,23 @@ describe('<mux-player> playbackId transitions', () => {
     // eslint-disable-next-line
     console.warn = () => {};
 
+    // correct playback-id is DS00Spx1CV902MCtPj5WknGlR102V5HFkDe
     const player = await fixture(`<mux-player
-      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkD.m3u8"
       stream-type="on-demand"
       muted
     ></mux-player>`);
 
-    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8');
+    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkD.m3u8');
 
-    player.dispatchEvent(
-      new CustomEvent('error', {
-        detail: { code: MediaError.MEDIA_ERR_NETWORK },
-      })
-    );
+    const errorDialog = player.mediaTheme.shadowRoot.querySelector('media-error-dialog');
 
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3').textContent, 'Network Error');
+    await waitUntil(() => errorDialog.open, 'error dialog never opened');
+    assert.equal(errorDialog.shadowRoot.querySelector('h3').textContent, 'Video does not exist');
 
     player.src = 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8';
-
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+    await aTimeout(100);
+    assert(!errorDialog.open);
 
     console.error = oldLogError;
     console.warn = oldLogWarn;
