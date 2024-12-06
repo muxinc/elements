@@ -86,7 +86,6 @@ export const inferMimeTypeFromURL = (url: string) => {
   let pathname = '';
   try {
     pathname = new URL(url).pathname;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_e) {
     console.error('invalid url');
   }
@@ -138,7 +137,6 @@ export const isJWTSubMismatch = ({ sub }: Partial<Pick<MuxJWT, 'sub'>>, expected
   return sub !== expectedSub;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const isJWTAudMissing = ({ aud }: Partial<Pick<MuxJWT, 'aud'>>, _expectedAud: string | undefined) => {
   return !aud;
 };
@@ -154,7 +152,7 @@ const DEFAULT_LOCALE = 'en';
 //   "Network Error": "Netwerk Fout",
 // };
 export function i18n(str: string, translate = true): any {
-  const message = translate ? (lang as unknown as any)?.[str] ?? str : str;
+  const message = translate ? ((lang as unknown as any)?.[str] ?? str) : str;
   const locale = translate ? (lang as unknown as any).code : DEFAULT_LOCALE;
   return new IntlMessageFormat(message, locale);
 }
@@ -174,7 +172,7 @@ class IntlMessageFormat {
   }
 
   format(values: Record<string, any>): string {
-    return this.message.replace(/\{(\w+)\}/g, (match, key) => {
+    return this.message.replace(/\{(\w+)\}/g, (_match, key) => {
       return values[key] ?? '';
     });
   }
