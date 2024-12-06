@@ -22,6 +22,7 @@ const ReactPropToAttrNameMap = {
   playsInline: 'playsinline',
   autoPlay: 'autoplay',
   playbackRate: 'playbackrate',
+  defaultMuted: 'muted',
 };
 
 type KeyTypes = string | number | symbol;
