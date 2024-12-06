@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MuxPlayer from '@mux/mux-player-react';
+---
+
+<Layout>
+  <MuxPlayer
+    client:load
+    style={{
+      display: 'block',
+      aspectRatio: '16/9'
+    }}
+    streamType="on-demand"
+    autoplay={true}
+    muted={true}
+    playbackId="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
+    metadata={{
+      video_title: 'Elephants Dream',
+    }}
+  ></MuxPlayer>
+</Layout>

@@ -1,0 +1,45 @@
+---
+import DefaultHeader from '../components/DefaultHeader.astro';
+
+const isHome = (Astro.url.pathname === '/');
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Mux Elements</title>
+	</head>
+	<body>
+    <DefaultHeader />
+		<slot />
+    <br>
+    <br>
+    {!isHome && <a href="/">← Browse Elements</a>}
+	</body>
+</html>
+
+<style is:global>
+  @import url('water.css');
+
+  :root {
+    --links: rgb(223, 40, 104);
+  }
+
+  body {
+    padding: 0 1rem;
+  }
+
+  @media (prefers-color-scheme:dark) {
+    body {
+      background: var(--background-alt);
+    }
+    .github-logo {
+      filter: invert(1) saturate(0);
+    }
+  }
+</style>
