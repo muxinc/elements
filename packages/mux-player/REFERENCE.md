@@ -56,7 +56,7 @@
 | `placeholder`                 | `string` (URI)                                                                                              | Image to show as various assets load. Typically a [data URI](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs) when used                                                                                                                                                                                                                                               | N/A           |
 | `cast-receiver` | `string` (Receiver ID) | The app ID to use for a custom [Google cast receiver](https://developers.google.com/cast/docs/web_receiver/basic). If none is provided, the default receiver app will be used. | N/A |
 | `no-tooltips` | `boolean` | Toggles disabling tooltips in the UI | `false` |
-| `player-init-time` | `number` (timestamp) | Overrides the default [player initialization time](https://docs.mux.com/guides/make-your-data-actionable-with-metadata#optional-configurable-metadata), used by Mux Data for time-based [quality-of-experience (QOE) metrics](https://docs.mux.com/guides/understand-metric-definitions) | `false` |
+| `player-init-time` | `number` (timestamp) | Overrides the default [player initialization time](https://docs.mux.com/guides/make-your-data-actionable-with-metadata#optional-configurable-metadata), used by Mux Data for time-based [quality-of-experience (QOE) metrics](https://docs.mux.com/guides/understand-metric-definitions). It will be inferred from instantiation time by default. | Varies |
 
 <!-- UNDOCUMENTED
 // NEW STREAM TYPE VALUES
@@ -159,7 +159,7 @@
 | `activeChapter` <sub><sup>Read only</sup></sub> | `{ startTime: number; endTime?: number, value: string; }` | The current active Chapter, determined based on the player's `currentTime`. | `undefined` |
 | `castReceiver` | `string` (Receiver ID) | The app ID to use for a custom [Google cast receiver](https://developers.google.com/cast/docs/web_receiver/basic). If none is provided, the default receiver app will be used. | `undefined` |
 | `castCustomData` | `object` (JSON-serializable) | [Custom Data](https://developers.google.com/cast/docs/reference/web_sender/chrome.cast.media.MediaInfo#customData) to send to your Google cast receiver on initial load. If none is provided, various Mux key/value pairs will be sent. | Mux-specific object |
-| `playerInitTime` | `number` (timestamp) | Overrides the default [player initialization time](https://docs.mux.com/guides/make-your-data-actionable-with-metadata#optional-configurable-metadata), used by Mux Data for time-based [quality-of-experience (QOE) metrics](https://docs.mux.com/guides/understand-metric-definitions) | `false` |
+| `playerInitTime` | `number` (timestamp) | Overrides the default [player initialization time](https://docs.mux.com/guides/make-your-data-actionable-with-metadata#optional-configurable-metadata), used by Mux Data for time-based [quality-of-experience (QOE) metrics](https://docs.mux.com/guides/understand-metric-definitions). It will be inferred from instantiation time by default. | Varies |
 
 <!-- UNDOCUMENTED
 // NEW STREAM TYPE VALUES
