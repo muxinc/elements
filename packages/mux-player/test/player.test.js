@@ -1,8 +1,6 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent, nextFrame } from '@open-wc/testing';
 import '../src/index.ts';
 
-console.log('!!!!USER AGENT?', globalThis.navigator?.userAgent);
-
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
 // Media Chrome uses a ResizeObserver which ends up throwing in Firefox and Safari in some cases
@@ -53,6 +51,7 @@ describe('<mux-player>', () => {
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
+      muted
       preload="auto"
     ></mux-player>`);
 
@@ -67,6 +66,9 @@ describe('<mux-player>', () => {
     player.volume = 0.5;
     assert.equal(player.volume, 0.5, 'is half volume');
 
+    player.muted = true;
+    assert(player.muted, 'is muted');
+
     await aTimeout(1000);
 
     await player.play();
@@ -77,16 +79,6 @@ describe('<mux-player>', () => {
     await aTimeout(1000);
 
     assert.isAtLeast(Math.round(player.currentTime), 1, 'is greater or equal to 1s');
-
-    // NOTE: For reliable testing, we have to make sure the media is unmuted when attempting to play
-    // (which is why this state change and assertion comes last) due to browser-specific
-    // optimizations around play rejections when in the background. These optimizations will not
-    // kick in if there is also sound, on the assumption that folks may want to hear video playing
-    // in the background, even if they can't see it.
-    // For the error in question, see: https://developer.chrome.com/blog/play-request-was-interrupted
-    // (though the workarounds/"fixes" are N/A for this case) (CJP)
-    player.muted = true;
-    assert(player.muted, 'is muted');
   });
 
   it('playbackId is forwarded to the media element', async function () {
