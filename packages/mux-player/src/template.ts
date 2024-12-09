@@ -102,6 +102,7 @@ export const content = (props: MuxTemplateProps) => html`
     defaultduration="${props.defaultDuration ?? false}"
     hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
+    proudlydisplaymuxbadge="${props.proudlyDisplayMuxBadge ?? false}"
     exportparts="${partsListStr}"
     onclose="${props.onCloseErrorDialog}"
     onfocusin="${props.onFocusInErrorDialog}"
