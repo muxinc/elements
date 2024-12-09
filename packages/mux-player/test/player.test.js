@@ -79,7 +79,7 @@ describe('<mux-player>', () => {
     // NOTE: For reliable testing, we have to make sure the media is unmuted when attempting to play
     // (which is why this state change and assertion comes last) due to browser-specific
     // optimizations around play rejections when in the background. These optimizations will not
-    // kick in if there is also sound (on the assumption that folks may want to hear video playing)
+    // kick in if there is also sound, on the assumption that folks may want to hear video playing
     // in the background, even if they can't see it.
     // For the error in question, see: https://developer.chrome.com/blog/play-request-was-interrupted
     // (though the workarounds/"fixes" are N/A for this case) (CJP)

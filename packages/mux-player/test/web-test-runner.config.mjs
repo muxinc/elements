@@ -26,7 +26,6 @@ const config = {
     include: ['src/**/*'],
   },
   testsFinishTimeout: 600000,
-  // browsers: [chromeLauncher({ launchOptions: { args: ['--headless'] } })],
   browsers: [chromeLauncher({})],
 };
 
