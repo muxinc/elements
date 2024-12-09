@@ -27,6 +27,7 @@ import { CustomAudioElement, Events as AudioEvents } from 'custom-media-element'
 import type { HlsConfig } from 'hls.js';
 
 export const Attributes = {
+  PLAYER_INIT_TIME: 'player-init-time',
   ENV_KEY: 'env-key',
   DEBUG: 'debug',
   PLAYBACK_ID: 'playback-id',
@@ -66,18 +67,30 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
 
   #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
-  #playerInitTime: number;
+  #defaultPlayerInitTime: number;
   #metadata: Readonly<Metadata> = {};
   #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;
 
   constructor() {
     super();
-    this.#playerInitTime = generatePlayerInitTime();
+    this.#defaultPlayerInitTime = generatePlayerInitTime();
   }
 
   get playerInitTime() {
-    return this.#playerInitTime;
+    if (!this.hasAttribute(Attributes.PLAYER_INIT_TIME)) return this.#defaultPlayerInitTime;
+    return +(this.getAttribute(Attributes.PLAYER_INIT_TIME) as string) as number;
+  }
+
+  set playerInitTime(val) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val == this.playerInitTime) return;
+
+    if (val == null) {
+      this.removeAttribute(Attributes.PLAYER_INIT_TIME);
+    } else {
+      this.setAttribute(Attributes.PLAYER_INIT_TIME, `${+val}`);
+    }
   }
 
   get playerSoftwareName() {
@@ -546,6 +559,13 @@ if (!globalThis.customElements.get('mux-audio')) {
   globalThis.MuxAudioElement = MuxAudioElement;
 }
 
-export { PlaybackEngine, PlaybackEngine as Hls, ExtensionMimeTypeMap as MimeTypes, MediaError, AudioEvents };
+export {
+  PlaybackEngine,
+  PlaybackEngine as Hls,
+  ExtensionMimeTypeMap as MimeTypes,
+  MediaError,
+  AudioEvents,
+  generatePlayerInitTime,
+};
 
 export default MuxAudioElement;

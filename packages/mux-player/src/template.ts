@@ -122,6 +122,7 @@ export const content = (props: MuxTemplateProps) => html`
       prefer-playback="${props.preferPlayback ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"
       beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
+      player-init-time="${props.playerInitTime ?? false}"
       player-software-name="${props.playerSoftwareName ?? false}"
       player-software-version="${props.playerSoftwareVersion ?? false}"
       env-key="${props.envKey ?? false}"

@@ -15,6 +15,7 @@ import {
   i18n,
   parseJwt,
   MuxJWTAud,
+  generatePlayerInitTime,
 } from '@mux/playback-core';
 import type {
   ValueOf,
@@ -48,7 +49,7 @@ const DefaultThemeName = 'gerwig';
 
 export type { Tokens };
 
-export { MediaError };
+export { MediaError, generatePlayerInitTime };
 
 const VideoAttributes = {
   SRC: 'src',
@@ -148,6 +149,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     assetEndTime: el.assetEndTime,
     renditionOrder: el.renditionOrder,
     metadata: el.metadata,
+    playerInitTime: el.playerInitTime,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
@@ -283,6 +285,7 @@ interface MuxPlayerElement
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
+  #defaultPlayerInitTime: number;
   #isInit = false;
   #tokens: Tokens = {};
   #userInactive = true;
@@ -315,6 +318,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   constructor() {
     super();
+    this.#defaultPlayerInitTime = generatePlayerInitTime();
 
     this.attachShadow({ mode: 'open' });
     this.#setupCSSProperties();
@@ -1235,6 +1239,22 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.removeAttribute(PlayerAttributes.DEFAULT_DURATION);
     } else {
       this.setAttribute(PlayerAttributes.DEFAULT_DURATION, `${val}`);
+    }
+  }
+
+  get playerInitTime() {
+    if (!this.hasAttribute(MuxVideoAttributes.PLAYER_INIT_TIME)) return this.#defaultPlayerInitTime;
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.PLAYER_INIT_TIME));
+  }
+
+  set playerInitTime(val) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val == this.playerInitTime) return;
+
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.PLAYER_INIT_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.PLAYER_INIT_TIME, `${+val}`);
     }
   }
 
