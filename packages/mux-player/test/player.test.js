@@ -1,6 +1,8 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent, nextFrame } from '@open-wc/testing';
 import '../src/index.ts';
 
+console.log('!!!!USER AGENT?', globalThis.navigator?.userAgent);
+
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
 // Media Chrome uses a ResizeObserver which ends up throwing in Firefox and Safari in some cases
