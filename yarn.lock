@@ -13635,11 +13635,6 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.0.tgz#d3db5f7010311f3cea2483e4d703f518cd365c4b"
-  integrity sha512-rzuYoXiCvn+3vRim9pXcdIIXZmPAZHZbN9AUl0crdUOSv2tdEFJ6v/IxlJ8T3o4+YrHsrUCUNnu2Yai6mY6Qqg==
-
 media-chrome@~4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.3.0.tgz#e18a7bb910f005746261ddbaa1a0a2624ed2c74e"
@@ -15362,12 +15357,12 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-player.style@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/player.style/-/player.style-0.0.8.tgz#8efd503a62df70b915e466b4b7ea96c1bc7130fc"
-  integrity sha512-ScmFzio3634eEn+ejpkEw13F5xYvnPghtaZz/Kg7QQP78ECrxdjRVqwVPZhUwbYxmg5OIScByOgHfrHpzTtR1Q==
+player.style@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/player.style/-/player.style-0.1.0.tgz#8785c8c7b5790ebf658e5f06e7b785e478196331"
+  integrity sha512-izui//1gvOqo+OEOSIKYgJSNFEZm92ryka/cIik+jly5r/cKU5hvN4C5u4yVkHngTI7ojCDmE+r11D1R9I4H5g==
   dependencies:
-    media-chrome "^4.1.0"
+    media-chrome "~4.3.0"
 
 playwright-core@1.45.3:
   version "1.45.3"
