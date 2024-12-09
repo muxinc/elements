@@ -1,12 +1,11 @@
 import 'media-chrome/dist/media-theme-element.js';
 // @ts-ignore
 import cssStr from './styles.css';
-import './dialog';
 import { getStreamTypeFromAttr } from './helpers';
 import { html } from './html';
 import { stylePropsToString } from './utils';
 import type { MuxTemplateProps } from './types';
-import { i18n, StreamTypes, toMuxVideoURL } from '@mux/playback-core';
+import { StreamTypes, toMuxVideoURL } from '@mux/playback-core';
 
 const getPropsCSS = (props: MuxTemplateProps) => {
   const { tokens } = props;
@@ -85,7 +84,7 @@ export const content = (props: MuxTemplateProps) => html`
     template="${props.themeTemplate || false}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
-    nohotkeys="${props.noHotKeys || !props.hasSrc || props.isDialogOpen || false}"
+    nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     novolumepref="${props.novolumepref || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
@@ -104,6 +103,8 @@ export const content = (props: MuxTemplateProps) => html`
     hideduration="${props.hideDuration ?? false}"
     title="${props.title ?? false}"
     exportparts="${partsListStr}"
+    onclose="${props.onCloseErrorDialog}"
+    onfocusin="${props.onFocusInErrorDialog}"
   >
     <mux-video
       slot="media"
@@ -145,25 +146,5 @@ export const content = (props: MuxTemplateProps) => html`
         placeholdersrc="${props.placeholder ?? false}"
       ></media-poster-image>
     </slot>
-    <mxp-dialog
-      no-auto-hide
-      open="${props.isDialogOpen ?? false}"
-      onclose="${props.onCloseErrorDialog}"
-      oninitfocus="${props.onInitFocusDialog}"
-    >
-      ${props.dialog?.title ? html`<h3>${props.dialog.title}</h3>` : html``}
-      <p>
-        ${props.dialog?.message}
-        ${props.dialog?.linkUrl
-          ? html`<a
-              href="${props.dialog.linkUrl}"
-              target="_blank"
-              rel="external noopener"
-              aria-label="${props.dialog.linkText ?? ''} ${i18n(`(opens in a new window)`)}"
-              >${props.dialog.linkText ?? props.dialog.linkUrl}</a
-            >`
-          : html``}
-      </p>
-    </mxp-dialog>
   </media-theme>
 `;

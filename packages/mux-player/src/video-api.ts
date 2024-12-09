@@ -185,7 +185,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     });
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {
+  attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string) {
     switch (attrName) {
       case CustomVideoAttributes.MUTED: {
         if (this.media) {

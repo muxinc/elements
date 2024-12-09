@@ -28,7 +28,6 @@ export const playerSoftwareName = 'mux-audio-react';
 export { generatePlayerInitTime };
 
 const MuxAudio = React.forwardRef<HTMLAudioElement | undefined, Partial<Props>>((props, ref) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { playbackId, src: outerSrc, children, autoPlay, preload, tokens, playbackToken, ...restProps } = props;
 
   const nativeAudioProps = Object.fromEntries(

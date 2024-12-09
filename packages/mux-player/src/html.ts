@@ -176,7 +176,7 @@ export class TemplateResult {
 }
 
 const defaultProcessor = {
-  processCallback(instance: any, parts: any, state: any) {
+  processCallback(_instance: any, parts: any, state: any) {
     if (!state) return;
     for (const [expression, part] of parts) {
       if (expression in state) {
