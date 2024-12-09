@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import type {
   StreamTypes,
@@ -9,7 +9,7 @@ import type {
   MinResolutionValue,
   RenditionOrderValue,
 } from '@mux/playback-core';
-import { MaxResolution, MinResolution, RenditionOrder } from '@mux/playback-core';
+import { MaxResolution, MinResolution, RenditionOrder, generatePlayerInitTime } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, MuxPlayerElementEventMap } from '@mux/mux-player';
@@ -19,7 +19,7 @@ import { useCombinedRefs } from './useCombinedRefs';
 import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
 
-export { MediaError, MaxResolution, MinResolution, RenditionOrder };
+export { MediaError, MaxResolution, MinResolution, RenditionOrder, generatePlayerInitTime };
 
 type ValueOf<T> = T[keyof T];
 interface GenericEventListener<T extends Event = CustomEvent> {
@@ -79,6 +79,7 @@ export type MuxPlayerProps = {
   defaultHiddenCaptions?: boolean;
   playerSoftwareVersion?: string;
   playerSoftwareName?: string;
+  playerInitTime?: number;
   forwardSeekOffset?: number;
   backwardSeekOffset?: number;
   maxResolution?: MaxResolutionValue;
@@ -267,6 +268,7 @@ const MuxPlayer = React.forwardRef<
   const innerPlayerRef = useRef<MuxPlayerElement>(null);
   const playerRef = useCombinedRefs(innerPlayerRef, ref);
   const [remainingProps] = usePlayer(innerPlayerRef, props);
+  const [playerInitTime] = useState(props.playerInitTime ?? generatePlayerInitTime());
 
   return (
     <MuxPlayerInternal
@@ -274,6 +276,7 @@ const MuxPlayer = React.forwardRef<
       ref={playerRef as typeof innerPlayerRef}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}
+      playerInitTime={playerInitTime}
       {...remainingProps}
     />
   );

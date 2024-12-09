@@ -26,7 +26,7 @@ const config = {
     include: ['src/**/*'],
   },
   testsFinishTimeout: 600000,
-  browsers: [chromeLauncher({ launchOptions: { args: ['--headless=old'] } })],
+  browsers: [chromeLauncher({})],
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
