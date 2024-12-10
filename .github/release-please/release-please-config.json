@@ -8,37 +8,37 @@
   "packages": {
     "packages/mux-active-viewer-count": {
       "prerelease": true,
-      "package-name": "@mux/mux-active-viewer-count"
+      "component": "@mux/mux-active-viewer-count"
     },
     "packages/mux-audio": {
-      "package-name": "@mux/mux-audio"
+      "component": "@mux/mux-audio"
     },
     "packages/mux-audio-react": {
-      "package-name": "@mux/mux-audio-react"
+      "component": "@mux/mux-audio-react"
     },
     "packages/mux-elements-codemod": {
-      "package-name": "@mux/mux-elements-codemod"
+      "component": "@mux/mux-elements-codemod"
     },
     "packages/mux-player": {
-      "package-name": "@mux/mux-player"
+      "component": "@mux/mux-player"
     },
     "packages/mux-player-react": {
-      "package-name": "@mux/mux-player-react"
+      "component": "@mux/mux-player-react"
     },
     "packages/mux-uploader": {
-      "package-name": "@mux/mux-uploader"
+      "component": "@mux/mux-uploader"
     },
     "packages/mux-uploader-react": {
-      "package-name": "@mux/mux-uploader-react"
+      "component": "@mux/mux-uploader-react"
     },
     "packages/mux-video": {
-      "package-name": "@mux/mux-video"
+      "component": "@mux/mux-video"
     },
     "packages/mux-video-react": {
-      "package-name": "@mux/mux-video-react"
+      "component": "@mux/mux-video-react"
     },
     "packages/playback-core": {
-      "package-name": "@mux/playback-core"
+      "component": "@mux/playback-core"
     }
   }
 }
