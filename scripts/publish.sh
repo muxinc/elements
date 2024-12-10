@@ -106,7 +106,7 @@ function release {
 
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
-  DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
+  DEPENDANT_PKGS=$(npx -y lerna@4.0.0 ls --graph --toposort --scope @mux/* |
     jq -r "to_entries[] | select(.value[] | contains(\"$PKG_NAME\")) | .key")
   scope=""
   for name in ${DEPENDANT_PKGS}; do
@@ -114,9 +114,9 @@ function release {
   done
 
   if "$dry_run"; then
-    echo "Running the following command" npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+    echo "Running the following command" npx -y lerna@4.0.0 exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
   fi
-  npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+  npx -y lerna@4.0.0 exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
 
   echo "Ending release $PKG_NAME@$VERSION"
 };
@@ -165,7 +165,7 @@ function canary {
 
   # update all workspaces from the workspace root (../..) with the new version
   # make sure publish.sh is called in topological order, `lerna ls --toposort` does this
-  DEPENDANT_PKGS=$(npx lerna ls --graph --toposort --scope @mux/* |
+  DEPENDANT_PKGS=$(npx -y lerna@4.0.0 ls --graph --toposort --scope @mux/* |
     jq -r "to_entries[] | select(.value[] | contains(\"$PKG_NAME\")) | .key")
   scope=""
   for name in ${DEPENDANT_PKGS}; do
@@ -174,9 +174,9 @@ function canary {
 
   if [ -n "$scope" ]; then
     if "$dry_run"; then
-      echo "Running the following command" npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+      echo "Running the following command" npx -y lerna@4.0.0 exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
     fi
-    npx lerna exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
+    npx -y lerna@4.0.0 exec $scope -- npm pkg set dependencies.$PKG_NAME=$VERSION > /dev/null
   fi
 
   echo "Ending release $PKG_NAME@$VERSION"
