@@ -9,5 +9,5 @@
   "packages/mux-uploader-react": "1.0.3",
   "packages/mux-video": "0.22.0",
   "packages/mux-video-react": "0.12.0",
-  "packages/plaback-core": "0.27.0"
+  "packages/playback-core": "0.27.0"
 }
