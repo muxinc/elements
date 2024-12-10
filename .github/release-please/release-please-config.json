@@ -7,8 +7,10 @@
   "plugins": ["node-workspace"],
   "packages": {
     "packages/mux-active-viewer-count": {
+      "component": "@mux/mux-active-viewer-count",
       "prerelease": true,
-      "component": "@mux/mux-active-viewer-count"
+      "prerelease-type": "alpha",
+      "bump-patch-for-minor-pre-major": true
     },
     "packages/mux-audio": {
       "component": "@mux/mux-audio"
