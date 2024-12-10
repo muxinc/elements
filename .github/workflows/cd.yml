@@ -3,50 +3,73 @@ name: Deployment
 concurrency: production
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  release:
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+
     steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          config-file: .github/release-please/release-please-config.json
+          manifest-file: .github/release-please/.release-please-manifest.json
+
       - uses: actions/checkout@v4
+        # these if statements ensure that a publication only occurs when
+        # a new release is created:
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         with:
           fetch-depth: 0 # Fetch all history for all tags and branches
       - name: read node version from the .nvmrc file
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
         shell: bash
         id: nvmrc
+
       - uses: actions/setup-node@v4
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         with:
           node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
+
       - name: Install
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: yarn install --frozen-lockfile
       - name: Clean
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: yarn clean
       - name: Test
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: yarn test
       - name: Clean
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: yarn clean
       - name: Build
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: yarn build:packages
       - name: Publish
-        run: yarn deploy --yes
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: npm exec -c publish-packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Create Release Notes
-        run: yarn create-release-notes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: 'Get message'
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         id: 'deploy_message'
         run: |
           echo "::set-output name=commit_msg::$(git log -1 --format=%B)"
           echo "::set-output name=commit_sha::$(git log -1 --format=%H)"
       - name: Slack Notify
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         uses: rtCamp/action-slack-notify@v2.2.0
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}

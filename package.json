@@ -13,7 +13,6 @@
   "private": true,
   "devDependencies": {
     "husky": "^7.0.0",
-    "lerna": "^4.0.0",
     "prettier": "^3.2.5",
     "pretty-quick": "^4.0.0",
     "turbo": "^2.3.3"
@@ -34,11 +33,8 @@
     "build": "turbo run build",
     "i18n": "turbo run i18n",
     "prepare": "husky install",
-    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
-    "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope @mux/*",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
-    "create-release-notes": "lerna run create-release-notes --scope @mux/*",
-    "publish-release": "lerna run publish-release --scope @mux/* --"
+    "create-release-notes": "turbo run create-release-notes --filter '@mux/*'",
+    "publish-release": "turbo run publish-release --filter '@mux/*' --"
   },
   "resolutions": {
     "playwright": "1.45.3"

@@ -1,0 +1,23 @@
+{
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false,
+  "tag-separator": "@",
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "plugins": ["node-workspace"],
+  "packages": {
+    "packages/mux-active-viewer-count": {
+      "prerelease": true
+    },
+    "packages/mux-audio": {},
+    "packages/mux-audio-react": {},
+    "packages/mux-elements-codemod": {},
+    "packages/mux-player": {},
+    "packages/mux-player-react": {},
+    "packages/mux-uploader": {},
+    "packages/mux-uploader-react": {},
+    "packages/mux-video": {},
+    "packages/mux-video-react": {},
+    "packages/plaback-core": {}
+  }
+}
