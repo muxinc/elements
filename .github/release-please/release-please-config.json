@@ -1,5 +1,5 @@
 {
-  "release-type": "node",
+  "bootstrap-sha": "27b6858de2190e2caf2b1315ebbc469c01bbd25f",
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": false,
   "tag-separator": "@",
