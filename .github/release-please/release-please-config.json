@@ -1,5 +1,4 @@
 {
-  "bootstrap-sha": "27b6858de2190e2caf2b1315ebbc469c01bbd25f",
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": false,
   "tag-separator": "@",
@@ -8,17 +7,38 @@
   "plugins": ["node-workspace"],
   "packages": {
     "packages/mux-active-viewer-count": {
-      "prerelease": true
+      "prerelease": true,
+      "package-name": "@mux/mux-active-viewer-count"
     },
-    "packages/mux-audio": {},
-    "packages/mux-audio-react": {},
-    "packages/mux-elements-codemod": {},
-    "packages/mux-player": {},
-    "packages/mux-player-react": {},
-    "packages/mux-uploader": {},
-    "packages/mux-uploader-react": {},
-    "packages/mux-video": {},
-    "packages/mux-video-react": {},
-    "packages/playback-core": {}
+    "packages/mux-audio": {
+      "package-name": "@mux/mux-audio"
+    },
+    "packages/mux-audio-react": {
+      "package-name": "@mux/mux-audio-react"
+    },
+    "packages/mux-elements-codemod": {
+      "package-name": "@mux/mux-elements-codemod"
+    },
+    "packages/mux-player": {
+      "package-name": "@mux/mux-player"
+    },
+    "packages/mux-player-react": {
+      "package-name": "@mux/mux-player-react"
+    },
+    "packages/mux-uploader": {
+      "package-name": "@mux/mux-uploader"
+    },
+    "packages/mux-uploader-react": {
+      "package-name": "@mux/mux-uploader-react"
+    },
+    "packages/mux-video": {
+      "package-name": "@mux/mux-video"
+    },
+    "packages/mux-video-react": {
+      "package-name": "@mux/mux-video-react"
+    },
+    "packages/playback-core": {
+      "package-name": "@mux/playback-core"
+    }
   }
 }
