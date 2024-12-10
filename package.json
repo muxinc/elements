@@ -33,7 +33,7 @@
     "build": "turbo run build",
     "i18n": "turbo run i18n",
     "prepare": "husky install",
-    "publish-release": "turbo run publish-release --filter '@mux/*' --"
+    "publish-release": "npm run publish-release -w packages --"
   },
   "resolutions": {
     "playwright": "1.45.3"
