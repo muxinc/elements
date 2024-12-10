@@ -9,8 +9,7 @@
     "packages/mux-active-viewer-count": {
       "component": "@mux/mux-active-viewer-count",
       "prerelease": true,
-      "prerelease-type": "alpha",
-      "bump-patch-for-minor-pre-major": true
+      "versioning": "prerelease"
     },
     "packages/mux-audio": {
       "component": "@mux/mux-audio"
