@@ -52,7 +52,6 @@
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
     "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
   "peerDependencies": {

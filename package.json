@@ -33,7 +33,6 @@
     "build": "turbo run build",
     "i18n": "turbo run i18n",
     "prepare": "husky install",
-    "create-release-notes": "turbo run create-release-notes --filter '@mux/*'",
     "publish-release": "turbo run publish-release --filter '@mux/*' --"
   },
   "resolutions": {

@@ -5,6 +5,9 @@
     "clean": {
       "cache": false
     },
+    "publish-release": {
+      "cache": false
+    },
     "lint": {
       "outputs": []
     },

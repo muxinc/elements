@@ -20,7 +20,6 @@
     "build:esm": "esbuild src/index.ts --target=es2019 --format=esm --outdir=dist --out-extension:.js=.mjs",
     "build:types": "tsc",
     "build": "npm-run-all --parallel build:esm",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
     "publish-release": "../../scripts/publish.sh"
   },
   "dependencies": {
