@@ -155,7 +155,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
           mutation.addedNodes.forEach((node) => {
             const element = node as HTMLElement;
-            if (!element?.slot) {
+            if (!element?.slot && element.parentElement === this) {
               this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, node));
             }
           });
