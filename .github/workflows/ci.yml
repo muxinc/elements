@@ -9,6 +9,9 @@ env:
 
 jobs:
   build:
+    # Don't run if the CI is triggered by Release Please
+    if: ${{ github.actor != 'github-actions[bot]' }}
+
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -35,6 +38,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   lint:
+    # Don't run if the CI is triggered by Release Please
+    if: ${{ github.actor != 'github-actions[bot]' }}
+
     runs-on: ubuntu-latest
 
     steps:
@@ -51,6 +57,9 @@ jobs:
       - run: yarn lint
 
   test:
+    # Don't run if the CI is triggered by Release Please
+    if: ${{ github.actor != 'github-actions[bot]' }}
+
     runs-on: ubuntu-latest
 
     steps:
