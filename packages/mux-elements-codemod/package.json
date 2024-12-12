@@ -1,12 +1,14 @@
 {
   "name": "@mux/mux-elements-codemod",
   "version": "1.1.9",
-  "description": "A codemod to transform @mux-elments scope imports into @mux scope imports",
-  "bin": "./dist/index.mjs",
+  "description": "A codemod to transform @mux-elements scope imports into @mux scope imports",
+  "bin": {
+    "mux-elements-codemod": "dist/index.mjs"
+  },
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-elements-codemod"
   },
   "author": "Mux, Inc.",

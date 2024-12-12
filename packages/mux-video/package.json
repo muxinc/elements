@@ -38,7 +38,7 @@
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-video"
   },
   "author": "Mux, Inc.",
