@@ -155,7 +155,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
           mutation.addedNodes.forEach((node) => {
             const element = node as HTMLElement;
-            if (!element?.slot && element.parentElement === this) {
+            if (!element?.slot) {
               this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, node));
             }
           });
@@ -164,7 +164,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     };
 
     const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, subtree: true });
+    observer.observe(this, { childList: true });
   }
 
   /**
