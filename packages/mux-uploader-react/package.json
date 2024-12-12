@@ -52,8 +52,7 @@
     "build:esm": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:prop-types",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'"
   },
   "peerDependencies": {
     "@types/react": "^17.0.0 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
