@@ -1,9 +1,23 @@
-# Change Log
+# Changelog
+
+## [0.2.0-alpha.10](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.9...@mux/mux-active-viewer-count@0.2.0-alpha.10) (2024-12-12)
+
+
+### Features
+
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+
+## Change Log
 
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [0.2.0-alpha.9](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.8...@mux/mux-active-viewer-count@0.2.0-alpha.9) (2024-09-20)
+## [0.2.0-alpha.9](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.8...@mux/mux-active-viewer-count@0.2.0-alpha.9) (2024-09-20)
 
 **Note:** Version bump only for package @mux/mux-active-viewer-count
 
@@ -11,7 +25,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.8](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.7...@mux/mux-active-viewer-count@0.2.0-alpha.8) (2024-08-02)
+## [0.2.0-alpha.8](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.7...@mux/mux-active-viewer-count@0.2.0-alpha.8) (2024-08-02)
 
 **Note:** Version bump only for package @mux/mux-active-viewer-count
 
@@ -19,7 +33,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.7](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.6...@mux/mux-active-viewer-count@0.2.0-alpha.7) (2024-04-18)
+## [0.2.0-alpha.7](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.6...@mux/mux-active-viewer-count@0.2.0-alpha.7) (2024-04-18)
 
 
 ### Bug Fixes
@@ -30,7 +44,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.6](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.5...@mux/mux-active-viewer-count@0.2.0-alpha.6) (2024-01-02)
+## [0.2.0-alpha.6](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.5...@mux/mux-active-viewer-count@0.2.0-alpha.6) (2024-01-02)
 
 
 ### Bug Fixes
@@ -41,7 +55,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.5](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.4...@mux/mux-active-viewer-count@0.2.0-alpha.5) (2023-12-07)
+## [0.2.0-alpha.5](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.4...@mux/mux-active-viewer-count@0.2.0-alpha.5) (2023-12-07)
 
 
 ### Bug Fixes
@@ -52,7 +66,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.4](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.3...@mux/mux-active-viewer-count@0.2.0-alpha.4) (2023-09-05)
+## [0.2.0-alpha.4](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.3...@mux/mux-active-viewer-count@0.2.0-alpha.4) (2023-09-05)
 
 **Note:** Version bump only for package @mux/mux-active-viewer-count
 
@@ -60,7 +74,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.3](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.2...@mux/mux-active-viewer-count@0.2.0-alpha.3) (2023-08-30)
+## [0.2.0-alpha.3](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.2...@mux/mux-active-viewer-count@0.2.0-alpha.3) (2023-08-30)
 
 **Note:** Version bump only for package @mux/mux-active-viewer-count
 
@@ -68,7 +82,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.2](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.1...@mux/mux-active-viewer-count@0.2.0-alpha.2) (2023-08-15)
+## [0.2.0-alpha.2](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.1...@mux/mux-active-viewer-count@0.2.0-alpha.2) (2023-08-15)
 
 
 ### Bug Fixes
@@ -79,7 +93,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# [0.2.0-alpha.1](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.0...@mux/mux-active-viewer-count@0.2.0-alpha.1) (2023-08-14)
+## [0.2.0-alpha.1](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.0...@mux/mux-active-viewer-count@0.2.0-alpha.1) (2023-08-14)
 
 **Note:** Version bump only for package @mux/mux-active-viewer-count
 
@@ -87,7 +101,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-# 0.2.0-alpha.0 (2023-03-31)
+## 0.2.0-alpha.0 (2023-03-31)
 
 
 ### Bug Fixes
