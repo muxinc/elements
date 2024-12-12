@@ -11,7 +11,7 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-active-viewer-count.js",
-  "jsdelivr": "./dist/mux-active-viewer-counts.js",
+  "jsdelivr": "./dist/mux-active-viewer-count.js",
   "typesVersions": {
     "<4.3.5": {
       ".": [
@@ -35,7 +35,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
-    "directory": "packages/mux-active-viewer-counts"
+    "directory": "packages/mux-active-viewer-count"
   },
   "author": "Mux, Inc.",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8006 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
-    "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-counts/src/' coverage/lcov.info --silent",
+    "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-count/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
     "dev:cjs": "yarn build:cjs --watch=forever",
     "dev:esm": "yarn build:esm --watch=forever",

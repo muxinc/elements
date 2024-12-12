@@ -36,7 +36,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements",
-    "directory": "packages/mux-video"
+    "directory": "packages/mux-video-react"
   },
   "author": "Mux, Inc.",
   "license": "MIT",
