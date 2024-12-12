@@ -29,7 +29,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn clean
       - run: yarn build:packages
-      - run: npx --yes -w packages wet-run@1.2.4 release prerelease --prerelease canary --provenance --log-level verbose
+      - run: npx --yes -w packages wet-run@1.2.5 release prerelease --prerelease canary --provenance --log-level verbose
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
