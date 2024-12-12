@@ -131,8 +131,6 @@ interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
-  #mediaChildrenMap = new WeakMap();
-
   static get observedAttributes() {
     return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
   }
@@ -144,27 +142,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
    */
   constructor() {
     super();
-
-    // Watch for child adds/removes and update the native element if necessary
-    const mutationCallback = (mutationsList: MutationRecord[]) => {
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-          mutation.removedNodes.forEach((node) => {
-            this.#mediaChildrenMap.get(node)?.remove();
-          });
-
-          mutation.addedNodes.forEach((node) => {
-            const element = node as HTMLElement;
-            if (!element?.slot) {
-              this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, node));
-            }
-          });
-        }
-      }
-    };
-
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, subtree: true });
   }
 
   /**
@@ -172,10 +149,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
    * We might just merge VideoApiElement in MuxPlayerElement and remove this?
    */
   init() {
-    this.querySelectorAll(':scope > :not([slot])').forEach((child) => {
-      this.media?.append(getOrInsertNodeClone(this.#mediaChildrenMap, child));
-    });
-
     // The video events are dispatched on the VideoApiElement instance.
     // This makes it possible to add event listeners before the element is upgraded.
     AllowedVideoEvents.forEach((type) => {
@@ -415,15 +388,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
 
 function getVideoAttribute(el: VideoApiElement, name: string) {
   return el.media ? el.media.getAttribute(name) : el.getAttribute(name);
-}
-
-function getOrInsertNodeClone(map: WeakMap<Node, Node>, node: Node) {
-  let clone = map.get(node);
-  if (!clone) {
-    clone = node.cloneNode();
-    map.set(node, clone);
-  }
-  return clone;
 }
 
 export default VideoApiElement;

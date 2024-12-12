@@ -137,6 +137,7 @@ export const content = (props: MuxTemplateProps) => html`
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
+      <slot></slot>
     </mux-video>
     <slot name="poster" slot="poster">
       <media-poster-image
