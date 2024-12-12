@@ -48,6 +48,30 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.1.0...@mux/mux-player@3.2.0) (2024-12-12)
+
+
+### Features
+
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+* use MC media-error-dialog ([#1014](https://github.com/muxinc/elements/issues/1014)) ([2fbb2c1](https://github.com/muxinc/elements/commit/2fbb2c157aa694ed82fc2b81b989cca6c0f790af))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+* Mux-player childList observer behavior ([#1041](https://github.com/muxinc/elements/issues/1041)) ([d34903f](https://github.com/muxinc/elements/commit/d34903f97b35545093484ffc2cc4713825658337))
+* **mux-video, mux-video-react, mux-audio, mux-audio-react, mux-player, mux-player-react:** Expose element name and version via exports and statics for web components. ([#1017](https://github.com/muxinc/elements/issues/1017)) ([27b6858](https://github.com/muxinc/elements/commit/27b6858de2190e2caf2b1315ebbc469c01bbd25f))
+* upgrade player.style 0.1.0 ([#1032](https://github.com/muxinc/elements/issues/1032)) ([ef71319](https://github.com/muxinc/elements/commit/ef713192980e5ce687f0028a63cc081b5a777632))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.22.0 to 0.23.0
+    * @mux/playback-core bumped from 0.27.0 to 0.28.0
+
 ## [2.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player@2.9.0...@mux/mux-player@2.9.1) (2024-08-06)
 
 

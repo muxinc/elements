@@ -31,6 +31,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.23.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.22.0...@mux/mux-video@0.23.0) (2024-12-12)
+
+
+### Features
+
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+* **mux-video, mux-video-react, mux-audio, mux-audio-react, mux-player, mux-player-react:** Expose element name and version via exports and statics for web components. ([#1017](https://github.com/muxinc/elements/issues/1017)) ([27b6858](https://github.com/muxinc/elements/commit/27b6858de2190e2caf2b1315ebbc469c01bbd25f))
+* tracks updating after load new playback id ([#1021](https://github.com/muxinc/elements/issues/1021)) ([b762184](https://github.com/muxinc/elements/commit/b762184001dfb373e1715bb3283e593aa2bf08eb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.27.0 to 0.28.0
+
 ## [0.20.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.20.1...@mux/mux-video@0.20.2) (2024-08-06)
 
 **Note:** Version bump only for package @mux/mux-video

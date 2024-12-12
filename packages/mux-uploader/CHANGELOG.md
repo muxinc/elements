@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.2...@mux/mux-uploader@1.1.0) (2024-12-12)
+
+
+### Features
+
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+
 ## [1.0.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.0.1...@mux/mux-uploader@1.0.2) (2024-09-20)
 
 **Note:** Version bump only for package @mux/mux-uploader

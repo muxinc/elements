@@ -20,6 +20,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.12.0](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.11.0...@mux/mux-audio-react@0.12.0) (2024-12-12)
+
+
+### Features
+
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+* use MC media-error-dialog ([#1014](https://github.com/muxinc/elements/issues/1014)) ([2fbb2c1](https://github.com/muxinc/elements/commit/2fbb2c157aa694ed82fc2b81b989cca6c0f790af))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+* **mux-video, mux-video-react, mux-audio, mux-audio-react, mux-player, mux-player-react:** Expose element name and version via exports and statics for web components. ([#1017](https://github.com/muxinc/elements/issues/1017)) ([27b6858](https://github.com/muxinc/elements/commit/27b6858de2190e2caf2b1315ebbc469c01bbd25f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.27.0 to 0.28.0
+
 ## [0.10.4](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.10.3...@mux/mux-audio-react@0.10.4) (2024-09-20)
 
 **Note:** Version bump only for package @mux/mux-audio-react

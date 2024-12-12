@@ -40,6 +40,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.27.0...@mux/playback-core@0.28.0) (2024-12-12)
+
+
+### Features
+
+* **playback-core:** custom cap level controller ([#1010](https://github.com/muxinc/elements/issues/1010)) ([e49e231](https://github.com/muxinc/elements/commit/e49e2318fba432da4832c10328e1f2034fba6949))
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+* use MC media-error-dialog ([#1014](https://github.com/muxinc/elements/issues/1014)) ([2fbb2c1](https://github.com/muxinc/elements/commit/2fbb2c157aa694ed82fc2b81b989cca6c0f790af))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+
 ## [0.25.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.25.1...@mux/playback-core@0.25.2) (2024-08-06)
 
 
