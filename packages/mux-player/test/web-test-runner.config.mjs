@@ -26,7 +26,8 @@ const config = {
     include: ['src/**/*'],
   },
   testsFinishTimeout: 600000,
-  browsers: [chromeLauncher({})],
+  browsers: [chromeLauncher()],
+  filterBrowserLogs: ({ args }) => !args[0]?.startsWith('Lit is in dev mode'),
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
