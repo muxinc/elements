@@ -24,5 +24,6 @@ export default {
     report: true,
     include: ['src/**/*'],
   },
-  browsers: [chromeLauncher({ launchOptions: { args: ['--headless=old'] } })],
+  browsers: [chromeLauncher()],
+  filterBrowserLogs: ({ args }) => !args[0]?.startsWith('Lit is in dev mode'),
 };
