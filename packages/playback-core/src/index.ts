@@ -2,6 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
+import type { ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -32,7 +33,6 @@ import {
   parseJwt,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
-import { ErrorDetails, ErrorTypes, type ErrorData, type HlsConfig } from 'hls.js';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
 // import { MediaKeySessionContext } from 'hls.js';
@@ -1397,8 +1397,8 @@ const getErrorFromHlsErrorData = (
   const hlsErrorDataToErrorCode = (data: ErrorData) => {
     if (
       [
-        ErrorDetails.KEY_SYSTEM_LICENSE_REQUEST_FAILED,
-        ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_REQUEST_FAILED,
+        Hls.ErrorDetails.KEY_SYSTEM_LICENSE_REQUEST_FAILED,
+        Hls.ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_REQUEST_FAILED,
       ].includes(data.details)
     ) {
       return MediaError.MEDIA_ERR_NETWORK;
@@ -1408,8 +1408,8 @@ const getErrorFromHlsErrorData = (
 
   // eslint-disable-next-line no-shadow
   const hlsErrorDataToCategory = (data: ErrorData) => {
-    if (data.type === ErrorTypes.KEY_SYSTEM_ERROR) return MuxErrorCategory.DRM;
-    if (data.type === ErrorTypes.NETWORK_ERROR) return MuxErrorCategory.VIDEO;
+    if (data.type === Hls.ErrorTypes.KEY_SYSTEM_ERROR) return MuxErrorCategory.DRM;
+    if (data.type === Hls.ErrorTypes.NETWORK_ERROR) return MuxErrorCategory.VIDEO;
   };
 
   let mediaError: MediaError;
@@ -1418,12 +1418,12 @@ const getErrorFromHlsErrorData = (
     const category = hlsErrorDataToCategory(data) ?? MuxErrorCategory.VIDEO;
     mediaError = getErrorFromResponse(data.response, category, props) ?? new MediaError('', errorCode);
   } else if (errorCode === MediaError.MEDIA_ERR_ENCRYPTED) {
-    if (data.details === ErrorDetails.KEY_SYSTEM_NO_CONFIGURED_LICENSE) {
+    if (data.details === Hls.ErrorDetails.KEY_SYSTEM_NO_CONFIGURED_LICENSE) {
       const message = i18n('Attempting to play DRM-protected content without providing a DRM token.');
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_MISSING_TOKEN;
-    } else if (data.details === ErrorDetails.KEY_SYSTEM_NO_ACCESS) {
+    } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_NO_ACCESS) {
       /** @TODO For UI message add suggestion to try another browser */
       const message = i18n(
         'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.'
@@ -1432,7 +1432,7 @@ const getErrorFromHlsErrorData = (
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_UNSUPPORTED_KEY_SYSTEM;
-    } else if (data.details === ErrorDetails.KEY_SYSTEM_NO_SESSION) {
+    } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_NO_SESSION) {
       const message = i18n(
         'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
       );
@@ -1441,28 +1441,28 @@ const getErrorFromHlsErrorData = (
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-    } else if (data.details === ErrorDetails.KEY_SYSTEM_SESSION_UPDATE_FAILED) {
+    } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_SESSION_UPDATE_FAILED) {
       const message = i18n(
         'Failed to update DRM license. This may be an issue with the player or your protected content.'
       );
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
-    } else if (data.details === ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_UPDATE_FAILED) {
+    } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_SERVER_CERTIFICATE_UPDATE_FAILED) {
       const message = i18n(
         'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.'
       );
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_SERVER_CERT_FAILED;
-    } else if (data.details === ErrorDetails.KEY_SYSTEM_STATUS_INTERNAL_ERROR) {
+    } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_STATUS_INTERNAL_ERROR) {
       const message = i18n(
         'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
       );
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
-    } else if (data.details === ErrorDetails.KEY_SYSTEM_STATUS_OUTPUT_RESTRICTED) {
+    } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_STATUS_OUTPUT_RESTRICTED) {
       const message = i18n(
         'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
       );

@@ -1,6 +1,9 @@
-import type Hls from 'hls.js';
+import Hls from './hls';
+import type { HlsInterface } from './hls';
 import type { Level } from 'hls.js';
-import { CapLevelController } from 'hls.js';
+
+// The hls.js commonJS module doesn't export CapLevelController, so get it from the default config.
+const CapLevelController = Hls.DefaultConfig.capLevelController;
 
 /**
  * A custom HLS.js CapLevelController that behaves like the default one, except
@@ -10,7 +13,7 @@ class MinCapLevelController extends CapLevelController {
   // Never cap below this level.
   static minMaxResolution = 720;
 
-  constructor(hls: Hls) {
+  constructor(hls: HlsInterface) {
     super(hls);
   }
 
