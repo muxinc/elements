@@ -48,6 +48,16 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.2.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.2.0...@mux/mux-player@3.2.1) (2024-12-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.23.0 to 0.23.1
+    * @mux/playback-core bumped from 0.28.0 to 0.28.1
+
 ## [3.2.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.1.0...@mux/mux-player@3.2.0) (2024-12-12)
 
 
