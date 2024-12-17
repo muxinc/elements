@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.actor != 'github-actions[bot]' }}
+    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -39,7 +39,7 @@ jobs:
 
   lint:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.actor != 'github-actions[bot]' }}
+    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
 
@@ -58,7 +58,7 @@ jobs:
 
   test:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.actor != 'github-actions[bot]' }}
+    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
 
