@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.0...@mux/playback-core@0.28.1) (2024-12-17)
+
+
+### Bug Fixes
+
+* cap level controller import in cjs build ([#1045](https://github.com/muxinc/elements/issues/1045)) ([23045a3](https://github.com/muxinc/elements/commit/23045a3c28cf158bf3018312240b0e1925a1459b))
+
 ## [0.28.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.27.0...@mux/playback-core@0.28.0) (2024-12-12)
 
 
