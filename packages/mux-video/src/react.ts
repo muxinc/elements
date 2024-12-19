@@ -1,6 +1,6 @@
 'use client';
 
-import MuxVideoElement from '.';
+import MuxVideoElement from '@mux/mux-video';
 import React from 'react';
 // keep as last import, ce-la-react is bundled.
 import { createComponent } from 'ce-la-react';
