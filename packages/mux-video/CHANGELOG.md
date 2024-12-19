@@ -31,6 +31,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.24.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.23.1...@mux/mux-video@0.24.0) (2024-12-19)
+
+
+### Features
+
+* add `@mux/mux-video/react` import ([#1047](https://github.com/muxinc/elements/issues/1047)) ([8470223](https://github.com/muxinc/elements/commit/8470223e27a870b81d7bf4a3afbdfc8c23c29ec5))
+
 ## [0.23.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.23.0...@mux/mux-video@0.23.1) (2024-12-17)
 
 
