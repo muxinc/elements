@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
+    if: ${{ github.event.commits[0].author.name != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -38,11 +38,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   lint:
+    # Don't run if the CI is triggered by Release Please
+    if: ${{ github.event.commits[0].author.name != 'github-actions[bot]' }}
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: View PR author
-        run: echo "This PR is opened by ${{ github.event.pull_request.user.login }}"
       - uses: actions/checkout@v4
       - name: read node version from the .nvmrc file
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
@@ -57,7 +58,7 @@ jobs:
 
   test:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
+    if: ${{ github.event.commits[0].author.name != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
 
