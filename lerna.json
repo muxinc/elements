@@ -1,7 +1,0 @@
-{
-  "packages": ["packages/*", "examples/*", "scripts/*"],
-  "npmClient": "yarn",
-  "useWorkspaces": true,
-  "version": "independent",
-  "ignoreChanges": ["**/test/**", "**/*.md"]
-}

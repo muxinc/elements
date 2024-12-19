@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player-react",
-  "version": "3.0.0",
+  "version": "3.2.1",
   "description": "An open source Mux player for React that Just Works™",
   "homepage": "https://mux.com/player",
   "keywords": [
@@ -40,28 +40,28 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.cjs.js"
     },
     "./lazy": {
       "import": "./dist/lazy.mjs",
-      "default": "./dist/lazy.mjs",
       "types@<4.3.5": "./dist/types-ts3.4/lazy.d.ts",
-      "types": "./dist/types/lazy.d.ts"
+      "types": "./dist/types/lazy.d.ts",
+      "default": "./dist/lazy.mjs"
     },
     "./themes/*": {
       "import": "./dist/themes/*.mjs",
       "require": "./dist/themes/*.cjs.js",
-      "default": "./dist/themes/*.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/themes/*.d.ts",
-      "types": "./dist/types/themes/*.d.ts"
+      "types": "./dist/types/themes/*.d.ts",
+      "default": "./dist/themes/*.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-player-react"
   },
   "author": "Mux, Inc.",
@@ -80,14 +80,12 @@
     "build:esm:lazy": "esbuild src/lazy.tsx --splitting --target=es2019 --bundle --sourcemap --metafile=./dist/esm.lazy.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify' 'build:esm:lazy --minify'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify' 'build:esm:lazy --minify'"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18 || ^19",
-    "react": "^17.0.2 || ^18 || ^19",
-    "react-dom": "^17.0.2 || ^18 || ^19"
+    "@types/react": "^17.0.0 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
+    "react": "^17.0.2 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
+    "react-dom": "^17.0.2 || ^17.0.2-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -98,8 +96,8 @@
     }
   },
   "dependencies": {
-    "@mux/mux-player": "3.0.0",
-    "@mux/playback-core": "0.26.0",
+    "@mux/mux-player": "3.2.1",
+    "@mux/playback-core": "0.28.1",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

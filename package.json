@@ -1,8 +1,8 @@
 {
   "name": "@mux/elements",
   "engines": {
-    "node": "^14.0.0 || ^16.0.0 || ^18.0.0 || >20.0.0",
-    "npm": "^7.0.0 || ^8.0.0"
+    "node": ">=14.0.0",
+    "npm": ">=7.0.0"
   },
   "version": "0.1.0",
   "description": "Custom elements for working with media in the browser that Just Work™",
@@ -13,10 +13,9 @@
   "private": true,
   "devDependencies": {
     "husky": "^7.0.0",
-    "lerna": "^4.0.0",
     "prettier": "^3.2.5",
     "pretty-quick": "^4.0.0",
-    "turbo": "^1.13.2"
+    "turbo": "^2.3.3"
   },
   "workspaces": [
     "packages/*",
@@ -33,15 +32,9 @@
     "build:packages": "turbo run build --filter '!./examples/*'",
     "build": "turbo run build",
     "i18n": "turbo run i18n",
-    "prepare": "husky install",
-    "deploy": "lerna publish from-package --no-private --no-verify-access --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
-    "deploy:canary": "lerna run deploy:canary --npm-client=npm --scope @mux/*",
-    "version:update": "lerna version --exact --no-private --conventional-commits --conventional-prerelease=@mux/mux-active-viewer-count",
-    "create-release-notes": "lerna run create-release-notes --scope @mux/*",
-    "publish-release": "lerna run publish-release --scope @mux/* --"
+    "prepare": "husky install"
   },
   "resolutions": {
-    "@web/test-runner-chrome": "0.13.0",
     "playwright": "1.45.3"
   },
   "packageManager": "yarn@1.22.21+sha256.dbed5b7e10c552ba0e1a545c948d5473bc6c5a28ce22a8fd27e493e3e5eb6370"

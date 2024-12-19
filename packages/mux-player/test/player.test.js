@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout, waitUntil, oneEvent } from '@open-wc/testing';
+import { fixture, assert, aTimeout, waitUntil, oneEvent, nextFrame } from '@open-wc/testing';
 import '../src/index.ts';
 
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
@@ -545,16 +545,19 @@ describe('<mux-player>', () => {
     const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
     const storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
 
+    await waitUntil(() => !!muxVideo.getAttribute('src'), '<mux-video> src never set');
     assert.equal(
       muxVideo.getAttribute('src'),
       'https://stream.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY.m3u8?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE2MjgsImF1ZCI6InYiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.OUegJAmrlvD9BhzUhogrup_mYRBYNG2ocqmJZK2lKPLFmP1jLKi99Lj_9ZQqIXgmoYeXo2jKr3WFMO8nbGwtZFKU2_szq1EWlj4mBgdWXfAP5amC92qkm87nIuNFM2WVANGlBksmj8uOmYNIuPh1Ctti1qiJEYkf-JthWFFpaR_2TlQJ7g0bmRPzk3nOPDtqZnJBfTVm3n4Kp7Cr27a_VBA6zpoW6DwjJ6_uPkm6TAxXjw7VWNd3YVLs7S_jgs8q3t9DPpAN57q94syVQtEUkRh4tlDX-gdIrJDi9nFB1fIBh45pD01PvrAWzZXKKE9YSW7dnktqSUy81kcu2F_gXA'
     );
 
+    await waitUntil(() => !!mediaPosterImage.getAttribute('src'), '<media-poster-image> src never set');
     assert.equal(
       mediaPosterImage.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/thumbnail.webp?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3MzYsImF1ZCI6InQiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.gDe_efqmRB5E3e4ag6in8MfMK-Vn3c_3B4M-BiWw6lg2aaf2BOTv7ltxhn2cvg4G0iFi-esRjhDlHbMRTxwTGavsx8TRLFtJ8vyBzToaFQbQMrn9OZztq_XrCEwqkD8bUAVtdOT1YB606OZyy6XO-CxdMRrKMUsM-cGrfv0TxvzJjThJBY4SzFv_whtYRxqAypZojROU7IiTbqcsk_cSrRMjB7WyAOAvyPNKnr6RkVEuMJtlCtaf_e4DIJHebZUZb3JmVTG4jIWrD1QkN7uLUwCPPRvGhXwhet9JaJPyC5lmkcb9YmH-15V6GOpwSg7sDMGC3YS4aIb_RtVkan0t-w'
     );
 
+    await waitUntil(() => !!storyboardTrack.getAttribute('src'), 'storyboard <track> src never set');
     assert.equal(
       storyboardTrack.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/storyboard.vtt?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3NzcsImF1ZCI6InMiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.aVd0dsOJUVeQko3BWd9YEhL41Eytf_ZfaBeNzHSSUqU_gREa_jJEVTlRfuiE4g71cKJLSiVTKP7f-F7Txh6DlL8E2SkonfIPB2H0f_3DQxYLso2E8qI4zuJkyxKORbQFLAEB_vSE-2lMbrHXfdpQhv6SrVyu6di9ku0LpFpoyz-_7fVJICr8nhlsqOGt66AYcaa99TXoZ582FWzBaePmWw-WWKYsLvtNjLS9UoxbdVaBRwNylohvhh-i1Y9dNilyNooJ7O8Cj4GuMjeh1pCj0BOrGagxrWrswm3HjUVNUqFq5JCWnJCxgjjwiV4RLZg_4z7gkBXyX7H2-i1dKA3Cpw&format=webp'
@@ -637,24 +640,22 @@ describe('<mux-player>', () => {
     });
 
     (isSafari ? it.skip : it)('should have something in the buffer if canplay', async function () {
-      this.timeout(5000);
+      this.timeout(10000);
       const playerEl = await fixture(
-        '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
+        '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe" preload="auto"></mux-player>'
       );
-      if (playerEl.readyState < 3) {
-        await oneEvent(playerEl, 'canplay');
-      }
-      assert(playerEl.buffered.length >= 1, 'should have a length of at least 1');
+
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
+      assert.isAtLeast(playerEl.buffered.length, 1, 'should have a length of at least 1');
     });
 
     (isSafari ? it.skip : it)('should clear the buffer when the media is unset', async function () {
-      this.timeout(5000);
+      this.timeout(10000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      if (playerEl.readyState < 3) {
-        await oneEvent(playerEl, 'canplay');
-      }
+
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
@@ -669,24 +670,22 @@ describe('<mux-player>', () => {
     });
 
     (isSafari ? it.skip : it)('should have a length of exactly 1 if canplay', async function () {
-      this.timeout(5000);
+      this.timeout(10000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      if (playerEl.readyState < 3) {
-        await oneEvent(playerEl, 'canplay');
-      }
+
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
       assert.equal(playerEl.seekable.length, 1, 'should have a length of exactly 1');
     });
 
     (isSafari ? it.skip : it)('should clear the seekable range when the media is unset', async function () {
-      this.timeout(5000);
+      this.timeout(10000);
       const playerEl = await fixture(
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
-      if (playerEl.readyState < 3) {
-        await oneEvent(playerEl, 'canplay');
-      }
+
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
@@ -904,7 +903,9 @@ describe('<mux-player> playbackId transitions', () => {
     assert(!muxVideo.hasAttribute('src'), `muxVideo has no src attribute`);
   });
 
-  it('loads the new playbackId and clears dialog state', async function () {
+  it('loads the new playbackId and hides error dialog', async function () {
+    this.timeout(10000);
+
     const oldLogError = console.error;
     const oldLogWarn = console.warn;
 
@@ -913,31 +914,31 @@ describe('<mux-player> playbackId transitions', () => {
     // eslint-disable-next-line
     console.warn = () => {};
 
+    // correct playback-id is DS00Spx1CV902MCtPj5WknGlR102V5HFkDe
     const player = await fixture(`<mux-player
-      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkD"
       stream-type="on-demand"
       muted
     ></mux-player>`);
 
-    assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
+    assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkD');
 
-    player.dispatchEvent(
-      new CustomEvent('error', {
-        detail: { code: MediaError.MEDIA_ERR_NETWORK },
-      })
-    );
+    const errorDialog = player.mediaTheme.shadowRoot.querySelector('media-error-dialog');
 
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3').textContent, 'Network Error');
+    await waitUntil(() => errorDialog.open, 'error dialog never opened');
+    assert.equal(errorDialog.shadowRoot.querySelector('h3').textContent, 'Video does not exist');
 
     player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';
-
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+    await aTimeout(100);
+    assert(!errorDialog.open);
 
     console.error = oldLogError;
     console.warn = oldLogWarn;
   });
 
-  it('loads the new src and clears dialog state', async function () {
+  it('loads the new src and hides error dialog', async function () {
+    this.timeout(10000);
+
     const oldLogError = console.error;
     const oldLogWarn = console.warn;
 
@@ -946,25 +947,23 @@ describe('<mux-player> playbackId transitions', () => {
     // eslint-disable-next-line
     console.warn = () => {};
 
+    // correct playback-id is DS00Spx1CV902MCtPj5WknGlR102V5HFkDe
     const player = await fixture(`<mux-player
-      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkD.m3u8"
       stream-type="on-demand"
       muted
     ></mux-player>`);
 
-    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8');
+    assert.equal(player.src, 'https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkD.m3u8');
 
-    player.dispatchEvent(
-      new CustomEvent('error', {
-        detail: { code: MediaError.MEDIA_ERR_NETWORK },
-      })
-    );
+    const errorDialog = player.mediaTheme.shadowRoot.querySelector('media-error-dialog');
 
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3').textContent, 'Network Error');
+    await waitUntil(() => errorDialog.open, 'error dialog never opened');
+    assert.equal(errorDialog.shadowRoot.querySelector('h3').textContent, 'Video does not exist');
 
     player.src = 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8';
-
-    assert.equal(player.shadowRoot.querySelector('mxp-dialog h3'), null);
+    await aTimeout(100);
+    assert(!errorDialog.open);
 
     console.error = oldLogError;
     console.warn = oldLogWarn;

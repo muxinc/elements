@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.13.4...@mux/mux-audio@0.14.0) (2024-10-24)
+
+
+### Features
+
+* **playback-core, mux-video, mux-audio, mux-video-react, mux-audio-react, mux-player, mux-player-react:** Add asset start and end time props and attrs. ([#1002](https://github.com/muxinc/elements/issues/1002)) ([99a0726](https://github.com/muxinc/elements/commit/99a07268cfa78ee026a0ee7b7f9af90fcf3feb4c))
+* **playback-core:** error handling rearchitecture (including more granular and DRM error cases)  ([4d0b670](https://github.com/muxinc/elements/commit/4d0b670eacb57f44891fab781941dab6e97e06fe))
+
+
+
+
+
+## [0.15.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.0...@mux/mux-audio@0.15.1) (2024-12-17)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.28.0 to 0.28.1
+
+## [0.15.0](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.14.0...@mux/mux-audio@0.15.0) (2024-12-12)
+
+
+### Features
+
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+* **mux-video, mux-video-react, mux-audio, mux-audio-react, mux-player, mux-player-react:** Expose element name and version via exports and statics for web components. ([#1017](https://github.com/muxinc/elements/issues/1017)) ([27b6858](https://github.com/muxinc/elements/commit/27b6858de2190e2caf2b1315ebbc469c01bbd25f))
+* tracks updating after load new playback id ([#1021](https://github.com/muxinc/elements/issues/1021)) ([b762184](https://github.com/muxinc/elements/commit/b762184001dfb373e1715bb3283e593aa2bf08eb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.27.0 to 0.28.0
+
 ## [0.13.4](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.13.3...@mux/mux-audio@0.13.4) (2024-09-20)
 
 **Note:** Version bump only for package @mux/mux-audio

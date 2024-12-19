@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-active-viewer-count",
-  "version": "0.2.0-alpha.9",
+  "version": "0.2.0-alpha.10",
   "description": "A custom Mux element to show the current viewer count for the browser that Just Works™",
   "keywords": [
     "analytics",
@@ -11,7 +11,7 @@
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
   "unpkg": "./dist/mux-active-viewer-count.js",
-  "jsdelivr": "./dist/mux-active-viewer-counts.js",
+  "jsdelivr": "./dist/mux-active-viewer-count.js",
   "typesVersions": {
     "<4.3.5": {
       ".": [
@@ -27,15 +27,15 @@
   "exports": {
     "import": "./dist/index.mjs",
     "require": "./dist/index.cjs.js",
-    "default": "./dist/index.cjs.js",
     "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-    "types": "./dist/types/index.d.ts"
+    "types": "./dist/types/index.d.ts",
+    "default": "./dist/index.cjs.js"
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
-    "directory": "packages/mux-active-viewer-counts"
+    "url": "git+https://github.com/muxinc/elements.git",
+    "directory": "packages/mux-active-viewer-count"
   },
   "author": "Mux, Inc.",
   "license": "MIT",
@@ -43,7 +43,7 @@
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8006 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
-    "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-counts/src/' coverage/lcov.info --silent",
+    "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-count/src/' coverage/lcov.info --silent",
     "dev:iife": "yarn build:iife --watch=forever",
     "dev:cjs": "yarn build:cjs --watch=forever",
     "dev:esm": "yarn build:esm --watch=forever",
@@ -57,9 +57,7 @@
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'"
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
@@ -67,7 +65,7 @@
     "@typescript-eslint/parser": "^8.3.0",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/dev-server-import-maps": "^0.2.1",
-    "@web/test-runner": "^0.18.2",
+    "@web/test-runner": "^0.19.0",
     "downlevel-dts": "^0.11.0",
     "esbuild": "^0.19.8",
     "eslint": "^9.9.1",

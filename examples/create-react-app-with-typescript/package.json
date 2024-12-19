@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://elements-create-react-app.vercel.app/",
+  "homepage": "https://elements-demo-create-react-app.vercel.app/",
   "eslintConfig": {
     "extends": [
       "react-app",

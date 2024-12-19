@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player",
-  "version": "3.0.0",
+  "version": "3.2.1",
   "description": "An open source Mux player web component that Just Works™",
   "homepage": "https://mux.com/player",
   "keywords": [
@@ -31,9 +31,9 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.cjs.js"
     },
     "./themes/microvideo": {
       "import": "./dist/themes/microvideo/index.mjs",
@@ -63,7 +63,7 @@
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-player"
   },
   "author": "Mux, Inc.",
@@ -71,6 +71,7 @@
   "scripts": {
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "test:saucelabs": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.saucelabs.config.mjs --root-dir ../..",
     "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info --silent",
     "i18n": "yarn build:esm --keep-names && i18n-utils dist/index.mjs ./lang",
@@ -89,15 +90,13 @@
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify' 'build:themes'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify' 'build:themes'"
   },
   "dependencies": {
-    "@mux/mux-video": "0.21.0",
-    "@mux/playback-core": "0.26.0",
-    "media-chrome": "~4.1.5",
-    "player.style": "^0.0.8"
+    "@mux/mux-video": "0.23.1",
+    "@mux/playback-core": "0.28.1",
+    "media-chrome": "~4.3.0",
+    "player.style": "^0.1.0"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",
@@ -106,8 +105,10 @@
     "@typescript-eslint/parser": "^8.3.0",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/dev-server-import-maps": "^0.2.1",
-    "@web/test-runner": "^0.18.2",
+    "@web/dev-server-legacy": "^2.1.1",
+    "@web/test-runner": "^0.19.0",
     "@web/test-runner-playwright": "^0.11.0",
+    "@web/test-runner-saucelabs": "^0.11.2",
     "downlevel-dts": "^0.11.0",
     "esbuild": "^0.19.8",
     "eslint": "^9.9.1",

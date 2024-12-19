@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.3...@mux/mux-uploader-react@1.0.4) (2024-12-12)
+
+
+### Bug Fixes
+
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-uploader bumped from 1.0.2 to 1.1.0
+
+## [1.0.3](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.2...@mux/mux-uploader-react@1.0.3) (2024-10-24)
+
+
+### Bug Fixes
+
+* add updated peer deps to other React pkgs ([#1006](https://github.com/muxinc/elements/issues/1006)) ([e51a7ce](https://github.com/muxinc/elements/commit/e51a7ce412ce7f56610035f412e2f263325ed6ad))
+
+
+
+
+
 ## [1.0.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.1...@mux/mux-uploader-react@1.0.2) (2024-09-20)
 
 **Note:** Version bump only for package @mux/mux-uploader-react

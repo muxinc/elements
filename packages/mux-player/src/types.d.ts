@@ -36,7 +36,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   defaultDuration?: number;
   hideDuration: boolean;
   onCloseErrorDialog: (evt: CustomEvent) => void;
-  onInitFocusDialog: (evt: CustomEvent) => void;
+  onFocusInErrorDialog: (evt: CustomEvent) => void;
   dialog: DialogOptions;
   inLiveWindow: boolean;
   maxResolution?: MaxResolutionValue;

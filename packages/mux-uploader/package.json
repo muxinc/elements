@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "An uploader elements to be used with Mux Direct Uploads",
   "keywords": [
     "video",
@@ -32,15 +32,15 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-uploader"
   },
   "author": "Mux, Inc.",
@@ -62,9 +62,7 @@
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'"
   },
   "dependencies": {
     "@mux/upchunk": "^3.4.0"
@@ -73,7 +71,7 @@
     "@open-wc/testing": "^4.0.0",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/dev-server-import-maps": "^0.2.1",
-    "@web/test-runner": "^0.18.2",
+    "@web/test-runner": "^0.19.0",
     "copyfiles": "^2.4.1",
     "downlevel-dts": "^0.11.0",
     "esbuild": "^0.19.8",

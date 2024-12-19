@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader-react",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "An uploader element for React that handles Mux Direct Uploads and a visual progress bar for you",
   "keywords": [
     "video",
@@ -29,15 +29,15 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-uploader-react"
   },
   "author": "Mux, Inc.",
@@ -52,14 +52,12 @@
     "build:esm": "esbuild src/index.tsx --target=es2019 --minify --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:prop-types",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18 || ^19",
-    "react": "^17.0.2 || ^18 || ^19",
-    "react-dom": "^17.0.2 || ^18 || ^19"
+    "@types/react": "^17.0.0 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
+    "react": "^17.0.2 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
+    "react-dom": "^17.0.2 || ^17.0.2-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -70,7 +68,7 @@
     }
   },
   "dependencies": {
-    "@mux/mux-uploader": "1.0.2",
+    "@mux/mux-uploader": "1.1.0",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

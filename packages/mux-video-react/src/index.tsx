@@ -23,8 +23,9 @@ export type Props = Omit<
 > &
   MuxMediaProps;
 
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-video-react';
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-video-react';
+export { generatePlayerInitTime };
 
 const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>((props, ref) => {
   const {
@@ -33,11 +34,8 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     children,
     autoPlay,
     preload,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     tokens,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     playbackToken,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     drmToken,
     ...restProps
   } = props;
@@ -46,7 +44,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     Object.entries(restProps).filter(([key]) => !Object.keys(MuxVideo.propTypes as any).includes(key))
   );
 
-  const [playerInitTime] = useState(generatePlayerInitTime());
+  const [playerInitTime] = useState(props.playerInitTime ?? generatePlayerInitTime());
   const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(props) ?? outerSrc);
   const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
   const innerMediaElRef = useRef<HTMLVideoElement>(null);
@@ -58,9 +56,11 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
 
   useEffect(() => {
     const propsWithState = {
+      // NOTE: Applying playerInitTime first as a simple way of overriding it if/when folks update
+      // the value via props after initial load (e.g. when swapping src)
+      playerInitTime,
       ...props,
       src,
-      playerInitTime,
       playerSoftwareName,
       playerSoftwareVersion,
       autoplay: autoPlay,
@@ -116,6 +116,8 @@ MuxVideo.propTypes = {
   preferPlayback: PropTypes.oneOf(Object.values(PlaybackTypes)),
   programStartTime: PropTypes.number,
   programEndTime: PropTypes.number,
+  assetStartTime: PropTypes.number,
+  assetEndTime: PropTypes.number,
   renditionOrder: PropTypes.oneOf(['desc']),
   startTime: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),

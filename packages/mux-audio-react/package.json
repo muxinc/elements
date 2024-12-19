@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio-react",
-  "version": "0.10.4",
+  "version": "0.12.1",
   "description": "A custom mux audio element for React that Just Works™",
   "keywords": [
     "audio",
@@ -26,15 +26,15 @@
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs.js",
-      "default": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
-      "types": "./dist/types/index.d.ts"
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements",
+    "url": "git+https://github.com/muxinc/elements.git",
     "directory": "packages/mux-video"
   },
   "author": "Mux, Inc.",
@@ -50,14 +50,12 @@
     "build:esm": "esbuild src/index.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --external:react --external:prop-types --external:@mux/* --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'",
-    "create-release-notes": "create-release-notes ./CHANGELOG.md",
-    "publish-release": "../../scripts/publish.sh"
+    "build": "npm-run-all --parallel 'build:cjs --minify' 'build:esm --minify'"
   },
   "peerDependencies": {
-    "@types/react": "^17.0.0 || ^18 || ^19",
-    "react": "^17.0.2 || ^18 || ^19",
-    "react-dom": "^17.0.2 || ^18 || ^19"
+    "@types/react": "^17.0.0 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
+    "react": "^17.0.2 || ^17.0.0-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0",
+    "react-dom": "^17.0.2 || ^17.0.2-0 || ^18 || ^18.0.0-0 || ^19 || ^19.0.0-0"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -68,7 +66,7 @@
     }
   },
   "dependencies": {
-    "@mux/playback-core": "0.26.0",
+    "@mux/playback-core": "0.28.1",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {

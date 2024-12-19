@@ -184,6 +184,8 @@ export type MuxMediaPropTypes = {
   preferPlayback: ValueOf<PlaybackTypes> | undefined;
   programStartTime: number;
   programEndTime: number;
+  assetStartTime: number;
+  assetEndTime: number;
   renditionOrder: RenditionOrderValue;
   startTime: Hls['config']['startPosition'];
   streamType: ValueOf<StreamTypes>;

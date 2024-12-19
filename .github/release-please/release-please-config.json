@@ -1,0 +1,45 @@
+{
+  "bump-minor-pre-major": true,
+  "bump-patch-for-minor-pre-major": false,
+  "tag-separator": "@",
+  "include-component-in-tag": true,
+  "include-v-in-tag": false,
+  "plugins": ["node-workspace"],
+  "packages": {
+    "packages/mux-active-viewer-count": {
+      "component": "@mux/mux-active-viewer-count",
+      "prerelease": true,
+      "versioning": "prerelease"
+    },
+    "packages/mux-audio": {
+      "component": "@mux/mux-audio"
+    },
+    "packages/mux-audio-react": {
+      "component": "@mux/mux-audio-react"
+    },
+    "packages/mux-elements-codemod": {
+      "component": "@mux/mux-elements-codemod"
+    },
+    "packages/mux-player": {
+      "component": "@mux/mux-player"
+    },
+    "packages/mux-player-react": {
+      "component": "@mux/mux-player-react"
+    },
+    "packages/mux-uploader": {
+      "component": "@mux/mux-uploader"
+    },
+    "packages/mux-uploader-react": {
+      "component": "@mux/mux-uploader-react"
+    },
+    "packages/mux-video": {
+      "component": "@mux/mux-video"
+    },
+    "packages/mux-video-react": {
+      "component": "@mux/mux-video-react"
+    },
+    "packages/playback-core": {
+      "component": "@mux/playback-core"
+    }
+  }
+}

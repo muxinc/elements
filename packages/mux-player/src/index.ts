@@ -1,5 +1,5 @@
 import { globalThis, document } from './polyfills';
-import { MediaController } from 'media-chrome';
+import { MediaController, MediaErrorDialog } from 'media-chrome';
 import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
 import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
@@ -15,6 +15,7 @@ import {
   i18n,
   parseJwt,
   MuxJWTAud,
+  generatePlayerInitTime,
 } from '@mux/playback-core';
 import type {
   ValueOf,
@@ -38,7 +39,7 @@ import {
 } from './helpers';
 import { template } from './template';
 import { render } from './html';
-import { getErrorLogs } from './errors';
+import { muxMediaErrorToDialog, muxMediaErrorToDevlog } from './errors';
 import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent } from './types';
@@ -48,7 +49,7 @@ const DefaultThemeName = 'gerwig';
 
 export type { Tokens };
 
-export { MediaError };
+export { MediaError, generatePlayerInitTime };
 
 const VideoAttributes = {
   SRC: 'src',
@@ -145,8 +146,11 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     minResolution: el.minResolution,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
+    assetStartTime: el.assetStartTime,
+    assetEndTime: el.assetEndTime,
     renditionOrder: el.renditionOrder,
     metadata: el.metadata,
+    playerInitTime: el.playerInitTime,
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
@@ -178,6 +182,35 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
 
   return props;
 }
+
+const baseFormatErrorMessage = MediaErrorDialog.formatErrorMessage;
+MediaErrorDialog.formatErrorMessage = (error: { code: number; message: string }) => {
+  if (error instanceof MediaError) {
+    const dialog = muxMediaErrorToDialog(error, false);
+    return `
+      ${dialog?.title ? `<h3>${dialog.title}</h3>` : ''}
+      ${
+        dialog?.message || dialog?.linkUrl
+          ? `<p>
+        ${dialog?.message}
+        ${
+          dialog?.linkUrl
+            ? `<a
+              href="${dialog.linkUrl}"
+              target="_blank"
+              rel="external noopener"
+              aria-label="${dialog.linkText ?? ''} ${i18n(`(opens in a new window)`)}"
+              >${dialog.linkText ?? dialog.linkUrl}</a
+            >`
+            : ''
+        }
+      </p>`
+          : ''
+      }
+    `;
+  }
+  return baseFormatErrorMessage(error);
+};
 
 function getThemeTemplate(el: MuxPlayerElement) {
   let themeName = el.theme;
@@ -229,11 +262,11 @@ function getMetadataFromAttrs(el: MuxPlayerElement) {
 const MuxVideoAttributeNames = Object.values(MuxVideoAttributes);
 const VideoAttributeNames = Object.values(VideoAttributes);
 const PlayerAttributeNames = Object.values(PlayerAttributes);
-const playerSoftwareVersion = getPlayerVersion();
-const playerSoftwareName = 'mux-player';
+
+export const playerSoftwareVersion = getPlayerVersion();
+export const playerSoftwareName = 'mux-player';
 
 const initialState = {
-  dialog: undefined,
   isDialogOpen: false,
 };
 
@@ -282,18 +315,35 @@ interface MuxPlayerElement
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
+  #defaultPlayerInitTime: number;
   #isInit = false;
   #tokens: Tokens = {};
   #userInactive = true;
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
-    onCloseErrorDialog: () => this.#setState({ dialog: undefined, isDialogOpen: false }),
-    onInitFocusDialog: (e) => {
+    onCloseErrorDialog: (event) => {
+      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+      if (localName !== 'media-error-dialog') return;
+
+      this.#setState({ isDialogOpen: false });
+    },
+    onFocusInErrorDialog: (event) => {
+      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+      if (localName !== 'media-error-dialog') return;
+
       const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
-      if (!isFocusedElementInPlayer) e.preventDefault();
+      if (!isFocusedElementInPlayer) event.preventDefault();
     },
   };
+
+  static get NAME() {
+    return playerSoftwareName;
+  }
+
+  static get VERSION() {
+    return playerSoftwareVersion;
+  }
 
   static get observedAttributes() {
     return [
@@ -306,6 +356,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   constructor() {
     super();
+    this.#defaultPlayerInitTime = generatePlayerInitTime();
 
     this.attachShadow({ mode: 'open' });
     this.#setupCSSProperties();
@@ -332,24 +383,21 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     try {
       customElements.upgrade(this.mediaTheme as Node);
       if (!(this.mediaTheme instanceof globalThis.HTMLElement)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error(`<media-theme> failed to upgrade!`);
     }
 
     try {
       customElements.upgrade(this.media as Node);
       if (!(this.media instanceof MuxVideoElement)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error('<mux-video> failed to upgrade!');
     }
 
     try {
       customElements.upgrade(this.mediaController as Node);
       if (!(this.mediaController instanceof MediaController)) throw '';
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+    } catch (_error) {
       logger.error(`<media-controller> failed to upgrade!`);
     }
 
@@ -386,8 +434,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         syntax: '<color>',
         inherits: true,
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {}
+    } catch (_error) {}
   }
 
   get mediaTheme(): Element | null | undefined {
@@ -458,7 +505,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         return;
       }
 
-      const { dialog, devlog } = getErrorLogs(error, false);
+      const devlog = muxMediaErrorToDevlog(error, false);
 
       if (devlog.message) {
         logger.devlog(devlog);
@@ -469,7 +516,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         logger.error(`${error.name} data:`, error.data);
       }
 
-      this.#setState({ isDialogOpen: true, dialog });
+      this.#setState({ isDialogOpen: true });
     };
 
     // Keep this event listener on mux-player instead of calling onError directly
@@ -481,7 +528,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.media.errorTranslator = (errorEvent: ErrorEvent = {}) => {
         if (!(this.media?.error instanceof MediaError)) return errorEvent;
 
-        const { devlog } = getErrorLogs(this.media?.error, false);
+        const devlog = muxMediaErrorToDevlog(this.media?.error, false);
 
         return {
           player_error_code: this.media?.error.code,
@@ -1233,6 +1280,22 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
   }
 
+  get playerInitTime() {
+    if (!this.hasAttribute(MuxVideoAttributes.PLAYER_INIT_TIME)) return this.#defaultPlayerInitTime;
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.PLAYER_INIT_TIME));
+  }
+
+  set playerInitTime(val) {
+    // don't cause an infinite loop and avoid change event dispatching
+    if (val == this.playerInitTime) return;
+
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.PLAYER_INIT_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.PLAYER_INIT_TIME, `${+val}`);
+    }
+  }
+
   /**
    * Get the player software name. Used by Mux Data.
    */
@@ -1331,6 +1394,30 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.removeAttribute(MuxVideoAttributes.PROGRAM_END_TIME);
     } else {
       this.setAttribute(MuxVideoAttributes.PROGRAM_END_TIME, `${val}`);
+    }
+  }
+
+  get assetStartTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.ASSET_START_TIME));
+  }
+
+  set assetStartTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.ASSET_START_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.ASSET_START_TIME, `${val}`);
+    }
+  }
+
+  get assetEndTime() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.ASSET_END_TIME));
+  }
+
+  set assetEndTime(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.ASSET_END_TIME);
+    } else {
+      this.setAttribute(MuxVideoAttributes.ASSET_END_TIME, `${val}`);
     }
   }
 
