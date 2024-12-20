@@ -33,6 +33,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.2.4](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.2.3...@mux/mux-player-react@3.2.4) (2024-12-20)
+
+
+### Bug Fixes
+
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.2.3 to 3.2.4
+    * @mux/playback-core bumped from 0.28.1 to 0.28.2
+
 ## [3.2.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.2.2...@mux/mux-player-react@3.2.3) (2024-12-19)
 
 

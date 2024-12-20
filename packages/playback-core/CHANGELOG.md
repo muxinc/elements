@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.1...@mux/playback-core@0.28.2) (2024-12-20)
+
+
+### Bug Fixes
+
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+
 ## [0.28.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.0...@mux/playback-core@0.28.1) (2024-12-17)
 
 
