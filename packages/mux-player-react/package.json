@@ -38,23 +38,23 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
       "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
     "./lazy": {
-      "import": "./dist/lazy.mjs",
       "types@<4.3.5": "./dist/types-ts3.4/lazy.d.ts",
       "types": "./dist/types/lazy.d.ts",
+      "import": "./dist/lazy.mjs",
       "default": "./dist/lazy.mjs"
     },
     "./themes/*": {
-      "import": "./dist/themes/*.mjs",
-      "require": "./dist/themes/*.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/themes/*.d.ts",
       "types": "./dist/types/themes/*.d.ts",
+      "import": "./dist/themes/*.mjs",
+      "require": "./dist/themes/*.cjs.js",
       "default": "./dist/themes/*.cjs.js"
     }
   },
@@ -101,15 +101,15 @@
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
-    "@types/prop-types": "^15.7.12",
+    "@types/prop-types": "^15.7.14",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "downlevel-dts": "^0.11.0",
-    "esbuild": "^0.19.8",
+    "esbuild": "^0.24.1",
     "npm-run-all": "^4.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "shx": "^0.3.4",
-    "typescript": "^5.5.4"
+    "typescript": "^5.7.2"
   }
 }

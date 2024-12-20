@@ -8,6 +8,6 @@
     "esbuilder": "./esbuilder.js"
   },
   "devDependencies": {
-    "esbuild": "^0.19.8"
+    "esbuild": "^0.24.1"
   }
 }
