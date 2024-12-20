@@ -78,8 +78,8 @@ jobs:
         with:
           timeout_minutes: 10
           max_attempts: 3
-        # run yarn and pass through `-- --all` to turborepo
-        command: yarn test -- -- --all
+          # run yarn and pass through `-- --all` to turborepo
+          command: yarn test -- -- --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:
