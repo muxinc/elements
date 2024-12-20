@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0-alpha.11](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.10...@mux/mux-active-viewer-count@0.2.0-alpha.11) (2024-12-20)
+
+
+### Bug Fixes
+
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+
 ## [0.2.0-alpha.10](https://github.com/muxinc/elements/compare/@mux/mux-active-viewer-count@0.2.0-alpha.9...@mux/mux-active-viewer-count@0.2.0-alpha.10) (2024-12-12)
 
 

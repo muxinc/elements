@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.4...@mux/mux-uploader-react@1.1.1) (2024-12-20)
+
+
+### Bug Fixes
+
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-uploader bumped from 1.1.0 to 1.1.1
+
 ## [1.0.4](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.0.3...@mux/mux-uploader-react@1.0.4) (2024-12-12)
 
 
