@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@mux/assets": ">=0.1.0",
-    "@mux/blurup": "^0.2.3",
+    "@mux/blurup": "^1.0.1",
     "@mux/mux-audio": ">=0.2.0",
     "@mux/mux-audio-react": ">=0.2.0",
     "@mux/mux-player": ">=1.0.0-beta.0",

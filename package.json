@@ -12,8 +12,8 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
-    "husky": "^7.0.0",
-    "prettier": "^3.2.5",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
     "pretty-quick": "^4.0.0",
     "turbo": "^2.3.3"
   },
@@ -32,10 +32,7 @@
     "build:packages": "turbo run build --filter '!./examples/*'",
     "build": "turbo run build",
     "i18n": "turbo run i18n",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
-  "resolutions": {
-    "playwright": "1.45.3"
-  },
-  "packageManager": "yarn@1.22.21+sha256.dbed5b7e10c552ba0e1a545c948d5473bc6c5a28ce22a8fd27e493e3e5eb6370"
+  "packageManager": "yarn@1.22.22"
 }

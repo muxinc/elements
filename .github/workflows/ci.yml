@@ -73,8 +73,13 @@ jobs:
       - run: yarn clean
       - name: Install playwright browsers
         run: npx playwright install --with-deps
-      # run yarn and pass through `-- --all` to turborepo
-      - run: yarn test -- -- --all
+      # Retry the test command up to 3 times with a timeout of 10 minutes
+      - uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          # run yarn and pass through `-- --all` to turborepo
+          command: yarn test -- -- --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:

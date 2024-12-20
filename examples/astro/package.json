@@ -9,10 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^4.0.0",
-    "@astrojs/vercel": "^8.0.0",
+    "@astrojs/react": "^4.1.2",
+    "@astrojs/vercel": "^8.0.1",
     "@mux/mux-player-react": ">=1.0.0-beta.0",
-    "astro": "^5.0.3",
+    "astro": "^5.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "water.css": "^2.1.1"

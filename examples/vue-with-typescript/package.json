@@ -12,14 +12,14 @@
     "@mux/mux-audio": ">=0.3.0",
     "@mux/mux-player": ">=1.0.0-beta.0",
     "@mux/mux-video": ">=0.3.0",
-    "pinia": "^2.2.2",
-    "vue": "^3.4.37",
-    "vue-router": "^4.4.3"
+    "pinia": "^2.3.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.1.2",
-    "typescript": "^5.5.4",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.7.2",
     "vite": "^5.4.1",
-    "vue-tsc": "^2.0.29"
+    "vue-tsc": "^2.1.10"
   }
 }

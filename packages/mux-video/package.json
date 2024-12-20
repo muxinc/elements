@@ -34,16 +34,16 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs.js",
       "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
       "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
     "./react": {
+      "types": "./dist/types/react.d.ts",
       "import": "./dist/react.mjs",
       "require": "./dist/react.cjs.js",
-      "types": "./dist/types/react.d.ts",
       "default": "./dist/react.cjs.js"
     }
   },
@@ -81,26 +81,26 @@
   },
   "dependencies": {
     "@mux/playback-core": "0.28.1",
-    "castable-video": "~1.1.3",
-    "custom-media-element": "~1.4.1",
+    "castable-video": "~1.1.4",
+    "custom-media-element": "~1.4.2",
     "media-tracks": "~0.3.2"
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.3.0",
-    "@typescript-eslint/parser": "^8.3.0",
-    "@web/dev-server-esbuild": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "@web/dev-server-esbuild": "^1.0.3",
     "@web/dev-server-import-maps": "^0.2.1",
     "@web/test-runner": "^0.19.0",
     "ce-la-react": "^0.1.3",
     "downlevel-dts": "^0.11.0",
-    "esbuild": "^0.19.8",
-    "eslint": "^9.9.1",
-    "hls.js": "~1.5.11",
+    "esbuild": "^0.24.1",
+    "eslint": "^9.17.0",
+    "hls.js": "~1.5.18",
     "npm-run-all": "^4.1.5",
     "react": "^18.2.0",
     "replace": "^1.2.1",
     "shx": "^0.3.4",
-    "typescript": "^5.5.4"
+    "typescript": "^5.7.2"
   }
 }
