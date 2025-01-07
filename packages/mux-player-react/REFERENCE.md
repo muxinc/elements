@@ -53,6 +53,7 @@
 | `castCustomData` | `object` (JSON-serializable) | [Custom Data](https://developers.google.com/cast/docs/reference/web_sender/chrome.cast.media.MediaInfo#customData) to send to your Google cast receiver on initial load. If none is provided, various Mux key/value pairs will be sent. | Mux-specific object |
 | `playerInitTime` | `number` (timestamp) | Overrides the default [player initialization time](https://docs.mux.com/guides/make-your-data-actionable-with-metadata#optional-configurable-metadata), used by Mux Data for time-based [quality-of-experience (QOE) metrics](https://docs.mux.com/guides/understand-metric-definitions). It will be inferred from instantiation time by default. | Varies |
 | `ref`                      | [React `ref`](https://reactjs.org/docs/refs-and-the-dom.html)                                                         | A [React `ref`](https://reactjs.org/docs/refs-and-the-dom.html) to the underlying [`MuxPlayerElement`](../mux-player/REFERENCE.md) web component                                                                                                                                                                                                                                                 | `undefined`                |
+| `proudlyDisplayMuxBadge`| `boolean` | Controls whether to show the Mux badge in the player UI                      | `false`  |
 
 <!-- UNDOCUMENTED
 // NEW STREAM TYPE VALUES
