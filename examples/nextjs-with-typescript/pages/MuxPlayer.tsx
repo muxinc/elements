@@ -124,6 +124,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   streamType: undefined,
   storyboardSrc: undefined,
   theme: undefined,
+  proudlyDisplayMuxBadge: undefined,
 });
 
 const SMALL_BREAKPOINT = 700;
@@ -329,6 +330,7 @@ function MuxPlayerPage({ location }: Props) {
           defaultDuration={state.defaultDuration}
           playbackRate={state.playbackRate}
           playbackRates={state.playbackRates}
+          proudlyDisplayMuxBadge={state.proudlyDisplayMuxBadge}
           onPlay={(evt: Event) => {
             onPlay(evt);
             // dispatch(updateProps({ paused: false }));
