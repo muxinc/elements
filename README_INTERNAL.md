@@ -25,15 +25,6 @@ To run tests for the entire monorepo, run `yarn test` from the monorepo root. In
   - **NOTE**: This is only available for core contributors and requires `SAUCE_USERNAME` + `SAUCE_ACCESS_KEY` env variables setup. Reach out to relevant team members for assistance.
   - **NOTE**: Currently only implemented for the `mux-player` package.
 
-## Validating how your changes will affect version updates
-
-You can do a dry-run locally of the `version:update` script by doing the following:
-
-1. Create a new branch from `main`
-2. Cherry pick commits from your working branch to it, including any needed footer e.g. "BREAKING CHANGE: ..."
-3. Push new branch to remote
-4. Run the script `yarn version:update` and select 'n' (no) for committing to the changes
-
 # Media Chrome Canaries
 
 It's helpful to point at Media Chrome canaries for developing PRs and having all the live examples work; however, we should not merge any PRs that point at a Media Chrome Canary release.

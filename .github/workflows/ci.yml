@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
+    if: ${{ github.event.commits[0].author.name != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -39,7 +39,7 @@ jobs:
 
   lint:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
+    if: ${{ github.event.commits[0].author.name != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
 
@@ -58,7 +58,7 @@ jobs:
 
   test:
     # Don't run if the CI is triggered by Release Please
-    if: ${{ github.event.pull_request.user.login != 'github-actions[bot]' }}
+    if: ${{ github.event.commits[0].author.name != 'github-actions[bot]' }}
 
     runs-on: ubuntu-latest
 
@@ -73,8 +73,13 @@ jobs:
       - run: yarn clean
       - name: Install playwright browsers
         run: npx playwright install --with-deps
-      # run yarn and pass through `-- --all` to turborepo
-      - run: yarn test -- -- --all
+      # Retry the test command up to 3 times with a timeout of 10 minutes
+      - uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          # run yarn and pass through `-- --all` to turborepo
+          command: yarn test -- -- --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.1.0
         with:

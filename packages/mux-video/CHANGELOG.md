@@ -31,6 +31,34 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.24.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.24.1...@mux/mux-video@0.24.2) (2024-12-20)
+
+
+### Bug Fixes
+
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.28.1 to 0.28.2
+
+## [0.24.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.24.0...@mux/mux-video@0.24.1) (2024-12-19)
+
+
+### Bug Fixes
+
+* mux-video/react import issue ([#1049](https://github.com/muxinc/elements/issues/1049)) ([f390932](https://github.com/muxinc/elements/commit/f3909329932f1f65bd29f7c5eb830ff6b73c1996))
+
+## [0.24.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.23.1...@mux/mux-video@0.24.0) (2024-12-19)
+
+
+### Features
+
+* add `@mux/mux-video/react` import ([#1047](https://github.com/muxinc/elements/issues/1047)) ([8470223](https://github.com/muxinc/elements/commit/8470223e27a870b81d7bf4a3afbdfc8c23c29ec5))
+
 ## [0.23.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.23.0...@mux/mux-video@0.23.1) (2024-12-17)
 
 

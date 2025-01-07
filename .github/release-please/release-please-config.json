@@ -4,7 +4,32 @@
   "tag-separator": "@",
   "include-component-in-tag": true,
   "include-v-in-tag": false,
-  "plugins": ["node-workspace"],
+  "plugins": [
+    {
+      "type": "node-workspace",
+      "merge": false
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "player",
+      "components": ["@mux/mux-player", "@mux/mux-player-react"]
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "audio",
+      "components": ["@mux/mux-audio", "@mux/mux-audio-react"]
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "video",
+      "components": ["@mux/mux-video", "@mux/mux-video-react"]
+    },
+    {
+      "type": "linked-versions",
+      "groupName": "uploader",
+      "components": ["@mux/mux-uploader", "@mux/mux-uploader-react"]
+    }
+  ],
   "packages": {
     "packages/mux-active-viewer-count": {
       "component": "@mux/mux-active-viewer-count",

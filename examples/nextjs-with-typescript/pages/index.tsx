@@ -23,6 +23,7 @@ function HomePage() {
         <li><Link href="/mux-video" className="video"><>&lt;mux-video&gt;<br/>(Web Component)</></Link></li>
         <li><Link href="/mux-audio" className="audio"><>&lt;mux-audio&gt;<br/>(Web Component)</></Link></li>
         <li><Link href="/mux-player" className="player"><>&lt;mux-player&gt;<br/>(Web Component)</></Link></li>
+        <li><Link href="/mux-video-react" className="video"><>&lt;MuxVideo&gt;<br/>(React Web Component)</></Link></li>
         <li><Link href="/app-router" className="react"><>App Router</></Link></li>
       </ul>
     </nav>
