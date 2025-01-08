@@ -472,7 +472,8 @@ function MuxPlayerPage({ location }: Props) {
             onChange={genericOnChange}
           />
           <TextRenderer value={state.title} name="title" onChange={genericOnChange} />
-          <BooleanRenderer value={state.paused} name="paused" onChange={genericOnChange} />
+          <BooleanRenderer value={state.proudlyDisplayMuxBadge} name="proudlyDisplayMuxBadge" onChange={genericOnChange} />
+          <BooleanRenderer value={state.muted} name="muted" onChange={genericOnChange} />
           <EnumRenderer
             value={state.autoPlay}
             name="autoPlay"
