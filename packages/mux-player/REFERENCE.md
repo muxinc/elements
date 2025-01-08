@@ -75,7 +75,6 @@
 | `addCuePoints()` | Add an array of CuePoints with the shape `{ startTime: number; endTime?: number, value: any; }` to the Mux Player instance |
 | `addChapters()` | Add an array of chapters with the shape `{ startTime: number; endTime?: number, value: string; }` to the Mux Player instance |
 | `getStartDate()` | Will return a Date that matches the earliest PDT in your stream. Identical to [native `getStartDate()` method](https://html.spec.whatwg.org/multipage/media.html#dom-media-getstartdate), if exists. |
-|
 
 <!-- UNDOCUMENTED
 | `addTextTrack()` | Identical to the [native `addTextTrack()` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement#methods). |
