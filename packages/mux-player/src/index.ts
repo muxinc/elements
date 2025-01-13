@@ -757,10 +757,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         }
         break;
       }
-      case PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE: {
-        this.#render({ proudlyDisplayMuxBadge: newValue !== null });
-        break;
-      }
       case MuxVideoAttributes.STREAM_TYPE: {
         if (newValue && ![StreamTypes.LIVE, StreamTypes.ON_DEMAND, StreamTypes.UNKNOWN].includes(newValue as any)) {
           // Handle deprecated values by translating to new properties for the time being.
