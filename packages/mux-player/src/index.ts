@@ -109,6 +109,7 @@ const ThemeAttributeNames = [
   'template',
   'title',
   'novolumepref',
+  'proudlydisplaymuxbadge',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
