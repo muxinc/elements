@@ -48,6 +48,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.2.4...@mux/mux-player@3.3.0) (2025-01-13)
+
+
+### Features
+
+* implement Mux badge ([#988](https://github.com/muxinc/elements/issues/988)) ([2343df8](https://github.com/muxinc/elements/commit/2343df80fddcbf05485ed9d4ab27f1bb0fac04d0))
+
+
+### Bug Fixes
+
+* Mux-player imports ([#1056](https://github.com/muxinc/elements/issues/1056)) ([9b7ec1b](https://github.com/muxinc/elements/commit/9b7ec1b8b92a49f74ba361db90ddfa0a526c44d0))
+* **playback-core:** Update hls.js version to fix multi-DRM playready bug. ([#1060](https://github.com/muxinc/elements/issues/1060)) ([380ded2](https://github.com/muxinc/elements/commit/380ded2ce544b9c9ae6a1d108b9d48cd4feb58fd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.24.2 to 0.24.3
+    * @mux/playback-core bumped from 0.28.2 to 0.28.3
+
 ## [3.2.4](https://github.com/muxinc/elements/compare/@mux/mux-player@3.2.3...@mux/mux-player@3.2.4) (2024-12-20)
 
 
