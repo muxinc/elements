@@ -245,7 +245,7 @@ describe('<mux-player>', () => {
 
     // Remove the attribute dynamically
     playerWithBadge.removeAttribute('proudly-display-mux-badge');
-    await playerWithBadge.updateComplete;
+    await aTimeout(100);
 
     // Assert that the Mux badge is removed
     muxBadge = playerWithBadge.shadowRoot.querySelector('media-theme').shadowRoot.querySelector('[part="mux-badge"]');
@@ -253,7 +253,7 @@ describe('<mux-player>', () => {
 
     // Add the attribute back dynamically
     playerWithBadge.setAttribute('proudly-display-mux-badge', '');
-    await playerWithBadge.updateComplete;
+    await aTimeout(100);
 
     // Assert that the Mux badge is added back
     muxBadge = playerWithBadge.shadowRoot.querySelector('media-theme').shadowRoot.querySelector('[part="mux-badge"]');
