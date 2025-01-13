@@ -85,6 +85,7 @@ const PlayerAttributes = {
   NO_VOLUME_PREF: 'no-volume-pref',
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
+  PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
 };
 
 const ThemeAttributeNames = [
@@ -108,6 +109,7 @@ const ThemeAttributeNames = [
   'template',
   'title',
   'novolumepref',
+  'proudlydisplaymuxbadge',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -172,6 +174,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     title: el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     castReceiver: el.castReceiver,
+    proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -1846,6 +1849,18 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       return;
     }
     this.setAttribute(PlayerAttributes.NO_TOOLTIPS, '');
+  }
+
+  get proudlyDisplayMuxBadge() {
+    return this.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE);
+  }
+
+  set proudlyDisplayMuxBadge(val: boolean) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE);
+    } else {
+      this.setAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE, '');
+    }
   }
 }
 

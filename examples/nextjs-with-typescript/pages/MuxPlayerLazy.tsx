@@ -96,6 +96,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   tokens: undefined,
   playbackId: undefined,
   streamType: undefined,
+  proudlyDisplayMuxBadge: undefined,
 });
 
 const reducer = (state: Partial<{ [k: string]: any }>, action): Partial<{ [k: string]: any }> => {
@@ -348,6 +349,7 @@ function MuxPlayerPage({ location }: Props) {
         audio={state.audio}
         primaryColor={state.primaryColor}
         secondaryColor={state.secondaryColor}
+        proudlyDisplayMuxBadge={state.proudlyDisplayMuxBadge}
         defaultShowRemainingTime={state.defaultShowRemainingTime}
         defaultHiddenCaptions={state.defaultHiddenCaptions}
         /** @TODO This doesn't appear to work? (CJP) */

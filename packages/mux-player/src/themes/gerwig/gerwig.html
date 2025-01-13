@@ -511,6 +511,80 @@
       --bottom-playback-rate-menu-button: none;
       --bottom-pip-button: none;
     }
+
+    [part='mux-badge'] {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 2;
+      opacity: 0.6;
+      transition:
+        opacity 0.2s ease-in-out,
+        bottom 0.2s ease-in-out;
+    }
+
+    [part='mux-badge']:hover {
+      opacity: 1;
+    }
+
+    [part='mux-badge'] a {
+      font-size: 14px;
+      font-family: var(--_font-family);
+      color: var(--_primary-color);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    [part='mux-badge'] .mux-badge-text {
+      transition: opacity 0.5s ease-in-out;
+      opacity: 0;
+    }
+
+    [part='mux-badge'] .mux-badge-logo {
+      width: 40px;
+      height: auto;
+      display: inline-block;
+    }
+
+    [part='mux-badge'] .mux-badge-logo svg {
+      width: 100%;
+      height: 100%;
+      fill: white;
+    }
+
+    media-controller:not([userinactive]):not([mediahasplayed]) [part='mux-badge'],
+    media-controller:not([userinactive]) [part='mux-badge'],
+    media-controller[mediahasplayed][mediapaused] [part='mux-badge'] {
+      transition: bottom 0.1s ease-in-out;
+    }
+
+    media-controller[userinactive]:not([mediapaused]) [part='mux-badge'] {
+      transition: bottom 0.2s ease-in-out 0.62s;
+    }
+
+    media-controller:not([userinactive]) [part='mux-badge'] .mux-badge-text,
+    media-controller[mediahasplayed][mediapaused] [part='mux-badge'] .mux-badge-text {
+      opacity: 1;
+    }
+
+    media-controller[userinactive]:not([mediapaused]) [part='mux-badge'] .mux-badge-text {
+      opacity: 0;
+    }
+
+    media-controller[userinactive]:not([mediapaused]) [part='mux-badge'] {
+      bottom: 10px;
+    }
+
+    media-controller:not([userinactive]):not([mediahasplayed]) [part='mux-badge'] {
+      bottom: 10px;
+    }
+
+    media-controller:not([userinactive])[mediahasplayed] [part='mux-badge'],
+    media-controller[mediahasplayed][mediapaused] [part='mux-badge'] {
+      bottom: calc(28px + var(--media-control-height, 0px) + var(--media-control-padding, 0px) * 2);
+    }
   </style>
 
   <template partial="TitleDisplay">
@@ -888,6 +962,35 @@
     </media-rendition-menu>
   </template>
 
+  <template partial="MuxBadge">
+    <div part="mux-badge">
+      <a href="https://www.mux.com/player" target="_blank">
+        <span class="mux-badge-text">Powered by</span>
+        <div class="mux-badge-logo">
+          <svg
+            viewBox="0 0 1600 500"
+            style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2"
+          >
+            <g>
+              <path
+                d="M994.287,93.486c-17.121,-0 -31,-13.879 -31,-31c0,-17.121 13.879,-31 31,-31c17.121,-0 31,13.879 31,31c0,17.121 -13.879,31 -31,31m0,-93.486c-34.509,-0 -62.484,27.976 -62.484,62.486l0,187.511c0,68.943 -56.09,125.033 -125.032,125.033c-68.942,-0 -125.03,-56.09 -125.03,-125.033l0,-187.511c0,-34.51 -27.976,-62.486 -62.485,-62.486c-34.509,-0 -62.484,27.976 -62.484,62.486l0,187.511c0,137.853 112.149,250.003 249.999,250.003c137.851,-0 250.001,-112.15 250.001,-250.003l0,-187.511c0,-34.51 -27.976,-62.486 -62.485,-62.486"
+                style="fill-rule: nonzero"
+              ></path>
+              <path
+                d="M1537.51,468.511c-17.121,-0 -31,-13.879 -31,-31c0,-17.121 13.879,-31 31,-31c17.121,-0 31,13.879 31,31c0,17.121 -13.879,31 -31,31m-275.883,-218.509l-143.33,143.329c-24.402,24.402 -24.402,63.966 0,88.368c24.402,24.402 63.967,24.402 88.369,-0l143.33,-143.329l143.328,143.329c24.402,24.4 63.967,24.402 88.369,-0c24.403,-24.402 24.403,-63.966 0.001,-88.368l-143.33,-143.329l0.001,-0.004l143.329,-143.329c24.402,-24.402 24.402,-63.965 0,-88.367c-24.402,-24.402 -63.967,-24.402 -88.369,-0l-143.329,143.328l-143.329,-143.328c-24.402,-24.401 -63.967,-24.402 -88.369,-0c-24.402,24.402 -24.402,63.965 0,88.367l143.329,143.329l0,0.004Z"
+                style="fill-rule: nonzero"
+              ></path>
+              <path
+                d="M437.511,468.521c-17.121,-0 -31,-13.879 -31,-31c0,-17.121 13.879,-31 31,-31c17.121,-0 31,13.879 31,31c0,17.121 -13.879,31 -31,31m23.915,-463.762c-23.348,-9.672 -50.226,-4.327 -68.096,13.544l-143.331,143.329l-143.33,-143.329c-17.871,-17.871 -44.747,-23.216 -68.096,-13.544c-23.349,9.671 -38.574,32.455 -38.574,57.729l0,375.026c0,34.51 27.977,62.486 62.487,62.486c34.51,-0 62.486,-27.976 62.486,-62.486l0,-224.173l80.843,80.844c24.404,24.402 63.965,24.402 88.369,-0l80.843,-80.844l0,224.173c0,34.51 27.976,62.486 62.486,62.486c34.51,-0 62.486,-27.976 62.486,-62.486l0,-375.026c0,-25.274 -15.224,-48.058 -38.573,-57.729"
+                style="fill-rule: nonzero"
+              ></path>
+            </g>
+          </svg>
+        </div>
+      </a>
+    </div>
+  </template>
+
   <media-controller
     part="controller"
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
@@ -918,6 +1021,9 @@
         <template if="!breakpointsm">{{>PlayButton section="center"}}</template>
         <template if="breakpointsm">{{>PrePlayButton section="center"}}</template>
       </div>
+
+      <!-- Mux Badge -->
+      <template if="proudlydisplaymuxbadge"> {{>MuxBadge}} </template>
 
       <!-- Autoplay centered unmute button -->
       <!--

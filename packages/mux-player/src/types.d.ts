@@ -55,6 +55,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   title: string;
   defaultStreamType?: ValueOf<StreamTypes>;
   castReceiver: string | undefined;
+  proudlyDisplayMuxBadge?: boolean;
 };
 
 export type DialogOptions = {

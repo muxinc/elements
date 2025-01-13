@@ -217,6 +217,49 @@ describe('<mux-player>', () => {
     assert.equal(muxVideo.preload, defaultPreload, `muxVideo default preload is ${defaultPreload}`);
   });
 
+  it('should show/hide Mux badge based on proudly-display-mux-badge attribute', async function () {
+    this.timeout(5000);
+
+    // Create player without the attribute
+    const playerWithoutBadge = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+    ></mux-player>`);
+
+    // Assert that the Mux badge is not present
+    let muxBadge = playerWithoutBadge.shadowRoot
+      .querySelector('media-theme')
+      .shadowRoot.querySelector('[part="mux-badge"]');
+    assert.notExists(muxBadge, 'Mux badge should not be present when attribute is not set');
+
+    // Create player with the attribute
+    const playerWithBadge = await fixture(`<mux-player
+      playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+      stream-type="on-demand"
+      proudly-display-mux-badge
+    ></mux-player>`);
+
+    // Assert that the Mux badge is present
+    muxBadge = playerWithBadge.shadowRoot.querySelector('media-theme').shadowRoot.querySelector('[part="mux-badge"]');
+    assert.exists(muxBadge, 'Mux badge should be present when attribute is set');
+
+    // Remove the attribute dynamically
+    playerWithBadge.removeAttribute('proudly-display-mux-badge');
+    await aTimeout(100);
+
+    // Assert that the Mux badge is removed
+    muxBadge = playerWithBadge.shadowRoot.querySelector('media-theme').shadowRoot.querySelector('[part="mux-badge"]');
+    assert.notExists(muxBadge, 'Mux badge should be removed when attribute is removed');
+
+    // Add the attribute back dynamically
+    playerWithBadge.setAttribute('proudly-display-mux-badge', '');
+    await aTimeout(100);
+
+    // Assert that the Mux badge is added back
+    muxBadge = playerWithBadge.shadowRoot.querySelector('media-theme').shadowRoot.querySelector('[part="mux-badge"]');
+    assert.exists(muxBadge, 'Mux badge should be added back when attribute is set again');
+  });
+
   it('poster is forwarded to the media-poster-image element', async function () {
     const player = await fixture(`<mux-player
       stream-type="on-demand"
