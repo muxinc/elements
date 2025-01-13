@@ -57,7 +57,7 @@
     "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'"
   },
   "dependencies": {
-    "hls.js": "~1.5.18",
+    "hls.js": "~1.5.19",
     "mux-embed": "^5.5.0"
   },
   "devDependencies": {

@@ -2,7 +2,7 @@
 import theme from './gerwig.html';
 import { document, globalThis } from '../../polyfills';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
-import 'media-chrome/menu';
+import 'media-chrome/dist/menu';
 
 const template = document.createElement('template');
 if ('innerHTML' in template) template.innerHTML = theme;
