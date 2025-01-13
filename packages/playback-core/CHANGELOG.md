@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.2...@mux/playback-core@0.28.3) (2025-01-13)
+
+
+### Bug Fixes
+
+* **playback-core:** Update hls.js version to fix multi-DRM playready bug. ([#1060](https://github.com/muxinc/elements/issues/1060)) ([380ded2](https://github.com/muxinc/elements/commit/380ded2ce544b9c9ae6a1d108b9d48cd4feb58fd))
+
 ## [0.28.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.1...@mux/playback-core@0.28.2) (2024-12-20)
 
 
