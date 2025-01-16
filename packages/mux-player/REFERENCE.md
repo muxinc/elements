@@ -193,7 +193,7 @@
 | `playing`        | Identical to the native [`playing` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playing_event)               |
 | `progress`       | Identical to the native [`progress` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/progress_event)             |
 | `ratechange`     | Identical to the native [`ratechange` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ratechange_event)         |
-| `resize`         | Identical to the native [`resize` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/resize_event)                 |
+| `resize`         | Identical to the native [`resize` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLVideoElement/resize_event)                 |
 | `seeked`         | Identical to the native [`seeked` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeked_event)                 |
 | `seeking`        | Identical to the native [`seeking` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeking_event)               |
 | `stalled`        | Identical to the native [`stalled` event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/stalled_event)               |
