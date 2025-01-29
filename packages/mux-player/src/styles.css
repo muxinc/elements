@@ -28,11 +28,6 @@
   line-height: 0;
 }
 
-/* Hide custom elements that are not defined yet */
-:not(:defined) {
-  display: none;
-}
-
 a {
   color: #fff;
   font-size: 0.9em;
