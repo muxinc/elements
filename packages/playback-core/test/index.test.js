@@ -1,4 +1,4 @@
-import { assert, aTimeout, oneEvent } from '@open-wc/testing';
+import { assert, fixture, aTimeout, oneEvent } from '@open-wc/testing';
 import {
   toMuxVideoURL,
   initialize,
@@ -14,10 +14,21 @@ import {
 } from '../src/index.ts';
 
 describe('playback core', function () {
-  this.timeout(10000);
+  let video;
+
+  beforeEach(async () => {
+    video = await fixture(`<video
+      preload="auto"
+      crossorigin
+      muted
+    ></video>`);
+  });
+
+  afterEach(() => {
+    video = undefined;
+  });
 
   it('initialize w/ default preferPlayback', async function () {
-    const video = document.createElement('video');
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -29,7 +40,6 @@ describe('playback core', function () {
   });
 
   it('teardown', async function () {
-    const video = document.createElement('video');
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -42,7 +52,6 @@ describe('playback core', function () {
   });
 
   it('handle error', async function () {
-    const video = document.createElement('video');
     initialize(
       {
         src: 'https://mux.com/', // not working src url
@@ -65,7 +74,6 @@ describe('playback core', function () {
   });
 
   it('setAutoplay("any")', async function () {
-    const video = document.createElement('video');
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -81,7 +89,6 @@ describe('playback core', function () {
   });
 
   it('setAutoplay("muted")', async function () {
-    const video = document.createElement('video');
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -98,7 +105,6 @@ describe('playback core', function () {
   });
 
   it('preload="none" will not start loading data', async function () {
-    const video = document.createElement('video');
     const loadStarted = new Promise((resolve) => video.addEventListener('loadstart', resolve));
 
     initialize(
@@ -116,7 +122,6 @@ describe('playback core', function () {
   });
 
   it('from preload="none" will play', async function () {
-    const video = document.createElement('video');
     video.muted = true;
 
     initialize(
@@ -136,7 +141,6 @@ describe('playback core', function () {
   });
 
   it('preload="auto" will start loading data', async function () {
-    const video = document.createElement('video');
     const loadeddataPromise = new Promise((resolve) => video.addEventListener('loadeddata', resolve));
     initialize(
       {
@@ -162,7 +166,6 @@ describe('playback core', function () {
   });
 
   it('preload="none" to preload="metadata"', async function () {
-    const video = document.createElement('video');
     const loadeddataPromise = new Promise((resolve) => video.addEventListener('loadeddata', resolve));
     const core = initialize(
       {
@@ -228,8 +231,12 @@ describe('playback core', function () {
   describe('updateStreamInfoFromSrc()', () => {
     let mediaEl;
 
-    beforeEach(() => {
-      mediaEl = document.createElement('video');
+    beforeEach(async () => {
+      mediaEl = await fixture(`<video
+        preload="auto"
+        crossorigin
+        muted
+      ></video>`);
       muxMediaState.set(mediaEl, {});
     });
 

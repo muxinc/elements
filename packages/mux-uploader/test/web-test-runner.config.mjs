@@ -31,5 +31,5 @@ export default {
     include: ['src/**/*'],
   },
   browsers: [chromeLauncher()],
-  filterBrowserLogs: ({ args }) => !args[0]?.startsWith('Lit is in dev mode'),
+  filterBrowserLogs: ({ args }) => !args[0]?.startsWith?.('Lit is in dev mode'),
 };
