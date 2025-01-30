@@ -20,11 +20,11 @@ describe('playback core', function () {
     video = await fixture(`<video
       preload="auto"
       crossorigin
-      muted
     ></video>`);
   });
 
   afterEach(() => {
+    video.remove();
     video = undefined;
   });
 
@@ -235,13 +235,13 @@ describe('playback core', function () {
       mediaEl = await fixture(`<video
         preload="auto"
         crossorigin
-        muted
       ></video>`);
       muxMediaState.set(mediaEl, {});
     });
 
     afterEach(() => {
       muxMediaState.delete(mediaEl);
+      mediaEl.remove();
       mediaEl = undefined;
     });
 
