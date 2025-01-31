@@ -1,7 +1,7 @@
 import { assert, fixture, oneEvent } from '@open-wc/testing';
 import { addCuePoints, getCuePoints, getActiveCuePoint } from '../src/text-tracks.ts';
 
-describe('textTracks', () => {
+describe('textTracks', function () {
   describe('cuePoints', () => {
     let mediaEl;
     const cuePoints = [
