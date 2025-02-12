@@ -521,7 +521,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   get ended() {
     // This ensures that edge case media that doesn't properly end will
     // still announce itself as "ended".
-    return getEnded(this.nativeEl, this._hls);
+    return getEnded(this.nativeEl);
   }
 
   get envKey(): string | undefined {
