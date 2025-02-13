@@ -33,6 +33,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.2.4...@mux/mux-player-react@3.3.0) (2025-02-13)
+
+
+### Features
+
+* implement Mux badge ([#988](https://github.com/muxinc/elements/issues/988)) ([2343df8](https://github.com/muxinc/elements/commit/2343df80fddcbf05485ed9d4ab27f1bb0fac04d0))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.2.4 to 3.3.0
+    * @mux/playback-core bumped from 0.28.2 to 0.28.3
+
 ## [3.2.4](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.2.3...@mux/mux-player-react@3.2.4) (2024-12-20)
 
 

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.1.1...@mux/mux-uploader@1.1.2) (2025-02-13)
+
+
+### Bug Fixes
+
+* upgrade MC, fix theme flicker ([#1067](https://github.com/muxinc/elements/issues/1067)) ([b2fad06](https://github.com/muxinc/elements/commit/b2fad068300420d12ad25f26f24f8189f7ba6907))
+
 ## [1.1.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.1.0...@mux/mux-uploader@1.1.1) (2024-12-20)
 
 
