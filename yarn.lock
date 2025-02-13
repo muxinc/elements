@@ -11901,10 +11901,10 @@ mdn-data@2.0.4:
   resolved "https://registry.yarnpkg.com/mdn-data/-/mdn-data-2.0.4.tgz#699b3c38ac6f1d728091a64650b65d388502fd5b"
   integrity sha512-iV3XNKw06j5Q7mi6h+9vbx23Tv7JkjEVgKHW4pimwyDGWm0OIQntJJ+u1C6mg6mK1EaTv42XQ7w76yuzH7M2cA==
 
-media-chrome@~4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.4.0.tgz#6edbf4fa0b735381a9bda0ba671b5b1a56fe371b"
-  integrity sha512-sH0gDfckIWBEn71P2ThPj4tg3maT0NAUf6gK6IZnAbtwyw6+wz19n6vLqXfKQ2yvW9UwHmB65qZou+M5ZXPcaA==
+media-chrome@~4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.5.0.tgz#0bea54a094caa6227558e55daad1298b33cddf75"
+  integrity sha512-MkVFFM+WvkkMwFu7sXr0bJMdQ5dbJz3BkhofPguiIHvgKYWei7VDPTEC41LmdhxWx4jQQ0FCYHXN8YFOWb7Olw==
 
 media-tracks@~0.3.2:
   version "0.3.3"
@@ -13290,12 +13290,12 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
-player.style@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/player.style/-/player.style-0.1.3.tgz#5ef67549541202526afd2890ae3ecda7286caeaa"
-  integrity sha512-lPQbNXScusEiQAt67HEOdS1x/NYDSJVU4cUiojIiITpdJKlaNotRZGgXG5Y/IakXndnQhxbc7zj/c/UB/RGn0w==
+player.style@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/player.style/-/player.style-0.1.4.tgz#913c8abf7db21255139b03fdcd3c20f2d41183e1"
+  integrity sha512-OzwGziw/mECZIq+15lwTbewP9IqoqSrImXHQiXJKyMdZZlSICSZvhUub0JBo/aMTVEDMzckhvLB38MlP4jvFkg==
   dependencies:
-    media-chrome "~4.4.0"
+    media-chrome "~4.5.0"
 
 playwright-core@1.45.3:
   version "1.45.3"
