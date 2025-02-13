@@ -24,13 +24,8 @@
   --media-title-display-display: var(--title-display);
 
   display: inline-block;
-  width: 100%;
   line-height: 0;
-}
-
-/* Hide custom elements that are not defined yet */
-:not(:defined) {
-  display: none;
+  width: 100%;
 }
 
 a {
@@ -40,12 +35,16 @@ a {
 }
 
 media-theme {
+  display: inline-block;
+  line-height: 0;
   width: 100%;
   height: 100%;
   direction: ltr;
 }
 
 media-poster-image {
+  display: inline-block;
+  line-height: 0;
   width: 100%;
   height: 100%;
 }
