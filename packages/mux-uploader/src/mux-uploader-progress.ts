@@ -17,8 +17,8 @@ template.innerHTML = /*html*/ `
   }
 
   .bar-type {
-    background: #e6e6e6;
-    border-radius: 100px;
+    background: var(--progress-bar-background-color, #e6e6e6);
+    border-radius: var(--progress-bar-border-radius, 100px);
     height: var(--progress-bar-height, 4px);
     width: 100%;
   }
@@ -44,8 +44,8 @@ template.innerHTML = /*html*/ `
   }
 
   .progress-bar {
-    box-shadow: 0 10px 40px -10px #fff;
-    border-radius: 100px;
+    box-shadow: var(--progress-bar-box-shadow, 0 10px 40px -10px #fff);
+    border-radius: var(--progress-bar-border-radius, 100px);
     background: var(--progress-bar-fill-color, #000000);
     height: var(--progress-bar-height, 4px);
     width: 0%;
