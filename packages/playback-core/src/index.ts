@@ -959,7 +959,7 @@ export const setupMux = (
 
 export const monitorPseudoEnded = (mediaEl: HTMLMediaElement, getEndTimeCheckValue: () => number) => {
   const endTimeCheckDelta = 0.275; // Slightly larger than 250ms
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let timeupdateTimeoutId: ReturnType<typeof setTimeout> | undefined;
   // Since what we need to check/do varies based on whether or not
   // the media *was* paused before particular time updates (and not just what its state *is*
   // for these events), we'll keep track of that state here.
@@ -986,18 +986,18 @@ export const monitorPseudoEnded = (mediaEl: HTMLMediaElement, getEndTimeCheckVal
   let endedSignaledAtEnd = false;
   addEventListenerWithTeardown(mediaEl, 'ended', () => {
     endedSignaledAtEnd = true;
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = undefined;
+    if (timeupdateTimeoutId) {
+      clearTimeout(timeupdateTimeoutId);
+      timeupdateTimeoutId = undefined;
     }
   });
 
   addEventListenerWithTeardown(mediaEl, 'timeupdate', () => {
     // Reset because time still changes/marches on, either as a result of a seek
     // or a result of play through
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = undefined;
+    if (timeupdateTimeoutId) {
+      clearTimeout(timeupdateTimeoutId);
+      timeupdateTimeoutId = undefined;
     }
 
     if (mediaEl.currentTime < getEndTimeCheckValue() - endTimeCheckDelta) {
@@ -1016,10 +1016,24 @@ export const monitorPseudoEnded = (mediaEl: HTMLMediaElement, getEndTimeCheckVal
     //    (See: https://html.spec.whatwg.org/multipage/media.html#ended-playback procedure)
     const timeoutTime = 275; // Also slightly larger than 250ms
 
-    /** @TODO Implement paused+pseudo-ended behavior and then potentially refactor for code sharing (CJP) */
     // If we weren't paused, that means we played to "near the end"
-    if (!latestPausedState && !endedSignaledAtEnd) {
-      timeoutId = setTimeout(() => {
+    if (!endedSignaledAtEnd) {
+      // If we're already in an ended state or an "ended current playback position"
+      // but haven't signaled ended, wait a frame and then signal.
+      if (mediaEl.ended) {
+        // Wait two frames to make sure the event loop has cycled through at least one full time.
+        globalThis.requestAnimationFrame(() => {
+          globalThis.requestAnimationFrame(() => {
+            if (endedSignaledAtEnd) return;
+            // If we *still* haven't signaled ended, go ahead and do it now.
+            mediaEl.dispatchEvent(new Event('ended'));
+          });
+        });
+        return;
+      }
+      const prevLatestPausedState = latestPausedState;
+      timeupdateTimeoutId = setTimeout(() => {
+        if (prevLatestPausedState) return;
         // NOTE: Since we should have cleared the timeout if the playhead seeked backwards,
         // and we should have cleared + recreated the timeout if time "continued to march on",
         // we should be able to assume that we're "close enough to the end". Also, because of
@@ -1076,6 +1090,59 @@ export const monitorPseudoEnded = (mediaEl: HTMLMediaElement, getEndTimeCheckVal
       }, timeoutTime);
     }
   });
+
+  addEventListenerWithTeardown(mediaEl, 'seeking', () => {
+    // We should only rely on seeking for "pseudo-ended" monitoring when the media
+    // is paused.
+    if (!mediaEl.paused) return;
+    // currentTime should be updated by the time seeking is dispatched, so if it's not
+    // "near the end", return.
+    // NOTE: Here we are assuming a timeupdate (+ seeked) event will eventually be dispatched,
+    // so we don't clean up things like endedSignaledAtEnd, since those should be handled by
+    // the timeupdate event listener.
+    if (mediaEl.currentTime < getEndTimeCheckValue() - endTimeCheckDelta) return;
+
+    // One indication that we're in an unexpected state is if we're ended while seeking (but before e.g.
+    // seeked)
+    // NOTE: No need to check loop state, since we *should* never be in an ended state when loop=true
+    if (mediaEl.ended) {
+      // Wait two frames to make sure the event loop has cycled through at least one full time.
+      globalThis.requestAnimationFrame(() => {
+        globalThis.requestAnimationFrame(() => {
+          if (endedSignaledAtEnd) return;
+          // If we still haven't signaled ended, assume we're stuck (this can happen in e.g. Safari)
+          // and "simulate" the timeupdate and seeked. REMEMBER: This is only in the case where we
+          // are already in an ended state on "seeking".
+          mediaEl.dispatchEvent(new Event('timeupdate'));
+          // NOTE: mediaEl.seeking will still be true in this case. We may want to implement
+          // an additional "pseudo-seeking" (currently, just considering this use case, it
+          // could defer to e.g. !(ended||"pseudo-ended"))
+          mediaEl.dispatchEvent(new Event('seeked'));
+          // NOTE: 'ended' event should get dispatched as a result of the timeupdate handler, which
+          // should get invoked due to the manually dispatched timeupdate event above.
+          // mediaEl.dispatchEvent(new Event('ended'));
+        });
+      });
+    } else if (mediaEl.loop) {
+      /** @TODO This event handler + logic should get removed if currentTime changes (aka a timeupdate is dispatched before a play is dispatched) */
+      addEventListenerWithTeardown(
+        mediaEl,
+        'play',
+        () => {
+          // Make sure loop is still true by the time we receive a play event
+          if (!mediaEl.loop) return;
+          /** @TODO Test via additional asset permutations if we need "fudge factor"/margin of error here (CJP) */
+          // If we're (still) at (or past) the end of the media timeline, go ahead and reset the currentTime to the
+          // beginning (like the media element should anyway)
+          if (mediaEl.currentTime < getEndTimeCheckValue()) return;
+          /** @TODO Should we delay this to see if the "built in" behavior kicks in? (CJP) */
+          mediaEl.currentTime = mediaEl.seekable.length ? mediaEl.seekable.start(0) : 0;
+        },
+        { once: true }
+      );
+    }
+    /** @TODO Go through additional examples to identify other cases we need to look out for (CJP) */
+  });
 };
 
 export const monitorPseudoEndedHlsJS = (mediaEl: HTMLMediaElement, hls: Hls) => {
@@ -1103,7 +1170,7 @@ export const monitorPseudoEndedHlsJS = (mediaEl: HTMLMediaElement, hls: Hls) => 
         const bufferedEnds = Array.from(mediaSource.sourceBuffers, (sourceBuffer) => {
           return sourceBuffer.buffered.end(sourceBuffer.buffered.length - 1);
         });
-        const timeCheckValue = Math.min(...bufferedEnds); // Slightly larger than 250ms
+        const timeCheckValue = Math.min(...bufferedEnds);
         monitorPseudoEnded(mediaEl, () => timeCheckValue);
       });
     },
@@ -1112,9 +1179,20 @@ export const monitorPseudoEndedHlsJS = (mediaEl: HTMLMediaElement, hls: Hls) => 
 };
 
 export const monitorPseudoEndedNative = (mediaEl: HTMLMediaElement) => {
-  addEventListenerWithTeardown(mediaEl, 'durationchange', () => {
-    monitorPseudoEnded(mediaEl, () => mediaEl.duration);
-  });
+  /**
+   * NOTE: durationchange can/often does get dispatched multiple times
+   * for a given media source, per spec. For that reason, using "once: true". However, the logic in monitorPseudoEnded()
+   * relies on the value yielded from the 2nd param function ("getEndTimeCheckValue()"). Should be fine, but that does mean
+   * the value will be potentially "silently changing under foot".
+   **/
+  addEventListenerWithTeardown(
+    mediaEl,
+    'durationchange',
+    () => {
+      monitorPseudoEnded(mediaEl, () => mediaEl.duration);
+    },
+    { once: true }
+  );
 };
 
 export const loadMedia = (
