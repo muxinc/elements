@@ -15,6 +15,10 @@ export type MuxUploaderProgressProps = {
   style?: CSSProperties & {
     ['--progress-bar-height']?: CSSProperties['height'];
     ['--progress-bar-fill-color']?: CSSProperties['fill'];
+    ['--progress-bar-background-color']?: CSSProperties['background'];
+    ['--progress-bar-box-shadow']?: CSSProperties['boxShadow'];
+    ['--progress-bar-border-radius']?: CSSProperties['borderRadius'];
+    ['--progress-radial-fill-color']?: CSSProperties['stroke'];
     ['--progress-percentage-display']?: CSSProperties['display'];
   };
 } & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;

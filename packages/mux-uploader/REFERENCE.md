@@ -95,7 +95,10 @@ customization:
 | Name | CSS Property | Default Value | Description |
 | ---- | ------------ | ------------- | ----------- |
 | `--progress-bar-fill-color` | `background` | `black` | Background "fill" color for progress bar, which visually indicates progress |
+| `--progress-bar-background-color` | `background` | `#e6e6e6` | The background on which the progress bar is rendered. |
+| `--progress-bar-box-shadow` | `box-shadow` | `0 10px 40px -10px #fff` | Box shadow behind the progress bar. |
 | `--progress-bar-height` | `height` | `4px` | Height for the progress bar. |
+| `--progress-bar-border-radius` | `border-radius` | `100px` | Border radius for the progress bar. |
 | `--progress-radial-fill-color` | `stroke` | `black` | Stroke color for `radial` progress `type` (_Experimental_) |
 | `--progress-percentage-display` | `display` | `block` | Display value for percentage progress. Set to `none` to hide. |
 
@@ -294,7 +297,10 @@ customization:
 | Name | CSS Property | Default Value | Description |
 | ---- | ------------ | ------------- | ----------- |
 | `--progress-bar-fill-color` | `background` | `black` | Background "fill" color for progress bar, which visually indicates progress |
+| `--progress-bar-background-color` | `background` | `#e6e6e6` | The background on which the progress bar is rendered. |
+| `--progress-bar-box-shadow` | `box-shadow` | `0 10px 40px -10px #fff` | Box shadow behind the progress bar. |
 | `--progress-bar-height` | `height` | `4px` | Height for the progress bar. |
+| `--progress-bar-border-radius` | `border-radius` | `100px` | Border radius for the progress bar. |
 | `--progress-radial-fill-color` | `stroke` | `black` | Stroke color for `radial` progress `type` (_Experimental_) |
 | `--progress-percentage-display` | `display` | `block` | Display value for percentage progress. Set to `none` to hide. |
 
