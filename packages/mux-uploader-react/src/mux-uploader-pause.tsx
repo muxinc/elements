@@ -12,9 +12,9 @@ export type MuxUploaderPauseProps = {
   children?: React.ReactNode;
 } & Omit<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>;
 
-const MuxUploaderRetryInternal = React.forwardRef<MuxUploaderPauseRefAttributes, MuxUploaderPauseProps>(
+const MuxUploaderPauseInternal = React.forwardRef<MuxUploaderPauseRefAttributes, MuxUploaderPauseProps>(
   ({ children, ...props }, ref) => {
-    return React.createElement('mux-uploader-retry', toNativeProps({ ...props, ref }), children);
+    return React.createElement('mux-uploader-pause', toNativeProps({ ...props, ref }), children);
   }
 );
 
@@ -22,7 +22,7 @@ const MuxUploaderPause = React.forwardRef<MuxUploaderPauseRefAttributes, MuxUplo
   const innerUploaderPauseRef = useRef<MuxUploaderPauseElement>(null);
   const uploaderPauseRef = useCombinedRefs(innerUploaderPauseRef, ref);
 
-  return <MuxUploaderRetryInternal ref={uploaderPauseRef as typeof innerUploaderPauseRef} {...props} />;
+  return <MuxUploaderPauseInternal ref={uploaderPauseRef as typeof innerUploaderPauseRef} {...props} />;
 });
 
 export default MuxUploaderPause;
