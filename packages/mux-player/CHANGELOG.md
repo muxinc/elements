@@ -48,6 +48,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.3.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.0...@mux/mux-player@3.3.1) (2025-03-05)
+
+
+### Bug Fixes
+
+* **deps:** bump media-chrome from 4.5.0 to 4.7.1 ([#1079](https://github.com/muxinc/elements/issues/1079)) ([9609d01](https://github.com/muxinc/elements/commit/9609d0184becf9c067ccd5a77c61919e61decf04))
+
 ## [3.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.2.4...@mux/mux-player@3.3.0) (2025-02-13)
 
 
