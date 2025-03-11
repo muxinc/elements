@@ -208,6 +208,7 @@ video::-webkit-media-text-track-container {
           this.#adBreak = false;
           this.#adProgressData = undefined;
           this.#ad = undefined;
+          this.dispatchEvent(new Event('durationchange'));
           if (this.nativeEl.paused && (!this.ended || this.loop)) {
             this.play();
           }
@@ -476,11 +477,11 @@ video::-webkit-media-text-track-container {
     }
 
     get adBreakTotalAds() {
-      return this.#adProgressData?.totalAds ?? this.#ad?.getAdPodInfo().getTotalAds() ?? 0;
+      return this.#ad?.getAdPodInfo().getTotalAds() ?? 0;
     }
 
     get adBreakAdPosition() {
-      return this.#adProgressData?.adPosition ?? this.#ad?.getAdPodInfo().getAdPosition() ?? 0;
+      return this.#ad?.getAdPodInfo().getAdPosition() ?? 0;
     }
 
     get adCuePoints() {
