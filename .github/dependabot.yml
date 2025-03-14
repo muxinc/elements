@@ -13,6 +13,12 @@ updates:
         patterns:
           - 'media-chrome'
           - 'player.style'
+          - 'castable-video'
+          - 'custom-media-element'
+          - 'media-tracks'
     allow:
       - dependency-name: 'media-chrome'
       - dependency-name: 'player.style'
+      - dependency-name: 'castable-video'
+      - dependency-name: 'custom-media-element'
+      - dependency-name: 'media-tracks'
