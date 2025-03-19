@@ -43,19 +43,19 @@ jobs:
 
       - name: Install
         if: ${{ steps.release.outputs.releases_created == 'true' }}
-        run: yarn install --frozen-lockfile
+        run: npm ci
       - name: Clean
         if: ${{ steps.release.outputs.releases_created == 'true' }}
-        run: yarn clean
+        run: npm run clean
       - name: Test
         if: ${{ steps.release.outputs.releases_created == 'true' }}
-        run: yarn test
+        run: npm test
       - name: Clean
         if: ${{ steps.release.outputs.releases_created == 'true' }}
-        run: yarn clean
+        run: npm run clean
       - name: Build
         if: ${{ steps.release.outputs.releases_created == 'true' }}
-        run: yarn build:packages
+        run: npm run build:packages
       - name: Publish
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: npm exec -c publish-packages

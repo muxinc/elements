@@ -26,7 +26,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "dev": "PORT=3001 BROWSER=none GENERATE_SOURCEMAP=false yarn start",
+    "dev": "PORT=3001 BROWSER=none GENERATE_SOURCEMAP=false npm start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

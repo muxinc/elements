@@ -49,11 +49,11 @@
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "test": "web-test-runner **/*test.js --port 8005 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-uploader/src/' coverage/lcov.info --silent",
-    "dev:iife": "yarn build:iife --watch=forever",
-    "dev:cjs": "yarn build:cjs --watch=forever",
-    "dev:esm": "yarn build:esm --watch=forever",
-    "dev:esm-module": "yarn build:esm-module --watch=forever",
-    "dev:types": "yarn build:types -w",
+    "dev:iife": "npm run build:iife -- --watch=forever",
+    "dev:cjs": "npm run build:cjs -- --watch=forever",
+    "dev:esm": "npm run build:esm -- --watch=forever",
+    "dev:esm-module": "npm run build:esm-module -- --watch=forever",
+    "dev:types": "npm run build:types -- -w",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:iife",
     "build:esm": "esbuild src/index.ts --target=es2019 --external:@mux/upchunk --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs",
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-uploader.mjs",
@@ -62,7 +62,7 @@
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'"
+    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'"
   },
   "dependencies": {
     "@mux/upchunk": "^3.5.0"
@@ -77,7 +77,7 @@
     "esbuild": "^0.24.1",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "sinon": "^15.0.1",
     "typescript": "^5.7.2"
   }

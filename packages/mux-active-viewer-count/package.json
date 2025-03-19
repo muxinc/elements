@@ -44,11 +44,11 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*test.js --port 8006 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-active-viewer-count/src/' coverage/lcov.info --silent",
-    "dev:iife": "yarn build:iife --watch=forever",
-    "dev:cjs": "yarn build:cjs --watch=forever",
-    "dev:esm": "yarn build:esm --watch=forever",
-    "dev:esm-module": "yarn build:esm-module --watch=forever",
-    "dev:types": "yarn build:types -w",
+    "dev:iife": "npm run build:iife -- --watch=forever",
+    "dev:cjs": "npm run build:cjs -- --watch=forever",
+    "dev:esm": "npm run build:esm -- --watch=forever",
+    "dev:esm-module": "npm run build:esm-module -- --watch=forever",
+    "dev:types": "npm run build:types -- -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:esm-module dev:iife",
     "build:esm": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --external:@mux/*",
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-active-viewer-counts.mjs",
@@ -57,7 +57,7 @@
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'"
+    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'"
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
@@ -71,7 +71,7 @@
     "eslint": "^9.17.0",
     "npm-run-all": "^4.1.5",
     "replace": "^1.2.1",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "typescript": "^5.7.2"
   }
 }
