@@ -207,7 +207,7 @@ describe('<mux-video>', () => {
       prefer-playback="mse"
       muted
       preload="auto"
-    ></mux-player>`);
+    ></mux-video>`);
 
     await aTimeout(1000);
 
