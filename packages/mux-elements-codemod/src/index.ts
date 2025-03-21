@@ -3,10 +3,15 @@
 // @ts-ignore
 // importing it as `process` doesn't preserve the argv properly
 import { argv } from 'node:process';
+// @ts-ignore
 import path from 'path';
-import sh, { type ShellString } from 'shelljs';
+// @ts-ignore
+import shell from 'shelljs';
 import minimist from 'minimist';
 import chalk from 'chalk';
+
+const sh: any = shell;
+type ShellString = typeof sh.ShellString;
 
 const args = minimist(argv.slice(2), {
   string: ['extensions', 'npm-client'],
@@ -77,7 +82,7 @@ const getFiles = (
   extensions: string[],
   predicate?: (file: string | ShellString) => boolean
 ) => {
-  return sh.find(folders).filter((file) => {
+  return sh.find(folders).filter((file: string) => {
     // if we aren't in a node_modules
     // the file matches our given extension
     // return true unless a predicate is provided, in which case,
@@ -108,7 +113,7 @@ const imports = () => {
     // if in dry-run, store unchanges lines here for use below
     if (!force && includesMuxElements) {
       const lineNumbers: number[] = [];
-      const lines = fileText.split('\n').filter((line, i) => {
+      const lines = fileText.split('\n').filter((line: string, i: number) => {
         const included = line.includes('@mux-elements');
         if (included) {
           lineNumbers.push(i);

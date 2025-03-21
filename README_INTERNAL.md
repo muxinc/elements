@@ -1,27 +1,27 @@
 # Local Development
 
-To run this repo locally, run `yarn` to install and link dependencies.
+To run this repo locally, run `npm i` to install and link dependencies.
 
-For dev testing, run `yarn dev`. By default, this only runs the packages.
-To run examples, you'll want to run run a `yarn dev` in the example folder of your choice or modify the `dev` script in the [top level package.json](./package.json).
+For dev testing, run `npm run dev`. By default, this only runs the packages.
+To run examples, you'll want to run run a `npm run dev` in the example folder of your choice or modify the `dev` script in the [top level package.json](./package.json).
 Examples:
 
 - To run all examples
   - include `--filter 'demo-*'` in the dev script
-  - Run `npx turbo run dev --filter 'demo-*'` locally after running `yarn dev`
+  - Run `npx turbo run dev --filter 'demo-*'` locally after running `npm run dev`
 - To only run `vanilla-ts-esm` demo
   - include `--filter '*-esm'` in the dev script
-  - Run `npx turbo run dev --filter '*-esm'` locally after running `yarn dev`
-  - Alternatively, run `yarn dev` and then, from another terminal, `cd ./examples/vanilla-ts-esm` and `yarn dev`
+  - Run `npx turbo run dev --filter '*-esm'` locally after running `npm run dev`
+  - Alternatively, run `npm run dev` and then, from another terminal, `cd ./examples/vanilla-ts-esm` and `npm run dev`
 
 ## Testing your changes
 
-To run tests for the entire monorepo, run `yarn test` from the monorepo root. In addition, you can:
+To run tests for the entire monorepo, run `npm test` from the monorepo root. In addition, you can:
 
-- Run tests across multiple browsers via `yarn test -- -- --all`
-- Run tests for a particular package by navigating to that package and running its `yarn test` (with or without the `--all` flag)
-  - Example: for `playback-core`, `cd ./packages/playback-core` and `yarn test`
-- Run tests on Sauce Labs from your local machine (where available) by going to the relevant package and running `yarn test:saucelabs`
+- Run tests across multiple browsers via `npm test -- -- --all`
+- Run tests for a particular package by navigating to that package and running its `npm test` (with or without the `--all` flag)
+  - Example: for `playback-core`, `cd ./packages/playback-core` and `npm test`
+- Run tests on Sauce Labs from your local machine (where available) by going to the relevant package and running `npm run test:saucelabs`
   - **NOTE**: This is only available for core contributors and requires `SAUCE_USERNAME` + `SAUCE_ACCESS_KEY` env variables setup. Reach out to relevant team members for assistance.
   - **NOTE**: Currently only implemented for the `mux-player` package.
 

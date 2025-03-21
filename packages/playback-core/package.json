@@ -41,11 +41,11 @@
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
     "test": "web-test-runner **/*.test.js --port 8004 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/playback-core/src/' coverage/lcov.info --silent",
-    "dev:cjs": "yarn build:cjs --watch=forever",
-    "dev:esm": "yarn build:esm --watch=forever",
-    "dev:esm-module": "yarn build:esm-module --watch=forever",
-    "dev:iife": "yarn build:iife --watch=forever",
-    "dev:types": "yarn build:types -w",
+    "dev:cjs": "npm run build:cjs -- --watch=forever",
+    "dev:esm": "npm run build:esm -- --watch=forever",
+    "dev:esm-module": "npm run build:esm-module -- --watch=forever",
+    "dev:iife": "npm run build:iife -- --watch=forever",
+    "dev:types": "npm run build:types -- -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:iife dev:esm-module",
     "build:esm": "esbuilder src/index.ts --sourcemap --format=esm --out-extension:.js=.mjs --external:mux-embed --external:hls.js",
     "build:esm-module": "esbuilder src/index.ts --sourcemap --format=esm --outfile=./dist/playback-core.mjs",
@@ -54,7 +54,7 @@
     "prebuild:types": "shx mkdir -p ./dist/types",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4 --to=3.4",
-    "build": "npm-run-all --parallel 'build:esm --minify' 'build:iife --minify' 'build:cjs --minify' 'build:esm-module --minify'"
+    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'"
   },
   "dependencies": {
     "hls.js": "~1.5.19",
@@ -72,7 +72,7 @@
     "esbuild": "^0.24.1",
     "eslint": "^9.17.0",
     "npm-run-all": "^4.1.5",
-    "shx": "^0.3.4",
+    "shx": "^0.4.0",
     "typescript": "^5.7.2"
   }
 }

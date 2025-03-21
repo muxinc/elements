@@ -36,7 +36,7 @@ const args = process.argv.slice(3).reduce((processArgs, val) => {
   return processArgs;
 }, {});
 
-// e.g. yarn build:esm --lang=nl
+// e.g. npm run build:esm --lang=nl
 const i18nPlugin = {
   name: 'example',
   setup(builder) {
@@ -73,7 +73,7 @@ const esmScriptModule = args.format === 'esm-module';
 const options = {
   entryPoints: [process.argv[2]],
   outfile: args.outfile,
-  outdir: args.outfile ? undefined : args.outdir ?? 'dist',
+  outdir: args.outfile ? undefined : (args.outdir ?? 'dist'),
   bundle: true,
   target: 'es2019',
   minify: args.minify,
