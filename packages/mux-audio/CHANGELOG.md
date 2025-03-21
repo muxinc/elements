@@ -15,6 +15,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.15.4](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.3...@mux/mux-audio@0.15.4) (2025-03-21)
+
+
+### Bug Fixes
+
+* upgrade dependencies (castable-video, ...) ([#1087](https://github.com/muxinc/elements/issues/1087)) ([dc84f07](https://github.com/muxinc/elements/commit/dc84f07109565dc7ee29d691a0fc941c6854f762))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.28.3 to 0.28.4
+
 ## [0.15.3](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.2...@mux/mux-audio@0.15.3) (2025-02-13)
 
 

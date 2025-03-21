@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video",
-  "version": "0.24.3",
+  "version": "0.24.4",
   "description": "A custom mux video element for the browser that Just Works™",
   "keywords": [
     "video",
@@ -80,7 +80,7 @@
     "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify' 'build:react:cjs -- --minify' 'build:react:esm -- --minify'"
   },
   "dependencies": {
-    "@mux/playback-core": "0.28.3",
+    "@mux/playback-core": "0.28.4",
     "castable-video": "~1.1.5",
     "custom-media-element": "~1.4.2",
     "media-tracks": "~0.3.3"

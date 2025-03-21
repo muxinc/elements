@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.1.2...@mux/mux-uploader@1.2.0) (2025-03-21)
+
+
+### Features
+
+* add additional custom properties to mux-uploader progress bar ([#1069](https://github.com/muxinc/elements/issues/1069)) ([bbe1e38](https://github.com/muxinc/elements/commit/bbe1e38af108a79a45ebfe712a76d0dcab7c5d94))
+
+
+### Bug Fixes
+
+* upgrade dependencies (castable-video, ...) ([#1087](https://github.com/muxinc/elements/issues/1087)) ([dc84f07](https://github.com/muxinc/elements/commit/dc84f07109565dc7ee29d691a0fc941c6854f762))
+
 ## [1.1.2](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.1.1...@mux/mux-uploader@1.1.2) (2025-02-13)
 
 

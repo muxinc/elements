@@ -48,6 +48,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.3.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.0...@mux/mux-player@3.3.1) (2025-03-21)
+
+
+### Bug Fixes
+
+* bump media-chrome from 4.7.1 to 4.8.0 in /packages/mux-player in the prod-dependencies group across 1 directory ([#1084](https://github.com/muxinc/elements/issues/1084)) ([d2eccb5](https://github.com/muxinc/elements/commit/d2eccb5e3437da360873c84258f2e9624f1d2993))
+* **deps:** bump media-chrome from 4.5.0 to 4.7.1 ([#1079](https://github.com/muxinc/elements/issues/1079)) ([9609d01](https://github.com/muxinc/elements/commit/9609d0184becf9c067ccd5a77c61919e61decf04))
+* upgrade dependencies (castable-video, ...) ([#1087](https://github.com/muxinc/elements/issues/1087)) ([dc84f07](https://github.com/muxinc/elements/commit/dc84f07109565dc7ee29d691a0fc941c6854f762))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.24.3 to 0.24.4
+    * @mux/playback-core bumped from 0.28.3 to 0.28.4
+
 ## [3.3.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.2.4...@mux/mux-player@3.3.0) (2025-02-13)
 
 

@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.3...@mux/playback-core@0.28.4) (2025-03-21)
+
+
+### Bug Fixes
+
+* upgrade dependencies (castable-video, ...) ([#1087](https://github.com/muxinc/elements/issues/1087)) ([dc84f07](https://github.com/muxinc/elements/commit/dc84f07109565dc7ee29d691a0fc941c6854f762))
+
 ## [0.28.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.2...@mux/playback-core@0.28.3) (2025-02-13)
 
 
