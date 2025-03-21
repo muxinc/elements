@@ -12,8 +12,8 @@
     "build": "npm run esbuild -- --minify"
   },
   "devDependencies": {
-    "esbuild": "^0.24.1",
-    "typescript": "^5.7.2"
+    "esbuild": "^0.25.1",
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "@mux/mux-active-viewer-count": ">=0.2.0-alpha.0",

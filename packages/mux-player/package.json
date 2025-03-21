@@ -96,26 +96,26 @@
     "@mux/mux-video": "0.24.3",
     "@mux/playback-core": "0.28.3",
     "media-chrome": "~4.8.0",
-    "player.style": "^0.1.4"
+    "player.style": "^0.1.6"
   },
   "devDependencies": {
     "@mux/esbuilder": "0.1.0",
     "@open-wc/testing": "^4.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.18.1",
-    "@typescript-eslint/parser": "^8.18.1",
-    "@web/dev-server-esbuild": "^1.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.27.0",
+    "@typescript-eslint/parser": "^8.27.0",
+    "@web/dev-server-esbuild": "^1.0.4",
     "@web/dev-server-import-maps": "^0.2.1",
     "@web/dev-server-legacy": "^2.1.1",
     "@web/test-runner": "^0.19.0",
     "@web/test-runner-playwright": "^0.11.0",
     "@web/test-runner-saucelabs": "^0.11.2",
     "downlevel-dts": "^0.11.0",
-    "esbuild": "^0.24.1",
-    "eslint": "^9.17.0",
+    "esbuild": "^0.25.1",
+    "eslint": "^9.22.0",
     "hls.js": "~1.5.19",
     "npm-run-all": "^4.1.5",
-    "replace": "^1.2.1",
+    "replace": "^1.2.2",
     "shx": "^0.4.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.2"
   }
 }

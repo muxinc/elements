@@ -67,21 +67,21 @@
   },
   "dependencies": {
     "@mux/playback-core": "0.28.3",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.8.1"
   },
   "devDependencies": {
     "@types/prop-types": "^15.7.14",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
-    "@typescript-eslint/eslint-plugin": "^8.18.1",
-    "@typescript-eslint/parser": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.27.0",
+    "@typescript-eslint/parser": "^8.27.0",
     "downlevel-dts": "^0.11.0",
-    "esbuild": "^0.24.1",
-    "eslint": "^9.17.0",
+    "esbuild": "^0.25.1",
+    "eslint": "^9.22.0",
     "npm-run-all": "^4.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "shx": "^0.4.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.8.2"
   }
 }
