@@ -1,0 +1,46 @@
+name: Integration tests
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      MUX_CDN_URL:
+        description: 'Mux Player version'
+        required: false
+      include_firefox:
+        type: boolean
+        description: Include Firefox
+jobs:
+  trigger-integration-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Get testing drivers
+        if: github.event.action != 'Test results from external repository'
+        run: |
+          if ${{ github.event.inputs.include_firefox }} == true; then
+            echo "drivers=Chrome,Firefox" >> $GITHUB_ENV
+          else
+            echo "drivers=Chrome" >> $GITHUB_ENV
+          fi
+      - name: Dispatch workflow on external repository
+        if: github.event.action != 'Test results from external repository'
+        run: |
+          curl -X POST https://api.github.com/repos/muxinc/playback-testing/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u ${{ secrets.ACCESS_TOKEN }} \
+          --data '{"event_type": "Run integration tests", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "repositoryUrl": "https://api.github.com/repos/muxinc/elements/dispatches", "players": "mux",  "drivers": "'${{env.drivers}}'", "MUX_CDN_URL":"'${{ github.event.inputs.MUX_CDN_URL }}'"  }}'
+          echo "Integration tests will be run on a separate repository. Once results are ready, a workflow will be executed that will display the results."
+      - name: Show test results from external repository
+        if: github.event.action == 'Test results from external repository'
+        run: |
+          echo -e '${{toJSON(github.event.client_payload.summary)}}'
+  show-results:
+    runs-on: ubuntu-latest
+    if: github.event.action == 'Test results from external repository'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/github-script@v6.3.3
+        with:
+          script: |
+            const createSummary = require('.github/external-testing/createSummary.js')
+            await createSummary({core}, ${{toJSON(github.event.client_payload.summary)}})
