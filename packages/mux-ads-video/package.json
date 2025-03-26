@@ -1,0 +1,31 @@
+{
+  "name": "@mux/mux-video-ads",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.mjs",
+  "unpkg": "./dist/mux-ads-video.js",
+  "jsdelivr": "./dist/mux-ads-video.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "build:types": "tsc",
+    "build:esm": "esbuild src/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "dev:iife": "npm run build:iife -- --watch=forever",
+    "dev:cjs": "npm run build:cjs -- --watch=forever",
+    "dev:types": "npm run build:types -- -w",
+    "dev:esm": "npm run build:esm --watch=forever",
+    "build:cjs": "esbuild src/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-ads-video.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:iife"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "npm-run-all": "^4.1.5",
+    "esbuild": "^0.24.1",
+    "@types/google_interactive_media_ads_types": "^1.20241219.0"
+  },
+  "dependencies": {
+    "hls.js": "~1.5.19",
+    "@mux/mux-video": "0.24.3"
+  }
+}
