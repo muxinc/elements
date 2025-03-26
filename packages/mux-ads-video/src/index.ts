@@ -26,6 +26,18 @@ class MuxVideoAds extends MuxVideoElement {
     display: inline-block;
     line-height: 0;
 }
+video {
+  max-width: 100%;
+  max-height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: var(--media-object-fit, contain);
+  object-position: var(--media-object-position, 50% 50%);
+}
+video::-webkit-media-text-track-container {
+  transform: var(--media-webkit-text-track-transform);
+  transition: var(--media-webkit-text-track-transition);
+}
 #mainContainer {
     position: relative;
 }
@@ -43,7 +55,9 @@ class MuxVideoAds extends MuxVideoElement {
 </style>
 <div id="mainContainer">
   <div id="content">
-    <video id="contentElement" ${serializeAttributes(attrs)}></video>
+    <slot name="media">
+      <video id="contentElement" ${serializeAttributes(attrs)}></video>
+    </slot>
   </div>
   <div id="adContainer"></div>
 </div>
