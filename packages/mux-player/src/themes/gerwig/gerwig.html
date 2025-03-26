@@ -589,6 +589,20 @@
     media-controller[mediahasplayed][mediapaused] [part='mux-badge'] {
       bottom: calc(28px + var(--media-control-height, 0px) + var(--media-control-padding, 0px) * 2);
     }
+
+    /**
+     * @TODO This is needed because media-container disables pointer-events on gestures-layer by default (CJP)
+     * @TODO This means the ad container is no longer clickable. Likely needed for mobile anyway, but this means
+     * Click div needs to be implemented for ad click through (CJP)
+     * @TODO This solution is mutually exclusive from use of Google IMA baked in skip ads UI (CJP)
+     */
+    /* media-controller::part(gesture-layer) {
+      pointer-events: auto;
+    }
+
+    media-controller::part(media-layer) {
+      pointer-events: none;
+    } */
   </style>
 
   <template partial="TitleDisplay">
@@ -995,6 +1009,15 @@
     </div>
   </template>
 
+  <template partial="AdCountDisplay">
+    <media-ad-count-display
+      part="top title display"
+      class="title-display"
+      mediaadbreaktotalads="{{mediaadbreaktotalads}}"
+      mediaadbreakadposition="{{mediaadbreakadposition}}"
+    ></media-ad-count-display>
+  </template>
+
   <media-controller
     part="controller"
     defaultstreamtype="{{defaultstreamtype ?? 'on-demand'}}"
@@ -1048,32 +1071,42 @@
         <div role="button" class="autoplay-unmute-btn">Unmute</div>
       </div> -->
 
-      <template if="streamtype == 'on-demand'">
-        <template if="breakpointsm">
-          <media-control-bar part="control-bar top" slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
+      <template if="!mediaadbreak">
+        <template if="streamtype == 'on-demand'">
+          <template if="breakpointsm">
+            <media-control-bar part="control-bar top" slot="top-chrome">{{>TitleDisplay}} </media-control-bar>
+          </template>
+          {{>TimeRange}}
+          <media-control-bar part="control-bar bottom">
+            {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>MuteButton}}
+            {{>VolumeRange}}
+            <div class="spacer"></div>
+            {{>RenditionMenu}} {{>PlaybackRateMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}}
+            {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
+          </media-control-bar>
         </template>
-        {{>TimeRange}}
-        <media-control-bar part="control-bar bottom">
-          {{>PlayButton}} {{>SeekBackwardButton}} {{>SeekForwardButton}} {{>TimeDisplay}} {{>MuteButton}}
-          {{>VolumeRange}}
-          <div class="spacer"></div>
-          {{>RenditionMenu}} {{>PlaybackRateMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}}
-          {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
-        </media-control-bar>
-      </template>
 
-      <template if="streamtype == 'live'">
-        <media-control-bar part="control-bar top" slot="top-chrome">
-          {{>LiveButton}}
-          <template if="breakpointsm"> {{>TitleDisplay}} </template>
-        </media-control-bar>
-        <template if="targetlivewindow > 0">{{>TimeRange}}</template>
-        <media-control-bar part="control-bar bottom">
-          {{>PlayButton}}
-          <template if="targetlivewindow > 0">{{>SeekBackwardButton}} {{>SeekForwardButton}}</template>
-          {{>MuteButton}} {{>VolumeRange}}
+        <template if="streamtype == 'live'">
+          <media-control-bar part="control-bar top" slot="top-chrome">
+            {{>LiveButton}}
+            <template if="breakpointsm"> {{>TitleDisplay}} </template>
+          </media-control-bar>
+          <template if="targetlivewindow > 0">{{>TimeRange}}</template>
+          <media-control-bar part="control-bar bottom">
+            {{>PlayButton}}
+            <template if="targetlivewindow > 0">{{>SeekBackwardButton}} {{>SeekForwardButton}}</template>
+            {{>MuteButton}} {{>VolumeRange}}
+            <div class="spacer"></div>
+            {{>RenditionMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}}
+            {{>FullscreenButton}}
+          </media-control-bar>
+        </template>
+      </template>
+      <template if="mediaadbreak">
+        <media-control-bar noautohide part="control-bar top" slot="top-chrome"> {{>AdCountDisplay}} </media-control-bar>
+        <media-control-bar noautohide part="control-bar bottom">
+          {{>PlayButton}} {{>TimeDisplay}} {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
-          {{>RenditionMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}}
           {{>FullscreenButton}}
         </media-control-bar>
       </template>
