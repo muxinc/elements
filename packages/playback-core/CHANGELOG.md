@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.5](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.4...@mux/playback-core@0.28.5) (2025-03-27)
+
+
+### Bug Fixes
+
+* **playback-core:** Remove redundant FPS DRM generateRequest() for native playback. ([#1088](https://github.com/muxinc/elements/issues/1088)) ([c20063b](https://github.com/muxinc/elements/commit/c20063b8725d968aec0b751875850932639fb6e0))
+
 ## [0.28.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.3...@mux/playback-core@0.28.4) (2025-03-21)
 
 
