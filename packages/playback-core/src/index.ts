@@ -867,7 +867,6 @@ export const setupNativeFairplayDRM = (
           );
         }),
       ]).then(([, messageEventMsg]) => messageEventMsg);
-      session.generateRequest(initDataType, initData);
 
       const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
         if (errOrResp instanceof Response) {
