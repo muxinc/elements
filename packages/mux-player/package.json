@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "An open source Mux player web component that Just Works™",
   "homepage": "https://mux.com/player",
   "keywords": [
@@ -93,8 +93,8 @@
     "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify' 'build:themes'"
   },
   "dependencies": {
-    "@mux/mux-video": "0.24.4",
-    "@mux/playback-core": "0.28.4",
+    "@mux/mux-video": "0.24.5",
+    "@mux/playback-core": "0.28.5",
     "media-chrome": "~4.8.0",
     "player.style": "^0.1.6"
   },
