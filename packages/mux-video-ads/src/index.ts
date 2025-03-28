@@ -298,7 +298,7 @@ declare global {
   var MuxVideoAds: MuxVideoAdsElementType; // eslint-disable-line
 }
 
-if (!globalThis.customElements.get('mux-video-ads')) {
+if (globalThis.customElements && !globalThis.customElements.get('mux-video-ads')) {
   globalThis.customElements.define('mux-video-ads', MuxVideoAds);
   globalThis.MuxVideoAds = MuxVideoAds;
 }
