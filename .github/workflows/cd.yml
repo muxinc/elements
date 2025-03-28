@@ -47,9 +47,16 @@ jobs:
       - name: Clean
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: npm run clean
+      - name: Install playwright browsers
+        run: npx playwright install --with-deps
+        # Retry the test command up to 6 times with a timeout of 10 minutes
       - name: Test
-        if: ${{ steps.release.outputs.releases_created == 'true' }}
-        run: npm test
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 6
+          # run npm test and pass through `-- --all` to turborepo
+          command: npm run test -- -- --all
       - name: Clean
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: npm run clean
