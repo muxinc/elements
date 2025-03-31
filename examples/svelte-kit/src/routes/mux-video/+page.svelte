@@ -37,7 +37,7 @@
 	metadata-viewer-user-id="user-id-6789"
 	stream-type="on-demand"
 	controls
-	watermark-enabled
+	logo
 	muted
 ></mux-video>
 

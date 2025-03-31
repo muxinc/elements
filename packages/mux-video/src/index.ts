@@ -48,6 +48,7 @@ import { CustomVideoElement, Events as VideoEvents } from 'custom-media-element'
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
+import { muxLogo } from './assets/muxLogo';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
@@ -80,7 +81,7 @@ export const Attributes = {
   TARGET_LIVE_WINDOW: 'target-live-window',
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
-  WATERMARK_ENABLED: 'watermark-enabled',
+  LOGO: 'logo',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -111,6 +112,32 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   #playerSoftwareName?: string;
   #errorTranslator?: (errorEvent: any) => any;
 
+  static getTemplateHTML(attrs: Record<string, string> = {}) {
+    const template = super.getTemplateHTML(attrs);
+    const showLogo = attrs['logo'] !== 'false' && attrs['logo'] !== undefined;
+    const hasLogoSrc = attrs['logo'] && attrs['logo'] !== '';
+    const logoSrc = attrs['logo'];
+
+    return `  
+      <style>
+        :host {
+          position: relative;
+        }
+        :host .logo {
+          display: block;
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          width: 5rem;
+          opacity: 0.5;
+          pointer-events: none;
+          user-select: none;
+        }
+      </style>
+      ${template}
+      ${showLogo ? (hasLogoSrc ? `<img class="logo" src=${logoSrc} />` : muxLogo) : ''}
+    `;
+  }
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
@@ -705,15 +732,14 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     this.#_hlsConfig = val;
   }
 
-  get watermarkEnabled() {
-    return this.hasAttribute(Attributes.WATERMARK_ENABLED);
+  get logo() {
+    return this.hasAttribute(Attributes.LOGO);
   }
 
-  set watermarkEnabled(val) {
-    // show mux logo as watermark
-    if (val === this.watermarkEnabled) return;
+  set logo(val) {
+    if (val === this.logo) return;
 
-    this.toggleAttribute(Attributes.WATERMARK_ENABLED, !!val);
+    this.toggleAttribute(Attributes.LOGO, !!val);
   }
 
   async #requestLoad() {
@@ -818,40 +844,6 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     super.connectedCallback?.();
     if (this.nativeEl && this.src && !this.#core) {
       this.#requestLoad();
-    }
-    if (this.watermarkEnabled) {
-      const shadowRoot = this.shadowRoot;
-      const mediaSlot = shadowRoot?.querySelector('slot[name="media"]');
-      const watermarkSlot = document.createElement('slot');
-      watermarkSlot.setAttribute('name', 'watermark');
-      const watermarkLogo = document.createElement('template');
-      watermarkLogo.innerHTML = `
-        <style>
-          :host {
-            position: relative;
-          }
-          slot[name="watermark"] {
-            display: block;
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-          }
-          slot[name="watermark"] img {
-            width: 5rem;
-            opacity: 0.5;
-            pointer-events: none;
-            user-select: none;
-          }
-          video:fullscreen + slot[name="watermark"] {
-            z-index: 10; /* Ensure watermark stays on top in fullscreen */
-          }
-        </style>
-        <slot name="watermark">
-          <img src="https://user-images.githubusercontent.com/360826/233653989-11cd8603-c20f-4008-8bf7-dc15b743c52b.svg" alt="Mux Logo" />
-        </slot>
-      `;
-      shadowRoot!.appendChild(watermarkLogo.content.cloneNode(true));
-      mediaSlot && shadowRoot!.insertBefore(watermarkSlot, mediaSlot);
     }
   }
   disconnectedCallback(): void {
