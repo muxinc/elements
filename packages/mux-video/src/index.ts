@@ -48,7 +48,7 @@ import { CustomVideoElement, Events as VideoEvents } from 'custom-media-element'
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
-import { muxLogo } from './assets/muxLogo';
+import { muxLogo } from './assets/mux-logo.js';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
@@ -733,13 +733,15 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   get logo() {
-    return this.hasAttribute(Attributes.LOGO);
+    return this.getAttribute(Attributes.LOGO);
   }
 
   set logo(val) {
-    if (val === this.logo) return;
-
-    this.toggleAttribute(Attributes.LOGO, !!val);
+    if (val) {
+      this.setAttribute(Attributes.LOGO, val);
+    } else {
+      this.removeAttribute(Attributes.LOGO);
+    }
   }
 
   async #requestLoad() {
