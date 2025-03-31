@@ -48,9 +48,11 @@ jobs:
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: npm run clean
       - name: Install playwright browsers
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         run: npx playwright install --with-deps
         # Retry the test command up to 6 times with a timeout of 10 minutes
       - name: Test
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 10
