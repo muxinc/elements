@@ -135,7 +135,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
         }
       </style>
       ${template}
-      ${showLogo ? (hasLogoSrc ? `<img class="logo" src=${logoSrc} />` : muxLogo) : ''}
+      ${showLogo ? (hasLogoSrc ? `<img class="logo" part="logo" src=${logoSrc} />` : muxLogo) : ''}
     `;
   }
   constructor() {
