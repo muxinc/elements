@@ -91,12 +91,25 @@ export const inferMimeTypeFromURL = (url: string) => {
   }
 
   const extDelimIdx = pathname.lastIndexOf('.');
-  if (extDelimIdx < 0) return '';
+  if (extDelimIdx < 0) {
+    if (isExtensionLessMuxM3U8URL(url)) {
+      return ExtensionMimeTypeMap.M3U8; // Treat extension-less Mux URLs as HLS
+    }
+    return '';
+  }
 
   const ext = pathname.slice(extDelimIdx + 1);
   const upperExt = ext.toUpperCase();
 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
+};
+
+const isExtensionLessMuxM3U8URL = (url: string): boolean => {
+  // Match https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008
+  // and https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008?foo=bar
+  // and https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008?foo=bar&baz=qux
+  // but not https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8
+  return /^https?:\/\/(stream\.mux\.com)\/[a-zA-Z0-9]+(?!\.m3u8)/.test(url.trim());
 };
 
 export type MuxJWT = {
