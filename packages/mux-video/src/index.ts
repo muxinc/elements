@@ -118,24 +118,35 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     const hasLogoSrc = attrs['logo'] && attrs['logo'] !== '';
     const logoSrc = attrs['logo'];
 
-    return `  
+    const logoTemplate = showLogo
+      ? `
       <style>
         :host {
           position: relative;
         }
-        :host .logo {
-          display: block;
+        :host slot[name="logo"] {
+          display: flex;
+          justify-content: end;
           position: absolute;
           top: 1rem;
           right: 1rem;
+
+        }
+         :host slot[name="logo"] .logo{
           width: 5rem;
-          opacity: 0.5;
           pointer-events: none;
           user-select: none;
-        }
+         }
       </style>
+      <slot name="logo">
+        ${hasLogoSrc ? `<img class="logo" part="logo" src="${logoSrc}" />` : muxLogo}
+      </slot>
+    `
+      : '';
+
+    return `
       ${template}
-      ${showLogo ? (hasLogoSrc ? `<img class="logo" part="logo" src=${logoSrc} />` : muxLogo) : ''}
+      ${logoTemplate}
     `;
   }
   constructor() {
