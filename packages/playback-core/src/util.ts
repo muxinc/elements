@@ -59,17 +59,13 @@ export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string
   return [idPart, queryPart];
 };
 
-export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => {
-  const type = props.type;
+export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src' | 'customDomain'>>) => {
+  const { type } = props;
   if (type) {
     const upperType = type.toUpperCase();
     return isKeyOf(upperType, MimeTypeShorthandMap) ? MimeTypeShorthandMap[upperType] : type;
   }
-
-  const { src } = props;
-  if (!src) return '';
-
-  return inferMimeTypeFromURL(src);
+  return inferMimeTypeFromURL(props);
 };
 
 export const toStreamTypeFromPlaylistType = (playlistType: HlsPlaylistTypes) => {
@@ -82,17 +78,20 @@ export const toTargetLiveWindowFromPlaylistType = (playlistType: HlsPlaylistType
   return 0;
 };
 
-export const inferMimeTypeFromURL = (url: string) => {
+export const inferMimeTypeFromURL = (props: Partial<Pick<MuxMediaProps, 'src' | 'customDomain'>>) => {
+  const { src } = props;
+  if (!src) return '';
+
   let pathname = '';
   try {
-    pathname = new URL(url).pathname;
+    pathname = new URL(src).pathname;
   } catch (_e) {
     console.error('invalid url');
   }
 
   const extDelimIdx = pathname.lastIndexOf('.');
   if (extDelimIdx < 0) {
-    if (isExtensionLessMuxM3U8URL(url)) {
+    if (isExtensionLessMuxM3U8URL(props)) {
       return ExtensionMimeTypeMap.M3U8; // Treat extension-less Mux URLs as HLS
     }
     return '';
@@ -104,12 +103,23 @@ export const inferMimeTypeFromURL = (url: string) => {
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
 };
 
-const isExtensionLessMuxM3U8URL = (url: string): boolean => {
-  // Match https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008
-  // and https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008?foo=bar
-  // and https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008?foo=bar&baz=qux
-  // but not https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8
-  return /^https?:\/\/(stream\.mux\.com)\/[a-zA-Z0-9]+(?!\.m3u8)/.test(url.trim());
+const MUX_VIDEO_DOMAIN = 'mux.com';
+export const isExtensionLessMuxM3U8URL = ({
+  src,
+  customDomain = MUX_VIDEO_DOMAIN,
+}: Partial<Pick<MuxMediaProps, 'src' | 'customDomain'>>) => {
+  let urlObj;
+  try {
+    urlObj = new URL(`${src}`);
+  } catch {
+    return false;
+  }
+  const validProtocol = urlObj.protocol === 'https:';
+  const validHostname = urlObj.hostname === `stream.${customDomain}`.toLowerCase();
+  const pathParts = urlObj.pathname.split('/');
+  const validPathPartsLength = pathParts.length === 2;
+  const validExtensionlessPath = !pathParts?.[1].includes('.');
+  return validProtocol && validHostname && validPathPartsLength && validExtensionlessPath;
 };
 
 export type MuxJWT = {
