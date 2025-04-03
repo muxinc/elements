@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.6](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.5...@mux/playback-core@0.28.6) (2025-04-03)
+
+
+### Bug Fixes
+
+* allow extension less Mux m3u8 url as src ([#1096](https://github.com/muxinc/elements/issues/1096)) ([5e85462](https://github.com/muxinc/elements/commit/5e85462cb003afbef45373318b324feb876e2ae4))
+
 ## [0.28.5](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.4...@mux/playback-core@0.28.5) (2025-03-31)
 
 

@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.3.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.2...@mux/mux-player@3.3.3) (2025-04-03)
+
+
+### Bug Fixes
+
+* bump player.style from 0.1.6 to 0.1.7 in the prod-dependencies group across 1 directory ([#1095](https://github.com/muxinc/elements/issues/1095)) ([b9da4be](https://github.com/muxinc/elements/commit/b9da4bea21b0292de92ab504b2a903ee61dc5bea))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.24.5 to 0.25.0
+    * @mux/playback-core bumped from 0.28.5 to 0.28.6
+
 ## [3.3.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.1...@mux/mux-player@3.3.2) (2025-03-31)
 
 
