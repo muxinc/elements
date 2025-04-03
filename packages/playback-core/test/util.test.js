@@ -52,6 +52,20 @@ describe('Module: util', () => {
       const actual = getType({ src: `http://foo.com/bar.${extension}`, type: MimeTypeShorthandMap.HLS });
       assert.equal(actual, expected);
     });
+
+    it('should support Mux extensionless m3u8 URLs', () => {
+      const expected = ExtensionMimeTypeMap.M3U8;
+      // Mux extensionless m3u8 URLs should be treated as M3U8
+      const actual = getType({ src: 'https://stream.mux.com/abc123' });
+      assert.equal(actual, expected);
+    });
+
+    it('should support Mux extensionless m3u8 URLs with custom domain', () => {
+      const expected = ExtensionMimeTypeMap.M3U8;
+      // Mux extensionless m3u8 URLs with custom domain should be treated as M3U8
+      const actual = getType({ src: 'https://stream.abc.com/abc123', customDomain: 'abc.com' });
+      assert.equal(actual, expected);
+    });
   });
 
   describe('parseJwt', () => {
