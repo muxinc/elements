@@ -31,6 +31,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.25.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.24.5...@mux/mux-video@0.25.0) (2025-04-03)
+
+
+### Features
+
+* add optional mux logo to mux video ([#1090](https://github.com/muxinc/elements/issues/1090)) ([e61c2fa](https://github.com/muxinc/elements/commit/e61c2fa0e775ef4c577551afe5adabc64044b9a7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.28.5 to 0.28.6
+
 ## [0.24.5](https://github.com/muxinc/elements/compare/@mux/mux-video@0.24.4...@mux/mux-video@0.24.5) (2025-03-31)
 
 
