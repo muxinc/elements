@@ -1,1 +1,1 @@
-export * as MuxVideo from "mux-video-ads/dist/index.cjs";
+export * as MuxVideo from "@mux/mux-video-ads";

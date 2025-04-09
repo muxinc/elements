@@ -37,9 +37,27 @@
             </a>
         </div>
     </header>
-    <mux-video-ads src="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
-        metadata-video-id="video-id-12345" metadata-video-title="Star Wars: Episode 3"
-        metadata-viewer-user-id="user-id-6789" stream-type="on-demand" prefer-playback="mse" controls playsinline muted
+    <!--
+      Description of attributes:
+      debug: Add/remove to enable/disable hls.js, mux-embed (mux data sdk), and elements debug logging.
+      metadata-*: values that will be sent to Mux Data for corresponding data views
+      prefer-playback: Add/remove to prefer e.g. MSE/hls.js even on playback environments that normally wouldn't
+        (e.g. on Mobile Safari to test Google IMA + MSE behaviors for that platform)
+      playsinline: Add/remove to test fullscreen vs. inline behaviors on mobile devices when using Google IMA with ad permutations and playback environments
+        (e.g. skippable ads on Mobile Safari)
+      autoplay: Add/remove to test Google IMA with autoplay enabled/disabled
+     -->
+    <mux-video-ads
+        debug
+        playback-id="a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M"
+        metadata-video-id="this-is-a-video--with-ads"
+        metadata-video-title="I AM TESTING ADS"
+        metadata-viewer-user-id="user-is-testing-ads"
+        prefer-playback="mse"
+        playsinline
+        controls
+        muted
+        autoplay
         adtagurl="https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="></mux-video-ads>
 
     <a href="../">Browse Elements</a>

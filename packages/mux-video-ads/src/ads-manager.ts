@@ -1,6 +1,7 @@
 /// <reference types="google_interactive_media_ads_types" />
 
 import MuxVideoElement from '@mux/mux-video';
+import { Hls } from '@mux/playback-core';
 
 export type MuxAdManagerConfig = {
   videoElement: MuxVideoElement;
@@ -80,6 +81,7 @@ export class MuxAdManager {
       if (this.isIOSMse(this.#customMediaElement.src)) {
         if (this.#customMediaElement._hls) {
           console.log('Disconnecting Hls for iOS');
+          // this.#customMediaElement.mux?.removeHLSJS();
           this.#customMediaElement._hls.detachMedia();
           this.#customMediaElement._hls.stopLoad();
           this.#videoElement.removeAttribute('src');
@@ -101,6 +103,10 @@ export class MuxAdManager {
 
           if (this.#customMediaElement._hls) {
             this.#customMediaElement._hls.attachMedia(this.#videoElement);
+            // this.#customMediaElement.mux?.addHLSJS({
+            //   hlsjs: this.#customMediaElement._hls,
+            //   Hls: this.#customMediaElement._hls ? Hls : undefined,
+            // });
             this.#customMediaElement._hls.loadSource(this.#videoBackup.originalSrc);
             this.#customMediaElement._hls.startLoad(this.#videoBackup.contentTime);
           }
@@ -295,5 +301,9 @@ export class MuxAdManager {
 
   updateViewMode(isFullscreen: boolean) {
     this.#viewMode = isFullscreen ? google.ima.ViewMode.FULLSCREEN : google.ima.ViewMode.NORMAL;
+  }
+
+  get adsLoader() {
+    return this.#adsLoader;
   }
 }

@@ -1,5 +1,11 @@
+/* eslint @typescript-eslint/triple-slash-reference: "off" */
+/// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" preserve="true" />
 import MuxVideoElement from '@mux/mux-video';
+/** @TODO publish types for package to use here (CJP) */
+// @ts-ignore
+import mux from '@mux/mux-data-google-ima';
 import { MuxAdManagerConfig, MuxAdManager } from './ads-manager';
+import type { MuxDataSDK } from '@mux/playback-core';
 
 const serializeAttributes = (attrs = {}) => {
   return (
@@ -290,6 +296,16 @@ video::-webkit-media-text-track-container {
   set mediaIsFullscreen(val: boolean) {
     if (val === this.mediaIsFullscreen) return;
     this.#mediaIsFullscreen = val;
+  }
+
+  get muxDataSDK() {
+    return mux as MuxDataSDK;
+  }
+
+  get muxDataSDKOptions() {
+    return {
+      imaAdsLoader: this.#muxAdManager?.adsLoader,
+    };
   }
 }
 
