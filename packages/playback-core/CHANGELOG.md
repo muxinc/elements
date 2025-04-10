@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.7](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.6...@mux/playback-core@0.28.7) (2025-04-10)
+
+
+### Bug Fixes
+
+* respect hls.js fatal error flag if available ([#1099](https://github.com/muxinc/elements/issues/1099)) ([6350a9b](https://github.com/muxinc/elements/commit/6350a9bf143a4cc0edcde5acabd3ae88f14609e7))
+
 ## [0.28.6](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.5...@mux/playback-core@0.28.6) (2025-04-03)
 
 
