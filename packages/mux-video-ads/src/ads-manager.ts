@@ -79,15 +79,8 @@ export class MuxAdManager {
       };
 
       if (this.isIOSMse(this.#customMediaElement.src)) {
-        if (this.#customMediaElement._hls) {
-          console.log('Disconnecting Hls for iOS');
-          // this.#customMediaElement.mux?.removeHLSJS();
-          this.#customMediaElement._hls.detachMedia();
-          this.#customMediaElement._hls.stopLoad();
-          this.#videoElement.removeAttribute('src');
-          this.#videoElement.load();
-        }
-        this.#customMediaElement.src = '';
+        // this.#customMediaElement.src = '';
+        this.#customMediaElement._teardownHls();
       } else {
         // Non-iOS handling
         console.log('Standard content pause for non-iOS');
@@ -99,17 +92,8 @@ export class MuxAdManager {
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       () => {
         if (this.#videoBackup && this.isIOSMse(this.#videoBackup.originalSrc)) {
-          this.#customMediaElement.src = this.#videoBackup.originalSrc;
-
-          if (this.#customMediaElement._hls) {
-            this.#customMediaElement._hls.attachMedia(this.#videoElement);
-            // this.#customMediaElement.mux?.addHLSJS({
-            //   hlsjs: this.#customMediaElement._hls,
-            //   Hls: this.#customMediaElement._hls ? Hls : undefined,
-            // });
-            this.#customMediaElement._hls.loadSource(this.#videoBackup.originalSrc);
-            this.#customMediaElement._hls.startLoad(this.#videoBackup.contentTime);
-          }
+          // this.#customMediaElement.src = this.#videoBackup.originalSrc;
+          this.#customMediaElement._initializeHls();
 
           // Restore content position
           if (this.#videoBackup?.contentTime) {

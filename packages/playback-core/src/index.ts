@@ -561,6 +561,50 @@ export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore)
   }
 };
 
+export const initializeHls = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement) => {
+  const nextHlsInstance = setupHls(props, mediaEl);
+  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+
+  if (mediaEl?.mux && !mediaEl.mux.deleted) {
+    mediaEl.mux.addHLSJS({
+      hlsjs: nextHlsInstance as HlsInterface,
+      Hls: nextHlsInstance ? Hls : undefined,
+    });
+  }
+
+  loadMedia(props, mediaEl, nextHlsInstance);
+  setupCuePoints(mediaEl);
+  setupChapters(mediaEl);
+
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+
+  return {
+    engine: nextHlsInstance,
+    setPreload,
+    setAutoplay,
+  };
+};
+
+export const teardownHls = (mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
+  if (mediaEl?.mux && !mediaEl.mux.deleted) {
+    mediaEl.mux.removeHLSJS();
+  }
+  const hls = core?.engine;
+  if (hls) {
+    hls.detachMedia();
+    hls.destroy();
+  }
+  if (mediaEl) {
+    mediaEl.removeAttribute('src');
+    mediaEl.load();
+    mediaEl.removeEventListener('error', handleNativeError);
+    mediaEl.removeEventListener('error', handleInternalError);
+    mediaEl.removeEventListener('durationchange', seekInSeekableRange);
+    muxMediaState.delete(mediaEl);
+    mediaEl.dispatchEvent(new Event('teardown'));
+  }
+};
+
 /**
  * Returns true if we should use native playback. e.g. progressive files (mp3, mp4, webm) or native HLS on Safari.
  * We should use native playback for hls media sources if we
