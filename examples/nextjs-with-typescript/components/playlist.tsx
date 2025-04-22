@@ -85,7 +85,7 @@ const Playlist = ({videoList}) => {
           maxResolution="2160p"
           minResolution="540p"
           renditionOrder="desc"
-          preferPlayback="native"
+          preferPlayback="mse"
           adTagUrl={videoList[currentIndex].adTagUrl}
           onPlay={() => {
             setPaused(false);

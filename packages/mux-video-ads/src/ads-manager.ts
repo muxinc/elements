@@ -2,12 +2,12 @@
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
 
 import MuxVideoElement from '@mux/mux-video';
-import { Hls } from '@mux/playback-core';
 
 export type MuxAdManagerConfig = {
   videoElement: MuxVideoElement;
   contentVideoElement: HTMLVideoElement;
   originalSize: DOMRect;
+  adContainer: HTMLElement;
 };
 
 type VideoBackup = {
@@ -28,17 +28,19 @@ export class MuxAdManager {
   #viewMode: google.ima.ViewMode;
   #videoBackup: VideoBackup | null = null;
   #originalSize: DOMRect;
+  #adContainer: HTMLElement;
 
   constructor(config: MuxAdManagerConfig) {
     this.#customMediaElement = config.videoElement;
     this.#videoElement = config.contentVideoElement;
     this.#viewMode = google.ima.ViewMode.NORMAL;
     this.#originalSize = config.originalSize;
+    this.#adContainer = config.adContainer;
   }
 
-  setupAdsManager(adContainer: HTMLElement) {
+  setupAdsManager() {
     if (!this.#adDisplayContainer) {
-      this.#adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, this.#videoElement);
+      this.#adDisplayContainer = new google.ima.AdDisplayContainer(this.#adContainer, this.#videoElement);
 
       this.#adsLoader = new google.ima.AdsLoader(this.#adDisplayContainer);
       console.log('adsLoader', this.#adsLoader);
@@ -84,12 +86,16 @@ export class MuxAdManager {
         originalSrc: this.#customMediaElement.src,
       };
 
-      if (this.isIOSMse(this.#customMediaElement.src)) {
-        // this.#customMediaElement.src = '';
-        this.#customMediaElement._teardownHls();
+      if (this.isUsingSameVideoElement()) {
+        if (this.isMSE()) {
+          console.log('MSE pause');
+          this.#customMediaElement._teardownHls();
+        } else if (this.isNative()) {
+          console.log('Native pause');
+          this.#customMediaElement.src = '';
+          this.#customMediaElement.load();
+        }
       } else {
-        // Non-iOS handling
-        console.log('Standard content pause for non-iOS');
         this.#videoElement.style.display = 'none';
       }
     });
@@ -98,9 +104,14 @@ export class MuxAdManager {
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       () => {
         console.log('CONTENT_RESUME_REQUESTED');
-        if (this.#videoBackup && this.isIOSMse(this.#videoBackup.originalSrc)) {
-          // this.#customMediaElement.src = this.#videoBackup.originalSrc;
-          this.#customMediaElement._initializeHls();
+        if (this.#videoBackup && this.isUsingSameVideoElement()) {
+          if (this.isMSE()) {
+            console.log('MSE Resume');
+            this.#customMediaElement._initializeHls();
+          } else if (this.isNative()) {
+            console.log('Native Resume');
+            this.#customMediaElement.src = this.#videoBackup.originalSrc;
+          }
 
           // Restore content position
           if (this.#videoBackup?.contentTime) {
@@ -159,9 +170,14 @@ export class MuxAdManager {
     );
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
-      console.log('paused');
+      console.log('Ads paused');
       this.#adPaused = true;
       this.#customMediaElement.dispatchEvent(new Event('pause'));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
+      console.log('Ads resumed');
+      this.#adPaused = false;
     });
 
     this.#adsManager?.addEventListener(
@@ -265,33 +281,18 @@ export class MuxAdManager {
     this.#adsManager?.setVolume(val);
   }
 
-  #getDeviceInfo() {
-    const ua = navigator.userAgent.toLowerCase();
-    console.log('User Agent:', ua);
-
-    const deviceInfo = {
-      isIPhone: /iphone/.test(ua),
-      isIPad: /ipad/.test(ua) || (ua.includes('macintosh') && 'ontouchend' in document), // Modern iPads show as MacOS
-      isIPod: /ipod/.test(ua),
-      isIOS: false,
-      deviceType: 'unknown',
-    };
-
-    deviceInfo.isIOS = deviceInfo.isIPhone || deviceInfo.isIPad || deviceInfo.isIPod;
-
-    if (deviceInfo.isIPhone) deviceInfo.deviceType = 'iPhone';
-    else if (deviceInfo.isIPad) deviceInfo.deviceType = 'iPad';
-    else if (deviceInfo.isIPod) deviceInfo.deviceType = 'iPod';
-
-    return deviceInfo;
+  isUsingSameVideoElement(): boolean {
+    const videoElements = this.#adContainer.querySelectorAll('video');
+    console.log('videoElements', videoElements.length, videoElements);
+    return videoElements.length === 0;
   }
 
-  isIOSMse(src: string): boolean {
-    return (
-      this.#getDeviceInfo().isIOS &&
-      this.#customMediaElement.getAttribute('prefer-playback') === 'mse' &&
-      src.includes('.m3u8')
-    );
+  isMSE(): boolean {
+    return this.#customMediaElement.getAttribute('prefer-playback') === 'mse';
+  }
+
+  isNative(): boolean {
+    return this.#customMediaElement.getAttribute('prefer-playback') === 'native';
   }
 
   updateViewMode(isFullscreen: boolean) {
