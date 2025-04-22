@@ -110,6 +110,7 @@ mux-video:not([audio]),
 video {
   aspect-ratio: 16 / 9;
   background: #000;
+  overflow: hidden;
 }
 
 .component-page {

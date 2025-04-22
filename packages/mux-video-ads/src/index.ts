@@ -5,7 +5,7 @@ import MuxVideoElement from '@mux/mux-video';
 // @ts-ignore
 import mux from '@mux/mux-data-google-ima';
 import { MuxAdManagerConfig, MuxAdManager } from './ads-manager';
-import type { MuxDataSDK } from '@mux/playback-core';
+// import type { MuxDataSDK } from '@mux/playback-core';
 
 const serializeAttributes = (attrs = {}) => {
   return (
@@ -23,16 +23,20 @@ const Attributes = {
 
 class MuxVideoAds extends MuxVideoElement {
   #muxAdManager: MuxAdManager | undefined;
-  #mediaIsFullscreen = false;
 
   static getTemplateHTML = (attrs: Record<string, string>) => {
     return `
 <style>
 :host {
-    display: inline-block;
-    line-height: 0;
+  aspect-ratio: var(--media-aspect-ratio, 16 / 9);
+  display: inline-block;
+  line-height: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 video {
+  display: block;
   max-width: 100%;
   max-height: 100%;
   min-width: 100%;
@@ -46,6 +50,8 @@ video::-webkit-media-text-track-container {
 }
 #mainContainer {
     position: relative;
+    width: 100%;
+    height: 100%;
 }
 #adContainer {
     position: absolute;
@@ -54,17 +60,33 @@ video::-webkit-media-text-track-container {
     bottom: 0px;
     right: 0px;
     z-index: -1;
+    width: 100%;
+    height: 100%;
 }
 #mainContainer #adContainer.ad-playing {
     z-index: 2;
 }
+#imaUnavailableMessage {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 1em 1.5em;
+  border-radius: 6px;
+  font-size: 0.9em;
+  text-align: center;
+  max-width: 90%;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
 </style>
 <div id="mainContainer">
-  <div id="content">
     <slot name="media">
       <video id="contentElement" ${serializeAttributes(attrs)}></video>
     </slot>
-  </div>
   <div id="adContainer"></div>
 </div>
 <slot></slot>
@@ -73,6 +95,16 @@ video::-webkit-media-text-track-container {
 
   constructor() {
     super();
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          this.#muxAdManager?.updateAdsManagerSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(this);
   }
 
   connectedCallback(): void {
@@ -81,21 +113,32 @@ video::-webkit-media-text-track-container {
 
     if (!MuxAdManager.isGoogleImaSDKAvailable()) {
       console.error('Missing google.ima SDK. Make sure you include it via a script tag.');
+      this.#showAdBlockedMessage();
       return;
     }
 
-    console.log('AdBreak connectedCallbk', this.#adBreak, this.adTagUrl);
+    console.log('AdBreak connectedCallbk', this.adBreak, this.adTagUrl);
 
     const config: MuxAdManagerConfig = {
       videoElement: this,
-      isFullscreen: this.mediaIsFullscreen,
       contentVideoElement: this.nativeEl,
+      originalSize: this.getBoundingClientRect(),
     };
 
     this.#muxAdManager = new MuxAdManager(config);
     this.#muxAdManager.setupAdsManager(this.#adContainer);
 
     this.#setupEventListeners();
+  }
+
+  #showAdBlockedMessage() {
+    const fallback = document.createElement('div');
+    fallback.id = 'imaUnavailableMessage';
+    fallback.innerHTML = `
+  <strong>Ad experience unavailable.</strong><br />
+  <span>This may be due to a missing SDK, network issue, or ad blocker.</span>
+`;
+    this.shadowRoot?.getElementById('mainContainer')?.appendChild(fallback);
   }
 
   #setupEventListeners(): void {
@@ -120,37 +163,26 @@ video::-webkit-media-text-track-container {
       { once: true }
     );
 
-    this.addEventListener(
-      'ended',
-      () => {
-        console.log('ended', { adTagUrl: this.adTagUrl, isReady: this.#muxAdManager?.isReadyForComplete() });
-        if (this.adTagUrl && this.#muxAdManager?.isReadyForComplete()) {
-          this.#muxAdManager.contentComplete();
-        }
-      },
-      { once: true }
-    );
-
     this.addEventListener('play', this.play);
 
     this.addEventListener('onAdsCompleted', () => {
       this.#adBreak = false;
+      this.dispatchEvent(new Event('durationchange'));
       this.adTagUrl = undefined;
       this.#setAdContainerPlaying(false);
       this.#dispatchAdBreakChange(false);
-      this.removeEventListener('play', this.play);
       setTimeout(() => {
         this.play();
       }, 200);
     });
 
-    this.addEventListener('webkitbeginfullscreen', () => {
-      this.#mediaIsFullscreen = true;
+    //TODO: should we move this to muxplayer?
+    globalThis.addEventListener('mediaenterfullscreenrequest', () => {
       this.#muxAdManager?.updateViewMode(true);
     });
 
-    this.addEventListener('webkitendfullscreen', () => {
-      this.#mediaIsFullscreen = false;
+    //TODO: should we move this to muxplayer?
+    globalThis.addEventListener('mediaexitfullscreenrequest', () => {
       this.#muxAdManager?.updateViewMode(false);
     });
   }
@@ -176,13 +208,13 @@ video::-webkit-media-text-track-container {
     this.setAttribute(Attributes.AD_TAG_URL, value);
   }
 
-  get #adBreak(): boolean {
-    return this.#mainContainer.hasAttribute(Attributes.AD_BREAK);
+  get adBreak(): boolean {
+    return this.hasAttribute(Attributes.AD_BREAK);
   }
 
   set #adBreak(val: boolean) {
-    if (val === this.#adBreak) return;
-    this.#mainContainer.toggleAttribute(Attributes.AD_BREAK, val);
+    if (val === this.adBreak) return;
+    this.toggleAttribute(Attributes.AD_BREAK, !!val);
     this.#dispatchAdBreakChange(val);
   }
 
@@ -190,23 +222,48 @@ video::-webkit-media-text-track-container {
     this.dispatchEvent(
       new CustomEvent('adbreakchange', {
         detail: { isAdBreak },
+        composed: true,
+        bubbles: true,
       })
     );
   }
 
+  onEnded() {
+    //TODO: this is a hack to prevent the play event from being called twice but we are able to propagate the event to the parent
+    this.dispatchEvent(new CustomEvent('ended', { composed: true, bubbles: true }));
+    if (this.adTagUrl && this.#muxAdManager?.isReadyForComplete()) {
+      this.#muxAdManager.contentComplete();
+    }
+  }
+
   play() {
-    console.log('play', { adTagUrl: this.adTagUrl });
+    //TODO: this is a hack to prevent the play event from being called twice but we are able to propagate the event to the parent
+    this.removeEventListener('play', this.play);
+    this.dispatchEvent(new CustomEvent('play', { composed: true, bubbles: true }));
+    this.addEventListener('play', this.play);
+
+    if (this.adTagUrl && this.adBreak) {
+      this.#muxAdManager?.resumeAdManager();
+      this.dispatchEvent(new Event('playing'));
+      return Promise.resolve();
+    }
 
     if (this.adTagUrl) {
+      this.#adBreak = true;
+      this.dispatchEvent(new Event('durationchange'));
       this.#setAdContainerPlaying(true);
+
       if (this.#muxAdManager?.isReadyForInitialization()) {
-        console.log('initializeAdDisplayContainer');
         this.#muxAdManager.initializeAdDisplayContainer();
+      }
+
+      if (this.#muxAdManager?.isReadyForInitialization() || this.#muxAdManager?.isInitialized()) {
         this.#muxAdManager.requestAds(this.adTagUrl);
+        this.addEventListener('ended', this.onEnded, { once: true });
       } else if (this.#muxAdManager?.isAdPaused()) {
-        console.log('resumeAdManager');
         this.#muxAdManager.resumeAdManager();
       }
+
       return Promise.resolve();
     }
     this.#setAdContainerPlaying(false);
@@ -214,10 +271,22 @@ video::-webkit-media-text-track-container {
   }
 
   pause(): void {
-    if (this.#adBreak) {
+    //TODO: this is a hack to prevent the play event from being called twice but we are able to propagate the event to the parent
+    this.removeEventListener('pause', this.pause);
+    this.dispatchEvent(new CustomEvent('pause', { composed: true, bubbles: true }));
+    this.addEventListener('pause', this.pause);
+
+    if (this.adBreak) {
       this.#muxAdManager?.pauseAdManager();
     }
     super.pause();
+  }
+
+  get paused(): boolean {
+    if (this.adBreak) {
+      return this.#muxAdManager?.isAdPaused() ?? false;
+    }
+    return super.paused;
   }
 
   #setAdContainerPlaying(isPlaying: boolean): void {
@@ -225,82 +294,73 @@ video::-webkit-media-text-track-container {
   }
 
   get duration(): number {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       return this.#muxAdManager?.getDuration() ?? 0;
     }
     return super.duration;
   }
 
   get currentTime(): number {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       return this.#muxAdManager?.getCurrentTime() ?? 0;
     }
     return super.currentTime;
   }
 
   set currentTime(val: number) {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       console.error('CANNOT SEEK DURING AD BREAK');
-      this.dispatchEvent(new Event('timeupdate'));
+      // this.dispatchEvent(new Event('timeupdate'));
       return;
     }
     super.currentTime = val;
   }
 
   get volume(): number {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       return this.#muxAdManager?.getVolume() ?? 0;
     }
     return super.volume;
   }
 
   set volume(val: number) {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       this.#muxAdManager?.setVolume(val);
     }
     super.volume = val;
   }
 
   get muted(): boolean {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       return !this.#muxAdManager?.getVolume();
     }
     return super.muted;
   }
 
   set muted(val: boolean) {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       this.#muxAdManager?.setVolume(val ? 0 : this.volume);
     }
     super.muted = val;
   }
 
   get readyState(): number {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       return 4;
     }
     return super.readyState;
   }
 
   async requestPictureInPicture(): Promise<PictureInPictureWindow> {
-    if (this.#adBreak) {
+    if (this.adBreak) {
       throw new Error('Cannot use PiP while ads are playing!');
     }
     return super.requestPictureInPicture();
   }
 
-  get mediaIsFullscreen(): boolean {
-    return this.#mediaIsFullscreen;
-  }
-
-  set mediaIsFullscreen(val: boolean) {
-    if (val === this.mediaIsFullscreen) return;
-    this.#mediaIsFullscreen = val;
-  }
-
-  get muxDataSDK() {
-    return mux as MuxDataSDK;
-  }
+  // get muxDataSDK() {
+  //   return mux as MuxDataSDK;
+  // }
 
   get muxDataSDKOptions() {
     return {

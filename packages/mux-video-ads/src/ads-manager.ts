@@ -1,12 +1,13 @@
-/// <reference types="google_interactive_media_ads_types" />
+/* eslint @typescript-eslint/triple-slash-reference: "off" */
+/// <reference types="google_interactive_media_ads_types" preserve="true"/>
 
 import MuxVideoElement from '@mux/mux-video';
 import { Hls } from '@mux/playback-core';
 
 export type MuxAdManagerConfig = {
   videoElement: MuxVideoElement;
-  isFullscreen: boolean;
   contentVideoElement: HTMLVideoElement;
+  originalSize: DOMRect;
 };
 
 type VideoBackup = {
@@ -26,15 +27,16 @@ export class MuxAdManager {
   #customMediaElement: MuxVideoElement;
   #viewMode: google.ima.ViewMode;
   #videoBackup: VideoBackup | null = null;
+  #originalSize: DOMRect;
 
   constructor(config: MuxAdManagerConfig) {
     this.#customMediaElement = config.videoElement;
     this.#videoElement = config.contentVideoElement;
-    this.#viewMode = config.isFullscreen ? google.ima.ViewMode.FULLSCREEN : google.ima.ViewMode.NORMAL;
+    this.#viewMode = google.ima.ViewMode.NORMAL;
+    this.#originalSize = config.originalSize;
   }
 
   setupAdsManager(adContainer: HTMLElement) {
-    console.log('Setting up Ad Manager', adContainer, this.#adDisplayContainer);
     if (!this.#adDisplayContainer) {
       this.#adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, this.#videoElement);
 
@@ -54,7 +56,10 @@ export class MuxAdManager {
 
       this.#adsLoader.addEventListener(
         google.ima.AdErrorEvent.Type.AD_ERROR,
-        console.log.bind(null, 'AD_ERROR'),
+        (adErrorEvent: google.ima.AdErrorEvent) => {
+          console.log('AD_ERROR Loader', adErrorEvent);
+          this.#customMediaElement.dispatchEvent(new Event('onAdsCompleted'));
+        },
         false
       );
     }
@@ -63,6 +68,7 @@ export class MuxAdManager {
   #startAdsManager() {
     console.log('startAdsManager', this.#adsManager);
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
+      console.log('CONTENT_PAUSE_REQUESTED');
       const currentTime = this.#customMediaElement.currentTime;
       const wasPlaying = !this.#customMediaElement.paused;
 
@@ -91,6 +97,7 @@ export class MuxAdManager {
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       () => {
+        console.log('CONTENT_RESUME_REQUESTED');
         if (this.#videoBackup && this.isIOSMse(this.#videoBackup.originalSrc)) {
           // this.#customMediaElement.src = this.#videoBackup.originalSrc;
           this.#customMediaElement._initializeHls();
@@ -109,18 +116,22 @@ export class MuxAdManager {
         this.#adProgressData = undefined;
         this.#ad = undefined;
         this.#customMediaElement.dispatchEvent(new Event('durationchange'));
-
-        if (this.#videoElement?.paused && (this.#customMediaElement.paused || this.#customMediaElement.loop)) {
-          console.log('contentResumeRequested play');
-          this.#customMediaElement.dispatchEvent(new Event('onAdsCompleted'));
-        }
+        this.#customMediaElement.dispatchEvent(new Event('onAdsCompleted'));
       },
       false
     );
 
     this.#adsManager?.addEventListener(
       google.ima.AdErrorEvent.Type.AD_ERROR,
-      console.log.bind(null, 'AD_ERROR'),
+      console.log.bind(null, 'AD_ERROR Manager'),
+      false
+    );
+
+    this.#adsManager?.addEventListener(
+      google.ima.AdEvent.Type.CLICK,
+      (adEvent: google.ima.AdEvent) => {
+        this.updateViewMode(false);
+      },
       false
     );
 
@@ -179,15 +190,11 @@ export class MuxAdManager {
       google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
       () => {
         console.log('allAdsCompleted');
-        if (this.#customMediaElement.ended && !this.#customMediaElement.loop) {
-          this.#customMediaElement.dispatchEvent(new Event('pause'));
-        }
       },
       false
     );
 
-    const elementDims = this.#videoElement.getBoundingClientRect();
-    this.#adsManager?.init(elementDims.width, elementDims.height, this.#viewMode);
+    this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
     this.#adsManager?.start();
   }
 
@@ -202,6 +209,10 @@ export class MuxAdManager {
 
   isReadyForInitialization() {
     return this.#adDisplayContainer && !this.#adsManager;
+  }
+
+  isInitialized() {
+    return this.#adDisplayContainer && this.#adsManager;
   }
 
   isReadyForComplete() {
@@ -285,6 +296,11 @@ export class MuxAdManager {
 
   updateViewMode(isFullscreen: boolean) {
     this.#viewMode = isFullscreen ? google.ima.ViewMode.FULLSCREEN : google.ima.ViewMode.NORMAL;
+  }
+
+  updateAdsManagerSize(width: number, height: number) {
+    this.#originalSize = { ...this.#originalSize, width, height };
+    this.#adsManager?.resize(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
   }
 
   get adsLoader() {

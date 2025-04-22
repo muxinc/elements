@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useRef, useState, useEffect } from "react";
 import MuxVideoAds from "@mux/mux-video-ads/react";
+import '../post-video.css'
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
@@ -11,6 +12,30 @@ function MuxVideoPage() {
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [paused, setPaused] = useState<boolean | undefined>(true);
   const [sdkLoaded, setSdkLoaded] = useState(false);  
+
+  const mainVideo = {
+    imageUrl: "https://d.newsweek.com/en/full/2616049/picture-video.jpg?w=480&h=270&q=75&f=234a33201b1c5adb080a1bec0cb4a4a0",
+    title: "US Official Cars Seen Leaving Greenland Capital After Vance Scales Back Visit",
+    idx: 2
+  };
+
+  const relatedVideos = [
+    {
+      imageUrl: "https://d.newsweek.com/en/full/2614934/picture-video.jpg?w=480&h=270&q=75&f=8dbdcf86a118c0f5afb2cba69bd4af24",
+      title: "JD Vance Announces He Will Join His Wife On Visit To Greenland",
+      idx: 0
+    },
+    {
+      imageUrl: "https://d.newsweek.com/en/full/2616059/reason-why-woman-trains-specific-arm.jpg?w=480&h=270&q=75&f=5000e727dbcc4e9e9d1ca21b1215c993",
+      title: "Reason Why Woman Trains Specific Arm",
+      idx: 1
+    },
+    {
+      imageUrl: "https://d.newsweek.com/en/full/2616049/picture-video.jpg?w=480&h=270&q=75&f=234a33201b1c5adb080a1bec0cb4a4a0",
+      title: "US Official Cars Seen Leaving Greenland Capital After Vance Scales Back Visit",
+      idx: 2
+    }
+  ];
 
   useEffect(() => {
     // Dynamically load the IMA SDK
@@ -64,37 +89,11 @@ function MuxVideoPage() {
         onPause={() => {
           setPaused(true);
         }}
-      />}
+          onEnded={() => {
 
-      <div className="options">
-        <div>
-          <label htmlFor="paused-control">Paused</label>
-          <input
-            id="paused-control"
-            type="checkbox"
-            onChange={() => paused ? mediaElRef.current.play() : mediaElRef.current.pause()}
-            checked={paused}
-          />
-        </div>
-        <div>
-          <label htmlFor="autoplay-control">Muted Autoplay</label>
-          <input
-            id="autoplay-control"
-            type="checkbox"
-            onChange={() => setAutoplay(!autoplay ? "muted" : false)}
-            checked={!!autoplay}
-          />
-        </div>
-        <div>
-          <label htmlFor="muted-control">Muted</label>
-          <input
-            id="muted-control"
-            type="checkbox"
-            onChange={() => setMuted(!muted)}
-            checked={muted}
-          />
-        </div>
-      </div>
+          }}
+        >
+      </MuxVideoAds>}
     </>
   );
 }
