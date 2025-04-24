@@ -238,6 +238,13 @@ video::-webkit-media-text-track-container {
     }
   }
 
+  handleEvent(event: Event): void {
+    if (this.adBreak && event.type === 'ended') {
+      return;
+    }
+    super.handleEvent(event);
+  }
+
   play() {
     //TODO: this is a hack to prevent the play event from being called twice but we are able to propagate the event to the parent
     this.removeEventListener('play', this.play);
