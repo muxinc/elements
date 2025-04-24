@@ -59,12 +59,12 @@ function MuxPlayerAdsPage() {
 
       {sdkLoaded && <MuxPlayer
         ref={mediaElRef}
-        playbackId="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
+        playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
         theme="newsweek-theme"
         themeProps={{ controlBarVertical: true, controlBarPlace: 'start start' }}
         metadata={{
           video_id: "video-id-12345",
-          video_title: "Mad Max: Fury Road Trailer",
+          video_title: "Elephants Dream",
           viewer_user_id: "user-id-6789",
         }}
         streamType="on-demand"

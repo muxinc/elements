@@ -1,10 +1,10 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
 
-import MuxVideoElement from '@mux/mux-video';
+import MuxVideoAdsElement from './index.js';
 
 export type MuxAdManagerConfig = {
-  videoElement: MuxVideoElement;
+  videoElement: MuxVideoAdsElement;
   contentVideoElement: HTMLVideoElement;
   originalSize: DOMRect;
   adContainer: HTMLElement;
@@ -24,7 +24,7 @@ export class MuxAdManager {
   #adProgressData: google.ima.AdProgressData | undefined | null;
   #adPaused = false;
   #videoElement: HTMLVideoElement;
-  #customMediaElement: MuxVideoElement;
+  #customMediaElement: MuxVideoAdsElement;
   #viewMode: google.ima.ViewMode;
   #videoBackup: VideoBackup | null = null;
   #originalSize: DOMRect;
@@ -87,14 +87,9 @@ export class MuxAdManager {
       };
 
       if (this.isUsingSameVideoElement()) {
-        if (this.isMSE()) {
-          console.log('MSE pause');
-          this.#customMediaElement._teardownHls();
-        } else if (this.isNative()) {
-          console.log('Native pause');
-          this.#customMediaElement.src = '';
-          this.#customMediaElement.load();
-        }
+        this.#customMediaElement.muxDataKeepSession = true;
+        this.#customMediaElement.unload();
+        this.#customMediaElement.muxDataKeepSession = false;
       } else {
         this.#videoElement.style.display = 'none';
       }
@@ -105,13 +100,9 @@ export class MuxAdManager {
       () => {
         console.log('CONTENT_RESUME_REQUESTED');
         if (this.#videoBackup && this.isUsingSameVideoElement()) {
-          if (this.isMSE()) {
-            console.log('MSE Resume');
-            this.#customMediaElement._initializeHls();
-          } else if (this.isNative()) {
-            console.log('Native Resume');
-            this.#customMediaElement.src = this.#videoBackup.originalSrc;
-          }
+          this.#customMediaElement.muxDataKeepSession = true;
+          this.#customMediaElement.load();
+          this.#customMediaElement.muxDataKeepSession = false;
 
           // Restore content position
           if (this.#videoBackup?.contentTime) {
@@ -285,14 +276,6 @@ export class MuxAdManager {
     const videoElements = this.#adContainer.querySelectorAll('video');
     console.log('videoElements', videoElements.length, videoElements);
     return videoElements.length === 0;
-  }
-
-  isMSE(): boolean {
-    return this.#customMediaElement.getAttribute('prefer-playback') === 'mse';
-  }
-
-  isNative(): boolean {
-    return this.#customMediaElement.getAttribute('prefer-playback') === 'native';
   }
 
   updateViewMode(isFullscreen: boolean) {

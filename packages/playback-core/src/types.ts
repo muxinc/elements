@@ -205,5 +205,6 @@ export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareVersion: MetaData['player_software_version'];
   muxDataSDK?: Mux;
   muxDataSDKOptions?: Mux;
+  muxDataKeepSession?: boolean;
   drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
 };

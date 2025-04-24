@@ -2,8 +2,6 @@ import { globalThis } from './polyfills';
 import {
   initialize,
   teardown,
-  initializeHls,
-  teardownHls,
   generatePlayerInitTime,
   MuxMediaProps,
   StreamTypes,
@@ -769,16 +767,8 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   unload() {
-    teardown(this.nativeEl, this.#core);
+    teardown(this.nativeEl, this.#core, this as Partial<MuxMediaProps>);
     this.#core = undefined;
-  }
-
-  _initializeHls() {
-    this.#core = initializeHls(this as Partial<MuxMediaProps>, this.nativeEl);
-  }
-
-  _teardownHls() {
-    teardownHls(this.nativeEl, this.#core);
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {

@@ -278,6 +278,7 @@ const MuxPlayer = React.forwardRef<
     <MuxPlayerInternal
       /** @TODO Fix types relationships (CJP) */
       ref={playerRef as typeof innerPlayerRef}
+      muxVideoElement={props.muxVideoElement}
       defaultHiddenCaptions={props.defaultHiddenCaptions}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}
