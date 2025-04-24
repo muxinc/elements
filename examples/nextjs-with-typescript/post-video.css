@@ -188,3 +188,29 @@
   .related-text:hover {
     text-decoration: underline;
 }
+
+/* Responsive  */
+
+@media (max-width: 768px) {
+  .post-video-section {
+    grid-template-columns: 1fr;
+    margin: auto;
+  }
+
+  .post-video-section h2 {
+    display: none;
+  }
+
+  hr {
+    display: none;
+  }
+
+  .video-section {
+    width: 60%;
+    margin: auto;
+  }
+
+  .related-videos-section {
+    display: none;
+  }
+}
