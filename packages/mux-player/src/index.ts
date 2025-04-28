@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { MediaController, MediaErrorDialog } from 'media-chrome';
 import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
-import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
+import { MediaUIAttributes, MediaUIEvents } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
@@ -807,6 +807,24 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
 
     this.#render({ [toPropName(attrName)]: newValue });
+  }
+
+  async requestFullscreen(_options?: FullscreenOptions) {
+    this.mediaController?.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
+  }
+
+  async exitFullscreen() {
+    this.mediaController?.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
   }
 
   get preferCmcd() {
