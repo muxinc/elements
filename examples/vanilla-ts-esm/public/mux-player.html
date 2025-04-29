@@ -56,6 +56,28 @@
       });
     </script>
 
+    <button id="request-fullscreen">
+      Request Fullscreen
+    </button>
+    <script>
+      document.getElementById('request-fullscreen').addEventListener('click', async () => {
+        const player = document.querySelector('mux-player');
+        await player.requestFullscreen();
+        console.log('Entered fullscreen');
+      });
+    </script>
+
+    <button id="exit-fullscreen">
+      Exit Fullscreen
+    </button>
+    <script>
+      document.getElementById('exit-fullscreen').addEventListener('click', async () => {
+        const player = document.querySelector('mux-player');
+        await player.exitFullscreen();
+        console.log('Exited fullscreen');
+      });
+    </script>
+
     <h2>Live</h2>
 
     <mux-player

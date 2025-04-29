@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { MediaController, MediaErrorDialog } from 'media-chrome';
 import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
-import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
+import { MediaStateChangeEvents, MediaUIAttributes, MediaUIEvents } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
@@ -807,6 +807,40 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
 
     this.#render({ [toPropName(attrName)]: newValue });
+  }
+
+  async requestFullscreen(_options?: FullscreenOptions) {
+    if (!this.mediaController || this.mediaController.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN)) {
+      return;
+    }
+    this.mediaController?.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
+    return new Promise<void>((resolve, _reject) => {
+      this.mediaController?.addEventListener(MediaStateChangeEvents.MEDIA_IS_FULLSCREEN, () => resolve(), {
+        once: true,
+      });
+    });
+  }
+
+  async exitFullscreen() {
+    if (!this.mediaController || !this.mediaController.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN)) {
+      return;
+    }
+    this.mediaController?.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
+    return new Promise<void>((resolve, _reject) => {
+      this.mediaController?.addEventListener(MediaStateChangeEvents.MEDIA_IS_FULLSCREEN, () => resolve(), {
+        once: true,
+      });
+    });
   }
 
   get preferCmcd() {
