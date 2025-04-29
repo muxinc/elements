@@ -77,6 +77,7 @@ const PlayerAttributes = {
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
   DEFAULT_DURATION: 'default-duration',
   TITLE: 'title',
+  VIDEO_TITLE: 'video-title', // video-title is an alternative for title which doesn't cause a tooltip.
   PLACEHOLDER: 'placeholder',
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
@@ -108,6 +109,7 @@ const ThemeAttributeNames = [
   'targetlivewindow',
   'template',
   'title',
+  'videotitle',
   'novolumepref',
   'proudlydisplaymuxbadge',
 ];
@@ -172,6 +174,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
+    videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     castReceiver: el.castReceiver,
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
@@ -1107,25 +1110,23 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   /**
-   * Get the title shown in the player.
+   * Get the video title shown in the player.
    */
-  get title() {
-    return this.getAttribute(PlayerAttributes.TITLE) ?? '';
+  get videoTitle() {
+    return this.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? '';
   }
 
   /**
-   * Set the title shown in the player.
+   * Set the video title shown in the player.
    */
-  set title(val: string) {
-    if (val === this.title) return;
+  set videoTitle(val: string) {
+    if (val === this.videoTitle) return;
 
     if (!!val) {
-      this.setAttribute(PlayerAttributes.TITLE, val);
+      this.setAttribute(PlayerAttributes.VIDEO_TITLE, val);
     } else {
-      this.removeAttribute('title');
+      this.removeAttribute(PlayerAttributes.VIDEO_TITLE);
     }
-    // Calling super.title for tooltip usage
-    super.title = val;
   }
 
   /**
