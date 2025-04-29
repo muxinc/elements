@@ -49,7 +49,7 @@ export const getErrorFromResponse = (
     const context = undefined;
     const mediaErrorCode = MediaError.MEDIA_ERR_NETWORK;
     // Being offline is not immediately a fatal error for playback.
-    const mediaError = new MediaError(message, mediaErrorCode, false, context);
+    const mediaError = new MediaError(`${message}`, mediaErrorCode, false, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_OFFLINE;
     mediaError.data = resp;
@@ -202,7 +202,7 @@ export const getErrorFromResponse = (
       translate
     );
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-    const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
+    const mediaError = new MediaError(`${message}`, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_READY;
     mediaError.data = resp;
@@ -224,7 +224,7 @@ export const getErrorFromResponse = (
       translate
     );
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-    const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
+    const mediaError = new MediaError(`${message}`, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_FOUND;
     mediaError.data = resp;
@@ -242,7 +242,7 @@ export const getErrorFromResponse = (
   if (status === 400) {
     const message = i18n(`The URL or playback-id was invalid. You may have used an invalid value as a playback-id.`);
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-    const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
+    const mediaError = new MediaError(`${message}`, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_INVALID_URL;
     mediaError.data = resp;
