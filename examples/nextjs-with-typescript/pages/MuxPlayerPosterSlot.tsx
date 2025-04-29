@@ -25,6 +25,7 @@ function MuxPlayerPage() {
         playbackId="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
         autoPlay={autoplay}
         muted={muted}
+        defaultHiddenCaptions={true}
         onPlay={() => {
           setPaused(false);
         }}
