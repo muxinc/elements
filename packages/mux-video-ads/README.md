@@ -21,6 +21,7 @@
 - [API Reference](#api-reference)
   - [Attributes](#attributes)
   - [Events](#events)
+- [Examples](#examples)
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
 
@@ -361,6 +362,24 @@ In addition to standard `<video>` and `<mux-video>` events, `<mux-video-ads>` ad
 
 - `adbreakchange`: Fired when entering or exiting an ad break
 - `onAdsCompleted`: Fired when all ads have completed playback
+
+## Playlist implementation
+
+[Playlist implementation](../../examples/nextjs-with-typescript/components/playlist.tsx)
+
+[End screen implementation](../../examples/nextjs-with-typescript/components/playlist-post-video.tsx) 
+
+# Examples
+
+[Mux video ads html example](../../examples/vanilla-ts-esm/public/mux-video-ads.html)
+
+[Mux player ads html example](../../examples/vanilla-ts-esm/public/mux-player-ads.html)
+
+[Mux video ads react example](../../examples/nextjs-with-typescript/pages/mux-video-ads-react.tsx)
+
+[Mux player ads react example](../../examples/nextjs-with-typescript/pages/MuxPlayerAds.tsx)
+
+[Playlist example](../../examples/nextjs-with-typescript/pages/playlist-page.tsx)
 
 # Troubleshooting
 
