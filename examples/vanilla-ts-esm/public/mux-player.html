@@ -60,9 +60,10 @@
       Request Fullscreen
     </button>
     <script>
-      document.getElementById('request-fullscreen').addEventListener('click', () => {
+      document.getElementById('request-fullscreen').addEventListener('click', async () => {
         const player = document.querySelector('mux-player');
-        player.requestFullscreen();
+        await player.requestFullscreen();
+        console.log('Entered fullscreen');
       });
     </script>
 
@@ -70,9 +71,10 @@
       Exit Fullscreen
     </button>
     <script>
-      document.getElementById('exit-fullscreen').addEventListener('click', () => {
+      document.getElementById('exit-fullscreen').addEventListener('click', async () => {
         const player = document.querySelector('mux-player');
-        player.exitFullscreen();
+        await player.exitFullscreen();
+        console.log('Exited fullscreen');
       });
     </script>
 
