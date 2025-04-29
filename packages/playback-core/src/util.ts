@@ -174,7 +174,7 @@ const DEFAULT_LOCALE = 'en';
 // lang = {
 //   "Network Error": "Netwerk Fout",
 // };
-export function i18n(str: string, translate = true): any {
+export function i18n(str: string, translate = true) {
   const message = translate ? ((lang as unknown as any)?.[str] ?? str) : str;
   const locale = translate ? (lang as unknown as any).code : DEFAULT_LOCALE;
   return new IntlMessageFormat(message, locale);

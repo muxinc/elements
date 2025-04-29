@@ -681,13 +681,22 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     switch (attrName) {
+      case PlayerAttributes.TITLE:
+        logger.warn(
+          i18n(
+            `The "title" attribute for showing a title in the player UI is deprecated and will be removed in the next major player version. Use "video-title" instead.`
+          ).toString()
+        );
+        break;
       case PlayerAttributes.HOTKEYS:
         this.#hotkeys.value = newValue;
         break;
       case PlayerAttributes.THUMBNAIL_TIME: {
         if (newValue != null && this.tokens.thumbnail) {
           logger.warn(
-            i18n(`Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`)
+            i18n(
+              `Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`
+            ).toString()
           );
         }
         break;

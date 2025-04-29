@@ -117,8 +117,8 @@ const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false)
 };
 
 export const muxMediaErrorToDialog = (mediaError: MediaError, translate = false): DialogOptions => {
-  const title = muxMediaErrorToDialogTitle(mediaError, translate);
-  const message = muxMediaErrorToDialogMessage(mediaError, translate);
+  const title = muxMediaErrorToDialogTitle(mediaError, translate).toString();
+  const message = muxMediaErrorToDialogMessage(mediaError, translate).toString();
   return {
     title,
     message,
