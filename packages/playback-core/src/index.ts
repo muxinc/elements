@@ -63,6 +63,8 @@ export {
 };
 export * from './types';
 
+const MAX_RETRIES = 3;
+
 const DRMType = {
   FAIRPLAY: 'fairplay',
   PLAYREADY: 'playready',
@@ -1252,7 +1254,7 @@ export const loadMedia = (
 
     const retryState = {
       count: 0,
-      maxRetries: 3,
+      maxRetries: MAX_RETRIES,
     };
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
