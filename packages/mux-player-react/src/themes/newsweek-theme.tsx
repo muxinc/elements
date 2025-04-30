@@ -1,12 +1,14 @@
 import 'media-chrome/react';
 import 'media-chrome/react/menu';
+import React from 'react';
 
 export default function NewsweekTheme() {
   return (
     <>
       <template
         id="newsweek-theme"
-        dangerouslySetInnerHTML={{ __html: `
+        dangerouslySetInnerHTML={{
+          __html: `
           <style>
             media-controller {
               font-size: 13px;
@@ -583,7 +585,8 @@ export default function NewsweekTheme() {
       </svg>
     </media-fullscreen-button>
 
-  </media-control-bar>` }}
+  </media-control-bar>`,
+        }}
       />
     </>
   );
