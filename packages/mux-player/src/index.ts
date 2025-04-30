@@ -174,7 +174,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
-    videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE),
+    videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     castReceiver: el.castReceiver,
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
@@ -248,9 +248,7 @@ function getHideDuration(el: MuxPlayerElement) {
 function getMetadataFromAttrs(el: MuxPlayerElement) {
   // Adding title defaulting, when present, as a seed value here to ensure it's
   // overridden by metadata-video-title if it is also present. (CJP)
-  const seedValue: { [key: string]: string } = el.hasAttribute(PlayerAttributes.TITLE)
-    ? { video_title: el.getAttribute(PlayerAttributes.TITLE) as string }
-    : {};
+  const seedValue: { [key: string]: string } = !!el.videoTitle ? { video_title: el.videoTitle } : {};
   return el
     .getAttributeNames()
     .filter((attrName) => attrName.startsWith('metadata-'))
@@ -1122,7 +1120,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
    * Get the video title shown in the player.
    */
   get videoTitle() {
-    return this.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? '';
+    return this.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? this.getAttribute(PlayerAttributes.TITLE) ?? '';
   }
 
   /**
