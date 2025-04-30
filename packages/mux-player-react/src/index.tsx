@@ -103,6 +103,7 @@ export type MuxPlayerProps = {
   noVolumePref?: boolean;
   thumbnailTime?: number;
   title?: string;
+  videoTitle?: string;
   tokens?: Tokens;
   theme?: string;
   themeProps?: { [k: string]: any };
