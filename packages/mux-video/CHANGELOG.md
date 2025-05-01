@@ -31,6 +31,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.25.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.1...@mux/mux-video@0.25.2) (2025-05-01)
+
+
+### Bug Fixes
+
+* bump castable-video from 1.1.5 to 1.1.6 in the prod-dependencies group across 1 directory ([#1103](https://github.com/muxinc/elements/issues/1103)) ([9f27791](https://github.com/muxinc/elements/commit/9f277919fa249f028ad57da174470b2d845e2b9b))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1109](https://github.com/muxinc/elements/issues/1109)) ([7969b53](https://github.com/muxinc/elements/commit/7969b53261ef055a76cf26ced26ab978338f2db9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.28.7 to 0.29.0
+
 ## [0.25.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.0...@mux/mux-video@0.25.1) (2025-04-10)
 
 
