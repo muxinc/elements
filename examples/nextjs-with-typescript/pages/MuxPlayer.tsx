@@ -121,7 +121,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   crossOrigin: undefined,
   customDomain: undefined,
   tokens: undefined,
-  playbackId: 'ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s',
+  playbackId: undefined,
   streamType: undefined,
   storyboardSrc: undefined,
   theme: undefined,
