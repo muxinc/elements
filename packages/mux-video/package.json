@@ -81,7 +81,7 @@
   },
   "dependencies": {
     "@mux/playback-core": "0.28.7",
-    "castable-video": "~1.1.6",
+    "castable-video": "~1.1.7",
     "custom-media-element": "~1.4.2",
     "media-tracks": "~0.3.3"
   },
