@@ -63,7 +63,7 @@ const toPlayerPropsFromJSON = (
     'custom-domain': customDomain,
     'storyboard-src': storyboardSrc,
     audio,
-    description: title,
+    description: videoTitle,
     placeholder,
   } = mediaAsset ?? {};
   const metadata = mediaAsset ? toMetadataFromMediaAsset(mediaAsset, mediaAssets) : undefined;
@@ -75,7 +75,7 @@ const toPlayerPropsFromJSON = (
     customDomain,
     storyboardSrc,
     metadata,
-    title,
+    videoTitle,
     placeholder,
   };
 };
@@ -109,6 +109,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   assetEndTime: undefined,
   thumbnailTime: undefined,
   title: undefined,
+  videoTitle: undefined,
   envKey: undefined,
   playbackRates: undefined,
   playbackRate: undefined,
@@ -120,7 +121,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   crossOrigin: undefined,
   customDomain: undefined,
   tokens: undefined,
-  playbackId: 'ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s',
+  playbackId: undefined,
   streamType: undefined,
   storyboardSrc: undefined,
   theme: undefined,
@@ -278,6 +279,7 @@ function MuxPlayerPage({ location }: Props) {
           //   debug: true,
           // }}
           title={state.title}
+          videoTitle={state.videoTitle}
           startTime={state.startTime}
           currentTime={state.currentTime}
           thumbnailTime={state.thumbnailTime}
@@ -472,6 +474,7 @@ function MuxPlayerPage({ location }: Props) {
             onChange={genericOnChange}
           />
           <TextRenderer value={state.title} name="title" onChange={genericOnChange} />
+          <TextRenderer value={state.videoTitle} name="videoTitle" onChange={genericOnChange} />
           <BooleanRenderer value={state.paused} name="paused" onChange={genericOnChange} />
           <BooleanRenderer value={state.proudlyDisplayMuxBadge} name="proudlyDisplayMuxBadge" onChange={genericOnChange} />
           <EnumRenderer
