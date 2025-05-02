@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import styles from './styles.css';
 import { VideoItem, PlaylistVideos } from './playlist';
+import style from './end-screen.css';
 
 interface PlaylistEndScreenProps {
   video: VideoItem;
@@ -38,7 +38,7 @@ const PlaylistEndScreen = ({
 
   return (
     <>
-      <div className={styles.wrapper}></div>
+      <style>{style}</style>
       <div className="playlist" style={{ display: isVisible ? 'grid' : 'none' }}>
         <div className="overlay" style={{ display: isVisible ? 'grid' : 'none' }} />
         <div className="post-video-section" style={{ display: isVisible ? 'grid' : 'none', zIndex: 99 }}>
