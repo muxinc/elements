@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { VideoItem, PlaylistVideos } from './playlist';
+import { VideoItem, PlaylistVideos } from './newsweek-mux-player';
 import style from './end-screen.css';
 
 interface PlaylistEndScreenProps {

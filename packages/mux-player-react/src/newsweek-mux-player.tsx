@@ -19,7 +19,7 @@ export interface PlaylistProps {
   videoList: PlaylistVideos;
 }
 
-export const Playlist = ({ videoList }: PlaylistProps) => {
+export const NewsweekMuxPlayer = ({ videoList }: PlaylistProps) => {
   const mediaElRef = useRef<any>(null);
   const [autoplay, setAutoplay] = useState<'muted' | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);

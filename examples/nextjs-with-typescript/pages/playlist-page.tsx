@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import "@mux/mux-video-ads"
-import { Playlist, PlaylistEndScreen } from "@mux/mux-player-react"
+import { NewsweekMuxPlayer, PlaylistEndScreen } from "@mux/mux-player-react"
 import { useEffect, useState } from 'react';
 
 function MuxVideoPage() {
@@ -62,7 +62,7 @@ function MuxVideoPage() {
         <title>&lt;Playlist/&gt; Demo</title>
       </Head>
       
-      {sdkLoaded && <Playlist videoList={relatedVideos}></Playlist>}
+      {sdkLoaded && <NewsweekMuxPlayer videoList={relatedVideos}></NewsweekMuxPlayer>}
 
     </>
   );

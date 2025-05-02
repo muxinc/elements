@@ -20,7 +20,7 @@ import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
 
 export { MediaError, MaxResolution, MinResolution, RenditionOrder, generatePlayerInitTime };
-export { Playlist } from './playlist';
+export { NewsweekMuxPlayer } from './newsweek-mux-player';
 import PlaylistEndScreen from './playlist-end-screen';
 export { PlaylistEndScreen };
 
