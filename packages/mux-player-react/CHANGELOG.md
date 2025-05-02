@@ -33,6 +33,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.4...@mux/mux-player-react@3.4.0) (2025-05-01)
+
+
+### Features
+
+* add video-title attr & prop ([#1108](https://github.com/muxinc/elements/issues/1108)) ([7763a49](https://github.com/muxinc/elements/commit/7763a49d885e56342fffe874ba838059e15c906c)), closes [#639](https://github.com/muxinc/elements/issues/639)
+
+
+### Bug Fixes
+
+* default-hidden-captions order bug for React ([#1105](https://github.com/muxinc/elements/issues/1105)) ([7b706ba](https://github.com/muxinc/elements/commit/7b706baf43cf6959415db4cd6a8d8381aa7b3adc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.3.4 to 3.4.0
+    * @mux/playback-core bumped from 0.28.7 to 0.29.0
+
 ## [3.3.4](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.3...@mux/mux-player-react@3.3.4) (2025-04-10)
 
 

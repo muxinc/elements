@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.29.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.7...@mux/playback-core@0.29.0) (2025-05-01)
+
+
+### Features
+
+* add video-title attr & prop ([#1108](https://github.com/muxinc/elements/issues/1108)) ([7763a49](https://github.com/muxinc/elements/commit/7763a49d885e56342fffe874ba838059e15c906c)), closes [#639](https://github.com/muxinc/elements/issues/639)
+
 ## [0.28.7](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.6...@mux/playback-core@0.28.7) (2025-04-10)
 
 
