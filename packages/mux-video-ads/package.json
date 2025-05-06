@@ -44,8 +44,6 @@
   "scripts": {
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "test": "web-test-runner **/*test.js --port 8002 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
-    "posttest": "replace 'SF:src/' 'SF:packages/mux-video-ads/src/' coverage/lcov.info --silent",
     "dev:iife": "npm run build:iife -- --watch=forever",
     "dev:cjs": "npm run build:cjs -- --watch=forever",
     "dev:esm": "npm run build:esm -- --watch=forever",
