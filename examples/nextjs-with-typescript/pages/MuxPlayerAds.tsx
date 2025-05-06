@@ -4,8 +4,7 @@ import Head from 'next/head';
 import { useRef, useState, useEffect } from "react";
 import '@mux/mux-video-ads';
 import MuxPlayer from "@mux/mux-player-react";
-import "@mux/mux-player/themes/microvideo";
-import  NewsweekTheme  from "./newsweek-theme";
+import  NewsweekTheme  from "@mux/mux-player-react/themes/newsweek-theme";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
