@@ -167,7 +167,7 @@ video::-webkit-media-text-track-container {
 
     this.addEventListener('play', this.play);
 
-    this.nativeEl.addEventListener('play', (event) => {
+    this.nativeEl.addEventListener('play', (_event) => {
       if (this.adBreak && !this.#isUsingSameVideoElement) {
         console.warn('Video play prevented during ad break');
         this.nativeEl.pause();
@@ -175,7 +175,7 @@ video::-webkit-media-text-track-container {
       }
     });
 
-    this.nativeEl.addEventListener('seeking', (event) => {
+    this.nativeEl.addEventListener('seeking', (_event) => {
       if (this.adBreak && !this.#isUsingSameVideoElement) {
         console.warn('Seek prevented during ad break');
         this.nativeEl.currentTime = this.#lastCurrentime ?? 0;
@@ -208,10 +208,6 @@ video::-webkit-media-text-track-container {
 
   get #adContainer() {
     return this.shadowRoot?.getElementById('adContainer') as HTMLElement;
-  }
-
-  get #mainContainer() {
-    return this.shadowRoot?.getElementById('mainContainer') as HTMLElement;
   }
 
   get adTagUrl(): string | undefined {

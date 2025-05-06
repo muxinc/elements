@@ -131,7 +131,7 @@ export class MuxAdManager {
 
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.CLICK,
-      (adEvent: google.ima.AdEvent) => {
+      (_adEvent: google.ima.AdEvent) => {
         this.updateViewMode(false);
       },
       false
