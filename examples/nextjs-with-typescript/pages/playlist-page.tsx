@@ -1,6 +1,5 @@
 import Head from 'next/head';
-import "@mux/mux-video-ads"
-import { NewsweekMuxPlayer, PlaylistEndScreen } from "@mux/mux-player-react"
+import { NewsweekMuxPlayer } from "@mux/mux-player-react"
 import { useEffect, useState } from 'react';
 
 function MuxVideoPage() {

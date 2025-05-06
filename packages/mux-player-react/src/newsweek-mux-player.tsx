@@ -1,5 +1,8 @@
+/* eslint @typescript-eslint/triple-slash-reference: "off" */
+/// <reference types="google_interactive_media_ads_types" preserve="true"/>
 import React, { useRef, useState } from 'react';
 import PlaylistEndScreen from './playlist-end-screen';
+import '@mux/mux-video-ads';
 import MuxPlayer from '@mux/mux-player-react';
 import NewsweekTheme from './themes/newsweek-theme';
 
