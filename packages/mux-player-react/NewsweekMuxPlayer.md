@@ -22,13 +22,13 @@ You must use the specific custom build through gitpkg as shown in the example be
 You can execute
 
 ```
-  npm install 'https://gitpkg.vercel.app/ismapin22/elements/packages/mux-player-react?mux-newsweek-player'
+  npm install 'https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-newsweek'
 ```
 
 or manually add it as a dependency in your package.json
 ```json
 "dependencies": {
-  "@mux/mux-player-react": "https://gitpkg.vercel.app/ismapin22/elements/packages/mux-player-react?mux-newsweek-player",
+  "@mux/mux-player-react": "https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-newsweek",
 }
 ```
 
