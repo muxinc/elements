@@ -15,26 +15,31 @@ This documentation covers how to integrate the `mux-video-ads` package with the 
 
 ## Installation
 
-**Note:** The video ads integration with the NewsweekMuxPlayer component is only available in the custom build referenced below. Standard npm packages do not include this functionality.
+**Note:** The video ads integration with the NewsweekMuxPlayer component is only available in the custom build referenced below. Standard npm package do not include this functionality.
 
 You must use the specific custom build through gitpkg as shown in the example below:
 
+You can execute
+
+```
+  npm install 'https://gitpkg.vercel.app/ismapin22/elements/packages/mux-player-react?mux-newsweek-player'
+```
+
+or manually add it as a dependency in your package.json
 ```json
 "dependencies": {
   "@mux/mux-player-react": "https://gitpkg.vercel.app/ismapin22/elements/packages/mux-player-react?mux-newsweek-player",
-  "@mux/mux-video-ads": "https://gitpkg.vercel.app/ismapin22/elements/packages/mux-video-ads?mux-newsweek-player"
 }
 ```
 
 ## Setting Up Dependencies
 
-### 1. Import the Required Packages
+### 1. Import the Required Package
 
 In your React component:
 
 ```jsx
 'use client';
-import "@mux/mux-video-ads";
 import { NewsweekMuxPlayer } from "@mux/mux-player-react";
 ```
 
