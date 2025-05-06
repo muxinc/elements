@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video-ads",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
   "browser": "./dist/index.mjs",
