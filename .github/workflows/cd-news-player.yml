@@ -43,7 +43,9 @@ jobs:
       - uses: fregante/setup-git-user@v2
       - name: Append !dist to gitignore
         run: echo '!dist' >> .gitignore
+      - name: Stage dist folders
+        run: git add **/dist
       - name: Commit changes to git
-        run: git commit -am "Update .gitignore to include !dist"
+        run: git commit -m "Add dist folders"
       - name: Force push to release-news-player
-        run: git push origin release-news-player --force
+        run: git push -uf origin release-news-player
