@@ -45,9 +45,7 @@ jobs:
 
       - name: Append !dist to gitignore
         run: echo '!dist' >> .gitignore
-      - name: Change branch to release-newsweek
-        run: git checkout -b release-newsweek
       - name: Commit changes to git
         run: git commit -am "Update .gitignore to include !dist"
-      - name: Push changes to git
-        run: git push origin release-newsweek
+      - name: Force push to release-newsweek
+        run: git push origin release-newsweek --force
