@@ -44,7 +44,7 @@ jobs:
       - name: Append !dist to gitignore
         run: echo '!dist' >> .gitignore
       - name: Stage dist folders
-        run: git add **/dist
+        run: git add --all
       - name: Commit changes to git
         run: git commit -m "Add dist folders"
       - name: Force push to release-news-player
