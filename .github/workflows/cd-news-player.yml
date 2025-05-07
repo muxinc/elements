@@ -1,7 +1,5 @@
 name: Deployment of News player components
 
-concurrency: production
-
 on:
   push:
     branches:
@@ -10,7 +8,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    environment: production
     permissions:
       contents: write
       pull-requests: write
