@@ -79,75 +79,114 @@ export const Parts = {
 
 export const partsListStr = Object.values(Parts).join(', ');
 
-export const content = (props: MuxTemplateProps) => html`
-  <media-theme
-    template="${props.themeTemplate || false}"
-    defaultstreamtype="${props.defaultStreamType ?? false}"
-    hotkeys="${getHotKeys(props) || false}"
-    nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
-    noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
-    novolumepref="${props.novolumepref || false}"
-    disabled="${!props.hasSrc || props.isDialogOpen}"
-    audio="${props.audio ?? false}"
-    style="${stylePropsToString({
-      '--media-primary-color': props.primaryColor,
-      '--media-secondary-color': props.secondaryColor,
-      '--media-accent-color': props.accentColor,
-    }) ?? false}"
-    defaultsubtitles="${!props.defaultHiddenCaptions}"
-    forwardseekoffset="${props.forwardSeekOffset ?? false}"
-    backwardseekoffset="${props.backwardSeekOffset ?? false}"
-    playbackrates="${props.playbackRates ?? false}"
-    defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
-    defaultduration="${props.defaultDuration ?? false}"
-    hideduration="${props.hideDuration ?? false}"
-    title="${props.title ?? false}"
-    videotitle="${props.videoTitle ?? false}"
-    proudlydisplaymuxbadge="${props.proudlyDisplayMuxBadge ?? false}"
-    exportparts="${partsListStr}"
-    onclose="${props.onCloseErrorDialog}"
-    onfocusin="${props.onFocusInErrorDialog}"
-  >
-    <mux-video
-      slot="media"
-      target-live-window="${props.targetLiveWindow ?? false}"
-      stream-type="${getStreamTypeFromAttr(props.streamType) ?? false}"
-      crossorigin="${props.crossOrigin ?? ''}"
-      playsinline
-      autoplay="${props.autoplay ?? false}"
-      muted="${props.muted ?? false}"
-      loop="${props.loop ?? false}"
-      preload="${props.preload ?? false}"
-      debug="${props.debug ?? false}"
-      prefer-cmcd="${props.preferCmcd ?? false}"
-      disable-tracking="${props.disableTracking ?? false}"
-      disable-cookies="${props.disableCookies ?? false}"
-      prefer-playback="${props.preferPlayback ?? false}"
-      start-time="${props.startTime != null ? props.startTime : false}"
-      beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
-      player-init-time="${props.playerInitTime ?? false}"
-      player-software-name="${props.playerSoftwareName ?? false}"
-      player-software-version="${props.playerSoftwareVersion ?? false}"
-      env-key="${props.envKey ?? false}"
-      custom-domain="${props.customDomain ?? false}"
-      src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
-      cast-src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
-      cast-receiver="${props.castReceiver ?? false}"
-      drm-token="${props.tokens?.drm ?? false}"
-      exportparts="video"
+const getTagSpecificProps = (tag: string, props: MuxTemplateProps) => {
+  const baseProps = {
+    'target-live-window': props.targetLiveWindow ?? false,
+    'stream-type': getStreamTypeFromAttr(props.streamType) ?? false,
+    crossorigin: props.crossOrigin ?? '',
+    playsinline: '',
+    autoplay: props.autoplay ?? false,
+    muted: props.muted ?? false,
+    loop: props.loop ?? false,
+    preload: props.preload ?? false,
+    debug: props.debug ?? false,
+    'prefer-cmcd': props.preferCmcd ?? false,
+    'disable-tracking': props.disableTracking ?? false,
+    'disable-cookies': props.disableCookies ?? false,
+    'prefer-playback': props.preferPlayback ?? false,
+    'start-time': props.startTime != null ? props.startTime : false,
+    'beacon-collection-domain': props.beaconCollectionDomain ?? false,
+    'player-init-time': props.playerInitTime ?? false,
+    'player-software-name': props.playerSoftwareName ?? false,
+    'player-software-version': props.playerSoftwareVersion ?? false,
+    'env-key': props.envKey ?? false,
+    'custom-domain': props.customDomain ?? false,
+    src: !!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false,
+    'cast-src': !!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false,
+    'cast-receiver': props.castReceiver ?? false,
+    'drm-token': props.tokens?.drm ?? false,
+    exportparts: 'video',
+  };
+
+  switch (tag) {
+    case 'mux-video-ads':
+      return {
+        ...baseProps,
+        adtagurl: props.adTagUrl ?? false,
+      };
+    default:
+      return baseProps;
+  }
+};
+
+export const content = (props: MuxTemplateProps) => {
+  const tag = props.muxVideoElement || 'mux-video';
+
+  const videoSlots = html`
+    ${props.storyboard ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />` : html``}
+    <slot></slot>
+  `;
+
+  const tagProps = getTagSpecificProps(tag, props);
+
+  const templateStrings = [`<${tag} slot='media' `];
+  const values = [];
+
+  Object.entries(tagProps).forEach(([key, value], index) => {
+    if (index == 0) {
+      templateStrings[0] += ` ${key}="`;
+    } else {
+      templateStrings.push(`" ${key}="`);
+    }
+    values.push(value);
+  });
+
+  templateStrings.push('">');
+  templateStrings.push('</' + tag + '>');
+  values.push(videoSlots);
+
+  const templateArray = Object.assign([], templateStrings, { raw: templateStrings });
+  const videoElement = html(templateArray as TemplateStringsArray, ...values);
+
+  return html`
+    <media-theme
+      template="${props.themeTemplate || false}"
+      mediaadbreak="${props.adBreak ?? false}"
+      defaultstreamtype="${props.defaultStreamType ?? false}"
+      hotkeys="${getHotKeys(props) || false}"
+      nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
+      noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
+      novolumepref="${props.novolumepref || false}"
+      disabled="${!props.hasSrc || props.isDialogOpen}"
+      audio="${props.audio ?? false}"
+      style="${stylePropsToString({
+        '--media-primary-color': props.primaryColor,
+        '--media-secondary-color': props.secondaryColor,
+        '--media-accent-color': props.accentColor,
+      }) ?? false}"
+      defaultsubtitles="${!props.defaultHiddenCaptions}"
+      forwardseekoffset="${props.forwardSeekOffset ?? false}"
+      backwardseekoffset="${props.backwardSeekOffset ?? false}"
+      playbackrates="${props.playbackRates ?? false}"
+      defaultshowremainingtime="${props.defaultShowRemainingTime ?? false}"
+      defaultduration="${props.defaultDuration ?? false}"
+      hideduration="${props.hideDuration ?? false}"
+      title="${props.title ?? false}"
+      videotitle="${props.videoTitle ?? false}"
+      proudlydisplaymuxbadge="${props.proudlyDisplayMuxBadge ?? false}"
+      exportparts="${partsListStr}"
+      onclose="${props.onCloseErrorDialog}"
+      onfocusin="${props.onFocusInErrorDialog}"
     >
-      ${props.storyboard
-        ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
-        : html``}
-      <slot></slot>
-    </mux-video>
-    <slot name="poster" slot="poster">
-      <media-poster-image
-        part="poster"
-        exportparts="poster, img"
-        src="${!!props.poster ? props.poster : false}"
-        placeholdersrc="${props.placeholder ?? false}"
-      ></media-poster-image>
-    </slot>
-  </media-theme>
-`;
+      ${videoElement}
+      <slot name="poster" slot="poster">
+        <media-poster-image
+          part="poster"
+          exportparts="poster, img"
+          src="${!!props.poster ? props.poster : false}"
+          placeholdersrc="${props.placeholder ?? false}"
+        ></media-poster-image>
+      </slot>
+    </media-theme>
+  `;
+};
