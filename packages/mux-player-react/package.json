@@ -97,9 +97,9 @@
   },
   "dependencies": {
     "@mux/mux-player": "3.4.0",
+    "@mux/mux-video-ads": "0.1.0",
     "@mux/playback-core": "0.29.0",
-    "prop-types": "^15.8.1",
-    "@mux/mux-video-ads": "0.1.0"
+    "prop-types": "^15.8.1"
   },
   "devDependencies": {
     "@types/prop-types": "^15.7.14",

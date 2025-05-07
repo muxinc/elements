@@ -40,8 +40,10 @@ jobs:
       - name: Build
         run: npm run build:packages
 
-      # @mux/mux-video-ads is not published so we need to update the dependency version to the gitpkg url.
+      # Require the custom version of mux-player and mux-video-ads
       # Do it here so we still automatically workspace symlink during development.
+      - name: Update NPM @mux/mux-player version to gitpkg url
+        run: npm pkg set dependencies.@mux/mux-player='https://gitpkg.vercel.app/muxinc/elements/packages/mux-player?release-news-player' -w @mux/mux-player-react
       - name: Update NPM @mux/mux-video-ads version to gitpkg url
         run: npm pkg set dependencies.@mux/mux-video-ads='https://gitpkg.vercel.app/muxinc/elements/packages/mux-video-ads?release-news-player' -w @mux/mux-player-react
 
