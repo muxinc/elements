@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "preserveWatchOutput": true,
+    "rootDir": "src",
+    "outDir": "./dist/types",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "incremental": true,
+    "target": "ES2019",
+    "module": "es6",
+    "jsx": "react",
+    "sourceMap": true,
+    "composite": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "moduleResolution": "Bundler",
+    "baseUrl": "./packages",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["src/**/*.ts"]
+}

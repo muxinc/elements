@@ -74,8 +74,8 @@
     "dev:esm:lazy": "npm run build:esm:lazy -- --watch=forever",
     "dev:types": "npm run build:types -- -w",
     "dev": "npm-run-all --parallel dev:types dev:cjs dev:esm dev:esm:lazy",
-    "build:cjs": "esbuild src/index.tsx src/themes/*.ts --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --out-extension:.js=.cjs.js --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
-    "build:esm": "esbuild src/index.tsx src/themes/*.ts --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.tsx src/themes/*.ts src/themes/*.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --loader:.css=text --outdir=dist --out-extension:.js=.cjs.js --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm": "esbuild src/index.tsx src/themes/*.ts src/themes/*.tsx --target=es2019 --bundle --sourcemap --metafile=./dist/esm.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs:lazy": "echo 'esbuild cjs does not support code-splitting. See https://esbuild.github.io/api/#splitting for details'",
     "build:esm:lazy": "esbuild src/lazy.tsx --splitting --target=es2019 --bundle --sourcemap --metafile=./dist/esm.lazy.json --format=esm --loader:.css=text --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/* --external:prop-types --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:types": "tsc",
@@ -98,7 +98,8 @@
   "dependencies": {
     "@mux/mux-player": "3.4.1",
     "@mux/playback-core": "0.29.1",
-    "prop-types": "^15.8.1"
+    "prop-types": "^15.8.1",
+    "@mux/mux-video-ads": "0.1.0"
   },
   "devDependencies": {
     "@types/prop-types": "^15.7.14",
