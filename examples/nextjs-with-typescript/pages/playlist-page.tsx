@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { NewsweekMuxPlayer } from "@mux/mux-player-react"
+import { MuxNewsPlayer } from "@mux/mux-player-react"
 import { useEffect, useState } from 'react';
 
 function MuxVideoPage() {
@@ -61,7 +61,7 @@ function MuxVideoPage() {
         <title>&lt;Playlist/&gt; Demo</title>
       </Head>
       
-      {sdkLoaded && <NewsweekMuxPlayer videoList={relatedVideos}></NewsweekMuxPlayer>}
+      {sdkLoaded && <MuxNewsPlayer videoList={relatedVideos} />}
 
     </>
   );

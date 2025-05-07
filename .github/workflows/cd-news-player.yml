@@ -1,11 +1,11 @@
-name: Deployment of Newsweek components
+name: Deployment of News player components
 
 concurrency: production
 
 on:
   push:
     branches:
-      - main-newsweek
+      - main-news-player
 
 jobs:
   release:
@@ -47,5 +47,5 @@ jobs:
         run: echo '!dist' >> .gitignore
       - name: Commit changes to git
         run: git commit -am "Update .gitignore to include !dist"
-      - name: Force push to release-newsweek
-        run: git push origin release-newsweek --force
+      - name: Force push to release-news-player
+        run: git push origin release-news-player --force

@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import PlaylistEndScreen from './playlist-end-screen';
 import '@mux/mux-video-ads';
 import MuxPlayer from '@mux/mux-player-react';
-import NewsweekTheme from './themes/newsweek-theme';
+import NewsTheme from './themes/news-theme';
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
@@ -22,7 +22,7 @@ export interface PlaylistProps {
   videoList: PlaylistVideos;
 }
 
-export const NewsweekMuxPlayer = ({ videoList }: PlaylistProps) => {
+export const MuxNewsPlayer = ({ videoList }: PlaylistProps) => {
   const mediaElRef = useRef<any>(null);
   const [autoplay, setAutoplay] = useState<'muted' | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
@@ -50,10 +50,10 @@ export const NewsweekMuxPlayer = ({ videoList }: PlaylistProps) => {
 
   return (
     <div>
-      <NewsweekTheme />
+      <NewsTheme />
       <MuxPlayer
         ref={mediaElRef}
-        theme="newsweek-theme"
+        theme="news-theme"
         themeProps={{ controlBarVertical: true, controlBarPlace: 'start start' }}
         key={`player-${playerKey}`}
         playbackId={videoList[currentIndex].playbackId}
@@ -72,7 +72,7 @@ export const NewsweekMuxPlayer = ({ videoList }: PlaylistProps) => {
         onPause={() => {
           setPaused(true);
         }}
-        onEnded={(event) => {
+        onEnded={(_event) => {
           console.log('ONENDED');
           if (currentIndex < videoList.length - 1) {
             setIsEndScreenVisible(true);

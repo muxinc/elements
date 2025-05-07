@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useRef, useState, useEffect } from "react";
 import '@mux/mux-video-ads';
 import MuxPlayer from "@mux/mux-player-react";
-import  NewsweekTheme  from "@mux/mux-player-react/themes/newsweek-theme";
+import  NewsTheme  from "@mux/mux-player-react/themes/news-theme";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
@@ -54,12 +54,12 @@ function MuxPlayerAdsPage() {
       <Head>
         <title>&lt;MuxPlayer/&gt; (theme) Demo</title>
       </Head>
-      <NewsweekTheme/>
+      <NewsTheme/>
 
       {sdkLoaded && <MuxPlayer
         ref={mediaElRef}
         playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
-        theme="newsweek-theme"
+        theme="news-theme"
         themeProps={{ controlBarVertical: true, controlBarPlace: 'start start' }}
         metadata={{
           video_id: "video-id-12345",

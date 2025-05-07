@@ -2,11 +2,11 @@ import 'media-chrome/react';
 import 'media-chrome/react/menu';
 import React from 'react';
 
-export default function NewsweekTheme() {
+export default function NewsTheme() {
   return (
     <>
       <template
-        id="newsweek-theme"
+        id="news-theme"
         dangerouslySetInnerHTML={{
           __html: `
           <style>

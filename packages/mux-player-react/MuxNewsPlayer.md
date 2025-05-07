@@ -1,34 +1,34 @@
-# Integrating Video Ads with NewsweekMuxPlayer Component
+# Integrating Video Ads with MuxNewsPlayer Component
 
 > **Important Note**: This feature is only available in the custom build referenced in this documentation. It is not available in the standard Mux packages from npm.
 
-This documentation covers how to integrate the `mux-video-ads` package with the `NewsweekMuxPlayer` component provided by the `mux-player-react` package. This integration allows you to display ads within a playlist of Mux videos.
+This documentation covers how to integrate the `mux-video-ads` package with the `MuxNewsPlayer` component provided by the `mux-player-react` package. This integration allows you to display ads within a playlist of Mux videos.
 
 ## Table of Contents
 
 1. [Installation](#installation)
 2. [Setting Up Dependencies](#setting-up-dependencies)
-3. [Implementing the NewsweekMuxPlayer with Ads](#implementing-the-playlist-with-ads)
+3. [Implementing the MuxNewsPlayer with Ads](#implementing-the-playlist-with-ads)
 4. [Configuration Options](#configuration-options)
 5. [Best Practices](#best-practices)
 6. [Troubleshooting](#troubleshooting)
 
 ## Installation
 
-**Note:** The video ads integration with the NewsweekMuxPlayer component is only available in the custom build referenced below. Standard npm package do not include this functionality.
+**Note:** The video ads integration with the MuxNewsPlayer component is only available in the custom build referenced below. Standard npm package do not include this functionality.
 
 You must use the specific custom build through gitpkg as shown in the example below:
 
 You can execute
 
 ```
-  npm install 'https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-newsweek'
+  npm install 'https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-news-player'
 ```
 
 or manually add it as a dependency in your package.json
 ```json
 "dependencies": {
-  "@mux/mux-player-react": "https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-newsweek",
+  "@mux/mux-player-react": "https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-news-player",
 }
 ```
 
@@ -40,12 +40,12 @@ In your React component:
 
 ```jsx
 'use client';
-import { NewsweekMuxPlayer } from "@mux/mux-player-react";
+import { MuxNewsPlayer } from "@mux/mux-player-react";
 ```
 
 ### 2. Load the Google IMA SDK
 
-The Google Interactive Media Ads (IMA) SDK is required for ad integration. It should be loaded before rendering the NewsweekMuxPlayer component:
+The Google Interactive Media Ads (IMA) SDK is required for ad integration. It should be loaded before rendering the MuxNewsPlayer component:
 
 ```jsx
 import { useEffect, useState } from "react";
@@ -85,7 +85,7 @@ export default function YourComponent() {
 }
 ```
 
-## Implementing the NewsweekMuxPlayer with Ads
+## Implementing the MuxNewsPlayer with Ads
 
 ### 1. Define Your Video List
 
@@ -109,14 +109,14 @@ Each video object should contain:
 - `playbackId`: Mux playback ID for the video
 - `adTagUrl`: VAST or VMAP URL for the ads to be displayed with this video
 
-### 2. Render the NewsweekMuxPlayer Component
+### 2. Render the MuxNewsPlayer Component
 
-Only render the NewsweekMuxPlayer component once the IMA SDK is loaded:
+Only render the MuxNewsPlayer component once the IMA SDK is loaded:
 
 ```jsx
 return (
   <>
-    {sdkLoaded && <NewsweekMuxPlayer videoList={videoList} />}
+    {sdkLoaded && <MuxNewsPlayer videoList={videoList} />}
   </>
 );
 ```
@@ -127,9 +127,9 @@ return (
 'use client';
 import Head from 'next/head';
 import { useEffect, useState } from "react";
-import { NewsweekMuxPlayer } from "@mux/mux-player-react";
+import { MuxNewsPlayer } from "@mux/mux-player-react";
 
-export default function VideoNewsweekMuxPlayerPage() {
+export default function VideoMuxNewsPlayerPage() {
   const [sdkLoaded, setSdkLoaded] = useState(false);
 
   useEffect(() => {
@@ -184,10 +184,10 @@ export default function VideoNewsweekMuxPlayerPage() {
   return (
     <>
       <Head>
-        <title>Video NewsweekMuxPlayer with Ads</title>
+        <title>Video MuxNewsPlayer with Ads</title>
       </Head>
 
-      {sdkLoaded && <NewsweekMuxPlayer videoList={videoList} />}
+      {sdkLoaded && <MuxNewsPlayer videoList={videoList} />}
     </>
   );
 }
@@ -217,5 +217,5 @@ Each video in the `videoList` array can have the following properties:
    - Verify that ad blocking software is not active
 
 2. **Console errors about IMA not defined**:
-   - Make sure you're checking if the SDK is loaded before rendering the NewsweekMuxPlayer
+   - Make sure you're checking if the SDK is loaded before rendering the MuxNewsPlayer
    - Verify the script is loading successfully in the network tab
