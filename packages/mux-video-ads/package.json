@@ -71,8 +71,8 @@
   },
   "dependencies": {
     "hls.js": "~1.5.19",
-    "@mux/mux-video": "0.24.4",
-    "@mux/playback-core": "0.28.4",
+    "@mux/mux-video": ">=0.25.2",
+    "@mux/playback-core": ">=0.29.0",
     "@mux/mux-data-google-ima": "0.2.8"
   }
 }
