@@ -48,4 +48,4 @@ jobs:
       - name: Commit changes to git
         run: git commit -m "Add dist folders"
       - name: Force push to release-news-player
-        run: git push -uf origin release-news-player
+        run: git push -f origin main-news-player:release-news-player
