@@ -1,10 +1,16 @@
 name: Deployment of News player components
 
-on: workflow_dispatch
+concurrency: production
+
+on:
+  push:
+    branches:
+      - main-news-player
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: write
       pull-requests: write
@@ -37,19 +43,9 @@ jobs:
       - name: Build
         run: npm run build:packages
 
-      # Require the custom version of mux-player and mux-video-ads
-      # Do it here so we still automatically workspace symlink during development.
-      - name: Update NPM @mux/mux-player version to gitpkg url
-        run: npm pkg set dependencies.@mux/mux-player='https://gitpkg.vercel.app/muxinc/elements/packages/mux-player?release-news-player' -w @mux/mux-player-react
-      - name: Update NPM @mux/mux-video-ads version to gitpkg url
-        run: npm pkg set dependencies.@mux/mux-video-ads='https://gitpkg.vercel.app/muxinc/elements/packages/mux-video-ads?release-news-player' -w @mux/mux-player-react
-
-      - uses: fregante/setup-git-user@v2
       - name: Append !dist to gitignore
         run: echo '!dist' >> .gitignore
-      - name: Stage dist folders
-        run: git add --all
       - name: Commit changes to git
-        run: git commit -m "Add dist folders"
+        run: git commit -am "Update .gitignore to include !dist"
       - name: Force push to release-news-player
-        run: git push -f origin main-news-player:release-news-player
+        run: git push origin release-news-player --force

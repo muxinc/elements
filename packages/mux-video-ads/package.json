@@ -1,0 +1,78 @@
+{
+  "name": "@mux/mux-video-ads",
+  "version": "0.1.0",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.mjs",
+  "browser": "./dist/index.mjs",
+  "unpkg": "./dist/mux-video-ads.js",
+  "jsdelivr": "./dist/mux-video-ads.js",
+  "license": "MIT",
+  "typesVersions": {
+    "<4.3.5": {
+      ".": [
+        "./dist/types-ts3.4/index.d.ts"
+      ],
+      "react": [
+        "./dist/types-ts3.4/react.d.ts"
+      ]
+    },
+    "*": {
+      ".": [
+        "./dist/types/index.d.ts"
+      ],
+      "react": [
+        "./dist/types/react.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types@<4.3.5": "./dist/types-ts3.4/index.d.ts",
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.cjs.js"
+    },
+    "./react": {
+      "types": "./dist/types/react.d.ts",
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.cjs.js",
+      "default": "./dist/react.cjs.js"
+    }
+  },
+  "types": "./dist/types/index.d.ts",
+  "scripts": {
+    "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "dev:iife": "npm run build:iife -- --watch=forever",
+    "dev:cjs": "npm run build:cjs -- --watch=forever",
+    "dev:esm": "npm run build:esm -- --watch=forever",
+    "dev:esm-module": "npm run build:esm-module -- --watch=forever",
+    "dev:react:cjs": "npm run build:react:cjs -- --watch=forever",
+    "dev:react:esm": "npm run build:react:esm -- --watch=forever",
+    "dev:types": "npm run build:types -- -w",
+    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:iife dev:react:*",
+    "build:esm": "esbuild src/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-video-ads.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs": "esbuild src/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-video-ads.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:react:cjs": "esbuild src/react.ts --target=es2019 --bundle --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:react --external:@mux/mux-video-ads",
+    "build:react:esm": "esbuild src/react.ts --target=es2019 --bundle --format=esm --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/mux-video-ads",
+    "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
+    "build:types": "tsc",
+    "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
+    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify' 'build:react:cjs -- --minify' 'build:react:esm -- --minify'"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2",
+    "npm-run-all": "^4.1.5",
+    "esbuild": "^0.24.1",
+    "@types/google_interactive_media_ads_types": "^1.20241219.0"
+  },
+  "dependencies": {
+    "hls.js": "~1.5.19",
+    "@mux/mux-video": ">=0.25.2",
+    "@mux/playback-core": ">=0.29.0",
+    "@mux/mux-data-google-ima": "0.2.8"
+  }
+}
