@@ -40,6 +40,7 @@ jobs:
       - name: Build
         run: npm run build:packages
 
+      - uses: fregante/setup-git-user@v2
       - name: Append !dist to gitignore
         run: echo '!dist' >> .gitignore
       - name: Commit changes to git
