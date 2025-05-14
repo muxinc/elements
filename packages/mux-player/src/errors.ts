@@ -35,7 +35,8 @@ const muxMediaErrorToDialogTitle = (mediaError: MediaError, translate = false) =
       return i18n(`{category} does not exist`, translate).format({ category });
     }
     if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
-      return i18n(`{category} is not currently available`, translate).format({ category });
+      const mediaType = mediaError.streamType === 'live' ? 'Live stream' : 'Video';
+      return i18n(`{mediaType} is not currently available`, translate).format({ mediaType });
     }
   }
 
@@ -102,7 +103,7 @@ const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false)
       return '';
     }
     if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
-      return i18n(`The live stream or video file are not yet ready.`, translate);
+      return i18n(`Retrying in 5 seconds...`, translate);
     }
     return mediaError.message;
   }

@@ -1253,6 +1253,7 @@ export const loadMedia = (
     hls.on(Hls.Events.ERROR, (_event, data) => {
       saveAndDispatchError(mediaEl, getErrorFromHlsErrorData(data, props));
     });
+
     mediaEl.addEventListener('error', handleInternalError);
     addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
 
@@ -1386,6 +1387,7 @@ const getErrorFromHlsErrorData = (
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>
 ) => {
   console.error('getErrorFromHlsErrorData()', data);
+
   const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
     [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
     [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
