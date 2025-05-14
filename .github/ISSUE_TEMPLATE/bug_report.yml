@@ -1,6 +1,7 @@
 name: 🐛 Bug Report
 description: Report a reproducible bug or regression.
-labels: ['bug', 'Status: Unconfirmed']
+type: bug
+labels: ['Status: Unconfirmed']
 title: 'Bug: '
 body:
   - type: markdown

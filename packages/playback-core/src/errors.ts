@@ -42,6 +42,20 @@ export const errorCategoryToTokenNameOrPrefix = (category: MuxErrorCategoryValue
   return category;
 };
 
+// Typescript says it's strictly a string, but it can also be a number or an object with a toString method.
+// https://github.com/microsoft/TypeScript/issues/6032
+// https://262.ecma-international.org/6.0/#sec-error-message
+
+type Stringable = string | { toString(): string };
+
+declare global {
+  interface ErrorConstructor {
+    new (message?: Stringable): Error;
+    (message?: Stringable): Error;
+    readonly prototype: Error;
+  }
+}
+
 export class MediaError extends Error {
   static MEDIA_ERR_ABORTED = 1 as const;
   static MEDIA_ERR_NETWORK = 2 as const;
@@ -67,7 +81,7 @@ export class MediaError extends Error {
   fatal: boolean;
   data?: any;
 
-  constructor(message?: string, code: number = MediaError.MEDIA_ERR_CUSTOM, fatal?: boolean, context?: string) {
+  constructor(message?: Stringable, code: number = MediaError.MEDIA_ERR_CUSTOM, fatal?: boolean, context?: string) {
     super(message);
     this.name = 'MediaError';
     this.code = code;

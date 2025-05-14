@@ -53,6 +53,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   placeholder: string;
   hotKeys: AttributeTokenList;
   title: string;
+  videoTitle: string;
   defaultStreamType?: ValueOf<StreamTypes>;
   castReceiver: string | undefined;
   proudlyDisplayMuxBadge?: boolean;
