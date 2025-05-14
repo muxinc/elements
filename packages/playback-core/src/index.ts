@@ -63,8 +63,6 @@ export {
 };
 export * from './types';
 
-const MAX_RETRIES = 3;
-
 const DRMType = {
   FAIRPLAY: 'fairplay',
   PLAYREADY: 'playready',
@@ -1252,42 +1250,8 @@ export const loadMedia = (
       }
     });
 
-    const retryState = {
-      count: 0,
-      maxRetries: MAX_RETRIES,
-    };
-
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      const error = getErrorFromHlsErrorData(data, props);
-
-      if (error.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
-        retryState.count++;
-
-        if (retryState.count <= retryState.maxRetries) {
-          console.log(`[Mux Player] Live stream not ready. Retrying (${retryState.count}/${retryState.maxRetries})...`);
-
-          setTimeout(() => {
-            if (data.details === 'manifestLoadError' && data.url) {
-              hls.loadSource(data.url);
-              hls.attachMedia(mediaEl);
-            } else {
-              hls.recoverMediaError();
-            }
-          }, 2000);
-          return;
-        } else {
-          console.log(`[Mux Player] Live stream not available after ${retryState.maxRetries} attempts.`);
-          retryState.count = 0;
-        }
-      }
-      saveAndDispatchError(mediaEl, error);
-    });
-
-    hls.on(Hls.Events.MANIFEST_LOADED, () => {
-      if (retryState.count > 0) {
-        console.log('[Mux Player] Live stream is now active');
-      }
-      retryState.count = 0;
+      saveAndDispatchError(mediaEl, getErrorFromHlsErrorData(data, props));
     });
 
     mediaEl.addEventListener('error', handleInternalError);
@@ -1421,11 +1385,8 @@ function handleInternalError(event: Event | CustomEvent<MediaError>) {
 const getErrorFromHlsErrorData = (
   data: ErrorData,
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>
-): MediaError => {
-  // Only log non-412 errors
-  if (!(data.response?.code === 412)) {
-    console.error('getErrorFromHlsErrorData()', data);
-  }
+) => {
+  console.error('getErrorFromHlsErrorData()', data);
 
   const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
     [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
