@@ -270,7 +270,6 @@ const MuxPlayer = React.forwardRef<
   const innerPlayerRef = useRef<MuxPlayerElement>(null);
   const playerRef = useCombinedRefs(innerPlayerRef, ref);
   const [remainingProps] = usePlayer(innerPlayerRef, props);
-  const [playerInitTime] = useState(props.playerInitTime ?? generatePlayerInitTime());
 
   return (
     <MuxPlayerInternal
@@ -279,7 +278,6 @@ const MuxPlayer = React.forwardRef<
       defaultHiddenCaptions={props.defaultHiddenCaptions}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}
-      playerInitTime={playerInitTime}
       {...remainingProps}
     />
   );
