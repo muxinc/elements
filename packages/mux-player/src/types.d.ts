@@ -60,6 +60,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   muxVideoElement: string;
   adTagUrl: string | undefined;
   adBreak: boolean;
+  allowPlaybackWithAdBlocker?: boolean;
 };
 
 export type DialogOptions = {

@@ -47,6 +47,9 @@ function MuxVideoPage() {
         setSdkLoaded(true);  // Mark SDK as loaded
         console.log("Google IMA SDK loaded");
       };
+      script.onerror = () => {
+        setSdkLoaded(true);
+      };
       document.head.appendChild(script);
     };
     

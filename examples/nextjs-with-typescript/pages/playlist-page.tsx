@@ -16,6 +16,9 @@ function MuxVideoPage() {
         setSdkLoaded(true);  // Mark SDK as loaded
         console.log("Google IMA SDK loaded");
       };
+      script.onerror = () => {
+        setSdkLoaded(true);
+      };
       document.head.appendChild(script);
     };
 
@@ -58,10 +61,10 @@ function MuxVideoPage() {
   return (
     <>
       <Head>
-        <title>&lt;Playlist/&gt; Demo</title>
+        <title>&lt;Playlist/&gt; Demo 3</title>
       </Head>
       
-      {sdkLoaded && <MuxNewsPlayer videoList={relatedVideos} />}
+      {sdkLoaded && <MuxNewsPlayer allowPlaybackWithAdBlocker={true} videoList={relatedVideos} />}
 
     </>
   );
