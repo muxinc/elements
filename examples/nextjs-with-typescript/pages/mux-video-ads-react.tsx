@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { useRef, useState, useEffect } from "react";
-import MuxVideoAds from "@mux/mux-video-ads/react";
+import MuxVideoAds from "@mux/mux-video/ads/react";
 import '../post-video.css'
 
 const INITIAL_AUTOPLAY = false;

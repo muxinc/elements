@@ -21,6 +21,9 @@
       ],
       "react": [
         "./dist/types-ts3.4/react.d.ts"
+      ],
+      "ads": [
+        "./dist/types-ts3.4/ads/index.d.ts"
       ]
     },
     "*": {
@@ -29,6 +32,9 @@
       ],
       "react": [
         "./dist/types/react.d.ts"
+      ],
+      "ads": [
+        "./dist/types/ads/index.d.ts"
       ]
     }
   },
@@ -40,11 +46,24 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
-    "./react": {
-      "types": "./dist/types/react.d.ts",
-      "import": "./dist/react.mjs",
-      "require": "./dist/react.cjs.js",
-      "default": "./dist/react.cjs.js"
+    "./ads": {
+      "types@<4.3.5": "./dist/types-ts3.4/ads/index.d.ts",
+      "types": "./dist/types/ads/index.d.ts",
+      "import": "./dist/ads/index.mjs",
+      "require": "./dist/ads/index.cjs.js",
+      "default": "./dist/ads/index.cjs.js"
+    },
+    "./*.js": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.cjs.js",
+      "default": "./dist/*.js"
+    },
+    "./*": {
+      "types@<4.3.5": "./dist/types-ts3.4/*.d.ts",
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.cjs.js",
+      "default": "./dist/*.mjs"
     }
   },
   "types": "./dist/types/index.d.ts",
@@ -66,20 +85,29 @@
     "dev:esm-module": "npm run build:esm-module -- --watch=forever",
     "dev:react:cjs": "npm run build:react:cjs -- --watch=forever",
     "dev:react:esm": "npm run build:react:esm -- --watch=forever",
+    "dev:ads:esm": "npm run build:ads:esm -- --watch=forever",
+    "dev:ads:cjs": "npm run build:ads:cjs -- --watch=forever",
+    "dev:ads:react:esm": "npm run build:ads:react:esm -- --watch=forever",
+    "dev:ads:react:cjs": "npm run build:ads:react:cjs -- --watch=forever",
     "dev:types": "npm run build:types -- -w",
-    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:iife dev:react:*",
+    "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:iife dev:react:* dev:ads:*",
     "build:esm": "esbuild src/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:esm-module": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-video.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs": "esbuild src/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/cjs.json --format=cjs --outdir=dist --out-extension:.js=.cjs.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:iife": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/iife.json --format=iife --outfile=./dist/mux-video.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:react:cjs": "esbuild src/react.ts --target=es2019 --bundle --format=cjs --outdir=dist --out-extension:.js=.cjs.js --external:react --external:@mux/mux-video",
     "build:react:esm": "esbuild src/react.ts --target=es2019 --bundle --format=esm --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/mux-video",
+    "build:ads:esm": "esbuild src/ads/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/ads/esm.json --format=esm --outdir=dist/ads --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:ads:cjs": "esbuild src/ads/index.ts --target=es2019 --external:@mux/* --bundle --sourcemap --metafile=./dist/ads/cjs.json --format=cjs --outdir=dist/ads --out-extension:.js=.cjs.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:ads:react:esm": "esbuild src/ads/react.ts --target=es2019 --bundle --format=esm --outdir=dist/ads --out-extension:.js=.mjs --external:react --external:@mux/mux-video",
+    "build:ads:react:cjs": "esbuild src/ads/react.ts --target=es2019 --bundle --format=cjs --outdir=dist/ads --out-extension:.js=.cjs.js --external:react --external:@mux/mux-video",
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify' 'build:react:cjs -- --minify' 'build:react:esm -- --minify'"
+    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify' 'build:react:cjs -- --minify' 'build:react:esm -- --minify' 'build:ads:esm -- --minify' 'build:ads:cjs -- --minify' 'build:ads:react:esm -- --minify' 'build:ads:react:cjs -- --minify'"
   },
   "dependencies": {
+    "@mux/mux-data-google-ima": "0.2.8",
     "@mux/playback-core": "0.29.1",
     "castable-video": "~1.1.10",
     "custom-media-element": "~1.4.5",
@@ -87,6 +115,7 @@
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
+    "@types/google_interactive_media_ads_types": "^1.20241219.0",
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "@typescript-eslint/parser": "^8.27.0",
     "@web/dev-server-esbuild": "^1.0.4",

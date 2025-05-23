@@ -2,7 +2,7 @@
 
 > **Important Note**: This feature is only available in the custom build referenced in this documentation. It is not available in the standard Mux packages from npm.
 
-This documentation covers how to integrate the `mux-video-ads` package with the `MuxNewsPlayer` component provided by the `mux-player-react` package. This integration allows you to display ads within a playlist of Mux videos.
+This documentation covers how to integrate the `MuxNewsPlayer` component provided by the `mux-player-react` package. This integration allows you to display ads within a playlist of Mux videos.
 
 ## Table of Contents
 
