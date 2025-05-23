@@ -20,7 +20,6 @@
     "@mux/mux-audio": ">=0.3.0",
     "@mux/mux-player": ">=1.0.0-beta.0",
     "@mux/mux-uploader": ">=1.0.0-beta.0",
-    "@mux/mux-video": ">=0.3.0",
-    "@mux/mux-video-ads": ">=0.1.0"
+    "@mux/mux-video": ">=0.3.0"
   }
 }

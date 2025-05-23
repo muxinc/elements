@@ -1,14 +1,14 @@
 'use client';
 
-import MuxVideoAds from '@mux/mux-video-ads';
+import MuxVideoElement from '@mux/mux-video/ads';
 import React from 'react';
 // keep as last import, ce-la-react is bundled.
 import { createComponent } from 'ce-la-react';
 
 export default createComponent({
   react: React,
-  tagName: 'mux-video-ads',
-  elementClass: MuxVideoAds,
+  tagName: 'mux-video',
+  elementClass: MuxVideoElement,
   toAttributeName,
 });
 
@@ -19,7 +19,6 @@ const ReactPropToAttrNameMap: Record<string, string> = {
   playsInline: 'playsinline',
   disablePictureInPicture: 'disablepictureinpicture',
   disableRemotePlayback: 'disableremoteplayback',
-  adTagUrl: 'adtagurl',
 };
 
 function toAttributeName(propName: string) {
