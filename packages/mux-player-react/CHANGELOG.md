@@ -33,6 +33,66 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.4...@mux/mux-player-react@3.4.0) (2025-05-01)
+
+
+### Features
+
+* add video-title attr & prop ([#1108](https://github.com/muxinc/elements/issues/1108)) ([7763a49](https://github.com/muxinc/elements/commit/7763a49d885e56342fffe874ba838059e15c906c)), closes [#639](https://github.com/muxinc/elements/issues/639)
+
+
+### Bug Fixes
+
+* default-hidden-captions order bug for React ([#1105](https://github.com/muxinc/elements/issues/1105)) ([7b706ba](https://github.com/muxinc/elements/commit/7b706baf43cf6959415db4cd6a8d8381aa7b3adc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.3.4 to 3.4.0
+    * @mux/playback-core bumped from 0.28.7 to 0.29.0
+
+## [3.3.4](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.3...@mux/mux-player-react@3.3.4) (2025-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.3.3 to 3.3.4
+    * @mux/playback-core bumped from 0.28.6 to 0.28.7
+
+## [3.3.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.2...@mux/mux-player-react@3.3.3) (2025-04-03)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.3.2 to 3.3.3
+    * @mux/playback-core bumped from 0.28.5 to 0.28.6
+
+## [3.3.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.1...@mux/mux-player-react@3.3.2) (2025-03-31)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.3.1 to 3.3.2
+    * @mux/playback-core bumped from 0.28.4 to 0.28.5
+
 ## [3.3.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.0...@mux/mux-player-react@3.3.1) (2025-03-21)
 
 

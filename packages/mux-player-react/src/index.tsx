@@ -103,6 +103,7 @@ export type MuxPlayerProps = {
   noVolumePref?: boolean;
   thumbnailTime?: number;
   title?: string;
+  videoTitle?: string;
   tokens?: Tokens;
   theme?: string;
   themeProps?: { [k: string]: any };
@@ -136,7 +137,14 @@ export type MuxPlayerProps = {
   Partial<VideoApiAttributes>;
 
 const MuxPlayerInternal = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProps>(({ children, ...props }, ref) => {
-  return React.createElement('mux-player', toNativeProps({ ...props, ref }), children);
+  return React.createElement(
+    'mux-player',
+    {
+      suppressHydrationWarning: true, // prevent issues with SSR / player-init-time
+      ...toNativeProps({ ...props, ref }),
+    },
+    children
+  );
 });
 
 const useEventCallbackEffect = <K extends keyof MuxPlayerElementEventMap>(
@@ -275,6 +283,7 @@ const MuxPlayer = React.forwardRef<
     <MuxPlayerInternal
       /** @TODO Fix types relationships (CJP) */
       ref={playerRef as typeof innerPlayerRef}
+      defaultHiddenCaptions={props.defaultHiddenCaptions}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}
       playerInitTime={playerInitTime}

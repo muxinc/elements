@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { MediaController, MediaErrorDialog } from 'media-chrome';
 import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media-container.js';
-import { MediaUIAttributes } from 'media-chrome/dist/constants.js';
+import { MediaStateChangeEvents, MediaUIAttributes, MediaUIEvents } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
 import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
@@ -77,6 +77,7 @@ const PlayerAttributes = {
   DEFAULT_SHOW_REMAINING_TIME: 'default-show-remaining-time',
   DEFAULT_DURATION: 'default-duration',
   TITLE: 'title',
+  VIDEO_TITLE: 'video-title', // video-title is an alternative for title which doesn't cause a tooltip.
   PLACEHOLDER: 'placeholder',
   THEME: 'theme',
   DEFAULT_STREAM_TYPE: 'default-stream-type',
@@ -108,6 +109,7 @@ const ThemeAttributeNames = [
   'targetlivewindow',
   'template',
   'title',
+  'videotitle',
   'novolumepref',
   'proudlydisplaymuxbadge',
 ];
@@ -172,6 +174,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackRates: el.getAttribute(PlayerAttributes.PLAYBACK_RATES),
     customDomain: el.getAttribute(MuxVideoAttributes.CUSTOM_DOMAIN) ?? undefined,
     title: el.getAttribute(PlayerAttributes.TITLE),
+    videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     castReceiver: el.castReceiver,
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
@@ -245,9 +248,7 @@ function getHideDuration(el: MuxPlayerElement) {
 function getMetadataFromAttrs(el: MuxPlayerElement) {
   // Adding title defaulting, when present, as a seed value here to ensure it's
   // overridden by metadata-video-title if it is also present. (CJP)
-  const seedValue: { [key: string]: string } = el.hasAttribute(PlayerAttributes.TITLE)
-    ? { video_title: el.getAttribute(PlayerAttributes.TITLE) as string }
-    : {};
+  const seedValue: { [key: string]: string } = !!el.videoTitle ? { video_title: el.videoTitle } : {};
   return el
     .getAttributeNames()
     .filter((attrName) => attrName.startsWith('metadata-'))
@@ -684,7 +685,9 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       case PlayerAttributes.THUMBNAIL_TIME: {
         if (newValue != null && this.tokens.thumbnail) {
           logger.warn(
-            i18n(`Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`)
+            i18n(
+              `Use of thumbnail-time with thumbnail-token is currently unsupported. Ignore thumbnail-time.`
+            ).toString()
           );
         }
         break;
@@ -807,6 +810,40 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     }
 
     this.#render({ [toPropName(attrName)]: newValue });
+  }
+
+  async requestFullscreen(_options?: FullscreenOptions) {
+    if (!this.mediaController || this.mediaController.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN)) {
+      return;
+    }
+    this.mediaController?.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
+    return new Promise<void>((resolve, _reject) => {
+      this.mediaController?.addEventListener(MediaStateChangeEvents.MEDIA_IS_FULLSCREEN, () => resolve(), {
+        once: true,
+      });
+    });
+  }
+
+  async exitFullscreen() {
+    if (!this.mediaController || !this.mediaController.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN)) {
+      return;
+    }
+    this.mediaController?.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
+    return new Promise<void>((resolve, _reject) => {
+      this.mediaController?.addEventListener(MediaStateChangeEvents.MEDIA_IS_FULLSCREEN, () => resolve(), {
+        once: true,
+      });
+    });
   }
 
   get preferCmcd() {
@@ -1073,25 +1110,23 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   /**
-   * Get the title shown in the player.
+   * Get the video title shown in the player.
    */
-  get title() {
-    return this.getAttribute(PlayerAttributes.TITLE) ?? '';
+  get videoTitle() {
+    return this.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? this.getAttribute(PlayerAttributes.TITLE) ?? '';
   }
 
   /**
-   * Set the title shown in the player.
+   * Set the video title shown in the player.
    */
-  set title(val: string) {
-    if (val === this.title) return;
+  set videoTitle(val: string) {
+    if (val === this.videoTitle) return;
 
     if (!!val) {
-      this.setAttribute(PlayerAttributes.TITLE, val);
+      this.setAttribute(PlayerAttributes.VIDEO_TITLE, val);
     } else {
-      this.removeAttribute('title');
+      this.removeAttribute(PlayerAttributes.VIDEO_TITLE);
     }
-    // Calling super.title for tooltip usage
-    super.title = val;
   }
 
   /**

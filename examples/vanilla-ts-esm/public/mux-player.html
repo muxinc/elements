@@ -42,7 +42,9 @@
 
     <mux-player
       stream-type="on-demand"
-      playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
+      playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
+      video-title="Elephants Dream"
+      title="Click to play video"
     >
       <track label="Japanese" kind="captions" srclang="ja" src="./vtt/elephantsdream/captions.ja.vtt"></track>
       <track default kind="chapters" src="./vtt/elephantsdream/chapters.vtt"></track>
@@ -56,19 +58,43 @@
       });
     </script>
 
+    <button id="request-fullscreen">
+      Request Fullscreen
+    </button>
+    <script>
+      document.getElementById('request-fullscreen').addEventListener('click', async () => {
+        const player = document.querySelector('mux-player');
+        await player.requestFullscreen();
+        console.log('Entered fullscreen');
+      });
+    </script>
+
+    <button id="exit-fullscreen">
+      Exit Fullscreen
+    </button>
+    <script>
+      document.getElementById('exit-fullscreen').addEventListener('click', async () => {
+        const player = document.querySelector('mux-player');
+        await player.exitFullscreen();
+        console.log('Exited fullscreen');
+      });
+    </script>
+
     <h2>Live</h2>
 
     <mux-player
       stream-type="live"
       target-live-window="Infinity"
       playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
-      title="My amazing video"
+      title="Big Bucks Bunny"
     ></mux-player>
 
     <mux-player
       stream-type="on-demand"
-      playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
+      playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
       proudly-display-mux-badge
+      title="Click to play"
+      video-title=""
     ></mux-player>
 
     <a href="../">Browse Elements</a>

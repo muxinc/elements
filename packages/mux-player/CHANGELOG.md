@@ -48,6 +48,68 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.4...@mux/mux-player@3.4.0) (2025-05-01)
+
+
+### Features
+
+* add fullscreen API on player element ([#1107](https://github.com/muxinc/elements/issues/1107)) ([205f3c8](https://github.com/muxinc/elements/commit/205f3c86a334c8f3d641e0e9d00cf9b9b8305cf5))
+* add video-title attr & prop ([#1108](https://github.com/muxinc/elements/issues/1108)) ([7763a49](https://github.com/muxinc/elements/commit/7763a49d885e56342fffe874ba838059e15c906c)), closes [#639](https://github.com/muxinc/elements/issues/639)
+
+
+### Bug Fixes
+
+* bump player.style from 0.1.7 to 0.1.8 in the prod-dependencies group across 1 directory ([#1110](https://github.com/muxinc/elements/issues/1110)) ([34dcba4](https://github.com/muxinc/elements/commit/34dcba46b4955263da8dc05c128e0c6e98ccfbcb))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1109](https://github.com/muxinc/elements/issues/1109)) ([7969b53](https://github.com/muxinc/elements/commit/7969b53261ef055a76cf26ced26ab978338f2db9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.25.1 to 0.25.2
+    * @mux/playback-core bumped from 0.28.7 to 0.29.0
+
+## [3.3.4](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.3...@mux/mux-player@3.3.4) (2025-04-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.25.0 to 0.25.1
+    * @mux/playback-core bumped from 0.28.6 to 0.28.7
+
+## [3.3.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.2...@mux/mux-player@3.3.3) (2025-04-03)
+
+
+### Bug Fixes
+
+* bump player.style from 0.1.6 to 0.1.7 in the prod-dependencies group across 1 directory ([#1095](https://github.com/muxinc/elements/issues/1095)) ([b9da4be](https://github.com/muxinc/elements/commit/b9da4bea21b0292de92ab504b2a903ee61dc5bea))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.24.5 to 0.25.0
+    * @mux/playback-core bumped from 0.28.5 to 0.28.6
+
+## [3.3.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.1...@mux/mux-player@3.3.2) (2025-03-31)
+
+
+### Bug Fixes
+
+* upgrade media-chrome ([#1094](https://github.com/muxinc/elements/issues/1094)) ([56d8395](https://github.com/muxinc/elements/commit/56d83953a58c236dd851b231f5c4487891eaa2aa)), closes [#1062](https://github.com/muxinc/elements/issues/1062)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.24.4 to 0.24.5
+    * @mux/playback-core bumped from 0.28.4 to 0.28.5
+
 ## [3.3.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.0...@mux/mux-player@3.3.1) (2025-03-21)
 
 

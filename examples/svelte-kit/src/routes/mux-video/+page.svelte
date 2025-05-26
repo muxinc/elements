@@ -25,6 +25,7 @@
 			width: 100%;
 			aspect-ratio: 16 / 9;
 			margin: 1rem 0 2rem;
+			background-color: #000;
 		}
 	</style>
 </svelte:head>
@@ -36,6 +37,7 @@
 	metadata-viewer-user-id="user-id-6789"
 	stream-type="on-demand"
 	controls
+	logo
 	muted
 ></mux-video>
 

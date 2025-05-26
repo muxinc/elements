@@ -40,6 +40,7 @@ export const getErrorFromResponse = (
   resp: Pick<Response, 'status' | 'url'> | Pick<LoaderResponse, 'code' | 'url'>,
   category: MuxErrorCategoryValue,
   muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>,
+  fatal?: boolean,
   translate = false,
   offline = !globalThis.navigator?.onLine // NOTE: Passing this in for testing purposes
 ) => {
@@ -47,7 +48,8 @@ export const getErrorFromResponse = (
     const message = i18n(`Your device appears to be offline`, translate);
     const context = undefined;
     const mediaErrorCode = MediaError.MEDIA_ERR_NETWORK;
-    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    // Being offline is not immediately a fatal error for playback.
+    const mediaError = new MediaError(message, mediaErrorCode, false, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_OFFLINE;
     mediaError.data = resp;
@@ -88,7 +90,7 @@ export const getErrorFromResponse = (
      * @TODO We plausibly should have some basic retry logic for all other 500 status
      * cases (CJP)
      **/
-    const mediaError = new MediaError('', mediaErrorCode, true);
+    const mediaError = new MediaError('', mediaErrorCode, fatal ?? true);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_UNKNOWN_ERROR;
     /** @TODO Add error msg + context crud here (NOT YET DEFINED) (CJP) */
@@ -186,7 +188,7 @@ export const getErrorFromResponse = (
         category,
       });
       const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-      const mediaError = new MediaError(message, mediaErrorCode, true, context);
+      const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
       mediaError.errorCategory = category;
       mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_MISSING;
       mediaError.data = resp;
@@ -200,7 +202,7 @@ export const getErrorFromResponse = (
       translate
     );
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_READY;
     mediaError.data = resp;
@@ -222,7 +224,7 @@ export const getErrorFromResponse = (
       translate
     );
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_FOUND;
     mediaError.data = resp;
@@ -240,14 +242,14 @@ export const getErrorFromResponse = (
   if (status === 400) {
     const message = i18n(`The URL or playback-id was invalid. You may have used an invalid value as a playback-id.`);
     const context = i18n(`Specified playback ID: {playbackId}`, translate).format({ playbackId });
-    const mediaError = new MediaError(message, mediaErrorCode, true, context);
+    const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_INVALID_URL;
     mediaError.data = resp;
     return mediaError;
   }
 
-  const mediaError = new MediaError('', mediaErrorCode, true);
+  const mediaError = new MediaError('', mediaErrorCode, fatal ?? true);
   mediaError.errorCategory = category;
   mediaError.muxCode = MuxErrorCode.NETWORK_UNKNOWN_ERROR;
   mediaError.data = resp;

@@ -59,17 +59,13 @@ export const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string
   return [idPart, queryPart];
 };
 
-export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src'>>) => {
-  const type = props.type;
+export const getType = (props: Partial<Pick<MuxMediaProps, 'type' | 'src' | 'customDomain'>>) => {
+  const { type } = props;
   if (type) {
     const upperType = type.toUpperCase();
     return isKeyOf(upperType, MimeTypeShorthandMap) ? MimeTypeShorthandMap[upperType] : type;
   }
-
-  const { src } = props;
-  if (!src) return '';
-
-  return inferMimeTypeFromURL(src);
+  return inferMimeTypeFromURL(props);
 };
 
 export const toStreamTypeFromPlaylistType = (playlistType: HlsPlaylistTypes) => {
@@ -82,21 +78,48 @@ export const toTargetLiveWindowFromPlaylistType = (playlistType: HlsPlaylistType
   return 0;
 };
 
-export const inferMimeTypeFromURL = (url: string) => {
+export const inferMimeTypeFromURL = (props: Partial<Pick<MuxMediaProps, 'src' | 'customDomain'>>) => {
+  const { src } = props;
+  if (!src) return '';
+
   let pathname = '';
   try {
-    pathname = new URL(url).pathname;
+    pathname = new URL(src).pathname;
   } catch (_e) {
     console.error('invalid url');
   }
 
   const extDelimIdx = pathname.lastIndexOf('.');
-  if (extDelimIdx < 0) return '';
+  if (extDelimIdx < 0) {
+    if (isExtensionLessMuxM3U8URL(props)) {
+      return ExtensionMimeTypeMap.M3U8; // Treat extension-less Mux URLs as HLS
+    }
+    return '';
+  }
 
   const ext = pathname.slice(extDelimIdx + 1);
   const upperExt = ext.toUpperCase();
 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
+};
+
+const MUX_VIDEO_DOMAIN = 'mux.com';
+export const isExtensionLessMuxM3U8URL = ({
+  src,
+  customDomain = MUX_VIDEO_DOMAIN,
+}: Partial<Pick<MuxMediaProps, 'src' | 'customDomain'>>) => {
+  let urlObj;
+  try {
+    urlObj = new URL(`${src}`);
+  } catch {
+    return false;
+  }
+  const validProtocol = urlObj.protocol === 'https:';
+  const validHostname = urlObj.hostname === `stream.${customDomain}`.toLowerCase();
+  const pathParts = urlObj.pathname.split('/');
+  const validPathPartsLength = pathParts.length === 2;
+  const validExtensionlessPath = !pathParts?.[1].includes('.');
+  return validProtocol && validHostname && validPathPartsLength && validExtensionlessPath;
 };
 
 export type MuxJWT = {
@@ -151,7 +174,7 @@ const DEFAULT_LOCALE = 'en';
 // lang = {
 //   "Network Error": "Netwerk Fout",
 // };
-export function i18n(str: string, translate = true): any {
+export function i18n(str: string, translate = true) {
   const message = translate ? ((lang as unknown as any)?.[str] ?? str) : str;
   const locale = translate ? (lang as unknown as any).code : DEFAULT_LOCALE;
   return new IntlMessageFormat(message, locale);

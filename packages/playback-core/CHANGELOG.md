@@ -40,6 +40,34 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.29.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.7...@mux/playback-core@0.29.0) (2025-05-01)
+
+
+### Features
+
+* add video-title attr & prop ([#1108](https://github.com/muxinc/elements/issues/1108)) ([7763a49](https://github.com/muxinc/elements/commit/7763a49d885e56342fffe874ba838059e15c906c)), closes [#639](https://github.com/muxinc/elements/issues/639)
+
+## [0.28.7](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.6...@mux/playback-core@0.28.7) (2025-04-10)
+
+
+### Bug Fixes
+
+* respect hls.js fatal error flag if available ([#1099](https://github.com/muxinc/elements/issues/1099)) ([6350a9b](https://github.com/muxinc/elements/commit/6350a9bf143a4cc0edcde5acabd3ae88f14609e7))
+
+## [0.28.6](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.5...@mux/playback-core@0.28.6) (2025-04-03)
+
+
+### Bug Fixes
+
+* allow extension less Mux m3u8 url as src ([#1096](https://github.com/muxinc/elements/issues/1096)) ([5e85462](https://github.com/muxinc/elements/commit/5e85462cb003afbef45373318b324feb876e2ae4))
+
+## [0.28.5](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.4...@mux/playback-core@0.28.5) (2025-03-31)
+
+
+### Bug Fixes
+
+* **playback-core:** Remove redundant FPS DRM generateRequest() for native playback. ([#1088](https://github.com/muxinc/elements/issues/1088)) ([c20063b](https://github.com/muxinc/elements/commit/c20063b8725d968aec0b751875850932639fb6e0))
+
 ## [0.28.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.3...@mux/playback-core@0.28.4) (2025-03-21)
 
 

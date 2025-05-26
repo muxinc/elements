@@ -867,7 +867,6 @@ export const setupNativeFairplayDRM = (
           );
         }),
       ]).then(([, messageEventMsg]) => messageEventMsg);
-      session.generateRequest(initDataType, initData);
 
       const response = await getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
         if (errOrResp instanceof Response) {
@@ -1416,7 +1415,8 @@ const getErrorFromHlsErrorData = (
   const errorCode = hlsErrorDataToErrorCode(data);
   if (errorCode === MediaError.MEDIA_ERR_NETWORK && data.response) {
     const category = hlsErrorDataToCategory(data) ?? MuxErrorCategory.VIDEO;
-    mediaError = getErrorFromResponse(data.response, category, props) ?? new MediaError('', errorCode);
+    mediaError =
+      getErrorFromResponse(data.response, category, props, data.fatal) ?? new MediaError('', errorCode, data.fatal);
   } else if (errorCode === MediaError.MEDIA_ERR_ENCRYPTED) {
     if (data.details === Hls.ErrorDetails.KEY_SYSTEM_NO_CONFIGURED_LICENSE) {
       const message = i18n('Attempting to play DRM-protected content without providing a DRM token.');

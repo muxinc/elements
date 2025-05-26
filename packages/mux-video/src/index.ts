@@ -48,6 +48,7 @@ import { CustomVideoElement, Events as VideoEvents } from 'custom-media-element'
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
+import { muxLogo } from './assets/mux-logo.js';
 
 // Must mutate so the added events are available in custom-media-element.
 VideoEvents.push('castchange', 'entercast', 'leavecast');
@@ -80,6 +81,7 @@ export const Attributes = {
   TARGET_LIVE_WINDOW: 'target-live-window',
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
+  LOGO: 'logo',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -110,6 +112,43 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   #playerSoftwareName?: string;
   #errorTranslator?: (errorEvent: any) => any;
 
+  static getTemplateHTML(attrs: Record<string, string> = {}) {
+    const template = super.getTemplateHTML(attrs);
+    const showLogo = attrs['logo'] !== 'false' && attrs['logo'] !== undefined;
+    const hasLogoSrc = attrs['logo'] && attrs['logo'] !== '';
+    const logoSrc = attrs['logo'];
+
+    const logoTemplate = showLogo
+      ? `
+      <style>
+        :host {
+          position: relative;
+        }
+        :host slot[name="logo"] {
+          display: flex;
+          justify-content: end;
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+
+        }
+         :host slot[name="logo"] .logo{
+          width: 5rem;
+          pointer-events: none;
+          user-select: none;
+         }
+      </style>
+      <slot name="logo">
+        ${hasLogoSrc ? `<img class="logo" part="logo" src="${logoSrc}" />` : muxLogo}
+      </slot>
+    `
+      : '';
+
+    return `
+      ${template}
+      ${logoTemplate}
+    `;
+  }
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
@@ -704,6 +743,18 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     this.#_hlsConfig = val;
   }
 
+  get logo() {
+    return this.getAttribute(Attributes.LOGO);
+  }
+
+  set logo(val) {
+    if (val) {
+      this.setAttribute(Attributes.LOGO, val);
+    } else {
+      this.removeAttribute(Attributes.LOGO);
+    }
+  }
+
   async #requestLoad() {
     if (this.#loadRequested) return;
     await (this.#loadRequested = Promise.resolve());
@@ -808,7 +859,6 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       this.#requestLoad();
     }
   }
-
   disconnectedCallback(): void {
     this.unload();
   }
