@@ -16,6 +16,7 @@ import {
   getActiveCuePoint,
   addChapters,
   getActiveChapter,
+  getMetadata,
   getStartDate,
   getCurrentPdt,
   getStreamType,
@@ -101,53 +102,71 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
   #defaultPlayerInitTime: number;
-  #metadata: Readonly<Metadata> = {};
+  #metadata: Metadata = {};
   #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;
   #playerSoftwareVersion?: string;
   #playerSoftwareName?: string;
   #errorTranslator?: (errorEvent: any) => any;
+  #logo: string = '';
+
+  static getLogoHTML(logoValue: string | null) {
+    if (!logoValue || logoValue === 'false') return '';
+    return logoValue === 'default' ? muxLogo : `<img part="logo" src="${logoValue}" />`;
+  }
 
   static getTemplateHTML(attrs: Record<string, string> = {}) {
-    const template = super.getTemplateHTML(attrs);
-    const showLogo = attrs['logo'] !== 'false' && attrs['logo'] !== undefined;
-    const hasLogoSrc = attrs['logo'] && attrs['logo'] !== '';
-    const logoSrc = attrs['logo'];
-
-    const logoTemplate = showLogo
-      ? `
+    return /* html */ `
+      ${super.getTemplateHTML(attrs)}
       <style>
         :host {
           position: relative;
         }
-        :host slot[name="logo"] {
+        slot[name="logo"] {
           display: flex;
           justify-content: end;
           position: absolute;
           top: 1rem;
           right: 1rem;
-
+          opacity: 0;
+          transition: opacity 0.25s ease-in-out;
+          z-index: 1;
         }
-         :host slot[name="logo"] .logo{
+        slot[name="logo"]:has([part="logo"]) {
+          opacity: 1;
+        }
+        slot[name="logo"] [part="logo"] {
           width: 5rem;
           pointer-events: none;
           user-select: none;
-         }
+        }
       </style>
       <slot name="logo">
-        ${hasLogoSrc ? `<img class="logo" part="logo" src="${logoSrc}" />` : muxLogo}
+        ${this.getLogoHTML(attrs[Attributes.LOGO] ?? '')}
       </slot>
-    `
-      : '';
-
-    return `
-      ${template}
-      ${logoTemplate}
     `;
   }
+
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
+
+    this.nativeEl.addEventListener('muxmetadata', (_event: Event) => {
+      const fetchedMetadata = getMetadata(this.nativeEl);
+      const userMetadata = this.metadata ?? {};
+
+      // User metadata takes precedence over fetched metadata...
+      this.metadata = {
+        ...fetchedMetadata,
+        ...userMetadata,
+      };
+
+      // ...except for the free plan branding metadata
+      if ((fetchedMetadata as any)?.['com.mux.video.branding'] === 'mux-free-plan') {
+        this.#logo = 'default';
+        this.updateLogo();
+      }
+    });
   }
 
   get preferCmcd() {
@@ -713,7 +732,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   get logo() {
-    return this.getAttribute(Attributes.LOGO);
+    return this.getAttribute(Attributes.LOGO) ?? this.#logo;
   }
 
   set logo(val) {
@@ -817,9 +836,22 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
           );
         }
         break;
-      default:
+      case Attributes.LOGO:
+        if (newValue == null || newValue !== oldValue) {
+          this.updateLogo();
+        }
         break;
     }
+  }
+
+  updateLogo() {
+    if (!this.shadowRoot) return;
+
+    const slotLogo = this.shadowRoot.querySelector('slot[name="logo"]');
+    if (!slotLogo) return;
+
+    const logoHTML = (this.constructor as typeof MuxVideoElement).getLogoHTML(this.#logo || this.logo);
+    slotLogo.innerHTML = logoHTML;
   }
 
   connectedCallback(): void {

@@ -15,6 +15,11 @@ export function setupMediaTracks(
   const levelIdMap = new WeakMap();
 
   hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
+    const chapters = data.sessionData?.['com.apple.hls.chapters'];
+    if (chapters?.VALUE) {
+      customMediaEl.setAttribute('metadata-url', chapters.VALUE);
+    }
+
     removeAllMediaTracks();
 
     const videoTrack = customMediaEl.addVideoTrack('main');
