@@ -114,40 +114,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
 
   static getTemplateHTML(attrs: Record<string, string> = {}) {
     const template = super.getTemplateHTML(attrs);
-    const showLogo = attrs['logo'] !== 'false' && attrs['logo'] !== undefined;
-    const hasLogoSrc = attrs['logo'] && attrs['logo'] !== '';
-    const logoSrc = attrs['logo'];
-
-    const logoTemplate = showLogo
-      ? `
-      <style>
-        :host {
-          position: relative;
-        }
-        :host slot[name="logo"] {
-          display: flex;
-          justify-content: end;
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-
-        }
-         :host slot[name="logo"] .logo{
-          width: 5rem;
-          pointer-events: none;
-          user-select: none;
-         }
-      </style>
-      <slot name="logo">
-        ${hasLogoSrc ? `<img class="logo" part="logo" src="${logoSrc}" />` : muxLogo}
-      </slot>
-    `
-      : '';
-
-    return `
-      ${template}
-      ${logoTemplate}
-    `;
+    return template;
   }
   constructor() {
     super();
@@ -831,7 +798,13 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
         if (newValue) {
           fetch(newValue)
             .then((resp) => resp.json())
-            .then((json) => (this.metadata = json))
+            .then((json) => {
+              this.metadata = json;
+              const metadata = json?.[0]?.metadata ?? [];
+              const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
+
+              if (planMeta) this.logo = 'default';
+            })
             .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
@@ -848,9 +821,51 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
           );
         }
         break;
+      case Attributes.LOGO:
+        if (newValue == null || newValue !== oldValue) {
+          this.updateLogo();
+        }
+        break;
       default:
         break;
     }
+  }
+
+  updateLogo() {
+    if (!this.shadowRoot) return;
+    this.shadowRoot.querySelector('div[part="logo-container"]')?.remove();
+
+    const showLogo = !!this.logo && this.logo !== 'false';
+    if (!showLogo) return;
+
+    const hasLogoSrc = this.logo !== 'default';
+    const logoContent = hasLogoSrc ? `<img class="logo" part="logo" src="${this.logo}" />` : muxLogo;
+
+    const logoContainer = document.createElement('div');
+    logoContainer.setAttribute('part', 'logo-container');
+    logoContainer.innerHTML = `
+      <style>
+        :host {
+          position: relative;
+        }
+        :host slot[name="logo"] {
+          display: flex;
+          justify-content: end;
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+        }
+        :host slot[name="logo"] .logo {
+          width: 5rem;
+          pointer-events: none;
+          user-select: none;
+        }
+      </style>
+      <slot name="logo">
+        ${logoContent}
+      </slot>
+    `;
+    this.shadowRoot.appendChild(logoContainer);
   }
 
   connectedCallback(): void {
