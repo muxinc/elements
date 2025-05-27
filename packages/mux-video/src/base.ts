@@ -31,7 +31,6 @@ import {
 import type {
   PlaybackCore,
   PlaybackEngine,
-  Autoplay,
   ExtensionMimeTypeMap,
   ValueOf,
   MaxResolutionValue,
