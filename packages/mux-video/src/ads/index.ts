@@ -1,5 +1,5 @@
 import { globalThis } from '../polyfills';
-import { MuxVideoBaseElement } from '../mux-video-base-element';
+import { MuxVideoBaseElement } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import { AdsVideoMixin } from './ads-video-mixin';
@@ -82,5 +82,5 @@ if (!globalThis.customElements.get('mux-video')) {
   globalThis.customElements.define('mux-video', MuxVideoElement);
 }
 
-export * from '../mux-video-base-element';
+export * from '../base';
 export default MuxVideoElement;
