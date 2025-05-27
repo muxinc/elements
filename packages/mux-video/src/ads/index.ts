@@ -1,9 +1,11 @@
 import { globalThis } from '../polyfills';
+import { Autoplay } from '@mux/playback-core';
 import { MuxVideoBaseElement } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import { AdsVideoMixin } from './ads-video-mixin';
-import { Autoplay } from '@mux/playback-core';
+
+export * from '@mux/mux-video/base';
 
 // castable-video should be mixed in last so that it can override load().
 class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(AdsVideoMixin(MuxVideoBaseElement))) {
@@ -82,5 +84,4 @@ if (!globalThis.customElements.get('mux-video')) {
   globalThis.customElements.define('mux-video', MuxVideoElement);
 }
 
-export * from '../base';
 export default MuxVideoElement;
