@@ -102,9 +102,6 @@ const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false)
     if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_FOUND) {
       return '';
     }
-    if (mediaError.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
-      return i18n(`Retrying in 5 seconds...`, translate);
-    }
     return mediaError.message;
   }
 
