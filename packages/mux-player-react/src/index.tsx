@@ -74,7 +74,7 @@ type MuxMediaPropTypes = {
 };
 
 export type MuxPlayerProps = {
-  allowPlaybackWithAdBlocker?: boolean;
+  allowAdBlocker?: boolean;
   className?: string;
   hotkeys?: string;
   nohotkeys?: boolean;

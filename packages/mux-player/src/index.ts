@@ -187,7 +187,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
     extraSourceParams: el.extraSourceParams,
-    allowPlaybackWithAdBlocker: el.getAttribute('allow-playback-with-ad-blocker'),
+    allowAdBlocker: el.getAttribute('allow-ad-blocker'),
   };
 
   return props;
@@ -344,7 +344,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       if (!isFocusedElementInPlayer) event.preventDefault();
     },
   };
-  allowPlaybackWithAdBlocker: any;
+  allowAdBlocker: any;
 
   static get NAME() {
     return playerSoftwareName;

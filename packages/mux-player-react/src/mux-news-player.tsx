@@ -21,10 +21,10 @@ export type PlaylistVideos = VideoItem[];
 
 export interface PlaylistProps extends Omit<MuxPlayerProps, 'playbackId' | 'adTagUrl'> {
   videoList: PlaylistVideos;
-  allowPlaybackWithAdBlocker?: boolean;
+  allowAdBlocker?: boolean;
 }
 
-export const MuxNewsPlayer = ({ videoList, allowPlaybackWithAdBlocker, ...muxPlayerProps }: PlaylistProps) => {
+export const MuxNewsPlayer = ({ videoList, allowAdBlocker: allowAdBlocker, ...muxPlayerProps }: PlaylistProps) => {
   const mediaElRef = useRef<any>(null);
   const [autoplay, setAutoplay] = useState<'muted' | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
@@ -54,7 +54,7 @@ export const MuxNewsPlayer = ({ videoList, allowPlaybackWithAdBlocker, ...muxPla
       <NewsTheme />
       <MuxPlayer
         {...muxPlayerProps}
-        allowPlaybackWithAdBlocker={allowPlaybackWithAdBlocker}
+        allowAdBlocker={allowAdBlocker}
         ref={mediaElRef}
         theme="news-theme"
         themeProps={{ controlBarVertical: true, controlBarPlace: 'start start' }}

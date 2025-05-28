@@ -19,7 +19,7 @@ const serializeAttributes = (attrs = {}) => {
 const Attributes = {
   AD_TAG_URL: 'adtagurl',
   AD_BREAK: 'adbreak',
-  ALLOW_PLAYBACK_WITH_AD_BLOCKER: 'allow-playback-with-ad-blocker',
+  ALLOW_AD_BLOCKER: 'allow-ad-blocker',
 } as const;
 
 class MuxVideoAds extends MuxVideoElement {
@@ -101,10 +101,6 @@ video::-webkit-media-text-track-container {
   `;
   };
 
-  static get observedAttributes() {
-    return [...(super.observedAttributes ?? []), Attributes.ALLOW_PLAYBACK_WITH_AD_BLOCKER];
-  }
-
   constructor() {
     super();
 
@@ -125,7 +121,7 @@ video::-webkit-media-text-track-container {
 
     if (!MuxAdManager.isGoogleImaSDKAvailable()) {
       console.error('Missing google.ima SDK. Make sure you include it via a script tag.');
-      if (!this.allowPlaybackWithAdBlocker) {
+      if (!this.allowAdBlocker) {
         this.#showAdBlockedMessage();
       } else {
         this.#adBreak = false;
@@ -280,7 +276,7 @@ video::-webkit-media-text-track-container {
       return Promise.resolve();
     }
 
-    if (this.adTagUrl && !this.allowPlaybackWithAdBlocker) {
+    if (this.adTagUrl && !this.allowAdBlocker) {
       this.#lastCurrentime = this.nativeEl.currentTime;
       this.#adBreak = true;
       this.dispatchEvent(new Event('durationchange'));
@@ -410,12 +406,12 @@ video::-webkit-media-text-track-container {
     return this.hasAttribute('mux-data-keep-session');
   }
 
-  get allowPlaybackWithAdBlocker(): boolean {
-    return this.hasAttribute(Attributes.ALLOW_PLAYBACK_WITH_AD_BLOCKER);
+  get allowAdBlocker(): boolean {
+    return this.hasAttribute(Attributes.ALLOW_AD_BLOCKER);
   }
 
-  set allowPlaybackWithAdBlocker(val: boolean) {
-    this.toggleAttribute(Attributes.ALLOW_PLAYBACK_WITH_AD_BLOCKER, !!val);
+  set allowAdBlocker(val: boolean) {
+    this.toggleAttribute(Attributes.ALLOW_AD_BLOCKER, !!val);
   }
 }
 

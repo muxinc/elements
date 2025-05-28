@@ -105,7 +105,7 @@ const getTagSpecificProps = (tag: string, props: MuxTemplateProps) => {
     'cast-src': !!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false,
     'cast-receiver': props.castReceiver ?? false,
     'drm-token': props.tokens?.drm ?? false,
-    'allow-playback-with-ad-blocker': props.allowPlaybackWithAdBlocker ?? false,
+    'allow-ad-blocker': props.allowAdBlocker ?? false,
     exportparts: 'video',
   };
 
