@@ -78,6 +78,8 @@ function MuxVideoPage() {
         ref={mediaElRef}
         playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
         controls
+        // allow playback with ad blocker
+        allowAdBlocker={true}
         autoplay={autoplay}
         muted={muted}
         playsInline={true}

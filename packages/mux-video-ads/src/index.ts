@@ -75,7 +75,6 @@ video::-webkit-media-text-track-container {
   z-index: 10;
   background: rgba(0, 0, 0, 0.75);
   color: white;
-  padding: 1em 1.5em;
   font-size: 0.9em;
   text-align: center;
   line-height: 1.4;
@@ -276,7 +275,11 @@ video::-webkit-media-text-track-container {
       return Promise.resolve();
     }
 
-    if (this.adTagUrl && !this.allowAdBlocker) {
+    const adBlockerDetected = !this.#muxAdManager?.adsLoader;
+
+    const adBlockerAndAllowed = adBlockerDetected && this.allowAdBlocker;
+
+    if (this.adTagUrl && !adBlockerAndAllowed) {
       this.#lastCurrentime = this.nativeEl.currentTime;
       this.#adBreak = true;
       this.dispatchEvent(new Event('durationchange'));
