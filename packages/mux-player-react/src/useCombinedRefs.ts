@@ -13,15 +13,24 @@ export const useCombinedRefs: useCombinedRefs = (...refs) => {
   const targetRef = useRef(null);
 
   useEffect(() => {
+    const cleanupFunctions: (() => void)[] = [];
+
     refs.forEach((ref) => {
       if (!ref) return;
 
       if (typeof ref === 'function') {
-        ref(targetRef.current);
+        const result = ref(targetRef.current);
+        if (typeof result === 'function') {
+          cleanupFunctions.push(result);
+        }
       } else {
         ref.current = targetRef.current;
       }
     });
+
+    return () => {
+      cleanupFunctions.forEach((cleanup) => cleanup());
+    };
   }, [refs]);
 
   return targetRef;
