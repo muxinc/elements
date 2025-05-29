@@ -136,6 +136,7 @@ export const content = (props: MuxTemplateProps) => html`
       cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
       ad-tag-url="${props.adTagUrl ?? false}"
+      allow-ad-blocker="${props.allowAdBlocker ?? false}"
       exportparts="video"
     >
       ${props.storyboard

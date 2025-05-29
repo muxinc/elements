@@ -10,6 +10,7 @@ import type { CustomVideoElement } from 'custom-media-element';
 export const Attributes = {
   AD_TAG_URL: 'ad-tag-url',
   AD_BREAK: 'ad-break',
+  ALLOW_AD_BLOCKER: 'allow-ad-blocker',
 } as const;
 
 export declare class AdsVideoInterface {
@@ -38,6 +39,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
             height: 100%;
             display: block;
           }
+
           video {
             display: block;
             max-width: 100%;
@@ -47,15 +49,18 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
             object-fit: var(--media-object-fit, contain);
             object-position: var(--media-object-position, 50% 50%);
           }
+
           video::-webkit-media-text-track-container {
             transform: var(--media-webkit-text-track-transform);
             transition: var(--media-webkit-text-track-transition);
           }
+
           #mainContainer {
               position: relative;
               width: 100%;
               height: 100%;
           }
+
           #adContainer {
               position: absolute;
               top: 0px;
@@ -66,24 +71,31 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
               width: 100%;
               height: 100%;
           }
+
           #mainContainer #adContainer.ad-playing {
-              z-index: 2;
+            z-index: 2;
           }
+
           #imaUnavailableMessage {
             position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 0;
+            left: 0;
             z-index: 10;
             background: rgba(0, 0, 0, 0.75);
             color: white;
-            padding: 1em 1.5em;
-            border-radius: 6px;
             font-size: 0.9em;
             text-align: center;
-            max-width: 90%;
             line-height: 1.4;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            align-content: center;
+            cursor: not-allowed;
+          }
+
+          #imaUnavailableMessage h4 {
+            font-size: 1rem;
+            margin: 0;
           }
         </style>
         <div id="mainContainer">
@@ -115,7 +127,11 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       if (!GoogleImaAdsProvider.isGoogleImaSDKAvailable()) {
         console.error('Missing google.ima SDK. Make sure you include it via a script tag.');
-        this.#showAdBlockedMessage();
+        if (!this.allowAdBlocker) {
+          this.#showAdBlockedMessage();
+        } else {
+          this.#adBreak = false;
+        }
         return;
       }
 
@@ -136,7 +152,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       const fallback = document.createElement('div');
       fallback.id = 'imaUnavailableMessage';
       fallback.innerHTML = `
-        <strong>Ad experience unavailable.</strong><br />
+        <h4>Ad experience unavailable.</h4>
         <span>This may be due to a missing SDK, network issue, or ad blocker.</span>
       `;
       this.shadowRoot?.getElementById('mainContainer')?.appendChild(fallback);
@@ -258,7 +274,10 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return Promise.resolve();
       }
 
-      if (this.adTagUrl) {
+      const adBlockerDetected = !this.#adProvider?.adsLoader;
+      const adBlockerAndAllowed = adBlockerDetected && this.allowAdBlocker;
+
+      if (this.adTagUrl && !adBlockerAndAllowed) {
         this.#lastCurrentime = this.nativeEl.currentTime;
         this.#adBreak = true;
         this.dispatchEvent(new Event('durationchange'));
@@ -384,6 +403,14 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     get muxDataKeepSession(): boolean {
       return this.hasAttribute('mux-data-keep-session');
+    }
+
+    get allowAdBlocker(): boolean {
+      return this.hasAttribute(Attributes.ALLOW_AD_BLOCKER);
+    }
+
+    set allowAdBlocker(val: boolean) {
+      this.toggleAttribute(Attributes.ALLOW_AD_BLOCKER, !!val);
     }
   }
   return AdsVideo as unknown as Constructor<AdsVideoInterface> & T;
