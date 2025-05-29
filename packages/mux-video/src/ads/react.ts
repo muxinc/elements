@@ -19,7 +19,6 @@ const ReactPropToAttrNameMap: Record<string, string> = {
   playsInline: 'playsinline',
   disablePictureInPicture: 'disablepictureinpicture',
   disableRemotePlayback: 'disableremoteplayback',
-  adTagUrl: 'adtagurl',
 };
 
 function toAttributeName(propName: string) {

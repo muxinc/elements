@@ -87,7 +87,7 @@ const PlayerAttributes = {
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
-  AD_TAG_URL: 'adtagurl',
+  AD_TAG_URL: 'ad-tag-url',
 } as const;
 
 const ThemeAttributeNames = [
@@ -1381,12 +1381,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   get adBreak() {
-    const muxVideoAds = this.media;
-    if (muxVideoAds) {
-      return muxVideoAds.getAttribute('adBreak') ?? false;
-    } else {
-      return false;
-    }
+    return this.media?.adBreak ?? false;
   }
 
   get maxResolution() {
