@@ -17,7 +17,7 @@ export function setupMediaTracks(
   hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
     const chapters = data.sessionData?.['com.apple.hls.chapters'];
     if (chapters?.VALUE) {
-      customMediaEl.setAttribute('metadata-url', chapters.VALUE);
+      fetchMetadata(customMediaEl, chapters.VALUE);
     }
 
     removeAllMediaTracks();
@@ -135,4 +135,21 @@ export function setupMediaTracks(
 
   // NOTE: Since this is only relevant for hls, using destroying event (CJP).
   hls.once(Hls.Events.DESTROYING, removeAllMediaTracks);
+}
+
+function fetchMetadata(el: HTMLMediaElement, metadataUrl: string) {
+  fetch(metadataUrl)
+    .then((resp) => resp.json())
+    .then((json) => {
+      // Attempt to set metadata on the custom element
+      if ('metadata' in el) {
+        (el as any).metadata = json;
+      }
+
+      const metadata = json?.[0]?.metadata ?? [];
+      const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
+
+      if (planMeta) el.setAttribute('logo', 'default');
+    })
+    .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${metadataUrl}!`));
 }
