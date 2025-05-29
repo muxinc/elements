@@ -1,11 +1,16 @@
 import { globalThis } from '../polyfills';
 import { Autoplay } from '@mux/playback-core';
-import { MuxVideoBaseElement } from '@mux/mux-video/base';
+import { MuxVideoBaseElement, Attributes as BaseAttributes } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
-import { AdsVideoMixin } from './ads-video-mixin';
+import { AdsVideoMixin, Attributes as AdsAttributes } from './mixin';
 
 export * from '@mux/mux-video/base';
+
+export const Attributes = {
+  ...BaseAttributes,
+  ...AdsAttributes,
+} as const;
 
 // castable-video should be mixed in last so that it can override load().
 class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(AdsVideoMixin(MuxVideoBaseElement))) {

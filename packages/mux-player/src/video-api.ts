@@ -14,6 +14,7 @@ export type CastOptions = {
 
 export type MuxVideoElementExt = MuxVideoElement & {
   requestCast(options: CastOptions): Promise<undefined>;
+  adBreak: boolean;
 };
 
 const AllowedVideoAttributes = {

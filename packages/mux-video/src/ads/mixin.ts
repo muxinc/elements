@@ -7,9 +7,9 @@ import { GoogleImaAdsProviderConfig, GoogleImaAdsProvider, AdsVideoElement } fro
 import type { MuxDataSDK } from '@mux/playback-core';
 import type { CustomVideoElement } from 'custom-media-element';
 
-const Attributes = {
-  AD_TAG_URL: 'adtagurl',
-  AD_BREAK: 'adbreak',
+export const Attributes = {
+  AD_TAG_URL: 'ad-tag-url',
+  AD_BREAK: 'ad-break',
 } as const;
 
 export declare class AdsVideoInterface {
