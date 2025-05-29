@@ -102,7 +102,7 @@ export default function NewsTheme() {
 
   <!-- Rendition Menu -->
   <style>
-    media-rendition-menu {
+    media-rendition-menu, media-captions-menu {
       position: absolute;
       border-radius: 0.3rem;
       right: 12px;
@@ -149,7 +149,7 @@ export default function NewsTheme() {
 
   <media-rendition-menu anchor="auto" hidden>
   </media-rendition-menu>
-
+  <media-captions-menu hidden anchor="auto"></media-captions-menu>
   <!-- Time Range / Progress Bar -->
 
   <style>
@@ -496,6 +496,7 @@ export default function NewsTheme() {
       </svg>
 
     </media-rendition-menu-button>
+    <media-captions-menu-button></media-captions-menu-button>
     </template>
 
     <!-- Fullscreen Button -->
@@ -584,7 +585,6 @@ export default function NewsTheme() {
         </g>
       </svg>
     </media-fullscreen-button>
-
   </media-control-bar>`,
         }}
       />
