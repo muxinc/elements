@@ -167,6 +167,10 @@
       --media-menu-item-hover-outline: var(--_accent-color) solid 1px;
     }
 
+    media-rendition-menu {
+      min-width: 140px;
+    }
+
     /* The icon is a circle so make it 16px high instead of 14px for more balance. */
     media-audio-track-menu-button {
       --media-control-padding: 5px;
@@ -960,7 +964,7 @@
           }
 
           [aria-checked='false'] .indicator {
-            display: none;
+            opacity: 0;
           }
         </style>
         <svg viewBox="0 0 14 18" class="indicator">
