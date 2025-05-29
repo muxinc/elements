@@ -63,6 +63,9 @@ export default function YourComponent() {
         setSdkLoaded(true);
         console.log("Google IMA SDK loaded");
       };
+      script.onerror = () => {
+        setSdkLoaded(true);
+      };
       document.head.appendChild(script);
     };
 
@@ -141,6 +144,9 @@ export default function VideoMuxNewsPlayerPage() {
       script.onload = () => {
         setSdkLoaded(true);
         console.log("Google IMA SDK loaded");
+      };
+      script.onerror = () => {
+        setSdkLoaded(true);
       };
       document.head.appendChild(script);
     };

@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
 import React, { useRef, useState } from 'react';
+import type { MuxPlayerProps } from '@mux/mux-player-react'; // ✅ import prop types
 import PlaylistEndScreen from './playlist-end-screen';
 import '@mux/mux-video-ads';
 import MuxPlayer from '@mux/mux-player-react';
@@ -18,16 +19,16 @@ export interface VideoItem {
 
 export type PlaylistVideos = VideoItem[];
 
-export interface PlaylistProps {
+export interface PlaylistProps extends Omit<MuxPlayerProps, 'playbackId' | 'adTagUrl'> {
   videoList: PlaylistVideos;
+  allowAdBlocker?: boolean;
 }
 
-export const MuxNewsPlayer = ({ videoList }: PlaylistProps) => {
+export const MuxNewsPlayer = ({ videoList, allowAdBlocker: allowAdBlocker, ...muxPlayerProps }: PlaylistProps) => {
   const mediaElRef = useRef<any>(null);
   const [autoplay, setAutoplay] = useState<'muted' | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [paused, setPaused] = useState<boolean | undefined>(true);
-  const [sdkLoaded, setSdkLoaded] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isEndScreenVisible, setIsEndScreenVisible] = useState(false);
   const [playerKey, setPlayerKey] = useState(0);
@@ -52,6 +53,8 @@ export const MuxNewsPlayer = ({ videoList }: PlaylistProps) => {
     <div>
       <NewsTheme />
       <MuxPlayer
+        {...muxPlayerProps}
+        allowAdBlocker={allowAdBlocker}
         ref={mediaElRef}
         theme="news-theme"
         themeProps={{ controlBarVertical: true, controlBarPlace: 'start start' }}

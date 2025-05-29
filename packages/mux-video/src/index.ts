@@ -82,6 +82,7 @@ export const Attributes = {
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
   LOGO: 'logo',
+  ALLOW_AD_BLOCKER: 'allow-ad-blocker',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);

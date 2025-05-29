@@ -19,6 +19,7 @@ const serializeAttributes = (attrs = {}) => {
 const Attributes = {
   AD_TAG_URL: 'adtagurl',
   AD_BREAK: 'adbreak',
+  ALLOW_AD_BLOCKER: 'allow-ad-blocker',
 } as const;
 
 class MuxVideoAds extends MuxVideoElement {
@@ -69,19 +70,24 @@ video::-webkit-media-text-track-container {
 }
 #imaUnavailableMessage {
   position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
   z-index: 10;
   background: rgba(0, 0, 0, 0.75);
   color: white;
-  padding: 1em 1.5em;
-  border-radius: 6px;
   font-size: 0.9em;
   text-align: center;
-  max-width: 90%;
   line-height: 1.4;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  align-content: center;
+  cursor: not-allowed;
+
+  h4{
+    font-size: 1rem;
+    margin:0;
+  }
 }
 </style>
 <div id="mainContainer">
@@ -114,7 +120,11 @@ video::-webkit-media-text-track-container {
 
     if (!MuxAdManager.isGoogleImaSDKAvailable()) {
       console.error('Missing google.ima SDK. Make sure you include it via a script tag.');
-      this.#showAdBlockedMessage();
+      if (!this.allowAdBlocker) {
+        this.#showAdBlockedMessage();
+      } else {
+        this.#adBreak = false;
+      }
       return;
     }
 
@@ -137,7 +147,7 @@ video::-webkit-media-text-track-container {
     const fallback = document.createElement('div');
     fallback.id = 'imaUnavailableMessage';
     fallback.innerHTML = `
-  <strong>Ad experience unavailable.</strong><br />
+  <h4>Ad experience unavailable.</h4>
   <span>This may be due to a missing SDK, network issue, or ad blocker.</span>
 `;
     this.shadowRoot?.getElementById('mainContainer')?.appendChild(fallback);
@@ -265,7 +275,11 @@ video::-webkit-media-text-track-container {
       return Promise.resolve();
     }
 
-    if (this.adTagUrl) {
+    const adBlockerDetected = !this.#muxAdManager?.adsLoader;
+
+    const adBlockerAndAllowed = adBlockerDetected && this.allowAdBlocker;
+
+    if (this.adTagUrl && !adBlockerAndAllowed) {
       this.#lastCurrentime = this.nativeEl.currentTime;
       this.#adBreak = true;
       this.dispatchEvent(new Event('durationchange'));
@@ -393,6 +407,14 @@ video::-webkit-media-text-track-container {
 
   get muxDataKeepSession(): boolean {
     return this.hasAttribute('mux-data-keep-session');
+  }
+
+  get allowAdBlocker(): boolean {
+    return this.hasAttribute(Attributes.ALLOW_AD_BLOCKER);
+  }
+
+  set allowAdBlocker(val: boolean) {
+    this.toggleAttribute(Attributes.ALLOW_AD_BLOCKER, !!val);
   }
 }
 
