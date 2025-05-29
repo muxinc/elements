@@ -1,9 +1,6 @@
 name: Deployment of News player components
 
-on:
-  push:
-    branches:
-      - main-news-player
+on: workflow_dispatch
 
 jobs:
   release:
