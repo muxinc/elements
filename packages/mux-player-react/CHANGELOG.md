@@ -33,6 +33,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.4.0...@mux/mux-player-react@3.4.1) (2025-05-30)
+
+
+### Bug Fixes
+
+* suppress Mux Player React hydration warning ([#1116](https://github.com/muxinc/elements/issues/1116)) ([0235d89](https://github.com/muxinc/elements/commit/0235d893a877b7aac96cece58e6ed3ee0571a6d9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.4.0 to 3.4.1
+
 ## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.4...@mux/mux-player-react@3.4.0) (2025-05-01)
 
 

@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.4.0...@mux/mux-player@3.4.1) (2025-05-30)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 1 update ([#1121](https://github.com/muxinc/elements/issues/1121)) ([85a2276](https://github.com/muxinc/elements/commit/85a2276805ae48fe99147fff121141ba6131bd27))
+* rendition-menu visual improvements ([#1131](https://github.com/muxinc/elements/issues/1131)) ([59a2aaa](https://github.com/muxinc/elements/commit/59a2aaaae6140b5e2a7e74faa39b68d0990b593e)), closes [#1122](https://github.com/muxinc/elements/issues/1122)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.25.2 to 0.25.3
+
 ## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.4...@mux/mux-player@3.4.0) (2025-05-01)
 
 
