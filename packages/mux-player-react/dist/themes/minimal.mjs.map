@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/themes/minimal.ts"],
+  "sourcesContent": ["'use client';\nimport '@mux/mux-player/themes/minimal';\nexport default 'minimal';\n"],
+  "mappings": "aACA,MAAO,iCACP,IAAOA,EAAQ",
+  "names": ["minimal_default"]
+}

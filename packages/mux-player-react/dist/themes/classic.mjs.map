@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/themes/classic.ts"],
+  "sourcesContent": ["'use client';\nimport '@mux/mux-player/themes/classic';\nexport default 'classic';\n"],
+  "mappings": "aACA,MAAO,iCACP,IAAOA,EAAQ",
+  "names": ["classic_default"]
+}
