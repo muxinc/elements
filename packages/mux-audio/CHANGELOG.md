@@ -15,6 +15,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.15.9](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.8...@mux/mux-audio@0.15.9) (2025-05-30)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1129](https://github.com/muxinc/elements/issues/1129)) ([e2ae00b](https://github.com/muxinc/elements/commit/e2ae00b3307161971326099a1a7af7c8f45163f4))
+
 ## [0.15.8](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.7...@mux/mux-audio@0.15.8) (2025-05-01)
 
 

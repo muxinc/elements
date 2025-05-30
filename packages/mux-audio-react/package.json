@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio-react",
-  "version": "0.15.8",
+  "version": "0.15.9",
   "description": "A custom mux audio element for React that Just Works™",
   "keywords": [
     "audio",
