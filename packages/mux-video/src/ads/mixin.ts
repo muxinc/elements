@@ -111,7 +111,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     connectedCallback(): void {
-      console.log('MuxVideoAds connectedCallback');
       super.connectedCallback();
 
       if (!GoogleImaAdsProvider.isGoogleImaSDKAvailable()) {
@@ -119,8 +118,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         this.#showAdBlockedMessage();
         return;
       }
-
-      console.log('AdBreak connectedCallbk', this.adBreak, this.adTagUrl);
 
       const config: GoogleImaAdsProviderConfig = {
         customVideoElement: this as unknown as AdsVideoElement,
@@ -149,10 +146,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       this.addEventListener(
         'loadedmetadata',
         () => {
-          console.log('loadedmetadata', {
-            adTagUrl: this.adTagUrl,
-            isReady: this.#adProvider?.isReadyForInitialization(),
-          });
           if (this.adTagUrl && this.#adProvider?.isReadyForInitialization()) {
             this.#adProvider.initializeAdDisplayContainer();
             const prevPaused = this.nativeEl.paused;
@@ -171,7 +164,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       this.nativeEl.addEventListener('play', (_event) => {
         if (this.adBreak && !this.#isUsingSameVideoElement) {
-          console.warn('Video play prevented during ad break');
           this.nativeEl.pause();
           return;
         }
@@ -179,7 +171,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       this.nativeEl.addEventListener('seeking', (_event) => {
         if (this.adBreak && !this.#isUsingSameVideoElement) {
-          console.warn('Seek prevented during ad break');
           this.nativeEl.currentTime = this.#lastCurrentime ?? 0;
           this.nativeEl.dispatchEvent(new Event('timeupdate'));
         }
@@ -330,8 +321,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     set currentTime(val: number) {
       if (this.adBreak) {
-        console.error('CANNOT SEEK DURING AD BREAK');
-        // this.dispatchEvent(new Event('timeupdate'));
         return;
       }
       super.currentTime = val;
