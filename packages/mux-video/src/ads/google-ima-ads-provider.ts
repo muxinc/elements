@@ -46,14 +46,12 @@ export class GoogleImaAdsProvider {
       this.#adDisplayContainer = new google.ima.AdDisplayContainer(this.#adContainer, this.#videoElement);
 
       this.#adsLoader = new google.ima.AdsLoader(this.#adDisplayContainer);
-      console.log('adsLoader', this.#adsLoader);
+
       this.#adsLoader.addEventListener(
         google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
         (adsManagerLoadedEvent: google.ima.AdsManagerLoadedEvent) => {
-          console.log('Ad Manager loaded', adsManagerLoadedEvent);
           const adsRenderingSettings = new google.ima.AdsRenderingSettings();
           this.#adsManager = adsManagerLoadedEvent.getAdsManager(this.#videoElement, adsRenderingSettings);
-          console.log('adsManager', this.#adsManager);
           this.#startAdsManager();
         },
         false
@@ -71,9 +69,7 @@ export class GoogleImaAdsProvider {
   }
 
   #startAdsManager() {
-    console.log('startAdsManager', this.#adsManager);
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => {
-      console.log('CONTENT_PAUSE_REQUESTED');
       const currentTime = this.#customVideoElement.currentTime;
       const wasPlaying = !this.#customVideoElement.paused;
 
@@ -101,7 +97,6 @@ export class GoogleImaAdsProvider {
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
       () => {
-        console.log('CONTENT_RESUME_REQUESTED');
         if (this.#videoBackup && this.isUsingSameVideoElement()) {
           this.#customVideoElement.muxDataKeepSession = true;
           this.#customVideoElement.load();
@@ -126,11 +121,7 @@ export class GoogleImaAdsProvider {
       false
     );
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdErrorEvent.Type.AD_ERROR,
-      console.log.bind(null, 'AD_ERROR Manager'),
-      false
-    );
+    this.#adsManager?.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, console.error, false);
 
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.CLICK,
@@ -143,7 +134,6 @@ export class GoogleImaAdsProvider {
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.LOADED,
       (adEvent: google.ima.AdEvent) => {
-        console.log('loaded', adEvent);
         this.#ad = adEvent.getAd();
         this.#customVideoElement.dispatchEvent(new Event('durationchange'));
         this.#customVideoElement.dispatchEvent(new Event('timeupdate'));
@@ -155,7 +145,6 @@ export class GoogleImaAdsProvider {
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.STARTED,
       (adEvent: google.ima.AdEvent) => {
-        console.log('started', adEvent);
         this.#ad = adEvent.getAd();
         this.#customVideoElement.dispatchEvent(new Event('playing'));
         this.#customVideoElement.dispatchEvent(new Event('adbreakadpositionchange'));
@@ -164,13 +153,11 @@ export class GoogleImaAdsProvider {
     );
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
-      console.log('Ads paused');
       this.#adPaused = true;
       this.#customVideoElement.dispatchEvent(new Event('pause'));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
-      console.log('Ads resumed');
       this.#adPaused = false;
     });
 
@@ -190,16 +177,7 @@ export class GoogleImaAdsProvider {
     this.#adsManager?.addEventListener(
       google.ima.AdEvent.Type.VOLUME_CHANGED,
       () => {
-        console.log('volumeChanged');
         this.#customVideoElement.dispatchEvent(new Event('volumechange'));
-      },
-      false
-    );
-
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
-      () => {
-        console.log('allAdsCompleted');
       },
       false
     );
@@ -234,7 +212,6 @@ export class GoogleImaAdsProvider {
   }
 
   requestAds(adTagUrl: string) {
-    console.log('requestAds', adTagUrl);
     const adsRequest = new google.ima.AdsRequest();
     adsRequest.adTagUrl = adTagUrl;
     this.#adsLoader?.requestAds(adsRequest);
@@ -277,7 +254,6 @@ export class GoogleImaAdsProvider {
 
   isUsingSameVideoElement(): boolean {
     const videoElements = this.#adContainer.querySelectorAll('video');
-    console.log('videoElements', videoElements.length, videoElements);
     return videoElements.length === 0;
   }
 
