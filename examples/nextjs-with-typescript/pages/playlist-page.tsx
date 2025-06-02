@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import MuxNewsPlayer from "@mux/mux-player-react/news"
+import MuxNewsPlayer from '@mux/mux-player-react/news';
 import { useEffect, useState } from 'react';
 
 function MuxVideoPage() {
