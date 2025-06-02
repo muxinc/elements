@@ -128,7 +128,7 @@ return (
 'use client';
 import Head from 'next/head';
 import { useEffect, useState } from "react";
-import { MuxNewsPlayer } from "@mux/mux-player-react";
+import MuxNewsPlayer from "@mux/mux-player-react/news";
 
 export default function VideoMuxNewsPlayerPage() {
   const [sdkLoaded, setSdkLoaded] = useState(false);
