@@ -21,14 +21,15 @@ You must use the specific custom build through gitpkg as shown in the example be
 
 You can execute
 
-```
-  npm install 'https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-news-player'
+```bash
+  npm install @mux/mux-player-react
 ```
 
 or manually add it as a dependency in your package.json
+
 ```json
 "dependencies": {
-  "@mux/mux-player-react": "https://gitpkg.vercel.app/muxinc/elements/packages/mux-player-react?release-news-player",
+  "@mux/mux-player-react": "^3.5.0",
 }
 ```
 
@@ -40,7 +41,7 @@ In your React component:
 
 ```jsx
 'use client';
-import { MuxNewsPlayer } from "@mux/mux-player-react";
+import MuxNewsPlayer from "@mux/mux-player-react/news";
 ```
 
 ### 2. Load the Google IMA SDK
