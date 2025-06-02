@@ -20,9 +20,6 @@ import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
 
 export { MediaError, MaxResolution, MinResolution, RenditionOrder, generatePlayerInitTime };
-export { MuxNewsPlayer } from './mux-news-player';
-import PlaylistEndScreen from './playlist-end-screen';
-export { PlaylistEndScreen };
 
 type ValueOf<T> = T[keyof T];
 interface GenericEventListener<T extends Event = CustomEvent> {
@@ -91,7 +88,6 @@ export type MuxPlayerProps = {
   programStartTime?: number;
   programEndTime?: number;
   proudlyDisplayMuxBadge?: boolean;
-  muxVideoElement?: string;
   adTagUrl?: string;
   assetStartTime?: number;
   assetEndTime?: number;

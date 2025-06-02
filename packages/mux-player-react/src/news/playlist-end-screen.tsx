@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { VideoItem, PlaylistVideos } from './mux-news-player';
-import style from './end-screen.css';
+import { VideoItem, PlaylistVideos } from '.';
+import style from './playlist-end-screen.css';
 
 interface PlaylistEndScreenProps {
   video: VideoItem;
