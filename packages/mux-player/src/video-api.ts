@@ -32,8 +32,6 @@ const CustomVideoAttributes = {
   // This muted attribute also reflects to the muted property while the muted
   // attribute on a native video element reflects only to video.defaultMuted.
   MUTED: 'muted',
-  /** @TODO Consider renaming to a more generic identifier e.g. media-element-name (CJP) */
-  MUX_VIDEO_ELEMENT: 'mux-video-element',
 };
 
 export const Attributes = {
@@ -211,12 +209,8 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     return this.media?.requestCast(options);
   }
 
-  get muxVideoElement() {
-    return this.getAttribute(Attributes.MUX_VIDEO_ELEMENT) ?? 'mux-video';
-  }
-
   get media(): MuxVideoElementExt | null | undefined {
-    return this.shadowRoot?.querySelector(this.muxVideoElement);
+    return this.shadowRoot?.querySelector('mux-video');
   }
 
   get audioTracks() {
