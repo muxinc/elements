@@ -179,7 +179,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     castReceiver: el.castReceiver,
-    muxVideoElement: el.muxVideoElement,
     adTagUrl: el.getAttribute(PlayerAttributes.AD_TAG_URL) ?? undefined,
     adBreak: el.adBreak,
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
@@ -396,13 +395,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     try {
       customElements.upgrade(this.media as Node);
-      if (this.muxVideoElement.includes('-')) {
-        customElements.upgrade(this.media as Node);
-        const mediaClass = customElements.get(this.muxVideoElement);
-        if (!(mediaClass && this.media instanceof mediaClass)) {
-          throw '';
-        }
-      }
     } catch (_error) {
       logger.error('underlying media element failed to upgrade!');
     }
