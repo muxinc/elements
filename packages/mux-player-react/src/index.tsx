@@ -71,7 +71,6 @@ type MuxMediaPropTypes = {
 };
 
 export type MuxPlayerProps = {
-  allowAdBlocker?: boolean;
   className?: string;
   hotkeys?: string;
   nohotkeys?: boolean;
@@ -89,6 +88,8 @@ export type MuxPlayerProps = {
   programStartTime?: number;
   programEndTime?: number;
   proudlyDisplayMuxBadge?: boolean;
+  /** Allow playback with ad blocker */
+  allowAdBlocker?: boolean;
   adTagUrl?: string;
   assetStartTime?: number;
   assetEndTime?: number;

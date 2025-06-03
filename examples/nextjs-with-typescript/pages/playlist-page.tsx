@@ -65,8 +65,7 @@ function MuxVideoPage() {
       </Head>
       
       {sdkLoaded && 
-        <MuxNewsPlayer 
-          // allow playback with ad blocker
+        <MuxNewsPlayer
           allowAdBlocker={true}
           videoList={relatedVideos} 
         />}

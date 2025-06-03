@@ -14,6 +14,8 @@ export const Attributes = {
 } as const;
 
 export declare class AdsVideoInterface {
+  /** Allow playback with ad blocker */
+  allowAdBlocker: boolean;
   adTagUrl: string | undefined;
   adBreak: boolean;
   muxDataSDK: MuxDataSDK;
