@@ -3,7 +3,6 @@
 import React, { useRef, useState } from 'react';
 import '@mux/mux-video/ads';
 import type { MuxPlayerProps } from '@mux/mux-player-react';
-import '@mux/mux-video-ads';
 import MuxPlayer from '@mux/mux-player-react';
 import NewsTheme from '../themes/news-theme';
 import PlaylistEndScreen from './playlist-end-screen';

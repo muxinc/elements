@@ -44,7 +44,6 @@ export class GoogleImaAdsProvider {
   setupAdsManager() {
     if (!this.#adDisplayContainer) {
       this.#adDisplayContainer = new google.ima.AdDisplayContainer(this.#adContainer, this.#videoElement);
-
       this.#adsLoader = new google.ima.AdsLoader(this.#adDisplayContainer);
 
       this.#adsLoader.addEventListener(
@@ -53,17 +52,14 @@ export class GoogleImaAdsProvider {
           const adsRenderingSettings = new google.ima.AdsRenderingSettings();
           this.#adsManager = adsManagerLoadedEvent.getAdsManager(this.#videoElement, adsRenderingSettings);
           this.#startAdsManager();
-        },
-        false
+        }
       );
 
       this.#adsLoader.addEventListener(
         google.ima.AdErrorEvent.Type.AD_ERROR,
-        (adErrorEvent: google.ima.AdErrorEvent) => {
-          console.log('AD_ERROR Loader', adErrorEvent);
-          this.#customVideoElement.dispatchEvent(new Event('onAdsCompleted'));
-        },
-        false
+        (_adErrorEvent: google.ima.AdErrorEvent) => {
+          this.#customVideoElement.dispatchEvent(new Event('adbreakend'));
+        }
       );
     }
   }
@@ -94,63 +90,45 @@ export class GoogleImaAdsProvider {
       }
     });
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-      () => {
-        if (this.#videoBackup && this.isUsingSameVideoElement()) {
-          this.#customVideoElement.muxDataKeepSession = true;
-          this.#customVideoElement.load();
-          this.#customVideoElement.muxDataKeepSession = false;
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
+      if (this.#videoBackup && this.isUsingSameVideoElement()) {
+        this.#customVideoElement.muxDataKeepSession = true;
+        this.#customVideoElement.load();
+        this.#customVideoElement.muxDataKeepSession = false;
 
-          // Restore content position
-          if (this.#videoBackup?.contentTime) {
-            this.#customVideoElement.currentTime = this.#videoBackup.contentTime;
-          }
-        } else {
-          // Show the video element again
-          this.#videoElement.style.display = '';
+        // Restore content position
+        if (this.#videoBackup?.contentTime) {
+          this.#customVideoElement.currentTime = this.#videoBackup.contentTime;
         }
+      } else {
+        // Show the video element again
+        this.#videoElement.style.display = '';
+      }
 
-        this.#videoBackup = null;
+      this.#videoBackup = null;
 
-        this.#adProgressData = undefined;
-        this.#ad = undefined;
-        this.#customVideoElement.dispatchEvent(new Event('durationchange'));
-        this.#customVideoElement.dispatchEvent(new Event('onAdsCompleted'));
-      },
-      false
-    );
+      this.#adProgressData = undefined;
+      this.#ad = undefined;
+      this.#customVideoElement.dispatchEvent(new Event('durationchange'));
+      this.#customVideoElement.dispatchEvent(new Event('adbreakend'));
+    });
 
     this.#adsManager?.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, console.error, false);
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.CLICK,
-      (_adEvent: google.ima.AdEvent) => {
-        this.updateViewMode(false);
-      },
-      false
-    );
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CLICK, (_adEvent: google.ima.AdEvent) => {
+      this.updateViewMode(false);
+    });
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.LOADED,
-      (adEvent: google.ima.AdEvent) => {
-        this.#ad = adEvent.getAd();
-        this.#customVideoElement.dispatchEvent(new Event('durationchange'));
-        this.#customVideoElement.dispatchEvent(new Event('timeupdate'));
-        this.#customVideoElement.dispatchEvent(new Event('adbreaktotaladschange'));
-      },
-      false
-    );
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.LOADED, (adEvent: google.ima.AdEvent) => {
+      this.#ad = adEvent.getAd();
+      this.#customVideoElement.dispatchEvent(new Event('durationchange'));
+      this.#customVideoElement.dispatchEvent(new Event('timeupdate'));
+    });
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.STARTED,
-      (adEvent: google.ima.AdEvent) => {
-        this.#ad = adEvent.getAd();
-        this.#customVideoElement.dispatchEvent(new Event('playing'));
-        this.#customVideoElement.dispatchEvent(new Event('adbreakadpositionchange'));
-      },
-      false
-    );
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.STARTED, (adEvent: google.ima.AdEvent) => {
+      this.#ad = adEvent.getAd();
+      this.#customVideoElement.dispatchEvent(new Event('playing'));
+    });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
       this.#adPaused = true;
@@ -161,26 +139,19 @@ export class GoogleImaAdsProvider {
       this.#adPaused = false;
     });
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.AD_PROGRESS,
-      (adProgressEvent: google.ima.AdEvent) => {
-        const prevDuration = this.#customVideoElement.duration;
-        this.#adProgressData = adProgressEvent.getAdData() as google.ima.AdProgressData;
-        if (prevDuration !== this.#customVideoElement.duration) {
-          this.#customVideoElement.dispatchEvent(new Event('durationchange'));
-        }
-        this.#customVideoElement.dispatchEvent(new Event('timeupdate'));
-      },
-      false
-    );
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (adProgressEvent: google.ima.AdEvent) => {
+      const prevDuration = this.#customVideoElement.duration;
+      this.#adProgressData = adProgressEvent.getAdData() as google.ima.AdProgressData;
 
-    this.#adsManager?.addEventListener(
-      google.ima.AdEvent.Type.VOLUME_CHANGED,
-      () => {
-        this.#customVideoElement.dispatchEvent(new Event('volumechange'));
-      },
-      false
-    );
+      if (prevDuration !== this.#customVideoElement.duration) {
+        this.#customVideoElement.dispatchEvent(new Event('durationchange'));
+      }
+      this.#customVideoElement.dispatchEvent(new Event('timeupdate'));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.VOLUME_CHANGED, () => {
+      this.#customVideoElement.dispatchEvent(new Event('volumechange'));
+    });
 
     this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
     this.#adsManager?.start();

@@ -455,11 +455,9 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   connectedCallback() {
     const muxVideo = this.media;
     if (muxVideo) {
-      this.media?.addEventListener('adbreakchange', () => {
-        // MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
-        // this.mediaController?.dispatchEvent(new CustomEvent('mediaexitpiprequest'));
-        this.#render();
-      });
+      this.media?.addEventListener('adbreakstart', () => this.#render());
+      this.media?.addEventListener('adended', () => this.#render());
+
       muxVideo.metadata = getMetadataFromAttrs(this);
     }
   }

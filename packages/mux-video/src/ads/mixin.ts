@@ -192,12 +192,12 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         }
       });
 
-      this.addEventListener('onAdsCompleted', () => {
+      this.addEventListener('adbreakend', () => {
         this.#adBreak = false;
         this.dispatchEvent(new Event('durationchange'));
         this.adTagUrl = undefined;
         this.#setAdContainerPlaying(false);
-        this.#dispatchAdBreakChange(false);
+
         this.addEventListener('ended', this.onEnded, { once: true });
         setTimeout(() => {
           this.play();
@@ -239,17 +239,12 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     set #adBreak(val: boolean) {
       if (val === this.adBreak) return;
       this.toggleAttribute(Attributes.AD_BREAK, !!val);
-      this.#dispatchAdBreakChange(val);
-    }
 
-    #dispatchAdBreakChange(isAdBreak: boolean): void {
-      this.dispatchEvent(
-        new CustomEvent('adbreakchange', {
-          detail: { isAdBreak },
-          composed: true,
-          bubbles: true,
-        })
-      );
+      if (!!val) {
+        this.dispatchEvent(new Event('adbreakstart'));
+      } else {
+        this.dispatchEvent(new Event('adended'));
+      }
     }
 
     onEnded() {
