@@ -66,7 +66,6 @@ function MuxPlayerAdsPage() {
           video_title: "Elephants Dream",
           viewer_user_id: "user-id-6789",
         }}
-        // allow playback with ad blocker
         allowAdBlocker={true}
         streamType="on-demand"
         // envKey="mux-data-env-key"

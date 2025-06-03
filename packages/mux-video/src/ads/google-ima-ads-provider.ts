@@ -113,7 +113,7 @@ export class GoogleImaAdsProvider {
       this.#customVideoElement.dispatchEvent(new Event('adbreakend'));
     });
 
-    this.#adsManager?.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, console.error, false);
+    this.#adsManager?.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, console.error);
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CLICK, (_adEvent: google.ima.AdEvent) => {
       this.updateViewMode(false);

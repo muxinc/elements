@@ -88,6 +88,7 @@ const PlayerAttributes = {
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
   AD_TAG_URL: 'ad-tag-url',
+  ALLOW_AD_BLOCKER: 'allow-ad-blocker',
 } as const;
 
 const ThemeAttributeNames = [
@@ -178,15 +179,15 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     title: el.getAttribute(PlayerAttributes.TITLE),
     videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
-    castReceiver: el.castReceiver,
-    adTagUrl: el.getAttribute(PlayerAttributes.AD_TAG_URL) ?? undefined,
-    adBreak: el.adBreak,
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
+    castReceiver: el.castReceiver,
+    adTagUrl: el.adTagUrl,
+    allowAdBlocker: el.allowAdBlocker,
+    adBreak: el.adBreak,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
     extraSourceParams: el.extraSourceParams,
-    allowAdBlocker: el.getAttribute('allow-ad-blocker'),
   };
 
   return props;
@@ -343,7 +344,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       if (!isFocusedElementInPlayer) event.preventDefault();
     },
   };
-  allowAdBlocker: any;
 
   static get NAME() {
     return playerSoftwareName;
@@ -1374,6 +1374,28 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   get adBreak() {
     return this.media?.adBreak ?? false;
+  }
+
+  get allowAdBlocker() {
+    return this.hasAttribute(PlayerAttributes.ALLOW_AD_BLOCKER);
+  }
+
+  set allowAdBlocker(val: boolean) {
+    if (val === this.allowAdBlocker) return;
+    this.toggleAttribute(PlayerAttributes.ALLOW_AD_BLOCKER, Boolean(val));
+  }
+
+  get adTagUrl() {
+    return this.getAttribute(PlayerAttributes.AD_TAG_URL) ?? undefined;
+  }
+
+  set adTagUrl(val: string | undefined) {
+    if (val === this.adTagUrl) return;
+    if (val) {
+      this.setAttribute(PlayerAttributes.AD_TAG_URL, val);
+    } else {
+      this.removeAttribute(PlayerAttributes.AD_TAG_URL);
+    }
   }
 
   get maxResolution() {

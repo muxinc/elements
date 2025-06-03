@@ -59,6 +59,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   proudlyDisplayMuxBadge?: boolean;
   adTagUrl: string | undefined;
   adBreak: boolean;
+  /** Allow playback with ad blocker */
   allowAdBlocker?: boolean;
 };
 
