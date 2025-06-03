@@ -88,6 +88,9 @@ export type MuxPlayerProps = {
   programStartTime?: number;
   programEndTime?: number;
   proudlyDisplayMuxBadge?: boolean;
+  /** Allow playback with ad blocker */
+  allowAdBlocker?: boolean;
+  adTagUrl?: string;
   assetStartTime?: number;
   assetEndTime?: number;
   metadataVideoId?: string;

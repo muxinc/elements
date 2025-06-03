@@ -14,6 +14,7 @@ export type CastOptions = {
 
 export type MuxVideoElementExt = MuxVideoElement & {
   requestCast(options: CastOptions): Promise<undefined>;
+  adBreak: boolean;
 };
 
 const AllowedVideoAttributes = {
@@ -23,7 +24,7 @@ const AllowedVideoAttributes = {
   MUTED: 'muted',
   PLAYSINLINE: 'playsinline',
   PRELOAD: 'preload',
-};
+} as const;
 
 const CustomVideoAttributes = {
   VOLUME: 'volume',
@@ -32,6 +33,11 @@ const CustomVideoAttributes = {
   // attribute on a native video element reflects only to video.defaultMuted.
   MUTED: 'muted',
 };
+
+export const Attributes = {
+  ...AllowedVideoAttributes,
+  ...CustomVideoAttributes,
+} as const;
 
 const emptyTimeRanges: TimeRanges = Object.freeze({
   length: 0,
@@ -57,9 +63,11 @@ const emptyTimeRanges: TimeRanges = Object.freeze({
 
 const AllowedVideoEvents = VideoEvents.filter((type) => type !== 'error');
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes).filter(
-  (name) => ![AllowedVideoAttributes.PLAYSINLINE].includes(name)
+  (name) => AllowedVideoAttributes.PLAYSINLINE !== name
 );
 const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
+
+export const AttributeNames = [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
 
 // NOTE: Some of these are defined in MuxPlayerElement. We may want to apply a
 // `Pick<>` on these to also enforce consistency (CJP).
@@ -132,7 +140,7 @@ interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
   static get observedAttributes() {
-    return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
+    return AttributeNames as string[];
   }
 
   /**

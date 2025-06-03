@@ -1,13 +1,19 @@
-import { globalThis } from './polyfills';
+import { globalThis } from '../polyfills';
 import { Autoplay } from '@mux/playback-core';
-import { MuxVideoBaseElement } from '@mux/mux-video/base';
+import { MuxVideoBaseElement, Attributes as BaseAttributes } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
+import { AdsVideoMixin, Attributes as AdsAttributes } from './mixin';
 
 export * from '@mux/mux-video/base';
 
+export const Attributes = {
+  ...BaseAttributes,
+  ...AdsAttributes,
+} as const;
+
 // castable-video should be mixed in last so that it can override load().
-class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {
+class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(AdsVideoMixin(MuxVideoBaseElement))) {
   // Define autoplay in the most outer layer because mux-video accepts string | boolean
   // which is not compatible the CustomVideoElement.autoplay boolean only type.
   /** @ts-ignore */
@@ -79,14 +85,8 @@ class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseEl
   }
 }
 
-type MuxVideoElementType = typeof MuxVideoElement;
-declare global {
-  var MuxVideoElement: MuxVideoElementType; // eslint-disable-line
-}
-
 if (!globalThis.customElements.get('mux-video')) {
   globalThis.customElements.define('mux-video', MuxVideoElement);
-  globalThis.MuxVideoElement = MuxVideoElement;
 }
 
 export default MuxVideoElement;

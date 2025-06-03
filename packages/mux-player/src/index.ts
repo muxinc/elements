@@ -4,7 +4,7 @@ import { Attributes as MediaControllerAttributes } from 'media-chrome/dist/media
 import { MediaStateChangeEvents, MediaUIAttributes, MediaUIEvents } from 'media-chrome/dist/constants.js';
 import 'media-chrome/dist/experimental/index.js';
 import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
-import MuxVideoElement, { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
+import { MediaError, Attributes as MuxVideoAttributes } from '@mux/mux-video';
 import {
   StreamTypes,
   PlaybackTypes,
@@ -54,7 +54,7 @@ export { MediaError, generatePlayerInitTime };
 const VideoAttributes = {
   SRC: 'src',
   POSTER: 'poster',
-};
+} as const;
 
 const PlayerAttributes = {
   STYLE: 'style',
@@ -87,7 +87,9 @@ const PlayerAttributes = {
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
-};
+  AD_TAG_URL: 'ad-tag-url',
+  ALLOW_AD_BLOCKER: 'allow-ad-blocker',
+} as const;
 
 const ThemeAttributeNames = [
   'audio',
@@ -112,6 +114,7 @@ const ThemeAttributeNames = [
   'videotitle',
   'novolumepref',
   'proudlydisplaymuxbadge',
+  'mediaadbreak',
 ];
 
 function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
@@ -176,8 +179,11 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     title: el.getAttribute(PlayerAttributes.TITLE),
     videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
-    castReceiver: el.castReceiver,
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
+    castReceiver: el.castReceiver,
+    adTagUrl: el.adTagUrl,
+    allowAdBlocker: el.allowAdBlocker,
+    adBreak: el.adBreak,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -391,9 +397,8 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
     try {
       customElements.upgrade(this.media as Node);
-      if (!(this.media instanceof MuxVideoElement)) throw '';
     } catch (_error) {
-      logger.error('<mux-video> failed to upgrade!');
+      logger.error('underlying media element failed to upgrade!');
     }
 
     try {
@@ -448,8 +453,11 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
   }
 
   connectedCallback() {
-    const muxVideo = this.shadowRoot?.querySelector('mux-video') as MuxVideoElement;
+    const muxVideo = this.media;
     if (muxVideo) {
+      this.media?.addEventListener('adbreakstart', () => this.#render());
+      this.media?.addEventListener('adended', () => this.#render());
+
       muxVideo.metadata = getMetadataFromAttrs(this);
     }
   }
@@ -803,6 +811,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       MuxVideoAttributes.PLAYBACK_ID,
       VideoAttributes.SRC,
       PlayerAttributes.PLAYBACK_TOKEN,
+      // @ts-ignore
     ].includes(attrName);
 
     if (shouldClearState && oldValue !== newValue) {
@@ -1360,6 +1369,32 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN);
+    }
+  }
+
+  get adBreak() {
+    return this.media?.adBreak ?? false;
+  }
+
+  get allowAdBlocker() {
+    return this.hasAttribute(PlayerAttributes.ALLOW_AD_BLOCKER);
+  }
+
+  set allowAdBlocker(val: boolean) {
+    if (val === this.allowAdBlocker) return;
+    this.toggleAttribute(PlayerAttributes.ALLOW_AD_BLOCKER, Boolean(val));
+  }
+
+  get adTagUrl() {
+    return this.getAttribute(PlayerAttributes.AD_TAG_URL) ?? undefined;
+  }
+
+  set adTagUrl(val: string | undefined) {
+    if (val === this.adTagUrl) return;
+    if (val) {
+      this.setAttribute(PlayerAttributes.AD_TAG_URL, val);
+    } else {
+      this.removeAttribute(PlayerAttributes.AD_TAG_URL);
     }
   }
 
