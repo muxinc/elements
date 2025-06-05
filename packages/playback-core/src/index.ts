@@ -1275,9 +1275,6 @@ export const loadMedia = (
             state.retryCount = retryCount + 1;
             if (data.details === 'manifestLoadError' && data.url) {
               hls.loadSource(data.url);
-              hls.attachMedia(mediaEl);
-            } else {
-              hls.recoverMediaError();
             }
           }, retryDelay);
           return;
