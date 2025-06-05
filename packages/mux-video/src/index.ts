@@ -143,6 +143,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
+
+    this.addEventListener('setdefaultlogo', (e) => {
+      this.#logo = 'default';
+      this.updateLogo();
+    });
   }
 
   get preferCmcd() {
@@ -739,6 +744,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   set logo(val) {
+    console.log('must set logo');
     if (val) {
       this.setAttribute(Attributes.LOGO, val);
     } else {
@@ -828,8 +834,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
               const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
 
               if (planMeta) {
-                this.#logo = 'default';
-                this.updateLogo();
+                const event = new Event('setdefaultlogo', {
+                  bubbles: true,
+                  composed: true,
+                });
+                this.dispatchEvent(event);
               }
             })
             .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
