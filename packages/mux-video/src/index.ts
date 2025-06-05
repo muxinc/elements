@@ -116,29 +116,28 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   static getTemplateHTML(attrs: Record<string, string> = {}) {
     const template = super.getTemplateHTML(attrs);
 
-    const logoTemplate = `
-      ${template}
-      <style>
-        :host {
-          position: relative;
-        }
-        :host slot[name="logo"] {
-          display: flex;
-          justify-content: end;
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-        }
-         :host slot[name="logo"] .logo{
-          width: 5rem;
-          pointer-events: none;
-          user-select: none;
-         }
-      </style>
-      <slot name="logo"></slot>
-    `;
-
-    return logoTemplate;
+    const logoHTML = this.prototype.getLogoHTML(attrs[Attributes.LOGO] ?? null);
+    return `
+    ${template}
+    <style>
+      :host {
+        position: relative;
+      }
+      :host slot[name="logo"] {
+        display: flex;
+        justify-content: end;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+      :host slot[name="logo"] .logo {
+        width: 5rem;
+        pointer-events: none;
+        user-select: none;
+      }
+    </style>
+    <slot name="logo">${logoHTML}</slot>
+  `;
   }
   constructor() {
     super();
@@ -867,17 +866,20 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
+  getLogoHTML(logoValue: string | null = null): string {
+    const logo = logoValue ?? this.#logo ?? this.logo;
+    if (!logo || logo === 'false') return '';
+
+    return logo === 'default' ? muxLogo : `<img class="logo" part="logo" src="${logo}" />`;
+  }
+
   updateLogo() {
     if (!this.shadowRoot) return;
     const slotLogo = this.shadowRoot.querySelector('slot[name="logo"]');
     if (!slotLogo) return;
 
-    const logo = this.#logo || this.logo;
-    if (!logo || logo === 'false') return;
-
-    const logoContent = logo === 'default' ? muxLogo : `<img class="logo" part="logo" src="${logo}" />`;
-
-    (slotLogo as HTMLElement).innerHTML = logoContent;
+    const logoHTML = this.getLogoHTML();
+    (slotLogo as HTMLElement).innerHTML = logoHTML;
   }
 
   connectedCallback(): void {
