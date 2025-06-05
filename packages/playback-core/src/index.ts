@@ -166,9 +166,23 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
 export const updateStreamInfoFromSrc = async (
   src: string,
   mediaEl: HTMLMediaElement,
-  type: MediaTypes | '' = getType({ src })
+  type: MediaTypes | '' = getType({ src }),
+  customElement: HTMLMediaElement
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
+
+  if (streamType === StreamTypes.ON_DEMAND && src.endsWith('.mp4') && !src.includes(MUX_VIDEO_DOMAIN)) {
+    try {
+      const url = new URL(src);
+      const pathParts = url.pathname.split('/');
+      pathParts.pop();
+      pathParts.push('metadata.json');
+      url.pathname = pathParts.join('/');
+      fetchMetadata(customElement, url.toString());
+    } catch (e) {
+      console.error('Failed to construct metadata URL from src:', src, e);
+    }
+  }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
@@ -1162,7 +1176,7 @@ export const loadMedia = (
         });
       };
       const setupNativeStreamInfo = async () => {
-        return updateStreamInfoFromSrc(src, mediaEl, type)
+        return updateStreamInfoFromSrc(src, mediaEl, type, props as HTMLMediaElement)
           .then(setupSeekableChangePoll)
           .catch((errOrResp: Response | Error) => {
             if (errOrResp instanceof Response) {
@@ -1577,4 +1591,35 @@ const getErrorFromHlsErrorData = (
   }
   mediaError.data = data;
   return mediaError;
+};
+
+export const fetchMetadata = (el: HTMLMediaElement, metadataUrl: string) => {
+  fetch(metadataUrl)
+    .then((resp) => {
+      if (!resp.ok) {
+        throw resp;
+      }
+      return resp.json();
+    })
+    .then((json) => {
+      if ('metadata' in el) {
+        (el as any).metadata = json;
+      }
+      const metadata = json?.[0]?.metadata ?? [];
+      const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
+
+      const event = new Event('setdefaultlogo', {
+        bubbles: true,
+        composed: true,
+      });
+
+      if (planMeta) el.dispatchEvent(event);
+    })
+    .catch((e) => {
+      el.mux?.emit('error', {
+        player_error_code: e.status,
+        player_error_message: `HTTP error ${e.status}`,
+        player_error_context: `Error fetching video metadata from: ${metadataUrl}`,
+      });
+    });
 };
