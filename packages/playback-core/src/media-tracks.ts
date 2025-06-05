@@ -1,3 +1,4 @@
+import { fetchMetadata } from '.';
 import Hls from './hls';
 
 export function setupMediaTracks(
@@ -15,6 +16,11 @@ export function setupMediaTracks(
   const levelIdMap = new WeakMap();
 
   hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
+    const chapters = data.sessionData?.['com.apple.hls.chapters'];
+    if (chapters?.VALUE) {
+      fetchMetadata(customMediaEl, chapters.VALUE);
+    }
+
     removeAllMediaTracks();
 
     const videoTrack = customMediaEl.addVideoTrack('main');

@@ -111,47 +111,42 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   #playerSoftwareVersion?: string;
   #playerSoftwareName?: string;
   #errorTranslator?: (errorEvent: any) => any;
+  #logo: string = '';
 
   static getTemplateHTML(attrs: Record<string, string> = {}) {
     const template = super.getTemplateHTML(attrs);
-    const showLogo = attrs['logo'] !== 'false' && attrs['logo'] !== undefined;
-    const hasLogoSrc = attrs['logo'] && attrs['logo'] !== '';
-    const logoSrc = attrs['logo'];
 
-    const logoTemplate = showLogo
-      ? `
-      <style>
-        :host {
-          position: relative;
-        }
-        :host slot[name="logo"] {
-          display: flex;
-          justify-content: end;
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-
-        }
-         :host slot[name="logo"] .logo{
-          width: 5rem;
-          pointer-events: none;
-          user-select: none;
-         }
-      </style>
-      <slot name="logo">
-        ${hasLogoSrc ? `<img class="logo" part="logo" src="${logoSrc}" />` : muxLogo}
-      </slot>
-    `
-      : '';
-
+    const logoHTML = this.prototype.getLogoHTML(attrs[Attributes.LOGO] ?? null);
     return `
-      ${template}
-      ${logoTemplate}
-    `;
+    ${template}
+    <style>
+      :host {
+        position: relative;
+      }
+      :host slot[name="logo"] {
+        display: flex;
+        justify-content: end;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+      :host slot[name="logo"] .logo {
+        width: 5rem;
+        pointer-events: none;
+        user-select: none;
+      }
+    </style>
+    <slot name="logo">${logoHTML}</slot>
+  `;
   }
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
+
+    this.addEventListener('setdefaultlogo', (e) => {
+      this.#logo = 'default';
+      this.updateLogo();
+    });
   }
 
   get preferCmcd() {
@@ -744,10 +739,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   get logo() {
-    return this.getAttribute(Attributes.LOGO);
+    return this.getAttribute(Attributes.LOGO) ?? this.#logo;
   }
 
   set logo(val) {
+    console.log('must set logo');
     if (val) {
       this.setAttribute(Attributes.LOGO, val);
     } else {
@@ -831,7 +827,19 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
         if (newValue) {
           fetch(newValue)
             .then((resp) => resp.json())
-            .then((json) => (this.metadata = json))
+            .then((json) => {
+              this.metadata = json;
+              const metadata = json?.[0]?.metadata ?? [];
+              const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
+
+              if (planMeta) {
+                const event = new Event('setdefaultlogo', {
+                  bubbles: true,
+                  composed: true,
+                });
+                this.dispatchEvent(event);
+              }
+            })
             .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
         }
         break;
@@ -848,9 +856,30 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
           );
         }
         break;
+      case Attributes.LOGO:
+        if (newValue == null || newValue !== oldValue) {
+          this.updateLogo();
+        }
+        break;
       default:
         break;
     }
+  }
+
+  getLogoHTML(logoValue: string | null = null): string {
+    const logo = logoValue ?? this.#logo ?? this.logo;
+    if (!logo || logo === 'false') return '';
+
+    return logo === 'default' ? muxLogo : `<img class="logo" part="logo" src="${logo}" />`;
+  }
+
+  updateLogo() {
+    if (!this.shadowRoot) return;
+    const slotLogo = this.shadowRoot.querySelector('slot[name="logo"]');
+    if (!slotLogo) return;
+
+    const logoHTML = this.getLogoHTML();
+    (slotLogo as HTMLElement).innerHTML = logoHTML;
   }
 
   connectedCallback(): void {
