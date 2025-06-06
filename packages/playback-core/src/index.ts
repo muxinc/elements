@@ -1304,13 +1304,8 @@ export const loadMedia = (
 
       const clearError = new MediaError('', MediaError.MEDIA_ERR_CUSTOM, false);
       clearError.muxCode = MuxErrorCode.NOT_AN_ERROR;
-      mediaEl.dispatchEvent(
-        new CustomEvent('error', {
-          detail: clearError,
-          composed: true,
-          bubbles: true,
-        })
-      );
+      mediaEl.dispatchEvent(new Event('emptied'));
+      mediaEl.dispatchEvent(new Event('loadstart'));
     });
 
     mediaEl.addEventListener('error', handleInternalError);
