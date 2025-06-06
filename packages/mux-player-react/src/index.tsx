@@ -141,7 +141,8 @@ const MuxPlayerInternal = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProp
     'mux-player',
     {
       suppressHydrationWarning: true, // prevent issues with SSR / player-init-time
-      ...toNativeProps({ ...props, ref }),
+      ...toNativeProps(props),
+      ref,
     },
     children
   );
