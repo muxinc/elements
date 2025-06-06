@@ -7,7 +7,7 @@ import React from 'react';
 // React 19+ handles primitive values correctly but we still need to convert
 // the camelCase prop names to kebab-case attribute names for mux-player. (WL)
 
-export const IS_REACT_19_OR_NEWER = parseInt(React.version) >= 19;
+const IS_REACT_19_OR_NEWER = parseInt(React.version) >= 19;
 
 // NOTE: As a forward-looking implementation, we may want to assume
 // prop names -> attribute names is always a simple name.toLowerCase()
