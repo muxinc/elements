@@ -27,6 +27,7 @@ import {
   getChapters,
   toPlaybackIdFromSrc,
   toPlaybackIdParts,
+  fetchMetadata,
   // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
@@ -70,6 +71,7 @@ export const Attributes = {
   ASSET_START_TIME: 'asset-start-time',
   ASSET_END_TIME: 'asset-end-time',
   METADATA_URL: 'metadata-url',
+  METADATA: 'metadata',
   PLAYBACK_ID: 'playback-id',
   PLAYER_SOFTWARE_NAME: 'player-software-name',
   PLAYER_SOFTWARE_VERSION: 'player-software-version',
@@ -113,10 +115,15 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   #errorTranslator?: (errorEvent: any) => any;
   #logo: string = '';
 
+  static getLogoHTML(logoValue: string | null): string {
+    if (!logoValue || logoValue === 'false') return '';
+    return logoValue === 'default' ? muxLogo : `<img class="logo" part="logo" src="${logoValue}" />`;
+  }
+
   static getTemplateHTML(attrs: Record<string, string> = {}) {
     const template = super.getTemplateHTML(attrs);
 
-    const logoHTML = this.prototype.getLogoHTML(attrs[Attributes.LOGO] ?? null);
+    const logoHTML = this.getLogoHTML(attrs[Attributes.LOGO] ?? null);
     return `
     ${template}
     <style>
@@ -743,7 +750,6 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   }
 
   set logo(val) {
-    console.log('must set logo');
     if (val) {
       this.setAttribute(Attributes.LOGO, val);
     } else {
@@ -825,22 +831,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       }
       case Attributes.METADATA_URL:
         if (newValue) {
-          fetch(newValue)
-            .then((resp) => resp.json())
-            .then((json) => {
-              this.metadata = json;
-              const metadata = json?.[0]?.metadata ?? [];
-              const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
-
-              if (planMeta) {
-                const event = new Event('setdefaultlogo', {
-                  bubbles: true,
-                  composed: true,
-                });
-                this.dispatchEvent(event);
-              }
-            })
-            .catch(() => console.error(`Unable to load or parse metadata JSON from metadata-url ${newValue}!`));
+          fetchMetadata(this as HTMLMediaElement, newValue);
         }
         break;
       case Attributes.STREAM_TYPE:
@@ -866,19 +857,12 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     }
   }
 
-  getLogoHTML(logoValue: string | null = null): string {
-    const logo = logoValue ?? this.#logo ?? this.logo;
-    if (!logo || logo === 'false') return '';
-
-    return logo === 'default' ? muxLogo : `<img class="logo" part="logo" src="${logo}" />`;
-  }
-
   updateLogo() {
     if (!this.shadowRoot) return;
     const slotLogo = this.shadowRoot.querySelector('slot[name="logo"]');
     if (!slotLogo) return;
 
-    const logoHTML = this.getLogoHTML();
+    const logoHTML = (this.constructor as typeof MuxVideoElement).getLogoHTML(!!this.#logo ? this.#logo : this.logo);
     (slotLogo as HTMLElement).innerHTML = logoHTML;
   }
 
