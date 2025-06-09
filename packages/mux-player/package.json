@@ -95,7 +95,7 @@
   "dependencies": {
     "@mux/mux-video": "0.25.2",
     "@mux/playback-core": "0.29.0",
-    "media-chrome": "~4.10.0",
+    "media-chrome": "~4.11.0",
     "player.style": "^0.1.8"
   },
   "devDependencies": {

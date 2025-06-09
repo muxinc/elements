@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@mux/playback-core": "0.29.0",
-    "custom-media-element": "~1.4.3"
+    "custom-media-element": "~1.4.5"
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
