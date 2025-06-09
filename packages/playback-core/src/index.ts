@@ -427,6 +427,10 @@ export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
 };
 
+export const getMetadata = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.metadata;
+};
+
 export const getStreamType = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.streamType ?? StreamTypes.UNKNOWN;
 };
@@ -1596,24 +1600,22 @@ const getErrorFromHlsErrorData = (
 export const fetchMetadata = (el: HTMLMediaElement, metadataUrl: string) => {
   fetch(metadataUrl)
     .then((resp) => {
-      if (!resp.ok) {
-        throw resp;
-      }
+      if (!resp.ok) throw resp;
       return resp.json();
     })
     .then((json) => {
+      const metadata = extractMetadata(json);
       if ('metadata' in el) {
-        (el as any).metadata = json;
+        (el as any).metadata = {
+          ...(el as any).metadata,
+          ...metadata,
+        };
       }
-      const metadata = json?.[0]?.metadata ?? [];
-      const planMeta = metadata.find((m: { value: string }) => m.value === 'mux-free-plan');
 
-      const event = new Event('setdefaultlogo', {
-        bubbles: true,
-        composed: true,
-      });
-
-      if (planMeta) el.dispatchEvent(event);
+      if (metadata['com.mux.video.branding'] === 'mux-free-plan') {
+        const event = new Event('setdefaultlogo', { bubbles: true, composed: true });
+        el.dispatchEvent(event);
+      }
     })
     .catch((e) => {
       el.mux?.emit('error', {
@@ -1622,4 +1624,27 @@ export const fetchMetadata = (el: HTMLMediaElement, metadataUrl: string) => {
         player_error_context: `Error fetching video metadata from: ${metadataUrl}`,
       });
     });
+};
+
+const extractMetadata = (json: any): Record<string, string> => {
+  const metadata: Record<string, string> = {};
+
+  if (Array.isArray(json) && json.length > 0) {
+    const first = json[0];
+    if (Array.isArray(first.metadata)) {
+      for (const item of first.metadata) {
+        if (item.key && item.value) {
+          metadata[item.key] = item.value;
+        }
+      }
+    } else {
+      for (const [key, value] of Object.entries(first)) {
+        if (typeof value === 'string' || typeof value === 'number') {
+          metadata[key] = String(value);
+        }
+      }
+    }
+  }
+
+  return metadata;
 };
