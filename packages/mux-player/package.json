@@ -35,29 +35,11 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
-    "./themes/microvideo": {
-      "browser": "./dist/themes/microvideo/index.mjs",
-      "import": "./dist/themes/microvideo/index.mjs",
-      "require": "./dist/themes/microvideo/index.cjs.js",
-      "default": "./dist/themes/microvideo/index.cjs.js"
-    },
-    "./themes/minimal": {
-      "browser": "./dist/themes/minimal/index.mjs",
-      "import": "./dist/themes/minimal/index.mjs",
-      "require": "./dist/themes/minimal/index.cjs.js",
-      "default": "./dist/themes/minimal/index.cjs.js"
-    },
-    "./themes/classic": {
-      "browser": "./dist/themes/classic/index.mjs",
-      "import": "./dist/themes/classic/index.mjs",
-      "require": "./dist/themes/classic/index.cjs.js",
-      "default": "./dist/themes/classic/index.cjs.js"
-    },
-    "./themes/gerwig": {
-      "browser": "./dist/themes/gerwig/index.mjs",
-      "import": "./dist/themes/gerwig/index.mjs",
-      "require": "./dist/themes/gerwig/index.cjs.js",
-      "default": "./dist/themes/gerwig/index.cjs.js"
+    "./themes/*": {
+      "browser": "./dist/themes/*/index.mjs",
+      "import": "./dist/themes/*/index.mjs",
+      "require": "./dist/themes/*/index.cjs.js",
+      "default": "./dist/themes/*/index.cjs.js"
     }
   },
   "types": "./dist/types/index.d.ts",

@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { useState } from 'react';
 import '@mux/mux-video/ads';
 import MuxPlayer from '@mux/mux-player-react';
-import NewsTheme from '@mux/mux-player-react/themes/news-theme';
+import NewsTheme from '@mux/mux-player-react/themes/news';
 
 function MuxPlayerAdsPage() {
   const [sdkReady, setSdkReady] = useState(false);
@@ -27,8 +27,6 @@ function MuxPlayerAdsPage() {
         strategy="afterInteractive"
       />
 
-      <NewsTheme/>
-
       {/*
         single preroll skippable
         adTagUrl="https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
@@ -38,7 +36,7 @@ function MuxPlayerAdsPage() {
       */}
 
       {sdkReady && <MuxPlayer
-        theme="news-theme"
+        theme={NewsTheme}
         streamType="on-demand"
         playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
         adTagUrl="https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
