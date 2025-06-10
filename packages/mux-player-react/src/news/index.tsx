@@ -2,9 +2,8 @@
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
 import React, { useRef, useState } from 'react';
 import '@mux/mux-video/ads';
-import type { MuxPlayerProps } from '@mux/mux-player-react';
-import MuxPlayer from '@mux/mux-player-react';
-import NewsTheme from '../themes/news-theme';
+import '@mux/mux-player/themes/news';
+import MuxPlayer, { MuxPlayerProps } from '@mux/mux-player-react';
 import PlaylistEndScreen from './playlist-end-screen';
 
 export interface VideoItem {
@@ -45,12 +44,11 @@ const MuxNewsPlayer = ({ allowAdBlocker, videoList, ...props }: PlaylistProps) =
 
   return (
     <div>
-      <NewsTheme />
       <MuxPlayer
         {...props}
         allowAdBlocker={allowAdBlocker}
         ref={mediaElRef}
-        theme="news-theme"
+        theme="news"
         key={`player-${playerKey}`}
         playbackId={videoList[currentIndex].playbackId}
         style={{ aspectRatio: '16/9' }}
