@@ -184,7 +184,6 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     castReceiver: el.castReceiver,
     adTagUrl: el.adTagUrl,
     allowAdBlocker: el.allowAdBlocker,
-    adBreak: el.adBreak,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -277,6 +276,7 @@ export const playerSoftwareName = 'mux-player';
 
 const initialState = {
   isDialogOpen: false,
+  adBreak: false,
 };
 
 const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
@@ -412,8 +412,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   connectedCallback() {
     const muxVideo = this.media;
     if (muxVideo) {
-      this.media?.addEventListener('adbreakstart', () => this.#render());
-      this.media?.addEventListener('adbreakend', () => this.#render());
+      this.media?.addEventListener('adbreakstart', () => this.#setState({ adBreak: true }));
+      this.media?.addEventListener('adbreakend', () => this.#setState({ adBreak: false }));
 
       muxVideo.metadata = getMetadataFromAttrs(this);
     }
@@ -1308,10 +1308,6 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     } else {
       this.removeAttribute(MuxVideoAttributes.BEACON_COLLECTION_DOMAIN);
     }
-  }
-
-  get adBreak() {
-    return this.media?.adBreak ?? false;
   }
 
   get allowAdBlocker() {
