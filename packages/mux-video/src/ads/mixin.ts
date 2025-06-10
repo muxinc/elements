@@ -81,7 +81,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     #oldAdTagUrl?: string | null;
     #adProvider?: GoogleImaClientProvider;
-    #lastCurrentime?: number;
+    // #lastCurrentime?: number;
     #adBreak = false;
     #resizeObserver?: ResizeObserver;
     #videoBackup?: VideoBackup;

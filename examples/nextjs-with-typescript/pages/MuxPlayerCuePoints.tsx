@@ -34,9 +34,6 @@ function MuxPlayerPage() {
         onCuePointChange={({ target }) => {
           setActiveCuePoint((target as MuxPlayerElement).activeCuePoint);
         }}
-        onCuePointsChange={({ target }) => {
-          setActiveCuePoint((target as MuxPlayerElement).activeCuePoint);
-        }}
       />
       <div>
         <b>Active CuePoint:</b>

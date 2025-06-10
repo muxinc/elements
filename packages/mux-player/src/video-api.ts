@@ -62,6 +62,7 @@ const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
 
 export const AttributeNames = [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 interface VideoApiElement extends HTMLElement {
   addEventListener(
     type: string,
@@ -85,6 +86,7 @@ interface VideoApiElement extends HTMLElement {
   ): void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
   static get observedAttributes() {
     return AttributeNames as string[];

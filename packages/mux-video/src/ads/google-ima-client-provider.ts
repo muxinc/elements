@@ -90,9 +90,9 @@ export class GoogleImaClientProvider extends EventTarget {
     this.dispatchEvent(new AdEvent(Events.AD_ENDED));
   };
 
-  #onAdsManagerLoaded = (event: google.ima.AdsManagerLoadedEvent) => {
+  #onAdsManagerLoaded = (loadedEvent: google.ima.AdsManagerLoadedEvent) => {
     const adsRenderingSettings = new google.ima.AdsRenderingSettings();
-    this.#adsManager = event.getAdsManager(this.#videoElement, adsRenderingSettings);
+    this.#adsManager = loadedEvent.getAdsManager(this.#videoElement, adsRenderingSettings);
 
     this.#adsManager?.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, this.#onAdError);
 
@@ -177,7 +177,7 @@ export class GoogleImaClientProvider extends EventTarget {
           { once: true }
         );
       }
-    } catch (error) {
+    } catch {
       this.#onAdComplete();
     }
   };

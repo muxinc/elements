@@ -456,7 +456,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   }
 
   #setUpErrors() {
-    const onError = (event: Event) => {
+    const onError = (_event: Event) => {
       let error = this.media?.error as unknown as MediaError;
 
       if (!(error instanceof MediaError)) {
