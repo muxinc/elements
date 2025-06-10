@@ -1302,8 +1302,6 @@ export const loadMedia = (
         state.retryCount = 0;
       }
 
-      const clearError = new MediaError('', MediaError.MEDIA_ERR_CUSTOM, false);
-      clearError.muxCode = MuxErrorCode.NOT_AN_ERROR;
       mediaEl.dispatchEvent(new Event('emptied'));
       mediaEl.dispatchEvent(new Event('loadstart'));
     });
