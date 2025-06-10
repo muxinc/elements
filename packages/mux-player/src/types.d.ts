@@ -1,5 +1,6 @@
 import type MuxVideoElement from '@mux/mux-video';
 import type { MediaError } from '@mux/mux-video';
+import type { EventMap as AdsEventMap } from '@mux/mux-video/ads';
 import type {
   MaxResolutionValue,
   MinResolutionValue,
@@ -82,3 +83,30 @@ export type ErrorEvent = {
   player_error_message?: string;
   player_error_context?: string;
 };
+
+type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+
+export type MuxPlayerElementEventMap = Expand<AdsEventMap>;
+
+export interface IMuxPlayerElement {
+  addEventListener<K extends keyof MuxPlayerElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof MuxPlayerElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
+}

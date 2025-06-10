@@ -1,8 +1,7 @@
 import { globalThis } from './polyfills';
-import { VideoEvents } from '@mux/mux-video';
-import type MuxVideoElement from '@mux/mux-video';
 import * as logger from './logger';
 import { toNumberOrUndefined } from './utils';
+import type MuxVideoElement from '@mux/mux-video/ads';
 
 export type CastOptions = {
   receiverApplicationId: string;
@@ -10,11 +9,6 @@ export type CastOptions = {
   androidReceiverCompatible: boolean;
   language: string;
   resumeSavedSession: boolean;
-};
-
-export type MuxVideoElementExt = MuxVideoElement & {
-  requestCast(options: CastOptions): Promise<undefined>;
-  adBreak: boolean;
 };
 
 const AllowedVideoAttributes = {
@@ -61,7 +55,6 @@ const emptyTimeRanges: TimeRanges = Object.freeze({
   },
 });
 
-const AllowedVideoEvents = VideoEvents.filter((type) => type !== 'error');
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes).filter(
   (name) => AllowedVideoAttributes.PLAYSINLINE !== name
 );
@@ -69,75 +62,29 @@ const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
 
 export const AttributeNames = [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
 
-// NOTE: Some of these are defined in MuxPlayerElement. We may want to apply a
-// `Pick<>` on these to also enforce consistency (CJP).
-type PartialHTMLVideoElement = Omit<
-  HTMLVideoElement,
-  | 'disablePictureInPicture'
-  | 'height'
-  | 'width'
-  | 'error'
-  | 'seeking'
-  | 'onenterpictureinpicture'
-  | 'onleavepictureinpicture'
-  | 'load'
-  | 'cancelVideoFrameCallback'
-  | 'getVideoPlaybackQuality'
-  | 'requestPictureInPicture'
-  | 'requestVideoFrameCallback'
-  | 'controls'
-  | 'disableRemotePlayback'
-  | 'mediaKeys'
-  | 'networkState'
-  | 'onencrypted'
-  | 'onwaitingforkey'
-  | 'played'
-  | 'remote'
-  | 'srcObject'
-  | 'textTracks'
-  | 'addTextTrack'
-  | 'canPlayType'
-  | 'fastSeek'
-  | 'setMediaKeys'
-  | 'HAVE_CURRENT_DATA'
-  | 'HAVE_ENOUGH_DATA'
-  | 'HAVE_FUTURE_DATA'
-  | 'HAVE_METADATA'
-  | 'HAVE_NOTHING'
-  | 'NETWORK_EMPTY'
-  | 'NETWORK_IDLE'
-  | 'NETWORK_LOADING'
-  | 'NETWORK_NO_SOURCE'
-  | 'src'
-  | 'poster'
-  | 'mux' // NOTE: Because of our global types extension of HTMLMediaElement, `mux` is a property that also needs to be omitted (CJP)
->;
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
-  addEventListener<K extends keyof HTMLVideoElementEventMap>(
-    type: K,
-    listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions
-  ): void;
+interface VideoApiElement extends HTMLElement {
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions
   ): void;
-  removeEventListener<K extends keyof HTMLVideoElementEventMap>(
-    type: K,
-    listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
-    options?: boolean | EventListenerOptions
+  addEventListener(
+    type: string,
+    listener: (event: CustomEvent) => void,
+    options?: boolean | AddEventListenerOptions
   ): void;
   removeEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void;
+  removeEventListener(
+    type: string,
+    listener: (event: CustomEvent) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
   static get observedAttributes() {
     return AttributeNames as string[];
@@ -150,20 +97,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
    */
   constructor() {
     super();
-  }
-
-  /**
-   * Gets called from mux-player when mux-video is rendered and upgraded.
-   * We might just merge VideoApiElement in MuxPlayerElement and remove this?
-   */
-  init() {
-    // The video events are dispatched on the VideoApiElement instance.
-    // This makes it possible to add event listeners before the element is upgraded.
-    AllowedVideoEvents.forEach((type) => {
-      this.media?.addEventListener(type, (evt) => {
-        this.dispatchEvent(new Event(evt.type));
-      });
-    });
   }
 
   attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string) {
@@ -205,11 +138,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     this.media?.load();
   }
 
-  requestCast(options: CastOptions) {
-    return this.media?.requestCast(options);
-  }
-
-  get media(): MuxVideoElementExt | null | undefined {
+  get media(): MuxVideoElement | undefined | null {
     return this.shadowRoot?.querySelector('mux-video');
   }
 

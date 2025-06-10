@@ -208,3 +208,12 @@ export type MuxMediaPropsInternal = MuxMediaProps & {
   muxDataKeepSession?: boolean;
   drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
 };
+
+export type MuxMediaEventsMap = {
+  cuepointchange: CustomEvent<{ composed: true; bubbles: true; detail: CuePoint }>;
+  chapterchange: CustomEvent<{ composed: true; bubbles: true; detail: Chapter }>;
+  targetlivewindowchange: CustomEvent<{ composed: true; bubbles: true }>;
+  streamtypechange: CustomEvent<{ composed: true; bubbles: true }>;
+  seekablechange: CustomEvent<{ composed: true }>;
+  error: CustomEvent<{ detail: MediaError }>;
+};

@@ -7,9 +7,10 @@ function HomePage() {
         <li><Link href="/MuxVideo" className="video">&lt;MuxVideo&gt;</Link></li>
         <li><Link href="/MuxAudio"className="audio">&lt;MuxAudio&gt;</Link></li>
         <li><Link href='/MuxPlayer?playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"' className="player">&lt;MuxPlayer&gt;</Link></li>
+        <li><Link href="/MuxPlayerAds" className="player"><>&lt;MuxPlayer&gt;<br />(ads)</></Link></li>
+        <li><Link href='/MuxPlayerError' className="player">&lt;MuxPlayer&gt; (error)</Link></li>
         <li><Link href="/MuxPlayerPosterSlot" className="player"><>&lt;MuxPlayer&gt;<br/>(poster slot)</></Link></li>
         <li><Link href="/MuxPlayerTheme" className="player"><>&lt;MuxPlayer&gt;<br/>(theme)</></Link></li>
-        <li><Link href="/MuxPlayerAds" className="player"><>&lt;MuxPlayerAds&gt;<br />(Ads)</></Link></li>
         <li><Link href="/MuxPlayerCuePoints" className="player"><>&lt;MuxPlayer&gt;<br/>(CuePoints)</></Link></li>
         <li><Link href="/MuxPlayerCuePointsMeditate" className="player"><>&lt;MuxPlayer&gt;<br/>(CuePoints + Audio Only)</></Link></li>
         <li><Link href="/MuxPlayerChapters" className="player"><>&lt;MuxPlayer&gt;<br/>(Chapters)</></Link></li>
@@ -25,7 +26,7 @@ function HomePage() {
         <li><Link href="/mux-audio" className="audio"><>&lt;mux-audio&gt;<br/>(Web Component)</></Link></li>
         <li><Link href="/mux-player" className="player"><>&lt;mux-player&gt;<br/>(Web Component)</></Link></li>
         <li><Link href="/mux-video-react" className="video"><>&lt;MuxVideo&gt;<br/>(React Web Component)</></Link></li>
-        <li><Link href="/mux-video-ads-react" className="video"><>&lt;MuxVideo&gt; (with ads)<br />(React Web Component)</></Link></li>
+        <li><Link href="/mux-video-ads-react" className="video"><>&lt;MuxVideo&gt; (ads)<br />(React Web Component)</></Link></li>
         <li><Link href="/playlist-page" className="video"><>&lt;Playlist&gt;<br />(React Web Component)</></Link></li>
         <li><Link href="/app-router" className="react"><>App Router</></Link></li>
       </ul>

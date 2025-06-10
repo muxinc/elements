@@ -134,8 +134,16 @@ export type MuxPlayerProps = {
   onEnded?: GenericEventListener<MuxPlayerElementEventMap['ended']>;
   onError?: GenericEventListener<MuxPlayerElementEventMap['error']>;
   onCuePointChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointchange']>;
-  onCuePointsChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointschange']>;
   onChapterChange?: GenericEventListener<MuxPlayerElementEventMap['chapterchange']>;
+  onAdError?: GenericEventListener<MuxPlayerElementEventMap['aderror']>;
+  onAdRequest?: GenericEventListener<MuxPlayerElementEventMap['adrequest']>;
+  onAdResponse?: GenericEventListener<MuxPlayerElementEventMap['adresponse']>;
+  onAdBreakStart?: GenericEventListener<MuxPlayerElementEventMap['adbreakstart']>;
+  onAdFirstQuartile?: GenericEventListener<MuxPlayerElementEventMap['adfirstquartile']>;
+  onAdMidpoint?: GenericEventListener<MuxPlayerElementEventMap['admidpoint']>;
+  onAdThirdQuartile?: GenericEventListener<MuxPlayerElementEventMap['adthirdquartile']>;
+  onAdEnded?: GenericEventListener<MuxPlayerElementEventMap['adended']>;
+  onAdBreakEnd?: GenericEventListener<MuxPlayerElementEventMap['adbreakend']>;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
 
@@ -197,8 +205,16 @@ const usePlayer = (
     onEnded,
     onError,
     onCuePointChange,
-    onCuePointsChange,
     onChapterChange,
+    onAdError,
+    onAdRequest,
+    onAdResponse,
+    onAdBreakStart,
+    onAdFirstQuartile,
+    onAdMidpoint,
+    onAdThirdQuartile,
+    onAdEnded,
+    onAdBreakEnd,
     metadata,
     tokens,
     paused,
@@ -266,8 +282,16 @@ const usePlayer = (
   useEventCallbackEffect('ended', ref, onEnded);
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('cuepointchange', ref, onCuePointChange);
-  useEventCallbackEffect('cuepointschange', ref, onCuePointsChange);
   useEventCallbackEffect('chapterchange', ref, onChapterChange);
+  useEventCallbackEffect('aderror', ref, onAdError);
+  useEventCallbackEffect('adrequest', ref, onAdRequest);
+  useEventCallbackEffect('adresponse', ref, onAdResponse);
+  useEventCallbackEffect('adbreakstart', ref, onAdBreakStart);
+  useEventCallbackEffect('adfirstquartile', ref, onAdFirstQuartile);
+  useEventCallbackEffect('admidpoint', ref, onAdMidpoint);
+  useEventCallbackEffect('adthirdquartile', ref, onAdThirdQuartile);
+  useEventCallbackEffect('adended', ref, onAdEnded);
+  useEventCallbackEffect('adbreakend', ref, onAdBreakEnd);
   return [remainingProps];
 };
 

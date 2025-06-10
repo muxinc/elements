@@ -42,14 +42,15 @@ import { render } from './html';
 import { muxMediaErrorToDialog, muxMediaErrorToDevlog } from './errors';
 import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
 import * as logger from './logger';
-import type { MuxTemplateProps, ErrorEvent } from './types';
+import type { MuxTemplateProps, ErrorEvent, IMuxPlayerElement } from './types';
 import './themes/gerwig';
 import { HlsConfig } from 'hls.js';
-const DefaultThemeName = 'gerwig';
 
+export type { MuxPlayerElementEventMap } from './types';
 export type { Tokens };
-
 export { MediaError, generatePlayerInitTime };
+
+const DefaultThemeName = 'gerwig';
 
 const VideoAttributes = {
   SRC: 'src',
@@ -280,49 +281,7 @@ const initialState = {
 
 const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 
-export interface MuxPlayerElementEventMap extends HTMLVideoElementEventMap {
-  cuepointchange: CustomEvent<{ time: number; value: any }>;
-  cuepointschange: CustomEvent<Array<{ time: number; value: any }>>;
-  chapterchange: CustomEvent<{ startTime: number; endTime: number; value: string }>;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-interface MuxPlayerElement
-  extends Omit<
-    HTMLVideoElement,
-    | 'poster'
-    | 'textTracks'
-    | 'addTextTrack'
-    | 'src'
-    | 'videoTracks'
-    | 'audioTracks'
-    | 'audioRenditions'
-    | 'videoRenditions'
-  > {
-  addEventListener<K extends keyof MuxPlayerElementEventMap>(
-    type: K,
-    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions
-  ): void;
-  addEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions
-  ): void;
-  removeEventListener<K extends keyof MuxPlayerElementEventMap>(
-    type: K,
-    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
-    options?: boolean | EventListenerOptions
-  ): void;
-  removeEventListener(
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions
-  ): void;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
+class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   #defaultPlayerInitTime: number;
   #isInit = false;
   #tokens: Tokens = {};
@@ -408,8 +367,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
       logger.error(`<media-controller> failed to upgrade!`);
     }
 
-    this.init();
-
     this.#setUpThemeAttributes();
     this.#setUpErrors();
     this.#setUpCaptionsButton();
@@ -456,7 +413,7 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
     const muxVideo = this.media;
     if (muxVideo) {
       this.media?.addEventListener('adbreakstart', () => this.#render());
-      this.media?.addEventListener('adended', () => this.#render());
+      this.media?.addEventListener('adbreakend', () => this.#render());
 
       muxVideo.metadata = getMetadataFromAttrs(this);
     }
@@ -500,10 +457,11 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
 
   #setUpErrors() {
     const onError = (event: Event) => {
-      let { detail: error }: { detail: any } = event as CustomEvent;
+      let error = this.media?.error as unknown as MediaError;
 
       if (!(error instanceof MediaError)) {
-        error = new MediaError(error.message, error.code, error.fatal);
+        const { message, code } = error ?? {};
+        error = new MediaError(message, code);
       }
 
       // Don't show an error dialog if it's not fatal.
@@ -547,26 +505,6 @@ class MuxPlayerElement extends VideoApiElement implements MuxPlayerElement {
         };
       };
     }
-
-    this.media?.addEventListener('error', (event: Event) => {
-      let { detail: error }: { detail: any } = event as CustomEvent;
-
-      // If it is a hls.js error event there will be an error object in the event.
-      // If it is a native video error event there will be no error object.
-      if (!error) {
-        const { message, code } = this.media?.error ?? {};
-        error = new MediaError(message, code);
-      }
-
-      // Don't fire a mux-player error event for non-fatal errors.
-      if (!error?.fatal) return;
-
-      this.dispatchEvent(
-        new CustomEvent('error', {
-          detail: error,
-        })
-      );
-    });
   }
 
   #setUpCaptionsButton() {

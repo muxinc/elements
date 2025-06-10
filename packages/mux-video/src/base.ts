@@ -42,12 +42,12 @@ import type {
 } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 // this must be imported after playback-core for the polyfill to be included
-import { CustomVideoElement, Events as VideoEvents } from 'custom-media-element';
+import { CustomVideoElement, Events } from 'custom-media-element';
 import type { HlsConfig } from 'hls.js';
 import { muxLogo } from './assets/mux-logo.js';
+import type { IMuxVideoBaseElement } from './types.js';
 
-// Must mutate so the added events are available in custom-media-element.
-VideoEvents.push('castchange', 'entercast', 'leavecast');
+export * from './types.js';
 
 export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
@@ -85,7 +85,7 @@ const AttributeNameValues = Object.values(Attributes);
 export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-video';
 
-export class MuxVideoBaseElement extends CustomVideoElement {
+export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideoBaseElement {
   static get NAME() {
     return playerSoftwareName;
   }
@@ -828,8 +828,21 @@ export class MuxVideoBaseElement extends CustomVideoElement {
       this.#requestLoad();
     }
   }
+
   disconnectedCallback(): void {
     this.unload();
+  }
+
+  handleEvent(event: Event): void {
+    if (event.target === this.nativeEl) {
+      // Composed events are forwarded to parent shadow hosts (e.g. mux-player).
+      this.dispatchEvent(
+        new CustomEvent(event.type, {
+          composed: true,
+          detail: (event as CustomEvent).detail,
+        })
+      );
+    }
   }
 }
 
@@ -838,6 +851,6 @@ export {
   PlaybackEngine as Hls,
   ExtensionMimeTypeMap as MimeTypes,
   MediaError,
-  VideoEvents,
+  Events,
   generatePlayerInitTime,
 };

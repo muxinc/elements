@@ -1,11 +1,15 @@
 import { globalThis } from '../polyfills';
 import { Autoplay } from '@mux/playback-core';
-import { MuxVideoBaseElement, Attributes as BaseAttributes } from '@mux/mux-video/base';
+import { MuxVideoBaseElement, Attributes as BaseAttributes, EventMap as BaseEventMap } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
-import { AdsVideoMixin, Attributes as AdsAttributes } from './mixin';
+import { AdsVideoMixin, Attributes as AdsAttributes } from './mixin.js';
+import type { Expand, AdEventMap } from './types.js';
 
 export * from '@mux/mux-video/base';
+export * from './types.js';
+
+export type EventMap = Expand<BaseEventMap & AdEventMap>;
 
 export const Attributes = {
   ...BaseAttributes,
