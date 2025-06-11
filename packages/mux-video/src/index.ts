@@ -107,7 +107,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
   #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
   #defaultPlayerInitTime: number;
-  #metadata: Readonly<Metadata> = {};
+  #metadata: Metadata = {};
   #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;
   #playerSoftwareVersion?: string;
@@ -153,6 +153,16 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     this.addEventListener('setdefaultlogo', (e) => {
       this.#logo = 'default';
       this.updateLogo();
+    });
+
+    this.addEventListener('muxmetadata', (e: Event) => {
+      const customEvent = e as CustomEvent<Record<string, any>>;
+      const previous = this.#metadata ?? {};
+
+      this.#metadata = {
+        ...previous,
+        ...customEvent.detail,
+      };
     });
   }
 

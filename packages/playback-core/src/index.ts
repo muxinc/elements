@@ -1524,16 +1524,13 @@ export const fetchMetadata = (el: HTMLMediaElement, metadataUrl: string) => {
     })
     .then((json) => {
       const metadata = extractMetadata(json);
-      if ('metadata' in el) {
-        (el as any).metadata = {
-          ...(el as any).metadata,
-          ...metadata,
-        };
-      }
+
+      const eventUpdateMetadata = new CustomEvent('muxmetadata', { bubbles: true, composed: true, detail: metadata });
+      el.dispatchEvent(eventUpdateMetadata);
 
       if (metadata['com.mux.video.branding'] === 'mux-free-plan') {
-        const event = new Event('setdefaultlogo', { bubbles: true, composed: true });
-        el.dispatchEvent(event);
+        const eventSetDefaultLogo = new Event('setdefaultlogo', { bubbles: true, composed: true });
+        el.dispatchEvent(eventSetDefaultLogo);
       }
     })
     .catch((e) => {
