@@ -1,6 +1,7 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
 import { Events, AdEvent } from './events.js';
+import { GoogleImaClientAd } from './google-ima-client-ad.js';
 
 export type GoogleImaClientProviderConfig = {
   adContainer: HTMLElement;
@@ -21,12 +22,12 @@ export class GoogleImaClientProvider extends EventTarget {
   #adContainer: HTMLElement;
   #videoElement: HTMLVideoElement;
   #originalSize: DOMRect;
-  #viewMode: google.ima.ViewMode;
-  #adDisplayContainer: google.ima.AdDisplayContainer | undefined;
-  #adsLoader: google.ima.AdsLoader | undefined;
-  #adsManager: google.ima.AdsManager | undefined;
-  #ad: google.ima.Ad | undefined | null;
-  #adProgressData: google.ima.AdProgressData | undefined | null;
+  #adDisplayContainer: google.ima.AdDisplayContainer;
+  #adsLoader: google.ima.AdsLoader;
+  #adsManager?: google.ima.AdsManager;
+  #imaAd?: google.ima.Ad | null;
+  #ad?: GoogleImaClientAd;
+  #adProgressData?: google.ima.AdProgressData;
   #initializedAdDisplayContainer = false;
   #adPaused = false;
   #videoPlayed = false;
@@ -37,7 +38,6 @@ export class GoogleImaClientProvider extends EventTarget {
     this.#adContainer = config.adContainer;
     this.#videoElement = config.videoElement;
     this.#originalSize = config.originalSize;
-    this.#viewMode = google.ima.ViewMode.NORMAL;
 
     this.#videoPlayed = !this.#videoElement.paused;
     this.#videoElement.addEventListener('play', this.#onVideoPlay, { once: true });
@@ -51,16 +51,6 @@ export class GoogleImaClientProvider extends EventTarget {
       google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
       this.#onAdsManagerLoaded
     );
-
-    //TODO: we should listen to standard events
-    // globalThis.addEventListener('mediaenterfullscreenrequest', () => {
-    //   this.#adProvider?.updateViewMode(true);
-    // });
-
-    //TODO: we should listen to standard events
-    // globalThis.addEventListener('mediaexitfullscreenrequest', () => {
-    //   this.#adProvider?.updateViewMode(false);
-    // });
   }
 
   destroy() {
@@ -86,9 +76,9 @@ export class GoogleImaClientProvider extends EventTarget {
     this.#onAdComplete();
   };
 
-  #onAdComplete = (_adEvent?: google.ima.AdEvent) => {
+  #onAdComplete(_adEvent?: google.ima.AdEvent) {
     this.dispatchEvent(new AdEvent(Events.AD_ENDED));
-  };
+  }
 
   #onAdsManagerLoaded = (loadedEvent: google.ima.AdsManagerLoadedEvent) => {
     const adsRenderingSettings = new google.ima.AdsRenderingSettings();
@@ -105,7 +95,14 @@ export class GoogleImaClientProvider extends EventTarget {
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, (event: google.ima.AdEvent) => {
-      this.#ad = event.getAd();
+      this.#imaAd = event.getAd();
+
+      if (!this.#imaAd || !this.#adsManager) {
+        console.warn('Google IMA ad is undefined');
+        return;
+      }
+
+      this.#ad = new GoogleImaClientAd(this.#imaAd, this.#adsManager);
       this.dispatchEvent(new AdEvent(Events.AD_BREAK_START));
     });
 
@@ -131,10 +128,6 @@ export class GoogleImaClientProvider extends EventTarget {
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
       this.dispatchEvent(new AdEvent(Events.AD_BREAK_END));
-    });
-
-    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CLICK, () => {
-      this.#updateViewMode(false);
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
@@ -184,12 +177,8 @@ export class GoogleImaClientProvider extends EventTarget {
 
   #startAds() {
     // init() is included here because some ads (VMAP) start playing without the start() call.
-    this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
+    this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height);
     this.#adsManager?.start();
-  }
-
-  #updateViewMode(isFullscreen: boolean) {
-    this.#viewMode = isFullscreen ? google.ima.ViewMode.FULLSCREEN : google.ima.ViewMode.NORMAL;
   }
 
   get adsLoader() {
@@ -205,7 +194,7 @@ export class GoogleImaClientProvider extends EventTarget {
   }
 
   get duration() {
-    return this.#adProgressData?.duration ?? this.#ad?.getDuration();
+    return this.#adProgressData?.duration ?? this.#imaAd?.getDuration();
   }
 
   get currentTime() {
@@ -261,6 +250,6 @@ export class GoogleImaClientProvider extends EventTarget {
 
   resize(width: number, height: number) {
     this.#originalSize = { ...this.#originalSize, width, height };
-    this.#adsManager?.resize(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
+    this.#adsManager?.resize(this.#originalSize.width, this.#originalSize.height);
   }
 }

@@ -120,7 +120,7 @@
   },
   "devDependencies": {
     "@open-wc/testing": "^4.0.0",
-    "@types/google_interactive_media_ads_types": "^1.20241219.0",
+    "@types/google_interactive_media_ads_types": "^3.697.0",
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "@typescript-eslint/parser": "^8.27.0",
     "@web/dev-server-esbuild": "^1.0.4",

@@ -1,13 +1,10 @@
-/* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference path="../../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" preserve="true" />
-/** @TODO publish types for package to use here (CJP) */
-// @ts-ignore
-import mux from '@mux/mux-data-google-ima';
 import { GoogleImaClientProvider } from './google-ima-client-provider';
-import type { MuxDataSDK } from '@mux/playback-core';
 import type { CustomVideoElement } from 'custom-media-element';
-import { Events as AdEvents, AdEvent } from './events';
-import { IAdsVideo } from './types';
+import { Events as AdEvents, AdEvent } from './events.js';
+import { IAdsVideo } from './types.js';
+
+export * from './events.js';
+export * from './types.js';
 
 export const Attributes = {
   AD_TAG_URL: 'ad-tag-url',
@@ -21,7 +18,7 @@ type VideoBackup = {
 type Constructor<T> = new (...args: any[]) => T;
 
 export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Constructor<IAdsVideo> & T {
-  class AdsVideo extends superclass {
+  class AdsVideo extends superclass implements IAdsVideo {
     static get observedAttributes() {
       return [...super.observedAttributes, Attributes.AD_TAG_URL];
     }
@@ -35,78 +32,61 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       return (
         super.getTemplateHTML(attrs) +
         /*html*/ `
-        <style>
-          :host {
-            position: relative;
-          }
+          <style>
+            :host {
+              position: relative;
+            }
 
-          #ad-container {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            bottom: 0px;
-            right: 0px;
-            z-index: -1;
-            width: 100%;
-            height: 100%;
-          }
+            #ad-container {
+              position: absolute;
+              top: 0px;
+              left: 0px;
+              bottom: 0px;
+              right: 0px;
+              z-index: -1;
+              width: 100%;
+              height: 100%;
+            }
 
-          #ad-container.ad-playing {
-            z-index: 0;
-          }
+            #ad-container.ad-break {
+              z-index: 0;
+            }
 
-          #ima-unavailable-message {
-            position: absolute;
-            inset: 0;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.75);
-            color: white;
-            font-size: 0.9em;
-            text-align: center;
-            line-height: 1.4;
-            align-items: center;
-            align-content: center;
-            cursor: not-allowed;
-          }
+            #ima-unavailable-message {
+              position: absolute;
+              inset: 0;
+              z-index: 10;
+              background: rgba(0, 0, 0, 0.75);
+              color: white;
+              font-size: 0.9em;
+              text-align: center;
+              line-height: 1.4;
+              align-items: center;
+              align-content: center;
+              cursor: not-allowed;
+            }
 
-          #ima-unavailable-message h4 {
-            font-size: 1rem;
-            margin: 0;
-          }
-        </style>
-        <div id="ad-container"></div>
-      `
+            #ima-unavailable-message h4 {
+              font-size: 1rem;
+              margin: 0;
+            }
+          </style>
+          <div id="ad-container"></div>
+        `
       );
     };
 
     #oldAdTagUrl?: string | null;
     #adProvider?: GoogleImaClientProvider;
-    // #lastCurrentime?: number;
     #adBreak = false;
     #resizeObserver?: ResizeObserver;
     #videoBackup?: VideoBackup;
-    #muxDataKeepSession = false;
 
     constructor(...args: any[]) {
       super(...args);
 
       this.addEventListener('loadedmetadata', this.#onLoadedMetadata);
       this.addEventListener('play', this.#onPlay);
-
-      // TODO: re-evaluate
-      // this.nativeEl.addEventListener('play', (_event) => {
-      //   if (this.adBreak && !this.#isUsingSameVideoElement()) {
-      //     this.nativeEl.pause();
-      //     return;
-      //   }
-      // });
-
-      // this.nativeEl.addEventListener('seeking', (_event) => {
-      //   if (this.adBreak && !this.#isUsingSameVideoElement()) {
-      //     this.nativeEl.currentTime = this.#lastCurrentime ?? 0;
-      //     this.nativeEl.dispatchEvent(new Event('timeupdate'));
-      //   }
-      // });
     }
 
     connectedCallback() {
@@ -159,7 +139,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       // If we are in an ad-break block the events from the native video element.
       // This can happen when Google IMA reuses the same video element for ads.
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return;
       }
 
@@ -228,11 +208,11 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       this.#adContainer?.insertAdjacentHTML(
         'afterend',
         /* html */ `
-        <div id="ima-unavailable-message">
-          <h4>Ad experience unavailable.</h4>
-          <span>This may be due to a missing SDK, network issue, or ad blocker.</span>
-        </div>
-      `
+          <div id="ima-unavailable-message">
+            <h4>Ad experience unavailable.</h4>
+            <span>This may be due to a missing SDK, network issue, or ad blocker.</span>
+          </div>
+        `
       );
     }
 
@@ -251,10 +231,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return;
       }
 
-      if (event.type === AdEvents.AD_ENDED) {
-        this.#onAdEnded();
-      }
-
       this.#dispatchAdEvent(event.type);
     }
 
@@ -264,87 +240,60 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     #onAdBreakStart() {
-      if (this.#adProvider?.ad?.isLinear()) {
-        this.#setAdBreak(true);
-        super.pause();
+      this.#adBreak = true;
+      this.#adContainer?.classList.toggle('ad-break', true);
 
-        this.#videoBackup = {
-          currentTime: this.currentTime,
-        };
-
-        if (this.#isUsingSameVideoElement()) {
-          // todo: make the following less Mux specific.
-          this.muxDataKeepSession = true;
-          // @ts-ignore mux-video has an unload method
-          this.unload();
-          this.muxDataKeepSession = false;
-        } else {
-          this.nativeEl.style.display = 'none';
-        }
+      if (!this.ad?.isLinear()) {
+        return;
       }
-    }
 
-    #onAdEnded() {
-      if (this.#adProvider?.ad?.isLinear()) {
-        if (this.#isUsingSameVideoElement()) {
-          // todo: make the following less Mux specific.
-          this.muxDataKeepSession = true;
-          this.load();
-          this.muxDataKeepSession = false;
+      super.pause();
 
-          if (this.#videoBackup?.currentTime) {
-            this.currentTime = this.#videoBackup.currentTime;
-          }
-        } else {
-          // Show the video element again
-          this.nativeEl.style.removeProperty('display');
-        }
-
-        this.#videoBackup = undefined;
-      }
+      this.#videoBackup = {
+        currentTime: this.currentTime,
+      };
     }
 
     #onAdBreakEnd() {
-      this.#setAdBreak(false);
+      this.#adBreak = false;
+      this.#adContainer?.classList.toggle('ad-break', false);
+
+      if (this.#videoBackup?.currentTime) {
+        this.currentTime = this.#videoBackup.currentTime;
+      }
+
+      this.#videoBackup = undefined;
 
       setTimeout(() => {
-        this.play();
+        if (!super.ended) {
+          this.play();
+        }
       }, 100);
-    }
-
-    #isUsingSameVideoElement() {
-      if (this.#adProvider) {
-        const videoElements = this.#adContainer.querySelectorAll('video');
-        return videoElements.length === 0;
-      }
-      return undefined;
-    }
-
-    #setAdBreak(val: boolean) {
-      if (val === this.adBreak) return;
-      this.#adBreak = val;
-      this.#adContainer?.classList.toggle('ad-playing', this.#adBreak);
     }
 
     play() {
       if (!GoogleImaClientProvider.isSDKAvailable() && !this.allowAdBlocker) {
         return Promise.reject(new Error('Playback failed: Ad experience not available'));
       }
-      if (this.adBreak && this.#adProvider) {
+      if (this.#adBreak && this.#adProvider) {
         return this.#adProvider.play();
       }
       return super.play();
     }
 
     pause() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         this.#adProvider?.pause();
       }
       super.pause();
     }
 
-    get adBreak() {
-      return this.#adBreak;
+    get ad() {
+      return this.#adProvider?.ad;
+    }
+
+    get adsLoader() {
+      return this.#adProvider?.adsLoader;
     }
 
     get adTagUrl() {
@@ -361,43 +310,51 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       }
     }
 
+    get allowAdBlocker() {
+      return this.hasAttribute(Attributes.ALLOW_AD_BLOCKER);
+    }
+
+    set allowAdBlocker(val) {
+      this.toggleAttribute(Attributes.ALLOW_AD_BLOCKER, Boolean(val));
+    }
+
     get paused() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return this.#adProvider?.paused ?? false;
       }
       return super.paused;
     }
 
     get duration() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return this.#adProvider?.duration ?? 0;
       }
       return super.duration;
     }
 
     get currentTime() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return this.#adProvider?.currentTime ?? 0;
       }
       return super.currentTime;
     }
 
     set currentTime(val) {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return;
       }
       super.currentTime = val;
     }
 
     get volume() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return this.#adProvider?.volume ?? 0;
       }
       return super.volume;
     }
 
     set volume(val) {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         if (this.#adProvider) {
           this.#adProvider.volume = val;
         }
@@ -406,14 +363,14 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     get muted() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return !this.#adProvider?.volume;
       }
       return super.muted;
     }
 
     set muted(val) {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         if (this.#adProvider) {
           this.#adProvider.volume = val ? 0 : this.volume;
         }
@@ -422,46 +379,19 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     get readyState() {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         return 4;
       }
       return super.readyState;
     }
 
     async requestPictureInPicture(): Promise<PictureInPictureWindow> {
-      if (this.adBreak) {
+      if (this.#adBreak) {
         throw new Error('Cannot use PiP while ads are playing!');
       }
       return super.requestPictureInPicture();
     }
-
-    // todo: remove following Mux specific methods
-    get muxDataSDK() {
-      return mux as MuxDataSDK;
-    }
-
-    get muxDataSDKOptions() {
-      return {
-        imaAdsLoader: this.#adProvider?.adsLoader,
-      };
-    }
-
-    set muxDataKeepSession(val) {
-      // Don't sprout attributes here, this setter is used internally.
-      this.#muxDataKeepSession = Boolean(val);
-    }
-
-    get muxDataKeepSession() {
-      return this.#muxDataKeepSession;
-    }
-
-    get allowAdBlocker() {
-      return this.hasAttribute(Attributes.ALLOW_AD_BLOCKER);
-    }
-
-    set allowAdBlocker(val) {
-      this.toggleAttribute(Attributes.ALLOW_AD_BLOCKER, Boolean(val));
-    }
   }
+
   return AdsVideo as unknown as Constructor<IAdsVideo> & T;
 }

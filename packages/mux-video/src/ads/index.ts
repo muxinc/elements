@@ -1,13 +1,19 @@
-import { globalThis } from '../polyfills';
+/* eslint @typescript-eslint/triple-slash-reference: "off" */
+/// <reference types="google_interactive_media_ads_types" preserve="true"/>
+/// <reference path="../../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" preserve="true" />
+
+/** @TODO publish types for package to use here (CJP) */
+// @ts-ignore
+import mux from '@mux/mux-data-google-ima';
+import type { MuxDataSDK } from '@mux/playback-core';
 import { Autoplay } from '@mux/playback-core';
 import { MuxVideoBaseElement, Attributes as BaseAttributes, EventMap as BaseEventMap } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
-import { AdsVideoMixin, Attributes as AdsAttributes } from './mixin.js';
-import type { Expand, AdEventMap } from './types.js';
+import { globalThis } from '../polyfills';
+import { AdsVideoMixin, Attributes as AdsAttributes, Events as AdEvents, Expand, AdEventMap } from './mixin/index.js';
 
 export * from '@mux/mux-video/base';
-export * from './types.js';
 
 export type EventMap = Expand<BaseEventMap & AdEventMap>;
 
@@ -18,6 +24,57 @@ export const Attributes = {
 
 // castable-video should be mixed in last so that it can override load().
 class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(AdsVideoMixin(MuxVideoBaseElement))) {
+  #muxDataKeepSession = false;
+
+  handleEvent(event: Event) {
+    super.handleEvent(event);
+
+    if (event.type === AdEvents.AD_BREAK_START) {
+      this.#handleAdBreakStart();
+    } else if (event.type === AdEvents.AD_BREAK_END) {
+      this.#handleAdBreakEnd();
+    }
+  }
+
+  #handleAdBreakStart() {
+    if (!this.ad?.isLinear()) return;
+
+    if (this.ad?.isCustomPlaybackUsed()) {
+      this.muxDataKeepSession = true;
+      this.unload();
+      this.muxDataKeepSession = false;
+    }
+  }
+
+  #handleAdBreakEnd() {
+    if (!this.ad?.isLinear()) return;
+
+    if (this.ad?.isCustomPlaybackUsed()) {
+      this.muxDataKeepSession = true;
+      this.load();
+      this.muxDataKeepSession = false;
+    }
+  }
+
+  get muxDataSDK() {
+    return mux as MuxDataSDK;
+  }
+
+  get muxDataSDKOptions() {
+    return {
+      imaAdsLoader: this.adsLoader,
+    };
+  }
+
+  set muxDataKeepSession(val) {
+    // Don't sprout attributes here, this setter is used internally.
+    this.#muxDataKeepSession = Boolean(val);
+  }
+
+  get muxDataKeepSession() {
+    return this.#muxDataKeepSession;
+  }
+
   // Define autoplay in the most outer layer because mux-video accepts string | boolean
   // which is not compatible the CustomVideoElement.autoplay boolean only type.
   /** @ts-ignore */

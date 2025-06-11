@@ -1,9 +1,7 @@
-/* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference types="google_interactive_media_ads_types" preserve="true"/>
 import React, { useRef, useState } from 'react';
 import '@mux/mux-video/ads';
-import '@mux/mux-player/themes/news';
 import MuxPlayer, { MuxPlayerProps } from '@mux/mux-player-react';
+import NewsTheme from '@mux/mux-player-react/themes/news';
 import PlaylistEndScreen from './playlist-end-screen';
 
 export interface VideoItem {
@@ -17,10 +15,9 @@ export type PlaylistVideos = VideoItem[];
 
 export interface PlaylistProps extends Omit<MuxPlayerProps, 'playbackId' | 'adTagUrl'> {
   videoList: PlaylistVideos;
-  allowAdBlocker?: boolean;
 }
 
-const MuxNewsPlayer = ({ allowAdBlocker, videoList, ...props }: PlaylistProps) => {
+const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
   const mediaElRef = useRef<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isEndScreenVisible, setIsEndScreenVisible] = useState(false);
@@ -45,17 +42,10 @@ const MuxNewsPlayer = ({ allowAdBlocker, videoList, ...props }: PlaylistProps) =
   return (
     <div>
       <MuxPlayer
-        {...props}
-        allowAdBlocker={allowAdBlocker}
         ref={mediaElRef}
-        theme="news"
+        theme={NewsTheme}
         key={`player-${playerKey}`}
         playbackId={videoList[currentIndex].playbackId}
-        style={{ aspectRatio: '16/9' }}
-        maxResolution="2160p"
-        minResolution="540p"
-        renditionOrder="desc"
-        preferPlayback="mse"
         adTagUrl={videoList[currentIndex].adTagUrl}
         onEnded={(_event) => {
           if (currentIndex < videoList.length - 1) {
@@ -66,6 +56,11 @@ const MuxNewsPlayer = ({ allowAdBlocker, videoList, ...props }: PlaylistProps) =
           }
         }}
         {...props}
+        style={{ aspectRatio: '16/9' }}
+        preferPlayback="mse"
+        maxResolution="2160p"
+        minResolution="540p"
+        renditionOrder="desc"
       >
         <PlaylistEndScreen
           video={currentIndex < videoList.length - 1 ? videoList[currentIndex + 1] : videoList[0]}
