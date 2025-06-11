@@ -79,7 +79,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     #oldAdTagUrl?: string | null;
     #adProvider?: GoogleImaClientProvider;
     #adBreak = false;
-    #resizeObserver?: ResizeObserver;
     #videoBackup?: VideoBackup;
 
     constructor(...args: any[]) {
@@ -100,23 +99,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         }
         return;
       }
-
-      this.#resizeObserver = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const { width, height } = entry.contentRect;
-          if (width > 0 && height > 0) {
-            this.#adProvider?.resize(width, height);
-          }
-        }
-      });
-      this.#resizeObserver?.observe(this);
-    }
-
-    disconnectedCallback() {
-      super.disconnectedCallback();
-
-      this.#resizeObserver?.disconnect();
-      this.#resizeObserver = undefined;
     }
 
     attributeChangedCallback(attrName: string, oldValue?: string | null, newValue?: string | null): void {

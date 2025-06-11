@@ -11,16 +11,23 @@ export const Events = {
   AD_ENDED: 'adended',
   AD_BREAK_END: 'adbreakend',
   AD_ERROR: 'aderror',
+  AD_PLAY: 'adplay',
+  AD_PLAYING: 'adplaying',
+  AD_PAUSE: 'adpause',
+
+  // Useful ad specific events that are not part of the Mux Data spec
+  AD_IMPRESSION: 'adimpression',
+  AD_CLICK: 'adclick',
+  AD_SKIP: 'adskip',
+  AD_CLOSE: 'adclose',
 
   // Use standard events if possible to be consistent with HTMLVideoElement
   // https://www.w3.org/TR/html52/semantics-embedded-content.html#mediaevents
-  // AD_PLAY: 'adplay',
-  // AD_PLAYING: 'adplaying',
-  // AD_PAUSE: 'adpause',
   PLAY: 'play',
   PLAYING: 'playing',
   PAUSE: 'pause',
   VOLUME_CHANGE: 'volumechange',
   TIME_UPDATE: 'timeupdate',
   DURATION_CHANGE: 'durationchange',
+  WAITING: 'waiting',
 } as const;

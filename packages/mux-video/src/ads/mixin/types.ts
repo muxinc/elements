@@ -63,3 +63,31 @@ export declare class IAdsVideoClientAd {
    */
   isCustomPlaybackUsed(): boolean;
 }
+
+export declare class IAdsVideoClientProvider extends EventTarget {
+  get adsLoader(): google.ima.AdsLoader | undefined;
+  get ad(): IAdsVideoClientAd | undefined;
+  get paused(): boolean;
+  get duration(): number;
+  get currentTime(): number;
+  get volume(): number;
+  set volume(val: number);
+
+  initializeAdDisplayContainer(): void;
+  requestAds(adTagUrl: string): void;
+  play(): Promise<void>;
+  pause(): void;
+  destroy(): void;
+
+  addEventListener<K extends keyof AdEventMap>(
+    type: K,
+    listener: (this: IAdsVideoClientProvider, ev: AdEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof AdEventMap>(
+    type: K,
+    listener: (this: IAdsVideoClientProvider, ev: AdEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
+  ): void;
+}

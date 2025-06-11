@@ -2,6 +2,7 @@
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
 import { Events, AdEvent } from './events.js';
 import { GoogleImaClientAd } from './google-ima-client-ad.js';
+import { IAdsVideoClientProvider } from './types.js';
 
 export type GoogleImaClientProviderConfig = {
   adContainer: HTMLElement;
@@ -9,7 +10,7 @@ export type GoogleImaClientProviderConfig = {
   originalSize: DOMRect;
 };
 
-export class GoogleImaClientProvider extends EventTarget {
+export class GoogleImaClientProvider extends EventTarget implements IAdsVideoClientProvider {
   static isSDKAvailable() {
     if (!('google' in globalThis && 'ima' in globalThis['google'])) {
       console.error('Missing google.ima SDK. Make sure you include it via a script tag.');
@@ -22,6 +23,7 @@ export class GoogleImaClientProvider extends EventTarget {
   #adContainer: HTMLElement;
   #videoElement: HTMLVideoElement;
   #originalSize: DOMRect;
+  #resizeObserver?: ResizeObserver;
   #adDisplayContainer: google.ima.AdDisplayContainer;
   #adsLoader: google.ima.AdsLoader;
   #adsManager?: google.ima.AdsManager;
@@ -51,16 +53,34 @@ export class GoogleImaClientProvider extends EventTarget {
       google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
       this.#onAdsManagerLoaded
     );
+
+    this.#resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          this.#resize(width, height);
+        }
+      }
+    });
+    this.#resizeObserver?.observe(this.#adContainer);
   }
 
   destroy() {
     this.#videoElement.removeEventListener('play', this.#onVideoPlay);
     this.#videoElement.removeEventListener('ended', this.#onVideoEnded);
 
+    this.#resizeObserver?.disconnect();
+    this.#resizeObserver = undefined;
+
     this.#adsManager?.stop();
     this.#adsManager?.destroy();
     this.#adDisplayContainer?.destroy();
     this.#adsLoader?.destroy();
+  }
+
+  #resize(width: number, height: number) {
+    this.#originalSize = { ...this.#originalSize, width, height };
+    this.#adsManager?.resize(this.#originalSize.width, this.#originalSize.height);
   }
 
   #onVideoPlay = () => {
@@ -90,10 +110,6 @@ export class GoogleImaClientProvider extends EventTarget {
       this.dispatchEvent(new AdEvent(Events.AD_RESPONSE));
     });
 
-    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.DURATION_CHANGE, () => {
-      this.dispatchEvent(new AdEvent(Events.DURATION_CHANGE));
-    });
-
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, (event: google.ima.AdEvent) => {
       this.#imaAd = event.getAd();
 
@@ -104,6 +120,22 @@ export class GoogleImaClientProvider extends EventTarget {
 
       this.#ad = new GoogleImaClientAd(this.#imaAd, this.#adsManager);
       this.dispatchEvent(new AdEvent(Events.AD_BREAK_START));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CLICK, () => {
+      this.dispatchEvent(new AdEvent(Events.AD_CLICK));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.IMPRESSION, () => {
+      this.dispatchEvent(new AdEvent(Events.AD_IMPRESSION));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.SKIPPED, () => {
+      this.dispatchEvent(new AdEvent(Events.AD_SKIP));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.USER_CLOSE, () => {
+      this.dispatchEvent(new AdEvent(Events.AD_CLOSE));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.FIRST_QUARTILE, () => {
@@ -131,22 +163,33 @@ export class GoogleImaClientProvider extends EventTarget {
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
+      this.dispatchEvent(new AdEvent(Events.AD_PLAYING));
       this.dispatchEvent(new AdEvent(Events.PLAYING));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.PAUSED, () => {
       this.#adPaused = true;
+      this.dispatchEvent(new AdEvent(Events.AD_PAUSE));
       this.dispatchEvent(new AdEvent(Events.PAUSE));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.RESUMED, () => {
       this.#adPaused = false;
+      this.dispatchEvent(new AdEvent(Events.AD_PLAY));
       this.dispatchEvent(new AdEvent(Events.PLAY));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.AD_BUFFERING, () => {
+      this.dispatchEvent(new AdEvent(Events.WAITING));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.AD_PROGRESS, (adProgressEvent: google.ima.AdEvent) => {
       this.#adProgressData = adProgressEvent.getAdData() as google.ima.AdProgressData;
       this.dispatchEvent(new AdEvent(Events.TIME_UPDATE));
+    });
+
+    this.#adsManager?.addEventListener(google.ima.AdEvent.Type.DURATION_CHANGE, () => {
+      this.dispatchEvent(new AdEvent(Events.DURATION_CHANGE));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.VOLUME_CHANGED, () => {
@@ -190,15 +233,15 @@ export class GoogleImaClientProvider extends EventTarget {
   }
 
   get paused() {
-    return this.#adsManager && this.#adPaused;
+    return this.#adPaused;
   }
 
   get duration() {
-    return this.#adProgressData?.duration ?? this.#imaAd?.getDuration();
+    return this.#adProgressData?.duration ?? this.#imaAd?.getDuration() ?? NaN;
   }
 
   get currentTime() {
-    return this.#adProgressData?.currentTime;
+    return this.#adProgressData?.currentTime ?? 0;
   }
 
   get volume() {
@@ -246,10 +289,5 @@ export class GoogleImaClientProvider extends EventTarget {
     adsRequest.adTagUrl = adTagUrl;
     this.#adsLoader?.requestAds(adsRequest);
     this.dispatchEvent(new AdEvent(Events.AD_REQUEST));
-  }
-
-  resize(width: number, height: number) {
-    this.#originalSize = { ...this.#originalSize, width, height };
-    this.#adsManager?.resize(this.#originalSize.width, this.#originalSize.height);
   }
 }
