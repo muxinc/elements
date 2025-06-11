@@ -42,25 +42,26 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
   return (
     <div>
       <MuxPlayer
-        ref={mediaElRef}
         theme={NewsTheme}
+        style={{ aspectRatio: '16/9' }}
+        preferPlayback="mse"
+        maxResolution="2160p"
+        minResolution="540p"
+        renditionOrder="desc"
+        {...props}
+        ref={mediaElRef}
         key={`player-${playerKey}`}
         playbackId={videoList[currentIndex].playbackId}
         adTagUrl={videoList[currentIndex].adTagUrl}
-        onEnded={(_event) => {
+        onEnded={(event) => {
           if (currentIndex < videoList.length - 1) {
             setIsEndScreenVisible(true);
           } else {
             setCurrentIndex(0);
             setPlayerKey((prev) => prev + 1);
           }
+          props.onEnded?.(event);
         }}
-        {...props}
-        style={{ aspectRatio: '16/9' }}
-        preferPlayback="mse"
-        maxResolution="2160p"
-        minResolution="540p"
-        renditionOrder="desc"
       >
         <PlaylistEndScreen
           video={currentIndex < videoList.length - 1 ? videoList[currentIndex + 1] : videoList[0]}
