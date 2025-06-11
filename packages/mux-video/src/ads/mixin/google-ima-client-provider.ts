@@ -200,6 +200,8 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
       this.#adPaused = false;
       this.dispatchEvent(new AdEvent(Events.AD_PLAY));
       this.dispatchEvent(new AdEvent(Events.PLAY));
+      this.dispatchEvent(new AdEvent(Events.AD_PLAYING));
+      this.dispatchEvent(new AdEvent(Events.PLAYING));
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.AD_BUFFERING, () => {

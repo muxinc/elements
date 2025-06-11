@@ -1,41 +1,9 @@
 import Head from 'next/head';
+import Script from 'next/script';
+import { useState } from 'react';
 import MuxNewsPlayer from '@mux/mux-player-react/news';
-import { useEffect, useState } from 'react';
 
-function MuxVideoPage() {
-
-  const [sdkLoaded, setSdkLoaded] = useState(false);
-
-  useEffect(() => {
-    // Dynamically load the IMA SDK
-    const loadImaSdk = () => {
-      const script = document.createElement("script");
-      script.src = "https://imasdk.googleapis.com/js/sdkloader/ima3.js";
-      script.async = true;
-      script.onload = () => {
-        setSdkLoaded(true);  // Mark SDK as loaded
-        console.log("Google IMA SDK loaded");
-      };
-      script.onerror = () => {
-        setSdkLoaded(true);
-      };
-      document.head.appendChild(script);
-    };
-
-    if (!window.google || !window.google.ima) {
-      loadImaSdk();
-    } else {
-      setSdkLoaded(true);
-    }
-
-    return () => {
-      // Cleanup by removing the script
-      const scriptElement = document.querySelector('script[src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"]');
-      if (scriptElement) {
-        scriptElement.remove();
-      }
-    };
-  }, []);
+function MuxNewsPlayerPage() {
 
   const relatedVideos = [
     {
@@ -58,13 +26,28 @@ function MuxVideoPage() {
     },
   ];
 
+  const [sdkReady, setSdkReady] = useState(false);
+
   return (
     <>
       <Head>
         <title>&lt;Playlist/&gt; Demo 3</title>
       </Head>
+
+      <Script
+        src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"
+        onReady={() => {
+          setSdkReady(true);
+          console.log("Google IMA SDK loaded");
+        }}
+        onError={() => {
+          setSdkReady(true);
+          console.log("Google IMA SDK failed to load");
+        }}
+        strategy="afterInteractive"
+      />
       
-      {sdkLoaded && 
+      {sdkReady && 
         <MuxNewsPlayer
           allowAdBlocker={true}
           videoList={relatedVideos} 
@@ -73,4 +56,4 @@ function MuxVideoPage() {
   );
 }
 
-export default MuxVideoPage;
+export default MuxNewsPlayerPage;

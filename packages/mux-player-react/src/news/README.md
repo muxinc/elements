@@ -40,7 +40,6 @@ or manually add it as a dependency in your package.json
 In your React component:
 
 ```jsx
-'use client';
 import MuxNewsPlayer from "@mux/mux-player-react/news";
 ```
 
@@ -128,7 +127,6 @@ return (
 ### 3. Complete Implementation Example
 
 ```jsx
-'use client';
 import Head from 'next/head';
 import { useEffect, useState } from "react";
 import MuxNewsPlayer from "@mux/mux-player-react/news";

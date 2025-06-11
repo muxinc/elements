@@ -135,15 +135,22 @@ export type MuxPlayerProps = {
   onError?: GenericEventListener<MuxPlayerElementEventMap['error']>;
   onCuePointChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointchange']>;
   onChapterChange?: GenericEventListener<MuxPlayerElementEventMap['chapterchange']>;
-  onAdError?: GenericEventListener<MuxPlayerElementEventMap['aderror']>;
   onAdRequest?: GenericEventListener<MuxPlayerElementEventMap['adrequest']>;
   onAdResponse?: GenericEventListener<MuxPlayerElementEventMap['adresponse']>;
+  onAdImpression?: GenericEventListener<MuxPlayerElementEventMap['adimpression']>;
   onAdBreakStart?: GenericEventListener<MuxPlayerElementEventMap['adbreakstart']>;
+  onAdPlay?: GenericEventListener<MuxPlayerElementEventMap['adplay']>;
+  onAdPlaying?: GenericEventListener<MuxPlayerElementEventMap['adplaying']>;
+  onAdPause?: GenericEventListener<MuxPlayerElementEventMap['adpause']>;
   onAdFirstQuartile?: GenericEventListener<MuxPlayerElementEventMap['adfirstquartile']>;
   onAdMidpoint?: GenericEventListener<MuxPlayerElementEventMap['admidpoint']>;
   onAdThirdQuartile?: GenericEventListener<MuxPlayerElementEventMap['adthirdquartile']>;
+  onAdClick?: GenericEventListener<MuxPlayerElementEventMap['adclick']>;
+  onAdSkip?: GenericEventListener<MuxPlayerElementEventMap['adskip']>;
+  onAdClose?: GenericEventListener<MuxPlayerElementEventMap['adclose']>;
   onAdEnded?: GenericEventListener<MuxPlayerElementEventMap['adended']>;
   onAdBreakEnd?: GenericEventListener<MuxPlayerElementEventMap['adbreakend']>;
+  onAdError?: GenericEventListener<MuxPlayerElementEventMap['aderror']>;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
 
@@ -206,15 +213,22 @@ const usePlayer = (
     onError,
     onCuePointChange,
     onChapterChange,
-    onAdError,
     onAdRequest,
     onAdResponse,
+    onAdImpression,
     onAdBreakStart,
+    onAdPlay,
+    onAdPlaying,
+    onAdPause,
     onAdFirstQuartile,
     onAdMidpoint,
     onAdThirdQuartile,
+    onAdClick,
+    onAdSkip,
+    onAdClose,
     onAdEnded,
     onAdBreakEnd,
+    onAdError,
     metadata,
     tokens,
     paused,
@@ -283,15 +297,22 @@ const usePlayer = (
   useEventCallbackEffect('error', ref, onError);
   useEventCallbackEffect('cuepointchange', ref, onCuePointChange);
   useEventCallbackEffect('chapterchange', ref, onChapterChange);
-  useEventCallbackEffect('aderror', ref, onAdError);
   useEventCallbackEffect('adrequest', ref, onAdRequest);
   useEventCallbackEffect('adresponse', ref, onAdResponse);
+  useEventCallbackEffect('adimpression', ref, onAdImpression);
   useEventCallbackEffect('adbreakstart', ref, onAdBreakStart);
+  useEventCallbackEffect('adplay', ref, onAdPlay);
+  useEventCallbackEffect('adplaying', ref, onAdPlaying);
+  useEventCallbackEffect('adpause', ref, onAdPause);
   useEventCallbackEffect('adfirstquartile', ref, onAdFirstQuartile);
   useEventCallbackEffect('admidpoint', ref, onAdMidpoint);
   useEventCallbackEffect('adthirdquartile', ref, onAdThirdQuartile);
+  useEventCallbackEffect('adclick', ref, onAdClick);
+  useEventCallbackEffect('adskip', ref, onAdSkip);
+  useEventCallbackEffect('adclose', ref, onAdClose);
   useEventCallbackEffect('adended', ref, onAdEnded);
   useEventCallbackEffect('adbreakend', ref, onAdBreakEnd);
+  useEventCallbackEffect('aderror', ref, onAdError);
   return [remainingProps];
 };
 

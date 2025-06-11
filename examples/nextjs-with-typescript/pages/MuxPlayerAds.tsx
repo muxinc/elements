@@ -41,7 +41,6 @@ function MuxPlayerAdsPage() {
         playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
         adTagUrl="https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
         allowAdBlocker={true}
-        onAdError={() => console.log('Ad Error')}
         onAdRequest={() => console.log('Ad Request')}
         onAdResponse={() => console.log('Ad Response')}
         onAdBreakStart={() => console.log('Ad Break Start')}
@@ -50,6 +49,7 @@ function MuxPlayerAdsPage() {
         onAdThirdQuartile={() => console.log('Ad Third Quartile')}
         onAdEnded={() => console.log('Ad Ended')}
         onAdBreakEnd={() => console.log('Ad Break End')}
+        onAdError={() => console.log('Ad Error')}
         metadata={{
           video_id: "video-id-12345",
           video_title: "Elephants Dream",
