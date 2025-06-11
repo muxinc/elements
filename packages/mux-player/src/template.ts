@@ -139,7 +139,7 @@ export const content = (props: MuxTemplateProps) => html`
       allow-ad-blocker="${props.allowAdBlocker ?? false}"
       exportparts="video"
     >
-      ${props.storyboard
+      ${!props.adBreak && props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
       <slot></slot>
