@@ -134,7 +134,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     #onPlay() {
-      // Make sure the ads are reset before playing.
+      // Make sure the ads are reset before playing if needed.
       this.#resetAds();
       this.#adProvider?.initializeAdDisplayContainer();
     }

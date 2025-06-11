@@ -33,6 +33,8 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
   #initializedAdDisplayContainer = false;
   #adPaused = false;
   #videoPlayed = false;
+  #adBreak = false;
+  #lastCurrentTime = 0;
 
   constructor(config: GoogleImaClientProviderConfig) {
     super();
@@ -42,8 +44,9 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
     this.#originalSize = config.originalSize;
 
     this.#videoPlayed = !this.#videoElement.paused;
-    this.#videoElement.addEventListener('play', this.#onVideoPlay, { once: true });
-    this.#videoElement.addEventListener('ended', this.#onVideoEnded, { once: true });
+    this.#videoElement.addEventListener('play', this.#onVideoPlay);
+    this.#videoElement.addEventListener('seeking', this.#onVideoSeeking);
+    this.#videoElement.addEventListener('ended', this.#onVideoEnded);
 
     this.#adDisplayContainer = new google.ima.AdDisplayContainer(this.#adContainer, this.#videoElement);
     this.#adsLoader = new google.ima.AdsLoader(this.#adDisplayContainer);
@@ -67,6 +70,7 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
 
   destroy() {
     this.#videoElement.removeEventListener('play', this.#onVideoPlay);
+    this.#videoElement.removeEventListener('seeking', this.#onVideoSeeking);
     this.#videoElement.removeEventListener('ended', this.#onVideoEnded);
 
     this.#resizeObserver?.disconnect();
@@ -85,13 +89,29 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
 
   #onVideoPlay = () => {
     this.#videoPlayed = true;
+
+    if (this.#adBreak && !this.#adsManager?.isCustomPlaybackUsed()) {
+      console.warn('Video play prevented during ad break');
+      this.#videoElement.pause();
+    }
+  };
+
+  #onVideoSeeking = () => {
+    if (this.#adBreak && !this.#adsManager?.isCustomPlaybackUsed()) {
+      if (this.#videoElement.currentTime !== this.#lastCurrentTime) {
+        console.warn('Seek prevented during ad break');
+        this.#videoElement.currentTime = this.#lastCurrentTime;
+        this.#videoElement.dispatchEvent(new Event('timeupdate'));
+      }
+    }
   };
 
   #onVideoEnded = () => {
     this.#adsLoader?.contentComplete();
   };
 
-  #onAdError = (_adErrorEvent: google.ima.AdErrorEvent) => {
+  #onAdError = (adErrorEvent: google.ima.AdErrorEvent) => {
+    console.error('Ad error', adErrorEvent.getError()?.getMessage());
     this.dispatchEvent(new AdEvent(Events.AD_ERROR));
     this.#onAdComplete();
   };
@@ -118,6 +138,8 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
         return;
       }
 
+      this.#adBreak = true;
+      this.#lastCurrentTime = this.#videoElement.currentTime || 0;
       this.#ad = new GoogleImaClientAd(this.#imaAd, this.#adsManager);
       this.dispatchEvent(new AdEvent(Events.AD_BREAK_START));
     });
@@ -159,6 +181,7 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
     });
 
     this.#adsManager?.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, () => {
+      this.#adBreak = false;
       this.dispatchEvent(new AdEvent(Events.AD_BREAK_END));
     });
 
