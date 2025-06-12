@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.29.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.0...@mux/playback-core@0.29.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* **playback-core:** Change default of preferCmcd to 'none' for improved cacheability. Update reference docs to document preferCmcd (et al.). ([#1136](https://github.com/muxinc/elements/issues/1136)) ([4409304](https://github.com/muxinc/elements/commit/44093049b6629044dbb7fed10839f83667fdb37c))
+
 ## [0.29.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.7...@mux/playback-core@0.29.0) (2025-05-01)
 
 
