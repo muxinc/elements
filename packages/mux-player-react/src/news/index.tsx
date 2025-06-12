@@ -40,38 +40,36 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
   }
 
   return (
-    <div>
-      <MuxPlayer
-        theme={NewsTheme}
-        style={{ aspectRatio: '16/9' }}
-        preferPlayback="mse"
-        maxResolution="2160p"
-        minResolution="540p"
-        renditionOrder="desc"
-        {...props}
-        ref={mediaElRef}
-        key={`player-${playerKey}`}
-        playbackId={videoList[currentIndex].playbackId}
-        adTagUrl={videoList[currentIndex].adTagUrl}
-        onEnded={(event) => {
-          if (currentIndex < videoList.length - 1) {
-            setIsEndScreenVisible(true);
-          } else {
-            setCurrentIndex(0);
-            setPlayerKey((prev) => prev + 1);
-          }
-          props.onEnded?.(event);
-        }}
-      >
-        <PlaylistEndScreen
-          video={currentIndex < videoList.length - 1 ? videoList[currentIndex + 1] : videoList[0]}
-          relatedVideos={videoList}
-          isVisible={isEndScreenVisible}
-          selectVideoCallback={selectVideo}
-          timerCallback={playVideo}
-        />
-      </MuxPlayer>
-    </div>
+    <MuxPlayer
+      theme={NewsTheme}
+      style={{ aspectRatio: '16/9' }}
+      preferPlayback="mse"
+      maxResolution="2160p"
+      minResolution="540p"
+      renditionOrder="desc"
+      {...props}
+      ref={mediaElRef}
+      key={`player-${playerKey}`}
+      playbackId={videoList[currentIndex].playbackId}
+      adTagUrl={videoList[currentIndex].adTagUrl}
+      onEnded={(event) => {
+        if (currentIndex < videoList.length - 1) {
+          setIsEndScreenVisible(true);
+        } else {
+          setCurrentIndex(0);
+          setPlayerKey((prev) => prev + 1);
+        }
+        props.onEnded?.(event);
+      }}
+    >
+      <PlaylistEndScreen
+        video={currentIndex < videoList.length - 1 ? videoList[currentIndex + 1] : videoList[0]}
+        relatedVideos={videoList}
+        isVisible={isEndScreenVisible}
+        selectVideoCallback={selectVideo}
+        timerCallback={playVideo}
+      />
+    </MuxPlayer>
   );
 };
 
