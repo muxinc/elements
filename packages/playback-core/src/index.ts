@@ -1297,13 +1297,13 @@ export const loadMedia = (
     hls.on(Hls.Events.MANIFEST_LOADED, () => {
       // Clear error state and UI
       const state = muxMediaState.get(mediaEl);
-      if (state) {
+      if (state && state.error) {
         state.error = null;
         state.retryCount = 0;
-      }
 
-      mediaEl.dispatchEvent(new Event('emptied'));
-      mediaEl.dispatchEvent(new Event('loadstart'));
+        mediaEl.dispatchEvent(new Event('emptied'));
+        mediaEl.dispatchEvent(new Event('loadstart'));
+      }
     });
 
     mediaEl.addEventListener('error', handleInternalError);
