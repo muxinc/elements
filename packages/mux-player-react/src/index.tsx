@@ -15,7 +15,7 @@ import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, MuxPlayerElementEventMap } from '@mux/mux-player';
 import { toNativeProps } from './common/utils';
 import { useRef } from 'react';
-import { useCombinedRefs } from './useCombinedRefs';
+import { useComposedRefs } from './useComposedRefs';
 import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
 
@@ -141,7 +141,8 @@ const MuxPlayerInternal = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProp
     'mux-player',
     {
       suppressHydrationWarning: true, // prevent issues with SSR / player-init-time
-      ...toNativeProps({ ...props, ref }),
+      ...toNativeProps(props),
+      ref,
     },
     children
   );
@@ -275,14 +276,14 @@ const MuxPlayer = React.forwardRef<
   Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>
 >((props, ref) => {
   const innerPlayerRef = useRef<MuxPlayerElement>(null);
-  const playerRef = useCombinedRefs(innerPlayerRef, ref);
+  const playerRef = useComposedRefs(innerPlayerRef, ref);
   const [remainingProps] = usePlayer(innerPlayerRef, props);
   const [playerInitTime] = useState(props.playerInitTime ?? generatePlayerInitTime());
 
   return (
     <MuxPlayerInternal
       /** @TODO Fix types relationships (CJP) */
-      ref={playerRef as typeof innerPlayerRef}
+      ref={playerRef as React.Ref<MuxPlayerElement>}
       defaultHiddenCaptions={props.defaultHiddenCaptions}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}

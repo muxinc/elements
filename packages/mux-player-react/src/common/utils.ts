@@ -51,8 +51,9 @@ export const toNativeAttrValue = (propValue: any, _propName: string) => {
   return propValue;
 };
 
-export const toNativeProps = (props = {}) => {
-  return Object.entries(props).reduce<{ [k: string]: string }>((transformedProps, [propName, propValue]) => {
+export const toNativeProps = (props: { ref?: any; [key: string]: any } = {}) => {
+  const { ref, ...restProps } = props;
+  return Object.entries(restProps).reduce<{ [k: string]: string }>((transformedProps, [propName, propValue]) => {
     const attrName = toNativeAttrName(propName, propValue);
 
     // prop was stripped. Don't add.

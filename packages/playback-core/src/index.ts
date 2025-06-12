@@ -612,14 +612,14 @@ export const setupHls = (
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const drmConfig = getDRMConfig(props);
     // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
-    const cmcd =
-      preferCmcd !== CmcdTypes.NONE
-        ? {
-            useHeaders: preferCmcd === CmcdTypes.HEADER,
-            sessionId: metadata?.view_session_id,
-            contentId: metadata?.video_id,
-          }
-        : undefined;
+    // @ts-ignore
+    const cmcd = [CmcdTypes.QUERY, CmcdTypes.HEADER].includes(preferCmcd)
+      ? {
+          useHeaders: preferCmcd === CmcdTypes.HEADER,
+          sessionId: metadata?.view_session_id,
+          contentId: metadata?.video_id,
+        }
+      : undefined;
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
