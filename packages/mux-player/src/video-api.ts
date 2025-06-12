@@ -62,8 +62,57 @@ const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
 
 export const AttributeNames = [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
 
+// NOTE: Some of these are defined in MuxPlayerElement. We may want to apply a
+// `Pick<>` on these to also enforce consistency (CJP).
+type PartialHTMLVideoElement = Omit<
+  HTMLVideoElement,
+  | 'disablePictureInPicture'
+  | 'height'
+  | 'width'
+  | 'error'
+  | 'seeking'
+  | 'onenterpictureinpicture'
+  | 'onleavepictureinpicture'
+  | 'load'
+  | 'cancelVideoFrameCallback'
+  | 'getVideoPlaybackQuality'
+  | 'requestPictureInPicture'
+  | 'requestVideoFrameCallback'
+  | 'controls'
+  | 'disableRemotePlayback'
+  | 'mediaKeys'
+  | 'networkState'
+  | 'onencrypted'
+  | 'onwaitingforkey'
+  | 'played'
+  | 'remote'
+  | 'srcObject'
+  | 'textTracks'
+  | 'addTextTrack'
+  | 'canPlayType'
+  | 'fastSeek'
+  | 'setMediaKeys'
+  | 'HAVE_CURRENT_DATA'
+  | 'HAVE_ENOUGH_DATA'
+  | 'HAVE_FUTURE_DATA'
+  | 'HAVE_METADATA'
+  | 'HAVE_NOTHING'
+  | 'NETWORK_EMPTY'
+  | 'NETWORK_IDLE'
+  | 'NETWORK_LOADING'
+  | 'NETWORK_NO_SOURCE'
+  | 'src'
+  | 'poster'
+  | 'mux' // NOTE: Because of our global types extension of HTMLMediaElement, `mux` is a property that also needs to be omitted (CJP)
+>;
+
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
-interface VideoApiElement extends HTMLElement {
+interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
+  addEventListener<K extends keyof HTMLVideoElementEventMap>(
+    type: K,
+    listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
@@ -73,6 +122,11 @@ interface VideoApiElement extends HTMLElement {
     type: string,
     listener: (event: CustomEvent) => void,
     options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof HTMLVideoElementEventMap>(
+    type: K,
+    listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
   ): void;
   removeEventListener(
     type: string,
