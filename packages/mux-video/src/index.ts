@@ -28,6 +28,7 @@ import {
   toPlaybackIdFromSrc,
   toPlaybackIdParts,
   fetchMetadata,
+  FetchError,
   // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
@@ -150,11 +151,6 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
 
-    this.addEventListener('setdefaultlogo', (e) => {
-      this.#logo = 'default';
-      this.updateLogo();
-    });
-
     this.addEventListener('muxmetadata', (e: Event) => {
       const customEvent = e as CustomEvent<Record<string, any>>;
       const previous = this.#metadata ?? {};
@@ -163,6 +159,11 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
         ...previous,
         ...customEvent.detail,
       };
+
+      if ((this.#metadata as any)['com.mux.video.branding'] === 'mux-free-plan') {
+        this.#logo = 'default';
+        this.updateLogo();
+      }
     });
   }
 
@@ -783,7 +784,7 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
     this.#core = undefined;
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  async attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     // Only forward the attributes to the native media element that are not handled.
     const isNativeAttr = CustomVideoElement.observedAttributes.includes(attrName);
     if (isNativeAttr && !['src', 'autoplay', 'preload'].includes(attrName)) {
@@ -841,7 +842,23 @@ class MuxVideoBaseElement extends CustomVideoElement implements Partial<MuxMedia
       }
       case Attributes.METADATA_URL:
         if (newValue) {
-          fetchMetadata(this as HTMLMediaElement, newValue);
+          try {
+            const metadata = await fetchMetadata(newValue);
+            const eventUpdateMetadata = new CustomEvent('muxmetadata', {
+              bubbles: true,
+              composed: true,
+              detail: metadata,
+            });
+            this.dispatchEvent(eventUpdateMetadata);
+          } catch (e) {
+            if (e instanceof FetchError) {
+              this.mux?.emit('error', {
+                player_error_code: e.status,
+                player_error_message: `HTTP error ${e.status}`,
+                player_error_context: `Error fetching video metadata from: ${newValue}`,
+              });
+            }
+          }
         }
         break;
       case Attributes.STREAM_TYPE:
