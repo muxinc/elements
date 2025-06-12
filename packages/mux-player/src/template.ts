@@ -11,7 +11,7 @@ const getPropsCSS = (props: MuxTemplateProps) => {
   const { tokens } = props;
   if (!tokens.drm) return '';
   // See styles.css for usage.
-  return ':host { --_cast-button-drm-display: none; }';
+  return ':host(:not([cast-receiver])) { --_cast-button-drm-display: none; }';
 };
 
 export const template = (props: MuxTemplateProps) => html`
