@@ -2,7 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import type { ErrorData, HlsConfig } from 'hls.js';
+import { type ErrorData, type HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -166,8 +166,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
 export const updateStreamInfoFromSrc = async (
   src: string,
   mediaEl: HTMLMediaElement,
-  type: MediaTypes | '' = getType({ src }),
-  customElement: HTMLMediaElement
+  type: MediaTypes | '' = getType({ src })
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
 
@@ -178,7 +177,19 @@ export const updateStreamInfoFromSrc = async (
       pathParts.pop();
       pathParts.push('metadata.json');
       url.pathname = pathParts.join('/');
-      fetchMetadata(customElement, url.toString());
+      try {
+        const metadata = await fetchMetadata(url.toString());
+        const eventUpdateMetadata = new CustomEvent('muxmetadata', { bubbles: true, composed: true, detail: metadata });
+        mediaEl.dispatchEvent(eventUpdateMetadata);
+      } catch (e) {
+        if (e instanceof FetchError) {
+          mediaEl.mux?.emit('error', {
+            player_error_code: e.status,
+            player_error_message: `HTTP error ${e.status}`,
+            player_error_context: `Error fetching video metadata from: ${url.toString()}`,
+          });
+        }
+      }
     } catch (e) {
       console.error('Failed to construct metadata URL from src:', src, e);
     }
@@ -1180,7 +1191,7 @@ export const loadMedia = (
         });
       };
       const setupNativeStreamInfo = async () => {
-        return updateStreamInfoFromSrc(src, mediaEl, type, props as HTMLMediaElement)
+        return updateStreamInfoFromSrc(src, mediaEl, type)
           .then(setupSeekableChangePoll)
           .catch((errOrResp: Response | Error) => {
             if (errOrResp instanceof Response) {
@@ -1597,30 +1608,30 @@ const getErrorFromHlsErrorData = (
   return mediaError;
 };
 
-export const fetchMetadata = (el: HTMLMediaElement, metadataUrl: string) => {
-  fetch(metadataUrl)
-    .then((resp) => {
-      if (!resp.ok) throw resp;
-      return resp.json();
-    })
-    .then((json) => {
-      const metadata = extractMetadata(json);
+export class FetchError extends Error {
+  constructor(
+    public status: number,
+    public statusText: string,
+    public body: any | null = null
+  ) {
+    super(`HTTP ${status} – ${statusText}`);
+    this.name = 'FetchError';
+  }
+}
 
-      const eventUpdateMetadata = new CustomEvent('muxmetadata', { bubbles: true, composed: true, detail: metadata });
-      el.dispatchEvent(eventUpdateMetadata);
+export const fetchMetadata = async (metadataUrl: string): Promise<Record<string, string>> => {
+  const resp = await fetch(metadataUrl);
+  if (!resp.ok) throw new FetchError(resp.status, resp.statusText, resp);
+  const json = await resp.json();
+  let metadata: Record<string, string> = {};
 
-      if (metadata['com.mux.video.branding'] === 'mux-free-plan') {
-        const eventSetDefaultLogo = new Event('setdefaultlogo', { bubbles: true, composed: true });
-        el.dispatchEvent(eventSetDefaultLogo);
-      }
-    })
-    .catch((e) => {
-      el.mux?.emit('error', {
-        player_error_code: e.status,
-        player_error_message: `HTTP error ${e.status}`,
-        player_error_context: `Error fetching video metadata from: ${metadataUrl}`,
-      });
-    });
+  for (const item of json[0].metadata) {
+    if (item.key && item.value) {
+      metadata[item.key] = item.value;
+    }
+  }
+
+  return metadata;
 };
 
 const extractMetadata = (json: any): Record<string, string> => {
