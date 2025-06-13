@@ -23,6 +23,7 @@ export class MuxAdManager {
   #ad: google.ima.Ad | undefined | null;
   #adProgressData: google.ima.AdProgressData | undefined | null;
   #adPaused = false;
+  #videoPlayed = false;
   #videoElement: HTMLVideoElement;
   #customMediaElement: MuxVideoAdsElement;
   #viewMode: google.ima.ViewMode;
@@ -33,6 +34,16 @@ export class MuxAdManager {
   constructor(config: MuxAdManagerConfig) {
     this.#customMediaElement = config.videoElement;
     this.#videoElement = config.contentVideoElement;
+    this.#videoPlayed = !this.#videoElement.paused;
+    if (!this.#videoPlayed) {
+      this.#videoElement.addEventListener(
+        'play',
+        () => {
+          this.#videoPlayed = true;
+        },
+        { once: true }
+      );
+    }
     this.#viewMode = google.ima.ViewMode.NORMAL;
     this.#originalSize = config.originalSize;
     this.#adContainer = config.adContainer;
@@ -201,8 +212,30 @@ export class MuxAdManager {
       false
     );
 
-    this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
-    this.#adsManager?.start();
+    const startAds = () => {
+      this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height, this.#viewMode);
+      this.#adsManager?.start();
+    };
+
+    try {
+      if (this.#videoPlayed) {
+        startAds();
+      } else {
+        this.#videoElement.addEventListener(
+          'play',
+          () => {
+            this.#videoPlayed = true;
+            startAds();
+          },
+          { once: true }
+        );
+      }
+    } catch {
+      // NOTE: This will have more robust state cleanup on this exception case in the official implementation (CJP).
+      console.error(
+        'Failed to start ads! Make sure you include the google.ima SDK as a script tag and that it is loaded before attempting ad playback'
+      );
+    }
   }
 
   static isGoogleImaSDKAvailable() {
