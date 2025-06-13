@@ -123,7 +123,7 @@ describe('errors', () => {
         const { dialog } = getErrorLogs(error);
         assert.equal(
           String(dialog.message),
-          'The live stream or video file are not yet ready.',
+          'A network error caused the media download to fail.',
           UNEXPECTED_DIALOG_MESSAGE
         );
       });
@@ -206,7 +206,7 @@ describe('errors', () => {
         const { dialog } = getErrorLogs(error);
         assert.equal(
           String(dialog.message),
-          'The live stream or video file are not yet ready.',
+          'A network error caused the media download to fail.',
           UNEXPECTED_DIALOG_MESSAGE
         );
       });
