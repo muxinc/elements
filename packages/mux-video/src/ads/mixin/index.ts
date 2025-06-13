@@ -156,8 +156,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     #requestAds() {
       // The container element must be in the DOM to initialize the ad display container.
-      // Wait until the video metadata has loaded before requesting ads to avoid unnecessary requests.
-      if (!this.adTagUrl || !this.isConnected || !this.#videoMetadataLoaded) return;
+      if (!this.adTagUrl || !this.isConnected) return;
 
       if (!this.#adProvider && GoogleImaClientProvider.isSDKAvailable()) {
         this.#adProvider = new GoogleImaClientProvider({
@@ -170,6 +169,9 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
           this.#adProvider.addEventListener(event, this);
         }
       }
+
+      // Wait until the video metadata has loaded before requesting ads to avoid unnecessary requests.
+      if (!this.#videoMetadataLoaded) return;
 
       if (this.adTagUrl !== this.#oldAdTagUrl) {
         this.#oldAdTagUrl = this.adTagUrl;
@@ -283,6 +285,9 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     get adsLoader() {
+      if (!this.#adProvider) {
+        console.warn('adsLoader not available yet');
+      }
       return this.#adProvider?.adsLoader;
     }
 
