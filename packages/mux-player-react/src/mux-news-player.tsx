@@ -69,20 +69,22 @@ export const MuxNewsPlayer = ({ videoList, allowAdBlocker: allowAdBlocker, ...mu
         renditionOrder="desc"
         preferPlayback="mse"
         adTagUrl={videoList[currentIndex].adTagUrl}
-        onPlay={() => {
+        onPlay={(event) => {
           setPaused(false);
+          muxPlayerProps.onPlay?.(event);
         }}
-        onPause={() => {
+        onPause={(event) => {
           setPaused(true);
+          muxPlayerProps.onPause?.(event);
         }}
-        onEnded={(_event) => {
-          console.log('ONENDED');
+        onEnded={(event) => {
           if (currentIndex < videoList.length - 1) {
             setIsEndScreenVisible(true);
           } else {
             setCurrentIndex(0);
             setPlayerKey((prev) => prev + 1);
           }
+          muxPlayerProps.onEnded?.(event);
         }}
       >
         <PlaylistEndScreen

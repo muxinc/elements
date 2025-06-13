@@ -2,6 +2,10 @@ import Head from 'next/head';
 import { MuxNewsPlayer } from "@mux/mux-player-react"
 import { useEffect, useState } from 'react';
 
+const onEnded = console.log.bind(null, '!!!ENDED');
+const onPlay = console.log.bind(null, '!!!PLAY');
+const onPause = console.log.bind(null, '!!!PAUSE');
+
 function MuxVideoPage() {
 
   const [sdkLoaded, setSdkLoaded] = useState(false);
@@ -63,12 +67,17 @@ function MuxVideoPage() {
       <Head>
         <title>&lt;Playlist/&gt; Demo 3</title>
       </Head>
-      
-      {sdkLoaded && 
-        <MuxNewsPlayer 
+
+      {sdkLoaded &&
+        <MuxNewsPlayer
           // allow playback with ad blocker
           allowAdBlocker={true}
-          videoList={relatedVideos} 
+          videoList={relatedVideos}
+          muted={true}
+          autoPlay={true}
+          onEnded={onEnded}
+          onPlay={onPlay}
+          onPause={onPause}
         />}
     </>
   );
