@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/themes/gerwig.ts"],
+  "sourcesContent": ["'use client';\nimport '@mux/mux-player/themes/gerwig';\nexport default 'gerwig';\n"],
+  "mappings": "aACA,MAAO,gCACP,IAAOA,EAAQ",
+  "names": ["gerwig_default"]
+}

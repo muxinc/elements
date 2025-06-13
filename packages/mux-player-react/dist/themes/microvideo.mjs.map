@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../src/themes/microvideo.ts"],
+  "sourcesContent": ["'use client';\nimport '@mux/mux-player/themes/microvideo';\nexport default 'microvideo';\n"],
+  "mappings": "aACA,MAAO,oCACP,IAAOA,EAAQ",
+  "names": ["microvideo_default"]
+}

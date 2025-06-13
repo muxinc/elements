@@ -1,0 +1,70 @@
+import React from 'react';
+import { CSSProperties } from 'react';
+import '@mux/mux-uploader';
+import MuxUploaderElement from '@mux/mux-uploader';
+import { MuxUploaderElementEventMap } from '@mux/mux-uploader';
+import { constants } from '@mux/mux-uploader';
+import MuxUploaderDrop from './mux-uploader-drop';
+import MuxUploaderFileSelect from './mux-uploader-file-select';
+import MuxUploaderProgress from './mux-uploader-progress';
+import MuxUploaderRetry from './mux-uploader-retry';
+import MuxUploaderPause from './mux-uploader-pause';
+import MuxUploaderStatus from './mux-uploader-status';
+export declare const ProgressTypes: constants.ProgressTypes;
+export type ProgressTypes = typeof ProgressTypes;
+export type MuxUploaderRefAttributes = MuxUploaderElement;
+interface GenericEventListener<T extends Event = CustomEvent> {
+    (evt: T): void;
+}
+export type MuxUploaderProps = {
+    id?: string;
+    endpoint?: MuxUploaderElement['endpoint'];
+    type?: ProgressTypes[keyof ProgressTypes];
+    noDrop?: boolean;
+    noProgress?: boolean;
+    noStatus?: boolean;
+    noRetry?: boolean;
+    pausable?: boolean;
+    style?: CSSProperties & {
+        ['--progress-bar-fill-color']?: CSSProperties['background'];
+        ['--progress-radial-fill-color']?: CSSProperties['stroke'];
+    };
+    children?: React.ReactNode;
+    dynamicChunkSize?: boolean;
+    useLargeFileWorkaround?: boolean;
+    maxFileSize?: number;
+    chunkSize?: number;
+    onUploadStart?: GenericEventListener<MuxUploaderElementEventMap['uploadstart']>;
+    onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap['chunkattempt']>;
+    onChunkSuccess?: GenericEventListener<MuxUploaderElementEventMap['chunksuccess']>;
+    onUploadError?: GenericEventListener<MuxUploaderElementEventMap['uploaderror']>;
+    onProgress?: GenericEventListener<MuxUploaderElementEventMap['progress']>;
+    onSuccess?: GenericEventListener<MuxUploaderElementEventMap['success']>;
+} & Pick<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, Exclude<keyof React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'>>;
+declare const MuxUploader: React.ForwardRefExoticComponent<{
+    id?: string;
+    endpoint?: MuxUploaderElement["endpoint"];
+    type?: ProgressTypes[keyof ProgressTypes];
+    noDrop?: boolean;
+    noProgress?: boolean;
+    noStatus?: boolean;
+    noRetry?: boolean;
+    pausable?: boolean;
+    style?: CSSProperties & {
+        ["--progress-bar-fill-color"]?: CSSProperties["background"];
+        ["--progress-radial-fill-color"]?: CSSProperties["stroke"];
+    };
+    children?: React.ReactNode;
+    dynamicChunkSize?: boolean;
+    useLargeFileWorkaround?: boolean;
+    maxFileSize?: number;
+    chunkSize?: number;
+    onUploadStart?: GenericEventListener<MuxUploaderElementEventMap["uploadstart"]>;
+    onChunkAttempt?: GenericEventListener<MuxUploaderElementEventMap["chunkattempt"]>;
+    onChunkSuccess?: GenericEventListener<MuxUploaderElementEventMap["chunksuccess"]>;
+    onUploadError?: GenericEventListener<MuxUploaderElementEventMap["uploaderror"]>;
+    onProgress?: GenericEventListener<MuxUploaderElementEventMap["progress"]>;
+    onSuccess?: GenericEventListener<MuxUploaderElementEventMap["success"]>;
+} & Pick<React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, Exclude<keyof React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>, "ref">> & React.RefAttributes<MuxUploaderElement>>;
+export { MuxUploaderDrop, MuxUploaderFileSelect, MuxUploaderProgress, MuxUploaderRetry, MuxUploaderPause, MuxUploaderStatus, };
+export default MuxUploader;
