@@ -225,6 +225,11 @@ export class MuxAdManager {
           'play',
           () => {
             this.#videoPlayed = true;
+            // NOTE: Since this condition is specifically to account for preroll  cases where ads should start (and start playing),
+            // go ahead and immediately pause to avoid slower async cases where some amount of main content plays before ads playback
+            /// kicks in. This can also create confusing/complex scenarios in Mux Data views where the main content plays before the preroll.
+            // Additionally, this quick fix may not generalize for ads content that does not include preroll. (CJP)
+            this.#videoElement.pause();
             startAds();
           },
           { once: true }

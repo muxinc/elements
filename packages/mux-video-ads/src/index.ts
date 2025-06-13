@@ -291,6 +291,8 @@ video::-webkit-media-text-track-container {
 
       if (this.#muxAdManager?.isReadyForInitialization() || this.#muxAdManager?.isInitialized()) {
         this.#muxAdManager.requestAds(this.adTagUrl);
+        // NOTE: Still need to initiate play() if we're about to request ads that we intend to play.
+        return super.play();
       } else if (this.#muxAdManager?.isAdPaused()) {
         this.#muxAdManager.resumeAdManager();
       }
