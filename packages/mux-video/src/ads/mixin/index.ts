@@ -18,7 +18,7 @@ type VideoBackup = {
 export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Constructor<IAdsVideo> & T {
   class AdsVideo extends superclass implements IAdsVideo {
     static get observedAttributes() {
-      return [...super.observedAttributes, Attributes.AD_TAG_URL];
+      return [...super.observedAttributes, 'src', Attributes.AD_TAG_URL];
     }
 
     static get Events() {
@@ -80,13 +80,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     #adBreak = false;
     #videoBackup?: VideoBackup;
 
-    constructor(...args: any[]) {
-      super(...args);
-
-      this.addEventListener('loadedmetadata', this.#onLoadedMetadata);
-      this.addEventListener('play', this.#onPlay);
-    }
-
     connectedCallback() {
       super.connectedCallback();
 
@@ -102,6 +95,15 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     attributeChangedCallback(attrName: string, oldValue?: string | null, newValue?: string | null): void {
       super.attributeChangedCallback(attrName, oldValue, newValue);
+
+      if (attrName === 'src' && newValue !== oldValue) {
+        // If subsequent videos are loaded, reset the old ad tag url
+        // to allow the same ads to be requested for a new video.
+        if (this.#videoMetadataLoaded) {
+          this.#oldAdTagUrl = undefined;
+        }
+        this.#videoBackup = undefined;
+      }
 
       if (attrName === Attributes.AD_TAG_URL) {
         this.#resetAds();
@@ -124,17 +126,16 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return;
       }
 
+      if (event.type === 'loadedmetadata') {
+        this.#onLoadedMetadata();
+      } else if (event.type === 'play') {
+        this.#onPlay();
+      }
+
       super.handleEvent(event);
     }
 
     #onLoadedMetadata() {
-      // If subsequent videos are loaded, reset the old ad tag url
-      // to allow the same ads to be requested for a new video.
-      if (this.#videoMetadataLoaded) {
-        this.#oldAdTagUrl = undefined;
-      }
-
-      this.#videoBackup = undefined;
       this.#videoMetadataLoaded = true;
       // When a new video is loaded, make sure we reset the ads.
       this.#resetAds();
@@ -239,7 +240,11 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return;
       }
 
-      super.pause();
+      try {
+        super.pause();
+      } catch {
+        // Ignore AbortError: The play() request was interrupted by a call to pause()
+      }
 
       this.#videoBackup = {
         currentTime: super.currentTime,
