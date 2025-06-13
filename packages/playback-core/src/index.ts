@@ -2,7 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import type { ErrorData, HlsConfig } from 'hls.js';
+import { type ErrorData, type HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -169,6 +169,31 @@ export const updateStreamInfoFromSrc = async (
   type: MediaTypes | '' = getType({ src })
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
+
+  if (streamType === StreamTypes.ON_DEMAND && src.endsWith('.mp4') && !src.includes(MUX_VIDEO_DOMAIN)) {
+    try {
+      const url = new URL(src);
+      const pathParts = url.pathname.split('/');
+      pathParts.pop();
+      pathParts.push('metadata.json');
+      url.pathname = pathParts.join('/');
+      try {
+        const metadata = await fetchMetadata(url.toString());
+        const eventUpdateMetadata = new CustomEvent('muxmetadata', { bubbles: true, composed: true, detail: metadata });
+        mediaEl.dispatchEvent(eventUpdateMetadata);
+      } catch (e) {
+        if (e instanceof FetchError) {
+          mediaEl.mux?.emit('error', {
+            player_error_code: e.status,
+            player_error_message: `HTTP error ${e.status}`,
+            player_error_context: `Error fetching video metadata from: ${url.toString()}`,
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Failed to construct metadata URL from src:', src, e);
+    }
+  }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
@@ -411,6 +436,10 @@ const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
+};
+
+export const getMetadata = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.metadata;
 };
 
 export const getStreamType = (mediaEl: HTMLMediaElement) => {
@@ -1496,4 +1525,53 @@ const getErrorFromHlsErrorData = (
   }
   mediaError.data = data;
   return mediaError;
+};
+
+export class FetchError extends Error {
+  constructor(
+    public status: number,
+    public statusText: string,
+    public body: any | null = null
+  ) {
+    super(`HTTP ${status} – ${statusText}`);
+    this.name = 'FetchError';
+  }
+}
+
+export const fetchMetadata = async (metadataUrl: string): Promise<Record<string, string>> => {
+  const resp = await fetch(metadataUrl);
+  if (!resp.ok) throw new FetchError(resp.status, resp.statusText, resp);
+  const json = await resp.json();
+  let metadata: Record<string, string> = {};
+
+  for (const item of json[0].metadata) {
+    if (item.key && item.value) {
+      metadata[item.key] = item.value;
+    }
+  }
+
+  return metadata;
+};
+
+const extractMetadata = (json: any): Record<string, string> => {
+  const metadata: Record<string, string> = {};
+
+  if (Array.isArray(json) && json.length > 0) {
+    const first = json[0];
+    if (Array.isArray(first.metadata)) {
+      for (const item of first.metadata) {
+        if (item.key && item.value) {
+          metadata[item.key] = item.value;
+        }
+      }
+    } else {
+      for (const [key, value] of Object.entries(first)) {
+        if (typeof value === 'string' || typeof value === 'number') {
+          metadata[key] = String(value);
+        }
+      }
+    }
+  }
+
+  return metadata;
 };
