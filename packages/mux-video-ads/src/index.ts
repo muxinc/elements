@@ -175,8 +175,6 @@ video::-webkit-media-text-track-container {
       { once: true }
     );
 
-    this.addEventListener('play', this.play);
-
     this.nativeEl.addEventListener('play', (_event) => {
       if (this.adBreak && !this.#isUsingSameVideoElement) {
         console.warn('Video play prevented during ad break');
@@ -271,8 +269,10 @@ video::-webkit-media-text-track-container {
       if (this.#muxAdManager?.isAdPaused()) {
         this.#muxAdManager?.resumeAdManager();
       }
-      this.dispatchEvent(new Event('playing'));
-      return Promise.resolve();
+      return Promise.resolve().then(() => {
+        this.dispatchEvent(new Event('play'));
+        this.dispatchEvent(new Event('playing'));
+      });
     }
 
     const adBlockerDetected = !this.#muxAdManager?.adsLoader;
@@ -295,7 +295,9 @@ video::-webkit-media-text-track-container {
         this.#muxAdManager.resumeAdManager();
       }
 
-      return Promise.resolve();
+      return Promise.resolve().then(() => {
+        this.dispatchEvent(new Event('play'));
+      });
     }
     this.#setAdContainerPlaying(false);
     return super.play();
