@@ -50,9 +50,6 @@ import { MediaTracksMixin } from 'media-tracks';
 import type { HlsConfig } from 'hls.js';
 import { muxLogo } from './assets/mux-logo.js';
 
-// Must mutate so the added events are available in custom-media-element.
-VideoEvents.push('castchange', 'entercast', 'leavecast');
-
 export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
