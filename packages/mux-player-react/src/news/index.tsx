@@ -46,6 +46,9 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
       maxResolution="2160p"
       minResolution="540p"
       renditionOrder="desc"
+      metadata={{
+        video_title: videoList[currentIndex].title,
+      }}
       {...props}
       ref={mediaElRef}
       key={`player-${playerKey}`}
