@@ -3,11 +3,13 @@ import { MuxMediaEventsMap } from '@mux/playback-core';
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
-type EventMapFromEvents<T extends readonly string[]> = {
-  [K in T[number]]: CustomEvent<{ composed: true }>;
+type EventMapFromEvents<T extends string> = {
+  [K in T]: CustomEvent<{ composed: true; detail: any }>;
 };
 
-export type EventMap = Expand<EventMapFromEvents<typeof Events> & MuxMediaEventsMap>;
+type EventsAndMuxMediaEvents = (typeof Events)[number] | keyof MuxMediaEventsMap;
+
+export type EventMap = Expand<EventMapFromEvents<EventsAndMuxMediaEvents>>;
 
 export interface IMuxVideoBaseElement extends HTMLVideoElement {
   addEventListener<K extends keyof EventMap>(

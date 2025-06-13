@@ -19,11 +19,29 @@
     "<4.3.5": {
       ".": [
         "./dist/types-ts3.4/index.d.ts"
+      ],
+      "base": [
+        "./dist/types-ts3.4/base.d.ts"
+      ],
+      "ads": [
+        "./dist/types-ts3.4/ads/index.d.ts"
+      ],
+      "ads/mixin": [
+        "./dist/types-ts3.4/ads/mixin/index.d.ts"
       ]
     },
     "*": {
       ".": [
         "./dist/types/index.d.ts"
+      ],
+      "base": [
+        "./dist/types/base.d.ts"
+      ],
+      "ads": [
+        "./dist/types/ads/index.d.ts"
+      ],
+      "ads/mixin": [
+        "./dist/types/ads/mixin/index.d.ts"
       ]
     }
   },
@@ -35,11 +53,37 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
+    "./ads": {
+      "types@<4.3.5": "./dist/types-ts3.4/ads/index.d.ts",
+      "types": "./dist/types/ads/index.d.ts",
+      "import": "./dist/ads/index.mjs",
+      "require": "./dist/ads/index.cjs.js",
+      "default": "./dist/ads/index.cjs.js"
+    },
+    "./ads/mixin": {
+      "types@<4.3.5": "./dist/types-ts3.4/ads/mixin/index.d.ts",
+      "types": "./dist/types/ads/mixin/index.d.ts",
+      "import": "./dist/ads/mixin/index.mjs",
+      "require": "./dist/ads/mixin/index.cjs.js",
+      "default": "./dist/ads/mixin/index.cjs.js"
+    },
     "./themes/*": {
       "browser": "./dist/themes/*/index.mjs",
       "import": "./dist/themes/*/index.mjs",
       "require": "./dist/themes/*/index.cjs.js",
       "default": "./dist/themes/*/index.cjs.js"
+    },
+    "./*.js": {
+      "import": "./dist/*.js",
+      "require": "./dist/*.cjs.js",
+      "default": "./dist/*.js"
+    },
+    "./*": {
+      "types@<4.3.5": "./dist/types-ts3.4/*.d.ts",
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/*.mjs",
+      "require": "./dist/*.cjs.js",
+      "default": "./dist/*.mjs"
     }
   },
   "types": "./dist/types/index.d.ts",
@@ -57,22 +101,28 @@
     "test": "web-test-runner **/*test.js --port 8001 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-player/src/' coverage/lcov.info --silent",
     "i18n": "npm run build:esm -- --keep-names && i18n-utils dist/index.mjs ./lang",
-    "dev:iife": "npm run build:iife -- --watch=forever",
-    "dev:esm": "npm run build:esm -- --watch=forever",
-    "dev:esm-module": "npm run build:esm-module -- --watch=forever",
-    "dev:cjs": "npm run build:cjs -- --watch=forever",
+    "dev:iife": "npm-run-all --parallel 'build:iife:** -- --watch=forever'",
+    "dev:esm": "npm-run-all --parallel 'build:esm:** -- --watch=forever'",
+    "dev:esm-module": "npm-run-all --parallel 'build:esm-module:** -- --watch=forever'",
+    "dev:cjs": "npm-run-all --parallel 'build:cjs:** -- --watch=forever'",
     "dev:types": "npm run build:types -- -w",
     "dev:themes": "node ./scripts/build-themes.mjs --dev",
     "dev": "npm-run-all --parallel dev:types dev:esm dev:cjs dev:esm-module dev:iife dev:themes",
-    "build:esm": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
-    "build:esm-module": "esbuilder src/index.ts --format=esm-module --outfile=dist/mux-player.mjs",
-    "build:iife": "esbuilder src/index.ts --format=iife --outfile=dist/mux-player.js",
-    "build:cjs": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
+    "build:esm:index": "esbuilder src/index.ts --format=esm --out-extension:.js=.mjs",
+    "build:esm-module:index": "esbuilder src/index.ts --format=esm-module --outfile=dist/mux-player.mjs",
+    "build:iife:index": "esbuilder src/index.ts --format=iife --outfile=dist/mux-player.js",
+    "build:cjs:index": "esbuilder src/index.ts --format=cjs --out-extension:.js=.cjs.js",
+    "build:esm:base": "esbuilder src/base.ts --format=esm --outdir=dist --out-extension:.js=.mjs",
+    "build:cjs:base": "esbuilder src/base.ts --format=cjs --outdir=dist --out-extension:.js=.cjs.js",
+    "build:esm:ads": "esbuilder src/ads/index.ts --format=esm --outdir=dist/ads --out-extension:.js=.mjs",
+    "build:cjs:ads": "esbuilder src/ads/index.ts --format=cjs --outdir=dist/ads --out-extension:.js=.cjs.js",
+    "build:esm:ads:mixin": "esbuilder src/ads/mixin/index.ts --format=esm --outdir=dist/ads/mixin --out-extension:.js=.mjs",
+    "build:cjs:ads:mixin": "esbuilder src/ads/mixin/index.ts --format=cjs --outdir=dist/ads/mixin --out-extension:.js=.cjs.js",
     "build:themes": "node ./scripts/build-themes.mjs",
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify' 'build:themes'"
+    "build": "npm-run-all 'build:esm:base -- --minify' 'build:cjs:base -- --minify' 'build:esm:ads:mixin -- --minify' 'build:cjs:ads:mixin -- --minify' --parallel 'build:esm:** -- --minify' 'build:iife:** -- --minify' 'build:cjs:** -- --minify' 'build:esm-module:** -- --minify' 'build:themes'"
   },
   "dependencies": {
     "@mux/mux-video": "0.25.3",

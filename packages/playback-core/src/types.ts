@@ -209,6 +209,7 @@ export type MuxMediaPropsInternal = MuxMediaProps & {
   drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
 };
 
+// TODO: Make these more uniform, remove bubbles, discuss to remove detail.
 export type MuxMediaEventsMap = {
   cuepointchange: CustomEvent<{ composed: true; bubbles: true; detail: CuePoint }>;
   chapterchange: CustomEvent<{ composed: true; bubbles: true; detail: Chapter }>;

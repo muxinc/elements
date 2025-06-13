@@ -11,7 +11,13 @@ import { MuxVideoBaseElement, Attributes as BaseAttributes, EventMap as BaseEven
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
 import { MediaTracksMixin } from 'media-tracks';
 import { globalThis } from '../polyfills';
-import { AdsVideoMixin, Attributes as AdsAttributes, Events as AdEvents, Expand, AdEventMap } from './mixin/index.js';
+import {
+  AdsVideoMixin,
+  Attributes as AdsAttributes,
+  Events as AdEvents,
+  Expand,
+  EventMap as AdEventMap,
+} from '@mux/mux-video/ads/mixin';
 
 export * from '@mux/mux-video/base';
 

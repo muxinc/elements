@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
-import '@mux/mux-video/ads';
-import MuxPlayer, { MuxPlayerProps } from '@mux/mux-player-react';
+import MuxPlayer, { MuxPlayerProps } from '@mux/mux-player-react/ads';
 import NewsTheme from '@mux/mux-player-react/themes/news';
 import PlaylistEndScreen from './playlist-end-screen';
 

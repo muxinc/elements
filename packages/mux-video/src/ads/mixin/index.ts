@@ -1,7 +1,7 @@
 import { GoogleImaClientProvider } from './google-ima-client-provider';
 import type { CustomVideoElement } from 'custom-media-element';
 import { Events as AdEvents, AdEvent } from './events.js';
-import { IAdsVideo } from './types.js';
+import { Constructor, IAdsVideo } from './types.js';
 
 export * from './events.js';
 export * from './types.js';
@@ -14,8 +14,6 @@ export const Attributes = {
 type VideoBackup = {
   currentTime: number;
 };
-
-type Constructor<T> = new (...args: any[]) => T;
 
 export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Constructor<IAdsVideo> & T {
   class AdsVideo extends superclass implements IAdsVideo {
@@ -76,6 +74,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       );
     };
 
+    #videoMetadataLoaded = false;
     #oldAdTagUrl?: string | null;
     #adProvider?: GoogleImaClientProvider;
     #adBreak = false;
@@ -129,6 +128,14 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     #onLoadedMetadata() {
+      // If subsequent videos are loaded, reset the old ad tag url
+      // to allow the same ads to be requested for a new video.
+      if (this.#videoMetadataLoaded) {
+        this.#oldAdTagUrl = undefined;
+      }
+
+      this.#videoBackup = undefined;
+      this.#videoMetadataLoaded = true;
       // When a new video is loaded, make sure we reset the ads.
       this.#resetAds();
     }
@@ -149,7 +156,8 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     #requestAds() {
       // The container element must be in the DOM to initialize the ad display container.
-      if (!this.adTagUrl || !this.isConnected) return;
+      // Wait until the video metadata has loaded before requesting ads to avoid unnecessary requests.
+      if (!this.adTagUrl || !this.isConnected || !this.#videoMetadataLoaded) return;
 
       if (!this.#adProvider && GoogleImaClientProvider.isSDKAvailable()) {
         this.#adProvider = new GoogleImaClientProvider({
@@ -232,7 +240,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       super.pause();
 
       this.#videoBackup = {
-        currentTime: this.currentTime,
+        currentTime: super.currentTime,
       };
     }
 

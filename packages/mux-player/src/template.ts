@@ -82,7 +82,6 @@ export const partsListStr = Object.values(Parts).join(', ');
 export const content = (props: MuxTemplateProps) => html`
   <media-theme
     template="${props.themeTemplate || false}"
-    mediaadbreak="${props.adBreak ?? false}"
     defaultstreamtype="${props.defaultStreamType ?? false}"
     hotkeys="${getHotKeys(props) || false}"
     nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
@@ -135,11 +134,9 @@ export const content = (props: MuxTemplateProps) => html`
       cast-src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
       cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
-      ad-tag-url="${props.adTagUrl ?? false}"
-      allow-ad-blocker="${props.allowAdBlocker ?? false}"
       exportparts="video"
     >
-      ${!props.adBreak && props.storyboard
+      ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
         : html``}
       <slot></slot>

@@ -1,6 +1,6 @@
 import type MuxVideoElement from '@mux/mux-video';
 import type { MediaError } from '@mux/mux-video';
-import type { EventMap as AdsEventMap } from '@mux/mux-video/ads';
+import type { EventMap as MuxVideoEventMap } from '@mux/mux-video';
 import type {
   MaxResolutionValue,
   MinResolutionValue,
@@ -10,6 +10,7 @@ import type {
 } from '@mux/playback-core';
 import type { AttributeTokenList } from './helpers';
 
+export type Props = MuxPlayerProps;
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   nohotkeys?: boolean;
   hotkeys?: AttributeTokenList;
@@ -86,7 +87,8 @@ export type ErrorEvent = {
 
 type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
-export type MuxPlayerElementEventMap = Expand<AdsEventMap>;
+export type EventMap = MuxPlayerElementEventMap;
+export type MuxPlayerElementEventMap = Expand<MuxVideoEventMap>;
 
 export interface IMuxPlayerElement {
   addEventListener<K extends keyof MuxPlayerElementEventMap>(

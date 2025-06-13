@@ -27,6 +27,9 @@
       ],
       "ads": [
         "./dist/types-ts3.4/ads/index.d.ts"
+      ],
+      "ads/mixin": [
+        "./dist/types-ts3.4/ads/mixin/index.d.ts"
       ]
     },
     "*": {
@@ -41,6 +44,9 @@
       ],
       "ads": [
         "./dist/types/ads/index.d.ts"
+      ],
+      "ads/mixin": [
+        "./dist/types/ads/mixin/index.d.ts"
       ]
     }
   },
@@ -65,6 +71,13 @@
       "import": "./dist/ads/index.mjs",
       "require": "./dist/ads/index.cjs.js",
       "default": "./dist/ads/index.cjs.js"
+    },
+    "./ads/mixin": {
+      "types@<4.3.5": "./dist/types-ts3.4/ads/mixin/index.d.ts",
+      "types": "./dist/types/ads/mixin/index.d.ts",
+      "import": "./dist/ads/mixin/index.mjs",
+      "require": "./dist/ads/mixin/index.cjs.js",
+      "default": "./dist/ads/mixin/index.cjs.js"
     },
     "./*.js": {
       "import": "./dist/*.js",
@@ -93,10 +106,10 @@
     "test": "web-test-runner **/*test.js --port 8002 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-video/src/' coverage/lcov.info --silent",
     "dev:types": "npm run build:types -- -w",
-    "dev:iife": "npm-run-all --parallel build:iife:** -- --watch=forever",
-    "dev:cjs": "npm-run-all --parallel build:cjs:** -- --watch=forever",
-    "dev:esm": "npm-run-all --parallel build:esm:** -- --watch=forever",
-    "dev:esm-module": "npm-run-all --parallel build:esm-module:** -- --watch=forever",
+    "dev:iife": "npm-run-all --parallel 'build:iife:** -- --watch=forever'",
+    "dev:cjs": "npm-run-all --parallel 'build:cjs:** -- --watch=forever'",
+    "dev:esm": "npm-run-all --parallel 'build:esm:** -- --watch=forever'",
+    "dev:esm-module": "npm-run-all --parallel 'build:esm-module:** -- --watch=forever'",
     "dev": "npm-run-all --parallel dev:types dev:iife dev:cjs dev:esm dev:esm-module",
     "build:esm:index": "esbuild src/index.ts --target=es2019 --external:@mux/* --external:castable-video --external:custom-media-element --external:media-tracks --bundle --sourcemap --metafile=./dist/esm.json --format=esm --outdir=dist --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:esm-module:index": "esbuild src/index.ts --target=es2019 --bundle --sourcemap --metafile=./dist/module.json --format=esm --outfile=./dist/mux-video.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
@@ -108,12 +121,14 @@
     "build:esm:react": "esbuild src/react.ts --target=es2019 --bundle --format=esm --outdir=dist --out-extension:.js=.mjs --external:react --external:@mux/mux-video",
     "build:esm:ads": "esbuild src/ads/index.ts --target=es2019 --external:@mux/* --external:castable-video --external:custom-media-element --external:media-tracks --bundle --sourcemap --metafile=./dist/ads/esm.json --format=esm --outdir=dist/ads --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:cjs:ads": "esbuild src/ads/index.ts --target=es2019 --external:@mux/* --external:castable-video --external:custom-media-element --external:media-tracks --bundle --sourcemap --metafile=./dist/ads/cjs.json --format=cjs --outdir=dist/ads --out-extension:.js=.cjs.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:esm:ads:mixin": "esbuild src/ads/mixin/index.ts --target=es2019 --external:@mux/* --external:castable-video --external:custom-media-element --external:media-tracks --bundle --sourcemap --metafile=./dist/ads/mixin/esm.json --format=esm --outdir=dist/ads/mixin --out-extension:.js=.mjs --define:PLAYER_VERSION=\"'$npm_package_version'\"",
+    "build:cjs:ads:mixin": "esbuild src/ads/mixin/index.ts --target=es2019 --external:@mux/* --external:castable-video --external:custom-media-element --external:media-tracks --bundle --sourcemap --metafile=./dist/ads/mixin/cjs.json --format=cjs --outdir=dist/ads/mixin --out-extension:.js=.cjs.js --define:PLAYER_VERSION=\"'$npm_package_version'\"",
     "build:esm:ads:react": "esbuild src/ads/react.ts --target=es2019 --bundle --format=esm --outdir=dist/ads --out-extension:.js=.mjs --external:react --external:@mux/mux-video",
     "build:cjs:ads:react": "esbuild src/ads/react.ts --target=es2019 --bundle --format=cjs --outdir=dist/ads --out-extension:.js=.cjs.js --external:react --external:@mux/mux-video",
     "copypolyfills": "shx mkdir -p src/polyfills && shx cp ../../shared/polyfills/index.ts ./src/polyfills/index.ts",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4",
-    "build": "npm-run-all 'build:esm:base -- --minify' 'build:cjs:base -- --minify' --parallel 'build:esm:** -- --minify' 'build:cjs:** -- --minify' 'build:iife:** -- --minify' 'build:esm-module:** -- --minify'"
+    "build": "npm-run-all 'build:esm:base -- --minify' 'build:cjs:base -- --minify' 'build:esm:ads:mixin -- --minify' 'build:cjs:ads:mixin -- --minify' --parallel 'build:esm:** -- --minify' 'build:cjs:** -- --minify' 'build:iife:** -- --minify' 'build:esm-module:** -- --minify'"
   },
   "dependencies": {
     "@mux/mux-data-google-ima": "0.2.8",

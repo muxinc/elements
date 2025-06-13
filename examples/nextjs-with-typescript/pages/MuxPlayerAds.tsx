@@ -1,8 +1,7 @@
 import Script from 'next/script';
 import Head from 'next/head';
 import { useState } from 'react';
-import '@mux/mux-video/ads';
-import MuxPlayer from '@mux/mux-player-react';
+import MuxPlayer from '@mux/mux-player-react/ads';
 import NewsTheme from '@mux/mux-player-react/themes/news';
 
 function MuxPlayerAdsPage() {
@@ -43,10 +42,17 @@ function MuxPlayerAdsPage() {
         allowAdBlocker={true}
         onAdRequest={() => console.log('Ad Request')}
         onAdResponse={() => console.log('Ad Response')}
+        onAdImpression={() => console.log('Ad Impression')}
         onAdBreakStart={() => console.log('Ad Break Start')}
+        onAdPlay={() => console.log('Ad Play')}
+        onAdPlaying={() => console.log('Ad Playing')}
+        onAdPause={() => console.log('Ad Pause')}
         onAdFirstQuartile={() => console.log('Ad First Quartile')}
         onAdMidpoint={() => console.log('Ad Midpoint')}
         onAdThirdQuartile={() => console.log('Ad Third Quartile')}
+        onAdClick={() => console.log('Ad Click')}
+        onAdSkip={() => console.log('Ad Skip')}
+        onAdClose={() => console.log('Ad Close')}
         onAdEnded={() => console.log('Ad Ended')}
         onAdBreakEnd={() => console.log('Ad Break End')}
         onAdError={() => console.log('Ad Error')}

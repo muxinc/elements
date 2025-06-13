@@ -1,11 +1,14 @@
 import { Events, AdEvent } from './events.js';
 
+export type Constructor<T> = new (...args: any[]) => T;
+
 export type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
 
 export type EventMapFromEvents<T extends Record<string, string>> = {
   [K in T[keyof T]]: AdEvent;
 };
 
+export type EventMap = AdEventMap;
 export type AdEventMap = Expand<EventMapFromEvents<typeof Events>>;
 
 export declare class IAdsVideo {
