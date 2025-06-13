@@ -240,11 +240,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return;
       }
 
-      try {
-        super.pause();
-      } catch {
-        // Ignore AbortError: The play() request was interrupted by a call to pause()
-      }
+      super.pause();
 
       this.#videoBackup = {
         currentTime: super.currentTime,
