@@ -2,15 +2,17 @@
 
 ## Installation
 
-See [mux-video](../README.md#installation) for installation instructions.
+See [mux-video](../../README.md#installation) for installation instructions.
+
+With the import path `@mux/mux-video/ads` you will get the ads version of the mux-video web component.
 
 ## Usage
 
-See [mux-video](../README.md#usage) for usage instructions.
+See [mux-video](../../README.md#usage) for usage instructions.
 
 ### Attributes
 
-See [mux-video](../README.md#attributes) for the list of base attributes.
+See [mux-video](../../README.md#attributes) for the list of base attributes.
 
 - `ad-tag-url`: This is the URL of the VAST ad tag to be used for ad playback.
 - `allow-ad-blocker`: When present, allows the content to be played even if the ad is blocked by an ad blocker.
@@ -24,7 +26,7 @@ See [mux-video](../README.md#attributes) for the list of base attributes.
 
 ### Events
 
-See [mux-video](../README.md#events) for the list of base events.
+See [mux-video](../../README.md#events) for the list of base events.
 
 - `adrequest`: The adrequest event is fired when the ad request is made.
 - `adresponse`: The adresponse event is fired when the ad response is received.
