@@ -1,0 +1,565 @@
+<template id="media-theme-news">
+  <style>
+    media-controller {
+      font-size: 13px;
+      font-family: Roboto, Arial, sans-serif;
+      --media-font-family: Roboto, helvetica neue, segoe ui, arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      --media-secondary-color: transparent;
+      --media-menu-background: rgba(28, 28, 28, 0.9);
+      --media-control-hover-background: var(--media-secondary-color);
+      --media-range-track-height: 3px;
+      --media-range-thumb-height: 13px;
+      --media-range-thumb-width: 13px;
+      --media-range-thumb-border-radius: 13px;
+      --media-preview-thumbnail-border: 2px solid #fff;
+      --media-preview-thumbnail-border-radius: 2px;
+      --media-tooltip-display: none;
+    }
+
+    /* The biggest size controller is tied to going fullscreen
+      instead of a player width */
+    media-controller[mediaisfullscreen] {
+      font-size: 17px;
+      --media-range-thumb-height: 20px;
+      --media-range-thumb-width: 20px;
+      --media-range-thumb-border-radius: 10px;
+      --media-range-track-height: 4px;
+    }
+
+    .nw-button {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      padding: 0 2px;
+      height: 100%;
+      opacity: 0.9;
+      transition: opacity 0.1s cubic-bezier(0.4, 0, 1, 1);
+    }
+    [breakpointmd] .nw-button {
+      width: 48px;
+    }
+    [mediaisfullscreen] .nw-button {
+      width: 54px;
+    }
+
+    .nw-button svg {
+      height: 100%;
+      width: 100%;
+      fill: var(--media-primary-color, #fff);
+      fill-rule: evenodd;
+    }
+
+    .svg-shadow {
+      stroke: #000;
+      stroke-opacity: 0.15;
+      stroke-width: 2px;
+      fill: none;
+    }
+  </style>
+
+  <media-controller
+    breakpoints="md:480"
+    defaultsubtitles="{{defaultsubtitles}}"
+    defaultduration="{{defaultduration}}"
+    gesturesdisabled="{{disabled}}"
+    hotkeys="{{hotkeys}}"
+    nohotkeys="{{nohotkeys}}"
+    mediaadbreak="{{mediaadbreak}}"
+    part="controller"
+  >
+    <slot name="media" slot="media"></slot>
+    <slot name="poster" slot="poster"></slot>
+    <media-error-dialog slot="dialog"></media-error-dialog>
+
+    <!-- Gradient -->
+    <style>
+      .nw-gradient-bottom {
+        padding-top: 37px;
+        position: absolute;
+        width: 100%;
+        height: 170px;
+        bottom: 0;
+        z-index: 2;
+        pointer-events: none;
+        background-position: bottom;
+        background-repeat: repeat-x;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAACqCAYAAABsziWkAAAAAXNSR0IArs4c6QAAAQVJREFUOE9lyNdHBQAAhfHb3nvvuu2997jNe29TJJEkkkgSSSSJJJJEEkkiifRH5jsP56Xz8PM5gcC/xfDEmjhKxEOCSaREEiSbFEqkQppJpzJMJiWyINvkUCIX8kw+JQqg0BRRxaaEEqVQZsopUQGVpooS1VBjglStqaNEPTSYRko0QbNpoUQrtJl2qsN0UqILuk0PJXqhz/RTYgAGzRA1bEYoMQpjZpwSExAyk5SYgmkzQ82aOUqEIWKilJiHBbNIiSVYhhVYhTVYhw3YhC3Yhh3YhT3YhwM4hCM4hhM4hTM4hwu4hCu4hhu4hTu4hwd4hCd4hhd4hTd4hw/4hC/4hh/4/QM2/id28uIEJAAAAABJRU5ErkJggg==');
+      }
+    </style>
+    <div class="nw-gradient-bottom"></div>
+
+    <!-- Rendition Menu -->
+    <style>
+      media-rendition-menu,
+      media-captions-menu {
+        position: absolute;
+        border-radius: 0.3rem;
+        right: 12px;
+        bottom: 61px;
+        z-index: 70;
+        will-change: width, height;
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        transition: opacity 0.1s cubic-bezier(0, 0, 0.2, 1);
+        user-select: none;
+        --media-settings-menu-min-width: 220px;
+        --media-menu-item-checked-background: #f72210;
+        --media-menu-item-checked-indicator-display: none;
+        font-weight: 500;
+      }
+
+      [mediaisfullscreen] media-rendition-menu {
+        --media-settings-menu-min-width: 320px;
+        right: 24px;
+        bottom: 70px;
+      }
+      media-chrome-menu-item {
+        height: 40px;
+        font-size: 13px;
+        font-weight: 500;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      [mediaisfullscreen] media-settings-menu-item {
+        font-size: 20px;
+        height: 50px;
+      }
+
+      media-settings-menu-item[submenusize='0'] {
+        display: none;
+      }
+
+      /* Also hide if only 'Auto' is added. */
+      .quality-settings[submenusize='1'] {
+        display: none;
+      }
+    </style>
+
+    <media-rendition-menu anchor="auto" hidden> </media-rendition-menu>
+    <media-captions-menu hidden anchor="auto"></media-captions-menu>
+    <!-- Time Range / Progress Bar -->
+
+    <style>
+      media-play-button[slot='centered-chrome'] {
+        display: grid;
+        grid-template-columns: 1.5rem auto;
+        align-items: center;
+        gap: 1.2rem;
+        background: #000;
+        border-radius: 2rem;
+        opacity: 1;
+        padding: 1rem;
+        font-size: 1.3rem;
+        font-weight: 400;
+        text-transform: uppercase;
+        margin: 0;
+      }
+
+      media-play-button[slot='centered-chrome'] {
+        display: none;
+      }
+
+      media-play-button[slot='centered-chrome'][mediapaused] {
+        display: block;
+        line-height: 1;
+        color: white;
+      }
+
+      media-play-button[slot='centered-chrome'][mediapaused]:hover {
+        color: #f72210;
+      }
+
+      media-play-button[slot='centered-chrome'] p {
+        margin: 0;
+        align-items: center;
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      media-play-button[slot='centered-chrome'] svg {
+        width: 1.8rem;
+        height: auto;
+      }
+
+      media-play-button[slot='centered-chrome'] media-duration-display {
+        display: none;
+        font-size: 1.3rem;
+      }
+
+      media-controller[mediacurrenttime='0'] media-duration-display {
+        display: block;
+        color: inherit;
+        padding: 0 0.3rem;
+      }
+
+      media-controller:not([mediacurrenttime='0']) media-duration-display {
+        display: none;
+      }
+
+      media-controller[mediacurrenttime='0'] media-play-button[slot='centered-chrome'] span {
+        display: none;
+      }
+    </style>
+
+    <media-play-button slot="centered-chrome">
+      <p slot="play">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18ZM10 0C8.68678 0 7.38642 0.258658 6.17317 0.761205C4.95991 1.26375 3.85752 2.00035 2.92893 2.92893C1.05357 4.8043 0 7.34784 0 10C0 12.6522 1.05357 15.1957 2.92893 17.0711C3.85752 17.9997 4.95991 18.7362 6.17317 19.2388C7.38642 19.7413 8.68678 20 10 20C12.6522 20 15.1957 18.9464 17.0711 17.0711C18.9464 15.1957 20 12.6522 20 10C20 8.68678 19.7413 7.38642 19.2388 6.17317C18.7362 4.95991 17.9997 3.85752 17.0711 2.92893C16.1425 2.00035 15.0401 1.26375 13.8268 0.761205C12.6136 0.258658 11.3132 0 10 0ZM8 14.5L14 10L8 5.5V14.5Z"
+            fill="currentColor"
+          />
+        </svg>
+
+        <span>Continue</span>
+        <media-duration-display></media-duration-display>
+      </p>
+    </media-play-button>
+
+    <!-- Time Range / Progress Bar -->
+    <style>
+      media-time-range {
+        position: absolute;
+        bottom: 36px;
+        width: 100%;
+        height: 5px;
+        z-index: 2;
+        --media-range-track-background: rgba(255, 255, 255, 0.2);
+        --media-range-track-pointer-background: rgba(255, 255, 255, 0.5);
+        --media-time-range-buffered-color: rgba(255, 255, 255, 0.4);
+        --media-range-bar-color: var(--media-accent-color, #f72210);
+        --media-range-thumb-border-radius: 13px;
+        --media-range-thumb-background: var(--media-accent-color, #f72210);
+        --media-range-thumb-transition: transform 0.1s linear;
+        --media-range-thumb-transform: scale(0) translate(0%, 0%);
+      }
+      media-time-range:hover {
+        --media-range-track-height: 5px;
+        --media-range-thumb-transform: scale(1) translate(0%, 0%);
+      }
+      [breakpointmd] media-time-range {
+        bottom: 47px;
+      }
+      [mediaisfullscreen] media-time-range {
+        bottom: 52.5px;
+        height: 8px;
+      }
+      [mediaisfullscreen] media-time-range:hover {
+        --media-range-track-height: 8px;
+      }
+
+      media-preview-thumbnail {
+        margin-bottom: 5px;
+      }
+
+      media-preview-chapter-display {
+        padding-block: 0;
+      }
+
+      media-preview-time-display {
+        padding-top: 0;
+        background: #d8d8d8;
+        color: black;
+        padding: 0.25rem 0.5rem;
+        text-shadow: none;
+        display: block !important;
+        opacity: 1;
+        margin-bottom: 1rem;
+      }
+    </style>
+    <media-time-range>
+      <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
+      <media-preview-chapter-display slot="preview"></media-preview-chapter-display>
+      <media-preview-time-display slot="preview"></media-preview-time-display>
+    </media-time-range>
+
+    <!-- Control Bar -->
+    <style>
+      media-control-bar {
+        position: absolute;
+        height: 36px;
+        line-height: 36px;
+        bottom: 0;
+        left: 12px;
+        right: 12px;
+        z-index: 3;
+      }
+      [breakpointmd] media-control-bar {
+        height: 48px;
+        line-height: 48px;
+      }
+      [mediaisfullscreen] media-control-bar {
+        height: 54px;
+        line-height: 54px;
+      }
+    </style>
+    <media-control-bar>
+      <!-- Play/Pause -->
+      <style>
+        media-play-button {
+          --media-button-icon-width: 30px;
+          padding: 6px 10px;
+        }
+
+        media-play-button :is(#play-p1, #play-p2, #pause-p1, #pause-p2) {
+          transition: clip-path 0.25s ease-in;
+        }
+
+        /* Slow down the play icon part hiding slightly
+          to achieve the morphing look a little better */
+        media-play-button:not([mediapaused]) #play-p2,
+        media-play-button:not([mediapaused]) #play-p2 {
+          transition: clip-path 0.35s ease-in;
+        }
+
+        /* Show icon */
+        media-play-button :is(#pause-p1, #pause-p2),
+        media-play-button[mediapaused] :is(#play-p1, #play-p2) {
+          clip-path: inset(0);
+        }
+
+        /* Hide icon wth clip path mask */
+        media-play-button #play-p1 {
+          clip-path: inset(0 100% 0 0);
+        }
+        media-play-button #play-p2 {
+          clip-path: inset(0 20% 0 100%);
+        }
+        media-play-button[mediapaused] #pause-p1 {
+          clip-path: inset(50% 0 50% 0);
+        }
+        media-play-button[mediapaused] #pause-p2 {
+          clip-path: inset(50% 0 50% 0);
+        }
+      </style>
+      <media-play-button mediapaused class="nw-button">
+        <svg slot="icon" viewBox="0 0 36 36">
+          <use class="svg-shadow" xlink:href="#icon-play"></use>
+          <g id="icon-play">
+            <path id="play-p1" d="M18.5 14L12 10V26L18.5 22V14Z" />
+            <path id="play-p2" d="M18 13.6953L25 18L18 22.3086V13.6953Z" />
+            <path id="pause-p1" d="M16 10H12V26H16V10Z" />
+            <path id="pause-p2" d="M21 10H25V26H21V10Z" />
+          </g>
+        </svg>
+      </media-play-button>
+
+      <template if="mediaadbreak == null">
+        <media-seek-backward-button seekoffset="10">
+          <svg slot="icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M16.908 21.7465C16.616 21.2426 16.2047 20.8212 15.7116 20.5206C15.2185 20.22 14.6594 20.0499 14.0851 20.0257C13.5109 20.0499 12.9518 20.22 12.4587 20.5206C11.9656 20.8212 11.5543 21.2426 11.2623 21.7465C10.5893 22.8804 10.2336 24.18 10.2336 25.5047C10.2336 26.8295 10.5893 28.129 11.2623 29.2629C11.5543 29.7668 11.9656 30.1882 12.4587 30.4888C12.9518 30.7894 13.5109 30.9595 14.0851 30.9838C14.6594 30.9595 15.2185 30.7894 15.7116 30.4888C16.2047 30.1882 16.616 29.7668 16.908 29.2629C17.581 28.129 17.9367 26.8295 17.9367 25.5047C17.9367 24.18 17.581 22.8804 16.908 21.7465ZM14.0851 29.409C12.8412 29.409 11.7886 27.6233 11.7886 25.4966C11.7886 23.3699 12.8412 21.5841 14.0851 21.5841C15.3291 21.5841 16.3817 23.3699 16.3817 25.4966C16.3817 27.6233 15.3451 29.409 14.0851 29.409ZM7.16351 30.9838V22.7043L6.39798 23.4836L5.31349 22.3796L7.38679 20.2692C7.49386 20.1598 7.63043 20.0853 7.77917 20.0551C7.92792 20.0248 8.08213 20.0403 8.22225 20.0994C8.36236 20.1585 8.48206 20.2587 8.56615 20.3872C8.65024 20.5157 8.69493 20.6667 8.69456 20.8211V31L7.16351 30.9838ZM33 9.8468V30.1883C32.9972 30.3941 32.9157 30.5907 32.7727 30.7362C32.6298 30.8817 32.4366 30.9647 32.2345 30.9675H22.2348V27.8343H29.9219V12.1845H11.4696V15.3177C11.4696 16.1782 10.8954 16.4866 10.1937 16.0158L3.52726 11.4865C3.30225 11.371 3.13094 11.17 3.05035 10.927C2.96977 10.6839 2.98641 10.4184 3.09666 10.1877C3.18836 9.99697 3.33987 9.84275 3.52726 9.7494L10.1937 5.22005C10.8954 4.74926 11.4696 5.05771 11.4696 5.91812V9.05133H32.2185C32.4248 9.05443 32.6218 9.13923 32.7677 9.28775C32.9136 9.43626 32.997 9.6368 33 9.8468Z"
+              fill="currentColor"
+            />
+          </svg>
+        </media-seek-backward-button>
+      </template>
+
+      <!-- Time Display -->
+      <style>
+        media-time-display {
+          padding-top: 6px;
+          padding-bottom: 6px;
+          font-size: 13px;
+        }
+
+        [mediaisfullscreen] media-time-display {
+          font-size: 20px;
+        }
+      </style>
+
+      <template if="mediaadbreak == null">
+        <media-time-display showduration></media-time-display>
+      </template>
+
+      <template if="mediaadbreak != null">
+        Advertisement
+        <media-time-display remaining></media-time-display>
+      </template>
+
+      <!-- Control Spacer -->
+      <style>
+        .control-spacer {
+          flex-grow: 1;
+        }
+      </style>
+      <span class="control-spacer"></span>
+
+      <!-- Volume/Mute -->
+      <style>
+        media-mute-button :is(#icon-muted, #icon-volume) {
+          transition: clip-path 0.3s ease-out;
+        }
+        media-mute-button #icon-muted {
+          clip-path: inset(0 0 100% 0);
+        }
+        media-mute-button[mediavolumelevel='off'] #icon-muted {
+          clip-path: inset(0);
+        }
+        media-mute-button #icon-volume {
+          clip-path: inset(0);
+        }
+        media-mute-button[mediavolumelevel='off'] #icon-volume {
+          clip-path: inset(100% 0 0 0);
+        }
+
+        media-mute-button #volume-high,
+        media-mute-button[mediavolumelevel='off'] #volume-high {
+          opacity: 1;
+          transition: opacity 0.3s;
+        }
+        media-mute-button[mediavolumelevel='low'] #volume-high,
+        media-mute-button[mediavolumelevel='medium'] #volume-high {
+          opacity: 0.2;
+        }
+
+        media-volume-range {
+          height: 36px;
+          --media-range-track-background: rgba(255, 255, 255, 0.2);
+        }
+
+        media-mute-button + media-volume-range {
+          width: 0;
+          overflow: hidden;
+          transition: width 0.2s ease-in;
+        }
+
+        /* Expand volume control in all relevant states */
+        media-mute-button:hover + media-volume-range,
+        media-mute-button:focus + media-volume-range,
+        media-mute-button:focus-within + media-volume-range,
+        media-volume-range:hover,
+        media-volume-range:focus,
+        media-volume-range:focus-within {
+          width: 70px;
+        }
+      </style>
+      <media-mute-button class="nw-button">
+        <svg slot="icon" viewBox="0 0 36 36">
+          <g id="icon-volume">
+            <path id="speaker" d="M13 15H9V21H13L18 26V10L13 15Z" />
+            <path
+              id="volume-low"
+              d="M20 22.0323C21.4818 21.2959 22.5 19.7669 22.5 18C22.5 16.2332 21.4818 14.7041 20 13.9678V22.0323Z"
+            />
+            <path
+              id="volume-high"
+              d="M20 9.22302V11.2899C22.8915 12.1505 25 14.829 25 18C25 21.171 22.8915 23.8495 20 24.7101V26.777C24.008 25.8675 27 22.2832 27 18C27 13.7168 24.008 10.1325 20 9.22302Z"
+            />
+          </g>
+          <g id="icon-muted">
+            <path
+              d="M10.2207 8.80817L8.80762 10.2213L13.2929 14.7065L13 14.9995H9V20.9995H13L18 25.9995V19.4136L22.1922 23.6058C21.5401 24.0942 20.8 24.4715 20 24.7096V26.7764C21.3453 26.4712 22.5761 25.8646 23.6177 25.0314L25.7782 27.1918L27.1924 25.7776L27.1913 25.7766L27.1902 25.7776L10.2207 8.80817Z"
+            />
+            <path
+              d="M25.8817 22.3478C26.5944 21.0589 27 19.5766 27 17.9995C27 13.7163 24.008 10.132 20 9.22247V11.2894C22.8915 12.1499 25 14.8284 25 17.9995C25 19.0177 24.7826 19.9851 24.3917 20.8578L25.8817 22.3478Z"
+            />
+            <path
+              d="M22.4139 18.88C22.4704 18.5952 22.5 18.3008 22.5 17.9995C22.5 16.2326 21.4818 14.7036 20 13.9672V16.4661L22.4139 18.88Z"
+            />
+            <path d="M18 14.4661V9.99945L15.7667 12.2328L18 14.4661Z" />
+          </g>
+        </svg>
+      </media-mute-button>
+      <media-volume-range></media-volume-range>
+
+      <!-- Settings Menu Button -->
+      <template if="mediaadbreak == null">
+        <style>
+          media-settings-menu-button svg {
+            transition: transform 0.1s cubic-bezier(0.4, 0, 1, 1);
+            transform: rotateZ(0deg);
+          }
+          media-settings-menu-button[aria-expanded='true'] svg {
+            transform: rotateZ(30deg);
+          }
+        </style>
+        <media-rendition-menu-button class="nw-button">
+          <svg slot="icon" viewBox="0 0 36 36">
+            <use class="svg-shadow" xlink:href="#settings-icon"></use>
+            <path
+              id="settings-icon"
+              d="M11.8153 12.0477L14.2235 12.9602C14.6231 12.6567 15.0599 12.3996 15.5258 12.1971L15.9379 9.66561C16.5985 9.50273 17.2891 9.41632 18 9.41632C18.7109 9.41632 19.4016 9.50275 20.0622 9.66566L20.4676 12.1555C20.9584 12.3591 21.418 12.6227 21.8372 12.9372L24.1846 12.0477C25.1391 13.0392 25.8574 14.2597 26.249 15.6186L24.3196 17.1948C24.3531 17.4585 24.3704 17.7272 24.3704 18C24.3704 18.2727 24.3531 18.5415 24.3196 18.8051L26.249 20.3814C25.8574 21.7403 25.1391 22.9607 24.1846 23.9522L21.8372 23.0628C21.4179 23.3772 20.9584 23.6408 20.4676 23.8445L20.0622 26.3343C19.4016 26.4972 18.7109 26.5836 18 26.5836C17.2891 26.5836 16.5985 26.4972 15.9379 26.3344L15.5258 23.8029C15.0599 23.6003 14.6231 23.3433 14.2236 23.0398L11.8154 23.9523C10.8609 22.9608 10.1426 21.7404 9.75098 20.3815L11.7633 18.7375C11.7352 18.4955 11.7208 18.2495 11.7208 18C11.7208 17.7505 11.7352 17.5044 11.7633 17.2625L9.75098 15.6185C10.1426 14.2596 10.8609 13.0392 11.8153 12.0477ZM18 20.75C19.5188 20.75 20.75 19.5188 20.75 18C20.75 16.4812 19.5188 15.25 18 15.25C16.4812 15.25 15.25 16.4812 15.25 18C15.25 19.5188 16.4812 20.75 18 20.75Z"
+            />
+          </svg>
+        </media-rendition-menu-button>
+        <media-captions-menu-button></media-captions-menu-button>
+      </template>
+
+      <!-- Fullscreen Button -->
+      <style>
+        /* Having trouble getting @property to work in the shadow dom
+         to clean this up. Like https://codepen.io/luwes/pen/oNRyZyx */
+
+        media-fullscreen-button path {
+          translate: 0% 0%;
+        }
+        media-fullscreen-button:hover path {
+          animation: 0.35s up-left-bounce cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        media-fullscreen-button:hover .urbounce {
+          animation-name: up-right-bounce;
+        }
+        media-fullscreen-button:hover .dlbounce {
+          animation-name: down-left-bounce;
+        }
+        media-fullscreen-button:hover .drbounce {
+          animation-name: down-right-bounce;
+        }
+
+        @keyframes up-left-bounce {
+          0% {
+            translate: 0 0;
+          }
+          50% {
+            translate: -4% -4%;
+          }
+        }
+        @keyframes up-right-bounce {
+          0% {
+            translate: 0 0;
+          }
+          50% {
+            translate: 4% -4%;
+          }
+        }
+        @keyframes down-left-bounce {
+          0% {
+            translate: 0 0;
+          }
+          50% {
+            translate: -4% 4%;
+          }
+        }
+        @keyframes down-right-bounce {
+          0% {
+            translate: 0 0;
+          }
+          50% {
+            translate: 4% 4%;
+          }
+        }
+      </style>
+      <media-fullscreen-button class="nw-button">
+        <svg slot="enter" viewBox="0 0 36 36">
+          <use class="svg-shadow" xlink:href="#fs-enter-paths"></use>
+          <g id="fs-enter-paths">
+            <path class="ulbounce" d="M11 15H9V9H15V11H11V15Z" />
+            <path class="urbounce" d="M21 11L21 9L27 9L27 15L25 15L25 11L21 11Z" />
+            <path class="dlbounce" d="M15 25L15 27L9 27L9 21L11 21L11 25L15 25Z" />
+            <path class="drbounce" d="M25 21L27 21L27 27L21 27L21 25L25 25L25 21Z" />
+          </g>
+        </svg>
+        <svg slot="exit" viewBox="0 0 36 36">
+          <use class="svg-shadow" xlink:href="#fs-exit-paths"></use>
+          <g id="fs-exit-paths">
+            <path class="drbounce" d="M14 9L16 9L16 16L9 16L9 14L14 14L14 9Z" />
+            <path class="dlbounce" d="M27 14L27 16L20 16L20 9L22 9L22 14L27 14Z" />
+            <path class="urbounce" d="M9 22L9 20L16 20L16 27L14 27L14 22L9 22Z" />
+            <path class="ulbounce" d="M22 27H20V20H27V22H22V27Z" />
+          </g>
+        </svg>
+      </media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>
+</template>

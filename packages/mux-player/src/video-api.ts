@@ -1,8 +1,7 @@
 import { globalThis } from './polyfills';
-import { VideoEvents } from '@mux/mux-video';
-import type MuxVideoElement from '@mux/mux-video';
 import * as logger from './logger';
 import { toNumberOrUndefined } from './utils';
+import type MuxVideoElement from '@mux/mux-video/ads';
 
 export type CastOptions = {
   receiverApplicationId: string;
@@ -12,10 +11,6 @@ export type CastOptions = {
   resumeSavedSession: boolean;
 };
 
-export type MuxVideoElementExt = MuxVideoElement & {
-  requestCast(options: CastOptions): Promise<undefined>;
-};
-
 const AllowedVideoAttributes = {
   AUTOPLAY: 'autoplay',
   CROSSORIGIN: 'crossorigin',
@@ -23,7 +18,7 @@ const AllowedVideoAttributes = {
   MUTED: 'muted',
   PLAYSINLINE: 'playsinline',
   PRELOAD: 'preload',
-};
+} as const;
 
 const CustomVideoAttributes = {
   VOLUME: 'volume',
@@ -32,6 +27,11 @@ const CustomVideoAttributes = {
   // attribute on a native video element reflects only to video.defaultMuted.
   MUTED: 'muted',
 };
+
+export const Attributes = {
+  ...AllowedVideoAttributes,
+  ...CustomVideoAttributes,
+} as const;
 
 const emptyTimeRanges: TimeRanges = Object.freeze({
   length: 0,
@@ -55,11 +55,12 @@ const emptyTimeRanges: TimeRanges = Object.freeze({
   },
 });
 
-const AllowedVideoEvents = VideoEvents.filter((type) => type !== 'error');
 const AllowedVideoAttributeNames = Object.values(AllowedVideoAttributes).filter(
-  (name) => ![AllowedVideoAttributes.PLAYSINLINE].includes(name)
+  (name) => AllowedVideoAttributes.PLAYSINLINE !== name
 );
 const CustomVideoAttributesNames = Object.values(CustomVideoAttributes);
+
+export const AttributeNames = [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
 
 // NOTE: Some of these are defined in MuxPlayerElement. We may want to apply a
 // `Pick<>` on these to also enforce consistency (CJP).
@@ -117,6 +118,11 @@ interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | AddEventListenerOptions
   ): void;
+  addEventListener(
+    type: string,
+    listener: (event: CustomEvent) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
   removeEventListener<K extends keyof HTMLVideoElementEventMap>(
     type: K,
     listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any,
@@ -127,12 +133,17 @@ interface VideoApiElement extends PartialHTMLVideoElement, HTMLElement {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void;
+  removeEventListener(
+    type: string,
+    listener: (event: CustomEvent) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement {
   static get observedAttributes() {
-    return [...AllowedVideoAttributeNames, ...CustomVideoAttributesNames];
+    return AttributeNames as string[];
   }
 
   /**
@@ -142,20 +153,6 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
    */
   constructor() {
     super();
-  }
-
-  /**
-   * Gets called from mux-player when mux-video is rendered and upgraded.
-   * We might just merge VideoApiElement in MuxPlayerElement and remove this?
-   */
-  init() {
-    // The video events are dispatched on the VideoApiElement instance.
-    // This makes it possible to add event listeners before the element is upgraded.
-    AllowedVideoEvents.forEach((type) => {
-      this.media?.addEventListener(type, (evt) => {
-        this.dispatchEvent(new Event(evt.type));
-      });
-    });
   }
 
   attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string) {
@@ -197,11 +194,7 @@ class VideoApiElement extends globalThis.HTMLElement implements VideoApiElement 
     this.media?.load();
   }
 
-  requestCast(options: CastOptions) {
-    return this.media?.requestCast(options);
-  }
-
-  get media(): MuxVideoElementExt | null | undefined {
+  get media(): MuxVideoElement | undefined | null {
     return this.shadowRoot?.querySelector('mux-video');
   }
 

@@ -1,5 +1,6 @@
 import type MuxVideoElement from '@mux/mux-video';
 import type { MediaError } from '@mux/mux-video';
+import type { EventMap as MuxVideoEventMap } from '@mux/mux-video';
 import type {
   MaxResolutionValue,
   MinResolutionValue,
@@ -9,6 +10,7 @@ import type {
 } from '@mux/playback-core';
 import type { AttributeTokenList } from './helpers';
 
+export type Props = MuxPlayerProps;
 export type MuxPlayerProps = Partial<MuxVideoElement> & {
   nohotkeys?: boolean;
   hotkeys?: AttributeTokenList;
@@ -57,6 +59,10 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   defaultStreamType?: ValueOf<StreamTypes>;
   castReceiver: string | undefined;
   proudlyDisplayMuxBadge?: boolean;
+  adTagUrl: string | undefined;
+  adBreak: boolean;
+  /** Allow playback with ad blocker */
+  allowAdBlocker?: boolean;
 };
 
 export type DialogOptions = {
@@ -78,3 +84,31 @@ export type ErrorEvent = {
   player_error_message?: string;
   player_error_context?: string;
 };
+
+type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
+
+export type EventMap = MuxPlayerElementEventMap;
+export type MuxPlayerElementEventMap = Expand<MuxVideoEventMap>;
+
+export interface IMuxPlayerElement {
+  addEventListener<K extends keyof MuxPlayerElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  removeEventListener<K extends keyof MuxPlayerElementEventMap>(
+    type: K,
+    listener: (this: HTMLMediaElement, ev: MuxPlayerElementEventMap[K]) => any,
+    options?: boolean | EventListenerOptions
+  ): void;
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
+}

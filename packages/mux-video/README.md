@@ -78,7 +78,7 @@ Now you are free to use this web component in your HTML, just as you would with 
 </body>
 ```
 
-Attributes:
+### Attributes
 
 - `playback-id`: This is the playback ID for your Mux Asset or Mux Live Stream. The playback-id is the variable you may have used before to construct a `.m3u8` hls url like this:`https://stream.mux.com/{PLAYBACK_ID}.m3u8`. [Mux Docs](https://docs.mux.com/guides/video/play-your-videos#1-get-your-playback-id)
 - `env-key`: This is the environment key for Mux Data. Note that this is different than your API Key. Get your env key from the "Mux Data" part of the Mux Dashboard. If undefined and you are playing a Mux Video asset, the environment will be inferred.
@@ -99,6 +99,16 @@ Attributes:
 - `disable-cookies`: Disables cookies used by Mux Data. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#disable-cookies).
 
 All the other attributes that you would use on a `<video>` element like `poster`, `controls`, `muted` and `autoplay` are available and will work the same as they do with the HTML5 video element. One sidenote about `autoplay` though -- [read this to understand why that might not always work as expected](https://docs.mux.com/guides/video/web-autoplay-your-videos).
+
+### Events
+
+`<mux-video>` emits the same events as the HTML5 `<video>` element plus the following events:
+
+- `cuepointchange`: The `cuepointchange` event fires whenever the `activeCuePoint` property changes.
+- `chapterchange`: The `chapterchange` event fires whenever the `activeChapter` property changes.
+- `targetlivewindowchange`: The `targetlivewindowchange` event fires whenever the `targetLiveWindow` property changes.
+- `streamtypechange`: The `streamtypechange` event fires whenever the `streamType` property changes.
+- `seekablechange`: The `seekablechange` event fires whenever the `seekable` property changes.
 
 ### Advanced: more metadata
 
