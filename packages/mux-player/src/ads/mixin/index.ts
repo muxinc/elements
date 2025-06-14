@@ -11,6 +11,8 @@ export function AdsPlayerMixin<T extends MuxPlayerElementConstructor>(superclass
       return [...superclass.observedAttributes, ...Object.values(Attributes)];
     }
 
+    #tracks: HTMLTrackElement[] = [];
+
     connectedCallback() {
       super.connectedCallback();
 
@@ -21,10 +23,16 @@ export function AdsPlayerMixin<T extends MuxPlayerElementConstructor>(superclass
 
       this.addEventListener('adbreakstart', () => {
         this.mediaTheme?.toggleAttribute('mediaadbreak', true);
-        // TODO: remove any track elements from mux-video!!!!
+
+        // Remove any tracks during ad-break to prevent cues from showing
+        // but also to fix a bug on iOS where the video would not start.
+        this.#tracks = Array.from(this.media?.querySelectorAll('track') || []);
+        this.#tracks.forEach((track) => track.remove());
       });
+
       this.addEventListener('adbreakend', () => {
         this.mediaTheme?.toggleAttribute('mediaadbreak', false);
+        this.media?.append(...this.#tracks);
       });
     }
 
