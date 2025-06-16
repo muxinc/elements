@@ -1,4 +1,3 @@
-import { fetchMetadata } from '.';
 import Hls from './hls';
 
 export function setupMediaTracks(
@@ -15,14 +14,7 @@ export function setupMediaTracks(
   // 1 to 1 relation from rendition to level.
   const levelIdMap = new WeakMap();
 
-  hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
-    const chapters = data.sessionData?.['com.apple.hls.chapters'];
-    if (chapters?.VALUE) {
-      const metadata = await fetchMetadata(chapters.VALUE);
-      const eventUpdateMetadata = new CustomEvent('muxmetadata', { bubbles: true, composed: true, detail: metadata });
-      customMediaEl.dispatchEvent(eventUpdateMetadata);
-    }
-
+  hls.on(Hls.Events.MANIFEST_PARSED, function (_event, data) {
     removeAllMediaTracks();
 
     const videoTrack = customMediaEl.addVideoTrack('main');

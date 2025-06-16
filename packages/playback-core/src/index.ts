@@ -31,6 +31,7 @@ import {
   addEventListenerWithTeardown,
   i18n,
   parseJwt,
+  fetchMetadata,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
@@ -169,31 +170,6 @@ export const updateStreamInfoFromSrc = async (
   type: MediaTypes | '' = getType({ src })
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
-
-  if (streamType === StreamTypes.ON_DEMAND && src.endsWith('.mp4') && !src.includes(MUX_VIDEO_DOMAIN)) {
-    try {
-      const url = new URL(src);
-      const pathParts = url.pathname.split('/');
-      pathParts.pop();
-      pathParts.push('metadata.json');
-      url.pathname = pathParts.join('/');
-      try {
-        const metadata = await fetchMetadata(url.toString());
-        const eventUpdateMetadata = new CustomEvent('muxmetadata', { bubbles: true, composed: true, detail: metadata });
-        mediaEl.dispatchEvent(eventUpdateMetadata);
-      } catch (e) {
-        if (e instanceof FetchError) {
-          mediaEl.mux?.emit('error', {
-            player_error_code: e.status,
-            player_error_message: `HTTP error ${e.status}`,
-            player_error_context: `Error fetching video metadata from: ${url.toString()}`,
-          });
-        }
-      }
-    } catch (e) {
-      console.error('Failed to construct metadata URL from src:', src, e);
-    }
-  }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
@@ -423,7 +399,7 @@ const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined)
 
 export const toPlaybackIdFromSrc = (src: string | undefined) => {
   if (!src || !src.startsWith('https://stream.')) return undefined;
-  const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
+  const [playbackId] = new URL(src).pathname.slice(1).split(/\.m3u8|\//);
   // `|| undefined` is here to handle potential invalid cases
   return playbackId || undefined;
 };
@@ -646,7 +622,7 @@ export const setupHls = (
       'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'tokens' | 'drmTypeCb'
     >
   >,
-  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
+  mediaEl: HTMLMediaElement
 ) => {
   const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
   const type = getType(props);
@@ -696,6 +672,16 @@ export const setupHls = (
       ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
+
+    hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
+      const chapters = data.sessionData?.['com.apple.hls.chapters'];
+      if (chapters?.VALUE) {
+        const metadata = await fetchMetadata(chapters.VALUE);
+        (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+        const eventUpdateMetadata = new CustomEvent('muxmetadata');
+        mediaEl.dispatchEvent(eventUpdateMetadata);
+      }
+    });
 
     return hls;
   }
@@ -1160,7 +1146,29 @@ export const loadMedia = (
 
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
+
     if (typeof src === 'string') {
+      // Fetch the Mux metadata JSON even on preload=none because it's needed for the Mux logo.
+      if (src.endsWith('.mp4') && src.includes(MUX_VIDEO_DOMAIN)) {
+        try {
+          const playbackId = toPlaybackIdFromSrc(src);
+          const domain = props.customDomain || MUX_VIDEO_DOMAIN;
+          const metadataUrl = new URL(`https://stream.${domain}/${playbackId}/metadata.json`);
+
+          fetchMetadata(metadataUrl.toString())
+            .then((metadata) => {
+              (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+              const eventUpdateMetadata = new CustomEvent('muxmetadata');
+              mediaEl.dispatchEvent(eventUpdateMetadata);
+            })
+            .catch((e) => {
+              console.error('Failed to fetch metadata:', e);
+            });
+        } catch (e) {
+          console.error('Failed to construct metadata URL from src:', src, e);
+        }
+      }
+
       // NOTE: This should only be invoked after stream type has been
       // derived after stream type has been determined.
       const setupSeekableChangePoll = () => {
@@ -1190,6 +1198,7 @@ export const loadMedia = (
           clearInterval(intervalId);
         });
       };
+
       const setupNativeStreamInfo = async () => {
         return updateStreamInfoFromSrc(src, mediaEl, type)
           .then(setupSeekableChangePoll)
@@ -1205,6 +1214,7 @@ export const loadMedia = (
             }
           });
       };
+
       if (mediaEl.preload === 'none') {
         // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
         // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
@@ -1253,6 +1263,7 @@ export const loadMedia = (
       }
 
       mediaEl.setAttribute('src', src);
+
       if (props.startTime) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
         // seekable is set to the range of the entire video once durationchange fires
@@ -1606,53 +1617,4 @@ const getErrorFromHlsErrorData = (
   }
   mediaError.data = data;
   return mediaError;
-};
-
-export class FetchError extends Error {
-  constructor(
-    public status: number,
-    public statusText: string,
-    public body: any | null = null
-  ) {
-    super(`HTTP ${status} – ${statusText}`);
-    this.name = 'FetchError';
-  }
-}
-
-export const fetchMetadata = async (metadataUrl: string): Promise<Record<string, string>> => {
-  const resp = await fetch(metadataUrl);
-  if (!resp.ok) throw new FetchError(resp.status, resp.statusText, resp);
-  const json = await resp.json();
-  let metadata: Record<string, string> = {};
-
-  for (const item of json[0].metadata) {
-    if (item.key && item.value) {
-      metadata[item.key] = item.value;
-    }
-  }
-
-  return metadata;
-};
-
-const extractMetadata = (json: any): Record<string, string> => {
-  const metadata: Record<string, string> = {};
-
-  if (Array.isArray(json) && json.length > 0) {
-    const first = json[0];
-    if (Array.isArray(first.metadata)) {
-      for (const item of first.metadata) {
-        if (item.key && item.value) {
-          metadata[item.key] = item.value;
-        }
-      }
-    } else {
-      for (const [key, value] of Object.entries(first)) {
-        if (typeof value === 'string' || typeof value === 'number') {
-          metadata[key] = String(value);
-        }
-      }
-    }
-  }
-
-  return metadata;
 };

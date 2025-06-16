@@ -11,6 +11,7 @@ import {
   getLiveEdgeStart,
   getStreamType,
   muxMediaState,
+  toPlaybackIdFromSrc,
 } from '../src/index.ts';
 
 describe('playback core', function () {
@@ -228,6 +229,39 @@ describe('playback core', function () {
       }),
       `https://stream.mux.com/123.m3u8?redundant_streams=true&min_resolution=720p&extra_extra=readallaboutit`
     );
+  });
+
+  describe('toPlaybackIdFromSrc', () => {
+    it('should extract the playback ID from a valid src', () => {
+      const src = 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8';
+      const playbackId = toPlaybackIdFromSrc(src);
+      assert.equal(playbackId, '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I');
+    });
+
+    it('should extract the playback ID from a valid src with parameters', () => {
+      const src = 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8?token=PLAYBACK-TOKEN';
+      const playbackId = toPlaybackIdFromSrc(src);
+      assert.equal(playbackId, '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I');
+    });
+
+    it('should extract the playback ID from a valid src with parameters and a custom domain', () => {
+      const src =
+        'https://stream.media.example.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8?token=PLAYBACK-TOKEN';
+      const playbackId = toPlaybackIdFromSrc(src);
+      assert.equal(playbackId, '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I');
+    });
+
+    it('should extract the playback ID from a valid mp4 src', () => {
+      const src = 'https://stream.media.example.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I/low.mp4';
+      const playbackId = toPlaybackIdFromSrc(src);
+      assert.equal(playbackId, '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I');
+    });
+
+    it('should return undefined for an invalid src', () => {
+      const src = 'https://notvalid.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8';
+      const playbackId = toPlaybackIdFromSrc(src);
+      assert.isUndefined(playbackId);
+    });
   });
 
   describe('updateStreamInfoFromSrc()', () => {
