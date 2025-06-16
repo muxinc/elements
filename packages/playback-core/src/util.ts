@@ -210,7 +210,7 @@ export const fetchMetadata = async (url: string) => {
   if (!resp.ok) throw new Error(`Failed to fetch metadata: ${resp.status} ${resp.statusText}`);
   const json = await resp.json();
 
-  let metadata: Record<string, string> = {};
+  const metadata: Record<string, string> = {};
 
   for (const item of json[0].metadata) {
     if (item.key && item.value) {

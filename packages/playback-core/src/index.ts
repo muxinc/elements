@@ -2,7 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import { type ErrorData, type HlsConfig } from 'hls.js';
+import type { ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -676,8 +676,8 @@ export const setupHls = (
     hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
       const chapters = data.sessionData?.['com.apple.hls.chapters'];
       if (chapters?.VALUE) {
-        const metadata = await fetchMetadata(chapters.VALUE);
-        (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+        const fetchedMetadata = await fetchMetadata(chapters.VALUE);
+        (muxMediaState.get(mediaEl) ?? {}).metadata = fetchedMetadata;
         const eventUpdateMetadata = new CustomEvent('muxmetadata');
         mediaEl.dispatchEvent(eventUpdateMetadata);
       }
