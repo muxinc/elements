@@ -120,7 +120,7 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
     this.dispatchEvent(new AdEvent(Events.AD_ENDED));
   }
 
-  #onAdsManagerLoaded = (loadedEvent: google.ima.AdsManagerLoadedEvent) => {
+  #onAdsManagerLoaded = async (loadedEvent: google.ima.AdsManagerLoadedEvent) => {
     const adsRenderingSettings = new google.ima.AdsRenderingSettings();
     this.#adsManager = loadedEvent.getAdsManager(this.#videoElement, adsRenderingSettings);
 
@@ -244,6 +244,9 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
   };
 
   #startAds() {
+    this.#adBreak = true;
+    this.#videoElement.pause();
+
     // init() is included here because some ads (VMAP) start playing without the start() call.
     this.#adsManager?.init(this.#originalSize.width, this.#originalSize.height);
     this.#adsManager?.start();
@@ -255,6 +258,10 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
 
   get ad() {
     return this.#ad;
+  }
+
+  get adBreak() {
+    return this.#adBreak;
   }
 
   get paused() {

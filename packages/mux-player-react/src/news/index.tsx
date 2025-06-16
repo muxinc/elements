@@ -26,7 +26,11 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
     setIsEndScreenVisible(false);
     setCurrentIndex(currentIndex + 1);
     setTimeout(() => {
-      mediaElRef.current.play();
+      try {
+        mediaElRef.current.play();
+      } catch {
+        // Ignore AbortError: The play() request was interrupted by a call to pause()
+      }
     }, 200);
   }
 
@@ -34,7 +38,11 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
     setIsEndScreenVisible(false);
     setCurrentIndex(index);
     setTimeout(() => {
-      mediaElRef.current.play();
+      try {
+        mediaElRef.current.play();
+      } catch {
+        // Ignore AbortError: The play() request was interrupted by a call to pause()
+      }
     }, 200);
   }
 

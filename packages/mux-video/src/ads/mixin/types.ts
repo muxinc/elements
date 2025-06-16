@@ -70,6 +70,8 @@ export declare class IAdsVideoClientAd {
 export declare class IAdsVideoClientProvider extends EventTarget {
   get adsLoader(): google.ima.AdsLoader | undefined;
   get ad(): IAdsVideoClientAd | undefined;
+  get adBreak(): boolean;
+
   get paused(): boolean;
   get duration(): number;
   get currentTime(): number;

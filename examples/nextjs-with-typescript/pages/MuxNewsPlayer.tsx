@@ -51,6 +51,12 @@ function MuxNewsPlayerPage() {
         <MuxNewsPlayer
           allowAdBlocker={true}
           videoList={relatedVideos}
+          onLoadStart={() => console.log('Load Start')}
+          onLoadedMetadata={() => console.log('Loaded Metadata')}
+          onPlay={() => console.log('Play')}
+          onPlaying={() => console.log('Playing')}
+          onPause={() => console.log('Pause')}
+          onEnded={() => console.log('Ended')}
           onAdRequest={() => console.log('Ad Request')}
           onAdResponse={() => console.log('Ad Response')}
           onAdImpression={() => console.log('Ad Impression')}

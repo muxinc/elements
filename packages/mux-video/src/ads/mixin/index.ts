@@ -77,7 +77,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     #videoMetadataLoaded = false;
     #oldAdTagUrl?: string | null;
     #adProvider?: GoogleImaClientProvider;
-    #adBreak = false;
     #videoBackup?: VideoBackup;
 
     connectedCallback() {
@@ -122,7 +121,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       // If we are in an ad-break block the events from the native video element.
       // This can happen when Google IMA reuses the same video element for ads.
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return;
       }
 
@@ -155,7 +154,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       }
     }
 
-    #requestAds() {
+    async #requestAds() {
       // The container element must be in the DOM to initialize the ad display container.
       if (!this.adTagUrl || !this.isConnected) return;
 
@@ -233,7 +232,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     #onAdBreakStart() {
-      this.#adBreak = true;
       this.#adContainer?.classList.toggle('ad-break', true);
 
       if (!this.ad?.isLinear()) {
@@ -248,7 +246,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     #onAdBreakEnd() {
-      this.#adBreak = false;
       this.#adContainer?.classList.toggle('ad-break', false);
 
       if (this.#videoBackup?.currentTime) {
@@ -259,7 +256,11 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       setTimeout(() => {
         if (!super.ended) {
-          this.play();
+          try {
+            this.play();
+          } catch {
+            // Ignore abort errors
+          }
         }
       }, 100);
     }
@@ -268,14 +269,14 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       if (!GoogleImaClientProvider.isSDKAvailable() && !this.allowAdBlocker) {
         return Promise.reject(new Error('Playback failed: Ad experience not available'));
       }
-      if (this.#adBreak && this.#adProvider) {
+      if (this.#adProvider?.adBreak) {
         return this.#adProvider.play();
       }
       return super.play();
     }
 
     pause() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         this.#adProvider?.pause();
       }
       super.pause();
@@ -315,42 +316,42 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     get paused() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return this.#adProvider?.paused ?? false;
       }
       return super.paused;
     }
 
     get duration() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return this.#adProvider?.duration ?? 0;
       }
       return super.duration;
     }
 
     get currentTime() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return this.#adProvider?.currentTime ?? 0;
       }
       return super.currentTime;
     }
 
     set currentTime(val) {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return;
       }
       super.currentTime = val;
     }
 
     get volume() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return this.#adProvider?.volume ?? 0;
       }
       return super.volume;
     }
 
     set volume(val) {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         if (this.#adProvider) {
           this.#adProvider.volume = val;
         }
@@ -359,14 +360,14 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     get muted() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return !this.#adProvider?.volume;
       }
       return super.muted;
     }
 
     set muted(val) {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         if (this.#adProvider) {
           this.#adProvider.volume = val ? 0 : this.volume;
         }
@@ -375,14 +376,14 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     get readyState() {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         return 4;
       }
       return super.readyState;
     }
 
     async requestPictureInPicture(): Promise<PictureInPictureWindow> {
-      if (this.#adBreak) {
+      if (this.#adProvider?.adBreak) {
         throw new Error('Cannot use PiP while ads are playing!');
       }
       return super.requestPictureInPicture();
