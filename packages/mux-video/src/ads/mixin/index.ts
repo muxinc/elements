@@ -125,13 +125,19 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return;
       }
 
-      if (event.type === 'loadedmetadata') {
+      if (event.type === 'emptied') {
+        this.#onEmptied();
+      } else if (event.type === 'loadedmetadata') {
         this.#onLoadedMetadata();
       } else if (event.type === 'play') {
         this.#onPlay();
       }
 
       super.handleEvent(event);
+    }
+
+    #onEmptied() {
+      this.#videoMetadataLoaded = false;
     }
 
     #onLoadedMetadata() {
@@ -186,6 +192,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
       this.#adProvider?.destroy();
       this.#adProvider = undefined;
+      this.#oldAdTagUrl = undefined;
     }
 
     get #adContainer() {
