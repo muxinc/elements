@@ -11,10 +11,10 @@ function MuxPlayerPage() {
       </Head>
 
       <MuxPlayer
-        src="https://stream.staging.mux.com/MxcYf7HJjOxK4A4ZnQLwMokE02tgD6bD5BZ3FVLY6qcc.m3u8"
-        preload="metadata"
         customDomain="staging.mux.com"
+        playbackId="MxcYf7HJjOxK4A4ZnQLwMokE02tgD6bD5BZ3FVLY6qcc"
         preferPlayback="native"
+        preload="metadata"
       />
     </>
   );
