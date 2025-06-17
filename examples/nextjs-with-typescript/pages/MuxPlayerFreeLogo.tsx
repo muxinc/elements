@@ -12,7 +12,9 @@ function MuxPlayerPage() {
 
       <MuxPlayer
         src="https://stream.staging.mux.com/MxcYf7HJjOxK4A4ZnQLwMokE02tgD6bD5BZ3FVLY6qcc.m3u8"
-        preload="none"
+        preload="metadata"
+        customDomain="staging.mux.com"
+        preferPlayback="native"
       />
     </>
   );
