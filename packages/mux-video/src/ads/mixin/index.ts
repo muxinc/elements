@@ -90,6 +90,18 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         }
         return;
       }
+
+      if (!this.#adProvider) {
+        this.#adProvider = new GoogleImaClientProvider({
+          adContainer: this.#adContainer,
+          videoElement: this.nativeEl,
+          originalSize: this.getBoundingClientRect(),
+        });
+
+        for (const event of Object.values(AdEvents)) {
+          this.#adProvider.addEventListener(event, this);
+        }
+      }
     }
 
     attributeChangedCallback(attrName: string, oldValue?: string | null, newValue?: string | null): void {
@@ -159,18 +171,6 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       // The container element must be in the DOM to initialize the ad display container.
       if (!this.adTagUrl || !this.isConnected) return;
 
-      if (!this.#adProvider && GoogleImaClientProvider.isSDKAvailable()) {
-        this.#adProvider = new GoogleImaClientProvider({
-          adContainer: this.#adContainer,
-          videoElement: this.nativeEl,
-          originalSize: this.getBoundingClientRect(),
-        });
-
-        for (const event of Object.values(AdEvents)) {
-          this.#adProvider.addEventListener(event, this);
-        }
-      }
-
       // Wait until the video metadata has loaded before requesting ads to avoid unnecessary requests.
       if (!this.#videoMetadataLoaded) return;
 
@@ -181,12 +181,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
     }
 
     #destroyAds() {
-      for (const event of Object.values(AdEvents)) {
-        this.#adProvider?.removeEventListener(event, this);
-      }
-
-      this.#adProvider?.destroy();
-      this.#adProvider = undefined;
+      this.#adProvider?.unload();
       this.#oldAdTagUrl = undefined;
     }
 

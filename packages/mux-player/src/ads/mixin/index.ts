@@ -7,8 +7,8 @@ export const Attributes = {
 
 export function AdsPlayerMixin<T extends MuxPlayerElementConstructor>(superclass: T): Constructor<IAdsPlayer> & T {
   class AdsPlayer extends superclass implements IAdsPlayer {
-    get observedAttributes() {
-      return [...superclass.observedAttributes, ...Object.values(Attributes)];
+    static get observedAttributes() {
+      return [...super.observedAttributes, ...Object.values(Attributes)];
     }
 
     #tracks: HTMLTrackElement[] = [];

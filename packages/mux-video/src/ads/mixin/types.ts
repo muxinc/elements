@@ -82,6 +82,7 @@ export declare class IAdsVideoClientProvider extends EventTarget {
   requestAds(adTagUrl: string): void;
   play(): Promise<void>;
   pause(): void;
+  unload(): void;
   destroy(): void;
 
   addEventListener<K extends keyof AdEventMap>(

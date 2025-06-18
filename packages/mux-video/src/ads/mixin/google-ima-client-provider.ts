@@ -82,6 +82,11 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
     this.#adsLoader?.destroy();
   }
 
+  unload() {
+    this.#adsManager?.stop();
+    this.#adsManager?.destroy();
+  }
+
   #resize(width: number, height: number) {
     this.#originalSize = { ...this.#originalSize, width, height };
     this.#adsManager?.resize(this.#originalSize.width, this.#originalSize.height);
