@@ -1,32 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { VideoItem, PlaylistVideos } from '.';
+import { VideoItem } from '.';
 import style from './playlist-end-screen.css';
 
-interface PlaylistEndScreenProps {
-  video: VideoItem;
-  relatedVideos: PlaylistVideos;
-  isVisible: boolean;
+type PlaylistEndScreenProps = {
+  currentIndex: number;
+  relatedVideos: VideoItem[];
+  visible: boolean;
   selectVideoCallback: (index: number) => void;
-  timerCallback: () => void;
-}
+};
 
 const PlaylistEndScreen = ({
-  video,
+  currentIndex = 0,
   relatedVideos,
-  isVisible,
+  visible,
   selectVideoCallback,
-  timerCallback,
 }: PlaylistEndScreenProps) => {
   const [count, setCount] = useState(3);
+  const video = relatedVideos[currentIndex];
 
   useEffect(() => {
-    if (!isVisible) {
+    if (!visible) {
       setCount(3);
       return;
     }
 
+    // For the countdown, simply select the "next" video. If at the end, cycle back to the 0th video.
     if (count < 0) {
-      timerCallback();
+      const nextIndex = (currentIndex + 1) % relatedVideos.length;
+      selectVideoCallback(nextIndex);
       return;
     }
     const timer = setInterval(() => {
@@ -34,14 +35,14 @@ const PlaylistEndScreen = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [count, isVisible]);
+  }, [count, visible]);
 
   return (
     <>
       <style>{style}</style>
-      <div className="playlist" style={{ display: isVisible ? 'grid' : 'none' }}>
-        <div className="overlay" style={{ display: isVisible ? 'grid' : 'none' }} />
-        <div className="post-video-section" style={{ display: isVisible ? 'grid' : 'none', zIndex: 99 }}>
+      <div className="playlist" style={{ display: visible ? 'grid' : 'none' }}>
+        <div className="overlay" style={{ display: visible ? 'grid' : 'none' }} />
+        <div className="post-video-section" style={{ display: visible ? 'grid' : 'none', zIndex: 99 }}>
           <div className="video-section">
             <div className="video-container">
               <h2 className="title">Video</h2>
