@@ -73,10 +73,7 @@ describe('errors', () => {
 
         assert.equal(mediaError.code, MediaError.MEDIA_ERR_NETWORK);
         assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_NOT_READY);
-        assert.equal(
-          mediaError.message,
-          'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.'
-        );
+        assert.equal(mediaError.message, 'A network error caused the media download to fail');
         assert.equal(mediaError.context, `Specified playback ID: ${playbackId}`);
       });
 
@@ -228,10 +225,7 @@ describe('errors', () => {
 
         assert.equal(mediaError.code, MediaError.MEDIA_ERR_NETWORK);
         assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_NOT_READY);
-        assert.equal(
-          mediaError.message,
-          'This playback-id may belong to a live stream that is not currently active or an asset that is not ready.'
-        );
+        assert.equal(mediaError.message, 'A network error caused the media download to fail');
         assert.equal(mediaError.context, `Specified playback ID: ${playbackId}`);
       });
 

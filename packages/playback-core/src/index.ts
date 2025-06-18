@@ -289,7 +289,7 @@ const isAndroidLike =
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
   HTMLMediaElement,
-  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number }
+  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number; retryCount?: number }
 > = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -524,7 +524,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   props.drmTypeCb = drmTypeCb;
 
-  muxMediaState.set(mediaEl as HTMLMediaElement, {});
+  muxMediaState.set(mediaEl as HTMLMediaElement, { retryCount: 0 });
   const nextHlsInstance = setupHls(props, mediaEl);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
@@ -1278,8 +1278,61 @@ export const loadMedia = (
     });
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      saveAndDispatchError(mediaEl, getErrorFromHlsErrorData(data, props));
+      const error = getErrorFromHlsErrorData(data, props);
+
+      if (error.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
+        const maxRetries = 6; // 5 minutes and 5 seconds total (5s, 60s, 60s, 60s, 60s, 60s)
+        const state = muxMediaState.get(mediaEl) ?? {};
+        const retryCount = state.retryCount ?? 0;
+
+        if (retryCount < maxRetries) {
+          // First retry is 5 seconds, subsequent retries are 60 seconds
+          const retryDelay = retryCount === 0 ? 5000 : 60000;
+
+          // New error with the retry delay
+          const retryDelayError = new MediaError(
+            `Retrying in ${retryDelay / 1000} seconds...`,
+            error.code,
+            error.fatal
+          );
+          Object.assign(retryDelayError, error);
+          saveAndDispatchError(mediaEl, retryDelayError);
+
+          setTimeout(() => {
+            state.retryCount = retryCount + 1;
+            if (data.details === 'manifestLoadError' && data.url) {
+              hls.loadSource(data.url);
+            }
+          }, retryDelay);
+          return;
+        } else {
+          state.retryCount = 0;
+          // New error with the retry link
+          const retryLinkError = new MediaError(
+            'Try again later or <a href="#" onclick="window.location.reload(); return false;" style="color: #4a90e2;">click here to retry</a>',
+            error.code,
+            error.fatal
+          );
+          Object.assign(retryLinkError, error);
+          saveAndDispatchError(mediaEl, retryLinkError);
+          return;
+        }
+      }
+      saveAndDispatchError(mediaEl, error);
     });
+
+    hls.on(Hls.Events.MANIFEST_LOADED, () => {
+      // Clear error state and UI
+      const state = muxMediaState.get(mediaEl);
+      if (state && state.error) {
+        state.error = null;
+        state.retryCount = 0;
+
+        mediaEl.dispatchEvent(new Event('emptied'));
+        mediaEl.dispatchEvent(new Event('loadstart'));
+      }
+    });
+
     mediaEl.addEventListener('error', handleInternalError);
     addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
 
@@ -1413,6 +1466,7 @@ const getErrorFromHlsErrorData = (
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>
 ) => {
   console.error('getErrorFromHlsErrorData()', data);
+
   const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
     [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
     [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
