@@ -84,7 +84,10 @@ export class GoogleImaClientProvider extends EventTarget implements IAdsVideoCli
 
   unload() {
     this.#adsManager?.stop();
-    this.#adsManager?.destroy();
+    // Wait for the next tick to ensure the ad is stopped and the content is resumed.
+    setTimeout(() => {
+      this.#adsManager?.destroy();
+    }, 0);
   }
 
   #resize(width: number, height: number) {
