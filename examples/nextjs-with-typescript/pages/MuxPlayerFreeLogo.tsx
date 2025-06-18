@@ -13,6 +13,7 @@ function MuxPlayerPage() {
       <MuxPlayer
         customDomain="staging.mux.com"
         playbackId="MxcYf7HJjOxK4A4ZnQLwMokE02tgD6bD5BZ3FVLY6qcc"
+        thumbnailTime={10}
         preferPlayback="native"
         preload="metadata"
       />

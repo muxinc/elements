@@ -31,7 +31,6 @@ import {
   addEventListenerWithTeardown,
   i18n,
   parseJwt,
-  fetchMetadata,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
@@ -211,12 +210,26 @@ export const updateStreamInfoFromSrc = async (
 
 export const fetchAndDispatchMuxMetadata = async (metadataUrl: string, mediaEl: HTMLMediaElement) => {
   try {
-    const metadata = await fetchMetadata(metadataUrl);
+    const resp = await fetch(metadataUrl);
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch Mux metadata: ${resp.status} ${resp.statusText}`);
+    }
+
+    const json = await resp.json();
+    const metadata: Record<string, string> = {};
+
+    for (const item of json[0].metadata) {
+      if (item.key && item.value) {
+        metadata[item.key] = item.value;
+      }
+    }
+
     (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+
     const eventUpdateMetadata = new CustomEvent('muxmetadata');
     mediaEl.dispatchEvent(eventUpdateMetadata);
   } catch (error) {
-    console.error('Failed to fetch metadata:', error);
+    console.error(error);
   }
 };
 
