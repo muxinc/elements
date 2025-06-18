@@ -2,10 +2,11 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>&lt;mux-player&gt; example</title>
+    <title>&lt;mux-player&gt; ads example</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="stylesheet" href="./styles.css">
-    <script type="module" src="./dist/mux-player.js"></script>
+    <script defer src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <script type="module" src="./dist/mux-player-ads.js"></script>
     <style>
       mux-player {
         display: block;
@@ -38,25 +39,13 @@
       </div>
     </header>
 
-    <!-- Correct playbackid: ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s -->
+    <h2>Mux Player Ads</h2>
+
     <mux-player
       stream-type="on-demand"
-      playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2"
+      playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
+      ad-tag-url="https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
     ></mux-player>
-
-    <button id="load-video-btn">Load new playback id</button>
-    <br>
-    <br>
-
-    <!-- Load new playback id -->
-    <script>
-      const player = document.querySelector('mux-player');
-      const loadVideoBtn = document.getElementById('load-video-btn');
-
-      loadVideoBtn.addEventListener('click', () => {
-        player.playbackId = 'ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s';
-      });
-    </script>
 
     <a href="../">Browse Elements</a>
   </body>

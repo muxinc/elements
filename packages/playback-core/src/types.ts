@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
 /// <reference path="../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" preserve="true" />
-import type { Options } from 'mux-embed';
+import type { Options, Mux } from 'mux-embed';
 import type { MediaError } from './errors';
 import type { HlsConfig } from 'hls.js';
 import type Hls from 'hls.js';
@@ -21,9 +21,11 @@ export type ValueOf<T> = T[keyof T];
 export type Metadata = Partial<Required<Options>['data']>;
 type MetaData = Metadata;
 export type PlaybackEngine = Hls;
+export type MuxDataSDK = Mux;
 
 export type PlaybackCore = {
   engine?: PlaybackEngine;
+  muxDataSDK?: MuxDataSDK;
   setAutoplay: (autoplay?: Autoplay) => void;
   setPreload: (preload?: HTMLMediaElement['preload']) => void;
 };
@@ -201,5 +203,18 @@ export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
 export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareName: MetaData['player_software_name'];
   playerSoftwareVersion: MetaData['player_software_version'];
+  muxDataSDK?: Mux;
+  muxDataSDKOptions?: Mux;
+  muxDataKeepSession?: boolean;
   drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
+};
+
+// TODO: Make these more uniform, remove bubbles, discuss to remove detail.
+export type MuxMediaEventsMap = {
+  cuepointchange: CustomEvent<{ composed: true; bubbles: true; detail: CuePoint }>;
+  chapterchange: CustomEvent<{ composed: true; bubbles: true; detail: Chapter }>;
+  targetlivewindowchange: CustomEvent<{ composed: true; bubbles: true }>;
+  streamtypechange: CustomEvent<{ composed: true; bubbles: true }>;
+  seekablechange: CustomEvent<{ composed: true }>;
+  error: CustomEvent<{ detail: MediaError }>;
 };

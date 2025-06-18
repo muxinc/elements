@@ -508,7 +508,7 @@ export const getEnded = (
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
-  teardown(mediaEl, core);
+  teardown(mediaEl, core, props);
   // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
   const { metadata = {} } = props;
   const { view_session_id = generateUUID() } = metadata;
@@ -527,7 +527,18 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   muxMediaState.set(mediaEl as HTMLMediaElement, { retryCount: 0 });
   const nextHlsInstance = setupHls(props, mediaEl);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
-  setupMux(props, mediaEl, nextHlsInstance);
+
+  if (props?.muxDataKeepSession && mediaEl?.mux && !mediaEl.mux.deleted) {
+    if (nextHlsInstance) {
+      mediaEl.mux.addHLSJS({
+        hlsjs: nextHlsInstance as HlsInterface,
+        Hls: nextHlsInstance ? Hls : undefined,
+      });
+    }
+  } else {
+    setupMux(props, mediaEl, nextHlsInstance);
+  }
+
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
   setupChapters(mediaEl);
@@ -540,19 +551,32 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   };
 };
 
-export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore) => {
+export const teardown = (
+  mediaEl?: HTMLMediaElement | null,
+  core?: PlaybackCore,
+  props?: Partial<MuxMediaPropsInternal>
+) => {
   const hls = core?.engine;
+
+  if (mediaEl?.mux && !mediaEl.mux.deleted) {
+    if (props?.muxDataKeepSession) {
+      if (hls) mediaEl.mux.removeHLSJS();
+    } else {
+      mediaEl.mux.destroy();
+      delete mediaEl.mux;
+    }
+  }
+
   if (hls) {
     hls.detachMedia();
     hls.destroy();
   }
-  if (mediaEl?.mux && !mediaEl.mux.deleted) {
-    mediaEl.mux.destroy();
-    delete mediaEl.mux;
-  }
+
   if (mediaEl) {
-    mediaEl.removeAttribute('src');
-    mediaEl.load();
+    if (mediaEl.hasAttribute('src')) {
+      mediaEl.removeAttribute('src');
+      mediaEl.load();
+    }
     mediaEl.removeEventListener('error', handleNativeError);
     mediaEl.removeEventListener('error', handleInternalError);
     mediaEl.removeEventListener('durationchange', seekInSeekableRange);
@@ -962,12 +986,14 @@ export const setupMux = (
       | 'customDomain'
       | 'disableCookies'
       | 'disableTracking'
+      | 'muxDataSDK'
+      | 'muxDataSDKOptions'
     >
   >,
   mediaEl: HTMLMediaElement,
   hlsjs?: HlsInterface
 ) => {
-  const { envKey: env_key, disableTracking } = props;
+  const { envKey: env_key, disableTracking, muxDataSDK = mux, muxDataSDKOptions = {} } = props;
   const inferredEnv = isMuxVideoSrc(props);
 
   if (!disableTracking && (env_key || inferredEnv)) {
@@ -997,7 +1023,7 @@ export const setupMux = (
       return error;
     };
 
-    mux.monitor(mediaEl, {
+    muxDataSDK.monitor(mediaEl, {
       debug,
       beaconCollectionDomain,
       hlsjs,
@@ -1005,6 +1031,7 @@ export const setupMux = (
       automaticErrorTracking: false,
       errorTranslator: muxEmbedErrorTranslator,
       disableCookies,
+      ...muxDataSDKOptions,
       data: {
         ...(env_key ? { env_key } : {}),
         // Metadata fields
