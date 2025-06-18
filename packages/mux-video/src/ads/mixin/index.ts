@@ -98,10 +98,11 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
       if (attrName === 'src' && newValue !== oldValue) {
         // If subsequent videos are loaded, reset the old ad tag url
         // to allow the same ads to be requested for a new video.
-        if (this.#videoMetadataLoaded) {
-          this.#oldAdTagUrl = undefined;
-        }
+        // Don't use events to reset the state as they could be triggered
+        // if Google IMA reuses the same video element for ads.
+        this.#oldAdTagUrl = undefined;
         this.#videoBackup = undefined;
+        this.#videoMetadataLoaded = false;
       }
 
       if (attrName === Attributes.AD_TAG_URL) {
@@ -125,19 +126,13 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
         return;
       }
 
-      if (event.type === 'emptied') {
-        this.#onEmptied();
-      } else if (event.type === 'loadedmetadata') {
+      if (event.type === 'loadedmetadata') {
         this.#onLoadedMetadata();
       } else if (event.type === 'play') {
         this.#onPlay();
       }
 
       super.handleEvent(event);
-    }
-
-    #onEmptied() {
-      this.#videoMetadataLoaded = false;
     }
 
     #onLoadedMetadata() {
