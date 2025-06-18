@@ -1142,7 +1142,7 @@ export const loadMedia = (
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
-  const { src } = props;
+  const { src, customDomain = MUX_VIDEO_DOMAIN } = props;
 
   const maybeDispatchEndedCallback = () => {
     // We want to early bail if the underlying media element is already in an ended state,
@@ -1186,10 +1186,9 @@ export const loadMedia = (
 
     if (typeof src === 'string') {
       // Fetch the Mux metadata JSON even on preload=none because it's needed for the Mux logo.
-      if (src.endsWith('.mp4') && src.includes(MUX_VIDEO_DOMAIN)) {
+      if (src.endsWith('.mp4') && src.includes(customDomain)) {
         const playbackId = toPlaybackIdFromSrc(src);
-        const domain = props.customDomain || MUX_VIDEO_DOMAIN;
-        const metadataUrl = new URL(`https://stream.${domain}/${playbackId}/metadata.json`);
+        const metadataUrl = new URL(`https://stream.${customDomain}/${playbackId}/metadata.json`);
         fetchAndDispatchMuxMetadata(metadataUrl.toString(), mediaEl);
       }
 
