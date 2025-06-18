@@ -85,8 +85,8 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
       {...props}
       ref={mediaElRef}
       key={`player-${playerKey}`}
-      adTagUrl={currentAdTagUrlString}
       playbackId={currentAdTagUrlString ? videoList[currentIndex].playbackId : undefined}
+      adTagUrl={currentAdTagUrlString}
       onEnded={(event) => {
         if (currentIndex < videoList.length - 1) {
           setEndScreenVisible(true);
