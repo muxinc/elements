@@ -95,15 +95,26 @@ export const getMultivariantPlaylistSessionData = (playlist: string) => {
   const sessionDataLines = playlist.split('\n').filter((line) => line.startsWith('#EXT-X-SESSION-DATA'));
   if (!sessionDataLines.length) return {};
 
-  const sessionData: Record<string, string> = {};
+  const sessionData: Record<string, { VALUE: string }> = {};
 
   for (const line of sessionDataLines) {
     const payload = line.split('#EXT-X-SESSION-DATA:')[1]?.trim();
     if (!payload) continue;
-    const [dataIdAttribute, valueAttribute] = payload.split(',');
-    const dataId = dataIdAttribute.split('=')[1]?.replace(/"/g, '');
-    const value = valueAttribute.split('=')[1]?.replace(/"/g, '');
-    sessionData[dataId] = value;
+
+    const attrs = payload.split(',');
+    const dataId = attrs
+      .find((attr) => attr.startsWith('DATA-ID='))
+      ?.split('=')[1]
+      ?.trim()
+      .replace(/"/g, '');
+    const VALUE = attrs
+      .find((attr) => attr.startsWith('VALUE='))
+      ?.split('=')[1]
+      ?.trim()
+      .replace(/"/g, '');
+    if (!dataId || !VALUE) continue;
+
+    sessionData[dataId] = { VALUE };
   }
 
   return {
@@ -194,9 +205,9 @@ export const updateStreamInfoFromSrc = async (
     type
   );
 
-  const metadataUrl = sessionData?.['com.apple.hls.chapters' as keyof typeof sessionData];
-  if (metadataUrl) {
-    fetchAndDispatchMuxMetadata(metadataUrl, mediaEl);
+  const metadata = sessionData?.['com.apple.hls.chapters' as keyof typeof sessionData];
+  if (metadata?.VALUE) {
+    fetchAndDispatchMuxMetadata(metadata.VALUE, mediaEl);
   }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
