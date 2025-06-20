@@ -29,10 +29,8 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
   }, [videoList]);
 
   useEffect(() => {
-    console.log('using effect');
     const videoAdTagUrl = videoList[currentIndex]?.adTagUrl;
     if (typeof videoAdTagUrl === 'string') {
-      console.log('setting videoAdTagUrl', 'prev', currentAdTagUrlString, 'next', videoAdTagUrl);
       setCurrentAdTagUrlString(videoAdTagUrl);
     } else if (typeof videoAdTagUrl === 'function') {
       const adTagUrlFnReturnVal = videoAdTagUrl();
@@ -60,16 +58,6 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
       }
     }, 200);
   }
-
-  console.log(
-    'render',
-    'currentAdTagUrlString',
-    currentAdTagUrlString,
-    'currentIndex',
-    currentIndex,
-    'videoList[currentIndex].playbackId',
-    videoList[currentIndex].playbackId
-  );
 
   return (
     <MuxPlayer
