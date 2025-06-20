@@ -31,6 +31,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.26.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.3...@mux/mux-video@0.26.0) (2025-06-20)
+
+
+### Features
+
+* add free plan logo ([#1140](https://github.com/muxinc/elements/issues/1140)) ([a6b369e](https://github.com/muxinc/elements/commit/a6b369e6fb97427374be5aa960cf709a3851b7e9))
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.29.1 to 0.30.0
+
 ## [0.25.3](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.2...@mux/mux-video@0.25.3) (2025-06-12)
 
 
