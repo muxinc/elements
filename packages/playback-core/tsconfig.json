@@ -7,7 +7,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "incremental": true,
-    "target": "ES2019",
+    "target": "ES2020",
     "module": "es6",
     "jsx": "react",
     "sourceMap": true,

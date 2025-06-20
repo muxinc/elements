@@ -95,32 +95,28 @@ export const getMultivariantPlaylistSessionData = (playlist: string) => {
   const sessionDataLines = playlist.split('\n').filter((line) => line.startsWith('#EXT-X-SESSION-DATA'));
   if (!sessionDataLines.length) return {};
 
-  const sessionData: Record<string, { VALUE: string }> = {};
+  const sessionData: Record<string, Record<string, string>> = {};
 
   for (const line of sessionDataLines) {
-    const payload = line.split('#EXT-X-SESSION-DATA:')[1]?.trim();
-    if (!payload) continue;
+    const sessionDataAttrs = parseSessionData(line);
+    const dataId = sessionDataAttrs['DATA-ID'];
+    if (!dataId) continue;
 
-    const attrs = payload.split(',');
-    const dataId = attrs
-      .find((attr) => attr.startsWith('DATA-ID='))
-      ?.split('=')[1]
-      ?.trim()
-      .replace(/"/g, '');
-    const VALUE = attrs
-      .find((attr) => attr.startsWith('VALUE='))
-      ?.split('=')[1]
-      ?.trim()
-      .replace(/"/g, '');
-    if (!dataId || !VALUE) continue;
-
-    sessionData[dataId] = { VALUE };
+    sessionData[dataId] = { ...sessionDataAttrs };
   }
 
   return {
     sessionData,
   };
 };
+
+export function parseSessionData(str: string) {
+  // Regular expression to match KEY="value" pairs
+  // This handles quoted values that may contain commas
+  const regex = /(\w+[-\w]*)="([^"]*)"/g;
+  const matches = [...str.matchAll(regex)];
+  return Object.fromEntries(matches.map(([, key, value]) => [key, value]));
+}
 
 export const getStreamInfoFromPlaylist = (playlist: string) => {
   const playlistLines = playlist.split('\n');
