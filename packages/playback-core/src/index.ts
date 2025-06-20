@@ -77,31 +77,49 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
   return undefined;
 };
 
-export const getMediaPlaylistLinesFromMultivariantPlaylistSrc = async (src: string) => {
-  return fetch(src)
-    .then((resp) => {
-      if (resp.status !== 200) {
-        return Promise.reject(resp);
-      }
-      return resp.text();
-    })
-    .then((multivariantPlaylistStr) => {
-      const mediaPlaylistUrl = multivariantPlaylistStr.split('\n').find((_line, idx, lines) => {
-        return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
-      }) as string;
+export const getMediaPlaylistFromMultivariantPlaylist = (multivariantPlaylist: string) => {
+  const mediaPlaylistUrl = multivariantPlaylist.split('\n').find((_line, idx, lines) => {
+    return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
+  }) as string;
 
-      return fetch(mediaPlaylistUrl)
-        .then((resp) => {
-          if (resp.status !== 200) {
-            return Promise.reject(resp);
-          }
-          return resp.text();
-        })
-        .then((mediaPlaylistStr) => mediaPlaylistStr.split('\n'));
-    });
+  return fetch(mediaPlaylistUrl).then((resp) => {
+    if (resp.status !== 200) {
+      return Promise.reject(resp);
+    }
+    return resp.text();
+  });
 };
 
-export const getStreamInfoFromPlaylistLines = (playlistLines: string[]) => {
+export const getMultivariantPlaylistSessionData = (playlist: string) => {
+  // See https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.6.4
+  const sessionDataLines = playlist.split('\n').filter((line) => line.startsWith('#EXT-X-SESSION-DATA'));
+  if (!sessionDataLines.length) return {};
+
+  const sessionData: Record<string, Record<string, string>> = {};
+
+  for (const line of sessionDataLines) {
+    const sessionDataAttrs = parseSessionData(line);
+    const dataId = sessionDataAttrs['DATA-ID'];
+    if (!dataId) continue;
+
+    sessionData[dataId] = { ...sessionDataAttrs };
+  }
+
+  return {
+    sessionData,
+  };
+};
+
+export function parseSessionData(str: string) {
+  // Regular expression to match KEY="value" pairs
+  // This handles quoted values that may contain commas
+  const regex = /(\w+[-\w]*)="([^"]*)"/g;
+  const matches = [...str.matchAll(regex)];
+  return Object.fromEntries(matches.map(([, key, value]) => [key, value]));
+}
+
+export const getStreamInfoFromPlaylist = (playlist: string) => {
+  const playlistLines = playlist.split('\n');
   const typeLine = playlistLines.find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
   const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
   const streamType = toStreamTypeFromPlaylistType(playlistType);
@@ -146,12 +164,21 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       streamType: StreamTypes.ON_DEMAND,
       targetLiveWindow: Number.NaN,
       liveEdgeStartOffset: undefined,
+      sessionData: undefined,
     };
   }
 
   if (type === ExtensionMimeTypeMap.M3U8) {
-    const playlistLines = await getMediaPlaylistLinesFromMultivariantPlaylistSrc(src);
-    return getStreamInfoFromPlaylistLines(playlistLines);
+    const multivariantPlaylistResponse = await fetch(src);
+    if (!multivariantPlaylistResponse.ok) {
+      return Promise.reject(multivariantPlaylistResponse);
+    }
+    const multivariantPlaylist = await multivariantPlaylistResponse.text();
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist);
+    return {
+      ...getMultivariantPlaylistSessionData(multivariantPlaylist),
+      ...getStreamInfoFromPlaylist(mediaPlaylist),
+    };
   }
 
   // Unknown or undefined type.
@@ -160,6 +187,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
     streamType: undefined,
     targetLiveWindow: undefined,
     liveEdgeStartOffset: undefined,
+    sessionData: undefined,
   };
 };
 
@@ -168,7 +196,15 @@ export const updateStreamInfoFromSrc = async (
   mediaEl: HTMLMediaElement,
   type: MediaTypes | '' = getType({ src })
 ) => {
-  const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
+  const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData } = await getStreamInfoFromSrcAndType(
+    src,
+    type
+  );
+
+  const metadata = sessionData?.['com.apple.hls.chapters' as keyof typeof sessionData];
+  if (metadata?.VALUE) {
+    fetchAndDispatchMuxMetadata(metadata.VALUE, mediaEl);
+  }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
@@ -177,6 +213,31 @@ export const updateStreamInfoFromSrc = async (
 
   (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
   mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
+};
+
+export const fetchAndDispatchMuxMetadata = async (metadataUrl: string, mediaEl: HTMLMediaElement) => {
+  try {
+    const resp = await fetch(metadataUrl);
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch Mux metadata: ${resp.status} ${resp.statusText}`);
+    }
+
+    const json = await resp.json();
+    const metadata: Record<string, string> = {};
+
+    for (const item of json[0].metadata) {
+      if (item.key && item.value) {
+        metadata[item.key] = item.value;
+      }
+    }
+
+    (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+
+    const eventUpdateMetadata = new CustomEvent('muxmetadata');
+    mediaEl.dispatchEvent(eventUpdateMetadata);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
@@ -398,7 +459,7 @@ const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined)
 
 export const toPlaybackIdFromSrc = (src: string | undefined) => {
   if (!src || !src.startsWith('https://stream.')) return undefined;
-  const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
+  const [playbackId] = new URL(src).pathname.slice(1).split(/\.m3u8|\//);
   // `|| undefined` is here to handle potential invalid cases
   return playbackId || undefined;
 };
@@ -411,6 +472,10 @@ const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
+};
+
+export const getMetadata = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.metadata;
 };
 
 export const getStreamType = (mediaEl: HTMLMediaElement) => {
@@ -617,7 +682,7 @@ export const setupHls = (
       'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'tokens' | 'drmTypeCb'
     >
   >,
-  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
+  mediaEl: HTMLMediaElement
 ) => {
   const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
   const type = getType(props);
@@ -667,6 +732,13 @@ export const setupHls = (
       ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
+
+    hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
+      const chapters = data.sessionData?.['com.apple.hls.chapters'];
+      if (chapters?.VALUE) {
+        fetchAndDispatchMuxMetadata(chapters.VALUE, mediaEl);
+      }
+    });
 
     return hls;
   }
@@ -1090,7 +1162,7 @@ export const loadMedia = (
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
-  const { src } = props;
+  const { src, customDomain = MUX_VIDEO_DOMAIN } = props;
 
   const maybeDispatchEndedCallback = () => {
     // We want to early bail if the underlying media element is already in an ended state,
@@ -1131,7 +1203,15 @@ export const loadMedia = (
 
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
+
     if (typeof src === 'string') {
+      // Fetch the Mux metadata JSON even on preload=none because it's needed for the Mux logo.
+      if (src.endsWith('.mp4') && src.includes(customDomain)) {
+        const playbackId = toPlaybackIdFromSrc(src);
+        const metadataUrl = new URL(`https://stream.${customDomain}/${playbackId}/metadata.json`);
+        fetchAndDispatchMuxMetadata(metadataUrl.toString(), mediaEl);
+      }
+
       // NOTE: This should only be invoked after stream type has been
       // derived after stream type has been determined.
       const setupSeekableChangePoll = () => {
@@ -1161,6 +1241,7 @@ export const loadMedia = (
           clearInterval(intervalId);
         });
       };
+
       const setupNativeStreamInfo = async () => {
         return updateStreamInfoFromSrc(src, mediaEl, type)
           .then(setupSeekableChangePoll)
@@ -1176,6 +1257,7 @@ export const loadMedia = (
             }
           });
       };
+
       if (mediaEl.preload === 'none') {
         // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
         // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
@@ -1224,6 +1306,7 @@ export const loadMedia = (
       }
 
       mediaEl.setAttribute('src', src);
+
       if (props.startTime) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
         // seekable is set to the range of the entire video once durationchange fires
