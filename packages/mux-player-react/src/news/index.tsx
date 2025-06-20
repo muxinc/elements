@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import MuxPlayer, { MuxPlayerProps } from '@mux/mux-player-react/ads';
 import NewsTheme from '@mux/mux-player-react/themes/news';
 import PlaylistEndScreen from './playlist-end-screen';
@@ -7,7 +7,7 @@ export interface VideoItem {
   imageUrl: string;
   title: string;
   playbackId: string;
-  adTagUrl: string;
+  adTagUrl: string | (() => string) | (() => Promise<string>); // NOTE: Consider making this and possibly other props optional (CJP)
 }
 
 export type PlaylistVideos = VideoItem[];
@@ -19,23 +19,36 @@ export interface PlaylistProps extends Omit<MuxPlayerProps, 'playbackId' | 'adTa
 const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
   const mediaElRef = useRef<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isEndScreenVisible, setIsEndScreenVisible] = useState(false);
+
+  const [currentAdTagUrlString, setCurrentAdTagUrlString] = useState(
+    typeof videoList[currentIndex]?.adTagUrl === 'string' ? videoList[currentIndex]?.adTagUrl : undefined
+  );
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [videoList]);
+
+  useEffect(() => {
+    const videoAdTagUrl = videoList[currentIndex]?.adTagUrl;
+    if (typeof videoAdTagUrl === 'string') {
+      setCurrentAdTagUrlString(videoAdTagUrl);
+    } else if (typeof videoAdTagUrl === 'function') {
+      const adTagUrlFnReturnVal = videoAdTagUrl();
+      if (typeof adTagUrlFnReturnVal === 'string') {
+        setCurrentAdTagUrlString(adTagUrlFnReturnVal);
+      } else if (typeof adTagUrlFnReturnVal?.then === 'function') {
+        setCurrentAdTagUrlString(undefined);
+        adTagUrlFnReturnVal.then(setCurrentAdTagUrlString);
+      }
+    }
+  }, [currentIndex]);
+
+  const [endScreenVisible, setEndScreenVisible] = useState(false);
   const [playerKey, setPlayerKey] = useState(0);
 
-  function playVideo() {
-    setIsEndScreenVisible(false);
-    setCurrentIndex(currentIndex + 1);
-    setTimeout(() => {
-      try {
-        mediaElRef.current.play();
-      } catch {
-        // Ignore AbortError: The play() request was interrupted by a call to pause()
-      }
-    }, 200);
-  }
-
   function selectVideo(index: number) {
-    setIsEndScreenVisible(false);
+    setEndScreenVisible(false);
+    setCurrentAdTagUrlString(undefined);
     setCurrentIndex(index);
     setTimeout(() => {
       try {
@@ -60,11 +73,11 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
       {...props}
       ref={mediaElRef}
       key={`player-${playerKey}`}
-      playbackId={videoList[currentIndex].playbackId}
-      adTagUrl={videoList[currentIndex].adTagUrl}
+      playbackId={currentAdTagUrlString ? videoList[currentIndex].playbackId : undefined}
+      adTagUrl={currentAdTagUrlString}
       onEnded={(event) => {
         if (currentIndex < videoList.length - 1) {
-          setIsEndScreenVisible(true);
+          setEndScreenVisible(true);
         } else {
           setCurrentIndex(0);
           setPlayerKey((prev) => prev + 1);
@@ -73,11 +86,10 @@ const MuxNewsPlayer = ({ videoList, ...props }: PlaylistProps) => {
       }}
     >
       <PlaylistEndScreen
-        video={currentIndex < videoList.length - 1 ? videoList[currentIndex + 1] : videoList[0]}
+        currentIndex={currentIndex}
         relatedVideos={videoList}
-        isVisible={isEndScreenVisible}
+        visible={endScreenVisible}
         selectVideoCallback={selectVideo}
-        timerCallback={playVideo}
       />
     </MuxPlayer>
   );
