@@ -115,7 +115,7 @@ const isQuotedString = (value: string) =>
   value.indexOf(QUOTE_CHAR) === 0 && value.lastIndexOf(QUOTE_CHAR) === value.length - 1;
 // matches all HLS attribute name=value pairs, with or without quotes, using per spec rules
 // for matching AttributeName (See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-17#section-4.2)
-const ATTR_LIST_REGEX = /([A-Z0-9\-]+)=(".*?"|.*?)(?:,|$)/g;
+const ATTR_LIST_REGEX = /([A-Z0-9-]+)=(".*?"|.*?)(?:,|$)/g;
 export function parseTagAttributes(str: string) {
   const matches = [...str.matchAll(ATTR_LIST_REGEX)];
   return Object.fromEntries(matches.map(([, key, value]) => [key, isQuotedString(value) ? value.slice(1, -1) : value]));
