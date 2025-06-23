@@ -33,6 +33,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.4.1...@mux/mux-player-react@3.5.0) (2025-06-23)
+
+
+### Features
+
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+
+
+### Bug Fixes
+
+* **mux-player-react news:** on demand ad tag url ([#1144](https://github.com/muxinc/elements/issues/1144)) ([fbf1bb0](https://github.com/muxinc/elements/commit/fbf1bb070f0cde2928bcb9a77ae8f3696a96994e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.4.1 to 3.5.0
+    * @mux/playback-core bumped from 0.29.1 to 0.30.0
+
 ## [3.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.4.0...@mux/mux-player-react@3.4.1) (2025-06-12)
 
 
