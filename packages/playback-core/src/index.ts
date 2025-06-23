@@ -98,7 +98,7 @@ export const getMultivariantPlaylistSessionData = (playlist: string) => {
   const sessionData: Record<string, Record<string, string>> = {};
 
   for (const line of sessionDataLines) {
-    const sessionDataAttrs = parseSessionData(line);
+    const sessionDataAttrs = parseTagAttributes(line);
     const dataId = sessionDataAttrs['DATA-ID'];
     if (!dataId) continue;
 
@@ -110,12 +110,15 @@ export const getMultivariantPlaylistSessionData = (playlist: string) => {
   };
 };
 
-export function parseSessionData(str: string) {
-  // Regular expression to match KEY="value" pairs
-  // This handles quoted values that may contain commas
-  const regex = /(\w+[-\w]*)="([^"]*)"/g;
-  const matches = [...str.matchAll(regex)];
-  return Object.fromEntries(matches.map(([, key, value]) => [key, value]));
+const QUOTE_CHAR = '"';
+const isQuotedString = (value: string) =>
+  value.indexOf(QUOTE_CHAR) === 0 && value.lastIndexOf(QUOTE_CHAR) === value.length - 1;
+// matches all HLS attribute name=value pairs, with or without quotes, using per spec rules
+// for matching AttributeName (See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-17#section-4.2)
+const ATTR_LIST_REGEX = /([A-Z0-9\-]+)=(".*?"|.*?)(?:,|$)/g;
+export function parseTagAttributes(str: string) {
+  const matches = [...str.matchAll(ATTR_LIST_REGEX)];
+  return Object.fromEntries(matches.map(([, key, value]) => [key, isQuotedString(value) ? value.slice(1, -1) : value]));
 }
 
 export const getStreamInfoFromPlaylist = (playlist: string) => {
@@ -202,8 +205,12 @@ export const updateStreamInfoFromSrc = async (
   );
 
   const metadata = sessionData?.['com.apple.hls.chapters' as keyof typeof sessionData];
-  if (metadata?.VALUE) {
-    fetchAndDispatchMuxMetadata(metadata.VALUE, mediaEl);
+  if (metadata?.URI || metadata?.VALUE.toLocaleLowerCase().startsWith('http')) {
+    // NOTE: data identified by DATA-ID 'com.apple.hls.chapters' is expected to provide its value
+    // via a remote JSON source identified by the URI attribute. Providing VALUE as a fallback.
+    // For more, see:
+    // https://developer.apple.com/documentation/http-live-streaming/providing-javascript-object-notation-json-chapters#Specify-a-main-playlist
+    fetchAndDispatchMuxMetadata(metadata.URI ?? metadata.VALUE, mediaEl);
   }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
