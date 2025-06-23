@@ -117,7 +117,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
 
   static getTemplateHTML(attrs: Record<string, string> = {}) {
     return /* html */ `
-      ${super.getTemplateHTML(attrs)}
+      ${CustomVideoElement.getTemplateHTML(attrs)}
       <style>
         :host {
           position: relative;

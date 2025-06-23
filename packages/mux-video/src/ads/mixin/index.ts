@@ -28,7 +28,7 @@ export function AdsVideoMixin<T extends CustomVideoElement>(superclass: T): Cons
 
     static getTemplateHTML = (attrs: Record<string, string>) => {
       return (
-        super.getTemplateHTML(attrs) +
+        superclass.getTemplateHTML(attrs) +
         /*html*/ `
           <style>
             :host {
