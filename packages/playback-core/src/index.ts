@@ -739,8 +739,8 @@ export const setupHls = (
 
     hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
       const chapters = data.sessionData?.['com.apple.hls.chapters'];
-      if (chapters?.VALUE) {
-        fetchAndDispatchMuxMetadata(chapters.VALUE, mediaEl);
+      if (chapters?.URI || chapters?.VALUE.toLocaleLowerCase().startsWith('http')) {
+        fetchAndDispatchMuxMetadata(chapters?.URI ?? chapters?.VALUE, mediaEl);
       }
     });
 
