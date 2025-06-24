@@ -209,11 +209,9 @@ describe('<mux-video>', () => {
       preload="auto"
     ></mux-video>`);
 
-    await aTimeout(1000);
-
     player.currentTime = 60;
 
-    await aTimeout(50);
+    await oneEvent(player, 'seeked');
 
     const currentPdt = player.currentPdt;
     const startDate = player.getStartDate();
