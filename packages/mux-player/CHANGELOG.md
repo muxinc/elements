@@ -48,6 +48,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.4.1...@mux/mux-player@3.5.0) (2025-06-23)
+
+
+### Features
+
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+* retry logic for 412 not playable errors ([#1106](https://github.com/muxinc/elements/issues/1106)) ([677c90a](https://github.com/muxinc/elements/commit/677c90ac3be18290f458be422a2bcc41cd4b7a6d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.25.3 to 0.26.0
+    * @mux/playback-core bumped from 0.29.1 to 0.30.0
+
 ## [3.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.4.0...@mux/mux-player@3.4.1) (2025-06-12)
 
 

@@ -40,6 +40,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.1...@mux/playback-core@0.30.0) (2025-06-23)
+
+
+### Features
+
+* add free plan logo ([#1140](https://github.com/muxinc/elements/issues/1140)) ([a6b369e](https://github.com/muxinc/elements/commit/a6b369e6fb97427374be5aa960cf709a3851b7e9))
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+* retry logic for 412 not playable errors ([#1106](https://github.com/muxinc/elements/issues/1106)) ([677c90a](https://github.com/muxinc/elements/commit/677c90ac3be18290f458be422a2bcc41cd4b7a6d))
+
+
+### Bug Fixes
+
+* **playback-core:** prefer uri value for chapters session metadata when available. ([#1145](https://github.com/muxinc/elements/issues/1145)) ([4dd2a50](https://github.com/muxinc/elements/commit/4dd2a50a66dcac8b47d6af561ea4c0469e6f35a8))
+* support URI and VALUE for session data ([#1146](https://github.com/muxinc/elements/issues/1146)) ([930ad72](https://github.com/muxinc/elements/commit/930ad72a942cd636ffab83b5d81324ef80d8cc12))
+
 ## [0.29.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.0...@mux/playback-core@0.29.1) (2025-06-12)
 
 
