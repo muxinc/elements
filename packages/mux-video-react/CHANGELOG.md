@@ -20,6 +20,59 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.27.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.26.0...@mux/mux-video-react@0.27.0) (2025-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade media chrome to 4.1.0 ([#978](https://github.com/muxinc/elements/issues/978))
+
+### Features
+
+* add `disable-tracking` attribute and prop ([#900](https://github.com/muxinc/elements/issues/900)) ([0f5966e](https://github.com/muxinc/elements/commit/0f5966ec6cdf3cacde017a4ddd9c388bea3168d7))
+* Manifest manipulation and other media stream query param props. ([954b2c8](https://github.com/muxinc/elements/commit/954b2c80d7df88bb4585c46a15dd1185d56dcf9a))
+* **mux-player-react, mux-uploader-react, mux-audio-react, mux-video-react:** add client component directive ([#911](https://github.com/muxinc/elements/issues/911)) ([76aa003](https://github.com/muxinc/elements/commit/76aa003e9ad9488509650970b971edd3ed463592))
+* **mux-player-react:** Force minor version bump via conventional commits. ([201bfcd](https://github.com/muxinc/elements/commit/201bfcd2a4137b2c409d1ce5fb3b32576a99ba31))
+* **mux-player, mux-player-react, mux-video, mux-video-react, mux-audio, mux-audio-react, playback-core:** pdt clipping ([#923](https://github.com/muxinc/elements/issues/923)) ([22e9b06](https://github.com/muxinc/elements/commit/22e9b06e2e0913a6c34ebea53f4bbeded969b5a4))
+* **mux-video-react:** Add disable cookies prop. ([777db83](https://github.com/muxinc/elements/commit/777db8301e6bbb97ef542a05251b00e450a04b8d))
+* **playback-core, mux-video, mux-audio, mux-video-react, mux-audio-react, mux-player, mux-player-react:** Add asset start and end time props and attrs. ([#1002](https://github.com/muxinc/elements/issues/1002)) ([99a0726](https://github.com/muxinc/elements/commit/99a07268cfa78ee026a0ee7b7f9af90fcf3feb4c))
+* **playback-core:** error handling rearchitecture (including more granular and DRM error cases)  ([4d0b670](https://github.com/muxinc/elements/commit/4d0b670eacb57f44891fab781941dab6e97e06fe))
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+* use MC media-error-dialog ([#1014](https://github.com/muxinc/elements/issues/1014)) ([2fbb2c1](https://github.com/muxinc/elements/commit/2fbb2c157aa694ed82fc2b81b989cca6c0f790af))
+
+
+### Bug Fixes
+
+* add async effect for loading media ([#492](https://github.com/muxinc/elements/issues/492)) ([d2b250a](https://github.com/muxinc/elements/commit/d2b250a2d86e4e6a4c17fc34196e6468c4fedf1f))
+* add updated peer deps to other React pkgs ([#1006](https://github.com/muxinc/elements/issues/1006)) ([e51a7ce](https://github.com/muxinc/elements/commit/e51a7ce412ce7f56610035f412e2f263325ed6ad))
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* mark React 19 as peerdep ([#971](https://github.com/muxinc/elements/issues/971)) ([4f74ea0](https://github.com/muxinc/elements/commit/4f74ea0215407e5c9573d8dd4a91d2a855b864bb))
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+* **mux-video-react:** Don't spread disableCookies to video to avoid warnings ([#749](https://github.com/muxinc/elements/issues/749)) ([06169be](https://github.com/muxinc/elements/commit/06169bef2c158a02e683839f1bebb8cb1e619c0c))
+* **mux-video-react:** Don't spread streamType to video to avoid React warnings ([#721](https://github.com/muxinc/elements/issues/721)) ([7395fca](https://github.com/muxinc/elements/commit/7395fca1b50dbad4fa04cb37b234523b953a2c78)), closes [#602](https://github.com/muxinc/elements/issues/602)
+* **mux-video, mux-video-react, mux-audio, mux-audio-react, mux-player, mux-player-react:** Expose element name and version via exports and statics for web components. ([#1017](https://github.com/muxinc/elements/issues/1017)) ([27b6858](https://github.com/muxinc/elements/commit/27b6858de2190e2caf2b1315ebbc469c01bbd25f))
+* MuxAudio and MuxVideo mem issues ([c997a61](https://github.com/muxinc/elements/commit/c997a61a93d44c038fd33fe0cdc65f27fc76408f))
+* MuxVideoReact memory leak ([c057099](https://github.com/muxinc/elements/commit/c057099bb344212c0afd5f938a92c893245423b4))
+* passthrough props to native media els ([#912](https://github.com/muxinc/elements/issues/912)) ([88a63db](https://github.com/muxinc/elements/commit/88a63db7dadc9aa3e09402f7c1be79a278b97c06))
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+* upgrade dependencies (castable-video, ...) ([#1087](https://github.com/muxinc/elements/issues/1087)) ([dc84f07](https://github.com/muxinc/elements/commit/dc84f07109565dc7ee29d691a0fc941c6854f762))
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+* upgrade media-chrome, upchunk, React types ([#904](https://github.com/muxinc/elements/issues/904)) ([1090ad6](https://github.com/muxinc/elements/commit/1090ad690261acd7ac1ab68b45801c46be1c2d0c))
+* upgrade mux-embed v5.2.0 & media-chrome v3.2.0 ([#897](https://github.com/muxinc/elements/issues/897)) ([fd91d94](https://github.com/muxinc/elements/commit/fd91d946ee2f8e58e05551fcb247422de6fbb761))
+
+
+### Miscellaneous Chores
+
+* Upgrade media chrome to 4.1.0 ([#978](https://github.com/muxinc/elements/issues/978)) ([ff78173](https://github.com/muxinc/elements/commit/ff781732c86719de2ea7e54987c75178ac42bbd6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.30.0 to 0.31.0
+
 ## [0.26.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.25.3...@mux/mux-video-react@0.26.0) (2025-06-23)
 
 
