@@ -229,6 +229,8 @@ export const fetchAndDispatchMuxMetadata = async (metadataUrl: string, mediaEl: 
     const json = await resp.json();
     const metadata: Record<string, string> = {};
 
+    if (!json?.[0]?.metadata) return;
+
     for (const item of json[0].metadata) {
       if (item.key && item.value) {
         metadata[item.key] = item.value;
