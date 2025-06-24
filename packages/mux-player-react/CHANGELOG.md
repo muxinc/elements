@@ -33,6 +33,95 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [4.0.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.0...@mux/mux-player-react@4.0.0) (2025-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **mux-player, mux-player-react:** Retrospective breaking change for tooltips pr
+* **mux-player,mux-player-react:** major version update ([#992](https://github.com/muxinc/elements/issues/992))
+* Upgrade media chrome to 4.1.0 ([#978](https://github.com/muxinc/elements/issues/978))
+* **mux-player-react:** Updates mux-player-react to match mux-player with new theme upgrade
+
+### Features
+
+* add `disable-tracking` attribute and prop ([#900](https://github.com/muxinc/elements/issues/900)) ([0f5966e](https://github.com/muxinc/elements/commit/0f5966ec6cdf3cacde017a4ddd9c388bea3168d7))
+* add a no-volume-pref attribute to turn of storing volume in localStorage ([#686](https://github.com/muxinc/elements/issues/686)) ([e9c2150](https://github.com/muxinc/elements/commit/e9c2150ba36615107f05d99baaa8a4432d71138d))
+* add attribute max-resolution on mux-player and mux-video ([#581](https://github.com/muxinc/elements/issues/581)) ([1936c8e](https://github.com/muxinc/elements/commit/1936c8ecb47805ee75fd04ffee514b846043efc1))
+* add poster slot for progressive enhancement ([#747](https://github.com/muxinc/elements/issues/747)) ([e90e096](https://github.com/muxinc/elements/commit/e90e096bc45776776e6fc4a8846aede2ad8ecb7c)), closes [#590](https://github.com/muxinc/elements/issues/590)
+* add video-title attr & prop ([#1108](https://github.com/muxinc/elements/issues/1108)) ([7763a49](https://github.com/muxinc/elements/commit/7763a49d885e56342fffe874ba838059e15c906c)), closes [#639](https://github.com/muxinc/elements/issues/639)
+* add way to set and render MC themes ([#561](https://github.com/muxinc/elements/issues/561)) ([0ac98e9](https://github.com/muxinc/elements/commit/0ac98e9a6fd60c5ea990be3c7d5d8ae7941e447c))
+* basic drm support ([#905](https://github.com/muxinc/elements/issues/905)) ([79acc9d](https://github.com/muxinc/elements/commit/79acc9d8cb520da469f1c72196befc384ee5b4f9))
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+* implement Mux badge ([#988](https://github.com/muxinc/elements/issues/988)) ([2343df8](https://github.com/muxinc/elements/commit/2343df80fddcbf05485ed9d4ab27f1bb0fac04d0))
+* inferred stream type ([#592](https://github.com/muxinc/elements/issues/592)) ([db4cc9f](https://github.com/muxinc/elements/commit/db4cc9f60660f2b860ecce0a5a5ef2a3a09cc40b))
+* Lerna bump mux-player-react so versions sync ([56df987](https://github.com/muxinc/elements/commit/56df987c413792aa8e5f762f931587f1c193b2bc))
+* Manifest manipulation and other media stream query param props. ([954b2c8](https://github.com/muxinc/elements/commit/954b2c80d7df88bb4585c46a15dd1185d56dcf9a))
+* **mux-player-react, mux-uploader-react, mux-audio-react, mux-video-react:** add client component directive ([#911](https://github.com/muxinc/elements/issues/911)) ([76aa003](https://github.com/muxinc/elements/commit/76aa003e9ad9488509650970b971edd3ed463592))
+* **mux-player-react:** Add disable cookies prop. ([ba9d46a](https://github.com/muxinc/elements/commit/ba9d46a2da652555565d5f82b6fc6550899ef4fb))
+* **mux-player-react:** Add experimentalCmcd prop. ([40b44ff](https://github.com/muxinc/elements/commit/40b44ff042f57d2b265398c024117ccce9af3982))
+* **mux-player-react:** Add prefer cmcd prop. ([4733618](https://github.com/muxinc/elements/commit/473361832e9209314106980ce3e1ff1009a40d12))
+* **mux-player-react:** bring breaking change in line with mux-player package ([#789](https://github.com/muxinc/elements/issues/789)) ([3d5112e](https://github.com/muxinc/elements/commit/3d5112ea3f90d8329d6d7e8553cbce3f62f334e1))
+* **mux-player-react:** Force bump ([#806](https://github.com/muxinc/elements/issues/806)) ([101d04a](https://github.com/muxinc/elements/commit/101d04a00fb85d79fa036a40103bb054f26e0b78))
+* **mux-player-react:** Force minor version bump via conventional commits. ([201bfcd](https://github.com/muxinc/elements/commit/201bfcd2a4137b2c409d1ce5fb3b32576a99ba31))
+* **mux-player-react:** Force version bump to 1.7.0 for parity with mux-player (minor code refactor for lerna). ([aba4ec0](https://github.com/muxinc/elements/commit/aba4ec0f6724928bd25f8def3685bfbccf68ec4c))
+* **mux-player-react:** Force version bump to 1.7.0 for parity with mux-player. ([e7d6b3f](https://github.com/muxinc/elements/commit/e7d6b3f3eb36166c32d643de58baee9decf31fac))
+* **mux-player-react:** meaningless commit, forced minor version bump ([2e52540](https://github.com/muxinc/elements/commit/2e52540a757b2384c4eb7aaf7ddad2d0a0398391))
+* **mux-player-react:** mux player react cuepoint handlers ([#605](https://github.com/muxinc/elements/issues/605)) ([df4e6e0](https://github.com/muxinc/elements/commit/df4e6e036f7cd9b5d9dfa52e1adc56bb0a850373))
+* **mux-player-react:** re-export themes from player package ([#737](https://github.com/muxinc/elements/issues/737)) ([682fe1a](https://github.com/muxinc/elements/commit/682fe1ab7b772d189224178b5fcac8bc0f607fa6))
+* **mux-player-react:** Remove commented out code (feat to force mino… ([#890](https://github.com/muxinc/elements/issues/890)) ([9d48804](https://github.com/muxinc/elements/commit/9d48804bcc0d7df497caea40505599652596c195))
+* **mux-player, mux-player-react, mux-video, mux-video-react, mux-audio, mux-audio-react, playback-core:** pdt clipping ([#923](https://github.com/muxinc/elements/issues/923)) ([22e9b06](https://github.com/muxinc/elements/commit/22e9b06e2e0913a6c34ebea53f4bbeded969b5a4))
+* **mux-player, mux-player-react, mux-video:** cast custom data ([2722b6e](https://github.com/muxinc/elements/commit/2722b6ea6c5497c0bd0a28fd1732bd0b9c2474b6))
+* **mux-player, mux-player-react:** Add extra-source-params/extraSourceParams attr/prop for advanced usage. ([a5ad6ed](https://github.com/muxinc/elements/commit/a5ad6ed3da0aafb52f983c91881126d74c884157))
+* **mux-player, mux-player-react:** default duration ([#844](https://github.com/muxinc/elements/issues/844)) ([8d52572](https://github.com/muxinc/elements/commit/8d52572330089076a6d05ff33fa0f596e18799ff))
+* **mux-player:** add storyboard-src attribute and corresponding prop ([#522](https://github.com/muxinc/elements/issues/522)) ([e9c3f0a](https://github.com/muxinc/elements/commit/e9c3f0afd3eb2521248996c37de1716b4ce724c4))
+* **playback-core, mux-video, mux-audio, mux-video-react, mux-audio-react, mux-player, mux-player-react:** Add asset start and end time props and attrs. ([#1002](https://github.com/muxinc/elements/issues/1002)) ([99a0726](https://github.com/muxinc/elements/commit/99a07268cfa78ee026a0ee7b7f9af90fcf3feb4c))
+* **playback-core, mux-video, mux-player:** addChapters interface ([#909](https://github.com/muxinc/elements/issues/909)) ([84392f1](https://github.com/muxinc/elements/commit/84392f14ee429b63ce26326e84e80e93bbdc70db))
+* Remove experimentalCmcd and add none to preferCmcd. Update secret docs. ([2656631](https://github.com/muxinc/elements/commit/2656631968f2b7e97a07d435818ee43c16627002))
+* Rename new default theme ([#771](https://github.com/muxinc/elements/issues/771)) ([b91c509](https://github.com/muxinc/elements/commit/b91c5092e005805a801982e15719984965f745e1))
+* Set default player init time for all elements for greater accuracy. Expose attr+prop for externally defined player init time. ([#1034](https://github.com/muxinc/elements/issues/1034)) ([61f10d3](https://github.com/muxinc/elements/commit/61f10d3933e487e44795a8e42e36721ae00873d2))
+* use MC media-error-dialog ([#1014](https://github.com/muxinc/elements/issues/1014)) ([2fbb2c1](https://github.com/muxinc/elements/commit/2fbb2c157aa694ed82fc2b81b989cca6c0f790af))
+
+
+### Bug Fixes
+
+* Adding unofficial _hlsConfig to media elements and playback core. ([#833](https://github.com/muxinc/elements/issues/833)) ([b86f6e6](https://github.com/muxinc/elements/commit/b86f6e6eb2c116d1d676fbaecd46d77a0baa3416)), closes [#792](https://github.com/muxinc/elements/issues/792)
+* default-hidden-captions order bug for React ([#1105](https://github.com/muxinc/elements/issues/1105)) ([7b706ba](https://github.com/muxinc/elements/commit/7b706baf43cf6959415db4cd6a8d8381aa7b3adc))
+* Ensure ref callback cleanup executes on MuxPlayer unmount ([#1132](https://github.com/muxinc/elements/issues/1132)) ([1c850b6](https://github.com/muxinc/elements/commit/1c850b60b7a678d572a46f96d95ecfb6630798ec))
+* mark React 19 as peerdep ([#971](https://github.com/muxinc/elements/issues/971)) ([4f74ea0](https://github.com/muxinc/elements/commit/4f74ea0215407e5c9573d8dd4a91d2a855b864bb))
+* move package exports default condition to be last ([#1013](https://github.com/muxinc/elements/issues/1013)) ([192aa79](https://github.com/muxinc/elements/commit/192aa79903d3c01fc9ce9fda3d8a35be3c56fc83))
+* **mux-player-react news:** on demand ad tag url ([#1144](https://github.com/muxinc/elements/issues/1144)) ([fbf1bb0](https://github.com/muxinc/elements/commit/fbf1bb070f0cde2928bcb9a77ae8f3696a96994e))
+* **mux-player-react/lazy:** display placeholder before JS load ([#895](https://github.com/muxinc/elements/issues/895)) ([3abdbb8](https://github.com/muxinc/elements/commit/3abdbb8653ca9003736a147236723d7d90f3dc9f))
+* **mux-player-react:** add disablePictureInPicture to TS def ([9fd9978](https://github.com/muxinc/elements/commit/9fd99780047d24e3efdb61ddc31ba7e8346415f3))
+* **mux-player-react:** Don't "reset" currentTime to 0 unintentionally. ([#663](https://github.com/muxinc/elements/issues/663)) ([6ea8aed](https://github.com/muxinc/elements/commit/6ea8aedbe8e62a33bd8de630eddaadf823a738a6))
+* **mux-player-react:** Don't declare lazy exports that don't exist. ([#746](https://github.com/muxinc/elements/issues/746)) ([c0c471a](https://github.com/muxinc/elements/commit/c0c471acbad94e06628c8c2061d09d893b410a51))
+* **mux-player, mux-player-react:** add accent color prop attr ([#790](https://github.com/muxinc/elements/issues/790)) ([f147e5f](https://github.com/muxinc/elements/commit/f147e5f95887f0b08a46a2e76a0aacadb6f00455))
+* **mux-video, mux-video-react, mux-audio, mux-audio-react, mux-player, mux-player-react:** Expose element name and version via exports and statics for web components. ([#1017](https://github.com/muxinc/elements/issues/1017)) ([27b6858](https://github.com/muxinc/elements/commit/27b6858de2190e2caf2b1315ebbc469c01bbd25f))
+* **playback-core:** Change default of preferCmcd to 'none' for improved cacheability. Update reference docs to document preferCmcd (et al.). ([#1136](https://github.com/muxinc/elements/issues/1136)) ([4409304](https://github.com/muxinc/elements/commit/44093049b6629044dbb7fed10839f83667fdb37c))
+* React 19 bool prop to attr value bug ([#1026](https://github.com/muxinc/elements/issues/1026)) ([52bca58](https://github.com/muxinc/elements/commit/52bca588a223600f450ed1f26be45a0da34fd4b2))
+* Reverting packages type (defaults to cjs) for accuracy per node … ([#745](https://github.com/muxinc/elements/issues/745)) ([9e7a171](https://github.com/muxinc/elements/commit/9e7a17113e14b711c8da9b1bdafe65ee86454b3b))
+* suppress Mux Player React hydration warning ([#1116](https://github.com/muxinc/elements/issues/1116)) ([0235d89](https://github.com/muxinc/elements/commit/0235d893a877b7aac96cece58e6ed3ee0571a6d9))
+* update typedefs, disable skipLibChecks in tsconfig ([#601](https://github.com/muxinc/elements/issues/601)) ([1664aec](https://github.com/muxinc/elements/commit/1664aec20e4cf4a59779848b298d4504eef24080))
+* upgrade dependencies (castable-video, ...) ([#1087](https://github.com/muxinc/elements/issues/1087)) ([dc84f07](https://github.com/muxinc/elements/commit/dc84f07109565dc7ee29d691a0fc941c6854f762))
+* upgrade deps custom-media-element, hls.js, mux-embed, ... ([#1052](https://github.com/muxinc/elements/issues/1052)) ([dd4264d](https://github.com/muxinc/elements/commit/dd4264d51671989a29c037e912a128056acea5f8))
+* upgrade media-chrome, upchunk, React types ([#904](https://github.com/muxinc/elements/issues/904)) ([1090ad6](https://github.com/muxinc/elements/commit/1090ad690261acd7ac1ab68b45801c46be1c2d0c))
+* upgrade mux-embed v5.2.0 & media-chrome v3.2.0 ([#897](https://github.com/muxinc/elements/issues/897)) ([fd91d94](https://github.com/muxinc/elements/commit/fd91d946ee2f8e58e05551fcb247422de6fbb761))
+
+
+### Miscellaneous Chores
+
+* **mux-player, mux-player-react:** breaking change take 2 ([#994](https://github.com/muxinc/elements/issues/994)) ([668403a](https://github.com/muxinc/elements/commit/668403adf97aae14e3acba667e42965f03d9ec97))
+* **mux-player,mux-player-react:** major version update ([#992](https://github.com/muxinc/elements/issues/992)) ([370c5dc](https://github.com/muxinc/elements/commit/370c5dc51a937b5746941ef0cd57c59dbd0b15f8))
+* Upgrade media chrome to 4.1.0 ([#978](https://github.com/muxinc/elements/issues/978)) ([ff78173](https://github.com/muxinc/elements/commit/ff781732c86719de2ea7e54987c75178ac42bbd6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.0 to 4.0.0
+    * @mux/playback-core bumped from 0.30.0 to 0.31.0
+
 ## [3.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.4.1...@mux/mux-player-react@3.5.0) (2025-06-23)
 
 
