@@ -31,6 +31,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.26.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.26.0...@mux/mux-video@0.26.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* **playback-core:** fix metadata type error ([#1151](https://github.com/muxinc/elements/issues/1151)) ([a78cf9a](https://github.com/muxinc/elements/commit/a78cf9a37b0e2892be9fe54097111ae36f78eadd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.30.0 to 0.30.1
+
 ## [0.26.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.3...@mux/mux-video@0.26.0) (2025-06-23)
 
 

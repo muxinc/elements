@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.0...@mux/playback-core@0.30.1) (2025-06-24)
+
+
+### Bug Fixes
+
+* **playback-core:** fix metadata type error ([#1151](https://github.com/muxinc/elements/issues/1151)) ([a78cf9a](https://github.com/muxinc/elements/commit/a78cf9a37b0e2892be9fe54097111ae36f78eadd))
+
 ## [0.30.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.1...@mux/playback-core@0.30.0) (2025-06-23)
 
 
