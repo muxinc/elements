@@ -35,7 +35,7 @@
     "format": "prettier --write .",
     "clean": "turbo run clean",
     "lint": "turbo run lint --filter '!./examples/*'",
-    "test": "turbo run test --filter '!./examples/*'",
+    "test": "turbo run test --concurrency=1 --filter '!./examples/*'",
     "dev": "turbo run dev --concurrency=20 --filter '!./examples/*'",
     "build:packages": "turbo run build --filter '!./examples/*'",
     "build": "turbo run build",
