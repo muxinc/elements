@@ -15,6 +15,8 @@
     "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "pretty-quick": "^4.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "turbo": "^2.4.4"
   },
   "overrides": {
