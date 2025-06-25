@@ -26,7 +26,14 @@ const config = {
     include: ['src/**/*'],
   },
   testsFinishTimeout: 600000,
-  browsers: [chromeLauncher()],
+  browsers: [
+    playwrightLauncher({
+      product: 'chromium',
+      launchOptions: {
+        channel: 'chrome',
+      },
+    }),
+  ],
   filterBrowserLogs: ({ args }) => !args[0]?.startsWith?.('Lit is in dev mode'),
 };
 
