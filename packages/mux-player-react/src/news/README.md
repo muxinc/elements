@@ -101,6 +101,8 @@ const videoList = [
     title: "Video Title 1",
     playbackId: "[PLAYBACK_ID]",
     adTagUrl: "https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator=",
+    // Or, if you need to dynamically and asynchronously fetch the ad tag URL, something like:
+    // adTagUrl: () => fetchAdTagUrlFor('[PLAYBACK_ID]'),
   },
   // Add more videos as needed
 ];
@@ -110,7 +112,7 @@ Each video object should contain:
 - `imageUrl`: Thumbnail image URL for the video
 - `title`: Title of the video
 - `playbackId`: Mux playback ID for the video
-- `adTagUrl`: VAST or VMAP URL for the ads to be displayed with this video
+- `adTagUrl`: A VAST or VMAP URL string for the ads to be displayed with this video, or a function that yields either the URL string or a Promise that (eventually) yields the string.
 
 ### 2. Render the MuxNewsPlayer Component
 
@@ -206,11 +208,15 @@ Each video in the `videoList` array can have the following properties:
 
 | Property | Type | Description | Required |
 |----------|------|-------------|----------|
-| `playbackId` | String | Mux playback ID for the video | Yes |
-| `adTagUrl` | String | URL for the VAST or VMAP ad tag | Yes for ads |
-| `imageUrl` | String | URL for the video thumbnail | Yes |
-| `title` | String | Title of the video | Yes |
+| `playbackId` | `string` | Mux playback ID for the video | Yes |
+| `adTagUrl` | `string \| () => string \| () => Promise<string>` | URL for the VAST or VMAP ad tag or function that yields the URL or function that yields a Promise that yields the URL | Yes for ads |
+| `imageUrl` | `string` | URL for the video thumbnail | Yes |
+| `title` | `string` | Title of the video | Yes |
 
+### Ad-related events
+
+For a list of all ad-related events, see the docs for [mux-video with ads](../../../mux-video/src/ads/README.md#events). Like other Mux Player React events,
+callbacks are supported using the same naming conventions, so e.g. the `adskip` callback React prop will be `onAdSkip`.
 
 ## Troubleshooting
 
