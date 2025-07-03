@@ -58,13 +58,6 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
-    "./base": {
-      "types@<4.3.5": "./dist/types-ts3.4/base.d.ts",
-      "types": "./dist/types/base.d.ts",
-      "import": "./dist/base.mjs",
-      "require": "./dist/base.cjs.js",
-      "default": "./dist/base.cjs.js"
-    },
     "./ads": {
       "types@<4.3.5": "./dist/types-ts3.4/ads/index.d.ts",
       "types": "./dist/types/ads/index.d.ts",
