@@ -48,7 +48,7 @@ describe('<mux-video>', () => {
       console.warn(error);
     }
 
-    await aTimeout(100);
+    await aTimeout(250);
 
     assert.deepInclude(eventMap, {
       canplay: true,

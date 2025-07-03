@@ -82,30 +82,7 @@ export function setupMediaTracks(
     // @ts-ignore
     const level = event.target.selectedIndex as number;
     if (level != hls.nextLevel) {
-      smoothSwitch(level);
-    }
-  };
-
-  // Workaround for issue changing renditions on an alternative audio track.
-  // https://github.com/video-dev/hls.js/issues/5749#issuecomment-1684629437
-  const smoothSwitch = (levelIndex: number) => {
-    const currentTime = customMediaEl.currentTime;
-    let flushedFwdBuffer = false;
-
-    const callback = (_event: string, data: { endOffset: number }) => {
-      flushedFwdBuffer ||= !Number.isFinite(data.endOffset);
-    };
-
-    hls.on(Hls.Events.BUFFER_FLUSHING, callback);
-    hls.nextLevel = levelIndex;
-    hls.off(Hls.Events.BUFFER_FLUSHING, callback);
-
-    if (!flushedFwdBuffer) {
-      hls.trigger(Hls.Events.BUFFER_FLUSHING, {
-        startOffset: currentTime + 10,
-        endOffset: Infinity,
-        type: 'video',
-      });
+      hls.nextLevel = level;
     }
   };
 

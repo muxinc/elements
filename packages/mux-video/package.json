@@ -58,13 +58,6 @@
       "require": "./dist/index.cjs.js",
       "default": "./dist/index.cjs.js"
     },
-    "./base": {
-      "types@<4.3.5": "./dist/types-ts3.4/base.d.ts",
-      "types": "./dist/types/base.d.ts",
-      "import": "./dist/base.mjs",
-      "require": "./dist/base.cjs.js",
-      "default": "./dist/base.cjs.js"
-    },
     "./ads": {
       "types@<4.3.5": "./dist/types-ts3.4/ads/index.d.ts",
       "types": "./dist/types/ads/index.d.ts",
@@ -150,7 +143,7 @@
     "downlevel-dts": "^0.11.0",
     "esbuild": "^0.25.1",
     "eslint": "^9.22.0",
-    "hls.js": "~1.5.19",
+    "hls.js": "~1.6.6",
     "npm-run-all": "^4.1.5",
     "react": "^18.2.0",
     "replace": "^1.2.2",
