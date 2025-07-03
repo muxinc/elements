@@ -10,11 +10,11 @@
     },
     "test": {
       "outputs": ["coverage/**/*"],
-      "dependsOn": ["copypolyfills", "^build"]
+      "dependsOn": ["copypolyfills", "build"]
     },
     "dev": {
       "cache": false,
-      "dependsOn": ["build:types", "^build"]
+      "dependsOn": ["build:types", "build"]
     },
     "copypolyfills": {
       "outputs": ["src/polyfills/**/*"],
