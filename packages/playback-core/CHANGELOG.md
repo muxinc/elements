@@ -40,6 +40,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.0...@mux/playback-core@0.30.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* type error in metadata response ([#1156](https://github.com/muxinc/elements/issues/1156)) ([d0ea117](https://github.com/muxinc/elements/commit/d0ea1173362070e1ea6cbe63bd37cd6e2680639f))
+* upgrade hls.js to 1.6.6, rm workaround MTA (multi-track audio) ([#1162](https://github.com/muxinc/elements/issues/1162)) ([ceb2d15](https://github.com/muxinc/elements/commit/ceb2d156af9f245577d2ca06f8863bec3acaeb80))
+
 ## [0.30.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.1...@mux/playback-core@0.30.0) (2025-06-23)
 
 

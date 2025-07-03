@@ -15,6 +15,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.15.11](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.10...@mux/mux-audio@0.15.11) (2025-07-03)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.6, rm workaround MTA (multi-track audio) ([#1162](https://github.com/muxinc/elements/issues/1162)) ([ceb2d15](https://github.com/muxinc/elements/commit/ceb2d156af9f245577d2ca06f8863bec3acaeb80))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.30.0 to 0.30.1
+
 ## [0.15.10](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.9...@mux/mux-audio@0.15.10) (2025-06-23)
 
 
