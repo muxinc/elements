@@ -69,13 +69,16 @@ const usePlayer = (
     _hlsConfig,
     ...remainingProps
   } = props;
+  // NOTE: We should set playbackId before all other props to ensure that any playback/view session-specific props are applied to the approrpiate
+  // session. "Under the hood," we wait one frame before (re)initializing playback core (and thus e.g. hls.js and mux-embed data sdk), so everything
+  // should be applied as expected as a result.
+  useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
   useObjectPropEffect('extraSourceParams', extraSourceParams, ref);
   useObjectPropEffect('_hlsConfig', _hlsConfig, ref);
   useObjectPropEffect('themeProps', themeProps, ref);
   useObjectPropEffect('tokens', tokens, ref);
-  useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect('castCustomData', castCustomData, ref);
   useObjectPropEffect(
     'paused',
