@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <MuxPlayer
+    id="muxPlayer"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+      backgroundColor: '#000',
+      margin: '1rem 0 2rem',
+    }}
+    title="Big Buck Bunny"
+    streamType="on-demand"
+    playbackId="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
+  />
+
+  <br />
+
+  <select id="qualityselect">
+    <option value="auto">Auto</option>
+  </select>
+
+  <input id="qualityplaying" value="N/A" readonly size="5" />
+
+  <br />
+  <br />
+</Layout>
+
+<script>
+  import type { MuxPlayerElement } from '@mux/mux-player-astro';
+
+  const muxPlayer = document.getElementById('muxPlayer') as MuxPlayerElement;
+  const qualityselect = document.getElementById('qualityselect') as HTMLSelectElement;
+  const qualityplaying = document.getElementById('qualityplaying') as HTMLInputElement;
+
+  muxPlayer.videoRenditions.addEventListener('addrendition', ({ rendition }: any) => {
+    qualityselect.append(new Option(
+      `${Math.min(rendition.width, rendition.height)}p`,
+      rendition.id,
+    ));
+  });
+
+  muxPlayer.videoRenditions.addEventListener('removerendition', ({ rendition }: any) => {
+    qualityselect.querySelector(`[value="${rendition.id}"]`)?.remove();
+  });
+
+  muxPlayer.addEventListener('resize', () => {
+    qualityplaying.value = `${Math.min(muxPlayer.videoWidth, muxPlayer.videoHeight)}p`;
+  });
+
+  qualityselect.addEventListener('change', () => {
+    muxPlayer.videoRenditions.selectedIndex = qualityselect.selectedIndex - 1;
+  });
+</script>

@@ -6,6 +6,8 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: vercel(),
-  integrations: [react()],
+  // adapter: vercel(),
+  devToolbar: {
+    enabled: false,
+  },
 });

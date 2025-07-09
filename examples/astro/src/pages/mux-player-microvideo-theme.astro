@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+import microvideo from '@mux/mux-player-astro/themes/microvideo';
+---
+
+<Layout>
+  <MuxPlayer
+    id="mux-player-microvideo-theme"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+      backgroundColor: '#000',
+      margin: '1rem 0 2rem',
+    }}
+    theme={microvideo}
+    streamType="on-demand"
+    playbackId="VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA"
+  />
+</Layout>
