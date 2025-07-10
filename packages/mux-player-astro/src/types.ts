@@ -18,6 +18,7 @@ export type MuxVideoTheme = {
 
 export type MuxPlayerProps = {
   theme?: MuxVideoTheme;
+  mediaChromeTheme?: string;
   hotkeys?: string;
   nohotkeys?: boolean;
   castReceiver?: string | undefined;
