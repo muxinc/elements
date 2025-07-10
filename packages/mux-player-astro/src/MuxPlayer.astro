@@ -2,7 +2,7 @@
 import type { MuxPlayerProps } from './types';
 import { toNativeAttributes } from './utils';
 type Props = MuxPlayerProps;
-const { theme, ...props } = Astro.props as Props;
+const { theme, ...props } = Astro.props;
 const Theme = theme?.component;
 ---
 

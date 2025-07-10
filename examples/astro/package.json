@@ -12,7 +12,9 @@
     "@astrojs/react": "^4.3.0",
     "@astrojs/vercel": "^8.2.1",
     "@mux/mux-player-astro": "0.0.1",
+    "@mux/mux-uploader-astro": "0.0.1",
     "astro": "^5.11.0",
+    "cta-modal": "^1.1.1",
     "water.css": "^2.1.1"
   }
 }
