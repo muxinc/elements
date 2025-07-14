@@ -2,7 +2,6 @@ build
 coverage
 dist
 node_modules
-examples
 *.sublime-*
 *.vscode*
 *.md
