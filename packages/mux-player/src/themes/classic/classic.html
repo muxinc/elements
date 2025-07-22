@@ -147,7 +147,8 @@
       pointer-events: none;
     }
 
-    :host([title]) media-control-bar[slot='top-chrome']::before {
+    :host([title]) media-control-bar[slot='top-chrome']::before,
+    :host([videotitle]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
