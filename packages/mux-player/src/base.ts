@@ -335,6 +335,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     if (this.#isInit) return;
     this.#isInit = true;
 
+    this.addEventListener('keydown', this.#keydownHandler, true);
+
     // The next line triggers the first render of the template.
     this.#render();
 
@@ -373,6 +375,15 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
     this.media?.addEventListener('loadstart', () => this.#render());
+  }
+
+  // Prevent spacebar shortcut when nohotkeys is enabled
+  #keydownHandler(e: KeyboardEvent) {
+    // 'Spacebar' for old browser support
+    if ((e.key === ' ' || e.key === 'Spacebar') && this.nohotkeys) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   }
 
   #setupCSSProperties() {
