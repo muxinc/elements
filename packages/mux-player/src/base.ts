@@ -40,7 +40,7 @@ import {
 import { template } from './template';
 import { render } from './html';
 import { muxMediaErrorToDialog, muxMediaErrorToDevlog } from './errors';
-import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
+import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase, getActiveElement } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent, IMuxPlayerElement } from './types';
 import './themes/gerwig';
@@ -377,10 +377,12 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.media?.addEventListener('loadstart', () => this.#render());
   }
 
-  // Prevent spacebar shortcut when nohotkeys is enabled
+  // Prevent spacebar shortcut when 'nohotkeys' is enabled and focused on video element
   #keydownHandler(e: KeyboardEvent) {
+    const isVideoElement =
+      getActiveElement() instanceof HTMLVideoElement || getActiveElement() instanceof MuxVideoElement;
     // 'Spacebar' for old browser support
-    if ((e.key === ' ' || e.key === 'Spacebar') && this.nohotkeys) {
+    if ((e.key === ' ' || e.key === 'Spacebar') && this.nohotkeys && isVideoElement) {
       e.preventDefault();
       e.stopPropagation();
     }
