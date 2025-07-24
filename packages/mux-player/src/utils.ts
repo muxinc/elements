@@ -45,11 +45,3 @@ export const containsComposedNode = (rootNode: Node, childNode?: Node | Element 
   if (rootNode.contains(childNode)) return true;
   return containsComposedNode(rootNode, (childNode.getRootNode() as ShadowRoot).host);
 };
-
-export const getActiveElement = (doc: Document | ShadowRoot = document): Element | null => {
-  let activeElement: Element | null = doc.activeElement;
-  while (activeElement && activeElement.shadowRoot?.activeElement) {
-    activeElement = activeElement.shadowRoot.activeElement;
-  }
-  return activeElement;
-};
