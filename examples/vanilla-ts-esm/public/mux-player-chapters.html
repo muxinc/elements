@@ -42,85 +42,56 @@
           <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
         </a>
       </div>
+      <title>&lt;MuxPlayer/&gt; (Chapters) Demo</title>
     </header>
 
     <h2>Chapters with explicit end times (with gaps)</h2>
 
     <mux-player
       id="playerOne"
-      stream-type="on-demand"
+      prefer-playback="mse"
       playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
-      muted
-      preload="auto"
     ></mux-player>
-    <p>
-      <b>Active Chapter:</b> <pre id="chapter-renderer">Unset</pre>
-    </p>
-    <p>
-      <button onclick="window.playerOne.addChapters([{startTime: 15, endTime: 18, value: 'Extra chapter'}]); this.disabled = true;">Add additional fourth chapter</button>
-    </p>
-
-
-    <h2>Chapters with implicit end times (no gaps, audio UI)</h2>
-
-    <mux-player
-      id="playerTwo"
-      stream-type="on-demand"
-      playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
-      muted
-      preload="auto"
-      audio
-    ></mux-player>
-
-    <p>
-      <button onclick="window.playerTwo.addChapters([{startTime: 6, value: 'Chapter 2.5'}]); this.disabled = true;">Add chapter between 2 and 3</button>
-    </p>
+          <div>
+        <b>Active chapter:</b>
+        <pre id="chapter-renderer" style="background-color: #888; padding: 10px; color: #fff;">
+        </pre>
+      </div>
+      <br />
 
     <script>
-      const playerOneEl = document.querySelector('#playerOne');
-      const playerTwoEl = document.querySelector('#playerTwo');
+      const playerEl = document.querySelector('#playerOne');
+      const chapterRendererEl = document.getElementById('chapter-renderer')
 
-      function addChapterstoPlayerOne() {
-        const chaptersOne = [
-          { startTime: 1, endTime: 3, value: 'Chapter 1' },
-          { startTime: 3, endTime: 6, value: 'Chapter 2 (joined)' },
-          { startTime: 10, endTime: 15, value: 'Chapter 3 (after gap)' }
-        ];
-        playerOneEl.addChapters(chaptersOne);
+      const chapters = [
+        { startTime: 0, endTime: 3, value: 'A beginning chapter' },
+        { startTime: 3, endTime: 6, value: 'In the middle' },
+        { startTime: 6, endTime: 9, value: 'Is this the end? (No)' }
+      ];
 
-        console.log('Player one chapters added');
-      }
+      const addChaptersToPlayer = (playerEl) => {
+        // Not ready for chapters yet!
+        // NOTE: Inverting readyState condition because it's possible the web component hasn't upgraded yet
+        if (!playerEl || !playerEl.readyState) return;
+        // Already added chapters!
+        if (!!playerEl.chapters?.length) return;
+        playerEl.addChapters(chapters);
+      };
 
-      function addChapterstoPlayerTwo() {
-        const chaptersTwo = [
-          { startTime: 1, value: 'Chapter 1' },
-          { startTime: 3, value: 'Chapter 2' },
-          { startTime: 10, value: 'Chapter 3 (to the end...)' }
-        ];
-        playerTwoEl.addChapters(chaptersTwo);
+      const setActiveChapter = (activeChapter) => {
+        chapterRendererEl.innerText = activeChapter.value ?? 'Unset';
+      };
 
-        console.log('Player 2 chapters added');
-      }
+      playerEl.addEventListener('chapterchange', () => {
+        setActiveChapter(playerEl.activeChapter);
+      });
 
-      function chapterChangeListener() {
-        console.log('Active Chapter', playerOneEl.activeChapter);
-        document.getElementById('chapter-renderer').innerText = playerOneEl.activeChapter.value;
-      }
-
-      playerOneEl.addEventListener('chapterchange', chapterChangeListener);
-
-      // NOTE: Need to wait until the player has loaded metadata before adding chapters!
-      if (playerOneEl.readyState >= 1) {
-        addChapterstoPlayerOne();
-      } else {
-        playerOneEl.addEventListener('loadedmetadata', addChapterstoPlayerOne, { once: true });
-      }
-
-      if (playerTwoEl.readyState >= 1) {
-        addChapterstoPlayerTwo();
-      } else {
-        playerTwoEl.addEventListener('loadedmetadata', addChapterstoPlayerTwo, { once: true });
-      }
+      addChaptersToPlayer(playerEl);
+      playerEl.addEventListener(
+        'loadedmetadata',
+        ({ target }) => addChaptersToPlayer(target),
+        { once: true }
+      );
     </script>
     <a href="../">Browse Elements</a>
   </body>
