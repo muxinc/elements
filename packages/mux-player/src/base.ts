@@ -88,6 +88,7 @@ const PlayerAttributes = {
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
+  DISABLE_ENDED_CALLBACK: 'disable-ended-callback',
 } as const;
 
 const ThemeAttributeNames = [
@@ -179,6 +180,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
+    disableEndedCallback: el.hasAttribute(PlayerAttributes.DISABLE_ENDED_CALLBACK),
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -321,6 +323,13 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     this.attachShadow({ mode: 'open' });
     this.#setupCSSProperties();
+
+    // Check if disableEndedCallback is enabled
+    this.addEventListener(
+      'mux-check-disable-ended-callback',
+      (event: CustomEvent<{ shouldDisable: boolean }>) =>
+        (event.detail.shouldDisable = this.hasAttribute('disable-ended-callback'))
+    );
 
     // If the custom element is defined before the <mux-player> HTML is parsed
     // no attributes will be available in the constructor (construction process).
