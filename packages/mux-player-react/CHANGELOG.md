@@ -33,6 +33,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.2...@mux/mux-player-react@3.5.3) (2025-08-06)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Stop-gap solution to some architectural layer + src-related prop setting causing early and incorrect playback-core initialization. ([#1180](https://github.com/muxinc/elements/issues/1180)) ([36f8377](https://github.com/muxinc/elements/commit/36f837744f6bf4a077dc1de0e83d391c2e7749ac))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.2 to 3.5.3
+
 ## [3.5.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.1...@mux/mux-player-react@3.5.2) (2025-08-05)
 
 
