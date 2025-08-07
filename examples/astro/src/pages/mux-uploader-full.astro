@@ -1,0 +1,135 @@
+---
+import { MuxUploader } from '@mux/mux-uploader-astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>&lt;MuxUploader&gt; full-page example</title>
+</head>
+<body>
+  <mux-uploader-drop mux-uploader="uploader" class="container" overlay overlay-text="We're awesome (and you are, too!)">
+    <main>
+      <section class="info">
+        <header>
+          <h1>Add a video.</h1>
+          <h1>Get a shareable link to stream it.</h1>
+        </header>
+        <h2>Enter your upload GCS url:</h2>
+        <input type="text" id="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+      </section>
+      <div class="button-container">
+        <MuxUploader id="uploader" noDrop />
+        <button class="second-button">Some other sample button</button>
+      </div>
+    </main>
+    <footer><a href="/">← Browse Elements</a></footer>
+  </mux-uploader-drop>
+</body>
+</html>
+
+<style>
+  @import url('water.css');
+
+  :root {
+    --links: rgb(223, 40, 104);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  @media (prefers-color-scheme:dark) {
+    body {
+      background: var(--background-alt);
+    }
+  }
+
+  #direct-upload-url {
+    padding: 8px 12px;
+    width: 400px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  header {
+    margin-bottom: 100px;
+    max-width: 45vw;
+  }
+
+  header > h1 {
+    font-size: 5vw;
+    line-height: 6vw;
+    margin: 0;
+  }
+
+  h2 {
+    font-size: 3vw;
+    line-height: 4vw;
+  }
+
+  main {
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+  }
+
+  main > .info {
+    flex-grow: 1;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .second-button {
+    margin-top: 20px;
+  }
+
+  footer {
+    padding: 20px;
+  }
+  
+  #uploader {
+    --button-border-radius: 40px;
+    --button-border: 2px solid black;
+  }
+
+  #uploader[upload-in-progress] {
+    min-width: 250px;
+  }
+
+  mux-uploader-drop {
+    height: 100vh;
+    width: 100vw;
+    border: 0;
+  }
+
+  mux-uploader-drop::part(heading),
+  mux-uploader-drop::part(separator) {
+    display: none;
+  }
+</style>
+
+<script>
+  import type { MuxUploaderElement } from '@mux/mux-uploader-astro';
+  
+  const input = document.getElementById('direct-upload-url') as HTMLInputElement;
+  const muxUploader = document.getElementById('uploader') as MuxUploaderElement;
+  
+  input.addEventListener('change', () => {
+    muxUploader.endpoint = input.value;
+  });
+</script>

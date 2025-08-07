@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <h2>Chapters with explicit end times (with gaps)</h2>
+
+  <MuxPlayer
+    id="playerOne"
+    streamType="on-demand"
+    playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+    muted
+    preload="auto"
+  />
+  <p>
+    <b>Active Chapter:</b>
+    <pre id="chapter-renderer">Unset</pre>
+  </p>
+  <p>
+    <button
+      onclick="window.playerOne.addChapters([{startTime: 15, endTime: 18, value: 'Extra chapter'}]); this.disabled = true;"
+      >Add additional fourth chapter</button
+    >
+  </p>
+
+  <h2>Chapters with implicit end times (no gaps, audio UI)</h2>
+
+  <MuxPlayer
+    id="playerTwo"
+    streamType="on-demand"
+    playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+    muted
+    preload="auto"
+    audio
+  />
+
+  <p>
+    <button onclick="window.playerTwo.addChapters([{startTime: 6, value: 'Chapter 2.5'}]); this.disabled = true;"
+      >Add chapter between 2 and 3</button
+    >
+  </p>
+
+  <script>
+    import type { MuxPlayerElement } from '@mux/mux-player-astro';
+
+    const playerOneEl = document.querySelector('#playerOne') as MuxPlayerElement;
+    const playerTwoEl = document.querySelector('#playerTwo') as MuxPlayerElement;
+
+    function addChapterstoPlayerOne() {
+      const chaptersOne = [
+        { startTime: 1, endTime: 3, value: 'Chapter 1' },
+        { startTime: 3, endTime: 6, value: 'Chapter 2 (joined)' },
+        { startTime: 10, endTime: 15, value: 'Chapter 3 (after gap)' },
+      ];
+      playerOneEl.addChapters(chaptersOne);
+
+      console.log('Player one chapters added');
+    }
+
+    function addChapterstoPlayerTwo() {
+      const chaptersTwo = [
+        { startTime: 1, value: 'Chapter 1' },
+        { startTime: 3, value: 'Chapter 2' },
+        { startTime: 10, value: 'Chapter 3 (to the end...)' },
+      ];
+      playerTwoEl.addChapters(chaptersTwo);
+
+      console.log('Player 2 chapters added');
+    }
+
+    function chapterChangeListener() {
+      console.log('Active Chapter', playerOneEl.activeChapter);
+      document.getElementById('chapter-renderer')!.innerText = playerOneEl.activeChapter?.value ?? '';
+    }
+
+    playerOneEl.addEventListener('chapterchange', chapterChangeListener);
+
+    // NOTE: Need to wait until the player has loaded metadata before adding chapters!
+    if (playerOneEl.readyState >= 1) {
+      addChapterstoPlayerOne();
+    } else {
+      playerOneEl.addEventListener('loadedmetadata', addChapterstoPlayerOne, { once: true });
+    }
+
+    if (playerTwoEl.readyState >= 1) {
+      addChapterstoPlayerTwo();
+    } else {
+      playerTwoEl.addEventListener('loadedmetadata', addChapterstoPlayerTwo, { once: true });
+    }
+  </script>
+</Layout>

@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <MuxPlayer
+    id="foo"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+    }}
+    autoplay={true}
+    muted
+    playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
+    metadata={{
+      video_title: 'Elephants Dream',
+    }}
+    streamType="on-demand"
+    proudlyDisplayMuxBadge
+  />
+</Layout>
