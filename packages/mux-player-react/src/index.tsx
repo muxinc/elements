@@ -1,167 +1,30 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import type { CSSProperties } from 'react';
-import type {
-  StreamTypes,
-  PlaybackTypes,
-  CmcdTypes,
-  MaxResolutionValue,
-  MinResolutionValue,
-  RenditionOrderValue,
-} from '@mux/playback-core';
+import React, { useState, useRef } from 'react';
 import { MaxResolution, MinResolution, RenditionOrder, generatePlayerInitTime } from '@mux/playback-core';
 import { MediaError } from '@mux/mux-player';
 import type MuxPlayerElement from '@mux/mux-player';
-import type { Tokens, MuxPlayerElementEventMap } from '@mux/mux-player';
+import type { MuxPlayerElementEventMap } from '@mux/mux-player';
 import { toNativeProps } from './common/utils';
-import { useRef } from 'react';
-import { useCombinedRefs } from './useCombinedRefs';
+import { useComposedRefs } from './useComposedRefs';
 import useObjectPropEffect, { defaultHasChanged } from './useObjectPropEffect';
 import { getPlayerVersion } from './env';
+import { useEventCallbackEffect } from './useEventCallbackEffect';
+import type { MuxPlayerProps, MuxPlayerRefAttributes } from './types';
 
 export { MediaError, MaxResolution, MinResolution, RenditionOrder, generatePlayerInitTime };
-
-type ValueOf<T> = T[keyof T];
-interface GenericEventListener<T extends Event = CustomEvent> {
-  (evt: T): void;
-}
-
-export type MuxPlayerRefAttributes = MuxPlayerElement;
-type VideoApiAttributes = {
-  currentTime: number;
-  volume: number;
-  paused: boolean;
-  src: string | null;
-  poster: string;
-  playbackRate: number;
-  playsInline: boolean;
-  preload: string;
-  crossOrigin: string;
-  autoPlay: boolean | string;
-  loop: boolean;
-  muted: boolean;
-  style: CSSProperties;
-};
-
-type MuxMediaPropTypes = {
-  audio: boolean;
-  //  envKey: Options["data"]["env_key"];
-  envKey: string;
-  // debug: Options["debug"] & Hls["config"]["debug"];
-  debug: boolean;
-  disableTracking: boolean;
-  disableCookies: boolean;
-  disablePictureInPicture?: boolean;
-  // metadata: Partial<Options["data"]>;
-  metadata: { [k: string]: any };
-  extraSourceParams: Record<string, any>;
-  _hlsConfig: MuxPlayerElement['_hlsConfig'];
-  beaconCollectionDomain: string;
-  customDomain: string;
-  playbackId: string;
-  preferPlayback: ValueOf<PlaybackTypes> | undefined;
-  // NOTE: Explicitly adding deprecated values here for now to avoid fully breaking changes in TS envs (CJP)
-  streamType: ValueOf<StreamTypes> | 'll-live' | 'live:dvr' | 'll-live:dvr';
-  defaultStreamType: ValueOf<StreamTypes>;
-  targetLiveWindow: number;
-  startTime: number;
-  storyboardSrc: string;
-  preferCmcd: ValueOf<CmcdTypes> | undefined;
-  children?: React.ReactNode;
-};
-
-export type MuxPlayerProps = {
-  className?: string;
-  hotkeys?: string;
-  nohotkeys?: boolean;
-  castReceiver?: string | undefined;
-  castCustomData?: Record<string, any> | undefined;
-  defaultHiddenCaptions?: boolean;
-  playerSoftwareVersion?: string;
-  playerSoftwareName?: string;
-  playerInitTime?: number;
-  forwardSeekOffset?: number;
-  backwardSeekOffset?: number;
-  maxResolution?: MaxResolutionValue;
-  minResolution?: MinResolutionValue;
-  renditionOrder?: RenditionOrderValue;
-  programStartTime?: number;
-  programEndTime?: number;
-  proudlyDisplayMuxBadge?: boolean;
-  assetStartTime?: number;
-  assetEndTime?: number;
-  metadataVideoId?: string;
-  metadataVideoTitle?: string;
-  metadataViewerUserId?: string;
-  primaryColor?: string;
-  secondaryColor?: string;
-  accentColor?: string;
-  placeholder?: string;
-  playbackRates?: number[];
-  defaultShowRemainingTime?: boolean;
-  defaultDuration?: number;
-  noVolumePref?: boolean;
-  thumbnailTime?: number;
-  title?: string;
-  videoTitle?: string;
-  tokens?: Tokens;
-  theme?: string;
-  themeProps?: { [k: string]: any };
-  onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
-  onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
-  onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;
-  onEmptied?: GenericEventListener<MuxPlayerElementEventMap['emptied']>;
-  onLoadStart?: GenericEventListener<MuxPlayerElementEventMap['loadstart']>;
-  onLoadedData?: GenericEventListener<MuxPlayerElementEventMap['loadeddata']>;
-  onLoadedMetadata?: GenericEventListener<MuxPlayerElementEventMap['loadedmetadata']>;
-  onProgress?: GenericEventListener<MuxPlayerElementEventMap['progress']>;
-  onDurationChange?: GenericEventListener<MuxPlayerElementEventMap['durationchange']>;
-  onVolumeChange?: GenericEventListener<MuxPlayerElementEventMap['volumechange']>;
-  onRateChange?: GenericEventListener<MuxPlayerElementEventMap['ratechange']>;
-  onResize?: GenericEventListener<MuxPlayerElementEventMap['resize']>;
-  onWaiting?: GenericEventListener<MuxPlayerElementEventMap['waiting']>;
-  onPlay?: GenericEventListener<MuxPlayerElementEventMap['play']>;
-  onPlaying?: GenericEventListener<MuxPlayerElementEventMap['playing']>;
-  onTimeUpdate?: GenericEventListener<MuxPlayerElementEventMap['timeupdate']>;
-  onPause?: GenericEventListener<MuxPlayerElementEventMap['pause']>;
-  onSeeking?: GenericEventListener<MuxPlayerElementEventMap['seeking']>;
-  onSeeked?: GenericEventListener<MuxPlayerElementEventMap['seeked']>;
-  onStalled?: GenericEventListener<MuxPlayerElementEventMap['stalled']>;
-  onSuspend?: GenericEventListener<MuxPlayerElementEventMap['suspend']>;
-  onEnded?: GenericEventListener<MuxPlayerElementEventMap['ended']>;
-  onError?: GenericEventListener<MuxPlayerElementEventMap['error']>;
-  onCuePointChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointchange']>;
-  onCuePointsChange?: GenericEventListener<MuxPlayerElementEventMap['cuepointschange']>;
-  onChapterChange?: GenericEventListener<MuxPlayerElementEventMap['chapterchange']>;
-} & Partial<MuxMediaPropTypes> &
-  Partial<VideoApiAttributes>;
+export * from './types';
 
 const MuxPlayerInternal = React.forwardRef<MuxPlayerRefAttributes, MuxPlayerProps>(({ children, ...props }, ref) => {
   return React.createElement(
     'mux-player',
     {
       suppressHydrationWarning: true, // prevent issues with SSR / player-init-time
-      ...toNativeProps({ ...props, ref }),
+      ...toNativeProps(props),
+      ref,
     },
     children
   );
 });
-
-const useEventCallbackEffect = <K extends keyof MuxPlayerElementEventMap>(
-  type: K,
-  ref: // | ((instance: EventTarget | null) => void)
-  React.MutableRefObject<MuxPlayerElement | null> | null | undefined,
-  callback: GenericEventListener<MuxPlayerElementEventMap[K]> | undefined
-) => {
-  return useEffect(() => {
-    const eventTarget = ref?.current;
-    if (!eventTarget || !callback) return;
-    eventTarget.addEventListener(type, callback);
-    return () => {
-      eventTarget.removeEventListener(type, callback);
-    };
-  }, [ref?.current, callback]);
-};
 
 const usePlayer = (
   ref: // | ((instance: EventTarget | null) => void)
@@ -193,7 +56,6 @@ const usePlayer = (
     onEnded,
     onError,
     onCuePointChange,
-    onCuePointsChange,
     onChapterChange,
     metadata,
     tokens,
@@ -207,13 +69,20 @@ const usePlayer = (
     _hlsConfig,
     ...remainingProps
   } = props;
+  /**
+   * @TODO We need to have some better modeling/architecture around order effects. We should also revisit our mapping of media-request-related props
+   * all to `src` in our template code. For now, moving tokens before playbackId, as there are timing issues that happen if we set it after playbackId (CJP)
+   **/
+  useObjectPropEffect('tokens', tokens, ref);
+  // NOTE: We should set playbackId before all other props to ensure that any playback/view session-specific props are applied to the approrpiate
+  // session. "Under the hood," we wait one frame before (re)initializing playback core (and thus e.g. hls.js and mux-embed data sdk), so everything
+  // should be applied as expected as a result.
+  useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
   useObjectPropEffect('extraSourceParams', extraSourceParams, ref);
   useObjectPropEffect('_hlsConfig', _hlsConfig, ref);
   useObjectPropEffect('themeProps', themeProps, ref);
-  useObjectPropEffect('tokens', tokens, ref);
-  useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect('castCustomData', castCustomData, ref);
   useObjectPropEffect(
     'paused',
@@ -238,32 +107,31 @@ const usePlayer = (
     if (currentTimeVal == null) return;
     playerEl.currentTime = currentTimeVal;
   });
-  useEventCallbackEffect('abort', ref, onAbort);
-  useEventCallbackEffect('canplay', ref, onCanPlay);
-  useEventCallbackEffect('canplaythrough', ref, onCanPlayThrough);
-  useEventCallbackEffect('emptied', ref, onEmptied);
-  useEventCallbackEffect('loadstart', ref, onLoadStart);
-  useEventCallbackEffect('loadeddata', ref, onLoadedData);
-  useEventCallbackEffect('loadedmetadata', ref, onLoadedMetadata);
-  useEventCallbackEffect('progress', ref, onProgress);
-  useEventCallbackEffect('durationchange', ref, onDurationChange);
-  useEventCallbackEffect('volumechange', ref, onVolumeChange);
-  useEventCallbackEffect('ratechange', ref, onRateChange);
-  useEventCallbackEffect('resize', ref, onResize);
-  useEventCallbackEffect('waiting', ref, onWaiting);
-  useEventCallbackEffect('play', ref, onPlay);
-  useEventCallbackEffect('playing', ref, onPlaying);
-  useEventCallbackEffect('timeupdate', ref, onTimeUpdate);
-  useEventCallbackEffect('pause', ref, onPause);
-  useEventCallbackEffect('seeking', ref, onSeeking);
-  useEventCallbackEffect('seeked', ref, onSeeked);
-  useEventCallbackEffect('stalled', ref, onStalled);
-  useEventCallbackEffect('suspend', ref, onSuspend);
-  useEventCallbackEffect('ended', ref, onEnded);
-  useEventCallbackEffect('error', ref, onError);
-  useEventCallbackEffect('cuepointchange', ref, onCuePointChange);
-  useEventCallbackEffect('cuepointschange', ref, onCuePointsChange);
-  useEventCallbackEffect('chapterchange', ref, onChapterChange);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('abort', ref, onAbort);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('canplay', ref, onCanPlay);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('canplaythrough', ref, onCanPlayThrough);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('emptied', ref, onEmptied);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('loadstart', ref, onLoadStart);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('loadeddata', ref, onLoadedData);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('loadedmetadata', ref, onLoadedMetadata);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('progress', ref, onProgress);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('durationchange', ref, onDurationChange);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('volumechange', ref, onVolumeChange);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('ratechange', ref, onRateChange);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('resize', ref, onResize);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('waiting', ref, onWaiting);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('play', ref, onPlay);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('playing', ref, onPlaying);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('timeupdate', ref, onTimeUpdate);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('pause', ref, onPause);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('seeking', ref, onSeeking);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('seeked', ref, onSeeked);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('stalled', ref, onStalled);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('suspend', ref, onSuspend);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('ended', ref, onEnded);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('error', ref, onError);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('cuepointchange', ref, onCuePointChange);
+  useEventCallbackEffect<MuxPlayerElement, MuxPlayerElementEventMap>('chapterchange', ref, onChapterChange);
   return [remainingProps];
 };
 
@@ -275,14 +143,14 @@ const MuxPlayer = React.forwardRef<
   Omit<MuxPlayerProps, 'playerSoftwareVersion' | 'playerSoftwareName'>
 >((props, ref) => {
   const innerPlayerRef = useRef<MuxPlayerElement>(null);
-  const playerRef = useCombinedRefs(innerPlayerRef, ref);
+  const playerRef = useComposedRefs(innerPlayerRef, ref);
   const [remainingProps] = usePlayer(innerPlayerRef, props);
   const [playerInitTime] = useState(props.playerInitTime ?? generatePlayerInitTime());
 
   return (
     <MuxPlayerInternal
       /** @TODO Fix types relationships (CJP) */
-      ref={playerRef as typeof innerPlayerRef}
+      ref={playerRef as React.Ref<MuxPlayerElement>}
       defaultHiddenCaptions={props.defaultHiddenCaptions}
       playerSoftwareName={playerSoftwareName}
       playerSoftwareVersion={playerSoftwareVersion}

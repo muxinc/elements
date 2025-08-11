@@ -48,6 +48,70 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.2...@mux/mux-player@3.5.3) (2025-08-06)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player:** Synchronize player versions
+
+## [3.5.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.1...@mux/mux-player@3.5.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* news theme responsive issues ([#1178](https://github.com/muxinc/elements/issues/1178)) ([75451bb](https://github.com/muxinc/elements/commit/75451bb262b6cfb14264920cfcd04bad566c7f6e))
+
+## [3.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.0...@mux/mux-player@3.5.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.6, rm workaround MTA (multi-track audio) ([#1162](https://github.com/muxinc/elements/issues/1162)) ([ceb2d15](https://github.com/muxinc/elements/commit/ceb2d156af9f245577d2ca06f8863bec3acaeb80))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.26.0 to 0.26.1
+    * @mux/playback-core bumped from 0.30.0 to 0.30.1
+
+## [3.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.4.1...@mux/mux-player@3.5.0) (2025-06-23)
+
+
+### Features
+
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+* retry logic for 412 not playable errors ([#1106](https://github.com/muxinc/elements/issues/1106)) ([677c90a](https://github.com/muxinc/elements/commit/677c90ac3be18290f458be422a2bcc41cd4b7a6d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.25.3 to 0.26.0
+    * @mux/playback-core bumped from 0.29.1 to 0.30.0
+
+## [3.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.4.0...@mux/mux-player@3.4.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* bring back cast button for drm protected videos ([#1137](https://github.com/muxinc/elements/issues/1137)) ([aa3a1ca](https://github.com/muxinc/elements/commit/aa3a1cae56813d1b5bd651392a14ef4325468a31))
+* bump the prod-dependencies group across 2 directories with 1 update ([#1121](https://github.com/muxinc/elements/issues/1121)) ([85a2276](https://github.com/muxinc/elements/commit/85a2276805ae48fe99147fff121141ba6131bd27))
+* bump the prod-dependencies group across 2 directories with 4 updates ([#1138](https://github.com/muxinc/elements/issues/1138)) ([0ac6871](https://github.com/muxinc/elements/commit/0ac68711fbf083964c442b8cea04dd76f1cfd288))
+* **playback-core:** Change default of preferCmcd to 'none' for improved cacheability. Update reference docs to document preferCmcd (et al.). ([#1136](https://github.com/muxinc/elements/issues/1136)) ([4409304](https://github.com/muxinc/elements/commit/44093049b6629044dbb7fed10839f83667fdb37c))
+* rendition-menu visual improvements ([#1131](https://github.com/muxinc/elements/issues/1131)) ([59a2aaa](https://github.com/muxinc/elements/commit/59a2aaaae6140b5e2a7e74faa39b68d0990b593e)), closes [#1122](https://github.com/muxinc/elements/issues/1122)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.25.2 to 0.25.3
+    * @mux/playback-core bumped from 0.29.0 to 0.29.1
+
 ## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.3.4...@mux/mux-player@3.4.0) (2025-05-01)
 
 

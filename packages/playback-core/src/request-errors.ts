@@ -8,7 +8,7 @@ import {
   parseJwt,
   toPlaybackIdParts,
 } from './util';
-import { isKeyOf, MuxMediaPropsInternal } from './types';
+import { isKeyOf, MuxMediaPropsInternal, StreamTypes } from './types';
 import type { MuxErrorCategoryValue } from './errors';
 import { errorCategoryToTokenNameOrPrefix, MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
 
@@ -39,7 +39,9 @@ export const categoryToToken = (
 export const getErrorFromResponse = (
   resp: Pick<Response, 'status' | 'url'> | Pick<LoaderResponse, 'code' | 'url'>,
   category: MuxErrorCategoryValue,
-  muxMediaEl: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>,
+  muxMediaEl: Partial<
+    Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens' | 'streamType'>
+  >,
   fatal?: boolean,
   translate = false,
   offline = !globalThis.navigator?.onLine // NOTE: Passing this in for testing purposes
@@ -205,6 +207,12 @@ export const getErrorFromResponse = (
     const mediaError = new MediaError(message, mediaErrorCode, fatal ?? true, context);
     mediaError.errorCategory = category;
     mediaError.muxCode = MuxErrorCode.NETWORK_NOT_READY;
+    mediaError.streamType =
+      muxMediaEl.streamType === StreamTypes.LIVE
+        ? 'live'
+        : muxMediaEl.streamType === StreamTypes.ON_DEMAND
+          ? 'on-demand'
+          : 'unknown';
     mediaError.data = resp;
     return mediaError;
   }

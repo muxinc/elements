@@ -64,9 +64,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: read node version from the .nvmrc file
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
+        shell: bash
+        id: nvmrc
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
           cache: npm
       # esbuild requires --ignore-scripts to NOT be added here.
       - run: npm ci

@@ -33,6 +33,86 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.2...@mux/mux-player-react@3.5.3) (2025-08-06)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Stop-gap solution to some architectural layer + src-related prop setting causing early and incorrect playback-core initialization. ([#1180](https://github.com/muxinc/elements/issues/1180)) ([36f8377](https://github.com/muxinc/elements/commit/36f837744f6bf4a077dc1de0e83d391c2e7749ac))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.2 to 3.5.3
+
+## [3.5.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.1...@mux/mux-player-react@3.5.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Update order of props setting so playback id always comes first to resolve session-based expectations (e.g. mux data metadata). ([#1164](https://github.com/muxinc/elements/issues/1164)) ([ba756d2](https://github.com/muxinc/elements/commit/ba756d2372010e48499750f1209e5fbedb35ac8a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.1 to 3.5.2
+
+## [3.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.0...@mux/mux-player-react@3.5.1) (2025-07-03)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.0 to 3.5.1
+    * @mux/playback-core bumped from 0.30.0 to 0.30.1
+
+## [3.5.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.4.1...@mux/mux-player-react@3.5.0) (2025-06-23)
+
+
+### Features
+
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+
+
+### Bug Fixes
+
+* **mux-player-react news:** on demand ad tag url ([#1144](https://github.com/muxinc/elements/issues/1144)) ([fbf1bb0](https://github.com/muxinc/elements/commit/fbf1bb070f0cde2928bcb9a77ae8f3696a96994e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.4.1 to 3.5.0
+    * @mux/playback-core bumped from 0.29.1 to 0.30.0
+
+## [3.4.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.4.0...@mux/mux-player-react@3.4.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* Ensure ref callback cleanup executes on MuxPlayer unmount ([#1132](https://github.com/muxinc/elements/issues/1132)) ([1c850b6](https://github.com/muxinc/elements/commit/1c850b60b7a678d572a46f96d95ecfb6630798ec))
+* **playback-core:** Change default of preferCmcd to 'none' for improved cacheability. Update reference docs to document preferCmcd (et al.). ([#1136](https://github.com/muxinc/elements/issues/1136)) ([4409304](https://github.com/muxinc/elements/commit/44093049b6629044dbb7fed10839f83667fdb37c))
+* suppress Mux Player React hydration warning ([#1116](https://github.com/muxinc/elements/issues/1116)) ([0235d89](https://github.com/muxinc/elements/commit/0235d893a877b7aac96cece58e6ed3ee0571a6d9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.4.0 to 3.4.1
+    * @mux/playback-core bumped from 0.29.0 to 0.29.1
+
 ## [3.4.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.3.4...@mux/mux-player-react@3.4.0) (2025-05-01)
 
 

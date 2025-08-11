@@ -1,5 +1,5 @@
 import { fixture, assert, aTimeout, oneEvent, waitUntil } from '@open-wc/testing';
-import MuxVideoElement, { VideoEvents } from '../src/index.ts';
+import MuxVideoElement, { Events as MuxVideoEvents } from '../src/index.ts';
 
 describe('<mux-video>', () => {
   it('has a Mux specific API', async function () {
@@ -29,7 +29,7 @@ describe('<mux-video>', () => {
     ></mux-video>`);
 
     const eventMap = {};
-    VideoEvents.forEach((type) => {
+    MuxVideoEvents.forEach((type) => {
       eventMap[type] = false;
       player.addEventListener(type, (e) => {
         assert.equal(e.target, player);
@@ -48,7 +48,7 @@ describe('<mux-video>', () => {
       console.warn(error);
     }
 
-    await aTimeout(100);
+    await aTimeout(250);
 
     assert.deepInclude(eventMap, {
       canplay: true,

@@ -40,6 +40,36 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.0...@mux/playback-core@0.30.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* type error in metadata response ([#1156](https://github.com/muxinc/elements/issues/1156)) ([d0ea117](https://github.com/muxinc/elements/commit/d0ea1173362070e1ea6cbe63bd37cd6e2680639f))
+* upgrade hls.js to 1.6.6, rm workaround MTA (multi-track audio) ([#1162](https://github.com/muxinc/elements/issues/1162)) ([ceb2d15](https://github.com/muxinc/elements/commit/ceb2d156af9f245577d2ca06f8863bec3acaeb80))
+
+## [0.30.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.1...@mux/playback-core@0.30.0) (2025-06-23)
+
+
+### Features
+
+* add free plan logo ([#1140](https://github.com/muxinc/elements/issues/1140)) ([a6b369e](https://github.com/muxinc/elements/commit/a6b369e6fb97427374be5aa960cf709a3851b7e9))
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+* retry logic for 412 not playable errors ([#1106](https://github.com/muxinc/elements/issues/1106)) ([677c90a](https://github.com/muxinc/elements/commit/677c90ac3be18290f458be422a2bcc41cd4b7a6d))
+
+
+### Bug Fixes
+
+* **playback-core:** prefer uri value for chapters session metadata when available. ([#1145](https://github.com/muxinc/elements/issues/1145)) ([4dd2a50](https://github.com/muxinc/elements/commit/4dd2a50a66dcac8b47d6af561ea4c0469e6f35a8))
+* support URI and VALUE for session data ([#1146](https://github.com/muxinc/elements/issues/1146)) ([930ad72](https://github.com/muxinc/elements/commit/930ad72a942cd636ffab83b5d81324ef80d8cc12))
+
+## [0.29.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.29.0...@mux/playback-core@0.29.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* **playback-core:** Change default of preferCmcd to 'none' for improved cacheability. Update reference docs to document preferCmcd (et al.). ([#1136](https://github.com/muxinc/elements/issues/1136)) ([4409304](https://github.com/muxinc/elements/commit/44093049b6629044dbb7fed10839f83667fdb37c))
+
 ## [0.29.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.28.7...@mux/playback-core@0.29.0) (2025-05-01)
 
 

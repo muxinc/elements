@@ -31,6 +31,56 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.26.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.26.0...@mux/mux-video@0.26.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.6, rm workaround MTA (multi-track audio) ([#1162](https://github.com/muxinc/elements/issues/1162)) ([ceb2d15](https://github.com/muxinc/elements/commit/ceb2d156af9f245577d2ca06f8863bec3acaeb80))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.30.0 to 0.30.1
+
+## [0.26.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.3...@mux/mux-video@0.26.0) (2025-06-23)
+
+
+### Features
+
+* add free plan logo ([#1140](https://github.com/muxinc/elements/issues/1140)) ([a6b369e](https://github.com/muxinc/elements/commit/a6b369e6fb97427374be5aa960cf709a3851b7e9))
+* Google IMA support for mux-player and mux-video variants ([#1128](https://github.com/muxinc/elements/issues/1128)) ([ec31d4d](https://github.com/muxinc/elements/commit/ec31d4d55e856e20cc67170f25d996afc549403b))
+
+
+### Bug Fixes
+
+* typeerror getLogoHTML of undefined ([35478ce](https://github.com/muxinc/elements/commit/35478ce0db11f7ef6304fba61d0e8d8574b88fcb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.29.1 to 0.30.0
+
+## [0.25.3](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.2...@mux/mux-video@0.25.3) (2025-06-12)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1129](https://github.com/muxinc/elements/issues/1129)) ([e2ae00b](https://github.com/muxinc/elements/commit/e2ae00b3307161971326099a1a7af7c8f45163f4))
+* bump the prod-dependencies group across 2 directories with 4 updates ([#1138](https://github.com/muxinc/elements/issues/1138)) ([0ac6871](https://github.com/muxinc/elements/commit/0ac68711fbf083964c442b8cea04dd76f1cfd288))
+* remove old cast events from mux-video ([73a85cd](https://github.com/muxinc/elements/commit/73a85cd37a4771bf54fdb09ab6d441cf849cc87b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.29.0 to 0.29.1
+
 ## [0.25.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.25.1...@mux/mux-video@0.25.2) (2025-05-01)
 
 

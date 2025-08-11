@@ -77,31 +77,49 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
   return undefined;
 };
 
-export const getMediaPlaylistLinesFromMultivariantPlaylistSrc = async (src: string) => {
-  return fetch(src)
-    .then((resp) => {
-      if (resp.status !== 200) {
-        return Promise.reject(resp);
-      }
-      return resp.text();
-    })
-    .then((multivariantPlaylistStr) => {
-      const mediaPlaylistUrl = multivariantPlaylistStr.split('\n').find((_line, idx, lines) => {
-        return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
-      }) as string;
+export const getMediaPlaylistFromMultivariantPlaylist = (multivariantPlaylist: string) => {
+  const mediaPlaylistUrl = multivariantPlaylist.split('\n').find((_line, idx, lines) => {
+    return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
+  }) as string;
 
-      return fetch(mediaPlaylistUrl)
-        .then((resp) => {
-          if (resp.status !== 200) {
-            return Promise.reject(resp);
-          }
-          return resp.text();
-        })
-        .then((mediaPlaylistStr) => mediaPlaylistStr.split('\n'));
-    });
+  return fetch(mediaPlaylistUrl).then((resp) => {
+    if (resp.status !== 200) {
+      return Promise.reject(resp);
+    }
+    return resp.text();
+  });
 };
 
-export const getStreamInfoFromPlaylistLines = (playlistLines: string[]) => {
+export const getMultivariantPlaylistSessionData = (playlist: string) => {
+  // See https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.6.4
+  const sessionDataLines = playlist.split('\n').filter((line) => line.startsWith('#EXT-X-SESSION-DATA'));
+  if (!sessionDataLines.length) return {};
+
+  const sessionData: Record<string, Record<string, string>> = {};
+
+  for (const line of sessionDataLines) {
+    const sessionDataAttrs = parseTagAttributes(line);
+    const dataId = sessionDataAttrs['DATA-ID'];
+    if (!dataId) continue;
+
+    sessionData[dataId] = { ...sessionDataAttrs };
+  }
+
+  return {
+    sessionData,
+  };
+};
+
+// matches all HLS attribute name=value pairs, with or without quotes, using per spec rules
+// for matching AttributeName (See: https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-17#section-4.2)
+const ATTR_LIST_REGEX = /([A-Z0-9-]+)="?(.*?)"?(?:,|$)/g;
+export function parseTagAttributes(str: string) {
+  const matches = [...str.matchAll(ATTR_LIST_REGEX)];
+  return Object.fromEntries(matches.map(([, key, value]) => [key, value]));
+}
+
+export const getStreamInfoFromPlaylist = (playlist: string) => {
+  const playlistLines = playlist.split('\n');
   const typeLine = playlistLines.find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
   const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
   const streamType = toStreamTypeFromPlaylistType(playlistType);
@@ -146,12 +164,21 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       streamType: StreamTypes.ON_DEMAND,
       targetLiveWindow: Number.NaN,
       liveEdgeStartOffset: undefined,
+      sessionData: undefined,
     };
   }
 
   if (type === ExtensionMimeTypeMap.M3U8) {
-    const playlistLines = await getMediaPlaylistLinesFromMultivariantPlaylistSrc(src);
-    return getStreamInfoFromPlaylistLines(playlistLines);
+    const multivariantPlaylistResponse = await fetch(src);
+    if (!multivariantPlaylistResponse.ok) {
+      return Promise.reject(multivariantPlaylistResponse);
+    }
+    const multivariantPlaylist = await multivariantPlaylistResponse.text();
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist);
+    return {
+      ...getMultivariantPlaylistSessionData(multivariantPlaylist),
+      ...getStreamInfoFromPlaylist(mediaPlaylist),
+    };
   }
 
   // Unknown or undefined type.
@@ -160,6 +187,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
     streamType: undefined,
     targetLiveWindow: undefined,
     liveEdgeStartOffset: undefined,
+    sessionData: undefined,
   };
 };
 
@@ -168,7 +196,19 @@ export const updateStreamInfoFromSrc = async (
   mediaEl: HTMLMediaElement,
   type: MediaTypes | '' = getType({ src })
 ) => {
-  const { streamType, targetLiveWindow, liveEdgeStartOffset } = await getStreamInfoFromSrcAndType(src, type);
+  const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData } = await getStreamInfoFromSrcAndType(
+    src,
+    type
+  );
+
+  const metadata = sessionData?.['com.apple.hls.chapters' as keyof typeof sessionData];
+  if (metadata?.URI || metadata?.VALUE.toLocaleLowerCase().startsWith('http')) {
+    // NOTE: data identified by DATA-ID 'com.apple.hls.chapters' is expected to provide its value
+    // via a remote JSON source identified by the URI attribute. Providing VALUE as a fallback.
+    // For more, see:
+    // https://developer.apple.com/documentation/http-live-streaming/providing-javascript-object-notation-json-chapters#Specify-a-main-playlist
+    fetchAndDispatchMuxMetadata(metadata.URI ?? metadata.VALUE, mediaEl);
+  }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
 
@@ -177,6 +217,33 @@ export const updateStreamInfoFromSrc = async (
 
   (muxMediaState.get(mediaEl) ?? {}).streamType = streamType;
   mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
+};
+
+export const fetchAndDispatchMuxMetadata = async (metadataUrl: string, mediaEl: HTMLMediaElement) => {
+  try {
+    const resp = await fetch(metadataUrl);
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch Mux metadata: ${resp.status} ${resp.statusText}`);
+    }
+
+    const json = await resp.json();
+    const metadata: Record<string, string> = {};
+
+    if (!json?.[0]?.metadata) return;
+
+    for (const item of json[0].metadata) {
+      if (item.key && item.value) {
+        metadata[item.key] = item.value;
+      }
+    }
+
+    (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+
+    const eventUpdateMetadata = new CustomEvent('muxmetadata');
+    mediaEl.dispatchEvent(eventUpdateMetadata);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
@@ -289,7 +356,7 @@ const isAndroidLike =
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
   HTMLMediaElement,
-  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number }
+  Partial<MuxMediaProps> & { seekable?: TimeRanges; liveEdgeStartOffset?: number; retryCount?: number }
 > = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
@@ -398,7 +465,7 @@ const toPlaybackIdFromParameterized = (playbackIdWithParams: string | undefined)
 
 export const toPlaybackIdFromSrc = (src: string | undefined) => {
   if (!src || !src.startsWith('https://stream.')) return undefined;
-  const [playbackId] = new URL(src).pathname.slice(1).split('.m3u8');
+  const [playbackId] = new URL(src).pathname.slice(1).split(/\.m3u8|\//);
   // `|| undefined` is here to handle potential invalid cases
   return playbackId || undefined;
 };
@@ -411,6 +478,10 @@ const toVideoId = (props: Partial<MuxMediaPropsInternal>) => {
 
 export const getError = (mediaEl: HTMLMediaElement) => {
   return muxMediaState.get(mediaEl)?.error;
+};
+
+export const getMetadata = (mediaEl: HTMLMediaElement) => {
+  return muxMediaState.get(mediaEl)?.metadata;
 };
 
 export const getStreamType = (mediaEl: HTMLMediaElement) => {
@@ -508,7 +579,7 @@ export const getEnded = (
 
 export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLMediaElement, core?: PlaybackCore) => {
   // Automatically tear down previously initialized mux data & hls instance if it exists.
-  teardown(mediaEl, core);
+  teardown(mediaEl, core, props);
   // NOTE: metadata should never be nullish/nil. Adding here for type safety due to current type defs.
   const { metadata = {} } = props;
   const { view_session_id = generateUUID() } = metadata;
@@ -524,10 +595,21 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   props.drmTypeCb = drmTypeCb;
 
-  muxMediaState.set(mediaEl as HTMLMediaElement, {});
+  muxMediaState.set(mediaEl as HTMLMediaElement, { retryCount: 0 });
   const nextHlsInstance = setupHls(props, mediaEl);
   const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
-  setupMux(props, mediaEl, nextHlsInstance);
+
+  if (props?.muxDataKeepSession && mediaEl?.mux && !mediaEl.mux.deleted) {
+    if (nextHlsInstance) {
+      mediaEl.mux.addHLSJS({
+        hlsjs: nextHlsInstance as HlsInterface,
+        Hls: nextHlsInstance ? Hls : undefined,
+      });
+    }
+  } else {
+    setupMux(props, mediaEl, nextHlsInstance);
+  }
+
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
   setupChapters(mediaEl);
@@ -540,19 +622,32 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   };
 };
 
-export const teardown = (mediaEl?: HTMLMediaElement | null, core?: PlaybackCore) => {
+export const teardown = (
+  mediaEl?: HTMLMediaElement | null,
+  core?: PlaybackCore,
+  props?: Partial<MuxMediaPropsInternal>
+) => {
   const hls = core?.engine;
+
+  if (mediaEl?.mux && !mediaEl.mux.deleted) {
+    if (props?.muxDataKeepSession) {
+      if (hls) mediaEl.mux.removeHLSJS();
+    } else {
+      mediaEl.mux.destroy();
+      delete mediaEl.mux;
+    }
+  }
+
   if (hls) {
     hls.detachMedia();
     hls.destroy();
   }
-  if (mediaEl?.mux && !mediaEl.mux.deleted) {
-    mediaEl.mux.destroy();
-    delete mediaEl.mux;
-  }
+
   if (mediaEl) {
-    mediaEl.removeAttribute('src');
-    mediaEl.load();
+    if (mediaEl.hasAttribute('src')) {
+      mediaEl.removeAttribute('src');
+      mediaEl.load();
+    }
     mediaEl.removeEventListener('error', handleNativeError);
     mediaEl.removeEventListener('error', handleInternalError);
     mediaEl.removeEventListener('durationchange', seekInSeekableRange);
@@ -593,7 +688,7 @@ export const setupHls = (
       'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'tokens' | 'drmTypeCb'
     >
   >,
-  mediaEl: Pick<HTMLMediaElement, 'canPlayType'>
+  mediaEl: HTMLMediaElement
 ) => {
   const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
   const type = getType(props);
@@ -612,14 +707,14 @@ export const setupHls = (
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const drmConfig = getDRMConfig(props);
     // NOTE: `metadata.view_session_id` & `metadata.video_id` are guaranteed here (CJP)
-    const cmcd =
-      preferCmcd !== CmcdTypes.NONE
-        ? {
-            useHeaders: preferCmcd === CmcdTypes.HEADER,
-            sessionId: metadata?.view_session_id,
-            contentId: metadata?.video_id,
-          }
-        : undefined;
+    // @ts-ignore
+    const cmcd = [CmcdTypes.QUERY, CmcdTypes.HEADER].includes(preferCmcd)
+      ? {
+          useHeaders: preferCmcd === CmcdTypes.HEADER,
+          sessionId: metadata?.view_session_id,
+          contentId: metadata?.video_id,
+        }
+      : undefined;
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
@@ -643,6 +738,13 @@ export const setupHls = (
       ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
+
+    hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
+      const chapters = data.sessionData?.['com.apple.hls.chapters'];
+      if (chapters?.URI || chapters?.VALUE.toLocaleLowerCase().startsWith('http')) {
+        fetchAndDispatchMuxMetadata(chapters?.URI ?? chapters?.VALUE, mediaEl);
+      }
+    });
 
     return hls;
   }
@@ -962,12 +1064,14 @@ export const setupMux = (
       | 'customDomain'
       | 'disableCookies'
       | 'disableTracking'
+      | 'muxDataSDK'
+      | 'muxDataSDKOptions'
     >
   >,
   mediaEl: HTMLMediaElement,
   hlsjs?: HlsInterface
 ) => {
-  const { envKey: env_key, disableTracking } = props;
+  const { envKey: env_key, disableTracking, muxDataSDK = mux, muxDataSDKOptions = {} } = props;
   const inferredEnv = isMuxVideoSrc(props);
 
   if (!disableTracking && (env_key || inferredEnv)) {
@@ -997,7 +1101,7 @@ export const setupMux = (
       return error;
     };
 
-    mux.monitor(mediaEl, {
+    muxDataSDK.monitor(mediaEl, {
       debug,
       beaconCollectionDomain,
       hlsjs,
@@ -1005,6 +1109,7 @@ export const setupMux = (
       automaticErrorTracking: false,
       errorTranslator: muxEmbedErrorTranslator,
       disableCookies,
+      ...muxDataSDKOptions,
       data: {
         ...(env_key ? { env_key } : {}),
         // Metadata fields
@@ -1063,7 +1168,7 @@ export const loadMedia = (
   >
 ) => {
   const shouldUseNative = useNative(props, mediaEl);
-  const { src } = props;
+  const { src, customDomain = MUX_VIDEO_DOMAIN } = props;
 
   const maybeDispatchEndedCallback = () => {
     // We want to early bail if the underlying media element is already in an ended state,
@@ -1104,7 +1209,15 @@ export const loadMedia = (
 
   if (mediaEl && shouldUseNative) {
     const type = getType(props);
+
     if (typeof src === 'string') {
+      // Fetch the Mux metadata JSON even on preload=none because it's needed for the Mux logo.
+      if (src.endsWith('.mp4') && src.includes(customDomain)) {
+        const playbackId = toPlaybackIdFromSrc(src);
+        const metadataUrl = new URL(`https://stream.${customDomain}/${playbackId}/metadata.json`);
+        fetchAndDispatchMuxMetadata(metadataUrl.toString(), mediaEl);
+      }
+
       // NOTE: This should only be invoked after stream type has been
       // derived after stream type has been determined.
       const setupSeekableChangePoll = () => {
@@ -1134,6 +1247,7 @@ export const loadMedia = (
           clearInterval(intervalId);
         });
       };
+
       const setupNativeStreamInfo = async () => {
         return updateStreamInfoFromSrc(src, mediaEl, type)
           .then(setupSeekableChangePoll)
@@ -1149,6 +1263,7 @@ export const loadMedia = (
             }
           });
       };
+
       if (mediaEl.preload === 'none') {
         // NOTE: Previously, we relied on the 'loadstart' event to fetch & parse playlists for stream
         // info for native playback scenarios. Unfortunately, per spec this event will be dispatched
@@ -1197,6 +1312,7 @@ export const loadMedia = (
       }
 
       mediaEl.setAttribute('src', src);
+
       if (props.startTime) {
         (muxMediaState.get(mediaEl) ?? {}).startTime = props.startTime;
         // seekable is set to the range of the entire video once durationchange fires
@@ -1251,8 +1367,61 @@ export const loadMedia = (
     });
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
-      saveAndDispatchError(mediaEl, getErrorFromHlsErrorData(data, props));
+      const error = getErrorFromHlsErrorData(data, props);
+
+      if (error.muxCode === MuxErrorCode.NETWORK_NOT_READY) {
+        const maxRetries = 6; // 5 minutes and 5 seconds total (5s, 60s, 60s, 60s, 60s, 60s)
+        const state = muxMediaState.get(mediaEl) ?? {};
+        const retryCount = state.retryCount ?? 0;
+
+        if (retryCount < maxRetries) {
+          // First retry is 5 seconds, subsequent retries are 60 seconds
+          const retryDelay = retryCount === 0 ? 5000 : 60000;
+
+          // New error with the retry delay
+          const retryDelayError = new MediaError(
+            `Retrying in ${retryDelay / 1000} seconds...`,
+            error.code,
+            error.fatal
+          );
+          Object.assign(retryDelayError, error);
+          saveAndDispatchError(mediaEl, retryDelayError);
+
+          setTimeout(() => {
+            state.retryCount = retryCount + 1;
+            if (data.details === 'manifestLoadError' && data.url) {
+              hls.loadSource(data.url);
+            }
+          }, retryDelay);
+          return;
+        } else {
+          state.retryCount = 0;
+          // New error with the retry link
+          const retryLinkError = new MediaError(
+            'Try again later or <a href="#" onclick="window.location.reload(); return false;" style="color: #4a90e2;">click here to retry</a>',
+            error.code,
+            error.fatal
+          );
+          Object.assign(retryLinkError, error);
+          saveAndDispatchError(mediaEl, retryLinkError);
+          return;
+        }
+      }
+      saveAndDispatchError(mediaEl, error);
     });
+
+    hls.on(Hls.Events.MANIFEST_LOADED, () => {
+      // Clear error state and UI
+      const state = muxMediaState.get(mediaEl);
+      if (state && state.error) {
+        state.error = null;
+        state.retryCount = 0;
+
+        mediaEl.dispatchEvent(new Event('emptied'));
+        mediaEl.dispatchEvent(new Event('loadstart'));
+      }
+    });
+
     mediaEl.addEventListener('error', handleInternalError);
     addEventListenerWithTeardown(mediaEl, 'waiting', maybeDispatchEndedCallback);
 
@@ -1386,6 +1555,7 @@ const getErrorFromHlsErrorData = (
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>
 ) => {
   console.error('getErrorFromHlsErrorData()', data);
+
   const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
     [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
     [Hls.ErrorTypes.MEDIA_ERROR]: MediaError.MEDIA_ERR_DECODE,
