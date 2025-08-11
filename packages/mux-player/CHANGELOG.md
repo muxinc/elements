@@ -48,6 +48,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.2...@mux/mux-player@3.5.3) (2025-08-06)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player:** Synchronize player versions
+
+## [3.5.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.1...@mux/mux-player@3.5.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* news theme responsive issues ([#1178](https://github.com/muxinc/elements/issues/1178)) ([75451bb](https://github.com/muxinc/elements/commit/75451bb262b6cfb14264920cfcd04bad566c7f6e))
+
 ## [3.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.0...@mux/mux-player@3.5.1) (2025-07-03)
 
 

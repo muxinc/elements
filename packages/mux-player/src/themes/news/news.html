@@ -59,7 +59,7 @@
   </style>
 
   <media-controller
-    breakpoints="md:480"
+    breakpoints="sm:300 md:480"
     defaultsubtitles="{{defaultsubtitles}}"
     defaultduration="{{defaultduration}}"
     gesturesdisabled="{{disabled}}"
@@ -71,23 +71,6 @@
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
     <media-error-dialog slot="dialog"></media-error-dialog>
-
-    <!-- Gradient -->
-    <style>
-      .nw-gradient-bottom {
-        padding-top: 37px;
-        position: absolute;
-        width: 100%;
-        height: 170px;
-        bottom: 0;
-        z-index: 2;
-        pointer-events: none;
-        background-position: bottom;
-        background-repeat: repeat-x;
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAACqCAYAAABsziWkAAAAAXNSR0IArs4c6QAAAQVJREFUOE9lyNdHBQAAhfHb3nvvuu2997jNe29TJJEkkkgSSSSJJJJEEkkiifRH5jsP56Xz8PM5gcC/xfDEmjhKxEOCSaREEiSbFEqkQppJpzJMJiWyINvkUCIX8kw+JQqg0BRRxaaEEqVQZsopUQGVpooS1VBjglStqaNEPTSYRko0QbNpoUQrtJl2qsN0UqILuk0PJXqhz/RTYgAGzRA1bEYoMQpjZpwSExAyk5SYgmkzQ82aOUqEIWKilJiHBbNIiSVYhhVYhTVYhw3YhC3Yhh3YhT3YhwM4hCM4hhM4hTM4hwu4hCu4hhu4hTu4hwd4hCd4hhd4hTd4hw/4hC/4hh/4/QM2/id28uIEJAAAAABJRU5ErkJggg==');
-      }
-    </style>
-    <div class="nw-gradient-bottom"></div>
 
     <!-- Rendition Menu -->
     <style>
@@ -154,6 +137,11 @@
         font-weight: 400;
         text-transform: uppercase;
         margin: 0;
+        scale: 0.7;
+      }
+
+      [breakpointsm] media-play-button[slot='centered-chrome'] {
+        scale: 1;
       }
 
       media-play-button[slot='centered-chrome'] {
@@ -276,21 +264,43 @@
     <!-- Control Bar -->
     <style>
       media-control-bar {
-        position: absolute;
         height: 36px;
         line-height: 36px;
-        bottom: 0;
-        left: 12px;
-        right: 12px;
-        z-index: 3;
+        padding-inline: 6px;
       }
+
       [breakpointmd] media-control-bar {
         height: 48px;
         line-height: 48px;
       }
+
       [mediaisfullscreen] media-control-bar {
         height: 54px;
         line-height: 54px;
+      }
+
+      media-control-bar {
+        --gradient-steps:
+          hsl(0 0% 0% / 0) 0%, hsl(0 0% 0% / 0.013) 8.1%, hsl(0 0% 0% / 0.049) 15.5%, hsl(0 0% 0% / 0.104) 22.5%,
+          hsl(0 0% 0% / 0.175) 29%, hsl(0 0% 0% / 0.259) 35.3%, hsl(0 0% 0% / 0.352) 41.2%, hsl(0 0% 0% / 0.45) 47.1%,
+          hsl(0 0% 0% / 0.55) 52.9%, hsl(0 0% 0% / 0.648) 58.8%, hsl(0 0% 0% / 0.741) 64.7%, hsl(0 0% 0% / 0.825) 71%,
+          hsl(0 0% 0% / 0.896) 77.5%, hsl(0 0% 0% / 0.951) 84.5%, hsl(0 0% 0% / 0.987) 91.9%, hsl(0 0% 0%) 100%;
+      }
+
+      media-control-bar::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        padding-bottom: min(100px, 25%);
+        background: linear-gradient(to bottom, var(--gradient-steps));
+        opacity: 0.8;
+        pointer-events: none;
+      }
+
+      media-control-bar > * {
+        position: relative;
       }
     </style>
     <media-control-bar>
@@ -344,15 +354,17 @@
         </svg>
       </media-play-button>
 
-      <template if="mediaadbreak == null">
-        <media-seek-backward-button seekoffset="10">
-          <svg slot="icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M16.908 21.7465C16.616 21.2426 16.2047 20.8212 15.7116 20.5206C15.2185 20.22 14.6594 20.0499 14.0851 20.0257C13.5109 20.0499 12.9518 20.22 12.4587 20.5206C11.9656 20.8212 11.5543 21.2426 11.2623 21.7465C10.5893 22.8804 10.2336 24.18 10.2336 25.5047C10.2336 26.8295 10.5893 28.129 11.2623 29.2629C11.5543 29.7668 11.9656 30.1882 12.4587 30.4888C12.9518 30.7894 13.5109 30.9595 14.0851 30.9838C14.6594 30.9595 15.2185 30.7894 15.7116 30.4888C16.2047 30.1882 16.616 29.7668 16.908 29.2629C17.581 28.129 17.9367 26.8295 17.9367 25.5047C17.9367 24.18 17.581 22.8804 16.908 21.7465ZM14.0851 29.409C12.8412 29.409 11.7886 27.6233 11.7886 25.4966C11.7886 23.3699 12.8412 21.5841 14.0851 21.5841C15.3291 21.5841 16.3817 23.3699 16.3817 25.4966C16.3817 27.6233 15.3451 29.409 14.0851 29.409ZM7.16351 30.9838V22.7043L6.39798 23.4836L5.31349 22.3796L7.38679 20.2692C7.49386 20.1598 7.63043 20.0853 7.77917 20.0551C7.92792 20.0248 8.08213 20.0403 8.22225 20.0994C8.36236 20.1585 8.48206 20.2587 8.56615 20.3872C8.65024 20.5157 8.69493 20.6667 8.69456 20.8211V31L7.16351 30.9838ZM33 9.8468V30.1883C32.9972 30.3941 32.9157 30.5907 32.7727 30.7362C32.6298 30.8817 32.4366 30.9647 32.2345 30.9675H22.2348V27.8343H29.9219V12.1845H11.4696V15.3177C11.4696 16.1782 10.8954 16.4866 10.1937 16.0158L3.52726 11.4865C3.30225 11.371 3.13094 11.17 3.05035 10.927C2.96977 10.6839 2.98641 10.4184 3.09666 10.1877C3.18836 9.99697 3.33987 9.84275 3.52726 9.7494L10.1937 5.22005C10.8954 4.74926 11.4696 5.05771 11.4696 5.91812V9.05133H32.2185C32.4248 9.05443 32.6218 9.13923 32.7677 9.28775C32.9136 9.43626 32.997 9.6368 33 9.8468Z"
-              fill="currentColor"
-            />
-          </svg>
-        </media-seek-backward-button>
+      <template if="breakpointsm">
+        <template if="mediaadbreak == null">
+          <media-seek-backward-button seekoffset="10">
+            <svg slot="icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M16.908 21.7465C16.616 21.2426 16.2047 20.8212 15.7116 20.5206C15.2185 20.22 14.6594 20.0499 14.0851 20.0257C13.5109 20.0499 12.9518 20.22 12.4587 20.5206C11.9656 20.8212 11.5543 21.2426 11.2623 21.7465C10.5893 22.8804 10.2336 24.18 10.2336 25.5047C10.2336 26.8295 10.5893 28.129 11.2623 29.2629C11.5543 29.7668 11.9656 30.1882 12.4587 30.4888C12.9518 30.7894 13.5109 30.9595 14.0851 30.9838C14.6594 30.9595 15.2185 30.7894 15.7116 30.4888C16.2047 30.1882 16.616 29.7668 16.908 29.2629C17.581 28.129 17.9367 26.8295 17.9367 25.5047C17.9367 24.18 17.581 22.8804 16.908 21.7465ZM14.0851 29.409C12.8412 29.409 11.7886 27.6233 11.7886 25.4966C11.7886 23.3699 12.8412 21.5841 14.0851 21.5841C15.3291 21.5841 16.3817 23.3699 16.3817 25.4966C16.3817 27.6233 15.3451 29.409 14.0851 29.409ZM7.16351 30.9838V22.7043L6.39798 23.4836L5.31349 22.3796L7.38679 20.2692C7.49386 20.1598 7.63043 20.0853 7.77917 20.0551C7.92792 20.0248 8.08213 20.0403 8.22225 20.0994C8.36236 20.1585 8.48206 20.2587 8.56615 20.3872C8.65024 20.5157 8.69493 20.6667 8.69456 20.8211V31L7.16351 30.9838ZM33 9.8468V30.1883C32.9972 30.3941 32.9157 30.5907 32.7727 30.7362C32.6298 30.8817 32.4366 30.9647 32.2345 30.9675H22.2348V27.8343H29.9219V12.1845H11.4696V15.3177C11.4696 16.1782 10.8954 16.4866 10.1937 16.0158L3.52726 11.4865C3.30225 11.371 3.13094 11.17 3.05035 10.927C2.96977 10.6839 2.98641 10.4184 3.09666 10.1877C3.18836 9.99697 3.33987 9.84275 3.52726 9.7494L10.1937 5.22005C10.8954 4.74926 11.4696 5.05771 11.4696 5.91812V9.05133H32.2185C32.4248 9.05443 32.6218 9.13923 32.7677 9.28775C32.9136 9.43626 32.997 9.6368 33 9.8468Z"
+                fill="currentColor"
+              />
+            </svg>
+          </media-seek-backward-button>
+        </template>
       </template>
 
       <!-- Time Display -->
@@ -368,13 +380,26 @@
         }
       </style>
 
-      <template if="mediaadbreak == null">
-        <media-time-display showduration></media-time-display>
+      <template if="breakpointsm">
+        <template if="mediaadbreak == null">
+          <media-time-display showduration></media-time-display>
+        </template>
+
+        <template if="mediaadbreak != null">
+          <span>Advertisement</span>
+          <media-time-display remaining></media-time-display>
+        </template>
       </template>
 
-      <template if="mediaadbreak != null">
-        Advertisement
-        <media-time-display remaining></media-time-display>
+      <template if="!breakpointsm">
+        <template if="mediaadbreak == null">
+          <media-time-display></media-time-display>
+        </template>
+
+        <template if="mediaadbreak != null">
+          <span>Ad</span>
+          <media-time-display remaining></media-time-display>
+        </template>
       </template>
 
       <!-- Control Spacer -->

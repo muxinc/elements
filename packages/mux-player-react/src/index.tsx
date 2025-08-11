@@ -69,6 +69,11 @@ const usePlayer = (
     _hlsConfig,
     ...remainingProps
   } = props;
+  /**
+   * @TODO We need to have some better modeling/architecture around order effects. We should also revisit our mapping of media-request-related props
+   * all to `src` in our template code. For now, moving tokens before playbackId, as there are timing issues that happen if we set it after playbackId (CJP)
+   **/
+  useObjectPropEffect('tokens', tokens, ref);
   // NOTE: We should set playbackId before all other props to ensure that any playback/view session-specific props are applied to the approrpiate
   // session. "Under the hood," we wait one frame before (re)initializing playback core (and thus e.g. hls.js and mux-embed data sdk), so everything
   // should be applied as expected as a result.
@@ -78,7 +83,6 @@ const usePlayer = (
   useObjectPropEffect('extraSourceParams', extraSourceParams, ref);
   useObjectPropEffect('_hlsConfig', _hlsConfig, ref);
   useObjectPropEffect('themeProps', themeProps, ref);
-  useObjectPropEffect('tokens', tokens, ref);
   useObjectPropEffect('castCustomData', castCustomData, ref);
   useObjectPropEffect(
     'paused',
