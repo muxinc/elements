@@ -637,7 +637,7 @@
           <media-control-bar part="control-bar top" slot="top-chrome">
             {{>TitleDisplay}}
           </media-control-bar>
-          <div slot="centered-chrome" class="center-controls">
+          <div slot="centered-chrome" part='centered-layer' exportparts="centered-layer" class="center-controls">
             {{>PlayButton section="center"}}
           </div>
           {{>TimeRange}}
