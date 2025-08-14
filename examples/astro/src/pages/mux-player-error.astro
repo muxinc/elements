@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <MuxPlayer
+    id="mux-player-error"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+      backgroundColor: '#000',
+      margin: '1rem 0 2rem',
+    }}
+    streamType="on-demand"
+    playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2"
+  />
+
+  <button id="load-video-btn">Load new playback id</button>
+  <br />
+  <br />
+</Layout>
+
+<script>
+  import type { MuxPlayerElement } from '@mux/mux-player-astro';
+
+  const player = document.getElementById('mux-player-error') as MuxPlayerElement;
+  const loadVideoBtn = document.getElementById('load-video-btn');
+
+  loadVideoBtn?.addEventListener('click', () => {
+    player.playbackId = 'ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s';
+  });
+</script>
