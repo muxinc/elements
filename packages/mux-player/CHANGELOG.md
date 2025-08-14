@@ -48,6 +48,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.4](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.3...@mux/mux-player@3.5.4) (2025-08-14)
+
+
+### Bug Fixes
+
+* Disable spacebar shortcut if `nohotkeys` enabled ([#1173](https://github.com/muxinc/elements/issues/1173)) ([52bb21d](https://github.com/muxinc/elements/commit/52bb21d3e7afc6f1d95fb18a132f837bf7ae292b))
+
 ## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.2...@mux/mux-player@3.5.3) (2025-08-06)
 
 
