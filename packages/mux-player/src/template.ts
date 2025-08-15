@@ -110,7 +110,6 @@ export const content = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
-      inert="${props.noHotKeys ?? false}"
       target-live-window="${props.targetLiveWindow ?? false}"
       stream-type="${getStreamTypeFromAttr(props.streamType) ?? false}"
       crossorigin="${props.crossOrigin ?? ''}"

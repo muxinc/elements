@@ -1032,7 +1032,12 @@
     <template if="!audio">
       <!-- Pre-playback UI -->
       <!-- same for both on-demand and live -->
-      <div slot="centered-chrome" class="center-controls pre-playback">
+      <div
+        slot="centered-chrome"
+        part="centered-layer"
+        exportparts="centered-layer"
+        class="center-controls pre-playback"
+      >
         <template if="!breakpointsm">{{>PlayButton section="center"}}</template>
         <template if="breakpointsm">{{>PrePlayButton section="center"}}</template>
       </div>
