@@ -1176,8 +1176,8 @@ export const loadMedia = (
     // Do the "cheaper" check first
     if (mediaEl.ended) return;
 
-    // Check if disableEndedCallback is enabled by dispatching a custom event
-    const checkEvent = new CustomEvent('mux-check-disable-ended-callback', {
+    // Check if disablePseudoEnded is enabled by dispatching a custom event
+    const checkEvent = new CustomEvent('mux-check-disable-pseudo-ended', {
       bubbles: true,
       composed: true,
       cancelable: true,
