@@ -235,7 +235,8 @@
         hsl(0 0% 0% / 0.896) 77.5%, hsl(0 0% 0% / 0.951) 84.5%, hsl(0 0% 0% / 0.987) 91.9%, hsl(0 0% 0%) 100%;
     }
 
-    :host([title]:not([audio])) media-control-bar[slot='top-chrome']::before {
+    :host([title]) media-control-bar[slot='top-chrome']::before,
+    :host([videotitle]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
