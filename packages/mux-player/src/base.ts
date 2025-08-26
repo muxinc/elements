@@ -324,13 +324,6 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.attachShadow({ mode: 'open' });
     this.#setupCSSProperties();
 
-    // Check if disablePseudoEnded is enabled
-    this.addEventListener(
-      'mux-check-disable-pseudo-ended',
-      (event: CustomEvent<{ shouldDisable: boolean }>) =>
-        (event.detail.shouldDisable = this.hasAttribute('disable-pseudo-ended'))
-    );
-
     // If the custom element is defined before the <mux-player> HTML is parsed
     // no attributes will be available in the constructor (construction process).
     // Wait until initializing attributes in the attributeChangedCallback.
