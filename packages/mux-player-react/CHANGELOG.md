@@ -33,6 +33,34 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.2...@mux/mux-player-react@3.5.3) (2025-08-06)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Stop-gap solution to some architectural layer + src-related prop setting causing early and incorrect playback-core initialization. ([#1180](https://github.com/muxinc/elements/issues/1180)) ([36f8377](https://github.com/muxinc/elements/commit/36f837744f6bf4a077dc1de0e83d391c2e7749ac))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.2 to 3.5.3
+
+## [3.5.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.1...@mux/mux-player-react@3.5.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* **mux-player-react:** Update order of props setting so playback id always comes first to resolve session-based expectations (e.g. mux data metadata). ([#1164](https://github.com/muxinc/elements/issues/1164)) ([ba756d2](https://github.com/muxinc/elements/commit/ba756d2372010e48499750f1209e5fbedb35ac8a))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.1 to 3.5.2
+
 ## [3.5.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.0...@mux/mux-player-react@3.5.1) (2025-07-03)
 
 
