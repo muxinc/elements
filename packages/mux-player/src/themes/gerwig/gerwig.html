@@ -1027,9 +1027,9 @@
     <slot name="poster" slot="poster"></slot>
 
     <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
-    <media-error-dialog slot="dialog" noautohide></media-error-dialog>
 
     <template if="!audio">
+      <media-error-dialog slot="dialog" noautohide></media-error-dialog>
       <!-- Pre-playback UI -->
       <!-- same for both on-demand and live -->
       <div slot="centered-chrome" class="center-controls pre-playback">
