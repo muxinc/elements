@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <MuxPlayer
+    id="mux-player-cuepoints"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+      backgroundColor: '#000',
+      margin: '1rem 0 2rem',
+    }}
+    streamType="on-demand"
+    playbackId="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+    muted
+    preload="auto"
+  />
+  <div>
+    <b>Active CuePoint:</b> <pre id="cuepoint-renderer" style="background-color: #888; color: #fff; padding: 10px;">Unset</pre>
+  </div>
+</Layout>
+
+<script>
+  import type { MuxPlayerElement } from '@mux/mux-player-astro';
+
+  const playerEl = document.getElementById('mux-player-cuepoints') as MuxPlayerElement;
+
+  function addCuePointsToPlayer() {
+    const cuePoints = [
+      { time: 1, value: 'Simple Value' }, 
+      { time: 3, value: { complex: 'Complex Object', duration: 2 } },
+      { time: 10, value: true },
+      { time: 15, value: { anything: 'That can be serialized to JSON and makes sense for your use case' } }
+    ];
+
+    playerEl.addCuePoints(cuePoints);
+  }
+
+  function cuePointChangeListener() {
+    console.log('Active CuePoint!', playerEl.activeCuePoint);
+    document.getElementById('cuepoint-renderer')!.innerText = JSON.stringify(playerEl.activeCuePoint.value, null, 2);
+  }
+
+  playerEl.addEventListener('cuepointchange', cuePointChangeListener);
+
+  if (playerEl.readyState >= 1) {
+    addCuePointsToPlayer();
+  } else {
+    playerEl.addEventListener('loadedmetadata', addCuePointsToPlayer, { once: true });
+  }
+</script>

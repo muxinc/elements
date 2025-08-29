@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro/ads';
+---
+
+<Layout>
+  <script defer src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+  <MuxPlayer
+    streamType="on-demand"
+    playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
+    adTagUrl="https://pubads.g.doubleclick.net/gampad/ads?iu=/21775744923/external/single_preroll_skippable&sz=640x480&ciu_szs=300x250%2C728x90&gdfp_req=1&output=vast&unviewed_position_start=1&env=vp&impl=s&correlator="
+  />
+</Layout>
