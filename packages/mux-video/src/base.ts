@@ -167,6 +167,11 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         this.updateLogo();
       }
     });
+
+    this.addEventListener('mux-check-disable-pseudo-ended', (event: Event): void => {
+      (event as CustomEvent<{ shouldDisable: boolean }>).detail.shouldDisable =
+        this.hasAttribute('disable-pseudo-ended');
+    });
   }
 
   get preferCmcd() {

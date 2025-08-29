@@ -136,6 +136,7 @@ export const content = (props: MuxTemplateProps) => html`
       cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
       exportparts="video"
+      disable-pseudo-ended="${props.disablePseudoEnded ?? false}"
     >
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`

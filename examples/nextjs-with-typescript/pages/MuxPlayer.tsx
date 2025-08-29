@@ -126,6 +126,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   storyboardSrc: undefined,
   theme: undefined,
   proudlyDisplayMuxBadge: undefined,
+  disablePseudoEnded: undefined,
 });
 
 const SMALL_BREAKPOINT = 700;
@@ -286,6 +287,7 @@ function MuxPlayerPage({ location }: Props) {
           poster={state.poster}
           placeholder={state.placeholder}
           playbackId={state.playbackId}
+          disablePseudoEnded={state.disablePseudoEnded}
           tokens={state.tokens}
           storyboardSrc={state.storyboardSrc}
           customDomain={state.customDomain}
@@ -477,6 +479,7 @@ function MuxPlayerPage({ location }: Props) {
           <TextRenderer value={state.videoTitle} name="videoTitle" onChange={genericOnChange} />
           <BooleanRenderer value={state.paused} name="paused" onChange={genericOnChange} />
           <BooleanRenderer value={state.proudlyDisplayMuxBadge} name="proudlyDisplayMuxBadge" onChange={genericOnChange} />
+          <BooleanRenderer value={state.disablePseudoEnded} name="disablePseudoEnded" onChange={genericOnChange} />
           <EnumRenderer
             value={state.autoPlay}
             name="autoPlay"

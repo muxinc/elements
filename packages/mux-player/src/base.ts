@@ -88,6 +88,7 @@ const PlayerAttributes = {
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
+  DISABLE_PSEUDO_ENDED: 'disable-pseudo-ended',
 } as const;
 
 const ThemeAttributeNames = [
@@ -179,6 +180,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
+    disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
