@@ -56,6 +56,7 @@ export const Attributes = {
   DEBUG: 'debug',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
+  DISABLE_PSEUDO_ENDED: 'disable-pseudo-ended',
   DRM_TOKEN: 'drm-token',
   PLAYBACK_TOKEN: 'playback-token',
   ENV_KEY: 'env-key',
@@ -166,11 +167,6 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         this.#logo = 'default';
         this.updateLogo();
       }
-    });
-
-    this.addEventListener('mux-check-disable-pseudo-ended', (event: Event): void => {
-      (event as CustomEvent<{ shouldDisable: boolean }>).detail.shouldDisable =
-        this.hasAttribute('disable-pseudo-ended');
     });
   }
 
@@ -333,6 +329,21 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       this.setAttribute(Attributes.DISABLE_COOKIES, '');
     } else {
       this.removeAttribute(Attributes.DISABLE_COOKIES);
+    }
+  }
+
+  get disablePseudoEnded() {
+    return this.hasAttribute(Attributes.DISABLE_PSEUDO_ENDED);
+  }
+
+  set disablePseudoEnded(val) {
+    // dont' cause an infinite loop
+    if (val === this.disablePseudoEnded) return;
+
+    if (val) {
+      this.setAttribute(Attributes.DISABLE_PSEUDO_ENDED, '');
+    } else {
+      this.removeAttribute(Attributes.DISABLE_PSEUDO_ENDED);
     }
   }
 

@@ -1139,6 +1139,7 @@ export const loadMedia = (
       | 'playbackId'
       | 'tokens'
       | 'customDomain'
+      | 'disablePseudoEnded'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1176,16 +1177,7 @@ export const loadMedia = (
     // Do the "cheaper" check first
     if (mediaEl.ended) return;
 
-    // Check if disablePseudoEnded is enabled by dispatching a custom event
-    const checkEvent = new CustomEvent('mux-check-disable-pseudo-ended', {
-      bubbles: true,
-      composed: true,
-      cancelable: true,
-      detail: { shouldDisable: false },
-    });
-
-    mediaEl.dispatchEvent(checkEvent);
-    if (checkEvent.detail.shouldDisable) return;
+    if (props.disablePseudoEnded) return;
 
     const pseudoEnded = getEnded(mediaEl, hls);
     if (!pseudoEnded) return;
