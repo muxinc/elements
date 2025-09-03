@@ -147,7 +147,8 @@
       pointer-events: none;
     }
 
-    :host([title]) media-control-bar[slot='top-chrome']::before {
+    :host([title]) media-control-bar[slot='top-chrome']::before,
+    :host([videotitle]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -263,10 +264,15 @@
   </style>
 
   <template partial="TitleDisplay">
-    <template if="title">
-      <media-text-display part="top title display" class="title-display">
-        {{title}}
-      </media-text-display>
+    <template if="videotitle">
+      <template if="videotitle != true">
+        <media-text-display part="top title display" class="title-display">{{videotitle}}</media-text-display>
+      </template>
+    </template>
+    <template if="!videotitle">
+      <template if="title">
+        <media-text-display part="top title display" class="title-display">{{title}}</media-text-display>
+      </template>
     </template>
   </template>
 
