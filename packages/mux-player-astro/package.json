@@ -17,8 +17,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./ads": "./src/ads/index.ts",
-    "./themes/*": "./src/themes/*/index.ts"
+    "./ads": "./src/ads/index.ts"
   },
   "peerDependencies": {
     "astro": "^4.0.0 || ^5.0.0"
@@ -28,6 +27,7 @@
     "@mux/playback-core": "0.30.1"
   },
   "devDependencies": {
-    "astro": "^5.11.0"
+    "astro": "^5.11.0",
+    "vite": "^6.0.0"
   }
 }

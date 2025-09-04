@@ -12,13 +12,14 @@ import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 type ValueOf<T> = T[keyof T];
 
 export type MuxVideoTheme = {
-  component: AstroComponentFactory;
-  name: string;
+  component?: AstroComponentFactory;
+  name?: string;
 };
 
+export type BuiltinTheme = 'classic' | 'gerwig' | 'microvideo' | 'minimal' | 'news';
+
 export type MuxPlayerProps = {
-  theme?: MuxVideoTheme;
-  mediaChromeTheme?: string;
+  theme?: MuxVideoTheme | BuiltinTheme | (string & {});
   hotkeys?: string;
   nohotkeys?: boolean;
   castReceiver?: string | undefined;

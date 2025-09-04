@@ -62,15 +62,16 @@ import { MuxPlayer } from '@mux/mux-player-astro';
 
 ## With Themes
 
+You can use one of the built-in themes by passing the theme name as a string to the `theme` prop:
+
 ```astro
 ---
 import { MuxPlayer } from '@mux/mux-player-astro';
-import classic from '@mux/mux-player-astro/themes/classic';
 ---
 
 <MuxPlayer
   playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  theme={classic}
+  theme="classic"
   style={{
     display: 'block',
     aspectRatio: '16/9',
@@ -80,12 +81,12 @@ import classic from '@mux/mux-player-astro/themes/classic';
 
 Available themes:
 - `classic` - Classic player theme
-- `minimal` - Minimal player theme  
+- `minimal` - Minimal player theme
 - `microvideo` - Microvideo theme for short-form content
 - `gerwig` - P, pretty, I, intelligent, N, never sad, K, cool
 - `news` - News theme
 
-Alternatively you can use a [Media Chrome theme](https://www.mux.com/docs/guides/player-themes#media-chrome-themes) by passing the theme name as a string:
+Alternatively you can use a [Media Chrome theme](https://www.mux.com/docs/guides/player-themes#media-chrome-themes) by passing the theme name as a string and including the theme `<template>` element with that ID in your page:
 
 ```astro
 ---
@@ -101,7 +102,7 @@ import { MuxPlayer } from '@mux/mux-player-astro';
 </template>
 <MuxPlayer
   playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-  mediaChromeTheme="tiny-theme"
+  theme="tiny-theme"
 />
 ```
 
@@ -121,21 +122,21 @@ import { MuxPlayer } from '@mux/mux-player-astro';
 
 <script>
   import type { MuxPlayerElement } from '@mux/mux-player-astro';
-  
+
   const player = document.getElementById('my-player') as MuxPlayerElement;
-  
+
   player.addEventListener('play', (event) => {
     console.log('Player started playing!');
   });
-  
+
   player.addEventListener('pause', (event) => {
     console.log('Player paused!');
   });
-  
+
   player.addEventListener('timeupdate', (event) => {
     console.log('Current time: ', player.currentTime);
   });
-  
+
   player.addEventListener('ended', (event) => {
     console.log('Video ended!');
   });

@@ -1,7 +1,12 @@
+/// <reference types="vite/client" />
+import type { MuxVideoTheme } from './types';
+
 const toKebabCase = (string: string) =>
   string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`).replaceAll('_', '-');
 
 const FLATTEN_PROPS = new Set(['metadata', 'tokens', 'castCustomData']);
+
+export const themes = import.meta.glob<{ default: MuxVideoTheme }>('./themes/*/index.ts');
 
 function stringifyValue(value: any): string {
   if (Array.isArray(value)) {
@@ -14,6 +19,22 @@ function stringifyValue(value: any): string {
     return '';
   }
   return String(value);
+}
+
+export async function getThemeObject(theme: string | MuxVideoTheme | undefined): Promise<MuxVideoTheme> {
+  if (!theme) {
+    return {};
+  }
+  if (typeof theme !== 'string') {
+    return theme;
+  }
+  const themeModule = themes[`./themes/${theme}/index.ts`];
+  if (!themeModule) {
+    return {
+      name: theme,
+    };
+  }
+  return (await themeModule()).default;
 }
 
 export const toNativeAttributes = (props: { [key: string]: any } = {}): Record<string, string> => {
