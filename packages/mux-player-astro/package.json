@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player-astro",
-  "version": "0.0.1",
+  "version": "3.5.3",
   "description": "An open source Mux player for Astro that Just Works™",
   "homepage": "https://mux.com/player",
   "keywords": [
