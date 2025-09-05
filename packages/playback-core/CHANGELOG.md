@@ -40,6 +40,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.1...@mux/playback-core@0.31.0) (2025-09-05)
+
+
+### Features
+
+* Add switch to control the behavior of the ended event ([#1181](https://github.com/muxinc/elements/issues/1181)) ([9c0f58f](https://github.com/muxinc/elements/commit/9c0f58f9ae1d0e9fc30097f93e92fbb98aaac950))
+* **astro:** add native Astro support with `MuxPlayer` and `MuxUploader` components ([#1167](https://github.com/muxinc/elements/issues/1167)) ([e0183ec](https://github.com/muxinc/elements/commit/e0183eceb30b98542356972f39652ce0ccf587ff))
+
 ## [0.30.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.0...@mux/playback-core@0.30.1) (2025-07-03)
 
 

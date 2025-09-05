@@ -33,6 +33,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.3...@mux/mux-player-react@3.6.0) (2025-09-05)
+
+
+### Features
+
+* Add switch to control the behavior of the ended event ([#1181](https://github.com/muxinc/elements/issues/1181)) ([9c0f58f](https://github.com/muxinc/elements/commit/9c0f58f9ae1d0e9fc30097f93e92fbb98aaac950))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.3 to 3.6.0
+    * @mux/playback-core bumped from 0.30.1 to 0.31.0
+
 ## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.5.2...@mux/mux-player-react@3.5.3) (2025-08-06)
 
 

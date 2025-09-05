@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-uploader-react",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "An uploader element for React that handles Mux Direct Uploads and a visual progress bar for you",
   "keywords": [
     "video",
@@ -68,7 +68,7 @@
     }
   },
   "dependencies": {
-    "@mux/mux-uploader": "1.2.0",
+    "@mux/mux-uploader": "1.3.0",
     "prop-types": "^15.8.1"
   },
   "devDependencies": {

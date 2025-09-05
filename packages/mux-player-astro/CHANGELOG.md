@@ -1,0 +1,17 @@
+# Changelog
+
+## [3.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.5.3...@mux/mux-player-astro@3.6.0) (2025-09-05)
+
+
+### Features
+
+* **astro:** add native Astro support with `MuxPlayer` and `MuxUploader` components ([#1167](https://github.com/muxinc/elements/issues/1167)) ([e0183ec](https://github.com/muxinc/elements/commit/e0183eceb30b98542356972f39652ce0ccf587ff))
+* **mux-player-react:** Force minor version bump via conventional commits. ([201bfcd](https://github.com/muxinc/elements/commit/201bfcd2a4137b2c409d1ce5fb3b32576a99ba31))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.5.1 to 3.6.0
+    * @mux/playback-core bumped from 0.30.1 to 0.31.0
