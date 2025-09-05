@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <MuxPlayer audio streamType="on-demand" playbackId="O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g" />
+
+  <br />
+
+  <MuxPlayer
+    audio
+    streamType="on-demand"
+    playbackId="O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g"
+    style="max-width: 480px"
+    poster="https://image.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I/thumbnail.webp?width=640"
+  />
+</Layout>
