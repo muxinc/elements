@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxUploader } from '@mux/mux-uploader-astro';
+---
+
+<Layout>
+  <div style="margin: 40px 0">
+    <cta-modal>
+      <div slot="button">
+        <p>
+          <button class="cta-modal-toggle" type="button">Upload a video</button>
+        </p>
+      </div>
+
+      <div slot="modal">
+        <h2>Enter your upload GCS url:</h2>
+        <div>
+          <input type="text" id="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+        </div>
+        <MuxUploader id="my-uploader" />
+      </div>
+    </cta-modal>
+
+    <div id="upload-status">
+      <mux-uploader-status mux-uploader="my-uploader"></mux-uploader-status>
+      <mux-uploader-progress mux-uploader="my-uploader"></mux-uploader-progress>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  #direct-upload-url {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  cta-modal {
+    --cta-modal-dialog-padding-top: 2rem;
+    --cta-modal-dialog-padding-left: 2rem;
+    --cta-modal-dialog-padding-right: 2rem;
+    --cta-modal-dialog-padding-bottom: 2rem;
+  }
+
+  cta-modal [slot='modal'] h2 {
+    color: #2a2932;
+    margin: 0 0 0.5rem;
+  }
+
+  cta-modal [slot='modal'] input {
+    margin: 0 0 1.5rem;
+  }
+
+  #upload-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  mux-uploader-status {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  mux-uploader-progress {
+    display: contents;
+    --progress-bar-fill-color: #46a6de;
+    --progress-bar-background-color: #4e46de;
+    --progress-bar-height: 8px;
+    --progress-bar-border-radius: 0px;
+  }
+</style>
+
+<script>
+  import type { MuxUploaderElement } from '@mux/mux-uploader-astro';
+  import 'cta-modal';
+  
+  const input = document.getElementById('direct-upload-url') as HTMLInputElement;
+  const muxUploader = document.getElementById('my-uploader') as MuxUploaderElement;
+  const modal = document.querySelector('cta-modal') as any;
+  const trigger = document.querySelector('cta-modal [slot="button"]') as HTMLElement;
+
+  input.addEventListener('change', () => {
+    muxUploader.endpoint = input.value;
+  });
+
+  muxUploader.addEventListener('file-ready', () => {
+    trigger.style.display = 'none';
+    modal.removeAttribute('active');
+  });
+</script>

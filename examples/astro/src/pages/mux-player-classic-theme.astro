@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxPlayer } from '@mux/mux-player-astro';
+---
+
+<Layout>
+  <MuxPlayer
+    id="mux-player-classic-theme"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+      backgroundColor: '#000',
+      margin: '1rem 0 2rem',
+    }}
+    theme="classic"
+    streamType="on-demand"
+    playbackId="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
+  />
+
+  <MuxPlayer
+    id="mux-player-classic-theme-live"
+    style={{
+      display: 'block',
+      aspectRatio: '16/9',
+      backgroundColor: '#000',
+      margin: '1rem 0 2rem',
+    }}
+    streamType="live"
+    targetLiveWindow={Infinity}
+    playbackId="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+    title="My amazing video"
+  />
+</Layout>

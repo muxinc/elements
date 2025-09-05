@@ -1,0 +1,10 @@
+---
+import type { MuxUploaderProps } from './types';
+import { toNativeAttributes } from './utils';
+type Props = MuxUploaderProps;
+---
+
+<mux-uploader {...toNativeAttributes(Astro.props)}><slot /></mux-uploader>
+<script>
+  import '@mux/mux-uploader';
+</script>
