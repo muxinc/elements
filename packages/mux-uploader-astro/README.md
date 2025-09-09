@@ -71,21 +71,21 @@ import { MuxUploader } from '@mux/mux-uploader-astro';
 
 <script>
   import type { MuxUploaderElement } from '@mux/mux-uploader-astro';
-  
+
   const uploader = document.getElementById('my-uploader') as MuxUploaderElement;
-  
+
   uploader.addEventListener('uploadstart', (event) => {
     console.log('Upload started!', event.detail);
   });
-  
+
   uploader.addEventListener('success', (event) => {
     console.log('Upload successful!', event.detail);
   });
-  
+
   uploader.addEventListener('uploaderror', (event) => {
     console.error('Upload error!', event.detail);
   });
-  
+
   uploader.addEventListener('progress', (event) => {
     console.log('Upload progress: ', event.detail);
   });
@@ -106,31 +106,15 @@ import { MuxUploader } from '@mux/mux-uploader-astro';
 
 <script>
   import type { MuxUploaderElement } from '@mux/mux-uploader-astro';
-  
+
   const input = document.getElementById('endpoint-input') as HTMLInputElement;
   const uploader = document.getElementById('uploader') as MuxUploaderElement;
-  
+
   input.addEventListener('change', () => {
     uploader.endpoint = input.value;
   });
 </script>
 ```
-
-# Props
-
-All props from the underlying `mux-uploader` web component are supported:
-
-- `endpoint` - The upload URL
-- `pausable` - Allow pausing/resuming uploads
-- `noDrop` - Disable drag and drop
-- `noProgress` - Hide progress indicator
-- `noStatus` - Hide status messages
-- `noRetry` - Hide retry button
-- `maxFileSize` - Maximum file size in bytes
-- `chunkSize` - Upload chunk size in bytes
-- `dynamicChunkSize` - Enable dynamic chunk sizing
-- `useLargeFileWorkaround` - Enable workaround for large files
-- `paused` - Control upload pause state
 
 # Docs
 
