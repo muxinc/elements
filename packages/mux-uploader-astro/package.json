@@ -3,6 +3,11 @@
   "version": "1.2.0",
   "description": "An open source Mux uploader for Astro that Just Works™",
   "homepage": "https://mux.com/uploader",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muxinc/elements.git",
+    "directory": "packages/mux-uploader-astro"
+  },
   "keywords": [
     "video",
     "mux",

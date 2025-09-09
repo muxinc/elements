@@ -3,6 +3,11 @@
   "version": "3.5.3",
   "description": "An open source Mux player for Astro that Just Works™",
   "homepage": "https://mux.com/player",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muxinc/elements.git",
+    "directory": "packages/mux-player-astro"
+  },
   "keywords": [
     "video",
     "mux",
