@@ -291,7 +291,6 @@
       flex-flow: row;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
       paint-order: stroke;
       stroke: rgba(102, 102, 102, 1);
       stroke-width: 0.3px;
@@ -305,6 +304,7 @@
       --media-control-hover-background: transparent;
       --media-control-padding: 0;
       width: 40px;
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
     }
 
     [breakpointsm] .center-controls media-play-button {
@@ -1032,12 +1032,7 @@
     <template if="!audio">
       <!-- Pre-playback UI -->
       <!-- same for both on-demand and live -->
-      <div
-        slot="centered-chrome"
-        part="centered-layer"
-        exportparts="centered-layer"
-        class="center-controls pre-playback"
-      >
+      <div slot="centered-chrome" class="center-controls pre-playback">
         <template if="!breakpointsm">{{>PlayButton section="center"}}</template>
         <template if="breakpointsm">{{>PrePlayButton section="center"}}</template>
       </div>
