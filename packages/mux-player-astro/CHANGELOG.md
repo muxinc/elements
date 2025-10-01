@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.6.1](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.6.0...@mux/mux-player-astro@3.6.1) (2025-10-01)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-astro:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.6.0 to 3.6.1
+
 ## [3.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.5.3...@mux/mux-player-astro@3.6.0) (2025-09-09)
 
 
