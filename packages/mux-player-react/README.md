@@ -62,7 +62,7 @@ import MuxPlayer from '@mux/mux-player-react/lazy';
 />;
 ```
 
-If you are generating your pages with a Node.js server (for example, [Next.js](https://nextjs.org/docs/basic-features/data-fetching/)), consider using `@mux/mux-player-react/lazy` with [`@mux/blurhash`](https://github.com/muxinc/blurhash) to generate a placeholder to display during loading.
+If you are generating your pages with a Node.js server (for example, [Next.js](https://nextjs.org/docs/basic-features/data-fetching/)), consider using `@mux/mux-player-react/lazy` with [`@mux/blurup`](https://github.com/muxinc/blurup) to generate a placeholder to display during loading.
 
 # Docs
 
