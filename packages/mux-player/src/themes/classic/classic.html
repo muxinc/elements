@@ -182,7 +182,6 @@
       paint-order: stroke;
       stroke: rgba(102, 102, 102, 1);
       stroke-width: 0.3px;
-      text-shadow: 0 0 2px rgb(0 0 0 / 0.25), 0 0 6px rgb(0 0 0 / 0.25);
     }
 
     .center-controls media-play-button {
@@ -200,6 +199,8 @@
       padding: 0;
       margin: 0 2%;
       width: max(33px, min(8%, 40px));
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
+      text-shadow: 0 0 2px rgb(0 0 0 / 0.25), 0 0 6px rgb(0 0 0 / 0.25);
     }
 
     media-control-bar:not([slot]) media-seek-backward-button {
