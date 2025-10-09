@@ -48,6 +48,36 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.6.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.6.0...@mux/mux-player@3.6.1) (2025-10-01)
+
+
+### Bug Fixes
+
+* bump media chrome to `4.14.0` ([#1205](https://github.com/muxinc/elements/issues/1205)) ([49b6cec](https://github.com/muxinc/elements/commit/49b6cec9b3c7236953117c72a1d81fec6c591748))
+
+## [3.6.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.3...@mux/mux-player@3.6.0) (2025-09-09)
+
+
+### Features
+
+* Add switch to control the behavior of the ended event ([#1181](https://github.com/muxinc/elements/issues/1181)) ([9c0f58f](https://github.com/muxinc/elements/commit/9c0f58f9ae1d0e9fc30097f93e92fbb98aaac950))
+* classic theme video title ([#1187](https://github.com/muxinc/elements/issues/1187)) ([91dec17](https://github.com/muxinc/elements/commit/91dec172913d4e666c2896a8c652fc279d5e73e8))
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 2 updates ([#1188](https://github.com/muxinc/elements/issues/1188)) ([8a98327](https://github.com/muxinc/elements/commit/8a98327701b2a4609245bbc6ae26ce7d9a7a0bc4))
+* Disable spacebar shortcut if `nohotkeys` enabled ([#1173](https://github.com/muxinc/elements/issues/1173)) ([52bb21d](https://github.com/muxinc/elements/commit/52bb21d3e7afc6f1d95fb18a132f837bf7ae292b))
+* Remove error dialog for audio only ([#1190](https://github.com/muxinc/elements/issues/1190)) ([f6aa5a4](https://github.com/muxinc/elements/commit/f6aa5a448d7e7b32b77a2ce75162a2780b68eedf))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.26.1 to 0.27.0
+    * @mux/playback-core bumped from 0.30.1 to 0.31.0
+
 ## [3.5.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.5.2...@mux/mux-player@3.5.3) (2025-08-06)
 
 

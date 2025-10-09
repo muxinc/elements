@@ -42,6 +42,7 @@ type MuxMediaPropTypes = {
   disableTracking: boolean;
   disableCookies: boolean;
   disablePictureInPicture?: boolean;
+  disablePseudoEnded?: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
   extraSourceParams: Record<string, any>;

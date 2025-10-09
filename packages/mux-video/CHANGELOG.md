@@ -31,6 +31,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.27.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.26.1...@mux/mux-video@0.27.0) (2025-09-09)
+
+
+### Features
+
+* Add switch to control the behavior of the ended event ([#1181](https://github.com/muxinc/elements/issues/1181)) ([9c0f58f](https://github.com/muxinc/elements/commit/9c0f58f9ae1d0e9fc30097f93e92fbb98aaac950))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.30.1 to 0.31.0
+
 ## [0.26.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.26.0...@mux/mux-video@0.26.1) (2025-07-03)
 
 

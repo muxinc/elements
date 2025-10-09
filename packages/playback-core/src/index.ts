@@ -1139,6 +1139,7 @@ export const loadMedia = (
       | 'playbackId'
       | 'tokens'
       | 'customDomain'
+      | 'disablePseudoEnded'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1175,6 +1176,9 @@ export const loadMedia = (
     // since that means it will have already fired the ended event.
     // Do the "cheaper" check first
     if (mediaEl.ended) return;
+
+    if (props.disablePseudoEnded) return;
+
     const pseudoEnded = getEnded(mediaEl, hls);
     if (!pseudoEnded) return;
 

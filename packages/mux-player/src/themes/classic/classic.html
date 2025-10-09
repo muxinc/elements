@@ -147,7 +147,8 @@
       pointer-events: none;
     }
 
-    :host([title]) media-control-bar[slot='top-chrome']::before {
+    :host([title]) media-control-bar[slot='top-chrome']::before,
+    :host([videotitle]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -264,10 +265,15 @@
   </style>
 
   <template partial="TitleDisplay">
-    <template if="title">
-      <media-text-display part="top title display" class="title-display">
-        {{title}}
-      </media-text-display>
+    <template if="videotitle">
+      <template if="videotitle != true">
+        <media-text-display part="top title display" class="title-display">{{videotitle}}</media-text-display>
+      </template>
+    </template>
+    <template if="!videotitle">
+      <template if="title">
+        <media-text-display part="top title display" class="title-display">{{title}}</media-text-display>
+      </template>
     </template>
   </template>
 
@@ -526,10 +532,8 @@
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
     <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
-    <media-error-dialog slot="dialog" noautohide></media-error-dialog>
-
+    
     <template if="audio">
-
       <template if="streamtype == 'on-demand'">
         <template if="title">
           <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
@@ -591,7 +595,7 @@
     </template>
 
     <template if="!audio">
-
+      <media-error-dialog slot="dialog" noautohide></media-error-dialog>
       <template if="streamtype == 'on-demand'">
 
         <template if="!breakpointsm">
