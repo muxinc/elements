@@ -55,6 +55,7 @@ export const Parts = {
   CONTROL_BAR: 'control-bar',
   MENU_BUTTON: 'menu-button',
   MENU: 'menu',
+  MENU_ITEM: 'menu-item',
   OPTION: 'option',
   // component/subcomponent purposes
   POSTER: 'poster',
