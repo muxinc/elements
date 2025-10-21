@@ -10,6 +10,14 @@ import type {
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, EventMap as MuxPlayerElementEventMap } from '@mux/mux-player';
 
+/**
+ * Custom CSS properties specific to mux-player
+ * These extend the standard CSSProperties to include mux-player's custom CSS variables
+ */
+export interface MuxPlayerCSSProperties extends CSSProperties {
+  [key: `--${string}`]: string | undefined;
+}
+
 type ValueOf<T> = T[keyof T];
 
 export interface GenericEventListener<T extends Event = CustomEvent> {
@@ -30,7 +38,7 @@ type VideoApiAttributes = {
   autoPlay: boolean | string;
   loop: boolean;
   muted: boolean;
-  style: CSSProperties;
+  style: MuxPlayerCSSProperties;
 };
 
 type MuxMediaPropTypes = {
