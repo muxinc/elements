@@ -68,6 +68,7 @@ const PlayerAttributes = {
   PLAYBACK_TOKEN: 'playback-token',
   THUMBNAIL_TOKEN: 'thumbnail-token',
   STORYBOARD_TOKEN: 'storyboard-token',
+  FULLSCREEN_ELEMENT: 'fullscreen-element',
   DRM_TOKEN: 'drm-token',
   STORYBOARD_SRC: 'storyboard-src',
   THUMBNAIL_TIME: 'thumbnail-time',
@@ -125,6 +126,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     poster: el.poster,
     storyboard: el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
+    fullscreenElement: el.getAttribute(PlayerAttributes.FULLSCREEN_ELEMENT),
     placeholder: el.getAttribute('placeholder'),
     themeTemplate: getThemeTemplate(el),
     thumbnailTime: !el.tokens.thumbnail && el.thumbnailTime,
@@ -735,6 +737,17 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
             this.targetLiveWindow = Number.NaN;
           }
         }
+        break;
+      }
+      case PlayerAttributes.FULLSCREEN_ELEMENT: {
+        if (newValue != null || newValue !== oldValue) {
+          const e = document.getElementById(newValue);
+          const muxVideo = e?.querySelector('mux-player');
+          if (this.mediaController && e && muxVideo) {
+            this.mediaController.fullscreenElement = e;
+          }
+        }
+        break;
       }
     }
 
