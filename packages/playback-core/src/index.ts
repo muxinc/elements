@@ -715,6 +715,9 @@ export const setupHls = (
           contentId: metadata?.video_id,
         }
       : undefined;
+
+    const capLevelControllerObj = _hlsConfig.capLevelToPlayerSize ? {} : { capLevelController: MinCapLevelController };
+
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
@@ -732,7 +735,7 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
-      capLevelController: MinCapLevelController,
+      ...capLevelControllerObj,
       ...defaultConfig,
       ...streamTypeConfig,
       ...drmConfig,
