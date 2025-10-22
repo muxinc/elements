@@ -22,6 +22,7 @@ export const setupPreload = (
 
   let hasLoadedSource = false;
   let hasPlayFired = false;
+  let isBufferingActive = true;
 
   const originalLength = hls.config.maxBufferLength;
   const originalSize = hls.config.maxBufferSize;
@@ -46,11 +47,29 @@ export const setupPreload = (
   };
 
   const safeLoadSource = () => {
-    if (!hasLoadedSource && src) {
+    if (!hasLoadedSource && src && isBufferingActive) {
       hasLoadedSource = true;
       hls.loadSource(src);
     }
   };
+
+  const startBuffering = () => {
+    isBufferingActive = true;
+    if (hls && src && hasLoadedSource) {
+      hls.startLoad();
+    } else if (hls && src && !hasLoadedSource) {
+      safeLoadSource();
+    }
+  };
+
+  const stopBuffering = () => {
+    isBufferingActive = false;
+    if (hls) {
+      hls.stopLoad();
+    }
+  };
+
+  const isBuffering = () => isBufferingActive;
 
   addEventListenerWithTeardown(
     mediaEl,
@@ -70,5 +89,10 @@ export const setupPreload = (
 
   updateHlsPreload(preload);
 
-  return updateHlsPreload;
+  return {
+    updateHlsPreload,
+    startBuffering,
+    stopBuffering,
+    isBuffering,
+  };
 };

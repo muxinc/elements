@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mux Player - Buffering Control Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+    
+    mux-player {
+      width: 100%;
+      height: 400px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.2s;
+    }
+    
+    .start-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    
+    .start-btn:hover {
+      background-color: #45a049;
+    }
+    
+    .stop-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .stop-btn:hover {
+      background-color: #da190b;
+    }
+    
+    .status-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+    
+    .status-btn:hover {
+      background-color: #1976D2;
+    }
+    
+    .info {
+      background-color: #e3f2fd;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    
+    .status {
+      font-weight: bold;
+      color: #1976D2;
+    }
+    
+    .code-example {
+      background-color: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 15px;
+      margin: 20px 0;
+      overflow-x: auto;
+    }
+    
+    .code-example pre {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    
+    .intersection-demo {
+      background-color: #fff3e0;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+    
+    .demo-video {
+      height: 200px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mux Player - Buffering Control Example</h1>
+    
+    <div class="video-container">
+      <mux-player
+        playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
+        autoplay
+        controls
+        muted
+        preload="auto"
+      ></mux-player>
+    </div>
+    
+    <div class="controls">
+      <button id="startBtn" class="start-btn">Start Buffering</button>
+      <button id="stopBtn" class="stop-btn">Stop Buffering</button>
+      <button id="statusBtn" class="status-btn">Check Status</button>
+    </div>
+    
+    <div class="info">
+      <h3>Current Status:</h3>
+      <p>Buffering: <span id="status" class="status">Unknown</span></p>
+    </div>
+    
+   
+  </div>
+
+  <script type="module">
+    import 'https://unpkg.com/@mux/mux-player';
+    
+    const player = document.querySelector('mux-player');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const statusBtn = document.getElementById('statusBtn');
+    const status = document.getElementById('status');
+    
+    // Button event listeners
+    startBtn.addEventListener('click', () => {
+      console.log("Que pasa???", player)
+      player.startBuffering();
+      updateStatus();
+    });
+    
+    stopBtn.addEventListener('click', () => {
+      player.stopBuffering();
+      updateStatus();
+    });
+    
+    statusBtn.addEventListener('click', () => {
+      updateStatus();
+    });
+    
+    function updateStatus() {
+      const isBuffering = player.isBuffering();
+      status.textContent = isBuffering ? 'Yes' : 'No';
+      status.style.color = isBuffering ? '#4CAF50' : '#f44336';
+    }
+    
+    // Intersection Observer for the demo video
+    // const demoPlayer = document.querySelector('.demo-video');
+    // const observer = new IntersectionObserver((entries) => {
+    //   entries.forEach(entry => {
+    //     if (entry.isIntersecting) {
+    //       demoPlayer.startBuffering();
+    //       console.log('Demo video is visible - starting buffering');
+    //     } else {
+    //       demoPlayer.stopBuffering();
+    //       console.log('Demo video is not visible - stopping buffering');
+    //     }
+    //   });
+    // }, { threshold: 0.5 });
+    
+    // observer.observe(demoPlayer);
+    
+    // Initial status check
+    updateStatus();
+  </script>
+</body>
+</html>

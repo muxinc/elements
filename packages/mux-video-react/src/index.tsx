@@ -1,7 +1,7 @@
 'use client';
 
 import { useCombinedRefs } from './use-combined-refs';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
 import {
   allMediaTypes,
@@ -23,11 +23,17 @@ export type Props = Omit<
 > &
   MuxMediaProps;
 
+export interface MuxVideoRef {
+  startBuffering: () => void;
+  stopBuffering: () => void;
+  isBuffering: () => boolean;
+}
+
 export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-video-react';
 export { generatePlayerInitTime };
 
-const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>((props, ref) => {
+const MuxVideo = React.forwardRef<MuxVideoRef, Partial<Props>>((props, ref) => {
   const {
     playbackId,
     src: outerSrc,
@@ -48,7 +54,17 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
   const [src, setSrc] = useState<MuxMediaProps['src']>(toMuxVideoURL(props) ?? outerSrc);
   const playbackCoreRef = useRef<PlaybackCore | undefined>(undefined);
   const innerMediaElRef = useRef<HTMLVideoElement>(null);
-  const mediaElRef = useCombinedRefs(innerMediaElRef, ref);
+  const mediaElRef = useCombinedRefs(innerMediaElRef);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      startBuffering: () => playbackCoreRef.current?.startBuffering?.(),
+      stopBuffering: () => playbackCoreRef.current?.stopBuffering?.(),
+      isBuffering: () => playbackCoreRef.current?.isBuffering?.() ?? false,
+    }),
+    []
+  );
 
   useEffect(() => {
     setSrc(toMuxVideoURL(props) ?? outerSrc);

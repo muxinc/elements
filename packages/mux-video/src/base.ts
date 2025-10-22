@@ -226,6 +226,18 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     return this.nativeEl?.mux;
   }
 
+  startBuffering() {
+    return this.#core?.startBuffering?.();
+  }
+
+  stopBuffering() {
+    return this.#core?.stopBuffering?.();
+  }
+
+  isBuffering() {
+    return this.#core?.isBuffering?.() ?? false;
+  }
+
   get error() {
     return getError(this.nativeEl) ?? null;
   }

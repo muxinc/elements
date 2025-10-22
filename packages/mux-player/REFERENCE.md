@@ -76,6 +76,9 @@
 | `addCuePoints()` | Add an array of CuePoints with the shape `{ startTime: number; endTime?: number, value: any; }` to the Mux Player instance                                                                           |
 | `addChapters()`  | Add an array of chapters with the shape `{ startTime: number; endTime?: number, value: string; }` to the Mux Player instance                                                                         |
 | `getStartDate()` | Will return a Date that matches the earliest PDT in your stream. Identical to [native `getStartDate()` method](https://html.spec.whatwg.org/multipage/media.html#dom-media-getstartdate), if exists. |
+| `startBuffering()` | Start or resume video buffering/loading. Useful for resuming buffering after it has been stopped. |
+| `stopBuffering()` | Stop video buffering/loading. Useful for pausing data fetching when video is not visible. |
+| `isBuffering()` | Returns `true` if the player is currently buffering/loading video data, `false` otherwise. |
 
 <!-- UNDOCUMENTED
 | `addTextTrack()` | Identical to the [native `addTextTrack()` method](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement#methods). |
