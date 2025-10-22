@@ -716,7 +716,8 @@ export const setupHls = (
         }
       : undefined;
 
-    const capLevelControllerObj = _hlsConfig.capLevelToPlayerSize ? {} : { capLevelController: MinCapLevelController };
+    const capLevelControllerObj =
+      _hlsConfig.capLevelToPlayerSize == null ? { capLevelController: MinCapLevelController } : {};
 
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
