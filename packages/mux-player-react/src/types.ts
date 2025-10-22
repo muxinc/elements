@@ -18,6 +18,10 @@ export interface MuxPlayerCSSProperties extends CSSProperties {
   [key: `--${string}`]: string | undefined;
 }
 
+export interface MuxCSSProperties extends CSSProperties {
+  [key: `--${string}`]: string | undefined;
+}
+
 type ValueOf<T> = T[keyof T];
 
 export interface GenericEventListener<T extends Event = CustomEvent> {
@@ -138,3 +142,18 @@ export type MuxPlayerProps = {
   onChapterChange?: GenericEventListener<MuxPlayerElementEventMap['chapterchange']>;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'mux-player': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        style?: MuxCSSProperties;
+        [key: string]: any;
+      };
+      'mux-video': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        style?: MuxCSSProperties;
+        [key: string]: any;
+      };
+    }
+  }
+}
