@@ -150,7 +150,6 @@
     
     function updateStatus() {
       const isBuffering = player.isBuffering();
-      console.log('is buffering', isBuffering)
       status.textContent = isBuffering ? 'Yes' : 'No';
       status.style.color = isBuffering ? '#4CAF50' : '#f44336';
     }
