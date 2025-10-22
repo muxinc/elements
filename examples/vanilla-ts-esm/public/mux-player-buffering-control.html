@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mux Player - Buffering Control Example</title>
+  <script type="module" src="./dist/mux-player.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -94,32 +95,6 @@
       color: #1976D2;
     }
     
-    .code-example {
-      background-color: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 4px;
-      padding: 15px;
-      margin: 20px 0;
-      overflow-x: auto;
-    }
-    
-    .code-example pre {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-    }
-    
-    .intersection-demo {
-      background-color: #fff3e0;
-      padding: 15px;
-      border-radius: 4px;
-      margin: 20px 0;
-    }
-    
-    .demo-video {
-      height: 200px;
-      margin: 20px 0;
-    }
   </style>
 </head>
 <body>
@@ -133,6 +108,7 @@
         controls
         muted
         preload="auto"
+        prefer-playback="mse"
       ></mux-player>
     </div>
     
@@ -150,9 +126,7 @@
    
   </div>
 
-  <script type="module">
-    import 'https://unpkg.com/@mux/mux-player';
-    
+  <script>
     const player = document.querySelector('mux-player');
     const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
@@ -161,7 +135,6 @@
     
     // Button event listeners
     startBtn.addEventListener('click', () => {
-      console.log("Que pasa???", player)
       player.startBuffering();
       updateStatus();
     });
@@ -177,28 +150,14 @@
     
     function updateStatus() {
       const isBuffering = player.isBuffering();
+      console.log('is buffering', isBuffering)
       status.textContent = isBuffering ? 'Yes' : 'No';
       status.style.color = isBuffering ? '#4CAF50' : '#f44336';
     }
-    
-    // Intersection Observer for the demo video
-    // const demoPlayer = document.querySelector('.demo-video');
-    // const observer = new IntersectionObserver((entries) => {
-    //   entries.forEach(entry => {
-    //     if (entry.isIntersecting) {
-    //       demoPlayer.startBuffering();
-    //       console.log('Demo video is visible - starting buffering');
-    //     } else {
-    //       demoPlayer.stopBuffering();
-    //       console.log('Demo video is not visible - stopping buffering');
-    //     }
-    //   });
-    // }, { threshold: 0.5 });
-    
-    // observer.observe(demoPlayer);
-    
-    // Initial status check
-    updateStatus();
+
+    player.addEventListener('loadedmetadata', () => {
+      updateStatus();
+    });
   </script>
 </body>
 </html>
