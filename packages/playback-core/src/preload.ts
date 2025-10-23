@@ -55,16 +55,18 @@ export const setupPreload = (
   const startBuffering = () => {
     if (hls && src && hasLoadedSource) {
       hls.resumeBuffering();
+      hls.startLoad();
     }
   };
 
   const stopBuffering = () => {
     if (hls) {
       hls.pauseBuffering();
+      hls.stopLoad();
     }
   };
 
-  const isBuffering = () => hls?.bufferingEnabled ?? false;
+  const isBuffering = () => (hls ? hls.loadingEnabled : false);
 
   addEventListenerWithTeardown(
     mediaEl,
