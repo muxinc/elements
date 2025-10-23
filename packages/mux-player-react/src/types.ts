@@ -149,9 +149,6 @@ declare global {
         style?: MuxCSSProperties;
         [key: string]: any;
       };
-      'mux-video': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        [key: string]: any;
-      };
     }
   }
 }
