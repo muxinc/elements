@@ -273,7 +273,9 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   get locale(): string {
-    return this.getAttribute('locale') ?? 'en';
+    const locale = this.getAttribute('locale');
+    const supportedLocales = ['en', 'es', 'fr', 'de'];
+    return supportedLocales.includes(locale || '') ? locale! : 'en';
   }
 
   set locale(value: string | undefined) {
