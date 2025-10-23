@@ -55,8 +55,6 @@ export const setupPreload = (
   const startBuffering = () => {
     if (hls && src && hasLoadedSource) {
       hls.resumeBuffering();
-    } else if (hls && src && !hasLoadedSource) {
-      safeLoadSource();
     }
   };
 
