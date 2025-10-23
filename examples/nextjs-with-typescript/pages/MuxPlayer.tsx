@@ -125,6 +125,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   streamType: undefined,
   storyboardSrc: undefined,
   theme: undefined,
+  fullscreenElement: undefined,
   proudlyDisplayMuxBadge: undefined,
   disablePseudoEnded: undefined,
 });
@@ -268,10 +269,12 @@ function MuxPlayerPage({ location }: Props) {
         <title>&lt;MuxPlayer/&gt; Demo</title>
       </Head>
       <main className="component-page">
+        <div id="custom-fullscreen-element">
         <MuxPlayer
           // ref={mediaElRef}
           style={stylesState}
           theme={state.theme}
+          fullscreenElement={state.fullscreenElement}
           envKey={state.envKey}
           metadata={state.metadata}
           // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
@@ -352,6 +355,7 @@ function MuxPlayerPage({ location }: Props) {
           onEnded={onEnded}
           onWaiting={onWaiting}
         />
+        </div>
 
         <div className="options">
           <ComponentCodeRenderer state={state} component="MuxPlayer" />
@@ -443,6 +447,13 @@ function MuxPlayerPage({ location }: Props) {
             name="theme"
             onChange={genericOnChange}
             values={['classic', 'microvideo', 'minimal', 'gerwig']}
+          />
+          <TextRenderer
+            value={state.fullscreenElement}
+            name="fullscreenElement"
+            label="Fullscreen Element"
+            onChange={genericOnChange}
+            placeholder={`custom-fullscreen-element`}
           />
           <TextRenderer
             value={state.envKey}
