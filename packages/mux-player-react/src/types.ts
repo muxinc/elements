@@ -11,16 +11,15 @@ import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, EventMap as MuxPlayerElementEventMap } from '@mux/mux-player';
 
 /**
- * Custom CSS properties specific to mux-player
- * These extend the standard CSSProperties to include mux-player's custom CSS variables
+ * CSS properties interface for Mux components
+ * Extends standard CSSProperties to include custom CSS variables
  */
-export interface MuxPlayerCSSProperties extends CSSProperties {
-  [key: `--${string}`]: string | undefined;
-}
-
 export interface MuxCSSProperties extends CSSProperties {
   [key: `--${string}`]: string | undefined;
 }
+
+// Alias for backward compatibility
+export type MuxPlayerCSSProperties = MuxCSSProperties;
 
 type ValueOf<T> = T[keyof T];
 
@@ -151,7 +150,6 @@ declare global {
         [key: string]: any;
       };
       'mux-video': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        style?: MuxCSSProperties;
         [key: string]: any;
       };
     }

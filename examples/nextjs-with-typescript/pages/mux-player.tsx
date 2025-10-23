@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import Link from "next/link";
 import Head from "next/head";
 import "@mux/mux-player";
@@ -26,7 +26,7 @@ function MuxPlayerWCPage() {
 
       <div>
         <mux-player
-          // style={{ aspectRatio: "16 / 9" }}
+          style={{ '--media-primary-color': '#ff0000' }}
           playback-id={playbackId}
           forward-seek-offset={10}
           backward-seek-offset={10}

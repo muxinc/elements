@@ -18,16 +18,12 @@ import {
 import type { PlaybackCore } from '@mux/playback-core';
 import { getPlayerVersion } from './env';
 
-export interface MuxVideoCSSProperties extends CSSProperties {
-  [key: `--${string}`]: string | undefined;
-}
-
 export type Props = Omit<
   React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>,
   'autoPlay' | 'style'
 > &
   MuxMediaProps & {
-    style?: MuxVideoCSSProperties;
+    style?: React.CSSProperties;
   };
 
 export const playerSoftwareVersion = getPlayerVersion();
