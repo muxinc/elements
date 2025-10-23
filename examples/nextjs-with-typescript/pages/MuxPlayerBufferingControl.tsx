@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
-import type { MuxPlayerRefAttributes } from '@mux/mux-player-react';
 
 const BufferingControlExample: React.FC = () => {
-  const playerRef = useRef<MuxPlayerRefAttributes>(null);
+  const playerRef = useRef(null);
   const [isBuffering, setIsBuffering] = useState<boolean>(false);
 
   const handleStartBuffering = () => {
@@ -20,6 +19,12 @@ const BufferingControlExample: React.FC = () => {
     const buffering = playerRef.current?.isBuffering() ?? false;
     setIsBuffering(buffering);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      updateBufferingStatus();
+    }, 100);
+  }, []);
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
