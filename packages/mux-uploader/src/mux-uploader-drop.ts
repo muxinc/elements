@@ -1,6 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
+import { i18n } from './utils/i18n';
 
 const template = document.createElement('template');
 
@@ -54,10 +55,10 @@ template.innerHTML = /*html*/ `
 </style>
 
 <slot name="heading" part="heading">
-  <span>Drop a video file here to upload</span>
+  <span id="drop-text">Drop a video file here to upload</span>
 </slot>
 <slot name="separator" part="separator">
-  <span>or</span>
+  <span id="separator-text">or</span>
 </slot>
 <slot></slot>
 
@@ -117,6 +118,8 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('file-ready', this.#uploaderEl.hasAttribute('file-ready'));
+
+      this.updateText();
     }
   }
 
@@ -196,6 +199,20 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
       },
       opts
     );
+  }
+
+  updateText() {
+    const locale = (this.#uploaderEl as any)?.locale || 'en';
+
+    const dropTextEl = this.shadowRoot?.getElementById('drop-text');
+    const separatorTextEl = this.shadowRoot?.getElementById('separator-text');
+
+    if (dropTextEl) {
+      dropTextEl.textContent = i18n('dropText', locale).toString();
+    }
+    if (separatorTextEl) {
+      separatorTextEl.textContent = i18n('separatorText', locale).toString();
+    }
   }
 }
 

@@ -1,0 +1,11 @@
+{
+  "dropText": "dropText",
+  "separatorText": "separatorText",
+  "uploadCompleteText": "uploadCompleteText",
+  "retryText": "retryText",
+  "pausingText": "pausingText",
+  "resumeText": "resumeText",
+  "pauseText": "pauseText",
+  "uploadButtonText": "uploadButtonText",
+  "noEndpointError": "noEndpointError"
+}

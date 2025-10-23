@@ -1,6 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
+import { i18n } from './utils/i18n';
 
 export const fileSelectFragment = /*html*/ `
   <style>
@@ -31,7 +32,7 @@ export const fileSelectFragment = /*html*/ `
 
   </style>
 
-  <button id="file-select" type="button" part="file-select-button">Upload a video</button>
+  <button id="file-select" type="button" part="file-select-button"></button>
 `;
 
 const template = document.createElement('template');
@@ -74,6 +75,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
       this.filePickerEl = slot
         .assignedElements({ flatten: true })
         .filter((el) => !['STYLE'].includes(el.nodeName))[0] as HTMLButtonElement;
+      this.updateText();
     });
   }
 
@@ -114,6 +116,8 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('file-ready', this.#uploaderEl.hasAttribute('file-ready'));
+
+      this.updateText();
     }
   }
 
@@ -145,6 +149,20 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
     const controller = attr ? document.getElementById(attr) : (this.getRootNode() as ShadowRoot).host;
 
     controller?.shadowRoot?.querySelector<HTMLInputElement>('#hidden-file-input')?.click();
+  }
+
+  updateText() {
+    const locale = (this.#uploaderEl as any)?.locale || 'en';
+    const text = i18n('uploadButtonText', locale).toString();
+
+    if (this.filePickerEl) {
+      this.filePickerEl.textContent = text;
+    } else {
+      const buttonEl = this.shadowRoot?.querySelector('#file-select') as HTMLButtonElement;
+      if (buttonEl) {
+        buttonEl.textContent = text;
+      }
+    }
   }
 }
 
