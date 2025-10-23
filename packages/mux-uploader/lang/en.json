@@ -1,16 +1,11 @@
 {
   "dropText": "Drop a video file here to upload",
   "separatorText": "or",
-  "uploadButtonText": "Upload a video",
   "uploadCompleteText": "Upload complete!",
   "retryText": "Retry",
-  "pauseText": "Pause",
-  "resumeText": "Resume",
   "pausingText": "Pausing...",
-  "cancelText": "Cancel",
-  "errorText": "Upload error",
-  "fileTooLargeText": "File is too large",
-  "invalidFileTypeText": "Invalid file type",
-  "noEndpointError": "No url or endpoint specified -- cannot handleUpload",
-  "uploadError": "Upload error"
+  "resumeText": "Resume",
+  "pauseText": "Pause",
+  "uploadButtonText": "Upload a video",
+  "noEndpointError": "No url or endpoint specified -- cannot handleUpload"
 }
