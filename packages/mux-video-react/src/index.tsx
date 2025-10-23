@@ -3,7 +3,6 @@
 import { useCombinedRefs } from './use-combined-refs';
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import type { CSSProperties } from 'react';
 import {
   allMediaTypes,
   initialize,
@@ -20,11 +19,9 @@ import { getPlayerVersion } from './env';
 
 export type Props = Omit<
   React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement>,
-  'autoPlay' | 'style'
+  'autoPlay'
 > &
-  MuxMediaProps & {
-    style?: React.CSSProperties;
-  };
+  MuxMediaProps;
 
 export const playerSoftwareVersion = getPlayerVersion();
 export const playerSoftwareName = 'mux-video-react';
