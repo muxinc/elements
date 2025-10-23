@@ -127,13 +127,17 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   connectedCallback() {
-    // Set locale based on browser language if not set
-    if (!this.locale && typeof navigator !== 'undefined' && navigator.language) {
+    // Set locale based on browser language if not explicitly set
+    if (!this.hasAttribute('locale') && typeof navigator !== 'undefined' && navigator.language) {
       const browserLang = navigator.language.split('-')[0];
       const supportedLocales = ['en', 'es', 'fr', 'de'];
       if (supportedLocales.includes(browserLang)) {
         this.locale = browserLang;
+      } else {
+        this.locale = 'en';
       }
+    } else if (!this.hasAttribute('locale')) {
+      this.locale = 'en';
     }
 
     this.addEventListener('file-ready', this.handleUpload);
@@ -268,8 +272,8 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
-  get locale(): string | undefined {
-    return this.getAttribute('locale') ?? undefined;
+  get locale(): string {
+    return this.getAttribute('locale') ?? 'en';
   }
 
   set locale(value: string | undefined) {
