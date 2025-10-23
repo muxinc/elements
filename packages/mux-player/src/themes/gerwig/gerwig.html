@@ -235,7 +235,8 @@
         hsl(0 0% 0% / 0.896) 77.5%, hsl(0 0% 0% / 0.951) 84.5%, hsl(0 0% 0% / 0.987) 91.9%, hsl(0 0% 0%) 100%;
     }
 
-    :host([title]:not([audio])) media-control-bar[slot='top-chrome']::before {
+    :host([title]) media-control-bar[slot='top-chrome']::before,
+    :host([videotitle]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -291,7 +292,6 @@
       flex-flow: row;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
       paint-order: stroke;
       stroke: rgba(102, 102, 102, 1);
       stroke-width: 0.3px;
@@ -305,6 +305,7 @@
       --media-control-hover-background: transparent;
       --media-control-padding: 0;
       width: 40px;
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
     }
 
     [breakpointsm] .center-controls media-play-button {
@@ -324,6 +325,9 @@
       padding: 0;
       margin: 0 20px;
       width: max(33px, min(8%, 40px));
+      text-shadow:
+        0 0 2px rgb(0 0 0 / 0.25),
+        0 0 6px rgb(0 0 0 / 0.25);
     }
 
     [breakpointsm]:not([audio]) .center-controls.pre-playback {
@@ -1027,9 +1031,9 @@
     <slot name="poster" slot="poster"></slot>
 
     <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
-    <media-error-dialog slot="dialog" noautohide></media-error-dialog>
 
     <template if="!audio">
+      <media-error-dialog slot="dialog" noautohide></media-error-dialog>
       <!-- Pre-playback UI -->
       <!-- same for both on-demand and live -->
       <div slot="centered-chrome" class="center-controls pre-playback">

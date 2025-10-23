@@ -171,6 +171,7 @@ export type MuxMediaPropTypes = {
   debug: Options['debug'] & Hls['config']['debug'];
   disableCookies: Options['disableCookies'];
   disableTracking: boolean;
+  disablePseudoEnded: boolean;
   drmToken?: string;
   playbackToken?: string;
   envKey: MetaData['env_key'];

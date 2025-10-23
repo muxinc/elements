@@ -1,0 +1,13 @@
+---
+import type { MuxPlayerProps } from './types';
+import { getThemeObject, toNativeAttributes } from './utils';
+type Props = MuxPlayerProps;
+const { theme, ...props } = Astro.props;
+const { component: Theme, name: themeName } = await getThemeObject(theme);
+---
+
+<mux-player {...toNativeAttributes(props)} theme={themeName}><slot /></mux-player>
+{Theme && <Theme />}
+<script>
+  import '@mux/mux-player';
+</script>

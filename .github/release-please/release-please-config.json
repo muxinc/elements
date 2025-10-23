@@ -12,7 +12,7 @@
     {
       "type": "linked-versions",
       "groupName": "player",
-      "components": ["@mux/mux-player", "@mux/mux-player-react"]
+      "components": ["@mux/mux-player", "@mux/mux-player-react", "@mux/mux-player-astro"]
     },
     {
       "type": "linked-versions",
@@ -27,7 +27,7 @@
     {
       "type": "linked-versions",
       "groupName": "uploader",
-      "components": ["@mux/mux-uploader", "@mux/mux-uploader-react"]
+      "components": ["@mux/mux-uploader", "@mux/mux-uploader-react", "@mux/mux-uploader-astro"]
     }
   ],
   "packages": {
@@ -51,11 +51,17 @@
     "packages/mux-player-react": {
       "component": "@mux/mux-player-react"
     },
+    "packages/mux-player-astro": {
+      "component": "@mux/mux-player-astro"
+    },
     "packages/mux-uploader": {
       "component": "@mux/mux-uploader"
     },
     "packages/mux-uploader-react": {
       "component": "@mux/mux-uploader-react"
+    },
+    "packages/mux-uploader-astro": {
+      "component": "@mux/mux-uploader-astro"
     },
     "packages/mux-video": {
       "component": "@mux/mux-video"

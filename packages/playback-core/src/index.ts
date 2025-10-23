@@ -715,6 +715,10 @@ export const setupHls = (
           contentId: metadata?.video_id,
         }
       : undefined;
+
+    const capLevelControllerObj =
+      _hlsConfig.capLevelToPlayerSize == null ? { capLevelController: MinCapLevelController } : {};
+
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
@@ -732,7 +736,7 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
-      capLevelController: MinCapLevelController,
+      ...capLevelControllerObj,
       ...defaultConfig,
       ...streamTypeConfig,
       ...drmConfig,
@@ -1139,6 +1143,7 @@ export const loadMedia = (
       | 'playbackId'
       | 'tokens'
       | 'customDomain'
+      | 'disablePseudoEnded'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1175,6 +1180,9 @@ export const loadMedia = (
     // since that means it will have already fired the ended event.
     // Do the "cheaper" check first
     if (mediaEl.ended) return;
+
+    if (props.disablePseudoEnded) return;
+
     const pseudoEnded = getEnded(mediaEl, hls);
     if (!pseudoEnded) return;
 
