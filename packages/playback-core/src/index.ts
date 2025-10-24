@@ -357,7 +357,7 @@ const isAndroidLike =
 const isChromeWithNativeHLS = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
   !!mediaEl.canPlayType('application/vnd.apple.mpegurl') &&
   browserBrand?.brand === 'Google Chrome' &&
-  +browserBrand?.version >= 141;
+  parseInt(browserBrand?.version ?? '0') >= 141;
 
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
