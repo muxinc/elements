@@ -329,6 +329,7 @@ declare global {
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const userAgentPlatform = globalThis?.navigator?.userAgentData?.platform ?? '';
+const browserBrand = navigator?.userAgentData?.brands?.[0];
 
 // NOTE: Our primary *goal* with this is to detect "non-Apple-OS" platforms which may also support
 // native HLS playback. Our primary concern with any check for this is "false negatives" where we
@@ -353,6 +354,11 @@ const isAndroidLike =
   userAgentStr.toLowerCase().includes('android') ||
   ['x11', 'android'].some((platformStr) => userAgentPlatform.toLowerCase().includes(platformStr));
 
+const isChromeWithNativeHLS = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
+  !!mediaEl.canPlayType('application/vnd.apple.mpegurl') &&
+  browserBrand?.brand === 'Google Chrome' &&
+  +browserBrand?.version >= 141;
+
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
   HTMLMediaElement,
@@ -361,7 +367,9 @@ export const muxMediaState: WeakMap<
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
-const DEFAULT_PREFER_MSE = isAndroidLike;
+
+const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
+  isAndroidLike || isChromeWithNativeHLS(mediaEl);
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
@@ -676,7 +684,7 @@ function useNative(
 
   const preferMse = preferPlayback === PlaybackTypes.MSE;
   const preferNative = preferPlayback === PlaybackTypes.NATIVE;
-  const forceMse = MSE_SUPPORTED && (preferMse || DEFAULT_PREFER_MSE);
+  const forceMse = MSE_SUPPORTED && (preferMse || shouldDefaultToMSE(mediaEl));
 
   return canUseNative && (preferNative || !forceMse);
 }
