@@ -1,0 +1,11 @@
+{
+  "dropText": "Arrastra un archivo de video aquí para subir",
+  "separatorText": "o",
+  "uploadCompleteText": "¡Subida completada!",
+  "retryText": "Reintentar",
+  "pausingText": "Pausando...",
+  "resumeText": "Reanudar",
+  "pauseText": "Pausar",
+  "uploadButtonText": "Subir un video",
+  "noEndpointError": "No se especificó URL o endpoint -- no se puede manejar la subida"
+}

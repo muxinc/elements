@@ -35,6 +35,7 @@ export type MuxUploaderProps = {
   noStatus?: boolean;
   noRetry?: boolean;
   pausable?: boolean;
+  locale?: string;
   style?: CSSProperties & {
     ['--progress-bar-fill-color']?: CSSProperties['background'];
     ['--progress-radial-fill-color']?: CSSProperties['stroke'];

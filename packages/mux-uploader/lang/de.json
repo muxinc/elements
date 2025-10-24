@@ -1,0 +1,11 @@
+{
+  "dropText": "Legen Sie hier eine Videodatei zum Hochladen ab",
+  "separatorText": "oder",
+  "uploadCompleteText": "Upload abgeschlossen!",
+  "retryText": "Wiederholen",
+  "pausingText": "Pausiere...",
+  "resumeText": "Fortsetzen",
+  "pauseText": "Pausieren",
+  "uploadButtonText": "Video hochladen",
+  "noEndpointError": "Keine URL oder Endpunkt angegeben -- Upload kann nicht verarbeitet werden"
+}
