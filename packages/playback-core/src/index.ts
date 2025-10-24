@@ -329,7 +329,7 @@ declare global {
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const userAgentPlatform = globalThis?.navigator?.userAgentData?.platform ?? '';
-const browserBrand = navigator?.userAgentData?.brands?.[0];
+const browserBrand = globalThis?.navigator?.userAgentData?.brands?.[0];
 
 // NOTE: Our primary *goal* with this is to detect "non-Apple-OS" platforms which may also support
 // native HLS playback. Our primary concern with any check for this is "false negatives" where we
