@@ -70,7 +70,7 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
   onSuccess = () => {
     this.toggleAttribute('upload-error', false);
 
-    const locale = (this.#uploaderEl as any)?.locale || 'en';
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
     const successMessage = i18n('uploadCompleteText', locale).toString();
 
     if (this.statusMessage) {

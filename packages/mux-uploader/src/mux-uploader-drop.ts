@@ -202,7 +202,7 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
   }
 
   updateText() {
-    const locale = (this.#uploaderEl as any)?.locale || 'en';
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
 
     const dropTextEl = this.shadowRoot?.getElementById('drop-text');
     const separatorTextEl = this.shadowRoot?.getElementById('separator-text');

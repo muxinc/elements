@@ -115,7 +115,7 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
   }
 
   updateText() {
-    const locale = (this.#uploaderEl as any)?.locale || 'en';
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
     const isPaused = this.#uploaderEl?.paused ?? false;
     const isPausing = this.pauseButton?.disabled && isPaused;
 

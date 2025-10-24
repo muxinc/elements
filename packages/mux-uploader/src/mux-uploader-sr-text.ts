@@ -1,5 +1,6 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
+import type MuxUploaderElement from './mux-uploader';
 import { i18n } from './utils/i18n';
 
 const template = document.createElement('template');
@@ -48,7 +49,7 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
 
   updateText() {
     if (this.srOnlyText) {
-      const locale = (this.#uploaderEl as any)?.locale || 'en';
+      const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
       this.srOnlyText.textContent = i18n('uploadCompleteText', locale).toString();
     }
   }
