@@ -46,11 +46,27 @@ export const setupPreload = (
   };
 
   const safeLoadSource = () => {
-    if (!hasLoadedSource && src) {
+    if (!hasLoadedSource && src && hls?.bufferingEnabled) {
       hasLoadedSource = true;
       hls.loadSource(src);
     }
   };
+
+  const startBuffering = () => {
+    if (hls && src && hasLoadedSource) {
+      hls.resumeBuffering();
+      hls.startLoad();
+    }
+  };
+
+  const stopBuffering = () => {
+    if (hls) {
+      hls.pauseBuffering();
+      hls.stopLoad();
+    }
+  };
+
+  const isBuffering = () => (hls ? hls.loadingEnabled : false);
 
   addEventListenerWithTeardown(
     mediaEl,
@@ -70,5 +86,10 @@ export const setupPreload = (
 
   updateHlsPreload(preload);
 
-  return updateHlsPreload;
+  return {
+    updateHlsPreload,
+    startBuffering,
+    stopBuffering,
+    isBuffering,
+  };
 };

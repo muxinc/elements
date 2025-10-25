@@ -605,7 +605,8 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   muxMediaState.set(mediaEl as HTMLMediaElement, { retryCount: 0 });
   const nextHlsInstance = setupHls(props, mediaEl);
-  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+  const preloadSetup = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+  const setPreload = typeof preloadSetup === 'function' ? preloadSetup : preloadSetup.updateHlsPreload;
 
   if (props?.muxDataKeepSession && mediaEl?.mux && !mediaEl.mux.deleted) {
     if (nextHlsInstance) {
@@ -627,6 +628,9 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
     engine: nextHlsInstance,
     setAutoplay,
     setPreload,
+    startBuffering: typeof preloadSetup === 'function' ? undefined : preloadSetup.startBuffering,
+    stopBuffering: typeof preloadSetup === 'function' ? undefined : preloadSetup.stopBuffering,
+    isBuffering: typeof preloadSetup === 'function' ? undefined : preloadSetup.isBuffering,
   };
 };
 
