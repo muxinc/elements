@@ -48,6 +48,26 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.6.1...@mux/mux-player@3.7.0) (2025-10-24)
+
+
+### Features
+
+* **themes:** expose centered layout ([#1183](https://github.com/muxinc/elements/issues/1183)) ([6cd7da7](https://github.com/muxinc/elements/commit/6cd7da79c0cd077f6f42a3f4a8ed9faf0a7b1606))
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.13 ([#1211](https://github.com/muxinc/elements/issues/1211)) ([8f0c917](https://github.com/muxinc/elements/commit/8f0c917269391d901692f0bdd7156b965f0582d6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.27.0 to 0.27.1
+    * @mux/playback-core bumped from 0.31.0 to 0.31.1
+
 ## [3.6.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.6.0...@mux/mux-player@3.6.1) (2025-10-01)
 
 
