@@ -85,7 +85,6 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   preferPlayback: undefined,
   muted: undefined,
   debug: undefined,
-  noVolumePref: undefined,
   disableTracking: undefined,
   disableCookies: undefined,
   autoPlay: undefined,
@@ -300,7 +299,6 @@ function MuxPlayerPage({ location }: Props) {
           preferCmcd={state.preferCmcd}
           preferPlayback={state.preferPlayback}
           debug={state.debug}
-          noVolumePref={state.noVolumePref}
           disableTracking={state.disableTracking}
           disableCookies={state.disableCookies}
           loop={state.loop}
@@ -519,7 +517,6 @@ function MuxPlayerPage({ location }: Props) {
             max={99}
           />
           <NumberRenderer value={state.volume} name="volume" onChange={genericOnChange} min={0} max={1} step={0.05} />
-          <BooleanRenderer value={state.noVolumePref} name="noVolumePref" onChange={genericOnChange} />
           <NumberRenderer value={state.startTime} name="startTime" onChange={genericOnChange} min={0} />
           <NumberRenderer
             value={state.currentTime}
