@@ -372,6 +372,10 @@ const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
   isAndroidLike || isChromeWithNativeHLS(mediaEl);
 
 export const generatePlayerInitTime = () => {
+  // bail during SSR to avoid triggering prerender errors
+  // actual time will be generated during hydration
+  if (typeof window === 'undefined') return 0;
+
   return mux.utils.now();
 };
 
