@@ -826,7 +826,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   }
 
   isBuffering() {
-    return this.media?.isBuffering?.() ?? false;
+    return this.media?.isBuffering?.();
   }
 
   /**

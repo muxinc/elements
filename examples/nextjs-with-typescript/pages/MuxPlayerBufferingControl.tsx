@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import MuxPlayer from '@mux/mux-player-react';
+import MuxPlayerElement from '@mux/mux-player';
 
 const BufferingControlExample: React.FC = () => {
-  const playerRef = useRef(null);
-  const [isBuffering, setIsBuffering] = useState<boolean>(false);
+  const playerRef = useRef<MuxPlayerElement>(null);
+  const [isBuffering, setIsBuffering] = useState<boolean | undefined>(undefined);
 
   const handleStartBuffering = () => {
     playerRef.current?.startBuffering();
@@ -16,14 +17,21 @@ const BufferingControlExample: React.FC = () => {
   };
 
   const updateBufferingStatus = () => {
-    const buffering = playerRef.current?.isBuffering() ?? false;
-    setIsBuffering(buffering);
+    if (playerRef.current) {
+      const buffering = playerRef.current.isBuffering();
+      setIsBuffering(buffering);
+    }
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      updateBufferingStatus();
-    }, 100);
+    const intervalId = setInterval(() => {
+      if (typeof playerRef.current?.isBuffering === "function") {
+        updateBufferingStatus();
+        clearInterval(intervalId);
+      }
+    }, 400);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -37,6 +45,7 @@ const BufferingControlExample: React.FC = () => {
           muted
           preload="auto"
           autoPlay={true}
+          preferPlayback='mse'
           style={{ width: '100%', height: '400px' }}
         />
       </div>
@@ -90,11 +99,14 @@ const BufferingControlExample: React.FC = () => {
 
       <div style={{ backgroundColor: '#000', padding: '15px', borderRadius: '4px', margin: '20px 0' }}>
         <h3>Current Status:</h3>
-        <p>
+        { (isBuffering !== undefined) && <p>
           Buffering: <span style={{ fontWeight: 'bold', color: isBuffering ? '#4CAF50' : '#f44336' }}>
             {isBuffering ? 'Yes' : 'No'}
           </span>
-        </p>
+        </p> }
+        { (isBuffering === undefined) && <p>
+          Stop/Start buffering is not supported natively. Make sure you are using Hls.js to playback content.
+        </p> }
       </div>
     </div>
   );

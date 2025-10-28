@@ -235,7 +235,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   isBuffering() {
-    return this.#core?.isBuffering?.() ?? false;
+    return this.#core?.isBuffering?.();
   }
 
   get error() {
