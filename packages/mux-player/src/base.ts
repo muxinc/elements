@@ -85,6 +85,7 @@ const PlayerAttributes = {
   TARGET_LIVE_WINDOW: 'target-live-window',
   EXTRA_SOURCE_PARAMS: 'extra-source-params',
   NO_VOLUME_PREF: 'no-volume-pref',
+  NO_MUTED_PREF: 'no-muted-pref',
   CAST_RECEIVER: 'cast-receiver',
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
@@ -113,6 +114,7 @@ const ThemeAttributeNames = [
   'title',
   'videotitle',
   'novolumepref',
+  'nomutedpref',
   'proudlydisplaymuxbadge',
 ];
 
@@ -178,6 +180,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     title: el.getAttribute(PlayerAttributes.TITLE),
     videoTitle: el.getAttribute(PlayerAttributes.VIDEO_TITLE) ?? el.getAttribute(PlayerAttributes.TITLE),
     novolumepref: el.hasAttribute(PlayerAttributes.NO_VOLUME_PREF),
+    nomutedpref: el.hasAttribute(PlayerAttributes.NO_MUTED_PREF),
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
@@ -1458,7 +1461,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   }
 
   /**
-   * Set video engine debug flag.
+   * Set no-volume-pref flag.
    */
   set noVolumePref(val) {
     if (val) {
@@ -1468,6 +1471,22 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     }
   }
 
+  /**
+   * Get no-muted-pref flag.
+   */
+  get noMutedPref() {
+    return this.hasAttribute(PlayerAttributes.NO_MUTED_PREF);
+  }
+  /**
+   * Set no-muted-pref flag.
+   */
+  set noMutedPref(val) {
+    if (val) {
+      this.setAttribute(PlayerAttributes.NO_MUTED_PREF, '');
+    } else {
+      this.removeAttribute(PlayerAttributes.NO_MUTED_PREF);
+    }
+  }
   /**
    * Get video engine debug flag.
    */

@@ -33,6 +33,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
   novolumepref: boolean;
+  nomutedpref: boolean;
   playbackRates: string;
   defaultShowRemainingTime: boolean;
   defaultDuration?: number;
