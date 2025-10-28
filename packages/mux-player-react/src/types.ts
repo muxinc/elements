@@ -104,6 +104,7 @@ export type MuxPlayerProps = {
   tokens?: Tokens;
   theme?: string;
   themeProps?: { [k: string]: any };
+  fullscreenElement?: string;
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;
