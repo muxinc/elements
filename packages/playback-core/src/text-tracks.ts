@@ -28,7 +28,7 @@ export function setupTextTracks(
       // NOTE: Undocumented method for determining identifier by hls.js. Relied on for
       // ensuring CUES_PARSED events can identify and apply cues to the appropriate track (CJP).
       // See: https://github.com/video-dev/hls.js/blob/master/src/controller/timeline-controller.ts#L640
-      const id = trackObj._id ?? trackObj.default ? 'default' : `${trackObj.kind}${idx}`;
+      const id = (trackObj._id ?? trackObj.default) ? 'default' : `${trackObj.kind}${idx}`;
 
       addTextTrack(mediaEl, trackObj.kind as TextTrackKind, trackObj.label, baseTrackObj?.lang, id, trackObj.default);
     });

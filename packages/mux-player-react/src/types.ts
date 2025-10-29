@@ -42,6 +42,7 @@ type MuxMediaPropTypes = {
   disableTracking: boolean;
   disableCookies: boolean;
   disablePictureInPicture?: boolean;
+  disablePseudoEnded?: boolean;
   // metadata: Partial<Options["data"]>;
   metadata: { [k: string]: any };
   extraSourceParams: Record<string, any>;
@@ -96,12 +97,14 @@ export type MuxPlayerProps = {
   defaultShowRemainingTime?: boolean;
   defaultDuration?: number;
   noVolumePref?: boolean;
+  noMutedPref?: boolean;
   thumbnailTime?: number;
   title?: string;
   videoTitle?: string;
   tokens?: Tokens;
   theme?: string;
   themeProps?: { [k: string]: any };
+  fullscreenElement?: string;
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;

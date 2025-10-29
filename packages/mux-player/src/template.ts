@@ -87,6 +87,7 @@ export const content = (props: MuxTemplateProps) => html`
     nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     novolumepref="${props.novolumepref || false}"
+    nomutedpref="${props.nomutedpref || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
@@ -110,6 +111,7 @@ export const content = (props: MuxTemplateProps) => html`
   >
     <mux-video
       slot="media"
+      inert="${props.noHotKeys ?? false}"
       target-live-window="${props.targetLiveWindow ?? false}"
       stream-type="${getStreamTypeFromAttr(props.streamType) ?? false}"
       crossorigin="${props.crossOrigin ?? ''}"
@@ -135,6 +137,7 @@ export const content = (props: MuxTemplateProps) => html`
       cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
       exportparts="video"
+      disable-pseudo-ended="${props.disablePseudoEnded ?? false}"
     >
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`

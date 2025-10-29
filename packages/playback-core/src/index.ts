@@ -329,6 +329,7 @@ declare global {
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const userAgentPlatform = globalThis?.navigator?.userAgentData?.platform ?? '';
+const browserBrand = globalThis?.navigator?.userAgentData?.brands?.[0];
 
 // NOTE: Our primary *goal* with this is to detect "non-Apple-OS" platforms which may also support
 // native HLS playback. Our primary concern with any check for this is "false negatives" where we
@@ -353,6 +354,11 @@ const isAndroidLike =
   userAgentStr.toLowerCase().includes('android') ||
   ['x11', 'android'].some((platformStr) => userAgentPlatform.toLowerCase().includes(platformStr));
 
+const isChromeWithNativeHLS = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
+  !!mediaEl.canPlayType('application/vnd.apple.mpegurl') &&
+  browserBrand?.brand === 'Google Chrome' &&
+  parseInt(browserBrand?.version ?? '0') >= 141;
+
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
   HTMLMediaElement,
@@ -361,7 +367,9 @@ export const muxMediaState: WeakMap<
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
-const DEFAULT_PREFER_MSE = isAndroidLike;
+
+const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
+  isAndroidLike || isChromeWithNativeHLS(mediaEl);
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
@@ -676,7 +684,7 @@ function useNative(
 
   const preferMse = preferPlayback === PlaybackTypes.MSE;
   const preferNative = preferPlayback === PlaybackTypes.NATIVE;
-  const forceMse = MSE_SUPPORTED && (preferMse || DEFAULT_PREFER_MSE);
+  const forceMse = MSE_SUPPORTED && (preferMse || shouldDefaultToMSE(mediaEl));
 
   return canUseNative && (preferNative || !forceMse);
 }
@@ -715,6 +723,10 @@ export const setupHls = (
           contentId: metadata?.video_id,
         }
       : undefined;
+
+    const capLevelControllerObj =
+      _hlsConfig.capLevelToPlayerSize == null ? { capLevelController: MinCapLevelController } : {};
+
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
       // autoStartLoad: false,
@@ -732,7 +744,7 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
-      capLevelController: MinCapLevelController,
+      ...capLevelControllerObj,
       ...defaultConfig,
       ...streamTypeConfig,
       ...drmConfig,
@@ -1139,6 +1151,7 @@ export const loadMedia = (
       | 'playbackId'
       | 'tokens'
       | 'customDomain'
+      | 'disablePseudoEnded'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1175,6 +1188,9 @@ export const loadMedia = (
     // since that means it will have already fired the ended event.
     // Do the "cheaper" check first
     if (mediaEl.ended) return;
+
+    if (props.disablePseudoEnded) return;
+
     const pseudoEnded = getEnded(mediaEl, hls);
     if (!pseudoEnded) return;
 

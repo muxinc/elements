@@ -40,6 +40,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.0...@mux/playback-core@0.31.1) (2025-10-24)
+
+
+### Bug Fixes
+
+* default to MSE for Chrome with native HLS ([#1221](https://github.com/muxinc/elements/issues/1221)) ([3778523](https://github.com/muxinc/elements/commit/3778523f262655d2f9039f3e8f8b4045926be6d2))
+* override player minmax ([#1219](https://github.com/muxinc/elements/issues/1219)) ([78de776](https://github.com/muxinc/elements/commit/78de77681b3240829abd84e8ebf99b59b2985ff5))
+* upgrade hls.js to 1.6.13 ([#1211](https://github.com/muxinc/elements/issues/1211)) ([8f0c917](https://github.com/muxinc/elements/commit/8f0c917269391d901692f0bdd7156b965f0582d6))
+
+## [0.31.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.1...@mux/playback-core@0.31.0) (2025-09-09)
+
+
+### Features
+
+* Add switch to control the behavior of the ended event ([#1181](https://github.com/muxinc/elements/issues/1181)) ([9c0f58f](https://github.com/muxinc/elements/commit/9c0f58f9ae1d0e9fc30097f93e92fbb98aaac950))
+* **astro:** add native Astro support with `MuxPlayer` and `MuxUploader` components ([#1167](https://github.com/muxinc/elements/issues/1167)) ([e0183ec](https://github.com/muxinc/elements/commit/e0183eceb30b98542356972f39652ce0ccf587ff))
+
 ## [0.30.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.0...@mux/playback-core@0.30.1) (2025-07-03)
 
 

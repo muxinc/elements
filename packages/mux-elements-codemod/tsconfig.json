@@ -19,7 +19,7 @@
     "esModuleInterop": true,
     "skipLibCheck": false,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["node_modules/@types"]
+    "types": ["node"]
   },
   "include": ["src/**/*"]
 }

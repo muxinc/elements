@@ -147,7 +147,8 @@
       pointer-events: none;
     }
 
-    :host([title]) media-control-bar[slot='top-chrome']::before {
+    :host([title]) media-control-bar[slot='top-chrome']::before,
+    :host([videotitle]) media-control-bar[slot='top-chrome']::before {
       content: '';
       position: absolute;
       width: 100%;
@@ -179,11 +180,9 @@
       flex-flow: row;
       align-items: center;
       justify-content: center;
-      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
       paint-order: stroke;
       stroke: rgba(102, 102, 102, 1);
       stroke-width: 0.3px;
-      text-shadow: 0 0 2px rgb(0 0 0 / 0.25), 0 0 6px rgb(0 0 0 / 0.25);
     }
 
     .center-controls media-play-button {
@@ -191,6 +190,7 @@
       --media-control-hover-background: transparent;
       padding: 0;
       width: max(43px, min(10%, 55px));
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
     }
 
     .center-controls media-seek-backward-button,
@@ -200,6 +200,8 @@
       padding: 0;
       margin: 0 2%;
       width: max(33px, min(8%, 40px));
+      filter: drop-shadow(0 0 2px rgb(0 0 0 / 0.25)) drop-shadow(0 0 6px rgb(0 0 0 / 0.25));
+      text-shadow: 0 0 2px rgb(0 0 0 / 0.25), 0 0 6px rgb(0 0 0 / 0.25);
     }
 
     media-control-bar:not([slot]) media-seek-backward-button {
@@ -263,10 +265,15 @@
   </style>
 
   <template partial="TitleDisplay">
-    <template if="title">
-      <media-text-display part="top title display" class="title-display">
-        {{title}}
-      </media-text-display>
+    <template if="videotitle">
+      <template if="videotitle != true">
+        <media-text-display part="top title display" class="title-display">{{videotitle}}</media-text-display>
+      </template>
+    </template>
+    <template if="!videotitle">
+      <template if="title">
+        <media-text-display part="top title display" class="title-display">{{title}}</media-text-display>
+      </template>
     </template>
   </template>
 
@@ -525,10 +532,8 @@
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
     <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
-    <media-error-dialog slot="dialog" noautohide></media-error-dialog>
-
+    
     <template if="audio">
-
       <template if="streamtype == 'on-demand'">
         <template if="title">
           <media-control-bar part="control-bar top">{{>TitleDisplay}}</media-control-bar>
@@ -590,7 +595,7 @@
     </template>
 
     <template if="!audio">
-
+      <media-error-dialog slot="dialog" noautohide></media-error-dialog>
       <template if="streamtype == 'on-demand'">
 
         <template if="!breakpointsm">

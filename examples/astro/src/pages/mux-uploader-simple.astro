@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MuxUploader } from '@mux/mux-uploader-astro';
+---
+
+<Layout>
+  <h2>Enter your upload GCS url:</h2>
+  <div>
+    <input type="text" id="direct-upload-url" placeholder="https://storage.googleapis.com/..." />
+  </div>
+
+  <div style="margin: 40px 0;">
+    <MuxUploader id="uploader" pausable />
+  </div>
+</Layout>
+
+<style>
+  #direct-upload-url {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  #uploader {
+    --progress-bar-fill-color: #7e22ce;
+    --button-background-color: salmon;
+    font-family: monospace;
+    font-size: 22px;
+  }
+  
+  #uploader mux-uploader-drop {
+    display: block;
+    padding: 40px;
+    background: #fef9c3;
+  }
+  
+  #uploader mux-uploader-drop[active] {
+    background: red;
+  }
+</style>
+
+<script>
+  import type { MuxUploaderElement } from '@mux/mux-uploader-astro';
+  
+  const input = document.getElementById('direct-upload-url') as HTMLInputElement;
+  const muxUploader = document.getElementById('uploader') as MuxUploaderElement;
+  
+  const updateEndpoint = () => {
+    muxUploader.endpoint = input.value;
+  };
+
+  if (input.value) {
+    updateEndpoint();
+  }
+
+  input.addEventListener('change', updateEndpoint);
+</script>
