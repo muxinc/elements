@@ -97,12 +97,14 @@ export type MuxPlayerProps = {
   defaultShowRemainingTime?: boolean;
   defaultDuration?: number;
   noVolumePref?: boolean;
+  noMutedPref?: boolean;
   thumbnailTime?: number;
   title?: string;
   videoTitle?: string;
   tokens?: Tokens;
   theme?: string;
   themeProps?: { [k: string]: any };
+  fullscreenElement?: string;
   onAbort?: GenericEventListener<MuxPlayerElementEventMap['abort']>;
   onCanPlay?: GenericEventListener<MuxPlayerElementEventMap['canplay']>;
   onCanPlayThrough?: GenericEventListener<MuxPlayerElementEventMap['canplaythrough']>;

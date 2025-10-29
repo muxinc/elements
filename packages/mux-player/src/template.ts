@@ -89,6 +89,7 @@ export const content = (props: MuxTemplateProps) => html`
     nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     novolumepref="${props.novolumepref || false}"
+    nomutedpref="${props.nomutedpref || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({
