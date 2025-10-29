@@ -54,6 +54,7 @@ export type MuxPlayerProps = {
   defaultShowRemainingTime?: boolean;
   defaultDuration?: number;
   noVolumePref?: boolean;
+  noMutedPref?: boolean;
   thumbnailTime?: number;
   title?: string;
   videoTitle?: string;

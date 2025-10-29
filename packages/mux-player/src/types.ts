@@ -16,6 +16,7 @@ export type MuxPlayerProps = Partial<MuxVideoElement> & {
   hotkeys?: AttributeTokenList;
   preferPlayback?: 'mse' | 'native' | undefined;
   storyboard?: string;
+  fullscreenElement?: string;
 };
 
 export type MuxTemplateProps = Partial<MuxPlayerProps> & {
@@ -33,6 +34,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   isDialogOpen: boolean;
   defaultHiddenCaptions: boolean;
   novolumepref: boolean;
+  nomutedpref: boolean;
   playbackRates: string;
   defaultShowRemainingTime: boolean;
   defaultDuration?: number;
