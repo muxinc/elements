@@ -33,6 +33,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.7.0...@mux/mux-player-react@3.8.0) (2025-10-30)
+
+
+### Features
+
+* add nomutedpref prop to mux player ([#1222](https://github.com/muxinc/elements/issues/1222)) ([ce091c9](https://github.com/muxinc/elements/commit/ce091c978e7926eb3ee3fbb894cf471e2d13ea58))
+* add support to define custom fullscreen element ([#1217](https://github.com/muxinc/elements/issues/1217)) ([3638325](https://github.com/muxinc/elements/commit/3638325e44aa1df1471c80f8c60bddf47c908613))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.7.0 to 3.8.0
+    * @mux/playback-core bumped from 0.31.1 to 0.31.2
+
 ## [3.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.6.1...@mux/mux-player-react@3.7.0) (2025-10-24)
 
 
