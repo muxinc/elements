@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.1...@mux/playback-core@0.31.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* chrome version check to shouldDefaultToMSE ([#1229](https://github.com/muxinc/elements/issues/1229)) ([437a167](https://github.com/muxinc/elements/commit/437a1671d6bab121be5b327b8d14bb0f15a75c08))
+
 ## [0.31.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.0...@mux/playback-core@0.31.1) (2025-10-24)
 
 
