@@ -329,7 +329,7 @@ declare global {
 
 const userAgentStr = globalThis?.navigator?.userAgent ?? '';
 const userAgentPlatform = globalThis?.navigator?.userAgentData?.platform ?? '';
-const browserBrand = globalThis?.navigator?.userAgentData?.brands?.[0];
+const browserBrands = globalThis?.navigator?.userAgentData?.brands ?? [];
 
 // NOTE: Our primary *goal* with this is to detect "non-Apple-OS" platforms which may also support
 // native HLS playback. Our primary concern with any check for this is "false negatives" where we
@@ -354,10 +354,12 @@ const isAndroidLike =
   userAgentStr.toLowerCase().includes('android') ||
   ['x11', 'android'].some((platformStr) => userAgentPlatform.toLowerCase().includes(platformStr));
 
+const googleChromeBrand = browserBrands.find((brand) => brand.brand === 'Google Chrome');
+
 const isChromeWithNativeHLS = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
-  !!mediaEl.canPlayType('application/vnd.apple.mpegurl') &&
-  browserBrand?.brand === 'Google Chrome' &&
-  parseInt(browserBrand?.version ?? '0') >= 141;
+  googleChromeBrand &&
+  parseInt(googleChromeBrand.version ?? '0') >= 141 &&
+  !!mediaEl.canPlayType('application/vnd.apple.mpegurl');
 
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
