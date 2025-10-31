@@ -28,6 +28,9 @@ export type PlaybackCore = {
   muxDataSDK?: MuxDataSDK;
   setAutoplay: (autoplay?: Autoplay) => void;
   setPreload: (preload?: HTMLMediaElement['preload']) => void;
+  startBuffering?: () => void;
+  stopBuffering?: () => void;
+  isBuffering?: () => boolean;
 };
 
 // TODO add INVIEW_MUTED, INVIEW_ANY

@@ -16,6 +16,7 @@ function HomePage() {
         <li><Link href="/MuxPlayerCuePoints" className="player"><>&lt;MuxPlayer&gt;<br/>(CuePoints)</></Link></li>
         <li><Link href="/MuxPlayerCuePointsMeditate" className="player"><>&lt;MuxPlayer&gt;<br/>(CuePoints + Audio Only)</></Link></li>
         <li><Link href="/MuxPlayerChapters" className="player"><>&lt;MuxPlayer&gt;<br/>(Chapters)</></Link></li>
+        <li><Link href="/MuxPlayerBufferingControl" className="player"><>&lt;MuxPlayer&gt;<br/>(Buffering control)</></Link></li>
         <li><Link href="/MuxPlayerLazy" className="player"><>&lt;MuxPlayer&gt;<br/>(lazy)</></Link></li>
         <li><Link href="/MuxPlayerDynamic" className="player"><>&lt;MuxPlayer&gt;<br/>(Next.js dynamic)</></Link></li>
         <li><Link href="/MuxPlayerLazyDynamic" className="player"><>&lt;MuxPlayer&gt;<br/>(lazy + dynamic)</></Link></li>

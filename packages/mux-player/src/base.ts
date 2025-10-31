@@ -833,6 +833,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     return this.media?.mux;
   }
 
+  startBuffering() {
+    return this.media?.startBuffering?.();
+  }
+
+  stopBuffering() {
+    return this.media?.stopBuffering?.();
+  }
+
+  isBuffering() {
+    return this.media?.isBuffering?.();
+  }
+
   /**
    * Gets the theme.
    */

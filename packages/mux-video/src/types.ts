@@ -32,4 +32,7 @@ export interface IMuxVideoBaseElement extends HTMLVideoElement {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void;
+  startBuffering(): void | undefined;
+  stopBuffering(): void | undefined;
+  isBuffering(): boolean | undefined;
 }

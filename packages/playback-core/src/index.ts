@@ -607,7 +607,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
 
   muxMediaState.set(mediaEl as HTMLMediaElement, { retryCount: 0 });
   const nextHlsInstance = setupHls(props, mediaEl);
-  const setPreload = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
+  const preloadSetup = setupPreload(props as Pick<MuxMediaProps, 'preload' | 'src'>, mediaEl, nextHlsInstance);
 
   if (props?.muxDataKeepSession && mediaEl?.mux && !mediaEl.mux.deleted) {
     if (nextHlsInstance) {
@@ -628,7 +628,10 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   return {
     engine: nextHlsInstance,
     setAutoplay,
-    setPreload,
+    setPreload: preloadSetup.updatePreload,
+    startBuffering: preloadSetup.startBuffering,
+    stopBuffering: preloadSetup.stopBuffering,
+    isBuffering: preloadSetup.isBuffering,
   };
 };
 

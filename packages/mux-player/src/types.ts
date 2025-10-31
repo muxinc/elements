@@ -114,4 +114,7 @@ export interface IMuxPlayerElement {
     listener: EventListenerOrEventListenerObject,
     options?: boolean | EventListenerOptions
   ): void;
+  startBuffering(): void | undefined;
+  stopBuffering(): void | undefined;
+  isBuffering(): boolean | undefined;
 }
