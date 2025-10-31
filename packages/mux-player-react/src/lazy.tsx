@@ -7,22 +7,13 @@ import ConditionalSuspense from './ConditionalSuspense';
 import useIsBrowser from './useIsBrowser';
 import useIsIntersecting from './useIsIntersecting';
 
-import type { MuxPlayerProps, MuxPlayerRefAttributes } from './index';
+import type { MuxPlayerProps, MuxPlayerRefAttributes, MuxCSSProperties } from './index';
 import type MuxPlayerElement from '@mux/mux-player';
 
 interface MuxPlayerElementReact extends Partial<Omit<MuxPlayerElement, 'style' | 'children'>> {
   ref: React.MutableRefObject<MuxPlayerElement | null> | null | undefined;
   style: React.CSSProperties;
   children?: React.ReactNode;
-}
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace JSX {
-    interface IntrinsicElements {
-      'mux-player': MuxPlayerElementReact;
-    }
-  }
 }
 
 const MuxPlayerIndex = React.lazy(() => import('./index'));
@@ -58,7 +49,7 @@ const Fallback = (props: FallbackProps) => {
           {
             '--mux-player-react-lazy-placeholder': placeholder ? `url('${placeholder}');` : '',
             ...style,
-          } as React.CSSProperties
+          } as MuxCSSProperties
         }
         className={className || ''}
         // since there's a possibility that the bundle loads before Suspense clears this placeholder,
