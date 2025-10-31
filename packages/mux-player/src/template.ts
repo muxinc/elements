@@ -51,10 +51,12 @@ export const Parts = {
   // component/subcomponent types
   BUTTON: 'button',
   RANGE: 'range',
+  THUMB: 'thumb',
   DISPLAY: 'display',
   CONTROL_BAR: 'control-bar',
   MENU_BUTTON: 'menu-button',
   MENU: 'menu',
+  MENU_ITEM: 'menu-item',
   OPTION: 'option',
   // component/subcomponent purposes
   POSTER: 'poster',
