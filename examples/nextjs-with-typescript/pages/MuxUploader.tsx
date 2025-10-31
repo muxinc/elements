@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import MuxUploader, { ProgressTypes } from '@mux/mux-uploader-react';
 import type { MuxUploaderProps } from '@mux/mux-uploader-react';
-import { BooleanRenderer, EnumRenderer, NumberRenderer, URLRenderer } from '../components/renderers';
+import { BooleanRenderer, EnumRenderer, NumberRenderer, URLRenderer, TextRenderer } from '../components/renderers';
 import ComponentCodeRenderer from '../components/ComponentCodeRenderer';
 import URLPathRenderer from '../components/URLPathRenderer';
 import { getLocationServerSideProps, usePageStateReducer } from '../app/page-state';
@@ -41,6 +41,7 @@ function MuxUploaderPage({ location }: Props) {
           noRetry={state.noRetry}
           pausable={state.pausable}
           type={state.type}
+          locale={state.locale}
           dynamicChunkSize={state.dynamicChunkSize}
           useLargeFileWorkaround={state.useLargeFileWorkaround}
           maxFileSize={state.maxFileSize}
@@ -67,6 +68,7 @@ function MuxUploaderPage({ location }: Props) {
           <BooleanRenderer value={state.noRetry} name="noRetry" onChange={genericOnChange} />
           <BooleanRenderer value={state.pausable} name="pausable" onChange={genericOnChange} />
           <EnumRenderer value={state.type} values={ProgressTypesList} name="type" onChange={genericOnChange} />
+          <TextRenderer value={state.locale} name="locale" onChange={genericOnChange} />
           <BooleanRenderer value={state.dynamicChunkSize} name="dynamicChunkSize" onChange={genericOnChange} />
           <BooleanRenderer
             value={state.useLargeFileWorkaround}
