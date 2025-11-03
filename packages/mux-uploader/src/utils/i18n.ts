@@ -3,16 +3,25 @@ import { En } from '../lang/en.js';
 import { Es } from '../lang/es.js';
 import { Fr } from '../lang/fr.js';
 import { De } from '../lang/de.js';
+import { Pt } from '../lang/pt.js';
+import { It } from '../lang/it.js';
+import { Zh } from '../lang/zh.js';
 
 const translationsLanguages: Record<string, TranslateDictionary> = {
   en: En,
   es: Es,
   fr: Fr,
   de: De,
+  pt: Pt,
+  it: It,
+  zh: Zh,
 };
 
 export const addTranslation = (langCode: string, languageDictionary: TranslateDictionary) => {
   translationsLanguages[langCode] = languageDictionary;
+  if (!supportedLocales.includes(langCode)) {
+    supportedLocales.push(langCode);
+  }
 };
 
 const getBrowserLanguage = (): string => {
@@ -22,7 +31,7 @@ const getBrowserLanguage = (): string => {
   return globalThis.navigator.language.split('-')[0];
 };
 
-const supportedLocales = ['en', 'es', 'fr', 'de'];
+const supportedLocales = ['en', 'es', 'fr', 'de', 'pt', 'it', 'zh'];
 
 const getEffectiveLocale = (locale?: string | null): string => {
   // Use provided locale if supported
