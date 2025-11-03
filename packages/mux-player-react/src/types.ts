@@ -141,14 +141,3 @@ export type MuxPlayerProps = {
   onChapterChange?: GenericEventListener<MuxPlayerElementEventMap['chapterchange']>;
 } & Partial<MuxMediaPropTypes> &
   Partial<VideoApiAttributes>;
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'mux-player': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        style?: MuxCSSProperties;
-        [key: string]: any;
-      };
-    }
-  }
-}
