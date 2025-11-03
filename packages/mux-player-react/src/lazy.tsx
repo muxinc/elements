@@ -16,6 +16,15 @@ interface MuxPlayerElementReact extends Partial<Omit<MuxPlayerElement, 'style' |
   children?: React.ReactNode;
 }
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements {
+      'mux-player': MuxPlayerElementReact;
+    }
+  }
+}
+
 const MuxPlayerIndex = React.lazy(() => import('./index'));
 
 interface FallbackProps extends MuxPlayerProps {
