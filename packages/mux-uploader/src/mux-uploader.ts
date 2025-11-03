@@ -136,8 +136,13 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.removeEventListener('reset', this.resetState);
   }
 
-  attributeChangedCallback() {
-    this.updateLayout();
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    if (name === 'locale' && oldValue !== newValue) {
+      // Dispatch event to notify subcomponents to update their texts
+      this.dispatchEvent(new CustomEvent('localechange', { detail: { locale: newValue } }));
+    } else if (name !== 'locale') {
+      this.updateLayout();
+    }
   }
 
   protected get hiddenFileInput() {

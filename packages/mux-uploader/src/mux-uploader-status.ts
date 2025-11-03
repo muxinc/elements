@@ -46,6 +46,17 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
+
+      this.#uploaderEl.addEventListener(
+        'localechange',
+        () => {
+          if (this.statusMessage?.textContent && this.#uploaderEl?.hasAttribute('upload-complete')) {
+            const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
+            this.statusMessage.innerHTML = t('Upload complete!', locale);
+          }
+        },
+        opts
+      );
     }
   }
 

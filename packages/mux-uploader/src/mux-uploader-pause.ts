@@ -102,6 +102,8 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
 
+      this.#uploaderEl.addEventListener('localechange', () => this.updateText(), opts);
+
       this.updateText();
     }
   }

@@ -38,6 +38,12 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
 
     if (this.#uploaderEl) {
       this.#uploaderEl.addEventListener('success', this.updateText.bind(this));
+
+      this.#uploaderEl.addEventListener('localechange', () => {
+        if (this.srOnlyText?.textContent) {
+          this.updateText();
+        }
+      });
     }
   }
 

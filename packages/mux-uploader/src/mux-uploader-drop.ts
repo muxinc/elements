@@ -119,6 +119,8 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('file-ready', this.#uploaderEl.hasAttribute('file-ready'));
 
+      this.#uploaderEl.addEventListener('localechange', () => this.updateText(), opts);
+
       this.updateText();
     }
   }
