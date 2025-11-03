@@ -51,7 +51,7 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
         'localechange',
         () => {
           if (this.statusMessage?.textContent && this.#uploaderEl?.hasAttribute('upload-complete')) {
-            const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
+            const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
             this.statusMessage.innerHTML = t('Upload complete!', locale);
           }
         },
@@ -81,7 +81,7 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
   onSuccess = () => {
     this.toggleAttribute('upload-error', false);
 
-    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
     const successMessage = t('Upload complete!', locale);
 
     if (this.statusMessage) {

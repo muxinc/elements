@@ -154,7 +154,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
   }
 
   updateText() {
-    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
     const text = t('Upload a video', locale);
 
     if (this.filePickerEl) {

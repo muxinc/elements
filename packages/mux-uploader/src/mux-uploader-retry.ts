@@ -74,7 +74,7 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
   };
 
   updateText() {
-    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
     if (this.retryButton) {
       this.retryButton.textContent = t('Retry', locale);
     }

@@ -55,7 +55,7 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
 
   updateText() {
     if (this.srOnlyText) {
-      const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
+      const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
       this.srOnlyText.textContent = t('Upload complete!', locale);
     }
   }
