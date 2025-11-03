@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
-import { i18n } from './utils/i18n';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -73,9 +73,8 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
 
   updateText() {
     const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
-
     if (this.retryButton) {
-      this.retryButton.textContent = i18n('retryText', locale).toString();
+      this.retryButton.textContent = t('Retry', locale);
     }
   }
 }

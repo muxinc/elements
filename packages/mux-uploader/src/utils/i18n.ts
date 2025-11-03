@@ -1,54 +1,45 @@
-import en from '../../lang/en.json';
-import es from '../../lang/es.json';
-import fr from '../../lang/fr.json';
-import de from '../../lang/de.json';
+import type { TranslateDictionary, TranslateKeys } from '../lang/en.js';
+import { En } from '../lang/en.js';
+import { Es } from '../lang/es.js';
+import { Fr } from '../lang/fr.js';
+import { De } from '../lang/de.js';
 
-const DEFAULT_LOCALE = 'en';
-
-const languages: Record<string, any> = {
-  en,
-  es,
-  fr,
-  de,
+const translationsLanguages: Record<string, TranslateDictionary> = {
+  en: En,
+  es: Es,
+  fr: Fr,
+  de: De,
 };
 
-// Function to translate text based on locale
-export function i18n(str: string, locale: string = DEFAULT_LOCALE) {
-  const message = (languages[locale] as any)?.[str] ?? str;
-  return new IntlMessageFormat(message, locale);
-}
+export const addTranslation = (langCode: string, languageDictionary: TranslateDictionary) => {
+  translationsLanguages[langCode] = languageDictionary;
+};
 
-// Function to detect browser locale
-export function detectBrowserLocale(): string {
-  if (typeof navigator !== 'undefined' && navigator.language) {
-    const browserLang = navigator.language.split('-')[0];
-    const supportedLocales = Object.keys(languages);
-    return supportedLocales.includes(browserLang) ? browserLang : DEFAULT_LOCALE;
+const getBrowserLanguage = (): string => {
+  if (typeof globalThis.navigator === 'undefined' || !globalThis.navigator.language) {
+    return 'en';
   }
-  return DEFAULT_LOCALE;
-}
+  return globalThis.navigator.language.split('-')[0];
+};
 
-/**
- * Poor man's IntlMessageFormat, enrich if need be.
- * @see https://formatjs.io/docs/intl-messageformat/
- */
-class IntlMessageFormat {
-  message: string;
-  locale: string;
+const supportedLocales = ['en', 'es', 'fr', 'de'];
 
-  /** @TODO re-implement esbuild custom plugin for code usage (CJP) */
-  constructor(message: string, locale = DEFAULT_LOCALE) {
-    this.message = message;
-    this.locale = locale;
+const getEffectiveLocale = (locale?: string | null): string => {
+  // Use provided locale if supported
+  if (locale && supportedLocales.includes(locale)) {
+    return locale;
   }
-
-  format(values: Record<string, any>): string {
-    return this.message.replace(/\{(\w+)\}/g, (_match, key) => {
-      return values[key] ?? '';
-    });
+  // Otherwise, use browser language if supported
+  const browserLang = getBrowserLanguage();
+  if (supportedLocales.includes(browserLang)) {
+    return browserLang;
   }
+  // Fallback to English
+  return 'en';
+};
 
-  toString() {
-    return this.message;
-  }
-}
+export const t = (key: TranslateKeys, locale?: string | null) => {
+  const effectiveLocale = getEffectiveLocale(locale);
+  const dictionary = translationsLanguages[effectiveLocale] || En;
+  return dictionary[key] || En[key];
+};

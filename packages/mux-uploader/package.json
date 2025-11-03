@@ -49,7 +49,6 @@
     "clean": "shx rm -rf dist/ && shx rm -rf src/polyfills",
     "test": "web-test-runner **/*test.js --port 8005 --coverage --config test/web-test-runner.config.mjs --root-dir ../..",
     "posttest": "replace 'SF:src/' 'SF:packages/mux-uploader/src/' coverage/lcov.info --silent",
-    "i18n": "npm run build:esm -- --keep-names && i18n-utils dist/index.mjs ./lang",
     "dev:iife": "npm run build:iife -- --watch=forever",
     "dev:cjs": "npm run build:cjs -- --watch=forever",
     "dev:esm": "npm run build:esm -- --watch=forever",

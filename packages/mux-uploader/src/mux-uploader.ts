@@ -4,7 +4,7 @@ import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
 import { ProgressTypes } from './constants';
-import { i18n } from './utils/i18n';
+import { t } from './utils/i18n.js';
 
 const rootTemplate = document.createElement('template');
 
@@ -127,19 +127,6 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
   }
 
   connectedCallback() {
-    // Set locale based on browser language if not explicitly set
-    if (!this.hasAttribute('locale') && typeof navigator !== 'undefined' && navigator.language) {
-      const browserLang = navigator.language.split('-')[0];
-      const supportedLocales = ['en', 'es', 'fr', 'de'];
-      if (supportedLocales.includes(browserLang)) {
-        this.locale = browserLang;
-      } else {
-        this.locale = 'en';
-      }
-    } else if (!this.hasAttribute('locale')) {
-      this.locale = 'en';
-    }
-
     this.addEventListener('file-ready', this.handleUpload);
     this.addEventListener('reset', this.resetState);
   }
@@ -272,10 +259,8 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
-  get locale(): string {
-    const locale = this.getAttribute('locale');
-    const supportedLocales = ['en', 'es', 'fr', 'de'];
-    return supportedLocales.includes(locale || '') ? locale! : 'en';
+  get locale(): string | null {
+    return this.getAttribute('locale');
   }
 
   set locale(value: string | undefined) {
@@ -338,7 +323,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const dynamicChunkSize = this.dynamicChunkSize;
 
     if (!endpoint) {
-      this.setError(i18n('noEndpointError', this.locale).toString());
+      this.setError(t('No url or endpoint specified - cannot handle upload', this.locale));
       // Bail early if no endpoint.
       return;
     } else {

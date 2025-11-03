@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
-import { i18n } from './utils/i18n';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -208,10 +208,10 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
     const separatorTextEl = this.shadowRoot?.getElementById('separator-text');
 
     if (dropTextEl) {
-      dropTextEl.textContent = i18n('dropText', locale).toString();
+      dropTextEl.textContent = t('Drop a video file here to upload', locale);
     }
     if (separatorTextEl) {
-      separatorTextEl.textContent = i18n('separatorText', locale).toString();
+      separatorTextEl.textContent = t('or', locale);
     }
   }
 }

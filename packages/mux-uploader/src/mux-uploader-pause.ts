@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
-import { i18n } from './utils/i18n';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -122,12 +122,10 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
     if (isPausing) {
       // If entered paused, currently does not take effect until current chunk completes upload,
       // so show as "pausing"
-      this.pauseButton.innerHTML = i18n('pausingText', locale).toString();
+      this.pauseButton.innerHTML = t('Pausing...', locale);
     } else {
       // Recheck paused state just in case state changed while waiting for 'chunksuccess'
-      this.pauseButton.innerHTML = isPaused
-        ? i18n('resumeText', locale).toString()
-        : i18n('pauseText', locale).toString();
+      this.pauseButton.innerHTML = isPaused ? t('Resume', locale) : t('Pause', locale);
     }
   }
 

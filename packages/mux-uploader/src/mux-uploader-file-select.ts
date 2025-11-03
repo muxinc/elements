@@ -1,7 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
-import { i18n } from './utils/i18n';
+import { t } from './utils/i18n.js';
 
 export const fileSelectFragment = /*html*/ `
   <style>
@@ -153,7 +153,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
 
   updateText() {
     const locale = (this.#uploaderEl as MuxUploaderElement)?.locale || 'en';
-    const text = i18n('uploadButtonText', locale).toString();
+    const text = t('Upload a video', locale);
 
     if (this.filePickerEl) {
       this.filePickerEl.textContent = text;
