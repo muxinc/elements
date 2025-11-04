@@ -2,6 +2,7 @@ import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import { type MuxUploaderElementEventMap } from './mux-uploader';
 import type MuxUploaderElement from './mux-uploader';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -45,6 +46,17 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
+
+      this.#uploaderEl.addEventListener(
+        'localechange',
+        () => {
+          if (this.statusMessage?.textContent && this.#uploaderEl?.hasAttribute('upload-complete')) {
+            const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
+            this.statusMessage.innerHTML = t('Upload complete!', locale);
+          }
+        },
+        opts
+      );
     }
   }
 
@@ -68,7 +80,9 @@ class MuxUploaderStatusElement extends globalThis.HTMLElement {
 
   onSuccess = () => {
     this.toggleAttribute('upload-error', false);
-    const successMessage = 'Upload complete!';
+
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
+    const successMessage = t('Upload complete!', locale);
 
     if (this.statusMessage) {
       this.statusMessage.innerHTML = successMessage;
