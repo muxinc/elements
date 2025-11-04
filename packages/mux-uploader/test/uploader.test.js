@@ -1,6 +1,7 @@
 import { server } from './utils/server';
 import { fixture, assert, oneEvent, aTimeout, waitUntil } from '@open-wc/testing';
 import '../src/index.ts';
+import { t } from '../src/utils/i18n.ts';
 
 describe('<mux-uploader>', () => {
   let file = new File(['foo'], 'foo.mp4', {
@@ -130,7 +131,7 @@ describe('<mux-uploader>', () => {
 
     const { detail } = await oneEvent(uploader, 'uploaderror');
 
-    assert.equal(detail.message, 'No url or endpoint specified -- cannot handleUpload', 'error message matches');
+    assert.equal(detail.message, t('No url or endpoint specified - cannot handle upload'), 'error message matches');
     assert.exists(uploader.getAttribute('upload-error'), 'upload error is true');
   });
 
@@ -277,5 +278,92 @@ describe('<mux-uploader>', () => {
 
     uploader.chunkSize = undefined;
     assert.equal(uploader.chunkSize, undefined, 'chunkSize matches');
+  });
+
+  describe('translations', () => {
+    let file = new File(['foo'], 'foo.mp4', {
+      type: 'video/mp4',
+    });
+
+    it('displays English error message when no locale is specified', async function () {
+      const uploader = await fixture(`<mux-uploader></mux-uploader>`);
+
+      setTimeout(() => {
+        uploader.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
+      });
+
+      const { detail } = await oneEvent(uploader, 'uploaderror');
+
+      assert.equal(
+        detail.message,
+        t('No url or endpoint specified - cannot handle upload'),
+        'displays English text by default'
+      );
+      assert.equal(
+        detail.message,
+        'No url or endpoint specified - cannot handle upload',
+        'matches English translation'
+      );
+    });
+
+    it('displays Spanish error message when locale is set to es', async function () {
+      const uploader = await fixture(`<mux-uploader locale="es"></mux-uploader>`);
+
+      setTimeout(() => {
+        uploader.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
+      });
+
+      const { detail } = await oneEvent(uploader, 'uploaderror');
+
+      assert.equal(
+        detail.message,
+        t('No url or endpoint specified - cannot handle upload', 'es'),
+        'displays Spanish text'
+      );
+      assert.equal(
+        detail.message,
+        'No se especificó URL o endpoint - no se puede manejar la subida',
+        'matches Spanish translation'
+      );
+    });
+
+    it('displays French error message when locale is set to fr', async function () {
+      const uploader = await fixture(`<mux-uploader locale="fr"></mux-uploader>`);
+
+      setTimeout(() => {
+        uploader.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
+      });
+
+      const { detail } = await oneEvent(uploader, 'uploaderror');
+
+      assert.equal(
+        detail.message,
+        t('No url or endpoint specified - cannot handle upload', 'fr'),
+        'displays French text'
+      );
+      assert.equal(
+        detail.message,
+        'Aucune URL ou point de terminaison spécifié - impossible de gérer le téléchargement',
+        'matches French translation'
+      );
+    });
   });
 });
