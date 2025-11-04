@@ -51,10 +51,12 @@ export const Parts = {
   // component/subcomponent types
   BUTTON: 'button',
   RANGE: 'range',
+  THUMB: 'thumb',
   DISPLAY: 'display',
   CONTROL_BAR: 'control-bar',
   MENU_BUTTON: 'menu-button',
   MENU: 'menu',
+  MENU_ITEM: 'menu-item',
   OPTION: 'option',
   // component/subcomponent purposes
   POSTER: 'poster',
@@ -87,6 +89,7 @@ export const content = (props: MuxTemplateProps) => html`
     nohotkeys="${props.noHotKeys || !props.hasSrc || false}"
     noautoseektolive="${!!props.streamType?.includes(StreamTypes.LIVE) && props.targetLiveWindow !== 0}"
     novolumepref="${props.novolumepref || false}"
+    nomutedpref="${props.nomutedpref || false}"
     disabled="${!props.hasSrc || props.isDialogOpen}"
     audio="${props.audio ?? false}"
     style="${stylePropsToString({

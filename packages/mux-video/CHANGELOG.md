@@ -31,6 +31,34 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.27.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.27.1...@mux/mux-video@0.27.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 3 updates ([#1230](https://github.com/muxinc/elements/issues/1230)) ([4d3fc77](https://github.com/muxinc/elements/commit/4d3fc773cf3516fc4de3a246f826727d17da6177))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.1 to 0.31.2
+
+## [0.27.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.27.0...@mux/mux-video@0.27.1) (2025-10-24)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.13 ([#1211](https://github.com/muxinc/elements/issues/1211)) ([8f0c917](https://github.com/muxinc/elements/commit/8f0c917269391d901692f0bdd7156b965f0582d6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.0 to 0.31.1
+
 ## [0.27.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.26.1...@mux/mux-video@0.27.0) (2025-09-09)
 
 
