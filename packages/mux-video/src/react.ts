@@ -8,6 +8,7 @@ import { createComponent } from 'ce-la-react';
 export default createComponent({
   react: React,
   tagName: 'mux-video',
+  displayName: 'MuxVideo',
   elementClass: MuxVideoElement,
   toAttributeName,
 });
