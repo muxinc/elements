@@ -1154,6 +1154,7 @@ export const loadMedia = (
       | 'tokens'
       | 'customDomain'
       | 'disablePseudoEnded'
+      | 'debug'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1570,9 +1571,17 @@ function handleInternalError(event: Event | CustomEvent<MediaError>) {
 
 const getErrorFromHlsErrorData = (
   data: ErrorData,
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens'>>
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'drmToken' | 'playbackToken' | 'tokens' | 'debug'>>
 ) => {
-  console.error('getErrorFromHlsErrorData()', data);
+  // Non-fatal errors: only log when debug is enabled (using console.warn to reduce user concern)
+  const isNonFatal = !data.fatal;
+  if (isNonFatal) {
+    if (props.debug) {
+      console.warn('getErrorFromHlsErrorData() (non-fatal)', data);
+    }
+  } else {
+    console.error('getErrorFromHlsErrorData()', data);
+  }
 
   const ErrorCodeMap: Partial<Record<ValueOf<typeof Hls.ErrorTypes>, 0 | 1 | 2 | 3 | 4 | 5>> = {
     [Hls.ErrorTypes.NETWORK_ERROR]: MediaError.MEDIA_ERR_NETWORK,
