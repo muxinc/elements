@@ -31,6 +31,25 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.27.2...@mux/mux-video@0.28.0) (2025-11-12)
+
+
+### Features
+
+* player disable tracking and cookies reactive ([#1214](https://github.com/muxinc/elements/issues/1214)) ([54f7793](https://github.com/muxinc/elements/commit/54f779317e42630cbf5a96efc95b9d436f128e7e))
+
+
+### Bug Fixes
+
+* Add display names to React Components ([#1237](https://github.com/muxinc/elements/issues/1237)) ([a201167](https://github.com/muxinc/elements/commit/a201167ee6cd251bc6e8f120b57a75f844e015f9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
 ## [0.27.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.27.1...@mux/mux-video@0.27.2) (2025-10-30)
 
 

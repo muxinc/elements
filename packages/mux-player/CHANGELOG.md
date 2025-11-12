@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.8.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.8.0...@mux/mux-player@3.8.1) (2025-11-12)
+
+
+### Bug Fixes
+
+* Add MENU_ITEM constant for styling of menu items with CSS ([#1212](https://github.com/muxinc/elements/issues/1212)) ([78f7154](https://github.com/muxinc/elements/commit/78f715466b6f3598fc2506d983bdbb3206bc9d11))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.27.2 to 0.28.0
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
 ## [3.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.7.0...@mux/mux-player@3.8.0) (2025-10-30)
 
 
