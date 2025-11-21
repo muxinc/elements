@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.2...@mux/playback-core@0.31.3) (2025-11-21)
+
+
+### Bug Fixes
+
+* suppressing non fatal errors ([#1239](https://github.com/muxinc/elements/issues/1239)) ([1c2e0c3](https://github.com/muxinc/elements/commit/1c2e0c32ad2c6b9524a624ab26087fa0abb62068))
+
 ## [0.31.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.1...@mux/playback-core@0.31.2) (2025-10-30)
 
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-astro@1.3.0...@mux/mux-uploader-astro@1.4.0) (2025-11-21)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-uploader-astro:** Synchronize uploader versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-uploader bumped from 1.3.0 to 1.4.0
+
 ## [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-astro@1.2.0...@mux/mux-uploader-astro@1.3.0) (2025-09-09)
 
 
