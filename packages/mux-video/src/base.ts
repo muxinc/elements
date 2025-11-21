@@ -857,6 +857,35 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
           this.updateLogo();
         }
         break;
+      case Attributes.DISABLE_TRACKING: {
+        if (newValue == null || newValue !== oldValue) {
+          const currentTime = this.currentTime;
+          const paused = this.paused;
+          this.unload();
+          this.#requestLoad().then(() => {
+            this.currentTime = currentTime;
+            if (!paused) {
+              this.play();
+            }
+          });
+        }
+        break;
+      }
+      case Attributes.DISABLE_COOKIES: {
+        if (newValue == null || newValue !== oldValue) {
+          const disabled = this.disableCookies;
+          if (disabled) {
+            document.cookie.split(';').forEach((c) => {
+              if (c.trim().startsWith('muxData')) {
+                document.cookie = c
+                  .replace(/^ +/, '')
+                  .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+              }
+            });
+          }
+        }
+        break;
+      }
     }
   }
 

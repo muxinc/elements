@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.12](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.11...@mux/mux-elements-codemod@1.1.12) (2025-10-24)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.13 ([#1211](https://github.com/muxinc/elements/issues/1211)) ([8f0c917](https://github.com/muxinc/elements/commit/8f0c917269391d901692f0bdd7156b965f0582d6))
+
 ## [1.1.11](https://github.com/muxinc/elements/compare/@mux/mux-elements-codemod@1.1.10...@mux/mux-elements-codemod@1.1.11) (2025-03-21)
 
 

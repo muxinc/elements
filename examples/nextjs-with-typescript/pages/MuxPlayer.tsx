@@ -85,7 +85,6 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   preferPlayback: undefined,
   muted: undefined,
   debug: undefined,
-  noVolumePref: undefined,
   disableTracking: undefined,
   disableCookies: undefined,
   autoPlay: undefined,
@@ -125,6 +124,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   streamType: undefined,
   storyboardSrc: undefined,
   theme: undefined,
+  fullscreenElement: undefined,
   proudlyDisplayMuxBadge: undefined,
   disablePseudoEnded: undefined,
 });
@@ -268,10 +268,12 @@ function MuxPlayerPage({ location }: Props) {
         <title>&lt;MuxPlayer/&gt; Demo</title>
       </Head>
       <main className="component-page">
+        <div id="custom-fullscreen-element">
         <MuxPlayer
           // ref={mediaElRef}
           style={stylesState}
           theme={state.theme}
+          fullscreenElement={state.fullscreenElement}
           envKey={state.envKey}
           metadata={state.metadata}
           // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
@@ -300,7 +302,6 @@ function MuxPlayerPage({ location }: Props) {
           preferCmcd={state.preferCmcd}
           preferPlayback={state.preferPlayback}
           debug={state.debug}
-          noVolumePref={state.noVolumePref}
           disableTracking={state.disableTracking}
           disableCookies={state.disableCookies}
           loop={state.loop}
@@ -352,6 +353,7 @@ function MuxPlayerPage({ location }: Props) {
           onEnded={onEnded}
           onWaiting={onWaiting}
         />
+        </div>
 
         <div className="options">
           <ComponentCodeRenderer state={state} component="MuxPlayer" />
@@ -445,6 +447,13 @@ function MuxPlayerPage({ location }: Props) {
             values={['classic', 'microvideo', 'minimal', 'gerwig']}
           />
           <TextRenderer
+            value={state.fullscreenElement}
+            name="fullscreenElement"
+            label="Fullscreen Element"
+            onChange={genericOnChange}
+            placeholder={`custom-fullscreen-element`}
+          />
+          <TextRenderer
             value={state.envKey}
             name="envKey"
             label="Env Key (Mux Data)"
@@ -519,7 +528,6 @@ function MuxPlayerPage({ location }: Props) {
             max={99}
           />
           <NumberRenderer value={state.volume} name="volume" onChange={genericOnChange} min={0} max={1} step={0.05} />
-          <BooleanRenderer value={state.noVolumePref} name="noVolumePref" onChange={genericOnChange} />
           <NumberRenderer value={state.startTime} name="startTime" onChange={genericOnChange} min={0} />
           <NumberRenderer
             value={state.currentTime}

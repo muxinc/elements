@@ -40,6 +40,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.1...@mux/playback-core@0.31.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* chrome version check to shouldDefaultToMSE ([#1229](https://github.com/muxinc/elements/issues/1229)) ([437a167](https://github.com/muxinc/elements/commit/437a1671d6bab121be5b327b8d14bb0f15a75c08))
+
+## [0.31.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.0...@mux/playback-core@0.31.1) (2025-10-24)
+
+
+### Bug Fixes
+
+* default to MSE for Chrome with native HLS ([#1221](https://github.com/muxinc/elements/issues/1221)) ([3778523](https://github.com/muxinc/elements/commit/3778523f262655d2f9039f3e8f8b4045926be6d2))
+* override player minmax ([#1219](https://github.com/muxinc/elements/issues/1219)) ([78de776](https://github.com/muxinc/elements/commit/78de77681b3240829abd84e8ebf99b59b2985ff5))
+* upgrade hls.js to 1.6.13 ([#1211](https://github.com/muxinc/elements/issues/1211)) ([8f0c917](https://github.com/muxinc/elements/commit/8f0c917269391d901692f0bdd7156b965f0582d6))
+
 ## [0.31.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.30.1...@mux/playback-core@0.31.0) (2025-09-09)
 
 
