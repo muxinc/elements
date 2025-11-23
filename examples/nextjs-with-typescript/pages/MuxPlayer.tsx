@@ -120,7 +120,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   crossOrigin: undefined,
   customDomain: undefined,
   tokens: undefined,
-  playbackId: 'a4nOgmxGWg6gULfcBbAa00gXyfcwPnAFldF8RdsNyk8M', // Landscape VOD with multiple resolutions for testing
+  playbackId: undefined,
   streamType: undefined,
   storyboardSrc: undefined,
   theme: undefined,
@@ -276,8 +276,12 @@ function MuxPlayerPage({ location }: Props) {
           fullscreenElement={state.fullscreenElement}
           envKey={state.envKey}
           metadata={state.metadata}
-          // Test capDefaultResolution property - caps maximum resolution
-          preferHigherResolution={false}
+          // Test _hlsConfig for MuxPlayer (react) (Note: This also indirectly tests <mux-player> & <mux-video>)
+          // _hlsConfig={{
+          //   startLevel: 2,
+          //   debug: true,
+          // }}
+          preferHigherResolution={true}
           capDefaultResolution={700}
           title={state.title}
           videoTitle={state.videoTitle}

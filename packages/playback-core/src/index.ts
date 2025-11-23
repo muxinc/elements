@@ -772,7 +772,6 @@ export const setupHls = (
       ..._hlsConfig,
     }) as HlsInterface;
 
-    // Set the capTo480p flag on the controller if it was provided
     if (capLevelControllerObj.capLevelController === MinCapLevelController) {
       if (preferHigherResolution !== undefined) {
         MinCapLevelController.setPreferHigherResolution(hls, preferHigherResolution);
