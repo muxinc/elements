@@ -695,12 +695,31 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaPropsInternal,
-      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'tokens' | 'drmTypeCb'
+      | 'debug'
+      | 'streamType'
+      | 'type'
+      | 'startTime'
+      | 'metadata'
+      | 'preferCmcd'
+      | '_hlsConfig'
+      | 'tokens'
+      | 'drmTypeCb'
+      | 'preferHigherResolution'
+      | 'capDefaultResolution'
     >
   >,
   mediaEl: HTMLMediaElement
 ) => {
-  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
+  const {
+    debug,
+    streamType,
+    startTime: startPosition = -1,
+    metadata,
+    preferCmcd,
+    _hlsConfig = {},
+    preferHigherResolution,
+    capDefaultResolution,
+  } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -752,6 +771,16 @@ export const setupHls = (
       ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
+
+    // Set the capTo480p flag on the controller if it was provided
+    if (capLevelControllerObj.capLevelController === MinCapLevelController) {
+      if (preferHigherResolution !== undefined) {
+        MinCapLevelController.setPreferHigherResolution(hls, preferHigherResolution);
+      }
+      if (capDefaultResolution !== undefined) {
+        MinCapLevelController.setCapDefaultResolution(hls, capDefaultResolution);
+      }
+    }
 
     hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
       const chapters = data.sessionData?.['com.apple.hls.chapters'];

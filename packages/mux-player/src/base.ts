@@ -153,6 +153,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
+    preferHigherResolution: el.preferHigherResolution,
+    capDefaultResolution: el.capDefaultResolution,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
     assetStartTime: el.assetStartTime,
@@ -1344,6 +1346,32 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.MIN_RESOLUTION, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.MIN_RESOLUTION);
+    }
+  }
+
+  get preferHigherResolution() {
+    return this.hasAttribute(MuxVideoAttributes.PREFER_HIGHER_RESOLUTION);
+  }
+
+  set preferHigherResolution(val: boolean | undefined) {
+    if (val === this.preferHigherResolution) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.PREFER_HIGHER_RESOLUTION, '');
+    } else {
+      this.removeAttribute(MuxVideoAttributes.PREFER_HIGHER_RESOLUTION);
+    }
+  }
+
+  get capDefaultResolution() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION));
+  }
+
+  set capDefaultResolution(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION);
+    } else {
+      this.setAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION, `${val}`);
     }
   }
 
