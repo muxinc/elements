@@ -704,7 +704,7 @@ export const setupHls = (
       | '_hlsConfig'
       | 'tokens'
       | 'drmTypeCb'
-      | 'preferHigherResolution'
+      | 'preferLowerResolution'
       | 'capDefaultResolution'
     >
   >,
@@ -717,7 +717,7 @@ export const setupHls = (
     metadata,
     preferCmcd,
     _hlsConfig = {},
-    preferHigherResolution,
+    preferLowerResolution,
     capDefaultResolution,
   } = props;
   const type = getType(props);
@@ -773,8 +773,8 @@ export const setupHls = (
     }) as HlsInterface;
 
     if (capLevelControllerObj.capLevelController === MinCapLevelController) {
-      if (preferHigherResolution !== undefined) {
-        MinCapLevelController.setPreferHigherResolution(hls, preferHigherResolution);
+      if (preferLowerResolution !== undefined) {
+        MinCapLevelController.setPreferLowerResolution(hls, preferLowerResolution);
       }
       if (capDefaultResolution !== undefined) {
         MinCapLevelController.setCapDefaultResolution(hls, capDefaultResolution);

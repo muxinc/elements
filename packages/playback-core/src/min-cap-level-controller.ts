@@ -12,7 +12,7 @@ const CapLevelController = Hls.DefaultConfig.capLevelController;
 class MinCapLevelController extends CapLevelController {
   // Never cap below this level.
   static minMaxResolution = 720;
-  private static preferHigherResolution = new WeakMap<HlsInterface, boolean>();
+  private static preferLowerResolution = new WeakMap<HlsInterface, boolean>();
   private static capDefaultResolution = new WeakMap<HlsInterface, number>();
 
   constructor(hls: HlsInterface) {
@@ -20,13 +20,13 @@ class MinCapLevelController extends CapLevelController {
   }
 
   /**
-   * Set the preferHigherResolution flag for a specific hls instance
+   * Set the preferLowerResolution flag for a specific hls instance
    */
-  static setPreferHigherResolution(hls: HlsInterface, preferHigherResolution: boolean | undefined) {
-    if (preferHigherResolution === undefined) {
-      MinCapLevelController.preferHigherResolution.delete(hls);
+  static setPreferLowerResolution(hls: HlsInterface, preferLowerResolution: boolean | undefined) {
+    if (preferLowerResolution === undefined) {
+      MinCapLevelController.preferLowerResolution.delete(hls);
     } else {
-      MinCapLevelController.preferHigherResolution.set(hls, preferHigherResolution);
+      MinCapLevelController.preferLowerResolution.set(hls, preferLowerResolution);
     }
   }
 
@@ -39,15 +39,15 @@ class MinCapLevelController extends CapLevelController {
   }
 
   /**
-   * Get the preferHigherResolution flag for a specific hls instance
+   * Get the preferLowerResolution flag for a specific hls instance
    */
-  private getPreferHigherResolution(): boolean {
+  private getPreferLowerResolution(): boolean {
     // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected (CJP)
     // @ts-ignore
     const hlsInstance = this.hls;
     // @ts-ignore
-    const value = MinCapLevelController.preferHigherResolution.get(hlsInstance);
-    // Default to false if not explicitly set (undefined means false by default)
+    const value = MinCapLevelController.preferLowerResolution.get(hlsInstance);
+    // Default to false if not explicitly set
     return value ?? false;
   }
 
@@ -78,9 +78,9 @@ class MinCapLevelController extends CapLevelController {
    *
    * Selection logic (in order of priority):
    * 1. If there's an exact match for capDefaultResolution, use it
-   * 2. If no exact match exists, choose based on preferHigherResolution:
-   *    - preferHigherResolution = true: take the lowest value that exceeds the cap
-   *    - preferHigherResolution = false (default): take the highest value that doesn't exceed the cap
+   * 2. If no exact match exists, choose based on preferLowerResolution:
+   *    - preferLowerResolution = false (default): take the lowest value that exceeds the cap
+   *    - preferLowerResolution = true: take the highest value that doesn't exceed the cap
    */
   private getMaxLevelCapped(capLevelIndex: number): number {
     const validLevels = this.getValidLevels(capLevelIndex);
@@ -113,33 +113,31 @@ class MinCapLevelController extends CapLevelController {
       return validLevels.findIndex((level) => level === exactLevel);
     }
 
-    // No exact match - choose based on preferHigherResolution
-    const preferHigher = this.getPreferHigherResolution();
+    // No exact match - choose based on preferLowerResolution
+    const preferLower = this.getPreferLowerResolution();
 
-    if (preferHigher) {
-      // preferHigherResolution = true: take the lowest value that exceeds the cap
+    if (preferLower) {
+      // preferLowerResolution = true: take the highest value that doesn't exceed the cap
+      if (levelsWithinCap.length === 0) {
+        // No levels within cap, return the lowest level
+        return 0;
+      }
+      // Return the highest quality within cap (last item, since levels are ordered from lowest to highest)
+      const highestQualityWithinCap = levelsWithinCap[levelsWithinCap.length - 1];
+      return validLevels.findIndex((level) => level === highestQualityWithinCap);
+    } else {
+      // preferLowerResolution = false (default): take the lowest value that exceeds the cap
       if (levelsAboveCap.length === 0) {
         // No levels above cap, fallback to highest within cap (or lowest level if none)
         if (levelsWithinCap.length > 0) {
-          // Levels are ordered from lowest to highest quality, so last item is highest quality
           const highestQualityWithinCap = levelsWithinCap[levelsWithinCap.length - 1];
           return validLevels.findIndex((level) => level === highestQualityWithinCap);
         }
         return 0;
       }
-
-      // Return the lowest quality that exceeds the cap
+      // Return the lowest quality that exceeds the cap (first item, since levels are ordered from lowest to highest)
       const lowestQualityAboveCap = levelsAboveCap[0];
       return validLevels.findIndex((level) => level === lowestQualityAboveCap);
-    } else {
-      // preferHigherResolution = false (default): take the highest value that doesn't exceed the cap
-      if (levelsWithinCap.length === 0) {
-        // No levels within cap, return the lowest level
-        return 0;
-      }
-      // Return the highest quality within cap
-      const highestQualityWithinCap = levelsWithinCap[levelsWithinCap.length - 1];
-      return validLevels.findIndex((level) => level === highestQualityWithinCap);
     }
   }
 

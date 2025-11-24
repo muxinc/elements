@@ -62,7 +62,7 @@ export const Attributes = {
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
-  PREFER_HIGHER_RESOLUTION: 'prefer-higher-resolution',
+  PREFER_LOWER_RESOLUTION: 'prefer-lower-resolution',
   CAP_DEFAULT_RESOLUTION: 'cap-default-resolution',
   RENDITION_ORDER: 'rendition-order',
   PROGRAM_START_TIME: 'program-start-time',
@@ -415,17 +415,22 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
-  get preferHigherResolution() {
-    return this.hasAttribute(Attributes.PREFER_HIGHER_RESOLUTION);
+  get preferLowerResolution() {
+    const attr = this.getAttribute(Attributes.PREFER_LOWER_RESOLUTION);
+    if (attr === null) {
+      return false;
+    }
+
+    return attr !== 'false';
   }
 
-  set preferHigherResolution(val: boolean | undefined) {
-    if (val === this.preferHigherResolution) return;
+  set preferLowerResolution(val: boolean | undefined) {
+    if (val === this.preferLowerResolution) return;
 
     if (val) {
-      this.setAttribute(Attributes.PREFER_HIGHER_RESOLUTION, '');
+      this.setAttribute(Attributes.PREFER_LOWER_RESOLUTION, '');
     } else {
-      this.removeAttribute(Attributes.PREFER_HIGHER_RESOLUTION);
+      this.removeAttribute(Attributes.PREFER_LOWER_RESOLUTION);
     }
   }
 

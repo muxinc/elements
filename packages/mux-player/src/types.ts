@@ -45,7 +45,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   inLiveWindow: boolean;
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
-  preferHigherResolution?: boolean;
+  preferLowerResolution?: boolean;
   capDefaultResolution?: number;
   renditionOrder?: RenditionOrderValue;
   extraSourceParams?: Record<string, any>;

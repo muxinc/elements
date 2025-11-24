@@ -181,7 +181,7 @@ export type MuxMediaPropTypes = {
   maxResolution: MaxResolutionValue;
   metadata: Partial<Options['data']>;
   minResolution: MinResolutionValue;
-  preferHigherResolution: boolean | undefined;
+  preferLowerResolution: boolean | undefined;
   capDefaultResolution: number | undefined;
   playbackId: string;
   playerInitTime: MetaData['player_init_time'];

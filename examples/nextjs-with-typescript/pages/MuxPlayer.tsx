@@ -281,7 +281,7 @@ function MuxPlayerPage({ location }: Props) {
           //   startLevel: 2,
           //   debug: true,
           // }}
-          preferHigherResolution={true}
+          preferLowerResolution={false}
           capDefaultResolution={700}
           title={state.title}
           videoTitle={state.videoTitle}

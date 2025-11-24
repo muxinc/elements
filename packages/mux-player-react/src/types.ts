@@ -77,7 +77,7 @@ export type MuxPlayerProps = {
   backwardSeekOffset?: number;
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
-  preferHigherResolution?: boolean;
+  preferLowerResolution?: boolean;
   capDefaultResolution?: number;
   renditionOrder?: RenditionOrderValue;
   programStartTime?: number;
