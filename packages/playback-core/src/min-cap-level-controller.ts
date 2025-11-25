@@ -90,22 +90,22 @@ class MinCapLevelController extends CapLevelController {
       return super.getMaxLevel(capLevelIndex);
     }
 
-    // Note: capDefaultResolution refers to the maximum dimension
-    const maxDimension = capDefaultResolution;
+    // Note: capDefaultResolution caps the height for landscape videos and width for portrait videos
+    const capValue = capDefaultResolution;
 
     // Find levels that don't exceed the cap
     const levelsWithinCap = validLevels.filter((level) => {
-      return Math.max(level.width, level.height) <= maxDimension;
+      return Math.min(level.width, level.height) <= capValue;
     });
 
     // Find levels that exceed the cap
     const levelsAboveCap = validLevels.filter((level) => {
-      return Math.max(level.width, level.height) > maxDimension;
+      return Math.min(level.width, level.height) > capValue;
     });
 
     // Check if there's an exact match first
     const exactMatch = levelsWithinCap.findIndex((level) => {
-      return Math.max(level.width, level.height) === maxDimension;
+      return Math.min(level.width, level.height) === capValue;
     });
 
     if (exactMatch !== -1) {
