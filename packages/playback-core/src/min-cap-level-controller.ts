@@ -90,22 +90,22 @@ class MinCapLevelController extends CapLevelController {
       return super.getMaxLevel(capLevelIndex);
     }
 
-    // Note:capDefaultResolution refers to the height
-    const maxHeight = capDefaultResolution;
+    // Note: capDefaultResolution refers to the maximum dimension
+    const maxDimension = capDefaultResolution;
 
     // Find levels that don't exceed the cap
     const levelsWithinCap = validLevels.filter((level) => {
-      return level.height <= maxHeight;
+      return Math.max(level.width, level.height) <= maxDimension;
     });
 
     // Find levels that exceed the cap
     const levelsAboveCap = validLevels.filter((level) => {
-      return level.height > maxHeight;
+      return Math.max(level.width, level.height) > maxDimension;
     });
 
     // Check if there's an exact match first
     const exactMatch = levelsWithinCap.findIndex((level) => {
-      return level.height === maxHeight;
+      return Math.max(level.width, level.height) === maxDimension;
     });
 
     if (exactMatch !== -1) {
