@@ -859,13 +859,7 @@ export const setupNativeFairplayDRM = (
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
   mediaEl: HTMLMediaElement
 ) => {
-  const setupMediaKeys = async (
-    props: Partial<
-      Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>
-    >,
-    mediaEl: HTMLMediaElement,
-    initDataType: string
-  ) => {
+  const setupMediaKeys = async (initDataType: string) => {
     const access = await navigator
       .requestMediaKeySystemAccess('com.apple.fps', [
         {
@@ -925,7 +919,7 @@ export const setupNativeFairplayDRM = (
     await mediaEl.setMediaKeys(keys);
   };
 
-  const updateMediaKeyStatus = (mediaEl: HTMLMediaElement, mediaKeyStatus: MediaKeyStatus) => {
+  const updateMediaKeyStatus = (mediaKeyStatus: MediaKeyStatus) => {
     let mediaError;
     if (mediaKeyStatus === 'internal-error') {
       const message = i18n(
@@ -949,20 +943,13 @@ export const setupNativeFairplayDRM = (
     }
   };
 
-  const setupMediaKeySession = async (
-    props: Partial<
-      Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>
-    >,
-    mediaEl: HTMLMediaElement,
-    initDataType: string,
-    initData: ArrayBuffer
-  ) => {
+  const setupMediaKeySession = async (initDataType: string, initData: ArrayBuffer) => {
     const session = (mediaEl.mediaKeys as MediaKeys).createSession();
     session.addEventListener('keystatuseschange', () => {
       // recheck key statuses
       // NOTE: As an improvement, we could also add checks for a status of 'expired' and
       // attempt to renew the license here (CJP)
-      session.keyStatuses.forEach((keyStatus) => updateMediaKeyStatus(mediaEl, keyStatus));
+      session.keyStatuses.forEach((keyStatus) => updateMediaKeyStatus(keyStatus));
     });
     session.generateRequest(initDataType, initData).catch((e) => {
       console.error('Failed to generate license request', e);
@@ -1013,7 +1000,7 @@ export const setupNativeFairplayDRM = (
       }
 
       if (!mediaEl.mediaKeys) {
-        await setupMediaKeys(props, mediaEl, initDataType);
+        await setupMediaKeys(initDataType);
       }
 
       const initData = event.initData;
@@ -1022,7 +1009,7 @@ export const setupNativeFairplayDRM = (
         return;
       }
 
-      await setupMediaKeySession(props, mediaEl, initDataType, initData);
+      await setupMediaKeySession(initDataType, initData);
       // @ts-ignore
     } catch (error: Error | MediaError) {
       saveAndDispatchError(mediaEl, error);
