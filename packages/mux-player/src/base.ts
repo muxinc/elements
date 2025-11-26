@@ -153,6 +153,8 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
+    preferLowerResolution: el.preferLowerResolution,
+    capDefaultResolution: el.capDefaultResolution,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
     assetStartTime: el.assetStartTime,
@@ -1344,6 +1346,37 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.MIN_RESOLUTION, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.MIN_RESOLUTION);
+    }
+  }
+
+  get preferLowerResolution() {
+    const attr = this.getAttribute(MuxVideoAttributes.PREFER_LOWER_RESOLUTION);
+    if (attr === null) {
+      return false;
+    }
+
+    return attr !== 'false';
+  }
+
+  set preferLowerResolution(val: boolean | undefined) {
+    if (val === this.preferLowerResolution) return;
+
+    if (val) {
+      this.setAttribute(MuxVideoAttributes.PREFER_LOWER_RESOLUTION, '');
+    } else {
+      this.removeAttribute(MuxVideoAttributes.PREFER_LOWER_RESOLUTION);
+    }
+  }
+
+  get capDefaultResolution() {
+    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION));
+  }
+
+  set capDefaultResolution(val: number | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION);
+    } else {
+      this.setAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION, `${val}`);
     }
   }
 
