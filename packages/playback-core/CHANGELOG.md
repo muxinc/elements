@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.3...@mux/playback-core@0.31.4) (2025-11-26)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.15 ([#1244](https://github.com/muxinc/elements/issues/1244)) ([677b17d](https://github.com/muxinc/elements/commit/677b17d64a21f40e6a5db33d60094904b7554d10))
+
 ## [0.31.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.2...@mux/playback-core@0.31.3) (2025-11-21)
 
 
