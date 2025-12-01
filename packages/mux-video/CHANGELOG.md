@@ -31,6 +31,40 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.28.0...@mux/mux-video@0.28.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.15 ([#1244](https://github.com/muxinc/elements/issues/1244)) ([677b17d](https://github.com/muxinc/elements/commit/677b17d64a21f40e6a5db33d60094904b7554d10))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
+## [0.28.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.27.2...@mux/mux-video@0.28.0) (2025-11-21)
+
+
+### Features
+
+* player disable tracking and cookies reactive ([#1214](https://github.com/muxinc/elements/issues/1214)) ([54f7793](https://github.com/muxinc/elements/commit/54f779317e42630cbf5a96efc95b9d436f128e7e))
+
+
+### Bug Fixes
+
+* Add display names to React Components ([#1237](https://github.com/muxinc/elements/issues/1237)) ([a201167](https://github.com/muxinc/elements/commit/a201167ee6cd251bc6e8f120b57a75f844e015f9))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1242](https://github.com/muxinc/elements/issues/1242)) ([3379e62](https://github.com/muxinc/elements/commit/3379e628c3ed10752997becf44430a8d2a3360a5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
 ## [0.27.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.27.1...@mux/mux-video@0.27.2) (2025-10-30)
 
 

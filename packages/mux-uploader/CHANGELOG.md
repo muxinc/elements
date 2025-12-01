@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.3.0...@mux/mux-uploader@1.4.0) (2025-11-21)
+
+
+### Features
+
+* Add internationalization support to MuxUploader ([#1220](https://github.com/muxinc/elements/issues/1220)) ([64cf297](https://github.com/muxinc/elements/commit/64cf297cbafbd2beb7db47fb8eba05fddbd2c47f))
+
 ## [1.3.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.2.0...@mux/mux-uploader@1.3.0) (2025-09-09)
 
 
