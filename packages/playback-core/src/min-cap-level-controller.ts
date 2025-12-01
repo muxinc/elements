@@ -42,20 +42,16 @@ class MinCapLevelController extends CapLevelController {
    * Get the preferLowerResolution flag for a specific hls instance
    */
   private getPreferLowerResolution(): boolean {
-    // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected (CJP)
+    // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected
     // @ts-ignore
     const hlsInstance = this.hls;
-    // @ts-ignore
-    const value = MinCapLevelController.preferLowerResolution.get(hlsInstance);
-    // Default to false if not explicitly set
-    return value ?? false;
+    return MinCapLevelController.preferLowerResolution.get(hlsInstance) ?? false;
   }
 
   private getCapDefaultResolution(): number | undefined {
-    // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected (CJP)
+    // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected
     // @ts-ignore
     const hlsInstance = this.hls;
-    // @ts-ignore
     return MinCapLevelController.capDefaultResolution.get(hlsInstance) ?? undefined;
   }
 
