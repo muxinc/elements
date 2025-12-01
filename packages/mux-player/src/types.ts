@@ -5,6 +5,7 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
   StreamTypes,
   ValueOf,
 } from '@mux/playback-core';
@@ -45,8 +46,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   inLiveWindow: boolean;
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
-  preferLowerResolution?: boolean;
-  capDefaultResolution?: number;
+  maxAutoResolution?: MaxAutoResolutionValue;
   renditionOrder?: RenditionOrderValue;
   extraSourceParams?: Record<string, any>;
   tokens: {

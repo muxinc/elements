@@ -37,6 +37,7 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
   Chapter,
   CuePoint,
   Tokens,
@@ -62,8 +63,7 @@ export const Attributes = {
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
-  PREFER_LOWER_RESOLUTION: 'prefer-lower-resolution',
-  CAP_DEFAULT_RESOLUTION: 'cap-default-resolution',
+  MAX_AUTO_RESOLUTION: 'max-auto-resolution',
   RENDITION_ORDER: 'rendition-order',
   PROGRAM_START_TIME: 'program-start-time',
   PROGRAM_END_TIME: 'program-end-time',
@@ -415,37 +415,15 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
-  get preferLowerResolution() {
-    const attr = this.getAttribute(Attributes.PREFER_LOWER_RESOLUTION);
-    if (attr === null) {
-      return false;
-    }
-
-    return attr !== 'false';
+  get maxAutoResolution() {
+    return (this.getAttribute(Attributes.MAX_AUTO_RESOLUTION) as MaxAutoResolutionValue) ?? undefined;
   }
 
-  set preferLowerResolution(val: boolean | undefined) {
-    if (val === this.preferLowerResolution) return;
-
-    if (val) {
-      this.setAttribute(Attributes.PREFER_LOWER_RESOLUTION, '');
-    } else {
-      this.removeAttribute(Attributes.PREFER_LOWER_RESOLUTION);
-    }
-  }
-
-  get capDefaultResolution() {
-    const value = this.getAttribute(Attributes.CAP_DEFAULT_RESOLUTION);
-    if (value === null) return undefined;
-    const num = parseInt(value, 10);
-    return isNaN(num) ? undefined : num;
-  }
-
-  set capDefaultResolution(val: number | undefined) {
+  set maxAutoResolution(val: MaxAutoResolutionValue | undefined) {
     if (val == undefined) {
-      this.removeAttribute(Attributes.CAP_DEFAULT_RESOLUTION);
+      this.removeAttribute(Attributes.MAX_AUTO_RESOLUTION);
     } else {
-      this.setAttribute(Attributes.CAP_DEFAULT_RESOLUTION, `${val}`);
+      this.setAttribute(Attributes.MAX_AUTO_RESOLUTION, val);
     }
   }
 

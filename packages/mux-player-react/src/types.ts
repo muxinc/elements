@@ -6,6 +6,7 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
 } from '@mux/playback-core';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, EventMap as MuxPlayerElementEventMap } from '@mux/mux-player';
@@ -77,8 +78,7 @@ export type MuxPlayerProps = {
   backwardSeekOffset?: number;
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
-  preferLowerResolution?: boolean;
-  capDefaultResolution?: number;
+  maxAutoResolution?: MaxAutoResolutionValue;
   renditionOrder?: RenditionOrderValue;
   programStartTime?: number;
   programEndTime?: number;

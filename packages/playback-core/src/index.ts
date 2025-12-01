@@ -704,8 +704,7 @@ export const setupHls = (
       | '_hlsConfig'
       | 'tokens'
       | 'drmTypeCb'
-      | 'preferLowerResolution'
-      | 'capDefaultResolution'
+      | 'maxAutoResolution'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -717,8 +716,7 @@ export const setupHls = (
     metadata,
     preferCmcd,
     _hlsConfig = {},
-    preferLowerResolution,
-    capDefaultResolution,
+    maxAutoResolution,
   } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
@@ -773,11 +771,8 @@ export const setupHls = (
     }) as HlsInterface;
 
     if (capLevelControllerObj.capLevelController === MinCapLevelController) {
-      if (preferLowerResolution !== undefined) {
-        MinCapLevelController.setPreferLowerResolution(hls, preferLowerResolution);
-      }
-      if (capDefaultResolution !== undefined) {
-        MinCapLevelController.setCapDefaultResolution(hls, capDefaultResolution);
+      if (maxAutoResolution !== undefined) {
+        MinCapLevelController.setMaxAutoResolution(hls, maxAutoResolution);
       }
     }
 

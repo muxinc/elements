@@ -24,6 +24,7 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
   Chapter,
   CuePoint,
   Tokens,
@@ -153,8 +154,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
-    preferLowerResolution: el.preferLowerResolution,
-    capDefaultResolution: el.capDefaultResolution,
+    maxAutoResolution: el.maxAutoResolution,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
     assetStartTime: el.assetStartTime,
@@ -1349,34 +1349,15 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     }
   }
 
-  get preferLowerResolution() {
-    const attr = this.getAttribute(MuxVideoAttributes.PREFER_LOWER_RESOLUTION);
-    if (attr === null) {
-      return false;
-    }
-
-    return attr !== 'false';
+  get maxAutoResolution() {
+    return (this.getAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION) as MaxAutoResolutionValue) ?? undefined;
   }
 
-  set preferLowerResolution(val: boolean | undefined) {
-    if (val === this.preferLowerResolution) return;
-
-    if (val) {
-      this.setAttribute(MuxVideoAttributes.PREFER_LOWER_RESOLUTION, '');
-    } else {
-      this.removeAttribute(MuxVideoAttributes.PREFER_LOWER_RESOLUTION);
-    }
-  }
-
-  get capDefaultResolution() {
-    return toNumberOrUndefined(this.getAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION));
-  }
-
-  set capDefaultResolution(val: number | undefined) {
+  set maxAutoResolution(val: MaxAutoResolutionValue | undefined) {
     if (val == undefined) {
-      this.removeAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION);
+      this.removeAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION);
     } else {
-      this.setAttribute(MuxVideoAttributes.CAP_DEFAULT_RESOLUTION, `${val}`);
+      this.setAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION, val);
     }
   }
 

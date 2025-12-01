@@ -1,9 +1,30 @@
 import Hls from './hls';
 import type { HlsInterface } from './hls';
 import type { Level } from 'hls.js';
+import type { MaxAutoResolutionValue } from './types';
 
 // The hls.js commonJS module doesn't export CapLevelController, so get it from the default config.
 const CapLevelController = Hls.DefaultConfig.capLevelController;
+
+/**
+ * Resolution pricing tiers based on total pixels (width * height)
+ */
+const RESOLUTION_PIXEL_LIMITS: Record<string, number> = {
+  '720p': 921600, // Up to 921,600 pixels (1280x720)
+  '1080p': 2073600, // Up to 2,073,600 pixels (1920x1080)
+  '1440p': 4194304, // Up to 4,194,304 pixels (2560x1440)
+  '2160p': 8294400, // Up to 8,294,400 pixels (3840x2160)
+};
+
+/**
+ * Convert resolution string to maximum total pixels
+ * Only accepts predefined tiers from the list
+ */
+function resolutionToMaxPixels(resolution: string): number | undefined {
+  const normalized = resolution.toLowerCase().trim();
+
+  return RESOLUTION_PIXEL_LIMITS[normalized];
+}
 
 /**
  * A custom HLS.js CapLevelController that behaves like the default one, except
@@ -12,47 +33,25 @@ const CapLevelController = Hls.DefaultConfig.capLevelController;
 class MinCapLevelController extends CapLevelController {
   // Never cap below this level.
   static minMaxResolution = 720;
-  private static preferLowerResolution = new WeakMap<HlsInterface, boolean>();
-  private static capDefaultResolution = new WeakMap<HlsInterface, number>();
+  private static maxAutoResolution = new WeakMap<HlsInterface, MaxAutoResolutionValue>();
 
   constructor(hls: HlsInterface) {
     super(hls);
   }
 
-  /**
-   * Set the preferLowerResolution flag for a specific hls instance
-   */
-  static setPreferLowerResolution(hls: HlsInterface, preferLowerResolution: boolean | undefined) {
-    if (preferLowerResolution === undefined) {
-      MinCapLevelController.preferLowerResolution.delete(hls);
+  static setMaxAutoResolution(hls: HlsInterface, maxAutoResolution: MaxAutoResolutionValue | undefined) {
+    if (maxAutoResolution) {
+      MinCapLevelController.maxAutoResolution.set(hls, maxAutoResolution);
     } else {
-      MinCapLevelController.preferLowerResolution.set(hls, preferLowerResolution);
+      MinCapLevelController.maxAutoResolution.delete(hls);
     }
   }
 
-  static setCapDefaultResolution(hls: HlsInterface, capDefaultResolution: number | undefined) {
-    if (capDefaultResolution) {
-      MinCapLevelController.capDefaultResolution.set(hls, capDefaultResolution);
-    } else {
-      MinCapLevelController.capDefaultResolution.delete(hls);
-    }
-  }
-
-  /**
-   * Get the preferLowerResolution flag for a specific hls instance
-   */
-  private getPreferLowerResolution(): boolean {
+  private getMaxAutoResolution(): MaxAutoResolutionValue | undefined {
     // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected
     // @ts-ignore
     const hlsInstance = this.hls;
-    return MinCapLevelController.preferLowerResolution.get(hlsInstance) ?? false;
-  }
-
-  private getCapDefaultResolution(): number | undefined {
-    // NOTE: hls is a TS-private member in CapLevelController. Should be TS-protected
-    // @ts-ignore
-    const hlsInstance = this.hls;
-    return MinCapLevelController.capDefaultResolution.get(hlsInstance) ?? undefined;
+    return MinCapLevelController.maxAutoResolution.get(hlsInstance) ?? undefined;
   }
 
   get levels() {
@@ -70,38 +69,39 @@ class MinCapLevelController extends CapLevelController {
   }
 
   /**
-   * Get the maximum level capped to capDefaultResolution
+   * Get the maximum level capped to maxAutoResolution
    *
    * Selection logic (in order of priority):
-   * 1. If there's an exact match for capDefaultResolution, use it
-   * 2. If no exact match exists, choose based on preferLowerResolution:
-   *    - preferLowerResolution = false (default): take the lowest value that exceeds the cap
-   *    - preferLowerResolution = true: take the highest value that doesn't exceed the cap
+   * 1. If there's an exact match for maxAutoResolution, use it
+   * 2. If no exact match exists, always select the highest quality that doesn't exceed the cap
+   *    (to prevent extra costs by going over the resolution limit)
    */
   private getMaxLevelCapped(capLevelIndex: number): number {
     const validLevels = this.getValidLevels(capLevelIndex);
-    const capDefaultResolution = this.getCapDefaultResolution();
+    const maxAutoResolution = this.getMaxAutoResolution();
 
-    if (!capDefaultResolution) {
+    if (!maxAutoResolution) {
       return super.getMaxLevel(capLevelIndex);
     }
 
-    // Note: capDefaultResolution caps the height for landscape videos and width for portrait videos
-    const capValue = capDefaultResolution;
+    // Convert resolution string to maximum total pixels
+    const maxPixels = resolutionToMaxPixels(maxAutoResolution);
+    if (!maxPixels) {
+      // Invalid resolution string, fallback to default behavior
+      return super.getMaxLevel(capLevelIndex);
+    }
 
-    // Find levels that don't exceed the cap
+    // Compare by total pixels (width * height) to match Mux Video pricing tiers
+    // Find levels that don't exceed the cap (total pixels <= maxPixels)
     const levelsWithinCap = validLevels.filter((level) => {
-      return Math.min(level.width, level.height) <= capValue;
+      const totalPixels = level.width * level.height;
+      return totalPixels <= maxPixels;
     });
 
-    // Find levels that exceed the cap
-    const levelsAboveCap = validLevels.filter((level) => {
-      return Math.min(level.width, level.height) > capValue;
-    });
-
-    // Check if there's an exact match first
+    // Check if there's an exact match first (total pixels === maxPixels)
     const exactMatch = levelsWithinCap.findIndex((level) => {
-      return Math.min(level.width, level.height) === capValue;
+      const totalPixels = level.width * level.height;
+      return totalPixels === maxPixels;
     });
 
     if (exactMatch !== -1) {
@@ -109,36 +109,18 @@ class MinCapLevelController extends CapLevelController {
       return validLevels.findIndex((level) => level === exactLevel);
     }
 
-    // No exact match - choose based on preferLowerResolution
-    const preferLower = this.getPreferLowerResolution();
-
-    if (preferLower) {
-      // preferLowerResolution = true: take the highest value that doesn't exceed the cap
-      if (levelsWithinCap.length === 0) {
-        // No levels within cap, return the lowest level
-        return 0;
-      }
-      // Return the highest quality within cap (last item, since levels are ordered from lowest to highest)
-      const highestQualityWithinCap = levelsWithinCap[levelsWithinCap.length - 1];
-      return validLevels.findIndex((level) => level === highestQualityWithinCap);
-    } else {
-      // preferLowerResolution = false (default): take the lowest value that exceeds the cap
-      if (levelsAboveCap.length === 0) {
-        // No levels above cap, fallback to highest within cap (or lowest level if none)
-        if (levelsWithinCap.length > 0) {
-          const highestQualityWithinCap = levelsWithinCap[levelsWithinCap.length - 1];
-          return validLevels.findIndex((level) => level === highestQualityWithinCap);
-        }
-        return 0;
-      }
-      // Return the lowest quality that exceeds the cap (first item, since levels are ordered from lowest to highest)
-      const lowestQualityAboveCap = levelsAboveCap[0];
-      return validLevels.findIndex((level) => level === lowestQualityAboveCap);
+    // No exact match - always select the highest quality that doesn't exceed the cap
+    if (levelsWithinCap.length === 0) {
+      // No levels within cap, return the lowest level
+      return 0;
     }
+    // Return the highest quality within cap (last item, since levels are ordered from lowest to highest)
+    const highestQualityWithinCap = levelsWithinCap[levelsWithinCap.length - 1];
+    return validLevels.findIndex((level) => level === highestQualityWithinCap);
   }
 
   getMaxLevel(capLevelIndex: number) {
-    if (this.getCapDefaultResolution() !== undefined) {
+    if (this.getMaxAutoResolution() !== undefined) {
       return this.getMaxLevelCapped(capLevelIndex);
     }
 
