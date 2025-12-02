@@ -8,6 +8,7 @@ const CapLevelController = Hls.DefaultConfig.capLevelController;
 
 /**
  * Resolution pricing tiers based on total pixels (width * height)
+ * Values align with Mux Video pricing tiers: https://www.mux.com/docs/pricing/video#resolution-based-pricing
  */
 const RESOLUTION_PIXEL_LIMITS: Record<string, number> = {
   '720p': 921600, // Up to 921,600 pixels (1280x720)
