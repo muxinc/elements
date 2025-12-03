@@ -695,12 +695,29 @@ export const setupHls = (
   props: Partial<
     Pick<
       MuxMediaPropsInternal,
-      'debug' | 'streamType' | 'type' | 'startTime' | 'metadata' | 'preferCmcd' | '_hlsConfig' | 'tokens' | 'drmTypeCb'
+      | 'debug'
+      | 'streamType'
+      | 'type'
+      | 'startTime'
+      | 'metadata'
+      | 'preferCmcd'
+      | '_hlsConfig'
+      | 'tokens'
+      | 'drmTypeCb'
+      | 'maxAutoResolution'
     >
   >,
   mediaEl: HTMLMediaElement
 ) => {
-  const { debug, streamType, startTime: startPosition = -1, metadata, preferCmcd, _hlsConfig = {} } = props;
+  const {
+    debug,
+    streamType,
+    startTime: startPosition = -1,
+    metadata,
+    preferCmcd,
+    _hlsConfig = {},
+    maxAutoResolution,
+  } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
   const shouldUseNative = useNative(props, mediaEl);
@@ -752,6 +769,12 @@ export const setupHls = (
       ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
+
+    if (capLevelControllerObj.capLevelController === MinCapLevelController) {
+      if (maxAutoResolution !== undefined) {
+        MinCapLevelController.setMaxAutoResolution(hls, maxAutoResolution);
+      }
+    }
 
     hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
       const chapters = data.sessionData?.['com.apple.hls.chapters'];

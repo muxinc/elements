@@ -37,6 +37,7 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
   Chapter,
   CuePoint,
   Tokens,
@@ -62,6 +63,7 @@ export const Attributes = {
   ENV_KEY: 'env-key',
   MAX_RESOLUTION: 'max-resolution',
   MIN_RESOLUTION: 'min-resolution',
+  MAX_AUTO_RESOLUTION: 'max-auto-resolution',
   RENDITION_ORDER: 'rendition-order',
   PROGRAM_START_TIME: 'program-start-time',
   PROGRAM_END_TIME: 'program-end-time',
@@ -410,6 +412,18 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       this.setAttribute(Attributes.MIN_RESOLUTION, val);
     } else {
       this.removeAttribute(Attributes.MIN_RESOLUTION);
+    }
+  }
+
+  get maxAutoResolution() {
+    return (this.getAttribute(Attributes.MAX_AUTO_RESOLUTION) as MaxAutoResolutionValue) ?? undefined;
+  }
+
+  set maxAutoResolution(val: MaxAutoResolutionValue | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(Attributes.MAX_AUTO_RESOLUTION);
+    } else {
+      this.setAttribute(Attributes.MAX_AUTO_RESOLUTION, val);
     }
   }
 

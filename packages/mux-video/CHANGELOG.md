@@ -31,6 +31,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.28.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.28.1...@mux/mux-video@0.28.2) (2025-12-01)
+
+
+### Bug Fixes
+
+* Upgrade ce-la-react ([#1248](https://github.com/muxinc/elements/issues/1248)) ([976b47c](https://github.com/muxinc/elements/commit/976b47c4e23f23689ed9a8e8b01bd1b5058b5b5b))
+
 ## [0.28.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.28.0...@mux/mux-video@0.28.1) (2025-11-26)
 
 
