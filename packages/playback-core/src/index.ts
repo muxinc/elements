@@ -963,9 +963,15 @@ export const setupNativeFairplayDRM = (
             saveAndDispatchError(mediaEl, mediaError);
             return Promise.reject(mediaError);
           }
+
+          const error = new Error('Unexpected error in license key request');
+          // @ts-ignore
+          saveAndDispatchError(mediaEl, error);
           // NOTE: This should never happen. Adding for exhaustiveness (CJP).
-          return Promise.reject(new Error('Unexpected error in license key request'));
+          return Promise.reject(error);
         }
+
+        saveAndDispatchError(mediaEl, errOrResp);
         return Promise.reject(errOrResp);
       });
 
