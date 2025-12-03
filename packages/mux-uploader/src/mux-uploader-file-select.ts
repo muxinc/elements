@@ -158,7 +158,12 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
     const text = t('Upload a video', locale);
 
     if (this.filePickerEl) {
-      this.filePickerEl.textContent = text;
+      // Don't translate text if it's a custom button
+      const isCustomButton = !this.shadowRoot?.contains(this.filePickerEl) && this.filePickerEl.hasAttribute('slot');
+
+      if (!isCustomButton) {
+        this.filePickerEl.textContent = text;
+      }
     } else {
       const buttonEl = this.shadowRoot?.querySelector('#file-select') as HTMLButtonElement;
       if (buttonEl) {

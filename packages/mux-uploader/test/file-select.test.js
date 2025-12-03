@@ -126,5 +126,32 @@ describe('<mux-uploader-file-select>', () => {
       assert.equal(button.textContent, t('Upload a video', 'fr'), 'displays French text');
       assert.equal(button.textContent, 'Télécharger une vidéo', 'matches French translation');
     });
+
+    it('preserves custom button text when locale changes', async function () {
+      const uploader = await fixture(`
+        <mux-uploader 
+          endpoint="https://my-authenticated-url/storage?your-url-params">
+          <button class="btn" type="button" slot="file-select">Pick a file</button>
+        </mux-uploader>
+      `);
+
+      const el = uploader.shadowRoot.querySelector('mux-uploader-file-select');
+      const slot = el.querySelector('slot');
+      const button = slot.assignedNodes()[0];
+
+      // Verify initial custom text
+      assert.equal(button.textContent, 'Pick a file', 'custom button text is preserved initially');
+
+      // Change locale to Spanish
+      uploader.setAttribute('locale', 'es');
+
+      // Custom button text should still be preserved (not overwritten by translation)
+      assert.equal(button.textContent, 'Pick a file', 'custom button text is preserved after locale change');
+      assert.notEqual(
+        button.textContent,
+        t('Upload a video', 'es'),
+        'custom button text is not overwritten by translation'
+      );
+    });
   });
 });
