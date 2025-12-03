@@ -2,7 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import type { ErrorData, HlsConfig } from 'hls.js';
+import type { CapLevelController, ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -705,6 +705,7 @@ export const setupHls = (
       | 'tokens'
       | 'drmTypeCb'
       | 'maxAutoResolution'
+      | 'capLevelToPlayerSize'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -743,8 +744,20 @@ export const setupHls = (
         }
       : undefined;
 
-    const capLevelControllerObj =
-      _hlsConfig.capLevelToPlayerSize == null ? { capLevelController: MinCapLevelController } : {};
+    let capLevelControllerObj : {
+      capLevelController?: typeof CapLevelController;
+      capLevelToPlayerSize?: boolean;
+    } = { capLevelController: undefined };
+    if (_hlsConfig.capLevelToPlayerSize == null && !props.capLevelToPlayerSize) {
+      capLevelControllerObj = {
+        capLevelController: MinCapLevelController,
+      };
+    }
+    if (props.capLevelToPlayerSize !== undefined) {
+      capLevelControllerObj = {
+        capLevelToPlayerSize: props.capLevelToPlayerSize,
+      };
+    }
 
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
@@ -763,8 +776,8 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
-      ...capLevelControllerObj,
       ...defaultConfig,
+      ...capLevelControllerObj,
       ...streamTypeConfig,
       ...drmConfig,
       ..._hlsConfig,

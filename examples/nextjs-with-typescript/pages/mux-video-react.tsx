@@ -4,11 +4,13 @@ import MuxVideo from "@mux/mux-video/react";
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
+const INITIAL_CAP_LEVEL_TO_PLAYER_SIZE = false;
 
 function MuxVideoPage() {
   const mediaElRef = useRef(null);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
+  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
   return (
@@ -32,12 +34,13 @@ function MuxVideoPage() {
         // }}
         // envKey="mux-data-env-key"
         controls
+        capLevelToPlayerSize={capLevelToPlayerSize}
         autoplay={autoplay}
         muted={muted}
         maxResolution="2160p"
         minResolution="540p"
         renditionOrder="desc"
-        preferPlayback="native"
+        preferPlayback="mse"
         onPlay={() => {
           setPaused(false);
         }}
@@ -72,6 +75,15 @@ function MuxVideoPage() {
             type="checkbox"
             onChange={() => setMuted(!muted)}
             checked={muted}
+          />
+        </div>
+        <div>
+          <label htmlFor="cap-level-to-player-size">Cap Level to Player Size</label>
+          <input
+            id="cap-level-to-player-size"
+            type="checkbox"
+            onChange={() => setCapLevelToPlayerSize(!capLevelToPlayerSize)}
+            checked={capLevelToPlayerSize}
           />
         </div>
       </div>

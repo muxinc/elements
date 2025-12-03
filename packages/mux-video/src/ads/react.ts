@@ -20,6 +20,7 @@ const ReactPropToAttrNameMap: Record<string, string> = {
   playsInline: 'playsinline',
   disablePictureInPicture: 'disablepictureinpicture',
   disableRemotePlayback: 'disableremoteplayback',
+  capLevelToPlayerSize: 'cap-level-to-player-size',
 };
 
 function toAttributeName(propName: string) {
