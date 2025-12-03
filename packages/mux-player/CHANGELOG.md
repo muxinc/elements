@@ -48,6 +48,35 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.9.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.9.1...@mux/mux-player@3.9.2) (2025-12-01)
+
+
+### Bug Fixes
+
+* Upgrade ce-la-react ([#1248](https://github.com/muxinc/elements/issues/1248)) ([976b47c](https://github.com/muxinc/elements/commit/976b47c4e23f23689ed9a8e8b01bd1b5058b5b5b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.28.1 to 0.28.2
+
+## [3.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.9.0...@mux/mux-player@3.9.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.15 ([#1244](https://github.com/muxinc/elements/issues/1244)) ([677b17d](https://github.com/muxinc/elements/commit/677b17d64a21f40e6a5db33d60094904b7554d10))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.28.0 to 0.28.1
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
 ## [3.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.8.0...@mux/mux-player@3.9.0) (2025-11-21)
 
 

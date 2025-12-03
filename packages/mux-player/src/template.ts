@@ -140,6 +140,7 @@ export const content = (props: MuxTemplateProps) => html`
       drm-token="${props.tokens?.drm ?? false}"
       exportparts="video"
       disable-pseudo-ended="${props.disablePseudoEnded ?? false}"
+      max-auto-resolution="${props.maxAutoResolution ?? false}"
     >
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`
