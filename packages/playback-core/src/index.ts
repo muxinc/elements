@@ -945,23 +945,14 @@ export const setupNativeFairplayDRM = (
 
   const setupMediaKeySession = async (initDataType: string, initData: ArrayBuffer) => {
     const session = (mediaEl.mediaKeys as MediaKeys).createSession();
-    session.addEventListener('keystatuseschange', () => {
+    const onKeyStatusChange = () => {
       // recheck key statuses
       // NOTE: As an improvement, we could also add checks for a status of 'expired' and
       // attempt to renew the license here (CJP)
       session.keyStatuses.forEach((keyStatus) => updateMediaKeyStatus(keyStatus));
-    });
-    session.generateRequest(initDataType, initData).catch((e) => {
-      console.error('Failed to generate license request', e);
-      const message = i18n(
-        'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
-      );
-      const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-      saveAndDispatchError(mediaEl, mediaError);
-    });
-    session.addEventListener('message', async (event) => {
+    };
+
+    const onMessage = async (event: MediaKeyMessageEvent) => {
       const spc = event.message;
       const ckc = await getLicenseKey(spc, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
         if (errOrResp instanceof Response) {
@@ -988,6 +979,29 @@ export const setupNativeFairplayDRM = (
 
         saveAndDispatchError(mediaEl, mediaError);
       });
+    };
+
+    session.addEventListener('keystatuseschange', onKeyStatusChange);
+    session.addEventListener('message', onMessage);
+    mediaEl.addEventListener(
+      'teardown',
+      () => {
+        session.removeEventListener('keystatuseschange', onKeyStatusChange);
+        session.removeEventListener('message', onMessage);
+        session.close();
+      },
+      { once: true }
+    );
+
+    await session.generateRequest(initDataType, initData).catch((e) => {
+      console.error('Failed to generate license request', e);
+      const message = i18n(
+        'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
+      );
+      const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
+      return Promise.reject(mediaError);
     });
   };
 
