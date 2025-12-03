@@ -954,39 +954,39 @@ export const setupNativeFairplayDRM = (
 
     const onMessage = async (event: MediaKeyMessageEvent) => {
       const spc = event.message;
-      const ckc = await getLicenseKey(spc, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
+      try {
+        const ckc = await getLicenseKey(spc, toLicenseKeyURL(props, 'fairplay'));
+
+        try {
+          // This is the same call whether we are local or AirPlay.
+          // Safari will forward CKC to Apple TV automatically.
+          await session.update(ckc);
+        } catch {
+          const message = i18n(
+            'Failed to update DRM license. This may be an issue with the player or your protected content.'
+          );
+          const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+          mediaError.errorCategory = MuxErrorCategory.DRM;
+          mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
+
+          saveAndDispatchError(mediaEl, mediaError);
+        }
+      } catch (errOrResp) {
         if (errOrResp instanceof Response) {
           const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
           console.error('mediaError', mediaError?.message, mediaError?.context);
+
           if (mediaError) {
-            // We dispatch here since this error won't be caught otherwise.
             saveAndDispatchError(mediaEl, mediaError);
-            return Promise.reject(mediaError);
+            return;
           }
 
-          const error = new Error('Unexpected error in license key request');
-          // @ts-ignore
-          saveAndDispatchError(mediaEl, error);
-          // NOTE: This should never happen. Adding for exhaustiveness (CJP).
-          return Promise.reject(error);
+          console.error('Unexpected error in license key request', errOrResp);
+          return;
         }
 
-        saveAndDispatchError(mediaEl, errOrResp);
-        return Promise.reject(errOrResp);
-      });
-
-      // This is the same call whether we are local or AirPlay.
-      // Safari will forward CKC to Apple TV automatically.
-      await session.update(ckc).catch(() => {
-        const message = i18n(
-          'Failed to update DRM license. This may be an issue with the player or your protected content.'
-        );
-        const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-        mediaError.errorCategory = MuxErrorCategory.DRM;
-        mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
-
-        saveAndDispatchError(mediaEl, mediaError);
-      });
+        console.error(errOrResp);
+      }
     };
 
     session.addEventListener('keystatuseschange', onKeyStatusChange);
