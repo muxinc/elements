@@ -32,7 +32,7 @@ export const fileSelectFragment = /*html*/ `
 
   </style>
 
-  <button id="file-select" type="button" part="file-select-button"></button>
+  <button id="file-select" type="button" part="file-select-button">Upload a video</button>
 `;
 
 const template = document.createElement('template');
@@ -158,13 +158,7 @@ class MuxUploaderFileSelectElement extends globalThis.HTMLElement {
     const text = t('Upload a video', locale);
 
     if (this.filePickerEl) {
-      // Don't translate text if it's a custom button
-      const isCustomButton = !this.shadowRoot?.contains(this.filePickerEl) && this.filePickerEl.hasAttribute('slot');
-
-      if (!isCustomButton) {
-        this.filePickerEl.textContent = text;
-      }
-    } else {
+      // Translate text only if it's the default button (inside the shadow DOM)
       const buttonEl = this.shadowRoot?.querySelector('#file-select') as HTMLButtonElement;
       if (buttonEl) {
         buttonEl.textContent = text;
