@@ -959,6 +959,8 @@ export const setupNativeFairplayDRM = (
           const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
           console.error('mediaError', mediaError?.message, mediaError?.context);
           if (mediaError) {
+            // We dispatch here since this error won't be caught otherwise.
+            saveAndDispatchError(mediaEl, mediaError);
             return Promise.reject(mediaError);
           }
           // NOTE: This should never happen. Adding for exhaustiveness (CJP).
