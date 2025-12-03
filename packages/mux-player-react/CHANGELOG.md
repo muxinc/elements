@@ -33,6 +33,50 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.9.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.9.1...@mux/mux-player-react@3.9.2) (2025-12-01)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.9.1 to 3.9.2
+
+## [3.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.9.0...@mux/mux-player-react@3.9.1) (2025-11-26)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.9.0 to 3.9.1
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
+## [3.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.8.0...@mux/mux-player-react@3.9.0) (2025-11-21)
+
+
+### Features
+
+* typed CSSProperties for mux-player custom CSS vars ([#1216](https://github.com/muxinc/elements/issues/1216)) ([252e2f4](https://github.com/muxinc/elements/commit/252e2f4ab36a2484456b26426808ced8d092e0af))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.8.0 to 3.9.0
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
 ## [3.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.7.0...@mux/mux-player-react@3.8.0) (2025-10-30)
 
 

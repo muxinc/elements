@@ -15,6 +15,29 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.15.16](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.15...@mux/mux-audio@0.15.16) (2025-11-26)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.15 ([#1244](https://github.com/muxinc/elements/issues/1244)) ([677b17d](https://github.com/muxinc/elements/commit/677b17d64a21f40e6a5db33d60094904b7554d10))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
+## [0.15.15](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.14...@mux/mux-audio@0.15.15) (2025-11-21)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
 ## [0.15.14](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.15.13...@mux/mux-audio@0.15.14) (2025-10-30)
 
 
