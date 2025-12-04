@@ -44,6 +44,62 @@ export const BooleanRenderer = ({
   );
 };
 
+export const OptionalBooleanRenderer = ({
+  name,
+  value,
+  label,
+  onChange,
+  formatter = DefaultEnumFormatter
+}: {
+  name: string;
+  value: boolean | undefined;
+  label?: string;
+  removeFalse?: boolean;
+  onChange: (obj: any) => void;
+  formatter?: (enumValue: boolean) => ReactNode;
+}) => {
+  const labelStr = label ?? toWordsFromKeyName(name);
+  const values = [true, false];
+  return (
+    <div>
+      <label htmlFor={`${name}-control`}>
+        {labelStr} (<code>{name}</code>)
+      </label>
+      <div>
+        <input
+          id={`${name}-none-control`}
+          type="radio"
+          onChange={() => {
+            
+              console.log("Selecting value:", undefined, toChangeObject(name, undefined));
+            onChange(toChangeObject(name, undefined))}}
+          value=""
+          checked={value === undefined}
+        />
+        <label htmlFor={`${name}-none-control`}>None</label>
+        {values.map((enumValue, i) => {
+          return (
+            <Fragment key={`${name}-${enumValue}`}>
+              <input
+                id={`${name}-${enumValue}-control`}
+                type="radio"
+                onChange={() => {
+                  const changeValue = enumValue;
+                  console.log("Selecting value:", changeValue, toChangeObject(name, changeValue));
+                  onChange(toChangeObject(name, changeValue));
+                }}
+                value={enumValue.toString()}
+                checked={value === enumValue}
+              />
+              <label htmlFor={`${name}-${enumValue}-control`}>{formatter(enumValue)}</label>
+            </Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 export const NumberRenderer = ({
   name,
   value,
