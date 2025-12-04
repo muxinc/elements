@@ -92,6 +92,7 @@ const PlayerAttributes = {
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
   DISABLE_PSEUDO_ENDED: 'disable-pseudo-ended',
+  CAP_LEVEL_TO_PLAYER_SIZE: 'cap-level-to-player-size',
 } as const;
 
 const ThemeAttributeNames = [
@@ -188,6 +189,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
+    capLevelToPlayerSize: el.hasAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE),
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -1882,6 +1884,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     } else {
       this.setAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE, '');
     }
+  }
+
+  get capLevelToPlayerSize() {
+    return this.hasAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE);
+  }
+
+  set capLevelToPlayerSize(val: boolean) {
+    if (!val) {
+      this.removeAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE);
+      return;
+    }
+    this.setAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE, '');
   }
 }
 

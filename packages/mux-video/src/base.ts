@@ -54,6 +54,7 @@ export * from './types.js';
 export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
+  CAP_LEVEL_TO_PLAYER_SIZE: 'cap-level-to-player-size',
   DEBUG: 'debug',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
@@ -516,6 +517,20 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
+  get capLevelToPlayerSize(): boolean | undefined {
+    let val = this.getAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE);
+    if (val == null) return undefined;
+    return val === 'true';
+  }
+
+  set capLevelToPlayerSize(val: boolean | undefined) {
+    if (val !== undefined) {
+      this.setAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE, val.toString());
+    } else {
+      this.removeAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE);
+    }
+  }
+
   get drmToken() {
     return this.getAttribute(Attributes.DRM_TOKEN) ?? undefined;
   }
@@ -900,6 +915,15 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         }
         break;
       }
+      /*case Attributes.CAP_LEVEL_TO_PLAYER_SIZE: {
+        if (newValue == null || newValue !== oldValue) {
+          const capLevelToPlayerSize = this.capLevelToPlayerSize;
+          if (this._hls) {
+            this._hls.config.capLevelToPlayerSize = capLevelToPlayerSize ?? false;
+          }
+        }
+        break;
+      }*/
     }
   }
 
