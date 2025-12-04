@@ -40,6 +40,18 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.32.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.4...@mux/playback-core@0.32.0) (2025-12-04)
+
+
+### Features
+
+* add `max-auto-resolution` attribute for automatic resolution capping ([#1243](https://github.com/muxinc/elements/issues/1243)) ([a43edd5](https://github.com/muxinc/elements/commit/a43edd5185d5c23b933c536df880ed0a1ca5b2ac))
+
+
+### Bug Fixes
+
+* Properly setup DRM to support Airplay ([#1245](https://github.com/muxinc/elements/issues/1245)) ([673b7ff](https://github.com/muxinc/elements/commit/673b7ff6e056581ec9aec5d674e013df1d81dd4a))
+
 ## [0.31.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.3...@mux/playback-core@0.31.4) (2025-11-26)
 
 

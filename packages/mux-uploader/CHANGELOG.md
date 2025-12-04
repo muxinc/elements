@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.4.0...@mux/mux-uploader@1.4.1) (2025-12-04)
+
+
+### Bug Fixes
+
+* button text for file-select slot can now be customized ([#1252](https://github.com/muxinc/elements/issues/1252)) ([240d2ae](https://github.com/muxinc/elements/commit/240d2aea4cf06846534eff0e54f10c8562aa185f))
+
 ## [1.4.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.3.0...@mux/mux-uploader@1.4.0) (2025-11-21)
 
 
