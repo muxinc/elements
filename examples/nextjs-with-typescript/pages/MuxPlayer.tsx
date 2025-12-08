@@ -654,6 +654,11 @@ function MuxPlayerPage({ location }: Props) {
             min={0}
             step={1}
           />
+          <BooleanRenderer
+            value={state.capLevelToPlayerSize}
+            name="capLevelToPlayerSize"
+            onChange={genericOnChange}
+          ></BooleanRenderer>
         </div>
       </main>
     </>

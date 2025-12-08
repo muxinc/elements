@@ -729,7 +729,6 @@ export const setupHls = (
       backBufferLength: 30,
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
-      capLevelToPlayerSize: true,
       capLevelOnFPSDrop: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
@@ -744,19 +743,19 @@ export const setupHls = (
         }
       : undefined;
 
-    let capLevelControllerObj : {
+    const capLevelControllerObj: {
       capLevelController?: typeof CapLevelController;
       capLevelToPlayerSize?: boolean;
-    } = { capLevelController: undefined };
-    if (_hlsConfig.capLevelToPlayerSize == null && !props.capLevelToPlayerSize) {
-      capLevelControllerObj = {
-        capLevelController: MinCapLevelController,
-      };
-    }
-    if (props.capLevelToPlayerSize !== undefined) {
-      capLevelControllerObj = {
-        capLevelToPlayerSize: props.capLevelToPlayerSize,
-      };
+    } = {};
+
+    // If capLevelToPlayerSize is not explicitly set we enable MinCapLevelController
+    if (_hlsConfig.capLevelToPlayerSize == null && props.capLevelToPlayerSize == null) {
+      capLevelControllerObj.capLevelController = MinCapLevelController;
+      capLevelControllerObj.capLevelToPlayerSize = true;
+    } else {
+      capLevelControllerObj.capLevelController = undefined;
+      // hlsConfig will take precedence over props
+      capLevelControllerObj.capLevelToPlayerSize = props.capLevelToPlayerSize;
     }
 
     const hls = new Hls({
