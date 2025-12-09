@@ -92,7 +92,6 @@ const PlayerAttributes = {
   NO_TOOLTIPS: 'no-tooltips',
   PROUDLY_DISPLAY_MUX_BADGE: 'proudly-display-mux-badge',
   DISABLE_PSEUDO_ENDED: 'disable-pseudo-ended',
-  CAP_LEVEL_TO_PLAYER_SIZE: 'cap-level-to-player-size',
 } as const;
 
 const ThemeAttributeNames = [
@@ -1886,16 +1885,15 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     }
   }
 
-  get capLevelToPlayerSize() {
-    return this.hasAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE);
+  get capLevelToPlayerSize(): boolean | undefined {
+    if (this._hls) {
+      return this._hls.capLevelToPlayerSize;
+    }
+    return this._hlsConfig?.capLevelToPlayerSize;
   }
 
-  set capLevelToPlayerSize(val: boolean) {
-    if (!val) {
-      this.removeAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE);
-      return;
-    }
-    this.setAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE, '');
+  set capLevelToPlayerSize(val: boolean | undefined) {
+    this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
   }
 }
 

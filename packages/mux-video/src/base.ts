@@ -54,7 +54,6 @@ export * from './types.js';
 export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
-  CAP_LEVEL_TO_PLAYER_SIZE: 'cap-level-to-player-size',
   DEBUG: 'debug',
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
@@ -518,17 +517,14 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   get capLevelToPlayerSize(): boolean | undefined {
-    let val = this.getAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE);
-    if (val == null) return undefined;
-    return val === 'true';
+    if (this._hls) {
+      return this._hls.capLevelToPlayerSize;
+    }
+    return this._hlsConfig?.capLevelToPlayerSize;
   }
 
   set capLevelToPlayerSize(val: boolean | undefined) {
-    if (val !== undefined) {
-      this.setAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE, val.toString());
-    } else {
-      this.removeAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE);
-    }
+    this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
   }
 
   get drmToken() {
