@@ -281,6 +281,7 @@ function MuxPlayerPage({ location }: Props) {
           //   startLevel: 2,
           //   debug: true,
           // }}
+          maxAutoResolution="720p"
           title={state.title}
           videoTitle={state.videoTitle}
           startTime={state.startTime}

@@ -1,15 +1,14 @@
 import { server } from './utils/server';
-
 import { fixture, assert, oneEvent, aTimeout } from '@open-wc/testing';
 import '../src/index.ts';
 import { t } from '../src/utils/i18n.ts';
 
-describe('<mux-uploader-sr-text>', () => {
-  it('updates with success message on success', async function () {
-    let file = new File(['foo'], 'foo.mp4', {
-      type: 'video/mp4',
-    });
+describe('<mux-uploader-pause>', () => {
+  let file = new File(['foo'], 'foo.mp4', {
+    type: 'video/mp4',
+  });
 
+  it('displays pause button when upload is in progress', async function () {
     server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
       200,
       { 'Content-Type': 'application/json' },
@@ -18,9 +17,10 @@ describe('<mux-uploader-sr-text>', () => {
 
     const uploader = await fixture(`<mux-uploader
       endpoint="https://mock-upload-endpoint.com"
-    ></mux-uploader>`);
+      pausable>
+    </mux-uploader>`);
 
-    const sr = uploader.shadowRoot.querySelector('mux-uploader-sr-text');
+    const pause = uploader.shadowRoot.querySelector('mux-uploader-pause');
 
     setTimeout(() => {
       uploader.dispatchEvent(
@@ -32,18 +32,15 @@ describe('<mux-uploader-sr-text>', () => {
       );
     });
 
-    await aTimeout(500);
+    await aTimeout(100);
     server.respond();
-    await oneEvent(uploader, 'success');
-    assert.equal(sr.srOnlyText.innerHTML, t('Upload complete!'), 'status message matches');
+
+    assert.exists(pause, 'pause element exists');
+    assert.equal(pause.pauseButton.textContent, t('Pause'), 'displays Pause text');
   });
 
   describe('translations', () => {
-    let file = new File(['foo'], 'foo.mp4', {
-      type: 'video/mp4',
-    });
-
-    it('displays English success message when no locale is specified', async function () {
+    it('displays English pause text when no locale is specified', async function () {
       server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
         200,
         { 'Content-Type': 'application/json' },
@@ -52,41 +49,10 @@ describe('<mux-uploader-sr-text>', () => {
 
       const uploader = await fixture(`<mux-uploader
         endpoint="https://mock-upload-endpoint.com"
-      ></mux-uploader>`);
-
-      const sr = uploader.shadowRoot.querySelector('mux-uploader-sr-text');
-
-      setTimeout(() => {
-        uploader.dispatchEvent(
-          new CustomEvent('file-ready', {
-            composed: true,
-            bubbles: true,
-            detail: file,
-          })
-        );
-      });
-
-      await aTimeout(500);
-      server.respond();
-      await oneEvent(uploader, 'success');
-
-      assert.equal(sr.srOnlyText.textContent, t('Upload complete!'), 'displays English text by default');
-      assert.equal(sr.srOnlyText.textContent, 'Upload complete!', 'matches English translation');
-    });
-
-    it('displays Spanish success message when locale is set to es', async function () {
-      server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
-        200,
-        { 'Content-Type': 'application/json' },
-        '{success: true}',
-      ]);
-
-      const uploader = await fixture(`<mux-uploader
-        endpoint="https://mock-upload-endpoint.com"
-        locale="es">
+        pausable>
       </mux-uploader>`);
 
-      const sr = uploader.shadowRoot.querySelector('mux-uploader-sr-text');
+      const pause = uploader.shadowRoot.querySelector('mux-uploader-pause');
 
       setTimeout(() => {
         uploader.dispatchEvent(
@@ -98,15 +64,14 @@ describe('<mux-uploader-sr-text>', () => {
         );
       });
 
-      await aTimeout(500);
-      server.respond();
-      await oneEvent(uploader, 'success');
+      await oneEvent(uploader, 'uploadstart');
+      await aTimeout(100);
 
-      assert.equal(sr.srOnlyText.textContent, t('Upload complete!', 'es'), 'displays Spanish text');
-      assert.equal(sr.srOnlyText.textContent, '¡Subida completada!', 'matches Spanish translation');
+      assert.equal(pause.pauseButton.textContent, t('Pause'), 'displays English Pause text by default');
+      assert.equal(pause.pauseButton.textContent, 'Pause', 'matches English translation');
     });
 
-    it('displays French success message when locale is set to fr', async function () {
+    it('displays Spanish pause text when locale is set to es', async function () {
       server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
         200,
         { 'Content-Type': 'application/json' },
@@ -115,10 +80,11 @@ describe('<mux-uploader-sr-text>', () => {
 
       const uploader = await fixture(`<mux-uploader
         endpoint="https://mock-upload-endpoint.com"
-        locale="fr">
+        locale="es"
+        pausable>
       </mux-uploader>`);
 
-      const sr = uploader.shadowRoot.querySelector('mux-uploader-sr-text');
+      const pause = uploader.shadowRoot.querySelector('mux-uploader-pause');
 
       setTimeout(() => {
         uploader.dispatchEvent(
@@ -130,12 +96,43 @@ describe('<mux-uploader-sr-text>', () => {
         );
       });
 
-      await aTimeout(500);
-      server.respond();
-      await oneEvent(uploader, 'success');
+      await oneEvent(uploader, 'uploadstart');
+      await aTimeout(100);
 
-      assert.equal(sr.srOnlyText.textContent, t('Upload complete!', 'fr'), 'displays French text');
-      assert.equal(sr.srOnlyText.textContent, 'Téléchargement terminé!', 'matches French translation');
+      assert.equal(pause.pauseButton.textContent, t('Pause', 'es'), 'displays Spanish Pause text');
+      assert.equal(pause.pauseButton.textContent, 'Pausar', 'matches Spanish translation');
+    });
+
+    it('displays French pause text when locale is set to fr', async function () {
+      server.respondWith('PUT', 'https://mock-upload-endpoint.com', [
+        200,
+        { 'Content-Type': 'application/json' },
+        '{success: true}',
+      ]);
+
+      const uploader = await fixture(`<mux-uploader
+        endpoint="https://mock-upload-endpoint.com"
+        locale="fr"
+        pausable>
+      </mux-uploader>`);
+
+      const pause = uploader.shadowRoot.querySelector('mux-uploader-pause');
+
+      setTimeout(() => {
+        uploader.dispatchEvent(
+          new CustomEvent('file-ready', {
+            composed: true,
+            bubbles: true,
+            detail: file,
+          })
+        );
+      });
+
+      await oneEvent(uploader, 'uploadstart');
+      await aTimeout(100);
+
+      assert.equal(pause.pauseButton.textContent, t('Pause', 'fr'), 'displays French Pause text');
+      assert.equal(pause.pauseButton.textContent, 'Pause', 'matches French translation');
     });
   });
 });

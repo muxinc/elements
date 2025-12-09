@@ -24,6 +24,7 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
   Chapter,
   CuePoint,
   Tokens,
@@ -153,6 +154,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     beaconCollectionDomain: el.beaconCollectionDomain,
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
+    maxAutoResolution: el.maxAutoResolution,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
     assetStartTime: el.assetStartTime,
@@ -1344,6 +1346,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       this.setAttribute(MuxVideoAttributes.MIN_RESOLUTION, val);
     } else {
       this.removeAttribute(MuxVideoAttributes.MIN_RESOLUTION);
+    }
+  }
+
+  get maxAutoResolution() {
+    return (this.getAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION) as MaxAutoResolutionValue) ?? undefined;
+  }
+
+  set maxAutoResolution(val: MaxAutoResolutionValue | undefined) {
+    if (val == undefined) {
+      this.removeAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION);
+    } else {
+      this.setAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION, val);
     }
   }
 

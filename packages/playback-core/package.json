@@ -1,6 +1,6 @@
 {
   "name": "@mux/playback-core",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "description": "Core library for media playback in the browser shared by mux elements",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
@@ -57,7 +57,7 @@
     "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'"
   },
   "dependencies": {
-    "hls.js": "~1.6.13",
+    "hls.js": "~1.6.15",
     "mux-embed": "^5.8.3"
   },
   "devDependencies": {

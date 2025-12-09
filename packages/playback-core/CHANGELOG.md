@@ -40,6 +40,39 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.32.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.4...@mux/playback-core@0.32.0) (2025-12-04)
+
+
+### Features
+
+* add `max-auto-resolution` attribute for automatic resolution capping ([#1243](https://github.com/muxinc/elements/issues/1243)) ([a43edd5](https://github.com/muxinc/elements/commit/a43edd5185d5c23b933c536df880ed0a1ca5b2ac))
+
+
+### Bug Fixes
+
+* Properly setup DRM to support Airplay ([#1245](https://github.com/muxinc/elements/issues/1245)) ([673b7ff](https://github.com/muxinc/elements/commit/673b7ff6e056581ec9aec5d674e013df1d81dd4a))
+
+## [0.31.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.3...@mux/playback-core@0.31.4) (2025-11-26)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.15 ([#1244](https://github.com/muxinc/elements/issues/1244)) ([677b17d](https://github.com/muxinc/elements/commit/677b17d64a21f40e6a5db33d60094904b7554d10))
+
+## [0.31.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.2...@mux/playback-core@0.31.3) (2025-11-21)
+
+
+### Bug Fixes
+
+* suppressing non fatal errors ([#1239](https://github.com/muxinc/elements/issues/1239)) ([1c2e0c3](https://github.com/muxinc/elements/commit/1c2e0c32ad2c6b9524a624ab26087fa0abb62068))
+
+## [0.31.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.1...@mux/playback-core@0.31.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* chrome version check to shouldDefaultToMSE ([#1229](https://github.com/muxinc/elements/issues/1229)) ([437a167](https://github.com/muxinc/elements/commit/437a1671d6bab121be5b327b8d14bb0f15a75c08))
+
 ## [0.31.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.0...@mux/playback-core@0.31.1) (2025-10-24)
 
 

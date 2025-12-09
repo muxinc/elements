@@ -6,9 +6,21 @@ import type {
   MaxResolutionValue,
   MinResolutionValue,
   RenditionOrderValue,
+  MaxAutoResolutionValue,
 } from '@mux/playback-core';
 import type MuxPlayerElement from '@mux/mux-player';
 import type { Tokens, EventMap as MuxPlayerElementEventMap } from '@mux/mux-player';
+
+/**
+ * CSS properties interface for Mux components
+ * Extends standard CSSProperties to include custom CSS variables
+ */
+export interface MuxCSSProperties extends CSSProperties {
+  [key: `--${string}`]: string | undefined;
+}
+
+// Alias for backward compatibility
+export type MuxPlayerCSSProperties = MuxCSSProperties;
 
 type ValueOf<T> = T[keyof T];
 
@@ -30,7 +42,7 @@ type VideoApiAttributes = {
   autoPlay: boolean | string;
   loop: boolean;
   muted: boolean;
-  style: CSSProperties;
+  style: MuxPlayerCSSProperties;
 };
 
 type MuxMediaPropTypes = {
@@ -77,6 +89,7 @@ export type MuxPlayerProps = {
   backwardSeekOffset?: number;
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
+  maxAutoResolution?: MaxAutoResolutionValue;
   renditionOrder?: RenditionOrderValue;
   programStartTime?: number;
   programEndTime?: number;

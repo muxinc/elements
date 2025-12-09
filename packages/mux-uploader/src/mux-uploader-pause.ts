@@ -1,6 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -81,16 +82,13 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
         this.pauseButton.disabled = false;
         if (!this.#uploaderEl) return;
         const nextPausedState = this.#uploaderEl.paused ?? false;
-        // If entered paused, currently does not take effect until current chunk completes upload,
-        // so show as "pausing"
-        this.pauseButton.innerHTML = nextPausedState ? 'Pausing...' : 'Pause';
+        this.updateText();
         if (nextPausedState) {
           this.pauseButton.disabled = true;
           this.#uploaderEl.addEventListener(
             'chunksuccess',
             () => {
-              // Recheck paused state just in case state changed while waiting for 'chunksuccess'
-              this.pauseButton.innerHTML = this.#uploaderEl?.paused ? 'Resume' : 'Pause';
+              this.updateText();
               this.pauseButton.disabled = false;
             },
             { once: true }
@@ -103,6 +101,10 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
       this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
       this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
+
+      this.#uploaderEl.addEventListener('localechange', () => this.updateText(), opts);
+
+      this.updateText();
     }
   }
 
@@ -112,6 +114,21 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
 
   get pauseButton() {
     return this.shadowRoot?.getElementById('pause-button') as HTMLButtonElement;
+  }
+
+  updateText() {
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
+    const isPaused = this.#uploaderEl?.paused ?? false;
+    const isPausing = this.pauseButton?.disabled && isPaused;
+
+    if (isPausing) {
+      // If entered paused, currently does not take effect until current chunk completes upload,
+      // so show as "pausing"
+      this.pauseButton.innerHTML = t('Pausing...', locale);
+    } else {
+      // Recheck paused state just in case state changed while waiting for 'chunksuccess'
+      this.pauseButton.innerHTML = isPaused ? t('Resume', locale) : t('Pause', locale);
+    }
   }
 
   triggerPause = () => {
