@@ -1,0 +1,44 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "tasks": {
+    "i18n": {},
+    "clean": {
+      "cache": false
+    },
+    "lint": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": ["coverage/**/*"],
+      "dependsOn": ["copypolyfills", "build"]
+    },
+    "dev": {
+      "cache": false,
+      "dependsOn": ["build:types", "build"]
+    },
+    "copypolyfills": {
+      "outputs": ["src/polyfills/**/*"],
+      "dependsOn": ["^copypolyfills"]
+    },
+    "build:types": {
+      "outputs": ["dist/types/**/*", "dist/types-ts3.4/**/*"],
+      "dependsOn": ["copypolyfills", "^build:types"]
+    },
+    "build:packages": {
+      "outputs": ["dist/**/*"],
+      "dependsOn": ["^build"]
+    },
+    "build": {
+      "outputs": [
+        "dist/**/*",
+        "build/**/*",
+        ".next/**/*",
+        "!.next/cache/**",
+        ".svelte-kit/**/*",
+        ".vercel/**/*",
+        "public/dist/**/*"
+      ],
+      "dependsOn": ["build:types", "^build"]
+    }
+  }
+}
