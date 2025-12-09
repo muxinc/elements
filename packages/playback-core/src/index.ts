@@ -354,12 +354,8 @@ const isAndroidLike =
   userAgentStr.toLowerCase().includes('android') ||
   ['x11', 'android'].some((platformStr) => userAgentPlatform.toLowerCase().includes(platformStr));
 
-const googleChromeBrand = browserBrands.find((brand) => brand.brand === 'Google Chrome');
-
-const isChromeWithNativeHLS = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
-  googleChromeBrand &&
-  parseInt(googleChromeBrand.version ?? '0') >= 141 &&
-  !!mediaEl.canPlayType('application/vnd.apple.mpegurl');
+const isSafari = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
+  /^((?!chrome|android).)*safari/i.test(userAgentStr) && !!mediaEl.canPlayType('application/vnd.apple.mpegurl');
 
 // NOTE: Exporting for testing
 export const muxMediaState: WeakMap<
@@ -370,8 +366,7 @@ export const muxMediaState: WeakMap<
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
 
-const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
-  isAndroidLike || isChromeWithNativeHLS(mediaEl);
+const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) => isAndroidLike || !isSafari(mediaEl);
 
 export const generatePlayerInitTime = () => {
   return mux.utils.now();
