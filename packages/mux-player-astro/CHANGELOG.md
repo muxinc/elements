@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.10.0...@mux/mux-player-astro@3.10.1) (2025-12-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.10.0 to 3.10.1
+    * @mux/playback-core bumped from 0.32.0 to 0.32.1
+
 ## [3.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.9.2...@mux/mux-player-astro@3.10.0) (2025-12-04)
 
 
