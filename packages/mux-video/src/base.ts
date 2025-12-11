@@ -82,6 +82,7 @@ export const Attributes = {
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
   LOGO: 'logo',
+  DISABLE_CAP_LEVEL_TO_PLAYER_SIZE: 'disable-cap-level-to-player-size',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -516,6 +517,29 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
+  get capLevelToPlayerSize(): boolean | undefined {
+    if (this._hls) {
+      return this._hls.capLevelToPlayerSize;
+    }
+    return this._hlsConfig?.capLevelToPlayerSize;
+  }
+
+  set capLevelToPlayerSize(val: boolean | undefined) {
+    this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
+  }
+
+  get disableCapLevelToPlayerSize(): boolean {
+    return this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+  }
+
+  set disableCapLevelToPlayerSize(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+    } else {
+      this.setAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
+    }
+  }
+
   get drmToken() {
     return this.getAttribute(Attributes.DRM_TOKEN) ?? undefined;
   }
@@ -900,6 +924,15 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         }
         break;
       }
+      /*case Attributes.CAP_LEVEL_TO_PLAYER_SIZE: {
+        if (newValue == null || newValue !== oldValue) {
+          const capLevelToPlayerSize = this.capLevelToPlayerSize;
+          if (this._hls) {
+            this._hls.config.capLevelToPlayerSize = capLevelToPlayerSize ?? false;
+          }
+        }
+        break;
+      }*/
     }
   }
 
