@@ -705,7 +705,7 @@ export const setupHls = (
       | 'tokens'
       | 'drmTypeCb'
       | 'maxAutoResolution'
-      | 'capLevelToPlayerSize'
+      | 'disableCapLevelToPlayerSize'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -749,14 +749,18 @@ export const setupHls = (
     } = {};
 
     // If capLevelToPlayerSize is not explicitly set we enable MinCapLevelController
-    if (_hlsConfig.capLevelToPlayerSize == null && props.capLevelToPlayerSize == null) {
+    if (_hlsConfig.capLevelToPlayerSize == null) {
       capLevelControllerObj.capLevelController = MinCapLevelController;
       capLevelControllerObj.capLevelToPlayerSize = true;
     } else {
       capLevelControllerObj.capLevelController = undefined;
-      // hlsConfig will take precedence over props
-      capLevelControllerObj.capLevelToPlayerSize = props.capLevelToPlayerSize;
+      capLevelControllerObj.capLevelToPlayerSize = _hlsConfig.capLevelToPlayerSize;
     }
+    if (props.disableCapLevelToPlayerSize) {
+      capLevelControllerObj.capLevelController = undefined;
+      capLevelControllerObj.capLevelToPlayerSize = false;
+    }
+
 
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
@@ -782,6 +786,12 @@ export const setupHls = (
       ..._hlsConfig,
     }) as HlsInterface;
 
+    console.log("capLevelToPlayerSize summary", {
+      hlsConfigCapLevelToPlayerSize: _hlsConfig.capLevelToPlayerSize,
+      disableCapLevelToPlayerSize: props.disableCapLevelToPlayerSize,
+      capLevelControllerObj: capLevelControllerObj,
+      hlsCapLevelToPlayerSize: hls.capLevelToPlayerSize,
+    });
     if (capLevelControllerObj.capLevelController === MinCapLevelController) {
       if (maxAutoResolution !== undefined) {
         MinCapLevelController.setMaxAutoResolution(hls, maxAutoResolution);

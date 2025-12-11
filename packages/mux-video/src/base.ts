@@ -82,6 +82,7 @@ export const Attributes = {
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
   LOGO: 'logo',
+  DISABLE_CAP_LEVEL_TO_PLAYER_SIZE: 'disable-cap-level-to-player-size',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -525,6 +526,18 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
 
   set capLevelToPlayerSize(val: boolean | undefined) {
     this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
+  }
+
+  get disableCapLevelToPlayerSize(): boolean {
+    return this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+  }
+
+  set disableCapLevelToPlayerSize(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+    } else {
+      this.setAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
+    }
   }
 
   get drmToken() {

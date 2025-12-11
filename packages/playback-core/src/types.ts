@@ -175,6 +175,7 @@ export type MuxMediaPropTypes = {
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
   capLevelToPlayerSize?: boolean;
+  disableCapLevelToPlayerSize?: boolean;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   customDomain: string;
   debug: Options['debug'] & Hls['config']['debug'];

@@ -188,7 +188,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
-    capLevelToPlayerSize: el.hasAttribute(PlayerAttributes.CAP_LEVEL_TO_PLAYER_SIZE),
+    disableCapLevelToPlayerSize: el.disableCapLevelToPlayerSize,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -1894,6 +1894,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
   set capLevelToPlayerSize(val: boolean | undefined) {
     this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
+  }
+
+  get disableCapLevelToPlayerSize(): boolean {
+    return this.hasAttribute(MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+  }
+
+  set disableCapLevelToPlayerSize(val: boolean | undefined) {
+    if (!val) {
+      this.removeAttribute(MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+    } else {
+      this.setAttribute(MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
+    }
   }
 }
 
