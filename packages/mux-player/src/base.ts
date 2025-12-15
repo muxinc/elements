@@ -378,7 +378,26 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
     // template details get updated appropriately (e.g. thumbnails track) (CJP)
-    this.media?.addEventListener('streamtypechange', () => this.#render());
+    this.media?.addEventListener('streamtypechange', () => {
+      // After stream type is determined from manifest, generate storyboard URL if needed
+      // This avoids Safari timing issues with dynamic URL generation during initial render
+      if (
+        this.streamType === StreamTypes.ON_DEMAND &&
+        this.preferPlayback === PlaybackTypes.MSE &&
+        !this.#cachedStoryboardUrl
+      ) {
+        const { tokens } = this;
+        if (!this.audio && this.playbackId && (!tokens.playback || tokens.storyboard)) {
+          this.#cachedStoryboardUrl = getStoryboardURLFromPlaybackId(this.playbackId, {
+            customDomain: this.customDomain,
+            token: tokens.storyboard,
+            programStartTime: this.programStartTime,
+            programEndTime: this.programEndTime,
+          });
+        }
+      }
+      this.#render();
+    });
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
     this.media?.addEventListener('loadstart', () => this.#render());
@@ -989,6 +1008,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     }
   }
 
+  #cachedStoryboardUrl?: string;
   /**
    * Return the storyboard URL when a playback ID or storyboard-src is provided,
    * we aren't an audio player and the stream-type isn't live.
@@ -997,6 +1017,11 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     const { tokens } = this;
     // If the storyboardSrc has been explicitly set, assume it should be used
     if (this.storyboardSrc && !tokens.storyboard) return this.storyboardSrc;
+
+    const isOnDemandMse = this.streamType === StreamTypes.ON_DEMAND && this.preferPlayback === PlaybackTypes.MSE;
+    if (isOnDemandMse) {
+      return this.#cachedStoryboardUrl;
+    }
     if (
       // NOTE: Some audio use cases may have a storyboard (e.g. it's an audio+video stream being played *as* audio)
       // Consider supporting cases (CJP)
