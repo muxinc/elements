@@ -382,6 +382,15 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
     this.media?.addEventListener('loadstart', () => this.#render());
+
+    this.media?.textTracks.addEventListener('addtrack', (event) => {
+      this.#checkDefaultHiddenCaptions(event.track!);
+    });
+  }
+
+  #checkDefaultHiddenCaptions(track: TextTrack) {
+    if (!this.defaultHiddenCaptions) return;
+    track.mode = 'disabled';
   }
 
   #setupCSSProperties() {
