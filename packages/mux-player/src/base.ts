@@ -1005,7 +1005,6 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     const { tokens } = this;
     // If the storyboardSrc has been explicitly set, assume it should be used
     if (this.storyboardSrc && !tokens.storyboard) return this.storyboardSrc;
-
     if (
       // NOTE: Some audio use cases may have a storyboard (e.g. it's an audio+video stream being played *as* audio)
       // Consider supporting cases (CJP)
