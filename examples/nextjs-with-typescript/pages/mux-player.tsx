@@ -30,6 +30,7 @@ function MuxPlayerWCPage() {
           playback-id={playbackId}
           forward-seek-offset={10}
           backward-seek-offset={10}
+          max-auto-resolution="720p"
           // onPlayerReady={() => console.log("ready!")}
           {...debugObj}
           {...mutedObj}

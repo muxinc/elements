@@ -1,5 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
+import type MuxUploaderElement from './mux-uploader';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -36,6 +38,12 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
 
     if (this.#uploaderEl) {
       this.#uploaderEl.addEventListener('success', this.updateText.bind(this));
+
+      this.#uploaderEl.addEventListener('localechange', () => {
+        if (this.srOnlyText?.textContent) {
+          this.updateText();
+        }
+      });
     }
   }
 
@@ -47,7 +55,8 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
 
   updateText() {
     if (this.srOnlyText) {
-      this.srOnlyText.textContent = 'Upload complete!';
+      const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
+      this.srOnlyText.textContent = t('Upload complete!', locale);
     }
   }
 }

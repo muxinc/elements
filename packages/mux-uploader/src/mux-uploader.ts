@@ -4,6 +4,7 @@ import { UpChunk } from '@mux/upchunk';
 
 import blockLayout from './layouts/block';
 import { ProgressTypes } from './constants';
+import { t } from './utils/i18n.js';
 
 const rootTemplate = document.createElement('template');
 
@@ -91,6 +92,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
       'no-retry',
       'max-file-size',
       'use-large-file-workaround',
+      'locale',
     ];
   }
 
@@ -134,8 +136,13 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     this.removeEventListener('reset', this.resetState);
   }
 
-  attributeChangedCallback() {
-    this.updateLayout();
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
+    if (name === 'locale' && oldValue !== newValue) {
+      // Dispatch event to notify subcomponents to update their texts
+      this.dispatchEvent(new CustomEvent('localechange', { detail: { locale: newValue } }));
+    } else if (name !== 'locale') {
+      this.updateLayout();
+    }
   }
 
   protected get hiddenFileInput() {
@@ -257,6 +264,19 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     }
   }
 
+  get locale(): string | null {
+    return this.getAttribute('locale');
+  }
+
+  set locale(value: string | undefined) {
+    if (value === this.locale) return;
+    if (!value) {
+      this.removeAttribute('locale');
+    } else {
+      this.setAttribute('locale', value);
+    }
+  }
+
   get upload() {
     return this._upload;
   }
@@ -308,7 +328,7 @@ class MuxUploaderElement extends globalThis.HTMLElement implements MuxUploaderEl
     const dynamicChunkSize = this.dynamicChunkSize;
 
     if (!endpoint) {
-      this.setError(`No url or endpoint specified -- cannot handleUpload`);
+      this.setError(t('No url or endpoint specified - cannot handle upload', this.locale));
       // Bail early if no endpoint.
       return;
     } else {

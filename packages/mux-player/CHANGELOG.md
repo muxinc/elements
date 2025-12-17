@@ -48,6 +48,97 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.10.0...@mux/mux-player@3.10.1) (2025-12-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.29.0 to 0.29.1
+    * @mux/playback-core bumped from 0.32.0 to 0.32.1
+
+## [3.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.9.2...@mux/mux-player@3.10.0) (2025-12-04)
+
+
+### Features
+
+* add `max-auto-resolution` attribute for automatic resolution capping ([#1243](https://github.com/muxinc/elements/issues/1243)) ([a43edd5](https://github.com/muxinc/elements/commit/a43edd5185d5c23b933c536df880ed0a1ca5b2ac))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.28.2 to 0.29.0
+    * @mux/playback-core bumped from 0.31.4 to 0.32.0
+
+## [3.9.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.9.1...@mux/mux-player@3.9.2) (2025-12-01)
+
+
+### Bug Fixes
+
+* Upgrade ce-la-react ([#1248](https://github.com/muxinc/elements/issues/1248)) ([976b47c](https://github.com/muxinc/elements/commit/976b47c4e23f23689ed9a8e8b01bd1b5058b5b5b))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.28.1 to 0.28.2
+
+## [3.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.9.0...@mux/mux-player@3.9.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* upgrade hls.js to 1.6.15 ([#1244](https://github.com/muxinc/elements/issues/1244)) ([677b17d](https://github.com/muxinc/elements/commit/677b17d64a21f40e6a5db33d60094904b7554d10))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.28.0 to 0.28.1
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
+## [3.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.8.0...@mux/mux-player@3.9.0) (2025-11-21)
+
+
+### Bug Fixes
+
+* Add MENU_ITEM constant for styling of menu items with CSS ([#1212](https://github.com/muxinc/elements/issues/1212)) ([78f7154](https://github.com/muxinc/elements/commit/78f715466b6f3598fc2506d983bdbb3206bc9d11))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1242](https://github.com/muxinc/elements/issues/1242)) ([3379e62](https://github.com/muxinc/elements/commit/3379e628c3ed10752997becf44430a8d2a3360a5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.27.2 to 0.28.0
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
+## [3.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.7.0...@mux/mux-player@3.8.0) (2025-10-30)
+
+
+### Features
+
+* add nomutedpref prop to mux player ([#1222](https://github.com/muxinc/elements/issues/1222)) ([ce091c9](https://github.com/muxinc/elements/commit/ce091c978e7926eb3ee3fbb894cf471e2d13ea58))
+* add support to define custom fullscreen element ([#1217](https://github.com/muxinc/elements/issues/1217)) ([3638325](https://github.com/muxinc/elements/commit/3638325e44aa1df1471c80f8c60bddf47c908613))
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 3 updates ([#1230](https://github.com/muxinc/elements/issues/1230)) ([4d3fc77](https://github.com/muxinc/elements/commit/4d3fc773cf3516fc4de3a246f826727d17da6177))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.27.1 to 0.27.2
+    * @mux/playback-core bumped from 0.31.1 to 0.31.2
+
 ## [3.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.6.1...@mux/mux-player@3.7.0) (2025-10-24)
 
 

@@ -33,6 +33,91 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.10.0...@mux/mux-player-react@3.10.1) (2025-12-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.10.0 to 3.10.1
+    * @mux/playback-core bumped from 0.32.0 to 0.32.1
+
+## [3.10.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.9.2...@mux/mux-player-react@3.10.0) (2025-12-04)
+
+
+### Features
+
+* add `max-auto-resolution` attribute for automatic resolution capping ([#1243](https://github.com/muxinc/elements/issues/1243)) ([a43edd5](https://github.com/muxinc/elements/commit/a43edd5185d5c23b933c536df880ed0a1ca5b2ac))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.9.2 to 3.10.0
+    * @mux/playback-core bumped from 0.31.4 to 0.32.0
+
+## [3.9.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.9.1...@mux/mux-player-react@3.9.2) (2025-12-01)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.9.1 to 3.9.2
+
+## [3.9.1](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.9.0...@mux/mux-player-react@3.9.1) (2025-11-26)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.9.0 to 3.9.1
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
+## [3.9.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.8.0...@mux/mux-player-react@3.9.0) (2025-11-21)
+
+
+### Features
+
+* typed CSSProperties for mux-player custom CSS vars ([#1216](https://github.com/muxinc/elements/issues/1216)) ([252e2f4](https://github.com/muxinc/elements/commit/252e2f4ab36a2484456b26426808ced8d092e0af))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.8.0 to 3.9.0
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
+## [3.8.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.7.0...@mux/mux-player-react@3.8.0) (2025-10-30)
+
+
+### Features
+
+* add nomutedpref prop to mux player ([#1222](https://github.com/muxinc/elements/issues/1222)) ([ce091c9](https://github.com/muxinc/elements/commit/ce091c978e7926eb3ee3fbb894cf471e2d13ea58))
+* add support to define custom fullscreen element ([#1217](https://github.com/muxinc/elements/issues/1217)) ([3638325](https://github.com/muxinc/elements/commit/3638325e44aa1df1471c80f8c60bddf47c908613))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.7.0 to 3.8.0
+    * @mux/playback-core bumped from 0.31.1 to 0.31.2
+
 ## [3.7.0](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.6.1...@mux/mux-player-react@3.7.0) (2025-10-24)
 
 

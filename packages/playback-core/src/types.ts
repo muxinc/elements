@@ -151,9 +151,17 @@ export const RenditionOrder = {
   DESCENDING: 'desc',
 } as const;
 
+export const MaxAutoResolution = {
+  upTo720p: '720p',
+  upTo1080p: '1080p',
+  upTo1440p: '1440p',
+  upTo2160p: '2160p',
+} as const;
+
 export type MaxResolutionValue = ValueOf<typeof MaxResolution>;
 export type MinResolutionValue = ValueOf<typeof MinResolution>;
 export type RenditionOrderValue = ValueOf<typeof RenditionOrder>;
+export type MaxAutoResolutionValue = ValueOf<typeof MaxAutoResolution>;
 
 export type Tokens = {
   playback?: string;
@@ -181,6 +189,7 @@ export type MuxMediaPropTypes = {
   maxResolution: MaxResolutionValue;
   metadata: Partial<Options['data']>;
   minResolution: MinResolutionValue;
+  maxAutoResolution: MaxAutoResolutionValue;
   playbackId: string;
   playerInitTime: MetaData['player_init_time'];
   preferCmcd: ValueOf<CmcdTypes> | undefined;

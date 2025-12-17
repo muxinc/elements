@@ -20,6 +20,78 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.29.1](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.29.0...@mux/mux-video-react@0.29.1) (2025-12-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.32.0 to 0.32.1
+
+## [0.29.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.28.2...@mux/mux-video-react@0.29.0) (2025-12-04)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-video-react:** Synchronize video versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.4 to 0.32.0
+
+## [0.28.2](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.28.1...@mux/mux-video-react@0.28.2) (2025-12-01)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-video-react:** Synchronize video versions
+
+## [0.28.1](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.28.0...@mux/mux-video-react@0.28.1) (2025-11-26)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-video-react:** Synchronize video versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.3 to 0.31.4
+
+## [0.28.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.27.2...@mux/mux-video-react@0.28.0) (2025-11-21)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-video-react:** Synchronize video versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.2 to 0.31.3
+
+## [0.27.2](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.27.1...@mux/mux-video-react@0.27.2) (2025-10-30)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-video-react:** Synchronize video versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.31.1 to 0.31.2
+
 ## [0.27.1](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.27.0...@mux/mux-video-react@0.27.1) (2025-10-24)
 
 

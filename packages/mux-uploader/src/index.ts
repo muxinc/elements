@@ -1,4 +1,5 @@
 export * as constants from './constants';
+export { t } from './utils/i18n.js';
 import MuxUploaderElement, { MuxUploaderElementEventMap } from './mux-uploader';
 import MuxUploaderProgressElement from './mux-uploader-progress';
 import MuxUploaderDropElement from './mux-uploader-drop';

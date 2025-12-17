@@ -1,6 +1,7 @@
 import { globalThis, document } from './polyfills';
 import { getMuxUploaderEl } from './utils/element-utils';
 import type MuxUploaderElement from './mux-uploader';
+import { t } from './utils/i18n.js';
 
 const template = document.createElement('template');
 
@@ -47,6 +48,10 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
       this.retryButton?.addEventListener('keyup', this.handleKeyup, opts);
 
       this.toggleAttribute('upload-error', this.#uploaderEl.hasAttribute('upload-error'));
+
+      this.#uploaderEl.addEventListener('localechange', () => this.updateText(), opts);
+
+      this.updateText();
     }
   }
 
@@ -67,6 +72,13 @@ class MuxUploaderRetryElement extends globalThis.HTMLElement {
   triggerReset = () => {
     this.#uploaderEl?.dispatchEvent(new CustomEvent('reset'));
   };
+
+  updateText() {
+    const locale = (this.#uploaderEl as MuxUploaderElement)?.locale;
+    if (this.retryButton) {
+      this.retryButton.textContent = t('Retry', locale);
+    }
+  }
 }
 
 if (!globalThis.customElements.get('mux-uploader-retry')) {
