@@ -368,6 +368,10 @@ const MSE_SUPPORTED = Hls.isSupported?.();
 const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) => isAndroidLike || !isSafari(mediaEl);
 
 export const generatePlayerInitTime = () => {
+  // bail during SSR to avoid triggering prerender errors
+  // actual time will be generated during hydration
+  if (typeof window === 'undefined') return undefined;
+
   return mux.utils.now();
 };
 
