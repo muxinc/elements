@@ -127,7 +127,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackId: el.playbackId,
     hasSrc: !!el.playbackId || !!el.src || !!el.currentSrc,
     poster: el.poster,
-    storyboard: el.storyboard,
+    storyboard: el.hasLoaded && el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     fullscreenElement: el.getAttribute(PlayerAttributes.FULLSCREEN_ELEMENT),
     placeholder: el.getAttribute('placeholder'),
@@ -825,6 +825,10 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
   get hasPlayed() {
     return this.mediaController?.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED) ?? false;
+  }
+
+  get hasLoaded() {
+    return this.#hasLoaded;
   }
 
   get inLiveWindow() {
