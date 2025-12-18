@@ -48,6 +48,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.10.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.10.1...@mux/mux-player@3.10.2) (2025-12-18)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 2 updates ([#1259](https://github.com/muxinc/elements/issues/1259)) ([ee4d961](https://github.com/muxinc/elements/commit/ee4d961a30427ba10a191703cd6e5d5c167bf42c))
+* Resolve infinite loading state in Safari with MSE and on-demand stream type ([#1257](https://github.com/muxinc/elements/issues/1257)) ([dadca90](https://github.com/muxinc/elements/commit/dadca90d7787a8f76cc00eca281c20461a3a5df2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.29.1 to 0.29.2
+    * @mux/playback-core bumped from 0.32.1 to 0.32.2
+
 ## [3.10.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.10.0...@mux/mux-player@3.10.1) (2025-12-10)
 
 
