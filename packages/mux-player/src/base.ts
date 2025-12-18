@@ -127,7 +127,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackId: el.playbackId,
     hasSrc: !!el.playbackId || !!el.src || !!el.currentSrc,
     poster: el.poster,
-    storyboard: el.hasLoaded && el.storyboard,
+    storyboard: el.media?.currentSrc && el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     fullscreenElement: el.getAttribute(PlayerAttributes.FULLSCREEN_ELEMENT),
     placeholder: el.getAttribute('placeholder'),
@@ -289,7 +289,6 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   #isInit = false;
   #tokens: Tokens = {};
   #userInactive = true;
-  #hasLoaded = false;
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
@@ -382,10 +381,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.media?.addEventListener('streamtypechange', () => this.#render());
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
-    this.media?.addEventListener('loadstart', () => {
-      this.#hasLoaded = true;
-      this.#render();
-    });
+    this.media?.addEventListener('loadstart', () => this.#render());
   }
 
   #setupCSSProperties() {
@@ -825,10 +821,6 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
   get hasPlayed() {
     return this.mediaController?.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED) ?? false;
-  }
-
-  get hasLoaded() {
-    return this.#hasLoaded;
   }
 
   get inLiveWindow() {
