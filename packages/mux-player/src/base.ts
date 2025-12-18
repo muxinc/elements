@@ -285,7 +285,7 @@ const initialState = {
 const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 
 class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
-  #defaultPlayerInitTime: number;
+  #defaultPlayerInitTime: number | undefined;
   #isInit = false;
   #tokens: Tokens = {};
   #userInactive = true;
