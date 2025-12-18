@@ -31,6 +31,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.29.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.29.1...@mux/mux-video@0.29.2) (2025-12-18)
+
+
+### Bug Fixes
+
+* Resolve infinite loading state in Safari with MSE and on-demand stream type ([#1257](https://github.com/muxinc/elements/issues/1257)) ([dadca90](https://github.com/muxinc/elements/commit/dadca90d7787a8f76cc00eca281c20461a3a5df2))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.32.1 to 0.32.2
+
 ## [0.29.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.29.0...@mux/mux-video@0.29.1) (2025-12-10)
 
 
