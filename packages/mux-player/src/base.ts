@@ -1002,10 +1002,6 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
    * we aren't an audio player and the stream-type isn't live.
    */
   get storyboard() {
-    // NOTE: We don't want to return a storyboard until the media has loaded,
-    // otherwise iOS Safari would stall playback.
-    if (!this.#hasLoaded) return undefined;
-
     const { tokens } = this;
     // If the storyboardSrc has been explicitly set, assume it should be used
     if (this.storyboardSrc && !tokens.storyboard) return this.storyboardSrc;
