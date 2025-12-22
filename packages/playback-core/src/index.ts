@@ -2,7 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import type { ErrorData, HlsConfig } from 'hls.js';
+import type { CapLevelController, ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -703,6 +703,7 @@ export const setupHls = (
       | 'tokens'
       | 'drmTypeCb'
       | 'maxAutoResolution'
+      | 'disableCapLevelToPlayerSize'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -726,7 +727,6 @@ export const setupHls = (
       backBufferLength: 30,
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
-      capLevelToPlayerSize: true,
       capLevelOnFPSDrop: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
@@ -741,8 +741,24 @@ export const setupHls = (
         }
       : undefined;
 
-    const capLevelControllerObj =
-      _hlsConfig.capLevelToPlayerSize == null ? { capLevelController: MinCapLevelController } : {};
+    const capLevelControllerObj: {
+      capLevelController?: typeof CapLevelController;
+      capLevelToPlayerSize?: boolean;
+    } = {};
+
+    // If capLevelToPlayerSize is not explicitly set we enable MinCapLevelController
+    if (_hlsConfig.capLevelToPlayerSize == null) {
+      capLevelControllerObj.capLevelController = MinCapLevelController;
+      capLevelControllerObj.capLevelToPlayerSize = true;
+    } else {
+      capLevelControllerObj.capLevelController = undefined;
+      capLevelControllerObj.capLevelToPlayerSize = _hlsConfig.capLevelToPlayerSize;
+    }
+    if (props.disableCapLevelToPlayerSize) {
+      capLevelControllerObj.capLevelController = undefined;
+      capLevelControllerObj.capLevelToPlayerSize = false;
+    }
+
 
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
@@ -761,13 +777,19 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
-      ...capLevelControllerObj,
       ...defaultConfig,
+      ...capLevelControllerObj,
       ...streamTypeConfig,
       ...drmConfig,
       ..._hlsConfig,
     }) as HlsInterface;
 
+    console.log("capLevelToPlayerSize summary", {
+      hlsConfigCapLevelToPlayerSize: _hlsConfig.capLevelToPlayerSize,
+      disableCapLevelToPlayerSize: props.disableCapLevelToPlayerSize,
+      capLevelControllerObj: capLevelControllerObj,
+      hlsCapLevelToPlayerSize: hls.capLevelToPlayerSize,
+    });
     if (capLevelControllerObj.capLevelController === MinCapLevelController) {
       if (maxAutoResolution !== undefined) {
         MinCapLevelController.setMaxAutoResolution(hls, maxAutoResolution);

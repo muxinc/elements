@@ -1,14 +1,21 @@
 import Head from 'next/head';
 import { useRef, useState } from "react";
 import MuxVideo from "@mux/mux-video/react";
+import MuxPlayerElement from '@mux/mux-player';
+import { EnumRenderer, OptionalBooleanRenderer } from '../components/renderers';
+import MuxVideoElement from '@mux/mux-video';
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
+const INITIAL_CAP_LEVEL_TO_PLAYER_SIZE = undefined;
+const INITIAL_PREFER_PLAYBACK = undefined;
 
 function MuxVideoPage() {
-  const mediaElRef = useRef(null);
+  const mediaElRef = useRef<MuxVideoElement>(null);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
+  const [preferPlayback, setPreferPlayback] = useState<MuxPlayerElement["preferPlayback"]>(INITIAL_PREFER_PLAYBACK);
+  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
   return (
@@ -32,12 +39,13 @@ function MuxVideoPage() {
         // }}
         // envKey="mux-data-env-key"
         controls
+        capLevelToPlayerSize={capLevelToPlayerSize}
         autoplay={autoplay}
         muted={muted}
         maxResolution="2160p"
         minResolution="540p"
         renditionOrder="desc"
-        preferPlayback="native"
+        preferPlayback={preferPlayback}
         onPlay={() => {
           setPaused(false);
         }}
@@ -47,6 +55,10 @@ function MuxVideoPage() {
       />
 
       <div className="options">
+        <button onClick={() => {
+          if (!mediaElRef.current) return;
+          mediaElRef.current.load();
+        }}>Reload</button>
         <div>
           <label htmlFor="paused-control">Paused</label>
           <input
@@ -74,6 +86,17 @@ function MuxVideoPage() {
             checked={muted}
           />
         </div>
+        <EnumRenderer
+          value={preferPlayback}
+          name="preferPlayback"
+          onChange={({ preferPlayback }) => setPreferPlayback(preferPlayback as MuxPlayerElement["preferPlayback"])}
+          values={['mse', 'native']}
+        />
+        <OptionalBooleanRenderer
+          value={capLevelToPlayerSize}
+          name="capLevelToPlayerSize"
+          onChange={({ capLevelToPlayerSize }) => setCapLevelToPlayerSize(capLevelToPlayerSize)}
+        />
       </div>
     </>
   );
