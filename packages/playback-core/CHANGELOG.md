@@ -40,6 +40,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.32.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.32.1...@mux/playback-core@0.32.2) (2025-12-18)
+
+
+### Bug Fixes
+
+* avoid prerender errors caused by date access ([#1226](https://github.com/muxinc/elements/issues/1226)) ([d044183](https://github.com/muxinc/elements/commit/d04418341e5a77cfda69d7d4f0939c36d7bd64b4))
+
+## [0.32.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.32.0...@mux/playback-core@0.32.1) (2025-12-10)
+
+
+### Bug Fixes
+
+* default to MSE except safari ([#1254](https://github.com/muxinc/elements/issues/1254)) ([f2411ad](https://github.com/muxinc/elements/commit/f2411ad692a7410f75413619611f955640591c48))
+
 ## [0.32.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.31.4...@mux/playback-core@0.32.0) (2025-12-04)
 
 

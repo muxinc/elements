@@ -105,7 +105,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
 
   #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
-  #defaultPlayerInitTime: number;
+  #defaultPlayerInitTime: number | undefined;
   #metadata: Metadata = {};
   #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;

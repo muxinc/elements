@@ -127,7 +127,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playbackId: el.playbackId,
     hasSrc: !!el.playbackId || !!el.src || !!el.currentSrc,
     poster: el.poster,
-    storyboard: el.storyboard,
+    storyboard: el.media?.currentSrc && el.storyboard,
     storyboardSrc: el.getAttribute(PlayerAttributes.STORYBOARD_SRC),
     fullscreenElement: el.getAttribute(PlayerAttributes.FULLSCREEN_ELEMENT),
     placeholder: el.getAttribute('placeholder'),
@@ -286,7 +286,7 @@ const initialState = {
 const DEFAULT_EXTRA_PLAYLIST_PARAMS = { redundant_streams: true };
 
 class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
-  #defaultPlayerInitTime: number;
+  #defaultPlayerInitTime: number | undefined;
   #isInit = false;
   #tokens: Tokens = {};
   #userInactive = true;

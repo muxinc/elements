@@ -67,7 +67,7 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
 
   #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
-  #defaultPlayerInitTime: number;
+  #defaultPlayerInitTime: number | undefined;
   #metadata: Readonly<Metadata> = {};
   #tokens: Tokens = {};
   #_hlsConfig?: Partial<HlsConfig>;
