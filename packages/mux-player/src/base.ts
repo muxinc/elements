@@ -188,7 +188,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
-    disableCapLevelToPlayerSize: el.disableCapLevelToPlayerSize,
+    capLevelToPlayerSize: el.capLevelToPlayerSize,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -752,6 +752,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
           if (this.mediaController && e && muxVideo) {
             this.mediaController.fullscreenElement = e;
           }
+        }
+        break;
+      }
+      case MuxVideoAttributes.CAP_LEVEL_TO_PLAYER_SIZE: {
+        if (newValue != null || newValue !== oldValue) {
+          this.capLevelToPlayerSize = newValue == null ? undefined : newValue !== 'false';
+        }
+        break;
+      }
+      case MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE: {
+        if (newValue != null || newValue !== oldValue) {
+          this.disableCapLevelToPlayerSize = newValue == null ? undefined : newValue !== 'false';
         }
         break;
       }
@@ -1897,16 +1909,16 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.media.capLevelToPlayerSize = val;
   }
 
-  get disableCapLevelToPlayerSize(): boolean {
-    return this.hasAttribute(MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+  get disableCapLevelToPlayerSize(): boolean | undefined {
+    return this.media?.disableCapLevelToPlayerSize;
   }
 
   set disableCapLevelToPlayerSize(val: boolean | undefined) {
-    if (!val) {
-      this.removeAttribute(MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
-    } else {
-      this.setAttribute(MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set disableCapLevelToPlayerSize');
+      return;
     }
+    this.media.disableCapLevelToPlayerSize = val;
   }
 }
 

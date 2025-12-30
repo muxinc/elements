@@ -941,12 +941,6 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         }
         break;
       }
-      /*case Attributes.CAP_LEVEL_TO_PLAYER_SIZE: {
-        if (newValue == null || newValue !== oldValue) {
-          this.capLevelToPlayerSize = newValue;
-        }
-        break;
-      }*/
     }
   }
 
