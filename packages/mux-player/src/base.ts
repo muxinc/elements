@@ -1886,14 +1886,15 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   }
 
   get capLevelToPlayerSize(): boolean | undefined {
-    if (this._hls) {
-      return this._hls.capLevelToPlayerSize;
-    }
-    return this._hlsConfig?.capLevelToPlayerSize;
+    return this.media?.capLevelToPlayerSize;
   }
 
   set capLevelToPlayerSize(val: boolean | undefined) {
-    this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set capLevelToPlayerSize');
+      return;
+    }
+    this.media.capLevelToPlayerSize = val;
   }
 
   get disableCapLevelToPlayerSize(): boolean {

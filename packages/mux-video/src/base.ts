@@ -82,6 +82,7 @@ export const Attributes = {
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
   LOGO: 'logo',
+  CAP_LEVEL_TO_PLAYER_SIZE: 'cap-level-to-player-size',
   DISABLE_CAP_LEVEL_TO_PLAYER_SIZE: 'disable-cap-level-to-player-size',
 } as const;
 
@@ -518,14 +519,28 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   get capLevelToPlayerSize(): boolean | undefined {
-    if (this._hls) {
-      return this._hls.capLevelToPlayerSize;
+    if (this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE)) {
+      return false;
     }
-    return this._hlsConfig?.capLevelToPlayerSize;
+
+    if (this.hasAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE)) {
+      return true;
+    }
+
+    return undefined;
   }
 
   set capLevelToPlayerSize(val: boolean | undefined) {
-    this._hlsConfig = { ...this._hlsConfig, capLevelToPlayerSize: val };
+    if (val === this.capLevelToPlayerSize) return;
+
+    this.removeAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE);
+    this.removeAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+
+    if (val === true) {
+      this.setAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE, '');
+    } else if (val === false) {
+      this.setAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
+    }
   }
 
   get disableCapLevelToPlayerSize(): boolean {
@@ -533,6 +548,8 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   set disableCapLevelToPlayerSize(val: boolean | undefined) {
+    if (val === this.disableCapLevelToPlayerSize) return;
+
     if (!val) {
       this.removeAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
     } else {
@@ -926,10 +943,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       }
       /*case Attributes.CAP_LEVEL_TO_PLAYER_SIZE: {
         if (newValue == null || newValue !== oldValue) {
-          const capLevelToPlayerSize = this.capLevelToPlayerSize;
-          if (this._hls) {
-            this._hls.config.capLevelToPlayerSize = capLevelToPlayerSize ?? false;
-          }
+          this.capLevelToPlayerSize = newValue;
         }
         break;
       }*/

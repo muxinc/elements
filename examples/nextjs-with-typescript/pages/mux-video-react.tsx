@@ -7,7 +7,7 @@ import MuxVideoElement from '@mux/mux-video';
 
 const INITIAL_AUTOPLAY = false;
 const INITIAL_MUTED = false;
-const INITIAL_CAP_LEVEL_TO_PLAYER_SIZE = undefined;
+const INITIAL_CAP_LEVEL_TO_PLAYER_SIZE : boolean | undefined = undefined;
 const INITIAL_PREFER_PLAYBACK = undefined;
 
 function MuxVideoPage() {
@@ -39,7 +39,8 @@ function MuxVideoPage() {
         // }}
         // envKey="mux-data-env-key"
         controls
-        capLevelToPlayerSize={capLevelToPlayerSize}
+        capLevelToPlayerSize={capLevelToPlayerSize === true}
+        disableCapLevelToPlayerSize={capLevelToPlayerSize === false}
         autoplay={autoplay}
         muted={muted}
         maxResolution="2160p"
