@@ -518,33 +518,33 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
+  /** Keeps track of attribute status */
+  #capLevelToPlayerSize: boolean | undefined = undefined;
+  /** Returns capLevelToPlayerSize based on it's attribute and considering
+   * {@link disableCapLevelToPlayerSize} and {@link _hlsConfig}
+   */
   get capLevelToPlayerSize(): boolean | undefined {
-    if (this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE)) {
+    if (this.disableCapLevelToPlayerSize) {
       return false;
     }
 
-    if (this.hasAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE)) {
-      return true;
+    if (this._hlsConfig?.capLevelToPlayerSize != undefined) {
+      return this._hlsConfig.capLevelToPlayerSize;
     }
 
-    return undefined;
+    return this.#capLevelToPlayerSize;
   }
 
   set capLevelToPlayerSize(val: boolean | undefined) {
-    if (val === this.capLevelToPlayerSize) return;
-
-    this.removeAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE);
-    this.removeAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
-
-    if (val === true) {
-      this.setAttribute(Attributes.CAP_LEVEL_TO_PLAYER_SIZE, '');
-    } else if (val === false) {
-      this.setAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
-    }
+    this.#capLevelToPlayerSize = val;
   }
 
+  /** If true, capLevelToPlayerSize is treated as set to false */
   get disableCapLevelToPlayerSize(): boolean {
-    return this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
+    return (
+      this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE) &&
+      this.getAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE) !== 'false'
+    );
   }
 
   set disableCapLevelToPlayerSize(val: boolean | undefined) {
@@ -940,6 +940,15 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
           }
         }
         break;
+      }
+      case Attributes.CAP_LEVEL_TO_PLAYER_SIZE: {
+        if (newValue == null || newValue !== oldValue) {
+          if (newValue == null) {
+            this.capLevelToPlayerSize = undefined;
+          } else {
+            this.capLevelToPlayerSize = newValue !== 'false';
+          }
+        }
       }
     }
   }

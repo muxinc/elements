@@ -1,23 +1,26 @@
-// @ts-nocheck
-import Link from "next/link";
 import Head from "next/head";
 import "@mux/mux-player";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import MuxPlayerElement from "@mux/mux-player";
+import { OptionalBooleanRenderer } from "../components/renderers";
+import { Autoplay, MuxMediaPropTypes } from "../../../packages/playback-core/dist/types/types";
 
 const INITIAL_DEBUG = false;
-const INITIAL_MUTED = false;
-const INITIAL_AUTOPLAY = false;
+const INITIAL_MUTED = true;
+const INITIAL_AUTOPLAY: Autoplay = false;
 const INITIAL_PLAYBACK_ID = "g65IqSFtWdpGR100c2W8VUHrfIVWTNRen";
+const INITIAL_CAP_LEVEL_TO_PLAYER_SIZE : boolean | undefined = undefined;
 
 function MuxPlayerWCPage() {
-  // const mediaElRef = useRef(null);
+  const mediaElRef = useRef<MuxPlayerElement>(null);
   const [playbackId, setPlaybackId] = useState(INITIAL_PLAYBACK_ID);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
-  const [autoplay, setAutoplay] = useState(INITIAL_AUTOPLAY);
-  const debugObj = debug ? { debug: "" } : {};
-  const mutedObj = muted ? { muted: "" } : {};
-  const autoplayObj = autoplay ? { autoplay } : {};
+  const [autoplay, setAutoplay] = useState<MuxMediaPropTypes["autoplay"]>(INITIAL_AUTOPLAY);
+  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState<boolean | undefined>(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
+  const debugObj : {debug?: boolean}=  debug ? { debug: true } : {};
+  const mutedObj : {muted?: boolean} = muted ? { muted: true } : {};
+  const autoplayObj : {autoplay?: Autoplay}  = autoplay ? { autoplay: autoplay } : {};
   return (
     <>
       <Head>
@@ -26,11 +29,13 @@ function MuxPlayerWCPage() {
 
       <div>
         <mux-player
-          // style={{ aspectRatio: "16 / 9" }}
+          ref={mediaElRef}
           playback-id={playbackId}
           forward-seek-offset={10}
           backward-seek-offset={10}
           max-auto-resolution="720p"
+          cap-level-to-player-size={capLevelToPlayerSize ? true : undefined}
+          disable-cap-level-to-player-size={capLevelToPlayerSize === false ? true : undefined}
           // onPlayerReady={() => console.log("ready!")}
           {...debugObj}
           {...mutedObj}
@@ -43,13 +48,17 @@ function MuxPlayerWCPage() {
         ></mux-player>
       </div>
       <div className="options">
+        <button onClick={() => {
+          if (!mediaElRef.current) return;
+          mediaElRef.current.load();
+        }}>Reload</button>
         <div>
           <label htmlFor="autoplay-control">Muted Autoplay</label>
           <input
             id="autoplay-control"
             type="checkbox"
             onChange={() => setAutoplay(!autoplay ? "muted" : false)}
-            checked={autoplay}
+            checked={!!autoplay}
           />
         </div>
         <div>
@@ -78,6 +87,11 @@ function MuxPlayerWCPage() {
             defaultValue={playbackId}
           />
         </div>
+        <OptionalBooleanRenderer
+          value={capLevelToPlayerSize}
+          name="capLevelToPlayerSize"
+          onChange={({ capLevelToPlayerSize }) => setCapLevelToPlayerSize(capLevelToPlayerSize)}
+        />
       </div>
     </>
   );

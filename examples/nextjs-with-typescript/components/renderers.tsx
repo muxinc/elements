@@ -70,8 +70,6 @@ export const OptionalBooleanRenderer = ({
           id={`${name}-none-control`}
           type="radio"
           onChange={() => {
-            
-              console.log("Selecting value:", undefined, toChangeObject(name, undefined));
             onChange(toChangeObject(name, undefined))}}
           value=""
           checked={value === undefined}

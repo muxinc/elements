@@ -10,10 +10,16 @@ import useIsIntersecting from './useIsIntersecting';
 import type { MuxPlayerProps, MuxPlayerRefAttributes, MuxCSSProperties } from './index';
 import type MuxPlayerElement from '@mux/mux-player';
 
-interface MuxPlayerElementReact extends Partial<Omit<MuxPlayerElement, 'style' | 'children'>> {
+interface MuxPlayerElementReact
+  extends Partial<
+    Omit<MuxPlayerElement, 'style' | 'children' | 'autoplay' | 'capLevelToPlayerSize' | 'dsiableCapLevelToPlayerSize'>
+  > {
   ref: React.MutableRefObject<MuxPlayerElement | null> | null | undefined;
-  style: React.CSSProperties;
+  style?: React.CSSProperties;
   children?: React.ReactNode;
+  autoplay?: MuxPlayerProps['autoPlay'];
+  'cap-level-to-player-size'?: boolean;
+  'disable-cap-level-to-player-size'?: boolean;
 }
 
 declare global {

@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import { useRef, useState } from "react";
 import MuxVideo from "@mux/mux-video/react";
-import MuxPlayerElement from '@mux/mux-player';
 import { EnumRenderer, OptionalBooleanRenderer } from '../components/renderers';
 import MuxVideoElement from '@mux/mux-video';
 
@@ -14,8 +13,8 @@ function MuxVideoPage() {
   const mediaElRef = useRef<MuxVideoElement>(null);
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
-  const [preferPlayback, setPreferPlayback] = useState<MuxPlayerElement["preferPlayback"]>(INITIAL_PREFER_PLAYBACK);
-  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
+  const [preferPlayback, setPreferPlayback] = useState<MuxVideoElement["preferPlayback"]>(INITIAL_PREFER_PLAYBACK);
+  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState<boolean | undefined>(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
   return (
@@ -90,7 +89,7 @@ function MuxVideoPage() {
         <EnumRenderer
           value={preferPlayback}
           name="preferPlayback"
-          onChange={({ preferPlayback }) => setPreferPlayback(preferPlayback as MuxPlayerElement["preferPlayback"])}
+          onChange={({ preferPlayback }) => setPreferPlayback(preferPlayback as MuxVideoElement["preferPlayback"])}
           values={['mse', 'native']}
         />
         <OptionalBooleanRenderer

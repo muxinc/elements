@@ -189,6 +189,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
     capLevelToPlayerSize: el.capLevelToPlayerSize,
+    disableCapLevelToPlayerSize: el.disableCapLevelToPlayerSize,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -756,14 +757,16 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
         break;
       }
       case MuxVideoAttributes.CAP_LEVEL_TO_PLAYER_SIZE: {
-        if (newValue != null || newValue !== oldValue) {
-          this.capLevelToPlayerSize = newValue == null ? undefined : newValue !== 'false';
+        if (newValue == null || newValue !== oldValue) {
+          if (newValue == null) this.capLevelToPlayerSize = undefined;
+          this.capLevelToPlayerSize = newValue !== 'false';
         }
         break;
       }
       case MuxVideoAttributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE: {
-        if (newValue != null || newValue !== oldValue) {
-          this.disableCapLevelToPlayerSize = newValue == null ? undefined : newValue !== 'false';
+        if (newValue == null || newValue !== oldValue) {
+          if (newValue == null) this.disableCapLevelToPlayerSize = undefined;
+          this.disableCapLevelToPlayerSize = newValue !== 'false';
         }
         break;
       }
@@ -1909,8 +1912,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.media.capLevelToPlayerSize = val;
   }
 
-  get disableCapLevelToPlayerSize(): boolean | undefined {
-    return this.media?.disableCapLevelToPlayerSize;
+  get disableCapLevelToPlayerSize(): boolean {
+    return this.media?.disableCapLevelToPlayerSize ?? false;
   }
 
   set disableCapLevelToPlayerSize(val: boolean | undefined) {

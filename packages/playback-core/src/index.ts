@@ -741,21 +741,7 @@ export const setupHls = (
         }
       : undefined;
 
-    const capLevelControllerObj: {
-      capLevelController?: typeof CapLevelController;
-      capLevelToPlayerSize?: boolean;
-    } = {};
-
-    /* 
-    If capLevelToPlayerSize is not explicitly set in props we enable MinCapLevelController
-    */
-    capLevelControllerObj.capLevelToPlayerSize = _hlsConfig.capLevelToPlayerSize ?? props.capLevelToPlayerSize;
-    if (capLevelControllerObj.capLevelToPlayerSize == null) {
-      capLevelControllerObj.capLevelController = MinCapLevelController;
-      capLevelControllerObj.capLevelToPlayerSize = true;
-    } else {
-      capLevelControllerObj.capLevelController = CapLevelController;
-    }
+    const capLevelControllerObj = getCapLevelControllerConfig(props, _hlsConfig);
 
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
@@ -1119,6 +1105,22 @@ export const isMuxVideoSrc = ({
   const hostname = new URL(src, base).hostname.toLocaleLowerCase();
 
   return hostname.includes(MUX_VIDEO_DOMAIN) || (!!customDomain && hostname.includes(customDomain.toLocaleLowerCase()));
+};
+
+export const getCapLevelControllerConfig = (
+  props: Pick<MuxMediaPropsInternal, 'capLevelToPlayerSize'>,
+  _hlsConfig: Partial<HlsConfig>
+): Partial<Pick<HlsConfig, 'capLevelController' | 'capLevelToPlayerSize'>> => {
+  const capLevelControllerObj: Partial<Pick<HlsConfig, 'capLevelController' | 'capLevelToPlayerSize'>> = {};
+  // If capLevelToPlayerSize is not explicitly set in props we enable MinCapLevelController
+  capLevelControllerObj.capLevelToPlayerSize = props.capLevelToPlayerSize;
+  if (capLevelControllerObj.capLevelToPlayerSize == null) {
+    capLevelControllerObj.capLevelController = MinCapLevelController;
+    capLevelControllerObj.capLevelToPlayerSize = true;
+  } else {
+    capLevelControllerObj.capLevelController = CapLevelController;
+  }
+  return capLevelControllerObj;
 };
 
 export const setupMux = (
