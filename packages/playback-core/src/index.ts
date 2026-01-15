@@ -704,7 +704,7 @@ export const setupHls = (
       | 'tokens'
       | 'drmTypeCb'
       | 'maxAutoResolution'
-      | 'capLevelToPlayerSize'
+      | 'capRenditionToPlayerSize'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -1109,12 +1109,12 @@ export const isMuxVideoSrc = ({
 };
 
 export const getCapLevelControllerConfig = (
-  props: Pick<MuxMediaPropsInternal, 'capLevelToPlayerSize'>,
+  props: Pick<MuxMediaPropsInternal, 'capRenditionToPlayerSize'>,
   _hlsConfig: Partial<HlsConfig>
 ): Partial<Pick<HlsConfig, 'capLevelController' | 'capLevelToPlayerSize'>> => {
   const capLevelControllerObj: Partial<Pick<HlsConfig, 'capLevelController' | 'capLevelToPlayerSize'>> = {};
-  // If capLevelToPlayerSize is not explicitly set in props we enable MinCapLevelController
-  capLevelControllerObj.capLevelToPlayerSize = props.capLevelToPlayerSize;
+  // If capRenditionToPlayerSize is not explicitly set in props we enable MinCapLevelController
+  capLevelControllerObj.capLevelToPlayerSize = props.capRenditionToPlayerSize;
   if (capLevelControllerObj.capLevelToPlayerSize == null) {
     capLevelControllerObj.capLevelController = MinCapLevelController;
     capLevelControllerObj.capLevelToPlayerSize = true;

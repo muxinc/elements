@@ -326,57 +326,57 @@ describe('<mux-video>', () => {
     });
   });
 
-  describe('Feature: capLevelToPlayerSize', async () => {
-    it('capLevelToPlayerSize is undefined by default', async () => {
+  describe('Feature: capRenditionToPlayerSize', async () => {
+    it('capRenditionToPlayerSize is undefined by default', async () => {
       const muxVideoEl = await fixture(`<mux-video></mux-video>`);
-      assert.isUndefined(muxVideoEl.capLevelToPlayerSize, 'default should be undefined');
+      assert.isUndefined(muxVideoEl.capRenditionToPlayerSize, 'default should be undefined');
     });
 
-    it('cap-level-to-player-size attribute sets property to true', async () => {
-      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size></mux-video>`);
-      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true when attribute is present');
+    it('cap-rendition-to-player-size attribute sets property to true', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-rendition-to-player-size></mux-video>`);
+      assert.isTrue(muxVideoEl.capRenditionToPlayerSize, 'should be true when attribute is present');
     });
 
-    it('cap-level-to-player-size="" attribute sets property to true', async () => {
-      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size=""></mux-video>`);
-      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true when attribute is empty string');
+    it('cap-rendition-to-player-size="" attribute sets property to true', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-rendition-to-player-size=""></mux-video>`);
+      assert.isTrue(muxVideoEl.capRenditionToPlayerSize, 'should be true when attribute is empty string');
     });
 
-    it('capLevelToPlayerSize property can be set to true', async () => {
+    it('capRenditionToPlayerSize property can be set to true', async () => {
       const muxVideoEl = await fixture(`<mux-video></mux-video>`);
-      muxVideoEl.capLevelToPlayerSize = true;
-      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true after setting property');
+      muxVideoEl.capRenditionToPlayerSize = true;
+      assert.isTrue(muxVideoEl.capRenditionToPlayerSize, 'should be true after setting property');
     });
 
-    it('capLevelToPlayerSize property can be set to false', async () => {
+    it('capRenditionToPlayerSize property can be set to false', async () => {
       const muxVideoEl = await fixture(`<mux-video></mux-video>`);
-      muxVideoEl.capLevelToPlayerSize = false;
-      assert.isFalse(muxVideoEl.capLevelToPlayerSize, 'should be false after setting property');
+      muxVideoEl.capRenditionToPlayerSize = false;
+      assert.isFalse(muxVideoEl.capRenditionToPlayerSize, 'should be false after setting property');
     });
 
-    it('capLevelToPlayerSize property can be set to undefined', async () => {
-      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size></mux-video>`);
-      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true initially');
-      muxVideoEl.capLevelToPlayerSize = undefined;
-      assert.isUndefined(muxVideoEl.capLevelToPlayerSize, 'should be undefined after setting property');
+    it('capRenditionToPlayerSize property can be set to undefined', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-rendition-to-player-size></mux-video>`);
+      assert.isTrue(muxVideoEl.capRenditionToPlayerSize, 'should be true initially');
+      muxVideoEl.capRenditionToPlayerSize = undefined;
+      assert.isUndefined(muxVideoEl.capRenditionToPlayerSize, 'should be undefined after setting property');
     });
 
-    it('removing cap-level-to-player-size attribute sets property to undefined', async () => {
-      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size></mux-video>`);
-      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true initially');
-      muxVideoEl.removeAttribute('cap-level-to-player-size');
-      assert.isUndefined(muxVideoEl.capLevelToPlayerSize, 'should be undefined after removing attribute');
+    it('removing cap-rendition-to-player-size attribute sets property to undefined', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-rendition-to-player-size></mux-video>`);
+      assert.isTrue(muxVideoEl.capRenditionToPlayerSize, 'should be true initially');
+      muxVideoEl.removeAttribute('cap-rendition-to-player-size');
+      assert.isUndefined(muxVideoEl.capRenditionToPlayerSize, 'should be undefined after removing attribute');
     });
 
     it('_hlsConfig.capLevelToPlayerSize takes precedence over property', async () => {
       const muxVideoEl = await fixture(`<mux-video></mux-video>`);
-      muxVideoEl.capLevelToPlayerSize = true;
+      muxVideoEl.capRenditionToPlayerSize = true;
       muxVideoEl._hlsConfig = { capLevelToPlayerSize: false };
-      assert.isFalse(muxVideoEl.capLevelToPlayerSize, '_hlsConfig should take precedence');
+      assert.isFalse(muxVideoEl.capRenditionToPlayerSize, '_hlsConfig should take precedence');
     });
 
     // Integration tests that verify the underlying hls.js instance is configured correctly
-    it('hls.js uses MinCapLevelController when capLevelToPlayerSize is undefined (default)', async () => {
+    it('hls.js uses MinCapLevelController when capRenditionToPlayerSize is undefined (default)', async () => {
       const muxVideoEl = await fixture(`<mux-video
         playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
         preload="none"
@@ -394,12 +394,12 @@ describe('<mux-video>', () => {
       );
     });
 
-    it('hls.js uses CapLevelController when capLevelToPlayerSize is explicitly true', async () => {
+    it('hls.js uses CapLevelController when capRenditionToPlayerSize is explicitly true', async () => {
       const muxVideoEl = await fixture(`<mux-video
         playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
         preload="none"
         prefer-playback="mse"
-        cap-level-to-player-size
+        cap-rendition-to-player-size
       ></mux-video>`);
 
       await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
@@ -412,14 +412,14 @@ describe('<mux-video>', () => {
       );
     });
 
-    it('hls.js uses CapLevelController when capLevelToPlayerSize is false via property', async () => {
+    it('hls.js uses CapLevelController when capRenditionToPlayerSize is false via property', async () => {
       const muxVideoEl = await fixture(`<mux-video
         preload="none"
         prefer-playback="mse"
       ></mux-video>`);
 
-      // Set capLevelToPlayerSize to false before setting playbackId
-      muxVideoEl.capLevelToPlayerSize = false;
+      // Set capRenditionToPlayerSize to false before setting playbackId
+      muxVideoEl.capRenditionToPlayerSize = false;
       muxVideoEl.playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
 
       await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');

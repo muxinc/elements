@@ -17,17 +17,17 @@ function MuxPlayerWCPage() {
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [debug, setDebug] = useState(INITIAL_DEBUG);
   const [autoplay, setAutoplay] = useState<MuxMediaPropTypes["autoplay"]>(INITIAL_AUTOPLAY);
-  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState<boolean | undefined>(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
+  const [capRenditionToPlayerSize, setCapRenditionToPlayerSize] = useState<boolean | undefined>(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
   const debugObj : {debug?: boolean}=  debug ? { debug: true } : {};
   const mutedObj : {muted?: boolean} = muted ? { muted: true } : {};
   const autoplayObj : {autoplay?: Autoplay}  = autoplay ? { autoplay: autoplay } : {};
 
-  // Set capLevelToPlayerSize via JavaScript property (supports undefined, true, and false)
+  // Set capRenditionToPlayerSize via JavaScript property (supports undefined, true, and false)
   useEffect(() => {
     if (mediaElRef.current) {
-      mediaElRef.current.capLevelToPlayerSize = capLevelToPlayerSize;
+      mediaElRef.current.capRenditionToPlayerSize = capRenditionToPlayerSize;
     }
-  }, [capLevelToPlayerSize]);
+  }, [capRenditionToPlayerSize]);
 
   return (
     <>
@@ -94,9 +94,9 @@ function MuxPlayerWCPage() {
           />
         </div>
         <OptionalBooleanRenderer
-          value={capLevelToPlayerSize}
-          name="capLevelToPlayerSize"
-          onChange={({ capLevelToPlayerSize }) => setCapLevelToPlayerSize(capLevelToPlayerSize)}
+          value={capRenditionToPlayerSize}
+          name="capRenditionToPlayerSize"
+          onChange={({ capRenditionToPlayerSize }) => setCapRenditionToPlayerSize(capRenditionToPlayerSize)}
         />
       </div>
     </>

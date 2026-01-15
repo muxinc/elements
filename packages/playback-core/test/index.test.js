@@ -342,32 +342,32 @@ describe('playback core', function () {
   });
 
   describe('getCapLevelControllerConfig()', () => {
-    it('should use MinCapLevelController when capLevelToPlayerSize is undefined', () => {
-      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: undefined }, {});
+    it('should use MinCapLevelController when capRenditionToPlayerSize is undefined', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: undefined }, {});
 
       assert.equal(config.capLevelController, MinCapLevelController, 'should use MinCapLevelController');
-      assert.equal(config.capLevelToPlayerSize, true, 'should default capLevelToPlayerSize to true');
+      assert.equal(config.capLevelToPlayerSize, true, 'should default hls.js capLevelToPlayerSize to true');
     });
 
-    it('should use MinCapLevelController when capLevelToPlayerSize is null', () => {
-      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: null }, {});
+    it('should use MinCapLevelController when capRenditionToPlayerSize is null', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: null }, {});
 
       assert.equal(config.capLevelController, MinCapLevelController, 'should use MinCapLevelController');
-      assert.equal(config.capLevelToPlayerSize, true, 'should default capLevelToPlayerSize to true');
+      assert.equal(config.capLevelToPlayerSize, true, 'should default hls.js capLevelToPlayerSize to true');
     });
 
-    it('should use CapLevelController when capLevelToPlayerSize is true', () => {
-      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: true }, {});
+    it('should use CapLevelController when capRenditionToPlayerSize is true', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: true }, {});
 
       assert.equal(config.capLevelController, CapLevelController, 'should use standard CapLevelController');
-      assert.equal(config.capLevelToPlayerSize, true, 'should keep capLevelToPlayerSize as true');
+      assert.equal(config.capLevelToPlayerSize, true, 'should keep hls.js capLevelToPlayerSize as true');
     });
 
-    it('should use CapLevelController when capLevelToPlayerSize is false', () => {
-      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: false }, {});
+    it('should use CapLevelController when capRenditionToPlayerSize is false', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: false }, {});
 
       assert.equal(config.capLevelController, CapLevelController, 'should use standard CapLevelController');
-      assert.equal(config.capLevelToPlayerSize, false, 'should keep capLevelToPlayerSize as false');
+      assert.equal(config.capLevelToPlayerSize, false, 'should keep hls.js capLevelToPlayerSize as false');
     });
   });
 });

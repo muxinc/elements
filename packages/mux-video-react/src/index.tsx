@@ -98,7 +98,7 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
 MuxVideo.propTypes = {
   _hlsConfig: PropTypes.any,
   beaconCollectionDomain: PropTypes.string,
-  capLevelToPlayerSize: PropTypes.bool,
+  capRenditionToPlayerSize: PropTypes.bool,
   customDomain: PropTypes.string,
   debug: PropTypes.bool,
   disableCookies: PropTypes.bool,

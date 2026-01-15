@@ -11,12 +11,12 @@ import type { MuxPlayerProps, MuxPlayerRefAttributes, MuxCSSProperties } from '.
 import type MuxPlayerElement from '@mux/mux-player';
 
 interface MuxPlayerElementReact
-  extends Partial<Omit<MuxPlayerElement, 'style' | 'children' | 'autoplay' | 'capLevelToPlayerSize'>> {
+  extends Partial<Omit<MuxPlayerElement, 'style' | 'children' | 'autoplay' | 'capRenditionToPlayerSize'>> {
   ref: React.MutableRefObject<MuxPlayerElement | null> | null | undefined;
   style?: React.CSSProperties;
   children?: React.ReactNode;
   autoplay?: MuxPlayerProps['autoPlay'];
-  'cap-level-to-player-size'?: boolean;
+  'cap-rendition-to-player-size'?: boolean;
 }
 
 declare global {

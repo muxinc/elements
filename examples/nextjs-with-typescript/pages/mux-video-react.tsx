@@ -14,7 +14,7 @@ function MuxVideoPage() {
   const [autoplay, setAutoplay] = useState<"muted" | boolean>(INITIAL_AUTOPLAY);
   const [muted, setMuted] = useState(INITIAL_MUTED);
   const [preferPlayback, setPreferPlayback] = useState<MuxVideoElement["preferPlayback"]>(INITIAL_PREFER_PLAYBACK);
-  const [capLevelToPlayerSize, setCapLevelToPlayerSize] = useState<boolean | undefined>(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
+  const [capRenditionToPlayerSize, setCapRenditionToPlayerSize] = useState<boolean | undefined>(INITIAL_CAP_LEVEL_TO_PLAYER_SIZE);
   const [paused, setPaused] = useState<boolean | undefined>(true);
 
   return (
@@ -38,7 +38,7 @@ function MuxVideoPage() {
         // }}
         // envKey="mux-data-env-key"
         controls
-        capLevelToPlayerSize={capLevelToPlayerSize}
+        capRenditionToPlayerSize={capRenditionToPlayerSize}
         autoplay={autoplay}
         muted={muted}
         maxResolution="2160p"
@@ -92,9 +92,9 @@ function MuxVideoPage() {
           values={['mse', 'native']}
         />
         <OptionalBooleanRenderer
-          value={capLevelToPlayerSize}
-          name="capLevelToPlayerSize"
-          onChange={({ capLevelToPlayerSize }) => setCapLevelToPlayerSize(capLevelToPlayerSize)}
+          value={capRenditionToPlayerSize}
+          name="capRenditionToPlayerSize"
+          onChange={({ capRenditionToPlayerSize }) => setCapRenditionToPlayerSize(capRenditionToPlayerSize)}
         />
       </div>
     </>

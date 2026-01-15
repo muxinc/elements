@@ -128,7 +128,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   fullscreenElement: undefined,
   proudlyDisplayMuxBadge: undefined,
   disablePseudoEnded: undefined,
-  capLevelToPlayerSize: undefined,
+  capRenditionToPlayerSize: undefined,
 });
 
 const SMALL_BREAKPOINT = 700;
@@ -284,7 +284,7 @@ function MuxPlayerPage({ location }: Props) {
           //   debug: true,
           // }}
           maxAutoResolution="720p"
-          capLevelToPlayerSize={state.capLevelToPlayerSize}
+          capRenditionToPlayerSize={state.capRenditionToPlayerSize}
           title={state.title}
           videoTitle={state.videoTitle}
           startTime={state.startTime}
@@ -658,8 +658,8 @@ function MuxPlayerPage({ location }: Props) {
             step={1}
           />
           <OptionalBooleanRenderer
-            value={state.capLevelToPlayerSize}
-            name="capLevelToPlayerSize"
+            value={state.capRenditionToPlayerSize}
+            name="capRenditionToPlayerSize"
             onChange={genericOnChange}
           />
         </div>
