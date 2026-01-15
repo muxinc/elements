@@ -83,7 +83,6 @@ export const Attributes = {
   TYPE: 'type',
   LOGO: 'logo',
   CAP_LEVEL_TO_PLAYER_SIZE: 'cap-level-to-player-size',
-  DISABLE_CAP_LEVEL_TO_PLAYER_SIZE: 'disable-cap-level-to-player-size',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -520,41 +519,16 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
 
   /** Keeps track of attribute status */
   #capLevelToPlayerSize: boolean | undefined = undefined;
-  /** Returns capLevelToPlayerSize based on it's attribute and considering
-   * {@link disableCapLevelToPlayerSize} and {@link _hlsConfig}
-   */
+  /** Returns capLevelToPlayerSize based on its attribute and {@link _hlsConfig} */
   get capLevelToPlayerSize(): boolean | undefined {
-    if (this.disableCapLevelToPlayerSize) {
-      return false;
-    }
-
     if (this._hlsConfig?.capLevelToPlayerSize != undefined) {
       return this._hlsConfig.capLevelToPlayerSize;
     }
-
     return this.#capLevelToPlayerSize;
   }
 
   set capLevelToPlayerSize(val: boolean | undefined) {
     this.#capLevelToPlayerSize = val;
-  }
-
-  /** If true, capLevelToPlayerSize is treated as set to false */
-  get disableCapLevelToPlayerSize(): boolean {
-    return (
-      this.hasAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE) &&
-      this.getAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE) !== 'false'
-    );
-  }
-
-  set disableCapLevelToPlayerSize(val: boolean | undefined) {
-    if (val === this.disableCapLevelToPlayerSize) return;
-
-    if (!val) {
-      this.removeAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE);
-    } else {
-      this.setAttribute(Attributes.DISABLE_CAP_LEVEL_TO_PLAYER_SIZE, '');
-    }
   }
 
   get drmToken() {
@@ -943,11 +917,8 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       }
       case Attributes.CAP_LEVEL_TO_PLAYER_SIZE: {
         if (newValue == null || newValue !== oldValue) {
-          if (newValue == null) {
-            this.capLevelToPlayerSize = undefined;
-          } else {
-            this.capLevelToPlayerSize = newValue !== 'false';
-          }
+          // Presence-based: attribute present = true, absent = undefined
+          this.capLevelToPlayerSize = newValue != null ? true : undefined;
         }
       }
     }

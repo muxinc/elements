@@ -1,4 +1,5 @@
 import { assert, fixture, aTimeout, oneEvent } from '@open-wc/testing';
+import { CapLevelController } from 'hls.js';
 import {
   toMuxVideoURL,
   initialize,
@@ -12,6 +13,8 @@ import {
   getStreamType,
   muxMediaState,
   toPlaybackIdFromSrc,
+  getCapLevelControllerConfig,
+  MinCapLevelController,
 } from '../src/index.ts';
 
 describe('playback core', function () {
@@ -335,6 +338,36 @@ describe('playback core', function () {
       assert.equal(getStreamType(mediaEl), StreamTypes.UNKNOWN, 'should have a default stream type of unknown');
       assert(Number.isNaN(getTargetLiveWindow(mediaEl)), 'should have a default targetLiveWindow of NaN');
       assert(Number.isNaN(getLiveEdgeStart(mediaEl)), 'should have a default liveEdgeStart of NaN');
+    });
+  });
+
+  describe('getCapLevelControllerConfig()', () => {
+    it('should use MinCapLevelController when capLevelToPlayerSize is undefined', () => {
+      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: undefined }, {});
+
+      assert.equal(config.capLevelController, MinCapLevelController, 'should use MinCapLevelController');
+      assert.equal(config.capLevelToPlayerSize, true, 'should default capLevelToPlayerSize to true');
+    });
+
+    it('should use MinCapLevelController when capLevelToPlayerSize is null', () => {
+      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: null }, {});
+
+      assert.equal(config.capLevelController, MinCapLevelController, 'should use MinCapLevelController');
+      assert.equal(config.capLevelToPlayerSize, true, 'should default capLevelToPlayerSize to true');
+    });
+
+    it('should use CapLevelController when capLevelToPlayerSize is true', () => {
+      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: true }, {});
+
+      assert.equal(config.capLevelController, CapLevelController, 'should use standard CapLevelController');
+      assert.equal(config.capLevelToPlayerSize, true, 'should keep capLevelToPlayerSize as true');
+    });
+
+    it('should use CapLevelController when capLevelToPlayerSize is false', () => {
+      const config = getCapLevelControllerConfig({ capLevelToPlayerSize: false }, {});
+
+      assert.equal(config.capLevelController, CapLevelController, 'should use standard CapLevelController');
+      assert.equal(config.capLevelToPlayerSize, false, 'should keep capLevelToPlayerSize as false');
     });
   });
 });

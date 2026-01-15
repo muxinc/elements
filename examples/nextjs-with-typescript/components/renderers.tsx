@@ -82,9 +82,7 @@ export const OptionalBooleanRenderer = ({
                 id={`${name}-${enumValue}-control`}
                 type="radio"
                 onChange={() => {
-                  const changeValue = enumValue;
-                  console.log("Selecting value:", changeValue, toChangeObject(name, changeValue));
-                  onChange(toChangeObject(name, changeValue));
+                  onChange(toChangeObject(name, enumValue));
                 }}
                 value={enumValue.toString()}
                 checked={value === enumValue}

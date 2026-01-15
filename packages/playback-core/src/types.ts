@@ -174,10 +174,8 @@ export type MuxMediaPropTypes = {
   _hlsConfig?: Partial<HlsConfig>;
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
-  /** Based on `cap-level-to-player-size` attribute, `disableCapLevelToPlayerSize` and `_hlsConfig.capLevelToPlayerSize` */
+  /** Based on `cap-level-to-player-size` attribute and `_hlsConfig.capLevelToPlayerSize` */
   capLevelToPlayerSize?: boolean;
-  /** Based on `disable-cap-level-to-player-size` attribute */
-  disableCapLevelToPlayerSize?: boolean;
   beaconCollectionDomain: Options['beaconCollectionDomain'];
   customDomain: string;
   debug: Options['debug'] & Hls['config']['debug'];

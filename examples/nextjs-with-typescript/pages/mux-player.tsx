@@ -1,6 +1,6 @@
 import Head from "next/head";
 import "@mux/mux-player";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MuxPlayerElement from "@mux/mux-player";
 import { OptionalBooleanRenderer } from "../components/renderers";
 import { Autoplay, MuxMediaPropTypes } from "../../../packages/playback-core/dist/types/types";
@@ -21,6 +21,14 @@ function MuxPlayerWCPage() {
   const debugObj : {debug?: boolean}=  debug ? { debug: true } : {};
   const mutedObj : {muted?: boolean} = muted ? { muted: true } : {};
   const autoplayObj : {autoplay?: Autoplay}  = autoplay ? { autoplay: autoplay } : {};
+
+  // Set capLevelToPlayerSize via JavaScript property (supports undefined, true, and false)
+  useEffect(() => {
+    if (mediaElRef.current) {
+      mediaElRef.current.capLevelToPlayerSize = capLevelToPlayerSize;
+    }
+  }, [capLevelToPlayerSize]);
+
   return (
     <>
       <Head>
@@ -34,8 +42,6 @@ function MuxPlayerWCPage() {
           forward-seek-offset={10}
           backward-seek-offset={10}
           max-auto-resolution="720p"
-          cap-level-to-player-size={capLevelToPlayerSize ? true : undefined}
-          disable-cap-level-to-player-size={capLevelToPlayerSize === false ? true : undefined}
           // onPlayerReady={() => console.log("ready!")}
           {...debugObj}
           {...mutedObj}

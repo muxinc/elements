@@ -1,4 +1,6 @@
 import { fixture, assert, aTimeout, waitUntil, oneEvent, nextFrame } from '@open-wc/testing';
+import { CapLevelController } from 'hls.js';
+import { MinCapLevelController } from '@mux/playback-core';
 import '../src/index.ts';
 
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
@@ -1060,5 +1062,88 @@ describe('<mux-player> seek to live behaviors', function () {
     const mcPlayEl = playerEl.mediaTheme.shadowRoot.querySelector('media-play-button');
     mcPlayEl.click();
     await waitUntil(() => playerEl.inLiveWindow, 'clicking play did not seek to live window');
+  });
+
+  describe('Feature: capLevelToPlayerSize', () => {
+    it('capLevelToPlayerSize is undefined by default', async function () {
+      const playerEl = await fixture(`<mux-player></mux-player>`);
+      await waitUntil(() => playerEl.media, 'media element should be available');
+      assert.isUndefined(playerEl.capLevelToPlayerSize, 'default should be undefined');
+    });
+
+    it('capLevelToPlayerSize property can be set to true', async function () {
+      const playerEl = await fixture(`<mux-player></mux-player>`);
+      await waitUntil(() => playerEl.media, 'media element should be available');
+      playerEl.capLevelToPlayerSize = true;
+      assert.isTrue(playerEl.capLevelToPlayerSize, 'should be true after setting property');
+    });
+
+    it('capLevelToPlayerSize property can be set to false', async function () {
+      const playerEl = await fixture(`<mux-player></mux-player>`);
+      await waitUntil(() => playerEl.media, 'media element should be available');
+      playerEl.capLevelToPlayerSize = false;
+      assert.isFalse(playerEl.capLevelToPlayerSize, 'should be false after setting property');
+    });
+
+    // Integration tests that verify the underlying hls.js instance is configured correctly
+    it('hls.js uses MinCapLevelController when capLevelToPlayerSize is undefined (default)', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture(`<mux-player
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        preload="none"
+        prefer-playback="mse"
+      ></mux-player>`);
+
+      await waitUntil(() => playerEl.media?._hls, 'hls.js instance should be created');
+
+      assert.equal(playerEl.media._hls.config.capLevelToPlayerSize, true, 'should default to true');
+      assert.equal(
+        playerEl.media._hls.config.capLevelController,
+        MinCapLevelController,
+        'should use MinCapLevelController'
+      );
+    });
+
+    it('hls.js uses CapLevelController when capLevelToPlayerSize is explicitly true', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture(`<mux-player
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        preload="none"
+        prefer-playback="mse"
+        cap-level-to-player-size
+      ></mux-player>`);
+
+      await waitUntil(() => playerEl.media?._hls, 'hls.js instance should be created');
+
+      assert.equal(playerEl.media._hls.config.capLevelToPlayerSize, true, 'should be true');
+      assert.equal(
+        playerEl.media._hls.config.capLevelController,
+        CapLevelController,
+        'should use standard CapLevelController when explicitly set'
+      );
+    });
+
+    it('hls.js uses CapLevelController when capLevelToPlayerSize is false via property', async function () {
+      this.timeout(5000);
+      const playerEl = await fixture(`<mux-player
+        preload="none"
+        prefer-playback="mse"
+      ></mux-player>`);
+
+      await waitUntil(() => playerEl.media, 'media element should be available');
+
+      // Set capLevelToPlayerSize to false before setting playbackId
+      playerEl.capLevelToPlayerSize = false;
+      playerEl.playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+
+      await waitUntil(() => playerEl.media?._hls, 'hls.js instance should be created');
+
+      assert.equal(playerEl.media._hls.config.capLevelToPlayerSize, false, 'should be false');
+      assert.equal(
+        playerEl.media._hls.config.capLevelController,
+        CapLevelController,
+        'should use standard CapLevelController when explicitly disabled'
+      );
+    });
   });
 });

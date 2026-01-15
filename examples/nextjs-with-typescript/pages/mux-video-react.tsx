@@ -38,8 +38,7 @@ function MuxVideoPage() {
         // }}
         // envKey="mux-data-env-key"
         controls
-        capLevelToPlayerSize={capLevelToPlayerSize === true}
-        disableCapLevelToPlayerSize={capLevelToPlayerSize === false}
+        capLevelToPlayerSize={capLevelToPlayerSize}
         autoplay={autoplay}
         muted={muted}
         maxResolution="2160p"

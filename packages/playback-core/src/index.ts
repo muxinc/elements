@@ -60,6 +60,7 @@ export {
   toPlaybackIdParts,
   i18n,
   parseJwt,
+  MinCapLevelController,
 };
 export * from './types';
 

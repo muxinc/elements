@@ -1,4 +1,6 @@
 import { fixture, assert, aTimeout, oneEvent, waitUntil } from '@open-wc/testing';
+import { CapLevelController } from 'hls.js';
+import { MinCapLevelController } from '@mux/playback-core';
 import MuxVideoElement, { Events as MuxVideoEvents } from '../src/index.ts';
 
 describe('<mux-video>', () => {
@@ -321,6 +323,113 @@ describe('<mux-video>', () => {
       muxVideoEl.playbackId = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
       await oneEvent(muxVideoEl, 'emptied');
       assert.equal(muxVideoEl.cuePoints.length, 0, 'cuePoints should be empty');
+    });
+  });
+
+  describe('Feature: capLevelToPlayerSize', async () => {
+    it('capLevelToPlayerSize is undefined by default', async () => {
+      const muxVideoEl = await fixture(`<mux-video></mux-video>`);
+      assert.isUndefined(muxVideoEl.capLevelToPlayerSize, 'default should be undefined');
+    });
+
+    it('cap-level-to-player-size attribute sets property to true', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size></mux-video>`);
+      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true when attribute is present');
+    });
+
+    it('cap-level-to-player-size="" attribute sets property to true', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size=""></mux-video>`);
+      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true when attribute is empty string');
+    });
+
+    it('capLevelToPlayerSize property can be set to true', async () => {
+      const muxVideoEl = await fixture(`<mux-video></mux-video>`);
+      muxVideoEl.capLevelToPlayerSize = true;
+      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true after setting property');
+    });
+
+    it('capLevelToPlayerSize property can be set to false', async () => {
+      const muxVideoEl = await fixture(`<mux-video></mux-video>`);
+      muxVideoEl.capLevelToPlayerSize = false;
+      assert.isFalse(muxVideoEl.capLevelToPlayerSize, 'should be false after setting property');
+    });
+
+    it('capLevelToPlayerSize property can be set to undefined', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size></mux-video>`);
+      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true initially');
+      muxVideoEl.capLevelToPlayerSize = undefined;
+      assert.isUndefined(muxVideoEl.capLevelToPlayerSize, 'should be undefined after setting property');
+    });
+
+    it('removing cap-level-to-player-size attribute sets property to undefined', async () => {
+      const muxVideoEl = await fixture(`<mux-video cap-level-to-player-size></mux-video>`);
+      assert.isTrue(muxVideoEl.capLevelToPlayerSize, 'should be true initially');
+      muxVideoEl.removeAttribute('cap-level-to-player-size');
+      assert.isUndefined(muxVideoEl.capLevelToPlayerSize, 'should be undefined after removing attribute');
+    });
+
+    it('_hlsConfig.capLevelToPlayerSize takes precedence over property', async () => {
+      const muxVideoEl = await fixture(`<mux-video></mux-video>`);
+      muxVideoEl.capLevelToPlayerSize = true;
+      muxVideoEl._hlsConfig = { capLevelToPlayerSize: false };
+      assert.isFalse(muxVideoEl.capLevelToPlayerSize, '_hlsConfig should take precedence');
+    });
+
+    // Integration tests that verify the underlying hls.js instance is configured correctly
+    it('hls.js uses MinCapLevelController when capLevelToPlayerSize is undefined (default)', async () => {
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        preload="none"
+        prefer-playback="mse"
+      ></mux-video>`);
+
+      // Wait for hls.js to be initialized
+      await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
+
+      assert.equal(muxVideoEl._hls.config.capLevelToPlayerSize, true, 'should default to true');
+      assert.equal(
+        muxVideoEl._hls.config.capLevelController,
+        MinCapLevelController,
+        'should use MinCapLevelController'
+      );
+    });
+
+    it('hls.js uses CapLevelController when capLevelToPlayerSize is explicitly true', async () => {
+      const muxVideoEl = await fixture(`<mux-video
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        preload="none"
+        prefer-playback="mse"
+        cap-level-to-player-size
+      ></mux-video>`);
+
+      await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
+
+      assert.equal(muxVideoEl._hls.config.capLevelToPlayerSize, true, 'should be true');
+      assert.equal(
+        muxVideoEl._hls.config.capLevelController,
+        CapLevelController,
+        'should use standard CapLevelController when explicitly set'
+      );
+    });
+
+    it('hls.js uses CapLevelController when capLevelToPlayerSize is false via property', async () => {
+      const muxVideoEl = await fixture(`<mux-video
+        preload="none"
+        prefer-playback="mse"
+      ></mux-video>`);
+
+      // Set capLevelToPlayerSize to false before setting playbackId
+      muxVideoEl.capLevelToPlayerSize = false;
+      muxVideoEl.playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
+
+      await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
+
+      assert.equal(muxVideoEl._hls.config.capLevelToPlayerSize, false, 'should be false');
+      assert.equal(
+        muxVideoEl._hls.config.capLevelController,
+        CapLevelController,
+        'should use standard CapLevelController when explicitly disabled'
+      );
     });
   });
 
