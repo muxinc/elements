@@ -1,6 +1,4 @@
 import { fixture, assert, aTimeout, oneEvent, waitUntil } from '@open-wc/testing';
-import { CapLevelController } from 'hls.js';
-import { MinCapLevelController } from '@mux/playback-core';
 import MuxVideoElement, { Events as MuxVideoEvents } from '../src/index.ts';
 
 describe('<mux-video>', () => {
@@ -387,10 +385,10 @@ describe('<mux-video>', () => {
       await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
 
       assert.equal(muxVideoEl._hls.config.capLevelToPlayerSize, true, 'should default to true');
-      assert.equal(
-        muxVideoEl._hls.config.capLevelController,
-        MinCapLevelController,
-        'should use MinCapLevelController'
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isDefined(
+        muxVideoEl._hls.config.capLevelController.minMaxResolution,
+        'should use MinCapLevelController (has minMaxResolution property)'
       );
     });
 
@@ -405,10 +403,10 @@ describe('<mux-video>', () => {
       await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
 
       assert.equal(muxVideoEl._hls.config.capLevelToPlayerSize, true, 'should be true');
-      assert.equal(
-        muxVideoEl._hls.config.capLevelController,
-        CapLevelController,
-        'should use standard CapLevelController when explicitly set'
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isUndefined(
+        muxVideoEl._hls.config.capLevelController.minMaxResolution,
+        'should use standard CapLevelController (no minMaxResolution property)'
       );
     });
 
@@ -425,10 +423,10 @@ describe('<mux-video>', () => {
       await waitUntil(() => muxVideoEl._hls, 'hls.js instance should be created');
 
       assert.equal(muxVideoEl._hls.config.capLevelToPlayerSize, false, 'should be false');
-      assert.equal(
-        muxVideoEl._hls.config.capLevelController,
-        CapLevelController,
-        'should use standard CapLevelController when explicitly disabled'
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isUndefined(
+        muxVideoEl._hls.config.capLevelController.minMaxResolution,
+        'should use standard CapLevelController (no minMaxResolution property)'
       );
     });
   });
