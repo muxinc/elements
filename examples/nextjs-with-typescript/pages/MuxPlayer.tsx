@@ -13,6 +13,7 @@ import {
   EnumMultiSelectRenderer,
   EnumRenderer,
   NumberRenderer,
+  OptionalBooleanRenderer,
   TextRenderer,
   URLRenderer,
 } from '../components/renderers';
@@ -127,6 +128,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   fullscreenElement: undefined,
   proudlyDisplayMuxBadge: undefined,
   disablePseudoEnded: undefined,
+  capRenditionToPlayerSize: undefined,
 });
 
 const SMALL_BREAKPOINT = 700;
@@ -282,6 +284,7 @@ function MuxPlayerPage({ location }: Props) {
           //   debug: true,
           // }}
           maxAutoResolution="720p"
+          capRenditionToPlayerSize={state.capRenditionToPlayerSize}
           title={state.title}
           videoTitle={state.videoTitle}
           startTime={state.startTime}
@@ -653,6 +656,11 @@ function MuxPlayerPage({ location }: Props) {
             onChange={genericOnChange}
             min={0}
             step={1}
+          />
+          <OptionalBooleanRenderer
+            value={state.capRenditionToPlayerSize}
+            name="capRenditionToPlayerSize"
+            onChange={genericOnChange}
           />
         </div>
       </main>

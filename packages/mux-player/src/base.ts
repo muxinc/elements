@@ -188,6 +188,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
+    capRenditionToPlayerSize: el.capRenditionToPlayerSize,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
     // moving this below the `...state` spread so it resolves to the default value when unset (CJP)
@@ -751,6 +752,13 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
           if (this.mediaController && e && muxVideo) {
             this.mediaController.fullscreenElement = e;
           }
+        }
+        break;
+      }
+      case MuxVideoAttributes.CAP_RENDITION_TO_PLAYER_SIZE: {
+        if (newValue == null || newValue !== oldValue) {
+          // Presence-based: attribute present = true, absent = undefined
+          this.capRenditionToPlayerSize = newValue != null ? true : undefined;
         }
         break;
       }
@@ -1882,6 +1890,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     } else {
       this.setAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE, '');
     }
+  }
+
+  get capRenditionToPlayerSize(): boolean | undefined {
+    return this.media?.capRenditionToPlayerSize;
+  }
+
+  set capRenditionToPlayerSize(val: boolean | undefined) {
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set capRenditionToPlayerSize');
+      return;
+    }
+    this.media.capRenditionToPlayerSize = val;
   }
 }
 

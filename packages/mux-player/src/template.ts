@@ -141,6 +141,7 @@ export const content = (props: MuxTemplateProps) => html`
       exportparts="video"
       disable-pseudo-ended="${props.disablePseudoEnded ?? false}"
       max-auto-resolution="${props.maxAutoResolution ?? false}"
+      cap-rendition-to-player-size="${props.capRenditionToPlayerSize ?? false}"
     >
       ${props.storyboard
         ? html`<track label="thumbnails" default kind="metadata" src="${props.storyboard}" />`

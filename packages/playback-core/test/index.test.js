@@ -12,6 +12,7 @@ import {
   getStreamType,
   muxMediaState,
   toPlaybackIdFromSrc,
+  getCapLevelControllerConfig,
 } from '../src/index.ts';
 
 describe('playback core', function () {
@@ -335,6 +336,52 @@ describe('playback core', function () {
       assert.equal(getStreamType(mediaEl), StreamTypes.UNKNOWN, 'should have a default stream type of unknown');
       assert(Number.isNaN(getTargetLiveWindow(mediaEl)), 'should have a default targetLiveWindow of NaN');
       assert(Number.isNaN(getLiveEdgeStart(mediaEl)), 'should have a default liveEdgeStart of NaN');
+    });
+  });
+
+  describe('getCapLevelControllerConfig()', () => {
+    it('should use MinCapLevelController when capRenditionToPlayerSize is undefined', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: undefined }, {});
+
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isDefined(
+        config.capLevelController.minMaxResolution,
+        'should use MinCapLevelController (has minMaxResolution property)'
+      );
+      assert.equal(config.capLevelToPlayerSize, true, 'should default hls.js capLevelToPlayerSize to true');
+    });
+
+    it('should use MinCapLevelController when capRenditionToPlayerSize is null', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: null }, {});
+
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isDefined(
+        config.capLevelController.minMaxResolution,
+        'should use MinCapLevelController (has minMaxResolution property)'
+      );
+      assert.equal(config.capLevelToPlayerSize, true, 'should default hls.js capLevelToPlayerSize to true');
+    });
+
+    it('should use CapLevelController when capRenditionToPlayerSize is true', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: true }, {});
+
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isUndefined(
+        config.capLevelController.minMaxResolution,
+        'should use standard CapLevelController (no minMaxResolution property)'
+      );
+      assert.equal(config.capLevelToPlayerSize, true, 'should keep hls.js capLevelToPlayerSize as true');
+    });
+
+    it('should use CapLevelController when capRenditionToPlayerSize is false', () => {
+      const config = getCapLevelControllerConfig({ capRenditionToPlayerSize: false }, {});
+
+      // MinCapLevelController has a static minMaxResolution property, standard CapLevelController does not
+      assert.isUndefined(
+        config.capLevelController.minMaxResolution,
+        'should use standard CapLevelController (no minMaxResolution property)'
+      );
+      assert.equal(config.capLevelToPlayerSize, false, 'should keep hls.js capLevelToPlayerSize as false');
     });
   });
 });

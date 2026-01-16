@@ -82,6 +82,7 @@ export const Attributes = {
   LIVE_EDGE_OFFSET: 'live-edge-offset',
   TYPE: 'type',
   LOGO: 'logo',
+  CAP_RENDITION_TO_PLAYER_SIZE: 'cap-rendition-to-player-size',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -516,6 +517,20 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
+  /** Keeps track of attribute status */
+  #capRenditionToPlayerSize: boolean | undefined = undefined;
+  /** Returns capRenditionToPlayerSize based on its attribute and {@link _hlsConfig} */
+  get capRenditionToPlayerSize(): boolean | undefined {
+    if (this._hlsConfig?.capLevelToPlayerSize != undefined) {
+      return this._hlsConfig.capLevelToPlayerSize;
+    }
+    return this.#capRenditionToPlayerSize;
+  }
+
+  set capRenditionToPlayerSize(val: boolean | undefined) {
+    this.#capRenditionToPlayerSize = val;
+  }
+
   get drmToken() {
     return this.getAttribute(Attributes.DRM_TOKEN) ?? undefined;
   }
@@ -899,6 +914,12 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
           }
         }
         break;
+      }
+      case Attributes.CAP_RENDITION_TO_PLAYER_SIZE: {
+        if (newValue == null || newValue !== oldValue) {
+          // Presence-based: attribute present = true, absent = undefined
+          this.capRenditionToPlayerSize = newValue != null ? true : undefined;
+        }
       }
     }
   }

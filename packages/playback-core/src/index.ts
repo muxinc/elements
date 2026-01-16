@@ -2,7 +2,7 @@ import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMe
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
-import type { ErrorData, HlsConfig } from 'hls.js';
+import { CapLevelController, ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
@@ -60,6 +60,7 @@ export {
   toPlaybackIdParts,
   i18n,
   parseJwt,
+  MinCapLevelController,
 };
 export * from './types';
 
@@ -703,6 +704,7 @@ export const setupHls = (
       | 'tokens'
       | 'drmTypeCb'
       | 'maxAutoResolution'
+      | 'capRenditionToPlayerSize'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -726,7 +728,6 @@ export const setupHls = (
       backBufferLength: 30,
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
-      capLevelToPlayerSize: true,
       capLevelOnFPSDrop: true,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
@@ -741,8 +742,7 @@ export const setupHls = (
         }
       : undefined;
 
-    const capLevelControllerObj =
-      _hlsConfig.capLevelToPlayerSize == null ? { capLevelController: MinCapLevelController } : {};
+    const capLevelControllerObj = getCapLevelControllerConfig(props, _hlsConfig);
 
     const hls = new Hls({
       // Kind of like preload metadata, but causes spinner.
@@ -761,8 +761,8 @@ export const setupHls = (
 
         xhr.open('GET', urlObj);
       },
-      ...capLevelControllerObj,
       ...defaultConfig,
+      ...capLevelControllerObj,
       ...streamTypeConfig,
       ...drmConfig,
       ..._hlsConfig,
@@ -1106,6 +1106,22 @@ export const isMuxVideoSrc = ({
   const hostname = new URL(src, base).hostname.toLocaleLowerCase();
 
   return hostname.includes(MUX_VIDEO_DOMAIN) || (!!customDomain && hostname.includes(customDomain.toLocaleLowerCase()));
+};
+
+export const getCapLevelControllerConfig = (
+  props: Pick<MuxMediaPropsInternal, 'capRenditionToPlayerSize'>,
+  _hlsConfig: Partial<HlsConfig>
+): Partial<Pick<HlsConfig, 'capLevelController' | 'capLevelToPlayerSize'>> => {
+  const capLevelControllerObj: Partial<Pick<HlsConfig, 'capLevelController' | 'capLevelToPlayerSize'>> = {};
+  // If capRenditionToPlayerSize is not explicitly set in props we enable MinCapLevelController
+  capLevelControllerObj.capLevelToPlayerSize = props.capRenditionToPlayerSize;
+  if (capLevelControllerObj.capLevelToPlayerSize == null) {
+    capLevelControllerObj.capLevelController = MinCapLevelController;
+    capLevelControllerObj.capLevelToPlayerSize = true;
+  } else {
+    capLevelControllerObj.capLevelController = CapLevelController;
+  }
+  return capLevelControllerObj;
 };
 
 export const setupMux = (

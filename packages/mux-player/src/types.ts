@@ -68,6 +68,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   /** Allow playback with ad blocker */
   allowAdBlocker?: boolean;
   disablePseudoEnded?: boolean;
+  capRenditionToPlayerSize?: boolean;
 };
 
 export type DialogOptions = {
