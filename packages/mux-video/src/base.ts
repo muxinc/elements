@@ -83,6 +83,7 @@ export const Attributes = {
   TYPE: 'type',
   LOGO: 'logo',
   CAP_RENDITION_TO_PLAYER_SIZE: 'cap-rendition-to-player-size',
+  USE_WEBKIT_FAIRPLAY: 'use-webkit-fairplay',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -785,6 +786,21 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       this.setAttribute(Attributes.LOGO, val);
     } else {
       this.removeAttribute(Attributes.LOGO);
+    }
+  }
+
+  get useWebkitFairplay(): boolean {
+    return this.hasAttribute(Attributes.USE_WEBKIT_FAIRPLAY);
+  }
+
+  set useWebkitFairplay(val: boolean) {
+    // dont' cause an infinite loop
+    if (val === this.useWebkitFairplay) return;
+
+    if (val) {
+      this.setAttribute(Attributes.USE_WEBKIT_FAIRPLAY, '');
+    } else {
+      this.removeAttribute(Attributes.USE_WEBKIT_FAIRPLAY);
     }
   }
 

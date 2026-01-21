@@ -207,6 +207,11 @@ export type MuxMediaPropTypes = {
   tokens: Tokens;
   type: MediaTypes;
   extraSourceParams: Record<string, any>;
+  /**
+   * Set to true to set up Native FairPlay DRM using webkit prefixed API functions
+   * amd will use com.apple.fps.1_0 key system.
+   */
+  useWebkitFairplay: boolean;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;

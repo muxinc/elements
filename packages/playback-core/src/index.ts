@@ -35,7 +35,8 @@ import {
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
-// import { MediaKeySessionContext } from 'hls.js';
+import { setupWebkitNativeFairplayDRM } from './webkit-fairplay';
+
 export {
   mux,
   Hls,
@@ -1218,6 +1219,7 @@ export const loadMedia = (
       | 'customDomain'
       | 'disablePseudoEnded'
       | 'debug'
+      | 'useWebkitFairplay'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1375,7 +1377,16 @@ export const loadMedia = (
 
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
       if (props.tokens?.drm) {
-        setupNativeFairplayDRM(props, mediaEl);
+        if (props.useWebkitFairplay) {
+          setupWebkitNativeFairplayDRM({
+            mediaEl,
+            getAppCertificate: () => getAppCertificate(toAppCertURL(props, 'fairplay')),
+            getLicenseKey: (message: ArrayBuffer) => getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')),
+            saveAndDispatchError,
+          });
+        } else {
+          setupNativeFairplayDRM(props, mediaEl);
+        }
       } else {
         // If we end up receiving an encrypted event in this case, that means the media is DRM-protected
         // but a token was not provided.
