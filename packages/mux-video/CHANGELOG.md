@@ -31,6 +31,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.29.2...@mux/mux-video@0.30.0) (2026-01-16)
+
+
+### Features
+
+* cap-rendition-to-player-size ([#1263](https://github.com/muxinc/elements/issues/1263)) ([9dfac1b](https://github.com/muxinc/elements/commit/9dfac1bc555d5432ef8e877578b584b3dbf7785f))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.32.2 to 0.33.0
+
 ## [0.29.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.29.1...@mux/mux-video@0.29.2) (2025-12-18)
 
 
