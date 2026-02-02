@@ -1,7 +1,7 @@
 /// <reference types="./webkit-fairplay.d.ts" />
 
 import { MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
-import { addEventListenerWithTeardown } from './util';
+import { addEventListenerWithTeardown, i18n } from './util';
 
 interface WebkitNativeFairplayConfig {
   mediaEl: HTMLMediaElement;
@@ -12,16 +12,18 @@ interface WebkitNativeFairplayConfig {
 
 const LEGACY_KEY_SYSTEM = 'com.apple.fps.1_0';
 
-export const setupWebkitNativeFairplayDRM = ({
+export const setupWebkitNativeFairplayDRM = async ({
   mediaEl,
   getAppCertificate,
   getLicenseKey,
   saveAndDispatchError,
 }: WebkitNativeFairplayConfig) => {
   if (!window.WebKitMediaKeys || !('onwebkitneedkey' in mediaEl)) {
-    console.error('No WebKitMediaKeys, FairPlay may not be supported');
+    console.error('No WebKitMediaKeys. FairPlay may not be supported');
 
-    const message = `Cannot setup Webkit Native Fairplay DRM`; // TODO: i18n
+    const message = i18n(
+      'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.'
+    );
     const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
     mediaError.errorCategory = MuxErrorCategory.DRM;
     mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
@@ -29,39 +31,22 @@ export const setupWebkitNativeFairplayDRM = ({
     return saveAndDispatchError(mediaEl, mediaError);
   }
 
-  let session: WebKitMediaKeySession | null = null;
-  let teardownSession: (() => void) | null = null;
-  // We keep a reference to the session so we don't create many to different events
-  const setSession = (newValue: WebKitMediaKeySession | null, newTeardown: (() => void) | null) => {
-    if (newValue) {
-      session = newValue;
-      teardownSession = newTeardown;
-    } else {
-      session = null;
-      teardownSession = null;
-    }
-  };
+  // @ts-ignore
+  const context = new WebkitFairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError);
 
   const webkitneedkeyHandler = async (ev: WebkitNeedKeyEvent) => {
-    if (session !== null) return;
+    // TODO: To support key rotation, we would need to refactor this to allow a different init data to create a new session for new init data
+    if (context.session !== null) return;
+
     const mediaEl: WebkitHTMLMediaElement = ev.target;
     try {
-      if (!mediaEl.webkitKeys) {
-        setupWebkitKey(mediaEl);
-      }
+      await context.setup();
+      const certificate = context.certificate;
 
-      if (ev.initData === null) return;
-      const initData = await getInitData(ev.initData, getAppCertificate);
+      if (ev.initData === null || certificate == null) return;
+      const initData = getInitData(ev.initData, certificate);
 
-      // Session may be initialized concurrently while we await the last call. TODO: I want to avoid this.
-      if (session) return;
-
-      const newSession = mediaEl.webkitKeys.createSession('application/vnd.apple.mpegurl', initData);
-      const teardownSession = setupWebkitKeySession(mediaEl, newSession, getLicenseKey, saveAndDispatchError);
-      setSession(newSession, () => {
-        teardownSession();
-        setSession(null, null);
-      });
+      context.createSession(mediaEl, initData);
     } catch (e) {
       console.error('Could not start encrypted playback due to exception', e);
       saveAndDispatchError(mediaEl, e as MediaError);
@@ -72,9 +57,7 @@ export const setupWebkitNativeFairplayDRM = ({
 
   // Teardown function
   return () => {
-    if (teardownSession && typeof teardownSession === 'function') {
-      teardownSession();
-    }
+    context.teardown();
     // @ts-ignore
     mediaEl.removeEventListener('webkitneedkey', webkitneedkeyHandler);
   };
@@ -89,65 +72,14 @@ const setupWebkitKey = (mediaEl: WebkitHTMLMediaElement) => {
     const mediaKeys = new WebKitMediaKeys(LEGACY_KEY_SYSTEM);
     mediaEl.webkitSetMediaKeys(mediaKeys);
   } catch (e) {
-    const message = `Failed to set up WebKit key ${e}`; // TODO: i18n
+    const message =
+      'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.';
     const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
     mediaError.errorCategory = MuxErrorCategory.DRM;
     mediaError.muxCode = MuxErrorCode.ENCRYPTED_UNSUPPORTED_KEY_SYSTEM;
 
     throw mediaError;
   }
-};
-
-/**
- * Adds necessary event handlers to a new session and returns the function to tear them down
- */
-const setupWebkitKeySession = (
-  mediaEl: WebkitHTMLMediaElement,
-  session: WebKitMediaKeySession,
-  getLicenseKey: WebkitNativeFairplayConfig['getLicenseKey'],
-  saveAndDispatchError: WebkitNativeFairplayConfig['saveAndDispatchError']
-) => {
-  const onwebkitkeymessageHandler = async (event: WebkiKeyMessageEvent) => {
-    const ckc = await getLicenseKey(event.message);
-    event.target.update(ckc);
-  };
-
-  const onwebkitkeyerrorHandler = (event: WebkitKeyErrorEvent) => {
-    const error = event.target.error;
-    if (!error) return;
-
-    const message = `Internal Webkit Key Session Error - sysCode: ${error.systemCode} code: ${error.code}`; // TODO: i18n
-    const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-    mediaError.errorCategory = MuxErrorCategory.DRM;
-    mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-
-    saveAndDispatchError(mediaEl, mediaError);
-  };
-
-  const teardownSession = () => {
-    if (!session) return;
-    if ('onwebkitkeymessage' in session) {
-      session.onwebkitkeymessage = null;
-    }
-    if ('onwebkitkeyerror' in session) {
-      session.onwebkitkeyerror = null;
-    }
-    session.close();
-  };
-
-  if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
-    // @ts-ignore
-    addEventListenerWithTeardown(mediaEl, 'webkitcurrentplaybacktargetiswirelesschanged', teardownSession, {
-      once: true,
-    });
-  }
-  if ('onwebkitkeymessage' in session) {
-    session.onwebkitkeymessage = onwebkitkeymessageHandler;
-  }
-  if ('onwebkitkeyerror' in session) {
-    session.onwebkitkeyerror = onwebkitkeyerrorHandler;
-  }
-  return teardownSession;
 };
 
 /**
@@ -161,12 +93,8 @@ const setupWebkitKeySession = (
  * [4 bytes content Id length][content id bytes]
  * [4 bytes certificate length][certificate bytes]
  */
-const getInitData = async (
-  initDataBuffer: ArrayBuffer,
-  getAppCertificate: WebkitNativeFairplayConfig['getAppCertificate']
-) => {
+const getInitData = (initDataBuffer: ArrayBuffer, certificateBuffer: ArrayBuffer) => {
   const contentIdBuffer = stringToUtf16LE(getContentId(initDataBuffer));
-  const certificateBuffer = await getAppCertificate();
 
   const initData: Uint8Array = new Uint8Array(initDataBuffer);
   const contentId: Uint8Array = new Uint8Array(contentIdBuffer);
@@ -208,4 +136,123 @@ function stringToUtf16LE(str: string) {
   }
 
   return buffer;
+}
+
+class WebkitFairPlayContext {
+  mediaEl: WebkitHTMLMediaElement;
+  getAppCertificate: WebkitNativeFairplayConfig['getAppCertificate'];
+  getLicenseKey: WebkitNativeFairplayConfig['getLicenseKey'];
+  saveAndDispatchError: WebkitNativeFairplayConfig['saveAndDispatchError'];
+
+  session: WebKitMediaKeySession | null = null;
+  certificate: ArrayBuffer | null = null;
+  teardownSession: (() => void) | null = null;
+
+  constructor(
+    mediaEl: WebkitHTMLMediaElement,
+    getAppCertificate: WebkitNativeFairplayConfig['getAppCertificate'],
+    getLicenseKey: WebkitNativeFairplayConfig['getLicenseKey'],
+    saveAndDispatchError: WebkitNativeFairplayConfig['saveAndDispatchError']
+  ) {
+    this.mediaEl = mediaEl;
+    this.getAppCertificate = getAppCertificate;
+    this.getLicenseKey = getLicenseKey;
+    this.saveAndDispatchError = saveAndDispatchError;
+  }
+
+  async setup() {
+    if (this.certificate === null) {
+      this.certificate = await this.getAppCertificate();
+    }
+    if (!this.mediaEl.webkitKeys) {
+      setupWebkitKey(this.mediaEl);
+    }
+    // TODO : this.drmTypeCb();
+  }
+
+  teardown() {
+    if (this.teardownSession !== null) {
+      this.teardownSession();
+    }
+    this.teardownSession = null;
+    this.certificate = null;
+    this.session = null;
+  }
+
+  // We keep a reference to the session so we don't create many to different events
+  setSession = (newValue: WebKitMediaKeySession | null, newTeardown: (() => void) | null) => {
+    if (newValue) {
+      this.session = newValue;
+      this.teardownSession = newTeardown;
+    } else {
+      this.session = null;
+      this.teardownSession = null;
+    }
+  };
+
+  createSession(mediaEl: WebkitHTMLMediaElement, initData: BufferSource) {
+    const newSession = mediaEl.webkitKeys.createSession('application/vnd.apple.mpegurl', initData);
+    const teardownSession = this.setupWebkitKeySession(mediaEl, newSession);
+    this.setSession(newSession, teardownSession);
+  }
+
+  /**
+   * Adds necessary event handlers to a new session and returns the function to tear them down
+   */
+  setupWebkitKeySession = (mediaEl: WebkitHTMLMediaElement, session: WebKitMediaKeySession) => {
+    const onwebkitkeymessageHandler = async (event: WebkiKeyMessageEvent) => {
+      try {
+        const spc = event.message;
+        const ckc = await this.getLicenseKey(spc);
+        event.target.update(ckc);
+      } catch (errOrResp) {
+        console.error('Error on FairPlay session message', errOrResp);
+        this.saveAndDispatchError(this.mediaEl, errOrResp as MediaError);
+      }
+    };
+
+    const onwebkitkeyerrorHandler = (event: WebkitKeyErrorEvent) => {
+      const error = event.target.error;
+      if (!error) return;
+      console.error(`Internal Webkit Key Session Error - sysCode: ${error.systemCode} code: ${error.code}`);
+
+      const message = i18n(
+        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+      );
+      const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+      mediaError.errorCategory = MuxErrorCategory.DRM;
+      mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
+
+      this.saveAndDispatchError(mediaEl, mediaError);
+    };
+
+    const teardownSession = () => {
+      if (!session) return;
+      if ('onwebkitkeymessage' in session) {
+        session.onwebkitkeymessage = null;
+      }
+      if ('onwebkitkeyerror' in session) {
+        session.onwebkitkeyerror = null;
+      }
+      try {
+        session.close();
+      } catch {}
+
+      this.setSession(null, null);
+    };
+
+    if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
+      // @ts-ignore
+      addEventListenerWithTeardown(mediaEl, 'webkitcurrentplaybacktargetiswirelesschanged', teardownSession, {
+        once: true,
+      });
+    }
+    if ('onwebkitkeymessage' in session) {
+      session.onwebkitkeymessage = onwebkitkeymessageHandler;
+    }
+    if ('onwebkitkeyerror' in session) {
+      session.onwebkitkeyerror = onwebkitkeyerrorHandler;
+    }
+    return teardownSession;
+  };
 }
