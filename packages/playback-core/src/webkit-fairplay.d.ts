@@ -13,8 +13,22 @@ declare global {
     setServerCertificate(cert: ArrayBuffer): boolean;
   }
 
+  /**
+   * From https://developer.apple.com/documentation/webkitjs/webkitmediakeyerror
+   * - MEDIA_KEYERR_CLIENT
+   * - MEDIA_KEYERR_DOMAIN
+   * - MEDIA_KEYERR_HARDWARECHANGE
+   * - MEDIA_KEYERR_OUTPUT
+   * - MEDIA_KEYERR_SERVICE
+   * - MEDIA_KEYERR_UNKNOWN
+   */
+  interface WebKitMediaKeysError {
+    code: number;
+    systemCode: number;
+  }
+
   interface WebKitMediaKeySession extends EventTarget {
-    error: Error | null;
+    error: WebKitMediaKeysError | null;
     update(response: BufferSource): Promise<void>;
     close(): Promise<void>;
   }

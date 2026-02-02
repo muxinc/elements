@@ -209,9 +209,17 @@ export type MuxMediaPropTypes = {
   extraSourceParams: Record<string, any>;
   /**
    * Set to true to set up Native FairPlay DRM using webkit prefixed API functions
-   * amd will use com.apple.fps.1_0 key system.
+   * and will use com.apple.fps.1_0 key system.
+   *
+   * Set to false to set up Native FairPlay DRM using EME API and com.apple.fps key system
    */
   useWebkitFairplay: boolean;
+  /**
+   * Used to address a FPS specific bug present when setup is done using EME.
+   * This fallback will be called if session.generateRequest call fails.
+   * Can be set to undefined to prevent the fallback from being called.
+   */
+  drmSetupFallback?: () => void;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;

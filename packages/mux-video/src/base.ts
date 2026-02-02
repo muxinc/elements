@@ -804,6 +804,15 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
+  drmSetupFallback = () => {
+    const previousSrc = this.src;
+    this.useWebkitFairplay = true;
+    this.removeAttribute('src');
+    this.src = previousSrc;
+
+    this.#requestLoad();
+  };
+
   async #requestLoad() {
     if (this.#loadRequested) return;
     await (this.#loadRequested = Promise.resolve());

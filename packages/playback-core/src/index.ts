@@ -36,6 +36,7 @@ import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylis
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
 import { setupWebkitNativeFairplayDRM } from './webkit-fairplay';
+import { setupEmeFairplayDRM } from './eme-fariplay';
 
 export {
   mux,
@@ -878,10 +879,43 @@ export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: stri
 };
 
 export const setupNativeFairplayDRM = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
+  props: Partial<
+    Pick<
+      MuxMediaPropsInternal,
+      'useWebkitFairplay' | 'drmSetupFallback' | 'playbackToken' | 'customDomain' | 'drmTypeCb'
+    >
+  >, // TODO: drmTypeCb
   mediaEl: HTMLMediaElement
 ) => {
-  const setupMediaKeys = async (initDataType: string) => {
+  if (props.useWebkitFairplay) {
+    const teardownWebkitFPS = setupWebkitNativeFairplayDRM({
+      mediaEl: mediaEl,
+      getAppCertificate: () => getAppCertificate(toAppCertURL(props, 'fairplay')),
+      getLicenseKey: (message: ArrayBuffer) => getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')),
+      saveAndDispatchError,
+    });
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownWebkitFPS, { once: true });
+  } else {
+    let fallback = undefined;
+
+    if (props.drmSetupFallback) {
+      const propsFallback = props.drmSetupFallback;
+      fallback = () => {
+        teardownEmeFPS();
+        propsFallback();
+      };
+    }
+    const teardownEmeFPS = setupEmeFairplayDRM({
+      mediaEl,
+      getAppCertificate: () => getAppCertificate(toAppCertURL(props, 'fairplay')),
+      getLicenseKey: (message: ArrayBuffer) => getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')),
+      fallback,
+    });
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownEmeFPS, { once: true });
+  }
+  /* const setupMediaKeys = async (initDataType: string) => {
     const access = await navigator
       .requestMediaKeySystemAccess('com.apple.fps', [
         {
@@ -1061,7 +1095,7 @@ export const setupNativeFairplayDRM = (
     }
   };
 
-  addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
+  addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted); */
 };
 
 export const toLicenseKeyURL = (
@@ -1220,6 +1254,7 @@ export const loadMedia = (
       | 'disablePseudoEnded'
       | 'debug'
       | 'useWebkitFairplay'
+      | 'drmSetupFallback'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1377,16 +1412,7 @@ export const loadMedia = (
 
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
       if (props.tokens?.drm) {
-        if (props.useWebkitFairplay) {
-          setupWebkitNativeFairplayDRM({
-            mediaEl,
-            getAppCertificate: () => getAppCertificate(toAppCertURL(props, 'fairplay')),
-            getLicenseKey: (message: ArrayBuffer) => getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')),
-            saveAndDispatchError,
-          });
-        } else {
-          setupNativeFairplayDRM(props, mediaEl);
-        }
+        setupNativeFairplayDRM(props, mediaEl);
       } else {
         // If we end up receiving an encrypted event in this case, that means the media is DRM-protected
         // but a token was not provided.
