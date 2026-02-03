@@ -43,7 +43,6 @@ export const setupWebkitNativeFairplayDRM = async ({
   const context = new WebkitFairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError, drmTypeCb);
 
   const webkitneedkeyHandler = async (ev: WebkitNeedKeyEvent) => {
-    const wkMediaEl: WebkitHTMLMediaElement = ev.target;
     try {
       await context.setup();
       const certificate = context.certificate;
