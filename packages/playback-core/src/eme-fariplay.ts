@@ -16,7 +16,7 @@ export const setupEmeFairplayDRM = ({
   fallback,
   saveAndDispatchError,
   drmTypeCb,
-}: EMEFairplayConfiguration): (() => void) => {
+}: EMEFairplayConfiguration): (() => Promise<void>) => {
   const context = new FairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError, drmTypeCb);
 
   const encryptedHandler = async (event: MediaEncryptedEvent): Promise<void> => {
@@ -61,9 +61,11 @@ export const setupEmeFairplayDRM = ({
     }
   };
 
+  console.log('Setup eme');
   mediaEl.addEventListener('encrypted', encryptedHandler);
-  return () => {
-    context.teardown();
+  return async () => {
+    console.log('Teardown eme');
+    await context.teardown();
     mediaEl.removeEventListener('encrypted', encryptedHandler);
   };
 };
@@ -116,9 +118,9 @@ class FairPlayContext {
     }
   }
 
-  teardown() {
+  async teardown() {
     if (this.mediaEl.mediaKeys) {
-      this.mediaEl.setMediaKeys(null).catch(() => {});
+      await this.mediaEl.setMediaKeys(null).catch(() => {});
     }
     if (this.teardownSession !== null) {
       this.teardownSession();

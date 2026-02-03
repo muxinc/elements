@@ -219,7 +219,7 @@ export type MuxMediaPropTypes = {
    * This fallback will be called if session.generateRequest call fails.
    * Can be set to undefined to prevent the fallback from being called.
    */
-  drmSetupFallback?: () => void;
+  drmSetupFallback?: () => Promise<void>;
 };
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;

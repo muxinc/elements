@@ -8,6 +8,7 @@ interface WebkitNativeFairplayConfig {
   getAppCertificate: () => Promise<ArrayBuffer>;
   getLicenseKey: (spc: ArrayBuffer) => Promise<BufferSource>;
   saveAndDispatchError: (mediaEl: HTMLMediaElement, error: MediaError) => void;
+  drmTypeCb: () => void;
 }
 
 const LEGACY_KEY_SYSTEM = 'com.apple.fps.1_0';
@@ -17,6 +18,7 @@ export const setupWebkitNativeFairplayDRM = async ({
   getAppCertificate,
   getLicenseKey,
   saveAndDispatchError,
+  drmTypeCb,
 }: WebkitNativeFairplayConfig) => {
   if (!window.WebKitMediaKeys || !('onwebkitneedkey' in mediaEl)) {
     console.error('No WebKitMediaKeys. FairPlay may not be supported');
@@ -31,14 +33,21 @@ export const setupWebkitNativeFairplayDRM = async ({
     return saveAndDispatchError(mediaEl, mediaError);
   }
 
+  const wkMediaEl: WebkitHTMLMediaElement = mediaEl as unknown as WebkitHTMLMediaElement;
+
+  if (!wkMediaEl.webkitKeys) {
+    setupWebkitKey(wkMediaEl);
+    drmTypeCb();
+  }
   // @ts-ignore
-  const context = new WebkitFairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError);
+  const context = new WebkitFairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError, drmTypeCb);
 
   const webkitneedkeyHandler = async (ev: WebkitNeedKeyEvent) => {
+    console.log('webkitneedkeyHandler');
     // TODO: To support key rotation, we would need to refactor this to allow a different init data to create a new session for new init data
     if (context.session !== null) return;
 
-    const mediaEl: WebkitHTMLMediaElement = ev.target;
+    const wkMediaEl: WebkitHTMLMediaElement = ev.target;
     try {
       await context.setup();
       const certificate = context.certificate;
@@ -46,17 +55,19 @@ export const setupWebkitNativeFairplayDRM = async ({
       if (ev.initData === null || certificate == null) return;
       const initData = getInitData(ev.initData, certificate);
 
-      context.createSession(mediaEl, initData);
+      context.createSession(wkMediaEl, initData);
     } catch (e) {
       console.error('Could not start encrypted playback due to exception', e);
-      saveAndDispatchError(mediaEl, e as MediaError);
+      saveAndDispatchError(wkMediaEl, e as MediaError);
     }
   };
   // @ts-ignore
   mediaEl.addEventListener('webkitneedkey', webkitneedkeyHandler);
 
+  console.log('Setup webkit');
   // Teardown function
   return () => {
+    console.log('Tearing down webkit');
     context.teardown();
     // @ts-ignore
     mediaEl.removeEventListener('webkitneedkey', webkitneedkeyHandler);
@@ -71,7 +82,7 @@ const setupWebkitKey = (mediaEl: WebkitHTMLMediaElement) => {
   try {
     const mediaKeys = new WebKitMediaKeys(LEGACY_KEY_SYSTEM);
     mediaEl.webkitSetMediaKeys(mediaKeys);
-  } catch (e) {
+  } catch {
     const message =
       'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.';
     const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
@@ -143,6 +154,7 @@ class WebkitFairPlayContext {
   getAppCertificate: WebkitNativeFairplayConfig['getAppCertificate'];
   getLicenseKey: WebkitNativeFairplayConfig['getLicenseKey'];
   saveAndDispatchError: WebkitNativeFairplayConfig['saveAndDispatchError'];
+  drmTypeCb: WebkitNativeFairplayConfig['drmTypeCb'];
 
   session: WebKitMediaKeySession | null = null;
   certificate: ArrayBuffer | null = null;
@@ -152,27 +164,32 @@ class WebkitFairPlayContext {
     mediaEl: WebkitHTMLMediaElement,
     getAppCertificate: WebkitNativeFairplayConfig['getAppCertificate'],
     getLicenseKey: WebkitNativeFairplayConfig['getLicenseKey'],
-    saveAndDispatchError: WebkitNativeFairplayConfig['saveAndDispatchError']
+    saveAndDispatchError: WebkitNativeFairplayConfig['saveAndDispatchError'],
+    drmTypeCb: WebkitNativeFairplayConfig['drmTypeCb']
   ) {
     this.mediaEl = mediaEl;
     this.getAppCertificate = getAppCertificate;
     this.getLicenseKey = getLicenseKey;
     this.saveAndDispatchError = saveAndDispatchError;
+    this.drmTypeCb = drmTypeCb;
   }
 
   async setup() {
     if (this.certificate === null) {
       this.certificate = await this.getAppCertificate();
     }
-    if (!this.mediaEl.webkitKeys) {
-      setupWebkitKey(this.mediaEl);
-    }
-    // TODO : this.drmTypeCb();
   }
 
   teardown() {
     if (this.teardownSession !== null) {
       this.teardownSession();
+    }
+    if (this.mediaEl.webkitKeys) {
+      try {
+        this.mediaEl.webkitSetMediaKeys(null);
+      } catch (e) {
+        console.warn('There was an error tearing down WebkitKeys', e);
+      }
     }
     this.teardownSession = null;
     this.certificate = null;

@@ -35,7 +35,7 @@ declare global {
 
   interface WebkitHTMLMediaElement extends HTMLMediaElement {
     webkitKeys: WebKitMediaKeys;
-    webkitSetMediaKeys(webkitKeys: WebKitMediaKeys): void;
+    webkitSetMediaKeys(webkitKeys: WebKitMediaKeys | null): void;
   }
 
   interface WebkitNeedKeyEvent extends MediaEncryptedEvent {

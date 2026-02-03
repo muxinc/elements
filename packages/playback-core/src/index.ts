@@ -884,7 +884,7 @@ export const setupNativeFairplayDRM = (
       MuxMediaPropsInternal,
       'useWebkitFairplay' | 'drmSetupFallback' | 'playbackToken' | 'customDomain' | 'drmTypeCb'
     >
-  >, // TODO: drmTypeCb
+  >,
   mediaEl: HTMLMediaElement
 ) => {
   const getAppCertificateHandler = () =>
@@ -935,9 +935,9 @@ export const setupNativeFairplayDRM = (
 
     if (props.drmSetupFallback) {
       const propsFallback = props.drmSetupFallback;
-      fallback = () => {
-        teardownEmeFPS();
-        propsFallback();
+      fallback = async () => {
+        await teardownEmeFPS(); // TODO: May be unnecessary
+        await propsFallback();
       };
     }
     const teardownEmeFPS = setupEmeFairplayDRM({

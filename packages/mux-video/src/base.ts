@@ -804,13 +804,13 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     }
   }
 
-  drmSetupFallback = () => {
-    const previousSrc = this.src;
+  drmSetupFallback = async () => {
     this.useWebkitFairplay = true;
-    this.removeAttribute('src');
-    this.src = previousSrc;
 
-    this.#requestLoad();
+    // TODO: Can we somehow wait till load is done before unloading?
+    this.unload();
+    await this.#requestLoad();
+    //setupNativeFairplayDRM(this, this.nativeEl);
   };
 
   async #requestLoad() {
