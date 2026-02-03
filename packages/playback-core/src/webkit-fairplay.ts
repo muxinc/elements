@@ -1,7 +1,7 @@
 /// <reference types="./webkit-fairplay.d.ts" />
 
 import { MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
-import { addEventListenerWithTeardown, i18n } from './util';
+import { i18n } from './util';
 
 interface WebkitNativeFairplayConfig {
   mediaEl: HTMLMediaElement;

@@ -145,17 +145,15 @@ class FairPlayContext {
   }
 
   initMediaAccess = async (initDataType: string): Promise<MediaKeySystemAccess> => {
-    const defaultKeySystemConfig = (initDataType: string): MediaKeySystemConfiguration => ({
-      initDataTypes: [initDataType],
-      videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
-      distinctiveIdentifier: 'not-allowed',
-      persistentState: 'not-allowed',
-      sessionTypes: ['temporary'],
-    });
-
     try {
       const access = await navigator.requestMediaKeySystemAccess('com.apple.fps', [
-        defaultKeySystemConfig(initDataType),
+        {
+          initDataTypes: [initDataType],
+          videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
+          distinctiveIdentifier: 'not-allowed',
+          persistentState: 'not-allowed',
+          sessionTypes: ['temporary'],
+        },
       ]);
       this.drmTypeCb();
       return access;
