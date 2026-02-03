@@ -43,10 +43,6 @@ export const setupWebkitNativeFairplayDRM = async ({
   const context = new WebkitFairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError, drmTypeCb);
 
   const webkitneedkeyHandler = async (ev: WebkitNeedKeyEvent) => {
-    console.log('webkitneedkeyHandler');
-    // TODO: To support key rotation, we would need to refactor this to allow a different init data to create a new session for new init data
-    if (context.session !== null) return;
-
     const wkMediaEl: WebkitHTMLMediaElement = ev.target;
     try {
       await context.setup();
@@ -64,10 +60,8 @@ export const setupWebkitNativeFairplayDRM = async ({
   // @ts-ignore
   mediaEl.addEventListener('webkitneedkey', webkitneedkeyHandler);
 
-  console.log('Setup webkit');
   // Teardown function
   return () => {
-    console.log('Tearing down webkit');
     context.teardown();
     // @ts-ignore
     mediaEl.removeEventListener('webkitneedkey', webkitneedkeyHandler);
@@ -197,17 +191,19 @@ class WebkitFairPlayContext {
   }
 
   // We keep a reference to the session so we don't create many to different events
-  setSession = (newValue: WebKitMediaKeySession | null, newTeardown: (() => void) | null) => {
-    if (newValue) {
-      this.session = newValue;
-      this.teardownSession = newTeardown;
-    } else {
-      this.session = null;
-      this.teardownSession = null;
+  setSession = (newValue: WebKitMediaKeySession, newTeardown: () => void) => {
+    if (this.session && this.session !== newValue) {
+      this.teardownSession?.();
     }
+    this.session = newValue;
+    this.teardownSession = newTeardown;
   };
 
   createSession(mediaEl: WebkitHTMLMediaElement, initData: BufferSource) {
+    if (!this.mediaEl.webkitKeys) {
+      // Should never happen
+      throw new Error('Unexpected error creating session. No Media Keys');
+    }
     const newSession = mediaEl.webkitKeys.createSession('application/vnd.apple.mpegurl', initData);
     const teardownSession = this.setupWebkitKeySession(mediaEl, newSession);
     this.setSession(newSession, teardownSession);
@@ -254,15 +250,16 @@ class WebkitFairPlayContext {
       try {
         session.close();
       } catch {}
+      if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
+        mediaEl.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', teardownSession);
+      }
 
-      this.setSession(null, null);
+      this.teardownSession = null;
+      this.session = null;
     };
 
     if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
-      // @ts-ignore
-      addEventListenerWithTeardown(mediaEl, 'webkitcurrentplaybacktargetiswirelesschanged', teardownSession, {
-        once: true,
-      });
+      mediaEl.addEventListener('webkitcurrentplaybacktargetiswirelesschanged', teardownSession, { once: true });
     }
     if ('onwebkitkeymessage' in session) {
       session.onwebkitkeymessage = onwebkitkeymessageHandler;

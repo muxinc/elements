@@ -34,16 +34,11 @@ export const setupEmeFairplayDRM = ({
       }
 
       await context.setup(initDataType);
-      // To avoid creating multiple sessions
-      // TODO: To support key rotation, we would need to refactor this to allow a different init data to create a new session for new init data
-      if (!mediaEl.mediaKeys || context.session) {
-        return;
-      }
       const session = context.createSession();
       await session?.generateRequest(initDataType, initData).catch((e: Error) => {
         if (e.name === 'NotSupportedError') {
           console.warn('Failed to generate license request', e);
-          context.teardownSession?.();
+          context.teardown();
           fallback?.();
         } else {
           console.error('Failed to generate license request', e);
@@ -61,10 +56,8 @@ export const setupEmeFairplayDRM = ({
     }
   };
 
-  console.log('Setup eme');
   mediaEl.addEventListener('encrypted', encryptedHandler);
   return async () => {
-    console.log('Teardown eme');
     await context.teardown();
     mediaEl.removeEventListener('encrypted', encryptedHandler);
   };
@@ -131,14 +124,12 @@ class FairPlayContext {
   }
 
   // We keep a reference to the session so we don't create many to different events
-  setSession = (newValue: MediaKeySession | null, newTeardown: (() => void) | null) => {
-    if (newValue) {
-      this.session = newValue;
-      this.teardownSession = newTeardown;
-    } else {
-      this.session = null;
-      this.teardownSession = null;
+  setSession = (newValue: MediaKeySession, newTeardown: () => void) => {
+    if (this.session && this.session !== newValue) {
+      this.teardownSession?.();
     }
+    this.session = newValue;
+    this.teardownSession = newTeardown;
   };
 
   /** Creates a session and sets up it's teardown function */
@@ -196,7 +187,8 @@ class FairPlayContext {
       mediaEl.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', teardownSession);
       mediaEl.removeEventListener('teardown', teardownSession);
 
-      this.setSession(null, null);
+      this.session = null;
+      this.teardownSession = null;
     };
     session.addEventListener('keystatuseschange', onKeyStatusChangeHandler);
     session.addEventListener('message', onMessageHandler);
