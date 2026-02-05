@@ -807,10 +807,17 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   drmSetupFallback = async () => {
     this.useWebkitFairplay = true;
 
-    // TODO: Can we somehow wait till load is done before unloading?
+    const wasPlaying = !this.paused;
+    this.pause();
+    const currentTime = this.currentTime;
+
     this.unload();
     await this.#requestLoad();
-    //setupNativeFairplayDRM(this, this.nativeEl);
+
+    this.currentTime = currentTime;
+    if (wasPlaying) {
+      await this.play();
+    }
   };
 
   async #requestLoad() {

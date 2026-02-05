@@ -936,7 +936,7 @@ export const setupNativeFairplayDRM = (
     if (props.drmSetupFallback) {
       const propsFallback = props.drmSetupFallback;
       fallback = async () => {
-        await teardownEmeFPS(); // TODO: May be unnecessary
+        await teardownEmeFPS();
         await propsFallback();
       };
     }
