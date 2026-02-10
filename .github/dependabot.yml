@@ -23,3 +23,5 @@ updates:
       - dependency-name: 'castable-video'
       - dependency-name: 'custom-media-element'
       - dependency-name: 'media-tracks'
+      - dependency-name: 'mux-embed'
+      - dependency-name: '@mux/mux-data-google-ima'
