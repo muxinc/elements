@@ -20,6 +20,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.15.21](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.15.20...@mux/mux-audio-react@0.15.21) (2026-02-10)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.33.0 to 0.33.1
+
 ## [0.15.20](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.15.19...@mux/mux-audio-react@0.15.20) (2026-01-16)
 
 
