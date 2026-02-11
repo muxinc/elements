@@ -33,6 +33,19 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.11.4](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.11.3...@mux/mux-player-react@3.11.4) (2026-02-11)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.11.3 to 3.11.4
+   
+### Release note
+
+This publish also includes changes from 3.11.1 - 3.11.3, which failed to release due to a misconfiguration in tokens.
+
 ## [3.11.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.11.2...@mux/mux-player-react@3.11.3) (2026-02-11)
 
 
@@ -46,10 +59,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * The following workspace dependencies were updated
   * dependencies
     * @mux/mux-player bumped from 3.11.2 to 3.11.3
-   
-### Release note
 
-This publish also includes changes from 3.11.1 and 3.11.2, which failed to release due to a misconfiguration in tokens.
 
 ## [3.11.2](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.11.1...@mux/mux-player-react@3.11.2) (2026-02-11)
 
