@@ -35,7 +35,9 @@ import {
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
-// import { MediaKeySessionContext } from 'hls.js';
+import { setupWebkitNativeFairplayDRM } from './webkit-fairplay';
+import { setupEmeFairplayDRM } from './eme-fariplay';
+
 export {
   mux,
   Hls,
@@ -877,190 +879,74 @@ export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: stri
 };
 
 export const setupNativeFairplayDRM = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
+  props: Partial<
+    Pick<
+      MuxMediaPropsInternal,
+      'useWebkitFairplay' | 'drmSetupFallback' | 'playbackToken' | 'customDomain' | 'drmTypeCb'
+    >
+  >,
   mediaEl: HTMLMediaElement
 ) => {
-  const setupMediaKeys = async (initDataType: string) => {
-    const access = await navigator
-      .requestMediaKeySystemAccess('com.apple.fps', [
-        {
-          initDataTypes: [initDataType],
-          videoCapabilities: [{ contentType: 'application/vnd.apple.mpegurl', robustness: '' }],
-          distinctiveIdentifier: 'not-allowed',
-          persistentState: 'not-allowed',
-          sessionTypes: ['temporary'],
-        },
-      ])
-      .then((value) => {
-        props.drmTypeCb?.(DRMType.FAIRPLAY);
-        return value;
-      })
-      .catch(() => {
-        const message = i18n(
-          'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.'
-        );
-        // Should we flag this as a business exception?
-        const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-        mediaError.errorCategory = MuxErrorCategory.DRM;
-        mediaError.muxCode = MuxErrorCode.ENCRYPTED_UNSUPPORTED_KEY_SYSTEM;
-        saveAndDispatchError(mediaEl, mediaError);
-      });
-
-    if (!access) return;
-
-    const keys = await access.createMediaKeys();
-
-    try {
-      const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
-        if (errOrResp instanceof Response) {
-          const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
-          console.error('mediaError', mediaError?.message, mediaError?.context);
-          if (mediaError) {
-            return Promise.reject(mediaError);
-          }
-          // NOTE: This should never happen. Adding for exhaustiveness (CJP).
-          return Promise.reject(new Error('Unexpected error in app cert request'));
+  const getAppCertificateHandler = () =>
+    getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
+      if (errOrResp instanceof Response) {
+        const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
+        console.error('mediaError', mediaError?.message, mediaError?.context);
+        if (mediaError) {
+          return Promise.reject(mediaError);
         }
-        return Promise.reject(errOrResp);
-      });
-      await keys.setServerCertificate(fairPlayAppCert).catch(() => {
-        const message = i18n(
-          'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.'
-        );
-        const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-        mediaError.errorCategory = MuxErrorCategory.DRM;
-        mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_SERVER_CERT_FAILED;
-        return Promise.reject(mediaError);
-      });
-      // @ts-ignore
-    } catch (error: Error | MediaError) {
-      saveAndDispatchError(mediaEl, error);
-      return;
-    }
-    await mediaEl.setMediaKeys(keys);
-  };
-
-  const updateMediaKeyStatus = (mediaKeyStatus: MediaKeyStatus) => {
-    let mediaError;
-    if (mediaKeyStatus === 'internal-error') {
-      const message = i18n(
-        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
-      );
-      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
-    } else if (mediaKeyStatus === 'output-restricted' || mediaKeyStatus === 'output-downscaled') {
-      const message = i18n(
-        'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
-      );
-      // NOTE: When encountered, this is a non-fatal error (though it's certainly interruptive of standard playback experience). (CJP)
-      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, false);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_OUTPUT_RESTRICTED;
-    }
-
-    if (mediaError) {
-      saveAndDispatchError(mediaEl, mediaError);
-    }
-  };
-
-  const setupMediaKeySession = async (initDataType: string, initData: ArrayBuffer) => {
-    const session = (mediaEl.mediaKeys as MediaKeys).createSession();
-    const onKeyStatusChange = () => {
-      // recheck key statuses
-      // NOTE: As an improvement, we could also add checks for a status of 'expired' and
-      // attempt to renew the license here (CJP)
-      session.keyStatuses.forEach((keyStatus) => updateMediaKeyStatus(keyStatus));
-    };
-
-    const onMessage = async (event: MediaKeyMessageEvent) => {
-      const spc = event.message;
-      try {
-        const ckc = await getLicenseKey(spc, toLicenseKeyURL(props, 'fairplay'));
-
-        try {
-          // This is the same call whether we are local or AirPlay.
-          // Safari will forward CKC to Apple TV automatically.
-          await session.update(ckc);
-        } catch {
-          const message = i18n(
-            'Failed to update DRM license. This may be an issue with the player or your protected content.'
-          );
-          const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-          mediaError.errorCategory = MuxErrorCategory.DRM;
-          mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
-
-          saveAndDispatchError(mediaEl, mediaError);
-        }
-      } catch (errOrResp) {
-        if (errOrResp instanceof Response) {
-          const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
-          console.error('mediaError', mediaError?.message, mediaError?.context);
-
-          if (mediaError) {
-            saveAndDispatchError(mediaEl, mediaError);
-            return;
-          }
-
-          console.error('Unexpected error in license key request', errOrResp);
-          return;
-        }
-
-        console.error(errOrResp);
+        // NOTE: This should never happen. Adding for exhaustiveness (CJP).
+        return Promise.reject(new Error('Unexpected error in app cert request'));
       }
-    };
-
-    session.addEventListener('keystatuseschange', onKeyStatusChange);
-    session.addEventListener('message', onMessage);
-    mediaEl.addEventListener(
-      'teardown',
-      () => {
-        session.removeEventListener('keystatuseschange', onKeyStatusChange);
-        session.removeEventListener('message', onMessage);
-        session.close();
-      },
-      { once: true }
-    );
-
-    await session.generateRequest(initDataType, initData).catch((e) => {
-      console.error('Failed to generate license request', e);
-      const message = i18n(
-        'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
-      );
-      const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-      return Promise.reject(mediaError);
+      return Promise.reject(errOrResp);
     });
+
+  const getLicenseKeyHandler = (message: ArrayBuffer) =>
+    getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
+      if (errOrResp instanceof Response) {
+        const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
+        console.error('mediaError', mediaError?.message, mediaError?.context);
+
+        if (mediaError) {
+          return Promise.reject(mediaError);
+        }
+        // NOTE: This should never happen. Adding for exhaustiveness (CJP).
+        return Promise.reject(new Error('Unexpected error in license key request'));
+      }
+      return Promise.reject(errOrResp);
+    });
+
+  const commonConfig = {
+    mediaEl: mediaEl,
+    getAppCertificate: getAppCertificateHandler,
+    getLicenseKey: getLicenseKeyHandler,
+    saveAndDispatchError,
+    drmTypeCb: () => {
+      props.drmTypeCb?.(DRMType.FAIRPLAY);
+    },
   };
 
-  const onFpEncrypted = async (event: MediaEncryptedEvent) => {
-    try {
-      const initDataType = event.initDataType;
-      if (initDataType !== 'skd') {
-        console.error(`Received unexpected initialization data type "${initDataType}"`);
-        return;
-      }
+  if (props.useWebkitFairplay) {
+    const teardownWebkitFPS = setupWebkitNativeFairplayDRM(commonConfig);
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownWebkitFPS, { once: true });
+  } else {
+    let fallback = undefined;
 
-      if (!mediaEl.mediaKeys) {
-        await setupMediaKeys(initDataType);
-      }
-
-      const initData = event.initData;
-      if (initData == null) {
-        console.error(`Could not start encrypted playback due to missing initData in ${event.type} event`);
-        return;
-      }
-
-      await setupMediaKeySession(initDataType, initData);
-      // @ts-ignore
-    } catch (error: Error | MediaError) {
-      saveAndDispatchError(mediaEl, error);
-      return;
+    if (props.drmSetupFallback) {
+      const propsFallback = props.drmSetupFallback;
+      fallback = async () => {
+        await teardownEmeFPS();
+        await propsFallback();
+      };
     }
-  };
-
-  addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
+    const teardownEmeFPS = setupEmeFairplayDRM({
+      ...commonConfig,
+      fallback,
+    });
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownEmeFPS, { once: true });
+  }
 };
 
 export const toLicenseKeyURL = (
@@ -1218,6 +1104,8 @@ export const loadMedia = (
       | 'customDomain'
       | 'disablePseudoEnded'
       | 'debug'
+      | 'useWebkitFairplay'
+      | 'drmSetupFallback'
     >
   >,
   mediaEl: HTMLMediaElement,

@@ -762,6 +762,12 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
         }
         break;
       }
+      case MuxVideoAttributes.USE_WEBKIT_FAIRPLAY: {
+        if (newValue == null || newValue !== oldValue) {
+          this.useWebkitFairplay = newValue != null;
+        }
+        break;
+      }
     }
 
     const shouldClearState = [
@@ -1902,6 +1908,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       return;
     }
     this.media.capRenditionToPlayerSize = val;
+  }
+
+  get useWebkitFairplay(): boolean {
+    return this.media?.useWebkitFairplay ?? false;
+  }
+
+  set useWebkitFairplay(val: boolean) {
+    if (val === this.useWebkitFairplay) return;
+
+    if (this.media) {
+      this.media.useWebkitFairplay = val;
+    }
   }
 }
 
