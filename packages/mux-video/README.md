@@ -165,7 +165,7 @@ Take a look at the [metadata guide](https://docs.mux.com/guides/data/make-your-d
 ### Advanced: prefer-playback
 
 By default `<mux-video>` will try to use native playback via the underlying `<video>` tag whenever possible.
-However, it can also instead use an in-code player when the browser browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API).
+However, it can also instead use an in-code player when the browser supports [Media Source Extension](https://developer.mozilla.org/en-US/docs/Web/API/Media_Source_Extensions_API).
 This includes MSE in Mac OS Safari.
 
 If you prefer to use the in-code MSE-based engine (currently hls.js) whenever possible, then set the `prefer-playback` attribute to `mse`.
