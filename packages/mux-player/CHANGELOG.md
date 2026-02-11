@@ -48,6 +48,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.11.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.2...@mux/mux-player@3.11.3) (2026-02-11)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player:** Synchronize player versions
+
 ## [3.11.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.1...@mux/mux-player@3.11.2) (2026-02-11)
 
 
