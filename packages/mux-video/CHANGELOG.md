@@ -31,6 +31,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.1...@mux/mux-video@0.30.2) (2026-02-11)
+
+
+### Bug Fixes
+
+* **mux-video:** remove duplicate word in prefer-playback docs ([#1274](https://github.com/muxinc/elements/issues/1274)) ([d72f1f8](https://github.com/muxinc/elements/commit/d72f1f822dd1e39595c6b4083ee0b70b234e0ac6))
+
 ## [0.30.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.0...@mux/mux-video@0.30.1) (2026-02-10)
 
 
