@@ -48,6 +48,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.11.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.2...@mux/mux-player@3.11.3) (2026-02-11)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player:** Synchronize player versions
+
+### Release note
+
+This publish also includes changes from 3.11.1 and 3.11.2, which failed to release due to a misconfiguration in tokens.
+
 ## [3.11.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.1...@mux/mux-player@3.11.2) (2026-02-11)
 
 
@@ -55,9 +66,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * **mux-player:** correct nohotkeys docs wording ([#1270](https://github.com/muxinc/elements/issues/1270)) ([0310055](https://github.com/muxinc/elements/commit/03100558594d4a4f33b6034e4f7fc864a71c0382))
 
-### Release note
 
-This publish also includes changes from 3.11.1, which failed to release due to a misconfiguration in tokens.
 ## [3.11.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.0...@mux/mux-player@3.11.1) (2026-02-10)
 
 
