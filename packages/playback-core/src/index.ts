@@ -35,7 +35,8 @@ import {
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
-// import { MediaKeySessionContext } from 'hls.js';
+import { setupWebkitNativeFairplayDRM } from './webkit-fairplay';
+
 export {
   mux,
   Hls,
@@ -880,6 +881,78 @@ export const setupNativeFairplayDRM = (
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
   mediaEl: HTMLMediaElement
 ) => {
+  const getAppCertificateHandler = () =>
+    getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
+      if (errOrResp instanceof Response) {
+        const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
+        console.error('mediaError', mediaError?.message, mediaError?.context);
+        if (mediaError) {
+          return Promise.reject(mediaError);
+        }
+        // NOTE: This should never happen. Adding for exhaustiveness (CJP).
+        return Promise.reject(new Error('Unexpected error in app cert request'));
+      }
+      return Promise.reject(errOrResp);
+    });
+
+  const getLicenseKeyHandler = (message: ArrayBuffer) =>
+    getLicenseKey(message, toLicenseKeyURL(props, 'fairplay')).catch((errOrResp) => {
+      if (errOrResp instanceof Response) {
+        const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
+        console.error('mediaError', mediaError?.message, mediaError?.context);
+
+        if (mediaError) {
+          return Promise.reject(mediaError);
+        }
+        // NOTE: This should never happen. Adding for exhaustiveness (CJP).
+        return Promise.reject(new Error('Unexpected error in license key request'));
+      }
+      return Promise.reject(errOrResp);
+    });
+
+  const commonConfig = {
+    mediaEl: mediaEl,
+    getAppCertificate: getAppCertificateHandler,
+    getLicenseKey: getLicenseKeyHandler,
+    saveAndDispatchError,
+    drmTypeCb: () => {
+      props.drmTypeCb?.(DRMType.FAIRPLAY);
+    },
+  };
+
+  const fallbackToWebkit = async () => {
+    const wasPlaying = !mediaEl.paused;
+    mediaEl.pause();
+    const currentTime = mediaEl.currentTime;
+
+    const src = mediaEl.src;
+    await teardownEme();
+
+    const teardownWebkit = setupWebkitNativeFairplayDRM(commonConfig);
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
+
+    mediaEl.src = src;
+    mediaEl.load();
+    mediaEl.currentTime = currentTime;
+    if (wasPlaying) {
+      await mediaEl.play();
+    }
+  };
+
+  // TODO: emeConfig
+  // const emeConfig = {fallbackToWebkit, ...commonConfig}
+
+  const teardownEme = setupEmeNativeFairplayDRM(props, mediaEl, fallbackToWebkit);
+  // @ts-ignore
+  mediaEl.addEventListener('teardown', teardownEme, { once: true });
+};
+
+export const setupEmeNativeFairplayDRM = (
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
+  mediaEl: HTMLMediaElement,
+  fallback: () => void
+) => {
   const setupMediaKeys = async (initDataType: string) => {
     const access = await navigator
       .requestMediaKeySystemAccess('com.apple.fps', [
@@ -1030,7 +1103,20 @@ export const setupNativeFairplayDRM = (
       const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
       mediaError.errorCategory = MuxErrorCategory.DRM;
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-      return Promise.reject(mediaError);
+
+      // This is used to address an OS bug when casting DRM protected content with AirPlay
+      // TODO: Remove this once Apple fixes this bug.
+      if (
+        e.name === 'NotSupportedError' &&
+        'webkitCurrentPlaybackTargetIsWireless' in mediaEl &&
+        mediaEl.webkitCurrentPlaybackTargetIsWireless
+      ) {
+        console.warn('Failed to generate a DRM license request. Attempting to fallback to Webkit DRM');
+        saveAndDispatchError(mediaEl, mediaError);
+        fallback();
+      } else {
+        return Promise.reject(mediaError);
+      }
     });
   };
 
@@ -1061,6 +1147,14 @@ export const setupNativeFairplayDRM = (
   };
 
   addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
+
+  return async () => {
+    if (mediaEl.mediaKeys) {
+      await mediaEl.setMediaKeys(null);
+    }
+    // TODO: session.close
+    mediaEl.removeEventListener('encrypted', onFpEncrypted);
+  };
 };
 
 export const toLicenseKeyURL = (
