@@ -953,6 +953,51 @@ export const setupEmeNativeFairplayDRM = (
   mediaEl: HTMLMediaElement,
   fallback: () => void
 ) => {
+  /**
+   * Listener for "encrypted" event.
+   * Will be called when we receive EXT-X-KEY tags and will setup media keys and session.
+   */
+  const onFpEncrypted = async (event: MediaEncryptedEvent) => {
+    try {
+      const initDataType = event.initDataType;
+      // Early bail if data type is not supported (currently only "skd" for Native Safari DRM)
+      if (initDataType !== 'skd') {
+        console.error(`Received unexpected initialization data type "${initDataType}"`);
+        return;
+      }
+
+      // Setup 1 - set up the keys based on the data type (currently only "skd" for Native Safari FPS DRM)
+      if (!mediaEl.mediaKeys) {
+        await setupMediaKeys(initDataType);
+      }
+
+      const initData = event.initData;
+      // Early bail if the init data is missing (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
+      // NOTE: This could happen before Step 1, but also shouldn't happen.
+      if (initData == null) {
+        console.error(`Could not start encrypted playback due to missing initData in ${event.type} event`);
+        return;
+      }
+
+      // Setup 2 - set up the key session based on the data type and the data (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
+      await setupMediaKeySession(initDataType, initData);
+      // @ts-ignore
+    } catch (error: Error | MediaError) {
+      saveAndDispatchError(mediaEl, error);
+      return;
+    }
+  };
+
+  /** Setup 1
+   * If successful will:
+   *  - request media key system access,
+   *  - create a media keys object,
+   *  - request a FPS certificate,
+   *  - set the certificate to the media keys
+   *  - set the media keys to mediaEl.
+   *
+   * If any step fails will dispatch an error and mediaEl.mediaKeys will not be set.
+   */
   const setupMediaKeys = async (initDataType: string) => {
     // Step 1.a - Get access to the Key System
     const access = await navigator
@@ -1027,43 +1072,28 @@ export const setupEmeNativeFairplayDRM = (
     await mediaEl.setMediaKeys(keys);
   };
 
-  const updateMediaKeyStatus = (mediaKeyStatus: MediaKeyStatus) => {
-    // This is just error management
-    let mediaError;
-    if (mediaKeyStatus === 'internal-error') {
-      const message = i18n(
-        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
-      );
-      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
-    } else if (mediaKeyStatus === 'output-restricted' || mediaKeyStatus === 'output-downscaled') {
-      const message = i18n(
-        'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
-      );
-      // NOTE: When encountered, this is a non-fatal error (though it's certainly interruptive of standard playback experience). (CJP)
-      mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, false);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_OUTPUT_RESTRICTED;
-    }
-
-    if (mediaError) {
-      saveAndDispatchError(mediaEl, mediaError);
-    }
-  };
-
+  /** Setup 2
+   * If successful will:
+   *  - Create a new media key session with it's respective 'keystatuseschange' and 'message' events.
+   *  - Generate an SPC request
+   *  - Use that SPC to fetch a CKC
+   *  - Update the session with the obtained CKC.
+   *  - Add a teardown listener to cleanup the session.
+   *
+   * If it fails:
+   *  - Will dispatch an error and session should be torn down (TODO)
+   *  - If the session.generateRequest call fails, will fallback to WebKit FairPlay implementation
+   */
   const setupMediaKeySession = async (initDataType: string, initData: ArrayBuffer) => {
     // Step 2.a - Create the session now that we have ready media keys on the Media Element.
     const session = (mediaEl.mediaKeys as MediaKeys).createSession();
 
-    // This is just to monitor for errors
-    const onKeyStatusChange = () => {
-      // recheck key statuses
-      // NOTE: As an improvement, we could also add checks for a status of 'expired' and
-      // attempt to renew the license here (CJP)
-      session.keyStatuses.forEach((keyStatus) => updateMediaKeyStatus(keyStatus));
-    };
+    // Step 2.b - Call session.generateRequest (done below, after event listeners are set up)
 
+    /** Step 2.c
+     * When session.generateRequest succeeds, it returns a spc via this event's message.
+     * We use that SPC to fetch the FPS license key from the server.
+     */
     const onMessage = async (event: MediaKeyMessageEvent) => {
       const spc = event.message;
       try {
@@ -1105,6 +1135,39 @@ export const setupEmeNativeFairplayDRM = (
       }
     };
 
+    /**
+     * This is just to monitor for errors.
+     */
+    const onKeyStatusChange = () => {
+      const recheckMediaKeyStatus = (mediaKeyStatus: MediaKeyStatus) => {
+        // This is just error management
+        let mediaError;
+        if (mediaKeyStatus === 'internal-error') {
+          const message = i18n(
+            'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+          );
+          mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+          mediaError.errorCategory = MuxErrorCategory.DRM;
+          mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
+        } else if (mediaKeyStatus === 'output-restricted' || mediaKeyStatus === 'output-downscaled') {
+          const message = i18n(
+            'DRM playback is being attempted in an environment that is not sufficiently secure. User may see black screen.'
+          );
+          // NOTE: When encountered, this is a non-fatal error (though it's certainly interruptive of standard playback experience). (CJP)
+          mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, false);
+          mediaError.errorCategory = MuxErrorCategory.DRM;
+          mediaError.muxCode = MuxErrorCode.ENCRYPTED_OUTPUT_RESTRICTED;
+        }
+
+        if (mediaError) {
+          saveAndDispatchError(mediaEl, mediaError);
+        }
+      };
+      // NOTE: As an improvement, we could also add checks for a status of 'expired' and
+      // attempt to renew the license here (CJP)
+      session.keyStatuses.forEach((keyStatus) => recheckMediaKeyStatus(keyStatus));
+    };
+
     session.addEventListener('keystatuseschange', onKeyStatusChange);
     session.addEventListener('message', onMessage);
     mediaEl.addEventListener(
@@ -1135,43 +1198,13 @@ export const setupEmeNativeFairplayDRM = (
         mediaEl.webkitCurrentPlaybackTargetIsWireless
       ) {
         console.warn('Failed to generate a DRM license request. Attempting to fallback to Webkit DRM');
+        // TODO: Teardown session
         saveAndDispatchError(mediaEl, mediaError);
         fallback();
       } else {
         return Promise.reject(mediaError);
       }
     });
-  };
-
-  const onFpEncrypted = async (event: MediaEncryptedEvent) => {
-    try {
-      const initDataType = event.initDataType;
-      // Early bail if data type is not supported (currently only "skd" for Native Safari DRM)
-      if (initDataType !== 'skd') {
-        console.error(`Received unexpected initialization data type "${initDataType}"`);
-        return;
-      }
-
-      // Setup 1 - set up the keys based on the data type (currently only "skd" for Native Safari FPS DRM)
-      if (!mediaEl.mediaKeys) {
-        await setupMediaKeys(initDataType);
-      }
-
-      const initData = event.initData;
-      // Early bail if the init data is missing (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
-      // NOTE: This could happen before Step 1, but also shouldn't happen.
-      if (initData == null) {
-        console.error(`Could not start encrypted playback due to missing initData in ${event.type} event`);
-        return;
-      }
-
-      // Setup 2 - set up the key session based on the data type and the data (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
-      await setupMediaKeySession(initDataType, initData);
-      // @ts-ignore
-    } catch (error: Error | MediaError) {
-      saveAndDispatchError(mediaEl, error);
-      return;
-    }
   };
 
   addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
