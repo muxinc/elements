@@ -954,6 +954,7 @@ export const setupEmeNativeFairplayDRM = (
   fallback: () => void
 ) => {
   const setupMediaKeys = async (initDataType: string) => {
+    // Step 1.a - Get access to the Key System
     const access = await navigator
       .requestMediaKeySystemAccess('com.apple.fps', [
         {
@@ -965,10 +966,12 @@ export const setupEmeNativeFairplayDRM = (
         },
       ])
       .then((value) => {
+        // This is just a simple callback to signal what DRM type was selected
         props.drmTypeCb?.(DRMType.FAIRPLAY);
         return value;
       })
       .catch(() => {
+        // This is just error management
         const message = i18n(
           'Cannot play DRM-protected content with current security configuration on this browser. Try playing in another browser.'
         );
@@ -981,10 +984,15 @@ export const setupEmeNativeFairplayDRM = (
 
     if (!access) return;
 
+    // Step 1.b - Create the keys now that access to the key system is available
     const keys = await access.createMediaKeys();
 
     try {
+      // Step 1.c.i - Fetch the FPS App Certificate from the server to use with the keys
+      // NOTE: We could pre-emptively do this as an optimization, but
+      // this simplifies things and has been sufficient thus far (CJP).
       const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
+        // This is just error management
         if (errOrResp instanceof Response) {
           const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
           console.error('mediaError', mediaError?.message, mediaError?.context);
@@ -996,7 +1004,9 @@ export const setupEmeNativeFairplayDRM = (
         }
         return Promise.reject(errOrResp);
       });
+      // Step 1.c.ii - Apply the fetched FPS App Certificate to the keys
       await keys.setServerCertificate(fairPlayAppCert).catch(() => {
+        // This is just error management
         const message = i18n(
           'Your server certificate failed when attempting to set it. This may be an issue with a no longer valid certificate.'
         );
@@ -1007,13 +1017,18 @@ export const setupEmeNativeFairplayDRM = (
       });
       // @ts-ignore
     } catch (error: Error | MediaError) {
+      // This is just catch all error management
       saveAndDispatchError(mediaEl, error);
       return;
     }
+
+    // Step 1.d - Now that the keys are ready, set them on the Media Element
+    // NOTE: After this, we will move on to Step 2 - set up the key session
     await mediaEl.setMediaKeys(keys);
   };
 
   const updateMediaKeyStatus = (mediaKeyStatus: MediaKeyStatus) => {
+    // This is just error management
     let mediaError;
     if (mediaKeyStatus === 'internal-error') {
       const message = i18n(
@@ -1038,7 +1053,10 @@ export const setupEmeNativeFairplayDRM = (
   };
 
   const setupMediaKeySession = async (initDataType: string, initData: ArrayBuffer) => {
+    // Step 2.a - Create the session now that we have ready media keys on the Media Element.
     const session = (mediaEl.mediaKeys as MediaKeys).createSession();
+
+    // This is just to monitor for errors
     const onKeyStatusChange = () => {
       // recheck key statuses
       // NOTE: As an improvement, we could also add checks for a status of 'expired' and
@@ -1049,13 +1067,16 @@ export const setupEmeNativeFairplayDRM = (
     const onMessage = async (event: MediaKeyMessageEvent) => {
       const spc = event.message;
       try {
+        // Step 2.c.i Now that we have an FPS SPC (license request payload) from 2.b, fetch the FPS license key from the server
         const ckc = await getLicenseKey(spc, toLicenseKeyURL(props, 'fairplay'));
 
         try {
           // This is the same call whether we are local or AirPlay.
           // Safari will forward CKC to Apple TV automatically.
+          // Step 2.c.ii - update the session with the license key
           await session.update(ckc);
         } catch {
+          // This is just catch all error management
           const message = i18n(
             'Failed to update DRM license. This may be an issue with the player or your protected content.'
           );
@@ -1066,6 +1087,7 @@ export const setupEmeNativeFairplayDRM = (
           saveAndDispatchError(mediaEl, mediaError);
         }
       } catch (errOrResp) {
+        // This is just catch all error management
         if (errOrResp instanceof Response) {
           const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
           console.error('mediaError', mediaError?.message, mediaError?.context);
@@ -1095,6 +1117,7 @@ export const setupEmeNativeFairplayDRM = (
       { once: true }
     );
 
+    // Step 2.b - We're finally ready to create a key request from the session. This will trigger a message event
     await session.generateRequest(initDataType, initData).catch((e) => {
       console.error('Failed to generate license request', e);
       const message = i18n(
@@ -1123,21 +1146,26 @@ export const setupEmeNativeFairplayDRM = (
   const onFpEncrypted = async (event: MediaEncryptedEvent) => {
     try {
       const initDataType = event.initDataType;
+      // Early bail if data type is not supported (currently only "skd" for Native Safari DRM)
       if (initDataType !== 'skd') {
         console.error(`Received unexpected initialization data type "${initDataType}"`);
         return;
       }
 
+      // Setup 1 - set up the keys based on the data type (currently only "skd" for Native Safari FPS DRM)
       if (!mediaEl.mediaKeys) {
         await setupMediaKeys(initDataType);
       }
 
       const initData = event.initData;
+      // Early bail if the init data is missing (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
+      // NOTE: This could happen before Step 1, but also shouldn't happen.
       if (initData == null) {
         console.error(`Could not start encrypted playback due to missing initData in ${event.type} event`);
         return;
       }
 
+      // Setup 2 - set up the key session based on the data type and the data (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
       await setupMediaKeySession(initDataType, initData);
       // @ts-ignore
     } catch (error: Error | MediaError) {
