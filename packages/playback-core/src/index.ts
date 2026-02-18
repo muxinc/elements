@@ -604,6 +604,10 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   };
 
   props.drmTypeCb = drmTypeCb;
+  props.drmFallbackTest = () => { // TODO: Clean this up
+    props.useWebkitFairplay = true;
+    initialize(props, mediaEl, core)
+  }
 
   muxMediaState.set(mediaEl as HTMLMediaElement, { retryCount: 0 });
   const nextHlsInstance = setupHls(props, mediaEl);
@@ -878,8 +882,9 @@ export const getLicenseKey = async (message: ArrayBuffer, licenseServerUrl: stri
 };
 
 export const setupNativeFairplayDRM = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
-  mediaEl: HTMLMediaElement
+  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb' | 'useWebkitFairplay'>>,
+  mediaEl: HTMLMediaElement,
+  fallbackTest: () => void 
 ) => {
   const getAppCertificateHandler = () =>
     getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
@@ -920,39 +925,64 @@ export const setupNativeFairplayDRM = (
     },
   };
 
-  const fallbackToWebkit = async () => {
-    const wasPlaying = !mediaEl.paused;
-    mediaEl.pause();
-    const currentTime = mediaEl.currentTime;
+  // TODO: Clean this up: (This one fails)
+  //const fallbackToWebkit = async () => {
+    //const wasPlaying = !mediaEl.paused;
+    //mediaEl.pause();
+    //const currentTime = mediaEl.currentTime;
 
-    const src = mediaEl.src;
-    await teardownEme();
+    //const src = mediaEl.src;
 
-    const teardownWebkit = setupWebkitNativeFairplayDRM(commonConfig);
-    // @ts-ignore
-    mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
+    //// Remove source to stop current playback and loading
+    //mediaEl.removeAttribute('src');
 
-    mediaEl.src = src;
-    mediaEl.load();
-    mediaEl.currentTime = currentTime;
-    if (wasPlaying) {
-      await mediaEl.play();
-    }
-  };
+    //// Clear EME media keys
+    //await mediaEl.setMediaKeys(null).catch(() => {});
+
+    //// Synchronously remove EME listeners; async session cleanup runs in background
+    //await teardownEme();
+
+    //// Set up WebKit DRM on the now-clean element
+    //const teardownWebkit = setupWebkitNativeFairplayDRM(commonConfig);
+    //// @ts-ignore
+    //mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
+
+    //// Restore source and load with WebKit DRM
+    //mediaEl.src = src;
+    //mediaEl.load();
+
+   ///*  mediaEl.currentTime = currentTime;
+    //if (wasPlaying) {
+      //mediaEl.play();
+    //} */
+  //};
 
   // TODO: emeConfig
   // const emeConfig = {fallbackToWebkit, ...commonConfig}
 
-  const teardownEme = setupEmeNativeFairplayDRM(props, mediaEl, fallbackToWebkit);
-  // @ts-ignore
-  mediaEl.addEventListener('teardown', teardownEme, { once: true });
+  if (props.useWebkitFairplay) {
+    const teardownWebkit = setupWebkitNativeFairplayDRM(commonConfig);
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
+  } else {
+    const teardownEme = setupEmeNativeFairplayDRM(props, mediaEl, async () => {
+      await teardownEme();
+
+      await mediaEl.setMediaKeys(null).catch(() => {}); // TODO: Can be moved inside teardown
+
+      fallbackTest()
+    });
+    // @ts-ignore
+    mediaEl.addEventListener('teardown', teardownEme, { once: true });
+  }
 };
 
 export const setupEmeNativeFairplayDRM = (
   props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
   mediaEl: HTMLMediaElement,
-  fallback: () => void
+  fallback: () => Promise<void>
 ) => {
+  let teardownSession: null | (() => Promise<void>) = null;
   /**
    * Listener for "encrypted" event.
    * Will be called when we receive EXT-X-KEY tags and will setup media keys and session.
@@ -1079,9 +1109,10 @@ export const setupEmeNativeFairplayDRM = (
    *  - Use that SPC to fetch a CKC
    *  - Update the session with the obtained CKC.
    *  - Add a teardown listener to cleanup the session.
+   *  - Tearsdown any old session and sets a new function to tear the new one down.
    *
    * If it fails:
-   *  - Will dispatch an error and session should be torn down (TODO)
+   *  - Will dispatch an error and session should be torn down
    *  - If the session.generateRequest call fails, will fallback to WebKit FairPlay implementation
    */
   const setupMediaKeySession = async (initDataType: string, initData: ArrayBuffer) => {
@@ -1170,38 +1201,53 @@ export const setupEmeNativeFairplayDRM = (
 
     session.addEventListener('keystatuseschange', onKeyStatusChange);
     session.addEventListener('message', onMessage);
-    mediaEl.addEventListener(
-      'teardown',
-      () => {
+    
+    const newTeardown = async () => {
+        console.log("Cleaning up session")
         session.removeEventListener('keystatuseschange', onKeyStatusChange);
         session.removeEventListener('message', onMessage);
-        session.close();
-      },
+        if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
+          // @ts-ignore
+          mediaEl.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', newTeardown);
+        }
+        mediaEl.removeEventListener("teardown", newTeardown)
+
+        await session.close().catch((e) => {/* Will throw an error if closed in an invalid state */ console.warn("Error when closing EME session", e)});
+        teardownSession = null;
+    };
+
+    // If we have a new device, we want a new session
+    if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
+      // @ts-ignore
+      mediaEl.addEventListener('webkitcurrentplaybacktargetiswirelesschanged', newTeardown, { once: true });
+    }
+    mediaEl.addEventListener(
+      'teardown',
+      newTeardown,
       { once: true }
     );
+    teardownSession = newTeardown
 
     // Step 2.b - We're finally ready to create a key request from the session. This will trigger a message event
-    await session.generateRequest(initDataType, initData).catch((e) => {
-      console.error('Failed to generate license request', e);
-      const message = i18n(
-        'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
-      );
-      const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-      mediaError.errorCategory = MuxErrorCategory.DRM;
-      mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
-
-      // This is used to address an OS bug when casting DRM protected content with AirPlay
-      // TODO: Remove this once Apple fixes this bug.
+    await session.generateRequest(initDataType, initData).catch(async (e) => {
       if (
         e.name === 'NotSupportedError' &&
         'webkitCurrentPlaybackTargetIsWireless' in mediaEl &&
         mediaEl.webkitCurrentPlaybackTargetIsWireless
       ) {
         console.warn('Failed to generate a DRM license request. Attempting to fallback to Webkit DRM');
-        // TODO: Teardown session
-        saveAndDispatchError(mediaEl, mediaError);
-        fallback();
+        // This is used to address an OS bug when casting DRM protected content with AirPlay
+        // TODO: Remove this once Apple fixes this bug.
+        await fallback();
       } else {
+        const message = i18n(
+          'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
+        );
+        const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+        mediaError.errorCategory = MuxErrorCategory.DRM;
+        mediaError.muxCode = MuxErrorCode.ENCRYPTED_GENERATE_REQUEST_FAILED;
+
+        console.error('Failed to generate license request', e);
         return Promise.reject(mediaError);
       }
     });
@@ -1209,13 +1255,15 @@ export const setupEmeNativeFairplayDRM = (
 
   addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
 
-  return async () => {
-    if (mediaEl.mediaKeys) {
-      await mediaEl.setMediaKeys(null);
-    }
-    // TODO: session.close
+  const teardownEme = async () => {
+    console.log("Tearing down EME FairPlay native DRM")
     mediaEl.removeEventListener('encrypted', onFpEncrypted);
+    mediaEl.removeEventListener('teardown', teardownEme);
+    if (teardownSession) {
+      await teardownSession()
+    }
   };
+  return teardownEme;
 };
 
 export const toLicenseKeyURL = (
@@ -1373,6 +1421,8 @@ export const loadMedia = (
       | 'customDomain'
       | 'disablePseudoEnded'
       | 'debug'
+      | 'useWebkitFairplay'
+      | 'drmFallbackTest'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1530,7 +1580,8 @@ export const loadMedia = (
 
       // NOTE: Currently use drmToken to signal that playback is expected to be DRM-protected
       if (props.tokens?.drm) {
-        setupNativeFairplayDRM(props, mediaEl);
+        const fallbackTest = () => props.drmFallbackTest?.()
+        setupNativeFairplayDRM(props, mediaEl, fallbackTest);
       } else {
         // If we end up receiving an encrypted event in this case, that means the media is DRM-protected
         // but a token was not provided.

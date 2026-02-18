@@ -30,7 +30,9 @@ export const setupWebkitNativeFairplayDRM = async ({
     mediaError.errorCategory = MuxErrorCategory.DRM;
     mediaError.muxCode = MuxErrorCode.ENCRYPTED_CDM_ERROR;
 
-    return saveAndDispatchError(mediaEl, mediaError);
+    saveAndDispatchError(mediaEl, mediaError);
+    // empty teardown
+    return () => {}
   }
 
   const wkMediaEl: WebkitHTMLMediaElement = mediaEl as unknown as WebkitHTMLMediaElement;
@@ -214,9 +216,12 @@ class WebkitFairPlayContext {
   setupWebkitKeySession = (mediaEl: WebkitHTMLMediaElement, session: WebKitMediaKeySession) => {
     const onwebkitkeymessageHandler = async (event: WebkiKeyMessageEvent) => {
       try {
+        console.log('WebKit FairPlay: key message received, fetching license');
         const spc = event.message;
         const ckc = await this.getLicenseKey(spc);
-        event.target.update(ckc);
+        console.log('WebKit FairPlay: license received, calling session.update');
+        await event.target.update(ckc);
+        console.log('WebKit FairPlay: session.update completed');
       } catch (errOrResp) {
         console.error('Error on FairPlay session message', errOrResp);
         this.saveAndDispatchError(this.mediaEl, errOrResp as MediaError);

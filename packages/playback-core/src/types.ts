@@ -211,7 +211,12 @@ export type MuxMediaPropTypes = {
 
 export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'preload' | 'error' | 'seekable'>>;
 
-export type MuxMediaProps = HTMLMediaElementProps & MuxMediaPropTypes;
+export type MuxMediaProps = HTMLMediaElementProps &
+  MuxMediaPropTypes & {
+    // TODO: Clean this up
+    useWebkitFairplay?: boolean;
+    drmFallbackTest: () => void;
+  };
 export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareName: MetaData['player_software_name'];
   playerSoftwareVersion: MetaData['player_software_version'];
