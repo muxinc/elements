@@ -20,6 +20,7 @@ export const setupWebkitNativeFairplayDRM = async ({
   saveAndDispatchError,
   drmTypeCb,
 }: WebkitNativeFairplayConfig) => {
+  console.log('Setting WebKit FairPlay');
   if (!window.WebKitMediaKeys || !('onwebkitneedkey' in mediaEl)) {
     console.error('No WebKitMediaKeys. FairPlay may not be supported');
 
@@ -32,7 +33,7 @@ export const setupWebkitNativeFairplayDRM = async ({
 
     saveAndDispatchError(mediaEl, mediaError);
     // empty teardown
-    return () => {}
+    return () => {};
   }
 
   const wkMediaEl: WebkitHTMLMediaElement = mediaEl as unknown as WebkitHTMLMediaElement;
@@ -45,6 +46,7 @@ export const setupWebkitNativeFairplayDRM = async ({
   const context = new WebkitFairPlayContext(mediaEl, getAppCertificate, getLicenseKey, saveAndDispatchError, drmTypeCb);
 
   const webkitneedkeyHandler = async (ev: WebkitNeedKeyEvent) => {
+    console.log('WebKit FairPlay: webkitneedkey event fired');
     try {
       await context.setup();
       const certificate = context.certificate;
@@ -52,6 +54,7 @@ export const setupWebkitNativeFairplayDRM = async ({
       if (ev.initData === null || certificate == null) return;
       const initData = getInitData(ev.initData, certificate);
 
+      console.log('WebKit FairPlay: creating session');
       context.createSession(wkMediaEl, initData);
     } catch (e) {
       console.error('Could not start encrypted playback due to exception', e);
@@ -216,6 +219,7 @@ class WebkitFairPlayContext {
   setupWebkitKeySession = (mediaEl: WebkitHTMLMediaElement, session: WebKitMediaKeySession) => {
     const onwebkitkeymessageHandler = async (event: WebkiKeyMessageEvent) => {
       try {
+        // TODO: Clean this up
         console.log('WebKit FairPlay: key message received, fetching license');
         const spc = event.message;
         const ckc = await this.getLicenseKey(spc);

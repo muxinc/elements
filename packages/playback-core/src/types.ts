@@ -213,9 +213,9 @@ export type HTMLMediaElementProps = Partial<Pick<HTMLMediaElement, 'src' | 'prel
 
 export type MuxMediaProps = HTMLMediaElementProps &
   MuxMediaPropTypes & {
-    // TODO: Clean this up
+    // TODO: useWebkitFairplay and fallbackToWebkitFairplay can be removed once webkit fallback is no longer necessary
     useWebkitFairplay?: boolean;
-    drmFallbackTest: () => void;
+    fallbackToWebkitFairplay: () => void;
   };
 export type MuxMediaPropsInternal = MuxMediaProps & {
   playerSoftwareName: MetaData['player_software_name'];

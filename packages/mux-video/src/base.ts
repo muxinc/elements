@@ -27,6 +27,7 @@ import {
   getChapters,
   toPlaybackIdFromSrc,
   toPlaybackIdParts,
+  getCoreReference,
   // isMuxVideoSrc,
 } from '@mux/playback-core';
 import type {
@@ -103,7 +104,6 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     return [...AttributeNameValues, ...(CustomVideoElement.observedAttributes ?? [])];
   }
 
-  #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
   #defaultPlayerInitTime: number | undefined;
   #metadata: Metadata = {};
@@ -171,6 +171,10 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         this.updateLogo();
       }
     });
+  }
+
+  get #core(): PlaybackCore | undefined {
+    return getCoreReference(this.nativeEl);
   }
 
   get preferCmcd() {
@@ -796,12 +800,11 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   load() {
-    this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
+    initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
   }
 
   unload() {
     teardown(this.nativeEl, this.#core, this as Partial<MuxMediaProps>);
-    this.#core = undefined;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
