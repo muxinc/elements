@@ -980,23 +980,38 @@ export const setupNativeFairplayDRM = (
     // @ts-ignore
     mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
   } else {
-    // TODO: emeConfig
-    // const emeConfig = {fallbackToWebkit, ...commonConfig}
+    const emeConfig = {
+      fallbackToWebkitFairplay: async () => {
+        await teardownEme();
+        props.fallbackToWebkitFairplay?.();
+      },
+      ...commonConfig,
+    };
 
-    const teardownEme = setupEmeNativeFairplayDRM(props, mediaEl, async () => {
-      await teardownEme();
-      props.fallbackToWebkitFairplay?.();
-    });
+    const teardownEme = setupEmeNativeFairplayDRM(emeConfig);
     // @ts-ignore
     mediaEl.addEventListener('teardown', teardownEme, { once: true });
   }
 };
 
-export const setupEmeNativeFairplayDRM = (
-  props: Partial<Pick<MuxMediaPropsInternal, 'playbackId' | 'tokens' | 'playbackToken' | 'customDomain' | 'drmTypeCb'>>,
-  mediaEl: HTMLMediaElement,
-  fallback: () => Promise<void>
-) => {
+// TODO: This will move to a mew file
+interface EmeNativeFairplayConfig {
+  mediaEl: HTMLMediaElement;
+  getAppCertificate: () => Promise<ArrayBuffer>;
+  getLicenseKey: (spc: ArrayBuffer) => Promise<BufferSource>;
+  saveAndDispatchError: (mediaEl: HTMLMediaElement, error: MediaError) => void;
+  drmTypeCb: () => void;
+  fallbackToWebkitFairplay: () => Promise<void>;
+}
+
+export const setupEmeNativeFairplayDRM = ({
+  mediaEl,
+  getAppCertificate,
+  getLicenseKey,
+  saveAndDispatchError,
+  drmTypeCb,
+  fallbackToWebkitFairplay,
+}: EmeNativeFairplayConfig) => {
   let teardownSession: null | (() => Promise<void>) = null;
   /**
    * Listener for "encrypted" event.
@@ -1057,7 +1072,7 @@ export const setupEmeNativeFairplayDRM = (
       ])
       .then((value) => {
         // This is just a simple callback to signal what DRM type was selected
-        props.drmTypeCb?.(DRMType.FAIRPLAY);
+        drmTypeCb();
         return value;
       })
       .catch(() => {
@@ -1081,19 +1096,7 @@ export const setupEmeNativeFairplayDRM = (
       // Step 1.c.i - Fetch the FPS App Certificate from the server to use with the keys
       // NOTE: We could pre-emptively do this as an optimization, but
       // this simplifies things and has been sufficient thus far (CJP).
-      const fairPlayAppCert = await getAppCertificate(toAppCertURL(props, 'fairplay')).catch((errOrResp) => {
-        // This is just error management
-        if (errOrResp instanceof Response) {
-          const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
-          console.error('mediaError', mediaError?.message, mediaError?.context);
-          if (mediaError) {
-            return Promise.reject(mediaError);
-          }
-          // NOTE: This should never happen. Adding for exhaustiveness (CJP).
-          return Promise.reject(new Error('Unexpected error in app cert request'));
-        }
-        return Promise.reject(errOrResp);
-      });
+      const fairPlayAppCert = await getAppCertificate();
       // Step 1.c.ii - Apply the fetched FPS App Certificate to the keys
       await keys.setServerCertificate(fairPlayAppCert).catch(() => {
         // This is just error management
@@ -1142,42 +1145,24 @@ export const setupEmeNativeFairplayDRM = (
      */
     const onMessage = async (event: MediaKeyMessageEvent) => {
       const spc = event.message;
+      // Step 2.c.i Now that we have an FPS SPC (license request payload) from 2.b, fetch the FPS license key from the server
+      const ckc = await getLicenseKey(spc);
+
       try {
-        // Step 2.c.i Now that we have an FPS SPC (license request payload) from 2.b, fetch the FPS license key from the server
-        const ckc = await getLicenseKey(spc, toLicenseKeyURL(props, 'fairplay'));
-
-        try {
-          // This is the same call whether we are local or AirPlay.
-          // Safari will forward CKC to Apple TV automatically.
-          // Step 2.c.ii - update the session with the license key
-          await session.update(ckc);
-        } catch {
-          // This is just catch all error management
-          const message = i18n(
-            'Failed to update DRM license. This may be an issue with the player or your protected content.'
-          );
-          const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
-          mediaError.errorCategory = MuxErrorCategory.DRM;
-          mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
-
-          saveAndDispatchError(mediaEl, mediaError);
-        }
-      } catch (errOrResp) {
+        // This is the same call whether we are local or AirPlay.
+        // Safari will forward CKC to Apple TV automatically.
+        // Step 2.c.ii - update the session with the license key
+        await session.update(ckc);
+      } catch {
         // This is just catch all error management
-        if (errOrResp instanceof Response) {
-          const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.DRM, props);
-          console.error('mediaError', mediaError?.message, mediaError?.context);
+        const message = i18n(
+          'Failed to update DRM license. This may be an issue with the player or your protected content.'
+        );
+        const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
+        mediaError.errorCategory = MuxErrorCategory.DRM;
+        mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_LICENSE_FAILED;
 
-          if (mediaError) {
-            saveAndDispatchError(mediaEl, mediaError);
-            return;
-          }
-
-          console.error('Unexpected error in license key request', errOrResp);
-          return;
-        }
-
-        console.error(errOrResp);
+        saveAndDispatchError(mediaEl, mediaError);
       }
     };
 
@@ -1251,7 +1236,7 @@ export const setupEmeNativeFairplayDRM = (
         console.warn('Failed to generate a DRM license request. Attempting to fallback to Webkit DRM');
         // This is used to address an OS bug when casting DRM protected content with AirPlay
         // TODO: Remove this once Apple fixes this bug.
-        await fallback();
+        fallbackToWebkitFairplay();
       } else {
         const message = i18n(
           'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
