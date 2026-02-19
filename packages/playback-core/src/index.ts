@@ -977,9 +977,7 @@ export const setupNativeFairplayDRM = (
   };
 
   if (props.useWebkitFairplay) {
-    const teardownWebkit = setupWebkitNativeFairplayDRM(commonConfig);
-    // @ts-ignore
-    mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
+    setupWebkitNativeFairplayDRM(commonConfig);
   } else {
     const emeConfig = {
       fallbackToWebkitFairplay: async () => {
@@ -990,8 +988,6 @@ export const setupNativeFairplayDRM = (
     };
 
     const teardownEme = setupEmeNativeFairplayDRM(emeConfig);
-    // @ts-ignore
-    mediaEl.addEventListener('teardown', teardownEme, { once: true });
   }
 };
 

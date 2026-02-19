@@ -44,7 +44,6 @@ export const setupWebkitNativeFairplayDRM = ({
     // empty teardown
     return () => {};
   }
-  console.log('Setting up Webkit Fairplay');
 
   const wkMediaEl = mediaEl as unknown as WebkitHTMLMediaElement;
 
@@ -57,25 +56,30 @@ export const setupWebkitNativeFairplayDRM = ({
    * Listener for "webkitneedkey" event.
    * Will be called when we receive EXT-X-KEY tags and will setup media keys and session.
    */
-  const onWebkitNeedKey = async (ev: WebkitNeedKeyEvent) => {
-    try {
-      // Setup 1 - set up the keys based on the data type (currently only "skd" for Native Safari FPS DRM)
-      if (!wkMediaEl.webkitKeys) {
-        setupWebkitKey(wkMediaEl);
+  const onWebkitNeedKey = (ev: WebkitNeedKeyEvent) => {
+    // note: Promises only resolve once, so we wrap it in an anonymous funciton to use as an event listener
+    const handle = async (ev: WebkitNeedKeyEvent) => {
+      try {
+        // Setup 1 - set up the keys based on the data type (currently only "skd" for Native Safari FPS DRM)
+        if (!wkMediaEl.webkitKeys) {
+          setupWebkitKey(wkMediaEl);
+        }
+
+        const certificate = await certificatePromise;
+        // Early bail if the init data is missing (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
+        // NOTE: This could happen before Step 1, but also shouldn't happen.
+        if (ev.initData === null || certificate == null) return;
+
+        const initData = getInitData(ev.initData, certificate);
+        // Setup 2 - set up the key session based on the data type and the data (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
+        setupWebkitKeySession(initData);
+      } catch (e) {
+        console.error('Could not start encrypted playback due to exception', e);
+        saveAndDispatchError(wkMediaEl, e as MediaError);
       }
+    };
 
-      const certificate = await certificatePromise;
-      // Early bail if the init data is missing (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
-      // NOTE: This could happen before Step 1, but also shouldn't happen.
-      if (ev.initData === null || certificate == null) return;
-
-      const initData = getInitData(ev.initData, certificate);
-      // Setup 2 - set up the key session based on the data type and the data (corresponds to EXT-X-KEY values for Native Safari FPS DRM)
-      setupWebkitKeySession(initData);
-    } catch (e) {
-      console.error('Could not start encrypted playback due to exception', e);
-      saveAndDispatchError(wkMediaEl, e as MediaError);
-    }
+    handle(ev);
   };
 
   /** Setup 1
@@ -183,7 +187,7 @@ export const setupWebkitNativeFairplayDRM = ({
     }
 
     // @ts-ignore
-    session.addEventListener('webkitkeymessage', onwebkitkeymessageHandler);
+    session.addEventListener('webkitkeymessage', onWebkitKeyMessage);
     // @ts-ignore
     session.addEventListener('webkitkeyerror', onWebkitKeyError);
     mediaEl.addEventListener('teardown', newTeardown);
@@ -197,6 +201,7 @@ export const setupWebkitNativeFairplayDRM = ({
     wkMediaEl.webkitSetMediaKeys(null);
     // @ts-ignore
     mediaEl.removeEventListener('webkitneedkey', onWebkitNeedKey);
+    mediaEl.removeEventListener('teardown', teardownWebkit);
   };
 
   // @ts-ignore

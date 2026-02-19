@@ -55,11 +55,13 @@ export const setupEmeNativeFairplayDRM = ({
   };
 
   /** Setup 1
+   *
    * If successful will:
    *  - request media key system access,
    *  - create a media keys object,
+   *  - signal what DRM type was selected,
    *  - request a FPS certificate,
-   *  - set the certificate to the media keys
+   *  - set the certificate to the media keys,
    *  - set the media keys to mediaEl.
    *
    * If any step fails will dispatch an error and mediaEl.mediaKeys will not be set.
@@ -133,7 +135,6 @@ export const setupEmeNativeFairplayDRM = ({
    *  - Use that SPC to fetch a CKC
    *  - Update the session with the obtained CKC.
    *  - Add a teardown listener to cleanup the session.
-   *  - Tearsdown any old session and sets a new function to tear the new one down.
    *
    * If it fails:
    *  - Will dispatch an error and session should be torn down
@@ -257,8 +258,9 @@ export const setupEmeNativeFairplayDRM = ({
     });
   };
 
-  addEventListenerWithTeardown(mediaEl, 'encrypted', onFpEncrypted);
-
+  /* note: Manually adding/removing teardown function instead of
+   * addEventListenerWithTeardown to add extra cleanup logic
+   */
   const teardownEme = async () => {
     mediaEl.removeEventListener('encrypted', onFpEncrypted);
     mediaEl.removeEventListener('teardown', teardownEme);
@@ -267,5 +269,9 @@ export const setupEmeNativeFairplayDRM = ({
     }
     await mediaEl.setMediaKeys(null).catch(() => {});
   };
+
+  mediaEl.addEventListener('encrypted', onFpEncrypted);
+  mediaEl.addEventListener('teardown', teardownEme, { once: true });
+
   return teardownEme;
 };
