@@ -622,7 +622,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
     props.useWebkitFairplay = true;
 
     // Prevent duplicate mux data
-    let muxDataKeepSession = props.muxDataKeepSession;
+    const muxDataKeepSession = props.muxDataKeepSession;
     props.muxDataKeepSession = true;
 
     const oldCore = muxMediaState.get(mediaEl)?.coreReference;

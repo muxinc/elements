@@ -1,5 +1,5 @@
 import { MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
-import { addEventListenerWithTeardown, i18n } from './util';
+import { i18n } from './util';
 
 interface EmeNativeFairplayConfig {
   mediaEl: HTMLMediaElement;

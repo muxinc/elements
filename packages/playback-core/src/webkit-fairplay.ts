@@ -58,11 +58,11 @@ export const setupWebkitNativeFairplayDRM = ({
    */
   const onWebkitNeedKey = (ev: WebkitNeedKeyEvent) => {
     // note: Promises only resolve once, so we wrap it in an anonymous funciton to use as an event listener
-    const handle = async (ev: WebkitNeedKeyEvent) => {
+    const handle = async () => {
       try {
         // Setup 1 - set up the keys based on the data type (currently only "skd" for Native Safari FPS DRM)
         if (!wkMediaEl.webkitKeys) {
-          setupWebkitKey(wkMediaEl);
+          setupWebkitKey();
         }
 
         const certificate = await certificatePromise;
@@ -79,7 +79,7 @@ export const setupWebkitNativeFairplayDRM = ({
       }
     };
 
-    handle(ev);
+    handle();
   };
 
   /** Setup 1
@@ -91,12 +91,12 @@ export const setupWebkitNativeFairplayDRM = ({
    *
    * If it fails will throw an error in order to abort setup.
    */
-  const setupWebkitKey = (mediaEl: WebkitHTMLMediaElement) => {
+  const setupWebkitKey = () => {
     try {
       // (Step 1.b in EME)
       const mediaKeys = new WebKitMediaKeys(LEGACY_KEY_SYSTEM);
       // (Step 1.d in EME)
-      mediaEl.webkitSetMediaKeys(mediaKeys);
+      wkMediaEl.webkitSetMediaKeys(mediaKeys);
       // This is just a simple callback to signal what DRM type was selected
       drmTypeCb();
     } catch {
@@ -134,8 +134,6 @@ export const setupWebkitNativeFairplayDRM = ({
     const onWebkitKeyMessage = async (event: WebkiKeyMessageEvent) => {
       try {
         const spc = event.message;
-        const session = event.target;
-
         const ckc = await getLicenseKey(spc);
         session.update(ckc);
       } catch (errOrResp) {
