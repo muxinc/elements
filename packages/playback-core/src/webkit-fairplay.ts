@@ -1,15 +1,8 @@
 /// <reference types="./webkit-fairplay.d.ts" />
 
+import { NativeFairplayConfig } from './eme-fairplay';
 import { MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
 import { i18n } from './util';
-
-interface WebkitNativeFairplayConfig {
-  mediaEl: HTMLMediaElement;
-  getAppCertificate: () => Promise<ArrayBuffer>;
-  getLicenseKey: (spc: ArrayBuffer) => Promise<BufferSource>;
-  saveAndDispatchError: (mediaEl: HTMLMediaElement, error: MediaError) => void;
-  drmTypeCb: () => void;
-}
 
 const LEGACY_KEY_SYSTEM = 'com.apple.fps.1_0';
 const MIME_TYPE = 'application/vnd.apple.mpegurl';
@@ -28,7 +21,7 @@ export const setupWebkitNativeFairplayDRM = ({
   getLicenseKey,
   saveAndDispatchError,
   drmTypeCb,
-}: WebkitNativeFairplayConfig) => {
+}: NativeFairplayConfig) => {
   // Support for this may be dropped in future WebKit versions so we add this guard.
   if (!window.WebKitMediaKeys || !('onwebkitneedkey' in mediaEl)) {
     console.error('No WebKitMediaKeys. FairPlay may not be supported');

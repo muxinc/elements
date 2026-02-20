@@ -1,13 +1,13 @@
 import { MediaError, MuxErrorCategory, MuxErrorCode } from './errors';
 import { i18n } from './util';
 
-interface EmeNativeFairplayConfig {
+export interface NativeFairplayConfig {
   mediaEl: HTMLMediaElement;
   getAppCertificate: () => Promise<ArrayBuffer>;
   getLicenseKey: (spc: ArrayBuffer) => Promise<BufferSource>;
   saveAndDispatchError: (mediaEl: HTMLMediaElement, error: MediaError) => void;
   drmTypeCb: () => void;
-  fallbackToWebkitFairplay: () => Promise<void>;
+  fallbackToWebkitFairplay?: () => Promise<void>;
 }
 
 export const setupEmeNativeFairplayDRM = ({
@@ -17,7 +17,7 @@ export const setupEmeNativeFairplayDRM = ({
   saveAndDispatchError,
   drmTypeCb,
   fallbackToWebkitFairplay,
-}: EmeNativeFairplayConfig) => {
+}: NativeFairplayConfig) => {
   let teardownSession: null | (() => Promise<void>) = null;
   /**
    * Listener for "encrypted" event.
@@ -243,7 +243,7 @@ export const setupEmeNativeFairplayDRM = ({
         console.warn('Failed to generate a DRM license request. Attempting to fallback to Webkit DRM');
         // This is used to address an OS bug when casting DRM protected content with AirPlay
         // TODO: Remove this once Apple fixes this bug.
-        fallbackToWebkitFairplay();
+        fallbackToWebkitFairplay?.();
       } else {
         const message = i18n(
           'Failed to generate a DRM license request. This may be an issue with the player or your protected content.'
