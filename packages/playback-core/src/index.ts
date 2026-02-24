@@ -977,6 +977,7 @@ export const setupNativeFairplayDRM = (
   };
 
   if (props.useWebkitFairplay) {
+    // Note: Sets teardown event listener
     setupWebkitNativeFairplayDRM(commonConfig);
   } else {
     const emeConfig = {
@@ -987,6 +988,7 @@ export const setupNativeFairplayDRM = (
       ...commonConfig,
     };
 
+    // Note: Returns teardown to be used in fallback, but also sets teardown event listener
     const teardownEme = setupEmeNativeFairplayDRM(emeConfig);
   }
 };

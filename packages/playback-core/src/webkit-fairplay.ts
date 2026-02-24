@@ -197,7 +197,7 @@ export const setupWebkitNativeFairplayDRM = ({
 
   // @ts-ignore
   mediaEl.addEventListener('webkitneedkey', onWebkitNeedKey);
-  mediaEl.addEventListener('teardown', teardownWebkit);
+  mediaEl.addEventListener('teardown', teardownWebkit, { once: true });
 
   return teardownWebkit;
 };
