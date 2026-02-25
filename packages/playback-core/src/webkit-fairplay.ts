@@ -157,20 +157,21 @@ export const setupWebkitNativeFairplayDRM = ({
     // If this becomes an issue, we should implement better cleanup.
     // For example separating event cleanup from session.close
     const newTeardown = () => {
+      // Remove all event listeners first to prevent events firing during cleanup
       // @ts-ignore
       session.removeEventListener('webkitkeymessage', onWebkitKeyMessage);
       // @ts-ignore
       session.removeEventListener('webkitkeyerror', onWebkitKeyError);
       mediaEl.removeEventListener('teardown', newTeardown);
+      if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
+        mediaEl.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', newTeardown);
+      }
+
+      teardownSession = null;
 
       try {
         session.close();
       } catch {}
-
-      if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
-        mediaEl.removeEventListener('webkitcurrentplaybacktargetiswirelesschanged', newTeardown);
-      }
-      teardownSession = null;
     };
 
     if ('webkitCurrentPlaybackTargetIsWireless' in mediaEl) {
@@ -187,12 +188,16 @@ export const setupWebkitNativeFairplayDRM = ({
   };
 
   const teardownWebkit = () => {
-    teardownSession?.();
-
-    wkMediaEl.webkitSetMediaKeys(null);
+    // Remove event listeners first to prevent new key requests during cleanup
     // @ts-ignore
     mediaEl.removeEventListener('webkitneedkey', onWebkitNeedKey);
     mediaEl.removeEventListener('teardown', teardownWebkit);
+
+    teardownSession?.();
+
+    try {
+      wkMediaEl.webkitSetMediaKeys(null);
+    } catch {}
   };
 
   // @ts-ignore
