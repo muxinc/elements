@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.33.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.33.1...@mux/playback-core@0.33.2) (2026-02-26)
+
+
+### Bug Fixes
+
+* **core:** Add WebKit FairPlay DRM fallback for AirPlay on newer OS versions ([#1277](https://github.com/muxinc/elements/issues/1277)) ([f283080](https://github.com/muxinc/elements/commit/f28308022a094d22c99b79fa49f2437cee7cc959))
+
 ## [0.33.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.33.0...@mux/playback-core@0.33.1) (2026-02-10)
 
 

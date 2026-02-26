@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video",
-  "version": "0.30.2",
+  "version": "0.30.3",
   "description": "A custom mux video element for the browser that Just Works™",
   "keywords": [
     "video",
@@ -125,7 +125,7 @@
   },
   "dependencies": {
     "@mux/mux-data-google-ima": "^0.3.4",
-    "@mux/playback-core": "0.33.1",
+    "@mux/playback-core": "0.33.2",
     "castable-video": "~1.1.11",
     "custom-media-element": "~1.4.5",
     "media-tracks": "~0.3.4"

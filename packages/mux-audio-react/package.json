@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio-react",
-  "version": "0.15.21",
+  "version": "0.15.22",
   "description": "A custom mux audio element for React that Just Works™",
   "keywords": [
     "audio",
@@ -66,7 +66,7 @@
     }
   },
   "dependencies": {
-    "@mux/playback-core": "0.33.1",
+    "@mux/playback-core": "0.33.2",
     "prop-types": "^15.8.1"
   },
   "devDependencies": {

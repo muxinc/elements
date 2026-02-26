@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-audio",
-  "version": "0.15.21",
+  "version": "0.15.22",
   "description": "A custom mux audio element for the browser that Just Works™",
   "keywords": [
     "audio",
@@ -63,7 +63,7 @@
     "build": "npm-run-all --parallel 'build:esm -- --minify' 'build:iife -- --minify' 'build:cjs -- --minify' 'build:esm-module -- --minify'"
   },
   "dependencies": {
-    "@mux/playback-core": "0.33.1",
+    "@mux/playback-core": "0.33.2",
     "custom-media-element": "~1.4.5"
   },
   "devDependencies": {
