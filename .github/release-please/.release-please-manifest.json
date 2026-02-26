@@ -1,15 +1,15 @@
 {
   "packages/mux-active-viewer-count": "0.2.0-alpha.13",
-  "packages/mux-audio": "0.15.21",
-  "packages/mux-audio-react": "0.15.21",
+  "packages/mux-audio": "0.15.22",
+  "packages/mux-audio-react": "0.15.22",
   "packages/mux-elements-codemod": "1.1.12",
-  "packages/mux-player": "3.11.4",
-  "packages/mux-player-react": "3.11.4",
-  "packages/mux-player-astro": "3.11.4",
+  "packages/mux-player": "3.11.5",
+  "packages/mux-player-react": "3.11.5",
+  "packages/mux-player-astro": "3.11.5",
   "packages/mux-uploader": "1.4.1",
   "packages/mux-uploader-react": "1.4.1",
   "packages/mux-uploader-astro": "1.4.1",
-  "packages/mux-video": "0.30.2",
-  "packages/mux-video-react": "0.30.2",
-  "packages/playback-core": "0.33.1"
+  "packages/mux-video": "0.30.3",
+  "packages/mux-video-react": "0.30.3",
+  "packages/playback-core": "0.33.2"
 }

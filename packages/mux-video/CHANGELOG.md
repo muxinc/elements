@@ -31,6 +31,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.3](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.2...@mux/mux-video@0.30.3) (2026-02-26)
+
+
+### Bug Fixes
+
+* **core:** Add WebKit FairPlay DRM fallback for AirPlay on newer OS versions ([#1277](https://github.com/muxinc/elements/issues/1277)) ([f283080](https://github.com/muxinc/elements/commit/f28308022a094d22c99b79fa49f2437cee7cc959))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.33.1 to 0.33.2
+
 ## [0.30.2](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.1...@mux/mux-video@0.30.2) (2026-02-11)
 
 
