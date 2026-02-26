@@ -9,6 +9,7 @@ import {
   getStartDate,
   getCurrentPdt,
   getEnded,
+  getCoreReference,
   toPlaybackIdParts,
 } from '@mux/playback-core';
 import type {
@@ -65,7 +66,6 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
     return [...AttributeNameValues, ...(CustomAudioElement.observedAttributes ?? [])];
   }
 
-  #core?: PlaybackCore;
   #loadRequested?: Promise<void> | null;
   #defaultPlayerInitTime: number | undefined;
   #metadata: Readonly<Metadata> = {};
@@ -75,6 +75,10 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
+  }
+
+  get #core(): PlaybackCore | undefined {
+    return getCoreReference(this.nativeEl);
   }
 
   get playerInitTime() {
@@ -464,12 +468,11 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
   }
 
   load() {
-    this.#core = initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
+    initialize(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
   }
 
   unload() {
     teardown(this.nativeEl, this.#core);
-    this.#core = undefined;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
