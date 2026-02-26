@@ -124,7 +124,7 @@
     "build": "npm-run-all 'build:esm:base -- --minify' 'build:cjs:base -- --minify' 'build:esm:ads:mixin -- --minify' 'build:cjs:ads:mixin -- --minify' --parallel 'build:esm:** -- --minify' 'build:cjs:** -- --minify' 'build:iife:** -- --minify' 'build:esm-module:** -- --minify'"
   },
   "dependencies": {
-    "@mux/mux-data-google-ima": "^0.3.4",
+    "@mux/mux-data-google-ima": "^0.3.15",
     "@mux/playback-core": "0.33.2",
     "castable-video": "~1.1.11",
     "custom-media-element": "~1.4.5",
