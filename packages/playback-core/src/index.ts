@@ -373,6 +373,14 @@ export const muxMediaState: WeakMap<
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
 
+/* NOTE: This will include iOS WebViews
+ *
+ * This is intentional, ultimately we intend to rely less on native platforms
+ * and more on our own engine. Also, we would prefer to avoid UA parsing.
+ *
+ * For an example see: https://github.com/muxinc/elements/issues/1227
+ * For internal dicussion see: https://github.com/muxinc/devextravaganza/issues/207
+ */
 const shouldDefaultToMSE = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) => isAndroidLike || !isSafari(mediaEl);
 
 export const generatePlayerInitTime = () => {
