@@ -2,12 +2,17 @@ import { globalThis } from './polyfills';
 import { Autoplay } from '@mux/playback-core';
 import { MuxVideoBaseElement } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
-import { MediaTracksMixin } from 'media-tracks';
+import { MediaTracksMixin, cleanupMediaTracks } from 'media-tracks';
 
 export * from '@mux/mux-video/base';
 
 // castable-video should be mixed in last so that it can override load().
 class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(MuxVideoBaseElement)) {
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    cleanupMediaTracks(this as unknown as HTMLMediaElement);
+  }
+
   // Define autoplay in the most outer layer because mux-video accepts string | boolean
   // which is not compatible the CustomVideoElement.autoplay boolean only type.
   /** @ts-ignore */

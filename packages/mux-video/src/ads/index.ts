@@ -9,7 +9,7 @@ import type { MuxDataSDK } from '@mux/playback-core';
 import { Autoplay } from '@mux/playback-core';
 import { MuxVideoBaseElement, Attributes as BaseAttributes, EventMap as BaseEventMap } from '@mux/mux-video/base';
 import { CastableMediaMixin } from 'castable-video/castable-mixin.js';
-import { MediaTracksMixin } from 'media-tracks';
+import { MediaTracksMixin, cleanupMediaTracks } from 'media-tracks';
 import { globalThis } from '../polyfills';
 import {
   AdsVideoMixin,
@@ -31,6 +31,11 @@ export const Attributes = {
 // castable-video should be mixed in last so that it can override load().
 class MuxVideoElement extends CastableMediaMixin(MediaTracksMixin(AdsVideoMixin(MuxVideoBaseElement))) {
   #muxDataKeepSession = false;
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    cleanupMediaTracks(this as unknown as HTMLMediaElement);
+  }
 
   handleEvent(event: Event) {
     super.handleEvent(event);
