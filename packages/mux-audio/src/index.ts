@@ -511,6 +511,12 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
         this.#core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
+      case Attributes.CUSTOM_DOMAIN:
+      case Attributes.PROGRAM_START_TIME:
+      case Attributes.PROGRAM_END_TIME:
+      case Attributes.ASSET_START_TIME:
+      case Attributes.ASSET_END_TIME:
+      case Attributes.PLAYBACK_TOKEN:
         this.src = toMuxVideoURL(this) as string;
         break;
       case Attributes.DEBUG: {
