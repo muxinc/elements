@@ -291,6 +291,11 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   #tokens: Tokens = {};
   #userInactive = true;
   #hotkeys = new AttributeTokenList(this, 'hotkeys');
+  #themeAttributeObserver?: MutationObserver;
+  #onStreamTypeChange = () => this.#render();
+  #onLoadStart = () => this.#render();
+  #onTrackCountChange = () => this.#render();
+  #captionsMovementCleanup?: () => void;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
     onCloseErrorDialog: (event) => {
@@ -341,6 +346,37 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     }
   }
 
+  #onError = (_event: Event) => {
+    let error = this.media?.error as unknown as MediaError;
+
+    if (!(error instanceof MediaError)) {
+      const { message, code } = error ?? {};
+      error = new MediaError(message, code);
+    }
+
+    // Don't show an error dialog if it's not fatal.
+    if (!error?.fatal) {
+      logger.warn(error);
+      if (error.data) {
+        logger.warn(`${error.name} data:`, error.data);
+      }
+      return;
+    }
+
+    const devlog = muxMediaErrorToDevlog(error, false);
+
+    if (devlog.message) {
+      logger.devlog(devlog);
+    }
+
+    logger.error(error);
+    if (error.data) {
+      logger.error(`${error.name} data:`, error.data);
+    }
+
+    this.#setState({ isDialogOpen: true });
+  };
+
   #init() {
     if (this.#isInit) return;
     this.#isInit = true;
@@ -379,10 +415,10 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     // NOTE: Make sure we re-render when stream type changes to ensure other props-driven
     // template details get updated appropriately (e.g. thumbnails track) (CJP)
-    this.media?.addEventListener('streamtypechange', () => this.#render());
+    this.media?.addEventListener('streamtypechange', this.#onStreamTypeChange);
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
-    this.media?.addEventListener('loadstart', () => this.#render());
+    this.media?.addEventListener('loadstart', this.#onLoadStart);
   }
 
   #setupCSSProperties() {
@@ -414,10 +450,27 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   }
 
   connectedCallback() {
+    this.#init();
     const muxVideo = this.media;
     if (muxVideo) {
       muxVideo.metadata = getMetadataFromAttrs(this);
     }
+  }
+
+  disconnectedCallback() {
+    this.#themeAttributeObserver?.disconnect();
+    this.media?.removeEventListener('streamtypechange', this.#onStreamTypeChange);
+    this.media?.removeEventListener('loadstart', this.#onLoadStart);
+    this.removeEventListener('error', this.#onError);
+    if (this.media) {
+      this.media.errorTranslator = undefined;
+    }
+    this.media?.textTracks?.removeEventListener('addtrack', this.#onTrackCountChange);
+    this.media?.textTracks?.removeEventListener('removetrack', this.#onTrackCountChange);
+    this.#captionsMovementCleanup?.();
+    this.#captionsMovementCleanup = undefined;
+    // Reset so #init() re-runs on reconnect
+    this.#isInit = false;
   }
 
   #setState(newState: Record<string, any>) {
@@ -446,51 +499,20 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       }
     };
 
-    const observer = new MutationObserver((mutationList) => {
+    this.#themeAttributeObserver = new MutationObserver((mutationList) => {
       for (const { attributeName } of mutationList) {
         setThemeAttribute(attributeName);
       }
     });
 
-    observer.observe(this, { attributes: true });
+    this.#themeAttributeObserver.observe(this, { attributes: true });
     this.getAttributeNames().forEach(setThemeAttribute);
   }
 
   #setUpErrors() {
-    const onError = (_event: Event) => {
-      let error = this.media?.error as unknown as MediaError;
-
-      if (!(error instanceof MediaError)) {
-        const { message, code } = error ?? {};
-        error = new MediaError(message, code);
-      }
-
-      // Don't show an error dialog if it's not fatal.
-      if (!error?.fatal) {
-        logger.warn(error);
-        if (error.data) {
-          logger.warn(`${error.name} data:`, error.data);
-        }
-        return;
-      }
-
-      const devlog = muxMediaErrorToDevlog(error, false);
-
-      if (devlog.message) {
-        logger.devlog(devlog);
-      }
-
-      logger.error(error);
-      if (error.data) {
-        logger.error(`${error.name} data:`, error.data);
-      }
-
-      this.#setState({ isDialogOpen: true });
-    };
-
     // Keep this event listener on mux-player instead of calling onError directly
     // from video.onerror. This allows us to simulate errors from the outside.
-    this.addEventListener('error', onError);
+    this.addEventListener('error', this.#onError);
 
     /** @TODO Push errorTranslator logic down to playback-core. Should be able to use MediaError message + context + code (muxCode?) (CJP) */
     if (this.media) {
@@ -509,9 +531,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   }
 
   #setUpCaptionsButton() {
-    const onTrackCountChange = () => this.#render();
-    this.media?.textTracks?.addEventListener('addtrack', onTrackCountChange);
-    this.media?.textTracks?.addEventListener('removetrack', onTrackCountChange);
+    this.media?.textTracks?.addEventListener('addtrack', this.#onTrackCountChange);
+    this.media?.textTracks?.addEventListener('removetrack', this.#onTrackCountChange);
   }
 
   #setUpCaptionsMovement() {
@@ -606,7 +627,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.textTracks?.addEventListener('change', selectTrack);
     this.textTracks?.addEventListener('addtrack', selectTrack);
 
-    this.addEventListener('userinactivechange', () => {
+    const onUserInactiveChange = () => {
       const newUserInactive = this.mediaController?.hasAttribute(MediaControllerAttributes.USER_INACTIVE) ?? true;
 
       if (this.#userInactive === newUserInactive) {
@@ -616,7 +637,16 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       this.#userInactive = newUserInactive;
 
       toggleLines(selectedTrack, this.#userInactive);
-    });
+    };
+
+    this.addEventListener('userinactivechange', onUserInactiveChange);
+
+    this.#captionsMovementCleanup = () => {
+      selectedTrack?.removeEventListener('cuechange', cuechangeHandler);
+      this.textTracks?.removeEventListener('change', selectTrack);
+      this.textTracks?.removeEventListener('addtrack', selectTrack);
+      this.removeEventListener('userinactivechange', onUserInactiveChange);
+    };
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string) {

@@ -132,3 +132,7 @@ packages/*/src/polyfills
 
 .turbo
 examples/astro/.vercel/
+
+# Yalc local package linking
+.yalc
+yalc.lock

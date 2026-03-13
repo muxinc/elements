@@ -1401,12 +1401,13 @@ export const loadMedia = (
           Object.assign(retryDelayError, error);
           saveAndDispatchError(mediaEl, retryDelayError);
 
-          setTimeout(() => {
+          const retryTimerId = setTimeout(() => {
             state.retryCount = retryCount + 1;
             if (data.details === 'manifestLoadError' && data.url) {
               hls.loadSource(data.url);
             }
           }, retryDelay);
+          mediaEl.addEventListener('teardown', () => clearTimeout(retryTimerId), { once: true });
           return;
         } else {
           state.retryCount = 0;
