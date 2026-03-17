@@ -1,10 +1,11 @@
 import Head from 'next/head';
 import MuxPlayer, { MuxPlayerProps, MaxResolution, MinResolution, RenditionOrder } from '@mux/mux-player-react';
+import type MuxPlayerElement from '@mux/mux-player';
 import '@mux/mux-player/themes/classic';
 import '@mux/mux-player/themes/minimal';
 import '@mux/mux-player/themes/microvideo';
 import '@mux/mux-player/themes/gerwig';
-import { useReducer, useState } from 'react';
+import { useReducer, useRef, useState } from 'react';
 import mediaAssetsJSON from '@mux/assets/media-assets.json';
 import type { NextParsedUrlQuery } from 'next/dist/server/request-meta';
 import {
@@ -250,7 +251,8 @@ export const getServerSideProps = getLocationServerSideProps;
 type Props = LocationProps;
 
 function MuxPlayerPage({ location }: Props) {
-  // const mediaElRef = useRef<MuxPlayerElement>(null);
+  const mediaElRef = useRef<MuxPlayerElement>(null);
+  const [playerSoftwareInfo, setPlayerSoftwareInfo] = useState<{ name?: string; version?: string }>({});
   const [mediaAssets, _setMediaAssets] = useState(mediaAssetsJSON);
   const [selectedAsset, setSelectedAsset] = useState(undefined);
   /** @TODO fix typing complexities here (CJP) */
@@ -270,7 +272,7 @@ function MuxPlayerPage({ location }: Props) {
       <main className="component-page">
         <div id="custom-fullscreen-element">
         <MuxPlayer
-          // ref={mediaElRef}
+          ref={mediaElRef}
           style={stylesState}
           theme={state.theme}
           fullscreenElement={state.fullscreenElement}
@@ -298,7 +300,13 @@ function MuxPlayerPage({ location }: Props) {
           crossOrigin={state.crossOrigin}
           nohotkeys={state.nohotkeys}
           hotkeys={state.hotkeys}
-          // onPlayerReady={() => console.log("ready!")}
+          onPlayerReady={(evt) => {
+            onPlayerReady(evt);
+            setPlayerSoftwareInfo({
+              name: mediaElRef.current?.playerSoftwareName,
+              version: mediaElRef.current?.playerSoftwareVersion,
+            });
+          }}
           preferCmcd={state.preferCmcd}
           preferPlayback={state.preferPlayback}
           debug={state.debug}
@@ -358,6 +366,12 @@ function MuxPlayerPage({ location }: Props) {
         <div className="options">
           <ComponentCodeRenderer state={state} component="MuxPlayer" />
           <URLPathRenderer state={state} location={typeof window !== 'undefined' ? window.location : location} />
+          {(playerSoftwareInfo.name || playerSoftwareInfo.version) && (
+            <div>
+              <strong>playerSoftwareName:</strong> {playerSoftwareInfo.name ?? 'N/A'}<br />
+              <strong>playerSoftwareVersion:</strong> {playerSoftwareInfo.version ?? 'N/A'}
+            </div>
+          )}
           <div>
             <label htmlFor="assets-control">Select from one of our example assets</label>
             <select
