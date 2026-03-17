@@ -266,12 +266,19 @@ function MuxPlayerPage({ location }: Props) {
   const [stylesState, dispatchStyles] = useReducer(reducer, DEFAULT_INITIAL_STYLES_STATE);
   const genericOnStyleChange = (obj) => dispatchStyles(updateProps(obj));
 
+  console.log('playerSoftwareInfo', playerSoftwareInfo);
+
   return (
     <>
       <Head>
         <title>&lt;MuxPlayer/&gt; Demo</title>
       </Head>
       <main className="component-page">
+        {(playerSoftwareInfo.name || playerSoftwareInfo.version) && (
+          <div>
+            <strong>{playerSoftwareInfo.name ?? 'N/A'}@{playerSoftwareInfo.version ?? 'N/A'}</strong>
+          </div>
+        )}
         <div id="custom-fullscreen-element">
         <MuxPlayer
           ref={mediaElRef}
@@ -304,13 +311,6 @@ function MuxPlayerPage({ location }: Props) {
           crossOrigin={state.crossOrigin}
           nohotkeys={state.nohotkeys}
           hotkeys={state.hotkeys}
-          onPlayerReady={(evt) => {
-            onPlayerReady(evt);
-            setPlayerSoftwareInfo({
-              name: mediaElRef.current?.playerSoftwareName,
-              version: mediaElRef.current?.playerSoftwareVersion,
-            });
-          }}
           preferCmcd={state.preferCmcd}
           preferPlayback={state.preferPlayback}
           debug={state.debug}
@@ -350,6 +350,10 @@ function MuxPlayerPage({ location }: Props) {
           proudlyDisplayMuxBadge={state.proudlyDisplayMuxBadge}
           onPlay={(evt: Event) => {
             onPlay(evt);
+            setPlayerSoftwareInfo({
+              name: mediaElRef.current?.playerSoftwareName,
+              version: mediaElRef.current?.playerSoftwareVersion,
+            });
             // dispatch(updateProps({ paused: false }));
           }}
           onPause={(evt: Event) => {
@@ -370,12 +374,6 @@ function MuxPlayerPage({ location }: Props) {
         <div className="options">
           <ComponentCodeRenderer state={state} component="MuxPlayer" />
           <URLPathRenderer state={state} location={typeof window !== 'undefined' ? window.location : location} />
-          {(playerSoftwareInfo.name || playerSoftwareInfo.version) && (
-            <div>
-              <strong>playerSoftwareName:</strong> {playerSoftwareInfo.name ?? 'N/A'}<br />
-              <strong>playerSoftwareVersion:</strong> {playerSoftwareInfo.version ?? 'N/A'}
-            </div>
-          )}
           <div>
             <label htmlFor="assets-control">Select from one of our example assets</label>
             <select
