@@ -22,5 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const body = await upstream.text();
 
   res.setHeader('Content-Type', upstream.headers.get('content-type') ?? 'text/vtt');
+  res.setHeader('Cache-Control', 'no-store');
   res.status(200).send(body);
 }
