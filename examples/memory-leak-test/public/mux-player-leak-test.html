@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>mux-player Memory Leak Test</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./dist/mux-player.js"></script>
+  </head>
+  <body>
+    <h1>&lt;mux-player&gt; Memory Leak Test</h1>
+    <p><a href="./">&larr; Back</a></p>
+
+    <div class="controls">
+      <button id="btn-mount">Mount</button>
+      <button id="btn-unmount">Unmount</button>
+      <span class="sep">|</span>
+      <label>Loops: <input type="number" id="loop-count" value="10" min="1"></label>
+      <label>Delay (ms): <input type="number" id="loop-delay" value="500" min="100" step="100"></label>
+      <button id="btn-loop">Start Loop</button>
+      <button id="btn-stop">Stop</button>
+      <span class="sep">|</span>
+      <button id="btn-gc">Force GC</button>
+    </div>
+
+    <div id="status">Cycles: <span id="counter">0</span> | Ready</div>
+    <div id="container"></div>
+  </body>
+</html>

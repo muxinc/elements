@@ -50,14 +50,16 @@ export function setupMediaTracks(
     }
   });
 
-  customMediaEl.audioTracks.addEventListener('change', () => {
+  const switchAudioTrack = () => {
     // Cast to number, hls.js uses numeric id's.
     const audioTrackId = +[...customMediaEl.audioTracks].find((t) => t.enabled)?.id;
     const availableIds = hls.audioTracks.map((t) => t.id);
     if (audioTrackId != hls.audioTrack && availableIds.includes(audioTrackId)) {
       hls.audioTrack = audioTrackId;
     }
-  });
+  };
+
+  customMediaEl.audioTracks.addEventListener('change', switchAudioTrack);
 
   // Fired when a level is removed after calling `removeLevel()`
   hls.on(Hls.Events.LEVELS_UPDATED, function (_event, data) {
@@ -106,5 +108,9 @@ export function setupMediaTracks(
   };
 
   // NOTE: Since this is only relevant for hls, using destroying event (CJP).
-  hls.once(Hls.Events.DESTROYING, removeAllMediaTracks);
+  hls.once(Hls.Events.DESTROYING, () => {
+    removeAllMediaTracks();
+    customMediaEl.audioTracks?.removeEventListener('change', switchAudioTrack);
+    customMediaEl.videoRenditions?.removeEventListener('change', switchRendition);
+  });
 }
