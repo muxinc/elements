@@ -948,7 +948,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   disconnectedCallback(): void {
     this.nativeEl?.removeEventListener('muxmetadata', this.#muxmetadataHandler);
     this.unload();
-    super.disconnectedCallback();
+    super.disconnectedCallback?.();
   }
 
   handleEvent(event: Event): void {
