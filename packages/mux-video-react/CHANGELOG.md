@@ -20,6 +20,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.5](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.30.4...@mux/mux-video-react@0.30.5) (2026-03-20)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-video-react:** Synchronize video versions
+
 ## [0.30.4](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.30.3...@mux/mux-video-react@0.30.4) (2026-03-19)
 
 

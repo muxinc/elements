@@ -20,6 +20,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.15.24](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.15.23...@mux/mux-audio-react@0.15.24) (2026-03-20)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-audio-react:** Synchronize audio versions
+
 ## [0.15.23](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.15.22...@mux/mux-audio-react@0.15.23) (2026-03-19)
 
 
