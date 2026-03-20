@@ -848,6 +848,15 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         this.#core?.setPreload(newValue as HTMLMediaElement['preload']);
         break;
       case Attributes.PLAYBACK_ID:
+      case Attributes.CUSTOM_DOMAIN:
+      case Attributes.MAX_RESOLUTION:
+      case Attributes.MIN_RESOLUTION:
+      case Attributes.RENDITION_ORDER:
+      case Attributes.PROGRAM_START_TIME:
+      case Attributes.PROGRAM_END_TIME:
+      case Attributes.ASSET_START_TIME:
+      case Attributes.ASSET_END_TIME:
+      case Attributes.PLAYBACK_TOKEN:
         this.src = toMuxVideoURL(this) as string;
         break;
       case Attributes.DEBUG: {
