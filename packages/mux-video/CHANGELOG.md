@@ -31,6 +31,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.30.5](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.4...@mux/mux-video@0.30.5) (2026-03-20)
+
+
+### Bug Fixes
+
+* Added attributes used in toMuxVideoURL to attribute changed callback ([#1286](https://github.com/muxinc/elements/issues/1286)) ([76ba494](https://github.com/muxinc/elements/commit/76ba494791da018525914600213c208dba10f614))
+
 ## [0.30.4](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.3...@mux/mux-video@0.30.4) (2026-03-19)
 
 
