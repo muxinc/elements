@@ -1,0 +1,26 @@
+{
+  "name": "demo-memory-leak-test",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npm run esbuild -- --servedir=public --serve=0.0.0.0:8005",
+    "esbuild": "esbuild src/*.ts src/*.tsx --bundle --target=es2019 --format=esm --outdir=public/dist --jsx=automatic --keep-names --sourcemap",
+    "build": "npm run esbuild"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "esbuild": "^0.25.1",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@mux/mux-player": ">=1.0.0-beta.0",
+    "@mux/mux-player-react": ">=1.0.0-beta.0",
+    "@mux/mux-video": ">=0.3.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

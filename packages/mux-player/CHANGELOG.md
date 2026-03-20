@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.11.6](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.5...@mux/mux-player@3.11.6) (2026-03-19)
+
+
+### Bug Fixes
+
+* Patch Memory Leaks ([#1285](https://github.com/muxinc/elements/issues/1285)) ([b7f93e2](https://github.com/muxinc/elements/commit/b7f93e2457ff77518804049b11da18031846a3b3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.3 to 0.30.4
+    * @mux/playback-core bumped from 0.33.2 to 0.33.3
+
 ## [3.11.5](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.4...@mux/mux-player@3.11.5) (2026-02-26)
 
 

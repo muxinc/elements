@@ -114,6 +114,23 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   #errorTranslator?: (errorEvent: any) => any;
   #logo: string = '';
 
+  #muxmetadataHandler = (_event: Event) => {
+    const fetchedMetadata = getMetadata(this.nativeEl);
+    const userMetadata = this.metadata ?? {};
+
+    // User metadata takes precedence over fetched metadata...
+    this.metadata = {
+      ...fetchedMetadata,
+      ...userMetadata,
+    };
+
+    // ...except for the free plan branding metadata
+    if ((fetchedMetadata as any)?.['com.mux.video.branding'] === 'mux-free-plan') {
+      this.#logo = 'default';
+      this.updateLogo();
+    }
+  };
+
   static getLogoHTML(logoValue: string | null) {
     if (!logoValue || logoValue === 'false') return '';
     return logoValue === 'default' ? muxLogo : `<img part="logo" src="${logoValue}" />`;
@@ -154,23 +171,6 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   constructor() {
     super();
     this.#defaultPlayerInitTime = generatePlayerInitTime();
-
-    this.nativeEl.addEventListener('muxmetadata', (_event: Event) => {
-      const fetchedMetadata = getMetadata(this.nativeEl);
-      const userMetadata = this.metadata ?? {};
-
-      // User metadata takes precedence over fetched metadata...
-      this.metadata = {
-        ...fetchedMetadata,
-        ...userMetadata,
-      };
-
-      // ...except for the free plan branding metadata
-      if ((fetchedMetadata as any)?.['com.mux.video.branding'] === 'mux-free-plan') {
-        this.#logo = 'default';
-        this.updateLogo();
-      }
-    });
   }
 
   get #core(): PlaybackCore | undefined {
@@ -948,13 +948,16 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
 
   connectedCallback(): void {
     super.connectedCallback?.();
+    this.nativeEl?.addEventListener('muxmetadata', this.#muxmetadataHandler);
     if (this.nativeEl && this.src && !this.#core) {
       this.#requestLoad();
     }
   }
 
   disconnectedCallback(): void {
+    this.nativeEl?.removeEventListener('muxmetadata', this.#muxmetadataHandler);
     this.unload();
+    super.disconnectedCallback?.();
   }
 
   handleEvent(event: Event): void {
