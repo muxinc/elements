@@ -48,6 +48,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.11.7](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.6...@mux/mux-player@3.11.7) (2026-03-25)
+
+
+### Bug Fixes
+
+* Update media-chrome to prevent errors on reconnection ([#1300](https://github.com/muxinc/elements/issues/1300)) ([42864d6](https://github.com/muxinc/elements/commit/42864d6a874c8dd291df63beffbb89e9e6d48c40))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.4 to 0.30.5
+
 ## [3.11.6](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.5...@mux/mux-player@3.11.6) (2026-03-19)
 
 
