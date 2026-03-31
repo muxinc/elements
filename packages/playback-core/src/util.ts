@@ -103,6 +103,15 @@ export const inferMimeTypeFromURL = (props: Partial<Pick<MuxMediaProps, 'src' | 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
 };
 
+export const isRelativeUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return false;
+  } catch {
+    return true;
+  }
+};
+
 const MUX_VIDEO_DOMAIN = 'mux.com';
 export const isExtensionLessMuxM3U8URL = ({
   src,
