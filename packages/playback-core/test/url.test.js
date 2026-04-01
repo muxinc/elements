@@ -70,6 +70,23 @@ describe('getMediaPlaylistFromMultivariantPlaylist()', () => {
     assert.equal(result, playlistContent);
   });
 
+  it('should resolve a relative media playlist URL when masterPlaylistUrl is itself relative', async () => {
+    const relativeMediaUrl = 'media/playlist.m3u8';
+    const relativeMasterUrl = '/hls/master.m3u8';
+    // window.location.href in the test browser is something like http://localhost:8004/
+    const expectedUrl = new URL(relativeMediaUrl, new URL(relativeMasterUrl, window.location.href)).toString();
+    const playlistContent = '#EXTM3U\n#EXT-X-ENDLIST';
+    const { getLastFetchedUrl } = mockFetch(200, playlistContent);
+
+    const result = await getMediaPlaylistFromMultivariantPlaylist(
+      makeMultivariantPlaylist(relativeMediaUrl),
+      relativeMasterUrl
+    );
+
+    assert.equal(getLastFetchedUrl(), expectedUrl);
+    assert.equal(result, playlistContent);
+  });
+
   it('should warn when a relative media playlist URL is found but masterPlaylistUrl is not provided', async () => {
     try {
       await getMediaPlaylistFromMultivariantPlaylist(makeMultivariantPlaylist('media/playlist.m3u8'));
