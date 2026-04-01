@@ -89,7 +89,8 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
  *
  * @param multivariantPlaylist - The raw text of the multivariant playlist.
  * @param masterPlaylistUrl - The URL the multivariant playlist was fetched from.
- *   Required when the media playlist URL in the manifest is relative.
+ *   Required when the media playlist URL in the manifest is relative. If this is
+ *   itself a relative URL it is resolved against `window.location.href` first.
  * @returns A promise that resolves with the media playlist text.
  * @rejects {Error} If no `#EXT-X-STREAM-INF` entry is found in the playlist.
  * @rejects {Error} If the media playlist URL is relative and `masterPlaylistUrl` is not provided.
@@ -115,10 +116,9 @@ export const getMediaPlaylistFromMultivariantPlaylist = (
       return Promise.reject(new Error('masterPlaylistUrl is required to resolve relative media playlist URL'));
     }
 
-    const absoluteMasterUrl =
-      masterPlaylistUrl && isRelativeUrl(masterPlaylistUrl.toString())
-        ? new URL(masterPlaylistUrl, window?.location.href)
-        : masterPlaylistUrl;
+    const absoluteMasterUrl = isRelativeUrl(masterPlaylistUrl.toString())
+      ? new URL(masterPlaylistUrl, window?.location.href)
+      : masterPlaylistUrl;
 
     fetchUrl = new URL(mediaPlaylistUrl, absoluteMasterUrl);
   }
@@ -215,7 +215,10 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       return Promise.reject(multivariantPlaylistResponse);
     }
     const multivariantPlaylist = await multivariantPlaylistResponse.text();
-    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist, src);
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(
+      multivariantPlaylist,
+      multivariantPlaylistResponse.url
+    );
     return {
       ...getMultivariantPlaylistSessionData(multivariantPlaylist),
       ...getStreamInfoFromPlaylist(mediaPlaylist),
