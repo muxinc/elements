@@ -112,6 +112,34 @@ export const isRelativeUrl = (url: string): boolean => {
   }
 };
 
+/**
+ * Returns the first media playlist URL from a multivariant HLS playlist string,
+ * i.e. the URI line that immediately follows an `#EXT-X-STREAM-INF` tag.
+ *
+ * @returns The URL string, or `undefined` if no `#EXT-X-STREAM-INF` entry is found.
+ */
+export const getFirstMediaPlaylistUrl = (multivariantPlaylist: string): string | undefined => {
+  return multivariantPlaylist.split('\n').find((_line, idx, lines) => {
+    return idx > 0 && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
+  });
+};
+
+/**
+ * Resolves `url` to an absolute `URL` instance.
+ *
+ * - If `url` is already absolute it is returned as-is.
+ * - If `url` is relative, `base` is used to resolve it. When `base` is itself
+ *   relative it is first resolved against `window?.location.href`.
+ *
+ * @throws {TypeError} If `url` is relative and `base` is not provided, or if
+ *   either value cannot be parsed as a valid URL.
+ */
+export const toAbsoluteUrl = (url: string, base?: string | URL): URL => {
+  if (!isRelativeUrl(url)) return new URL(url);
+  const absoluteBase = base && isRelativeUrl(base.toString()) ? new URL(base, window?.location.href) : base;
+  return new URL(url, absoluteBase);
+};
+
 const MUX_VIDEO_DOMAIN = 'mux.com';
 export const isExtensionLessMuxM3U8URL = ({
   src,

@@ -32,6 +32,8 @@ import {
   i18n,
   parseJwt,
   isRelativeUrl,
+  getFirstMediaPlaylistUrl,
+  toAbsoluteUrl,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
@@ -100,27 +102,21 @@ export const getMediaPlaylistFromMultivariantPlaylist = (
   multivariantPlaylist: string,
   masterPlaylistUrl?: string | URL
 ) => {
-  const mediaPlaylistUrl = multivariantPlaylist.split('\n').find((_line, idx, lines) => {
-    return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
-  });
+  const mediaPlaylistUrl = getFirstMediaPlaylistUrl(multivariantPlaylist);
 
   if (!mediaPlaylistUrl) {
     return Promise.reject(new Error('No media playlist URL found in multivariant playlist'));
   }
 
-  const isRelative = isRelativeUrl(mediaPlaylistUrl);
+  if (isRelativeUrl(mediaPlaylistUrl) && !masterPlaylistUrl) {
+    return Promise.reject(new Error('masterPlaylistUrl is required to resolve relative media playlist URL'));
+  }
 
-  let fetchUrl: URL | string = mediaPlaylistUrl;
-  if (isRelative) {
-    if (!masterPlaylistUrl) {
-      return Promise.reject(new Error('masterPlaylistUrl is required to resolve relative media playlist URL'));
-    }
-
-    const absoluteMasterUrl = isRelativeUrl(masterPlaylistUrl.toString())
-      ? new URL(masterPlaylistUrl, window?.location.href)
-      : masterPlaylistUrl;
-
-    fetchUrl = new URL(mediaPlaylistUrl, absoluteMasterUrl);
+  let fetchUrl: URL | string;
+  try {
+    fetchUrl = toAbsoluteUrl(mediaPlaylistUrl, masterPlaylistUrl);
+  } catch (e) {
+    return Promise.reject(e);
   }
 
   return fetch(fetchUrl).then((resp) => {
@@ -215,6 +211,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       return Promise.reject(multivariantPlaylistResponse);
     }
     const multivariantPlaylist = await multivariantPlaylistResponse.text();
+    // Note: We use response.url instead of src because it considers redirects.
     const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(
       multivariantPlaylist,
       multivariantPlaylistResponse.url
