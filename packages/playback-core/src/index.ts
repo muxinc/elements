@@ -109,11 +109,19 @@ export const getMediaPlaylistFromMultivariantPlaylist = (
 
   const isRelative = isRelativeUrl(mediaPlaylistUrl);
 
-  if (isRelative && !masterPlaylistUrl) {
-    return Promise.reject(new Error('masterPlaylistUrl is required to resolve relative media playlist URL'));
-  }
+  let fetchUrl: URL | string = mediaPlaylistUrl;
+  if (isRelative) {
+    if (!masterPlaylistUrl) {
+      return Promise.reject(new Error('masterPlaylistUrl is required to resolve relative media playlist URL'));
+    }
 
-  const fetchUrl = isRelative ? new URL(mediaPlaylistUrl, masterPlaylistUrl) : mediaPlaylistUrl;
+    const absoluteMasterUrl =
+      masterPlaylistUrl && isRelativeUrl(masterPlaylistUrl.toString())
+        ? new URL(masterPlaylistUrl, window?.location.href)
+        : masterPlaylistUrl;
+
+    fetchUrl = new URL(mediaPlaylistUrl, absoluteMasterUrl);
+  }
 
   return fetch(fetchUrl).then((resp) => {
     if (resp.status !== 200) {
