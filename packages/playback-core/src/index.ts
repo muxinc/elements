@@ -31,6 +31,9 @@ import {
   addEventListenerWithTeardown,
   i18n,
   parseJwt,
+  isRelativeUrl,
+  getFirstMediaPlaylistUrl,
+  toAbsoluteUrl,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
@@ -80,12 +83,43 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
   return undefined;
 };
 
-export const getMediaPlaylistFromMultivariantPlaylist = (multivariantPlaylist: string) => {
-  const mediaPlaylistUrl = multivariantPlaylist.split('\n').find((_line, idx, lines) => {
-    return idx && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
-  }) as string;
+/**
+ * Fetches the first media playlist from a multivariant (master) HLS playlist string.
+ *
+ * The first `#EXT-X-STREAM-INF` entry is selected. If its URL is relative, it is
+ * resolved against `masterPlaylistUrl`; absolute URLs are used as-is.
+ *
+ * @param multivariantPlaylist - The raw text of the multivariant playlist.
+ * @param masterPlaylistUrl - The URL the multivariant playlist was fetched from.
+ *   Required when the media playlist URL in the manifest is relative. If this is
+ *   itself a relative URL it is resolved against `window.location.href` first.
+ * @returns A promise that resolves with the media playlist text.
+ * @rejects {Error} If no `#EXT-X-STREAM-INF` entry is found in the playlist.
+ * @rejects {Error} If the media playlist URL is relative and `masterPlaylistUrl` is not provided.
+ * @rejects {Response} If the fetch response status is not 200.
+ */
+export const getMediaPlaylistFromMultivariantPlaylist = (
+  multivariantPlaylist: string,
+  masterPlaylistUrl?: string | URL
+) => {
+  const mediaPlaylistUrl = getFirstMediaPlaylistUrl(multivariantPlaylist);
 
-  return fetch(mediaPlaylistUrl).then((resp) => {
+  if (!mediaPlaylistUrl) {
+    return Promise.reject(new Error('No media playlist URL found in multivariant playlist'));
+  }
+
+  if (isRelativeUrl(mediaPlaylistUrl) && !masterPlaylistUrl) {
+    return Promise.reject(new Error('masterPlaylistUrl is required to resolve relative media playlist URL'));
+  }
+
+  let fetchUrl: URL | string;
+  try {
+    fetchUrl = toAbsoluteUrl(mediaPlaylistUrl, masterPlaylistUrl);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+
+  return fetch(fetchUrl).then((resp) => {
     if (resp.status !== 200) {
       return Promise.reject(resp);
     }
@@ -177,7 +211,11 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       return Promise.reject(multivariantPlaylistResponse);
     }
     const multivariantPlaylist = await multivariantPlaylistResponse.text();
-    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist);
+    // Note: We use response.url instead of src because it considers redirects.
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(
+      multivariantPlaylist,
+      multivariantPlaylistResponse.url
+    );
     return {
       ...getMultivariantPlaylistSessionData(multivariantPlaylist),
       ...getStreamInfoFromPlaylist(mediaPlaylist),
