@@ -138,6 +138,7 @@ export const content = (props: MuxTemplateProps) => html`
       cast-src="${!!props.src ? props.src : props.playbackId ? toMuxVideoURL(props) : false}"
       cast-receiver="${props.castReceiver ?? false}"
       drm-token="${props.tokens?.drm ?? false}"
+      playback-token="${props.tokens?.playback ?? false}"
       exportparts="video"
       disable-pseudo-ended="${props.disablePseudoEnded ?? false}"
       max-auto-resolution="${props.maxAutoResolution ?? false}"

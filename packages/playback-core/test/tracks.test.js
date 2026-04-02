@@ -96,13 +96,18 @@ describe('textTracks', function () {
       });
 
       it('should set the last cuePoint endTime as MAX_SAFE_INTEGER if duration is not a finite number', async () => {
+        if (mediaEl.readyState >= HTMLMediaElement.HAVE_METADATA) {
+          Object.defineProperty(mediaEl, 'duration', { get: () => Infinity, configurable: true });
+        }
         const track = await addCuePoints(mediaEl, cuePoints);
         const lastCue = track.cues[track.cues.length - 1];
         assert.equal(lastCue.endTime, Number.MAX_SAFE_INTEGER);
       });
 
       it('should set the last cuePoint endTime as mediaEl.duration if duration is a finite number', async () => {
-        await oneEvent(mediaEl, 'durationchange');
+        if (mediaEl.readyState < HTMLMediaElement.HAVE_METADATA) {
+          await oneEvent(mediaEl, 'durationchange');
+        }
         const track = await addCuePoints(mediaEl, cuePoints);
         const lastCue = track.cues[track.cues.length - 1];
         assert.equal(lastCue.endTime, mediaEl.duration);
