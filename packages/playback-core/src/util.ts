@@ -84,9 +84,9 @@ export const inferMimeTypeFromURL = (props: Partial<Pick<MuxMediaProps, 'src' | 
 
   let pathname = '';
   try {
-    pathname = new URL(src).pathname;
+    pathname = toAbsoluteUrl(src).pathname;
   } catch (_e) {
-    console.error('invalid url');
+    console.error('Invalid url when trying to infer mime type', src);
   }
 
   const extDelimIdx = pathname.lastIndexOf('.');
@@ -129,14 +129,19 @@ export const getFirstMediaPlaylistUrl = (multivariantPlaylist: string): string |
  *
  * - If `url` is already absolute it is returned as-is.
  * - If `url` is relative, `base` is used to resolve it. When `base` is itself
- *   relative it is first resolved against `window?.location.href`.
+ *   relative it is first resolved against `window?.location?.href`.
+ * - `base` defaults to `window?.location?.href`.
  *
  * @throws {TypeError} If `url` is relative and `base` is not provided, or if
- *   either value cannot be parsed as a valid URL.
+ *   either `url` or `base` value cannot be parsed as a valid URL.
  */
 export const toAbsoluteUrl = (url: string, base?: string | URL): URL => {
   if (!isRelativeUrl(url)) return new URL(url);
-  const absoluteBase = base && isRelativeUrl(base.toString()) ? new URL(base, window?.location.href) : base;
+  const windowLocation = window?.location?.href;
+  let absoluteBase: string | URL = base ?? windowLocation;
+  if (base && isRelativeUrl(base.toString())) {
+    absoluteBase = new URL(base, windowLocation);
+  }
   return new URL(url, absoluteBase);
 };
 

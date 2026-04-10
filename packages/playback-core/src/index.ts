@@ -844,7 +844,7 @@ export const setupHls = (
       cmcd,
       xhrSetup: (xhr, url) => {
         if (preferCmcd && preferCmcd !== CmcdTypes.QUERY) return;
-        const urlObj = new URL(url);
+        const urlObj = toAbsoluteUrl(url);
         if (!urlObj.searchParams.has('CMCD')) return;
         const cmcdVal = (urlObj.searchParams.get('CMCD')?.split(',') ?? [])
           .filter((cmcdKVStr) => cmcdKVStr.startsWith('sid') || cmcdKVStr.startsWith('cid'))
