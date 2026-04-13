@@ -57,8 +57,9 @@ describe('toAbsoluteUrl()', () => {
     );
   });
 
-  it('should throw when URL is relative and no base is provided', () => {
-    assert.throws(() => toAbsoluteUrl('media/playlist.m3u8'), TypeError);
+  it('should default to window location URL when URL is relative and no base is provided', () => {
+    const expected = new URL('media/playlist.m3u8', window.location.href).toString();
+    assert.equal(toAbsoluteUrl('media/playlist.m3u8'), expected);
   });
 });
 

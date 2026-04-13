@@ -130,9 +130,9 @@ export const getFirstMediaPlaylistUrl = (multivariantPlaylist: string): string |
  * - If `url` is already absolute it is returned as-is.
  * - If `url` is relative, `base` is used to resolve it. When `base` is itself
  *   relative it is first resolved against `window?.location?.href`.
- * - `base` defaults to `window?.location?.href`.
+ * - If undefined, `base` defaults to `window?.location?.href`.
  *
- * @throws {TypeError} If `url` is relative and `base` is not provided, or if
+ * @throws {TypeError} If both `url` and `base` are relative, or if
  *   either `url` or `base` value cannot be parsed as a valid URL.
  */
 export const toAbsoluteUrl = (url: string, base?: string | URL): URL => {
