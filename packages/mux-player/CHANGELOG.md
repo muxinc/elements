@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.11.8](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.7...@mux/mux-player@3.11.8) (2026-04-16)
+
+
+### Bug Fixes
+
+* Address failing tests ([#1305](https://github.com/muxinc/elements/issues/1305)) ([d0a9ef1](https://github.com/muxinc/elements/commit/d0a9ef1fa06bcdde20b4fe8a7d9e4a2204d14b89))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.5 to 0.30.6
+    * @mux/playback-core bumped from 0.33.3 to 0.34.0
+
 ## [3.11.7](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.6...@mux/mux-player@3.11.7) (2026-03-25)
 
 
