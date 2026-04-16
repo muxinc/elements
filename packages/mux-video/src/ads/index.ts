@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
 /// <reference types="google_interactive_media_ads_types" preserve="true"/>
-/// <reference path="../../../../node_modules/mux-embed/dist/types/mux-embed.d.ts" preserve="true" />
+/// <reference types="mux-embed" preserve="true" />
 
 /** @TODO publish types for package to use here (CJP) */
 // @ts-ignore
