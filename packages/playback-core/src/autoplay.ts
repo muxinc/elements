@@ -27,21 +27,46 @@ export const setupAutoplay = (
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
 
   // When minPreloadSegments is set and we have an HLS instance, defer
-  // autoplay until N main segments have buffered. This gives ABR real
-  // bandwidth data and builds buffer runway before playback starts.
+  // playback (autoplay or user-initiated) until N main segments have
+  // buffered. This gives ABR real bandwidth data and builds buffer
+  // runway before playback starts.
   let preloadReady = true;
   let pendingAutoplay = false;
+  let pendingUserPlay = false;
+  let selfPausing = false;
   if (minPreloadSegments != null && minPreloadSegments > 0 && hls) {
     preloadReady = false;
     let mainSegmentsBuffered = 0;
+
+    const onPlay = () => {
+      if (preloadReady) return;
+      pendingUserPlay = true;
+      selfPausing = true;
+      mediaEl.pause();
+    };
+    const onPause = () => {
+      if (selfPausing) {
+        selfPausing = false;
+        return;
+      }
+      pendingUserPlay = false;
+    };
+    mediaEl.addEventListener('play', onPlay);
+    mediaEl.addEventListener('pause', onPause);
+
     hls.on(Hls.Events.FRAG_BUFFERED, (_e: any, { frag }: any) => {
       if (frag.type !== 'main') return;
       mainSegmentsBuffered++;
       if (mainSegmentsBuffered >= minPreloadSegments && !preloadReady) {
         preloadReady = true;
+        mediaEl.removeEventListener('play', onPlay);
+        mediaEl.removeEventListener('pause', onPause);
         if (pendingAutoplay && !hasPlayed) {
           pendingAutoplay = false;
           handleAutoplay(mediaEl, autoplay);
+        } else if (pendingUserPlay) {
+          pendingUserPlay = false;
+          mediaEl.play().catch(() => {});
         }
       }
     });
@@ -50,7 +75,7 @@ export const setupAutoplay = (
   const maybeHandleAutoplay = (el: HTMLMediaElement, ap: Autoplay) => {
     if (preloadReady) {
       handleAutoplay(el, ap);
-    } else {
+    } else if (ap) {
       pendingAutoplay = true;
     }
   };
