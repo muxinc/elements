@@ -97,6 +97,9 @@ Now you are free to use this web component in your HTML, just as you would with 
 - `metadata-video-id`: This is an arbitrary ID that should map back to a record of this video in your database.
 - `metadata-*`: This syntax can be used to pass any other Mux Data metadata fields, for example `metadata-sub-property-id="123"`
 - `start-time: number (seconds)`: Set this to start playback of your media at some time other than 0 (or the "live edge" for live/"DVR" content).
+- `initial-bandwidth-estimate-kbps: number`: Sets the initial bandwidth estimate (in kbps) for HLS.js ABR. Overrides the default estimate derived from the first segment download, which can be inaccurate due to TCP slow start. Only used during initialization.
+- `initial-estimate-segments: number`: Number of segments that use the initial bandwidth estimate before switching to measured bandwidth. For example, `3` means the first three segments use the initial estimate, and segment four is the first to use real data.
+- `min-preload-segments: number`: Buffers this many segments before allowing playback to start. Defers both autoplay and user-initiated play until the buffer threshold is met, giving ABR more data to make accurate rendition selections.
 - `disable-tracking`: Disables Mux Data tracking. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#features)
 - `disable-cookies`: Disables cookies used by Mux Data. For more, check out the [Mux Docs](https://docs.mux.com/guides/data/monitor-html5-video-element#disable-cookies).
 
