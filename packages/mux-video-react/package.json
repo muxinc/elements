@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-video-react",
-  "version": "0.30.5",
+  "version": "0.30.6",
   "description": "A custom mux video element for React that Just Works™",
   "keywords": [
     "video",
@@ -67,7 +67,7 @@
     }
   },
   "dependencies": {
-    "@mux/playback-core": "0.33.3",
+    "@mux/playback-core": "0.34.0",
     "prop-types": "^15.8.1"
   },
   "devDependencies": {

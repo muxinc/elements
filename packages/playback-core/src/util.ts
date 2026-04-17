@@ -84,9 +84,9 @@ export const inferMimeTypeFromURL = (props: Partial<Pick<MuxMediaProps, 'src' | 
 
   let pathname = '';
   try {
-    pathname = new URL(src).pathname;
+    pathname = toAbsoluteUrl(src).pathname;
   } catch (_e) {
-    console.error('invalid url');
+    console.error('Invalid url when trying to infer mime type', src);
   }
 
   const extDelimIdx = pathname.lastIndexOf('.');
@@ -101,6 +101,48 @@ export const inferMimeTypeFromURL = (props: Partial<Pick<MuxMediaProps, 'src' | 
   const upperExt = ext.toUpperCase();
 
   return isKeyOf(upperExt, ExtensionMimeTypeMap) ? ExtensionMimeTypeMap[upperExt] : '';
+};
+
+export const isRelativeUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return false;
+  } catch {
+    return true;
+  }
+};
+
+/**
+ * Returns the first media playlist URL from a multivariant HLS playlist string,
+ * i.e. the URI line that immediately follows an `#EXT-X-STREAM-INF` tag.
+ *
+ * @returns The URL string, or `undefined` if no `#EXT-X-STREAM-INF` entry is found.
+ */
+export const getFirstMediaPlaylistUrl = (multivariantPlaylist: string): string | undefined => {
+  return multivariantPlaylist.split('\n').find((_line, idx, lines) => {
+    return idx > 0 && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
+  });
+};
+
+/**
+ * Resolves `url` to an absolute `URL` instance.
+ *
+ * - If `url` is already absolute it is returned as-is.
+ * - If `url` is relative, `base` is used to resolve it. When `base` is itself
+ *   relative it is first resolved against `window?.location?.href`.
+ * - If undefined, `base` defaults to `window?.location?.href`.
+ *
+ * @throws {TypeError} If both `url` and `base` are relative, or if
+ *   either `url` or `base` value cannot be parsed as a valid URL.
+ */
+export const toAbsoluteUrl = (url: string, base?: string | URL): URL => {
+  if (!isRelativeUrl(url)) return new URL(url);
+  const windowLocation = window?.location?.href;
+  let absoluteBase: string | URL = base ?? windowLocation;
+  if (base && isRelativeUrl(base.toString())) {
+    absoluteBase = new URL(base, windowLocation);
+  }
+  return new URL(url, absoluteBase);
 };
 
 const MUX_VIDEO_DOMAIN = 'mux.com';

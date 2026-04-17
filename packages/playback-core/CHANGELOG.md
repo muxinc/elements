@@ -40,6 +40,18 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.34.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.33.3...@mux/playback-core@0.34.0) (2026-04-16)
+
+
+### Features
+
+* Support relative urls on multivariant playlists ([#1303](https://github.com/muxinc/elements/issues/1303)) ([f4586aa](https://github.com/muxinc/elements/commit/f4586aaa3ced600c68c35db815390dde9ef12043))
+
+
+### Bug Fixes
+
+* Address failing tests ([#1305](https://github.com/muxinc/elements/issues/1305)) ([d0a9ef1](https://github.com/muxinc/elements/commit/d0a9ef1fa06bcdde20b4fe8a7d9e4a2204d14b89))
+
 ## [0.33.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.33.2...@mux/playback-core@0.33.3) (2026-03-19)
 
 
