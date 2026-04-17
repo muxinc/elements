@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ABR Startup Test</title>
+    <link rel="preconnect" href="https://stream.mux.com" crossorigin>
+    <link rel="preconnect" href="https://stream.mux.com">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      mux-player {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0 1rem;
+        background-color: #000;
+        aspect-ratio: 16 / 9;
+      }
+
+      .controls {
+        display: flex;
+        gap: 1rem;
+        align-items: end;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .field label {
+        font-size: 0.8rem;
+        font-weight: bold;
+        font-family: monospace;
+      }
+
+      .field input {
+        width: 10em;
+        padding: 0.5rem;
+        font-size: 1rem;
+        font-family: monospace;
+      }
+
+      .field .hint {
+        font-size: 0.75rem;
+        opacity: 0.6;
+      }
+
+      .controls button {
+        padding: 0.5rem 1.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .active-config {
+        font-family: monospace;
+        font-size: 0.85rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin: 0.5rem 0 1rem;
+        line-height: 1.6;
+        background: var(--background-alt, #f5f5f5);
+      }
+
+      .active-config .set {
+        font-weight: bold;
+        color: #155724;
+      }
+
+      .active-config .default {
+        opacity: 0.6;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      .stat {
+        padding: 0.75rem;
+        border-radius: 6px;
+        background: var(--background-alt, #f5f5f5);
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .verdict {
+        font-size: 1.4rem;
+        font-weight: bold;
+        padding: 1rem;
+        border-radius: 6px;
+        text-align: center;
+        margin: 1rem 0;
+      }
+
+      .verdict.pass { background: #d4edda; color: #155724; }
+      .verdict.fail { background: #f8d7da; color: #721c24; }
+      .verdict.waiting { background: #fff3cd; color: #856404; }
+
+      .timeline {
+        margin: 1rem 0;
+        font-family: monospace;
+        font-size: 0.85rem;
+        line-height: 1.8;
+        max-height: 300px;
+        overflow-y: auto;
+        background: var(--background-alt, #f5f5f5);
+        padding: 0.75rem;
+        border-radius: 6px;
+      }
+
+      .timeline-entry { display: flex; gap: 1rem; }
+      .timeline-entry .seg { min-width: 4em; }
+      .timeline-entry .res { min-width: 5em; font-weight: bold; }
+      .timeline-entry .bw { opacity: 0.7; }
+      .timeline-entry .note { opacity: 0.5; font-style: italic; }
+      .timeline-entry .reset-tag { color: #155724; font-weight: bold; }
+
+      .renditions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin: 0.5rem 0;
+      }
+
+      .rendition-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        background: var(--background-alt, #eee);
+      }
+
+      .rendition-badge.active {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+      }
+
+      .rendition-badge.first-pick {
+        outline: 3px solid #28a745;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/360826/233653989-11cd8603-c20f-4008-8bf7-dc15b743c52b.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+            <img alt="Mux Logo" src="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+          </picture>
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <h2>ABR Startup Test</h2>
+    <p>
+      Tests how ABR startup attributes affect rendition selection during the first several segments.
+      Leave all fields empty to see default Mux Player behavior, then set them to see the fix.
+    </p>
+
+    <div class="controls">
+      <div class="field">
+        <label>initial-bandwidth-estimate-kbps</label>
+        <input type="number" id="estimateInput" placeholder="(unset)">
+        <span class="hint">Default: HLS.js uses 500 kbps</span>
+      </div>
+      <div class="field">
+        <label>initial-estimate-segments</label>
+        <input type="number" id="segmentsInput" placeholder="(unset)">
+        <span class="hint">Reset estimator after N segments</span>
+      </div>
+      <div class="field">
+        <label>min-preload-segments</label>
+        <input type="number" id="preloadInput" placeholder="(unset)">
+        <span class="hint">Buffer N segments before playing</span>
+      </div>
+      <button onclick="startTest()">Start</button>
+    </div>
+
+    <div id="activeConfig" class="active-config"></div>
+
+    <div id="playerContainer"></div>
+
+    <div id="verdict" class="verdict waiting">Set parameters above and click Start</div>
+
+    <div class="dashboard">
+      <div class="stat">
+        <div class="stat-label">First segment rendition</div>
+        <div class="stat-value" id="firstRendition">--</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Initial bandwidth estimate</div>
+        <div class="stat-value" id="initialEstimate">--</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Estimator resets remaining</div>
+        <div class="stat-value" id="resetState">--</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Preload buffer</div>
+        <div class="stat-value" id="preloadState">--</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Min rendition (segments 1-8)</div>
+        <div class="stat-value" id="minRendition">--</div>
+      </div>
+    </div>
+
+    <h3>Available renditions</h3>
+    <div id="renditions" class="renditions"></div>
+
+    <h3>Segment timeline</h3>
+    <div id="timeline" class="timeline">
+      <em>No segments loaded yet.</em>
+    </div>
+
+    <br>
+    <a href="../">Browse Elements</a>
+
+    <script type="module">
+      const PLAYBACK_ID = 'GwnXqdTJdRgCNETdQwf7JQoVxFj02Ovh7ceTTuE376aA';
+
+      let segmentCount = 0;
+      let firstSegmentLevel = null;
+      let hls = null;
+      let levels = [];
+      let minLevel = Infinity;
+
+      const estimateInput = document.getElementById('estimateInput');
+      const segmentsInput = document.getElementById('segmentsInput');
+      const preloadInput = document.getElementById('preloadInput');
+      const playerContainer = document.getElementById('playerContainer');
+      const verdictEl = document.getElementById('verdict');
+      const firstRenditionEl = document.getElementById('firstRendition');
+      const initialEstimateEl = document.getElementById('initialEstimate');
+      const resetStateEl = document.getElementById('resetState');
+      const preloadStateEl = document.getElementById('preloadState');
+      const minRenditionEl = document.getElementById('minRendition');
+      const renditionsEl = document.getElementById('renditions');
+      const timelineEl = document.getElementById('timeline');
+      const activeConfigEl = document.getElementById('activeConfig');
+
+      // Persist field values in URL hash
+      function saveToHash() {
+        const params = new URLSearchParams();
+        if (estimateInput.value) params.set('estimate', estimateInput.value);
+        if (segmentsInput.value) params.set('segments', segmentsInput.value);
+        if (preloadInput.value) params.set('preload', preloadInput.value);
+        location.hash = params.toString();
+      }
+
+      function loadFromHash() {
+        const params = new URLSearchParams(location.hash.replace('#', ''));
+        if (params.has('estimate')) estimateInput.value = params.get('estimate');
+        if (params.has('segments')) segmentsInput.value = params.get('segments');
+        if (params.has('preload')) preloadInput.value = params.get('preload');
+      }
+
+      function formatBps(bps) {
+        if (bps >= 1_000_000) return `${(bps / 1_000_000).toFixed(1)} Mbps`;
+        if (bps >= 1_000) return `${(bps / 1_000).toFixed(0)} kbps`;
+        return `${bps} bps`;
+      }
+
+      function resolutionLabel(level) {
+        return `${Math.min(level.width, level.height)}p`;
+      }
+
+      function renderRenditions(activeLevel, firstLevel) {
+        renditionsEl.innerHTML = '';
+        levels.forEach((level, i) => {
+          const badge = document.createElement('span');
+          badge.className = 'rendition-badge';
+          if (i === activeLevel) badge.classList.add('active');
+          if (i === firstLevel) badge.classList.add('first-pick');
+          badge.textContent = `${resolutionLabel(level)} (${formatBps(level.bitrate)})`;
+          renditionsEl.appendChild(badge);
+        });
+      }
+
+      function addTimelineEntry(segNum, level, estimateBps, noteHtml) {
+        if (segmentCount === 1) timelineEl.innerHTML = '';
+        const entry = document.createElement('div');
+        entry.className = 'timeline-entry';
+        entry.innerHTML = `
+          <span class="seg">seg ${segNum}</span>
+          <span class="res">${resolutionLabel(levels[level])}</span>
+          <span class="bw">${formatBps(estimateBps)} est</span>
+          ${noteHtml ? `<span class="note">${noteHtml}</span>` : ''}
+        `;
+        timelineEl.appendChild(entry);
+        timelineEl.scrollTop = timelineEl.scrollHeight;
+      }
+
+      function resetDashboard() {
+        segmentCount = 0;
+        firstSegmentLevel = null;
+        hls = null;
+        levels = [];
+        minLevel = Infinity;
+        firstRenditionEl.textContent = '--';
+        initialEstimateEl.textContent = '--';
+        resetStateEl.textContent = '--';
+        preloadStateEl.textContent = '--';
+        minRenditionEl.textContent = '--';
+        renditionsEl.innerHTML = '';
+        timelineEl.innerHTML = '<em>No segments loaded yet.</em>';
+        verdictEl.className = 'verdict waiting';
+        verdictEl.textContent = 'Waiting for first segment...';
+      }
+
+      function updateConfigDisplay(estimateKbps, estimateSegments, preloadSegments) {
+        const estimateLine = estimateKbps != null
+          ? `<span class="set">initial-bandwidth-estimate-kbps: ${estimateKbps.toLocaleString()}</span>  (abrEwmaDefaultEstimate = ${(estimateKbps * 1000).toLocaleString()} bps)`
+          : `<span class="default">initial-bandwidth-estimate-kbps: (unset)</span>  HLS.js default: 500 kbps`;
+
+        const segmentsLine = estimateSegments != null
+          ? `<span class="set">initial-estimate-segments: ${estimateSegments}</span>  (reset EWMA estimator after first ${estimateSegments} segment${estimateSegments === 1 ? '' : 's'})`
+          : `<span class="default">initial-estimate-segments: (unset)</span>  no estimator resets`;
+
+        const preloadLine = preloadSegments != null
+          ? `<span class="set">min-preload-segments: ${preloadSegments}</span>  (buffer ${preloadSegments} segment${preloadSegments === 1 ? '' : 's'} before starting playback)`
+          : `<span class="default">min-preload-segments: (unset)</span>  play as soon as browser is ready`;
+
+        activeConfigEl.innerHTML = estimateLine + '\n' + segmentsLine + '\n' + preloadLine;
+      }
+
+      function attachHls(player, estimateSegments, preloadSegments) {
+        const muxVideo = player.media;
+        if (!muxVideo) return false;
+
+        hls = muxVideo._hls;
+        if (!hls) return false;
+
+        initialEstimateEl.textContent = formatBps(hls.config.abrEwmaDefaultEstimate);
+
+        if (estimateSegments != null && estimateSegments > 0) {
+          resetStateEl.textContent = `${estimateSegments} resets pending`;
+        } else {
+          resetStateEl.textContent = 'N/A (no resets)';
+        }
+
+        if (preloadSegments != null && preloadSegments > 0) {
+          preloadStateEl.textContent = `Buffering 0/${preloadSegments}...`;
+        } else {
+          preloadStateEl.textContent = 'N/A (instant play)';
+        }
+
+        const Hls = hls.constructor;
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          levels = hls.levels;
+          renderRenditions(-1, null);
+        });
+
+        // Track estimator resets and preload progress
+        let resetsDone = 0;
+        let preloadBuffered = 0;
+        hls.on(Hls.Events.FRAG_BUFFERED, (_event, data) => {
+          if (data.frag.type !== 'main') return;
+          resetsDone++;
+          preloadBuffered++;
+          if (preloadSegments != null && preloadSegments > 0) {
+            if (preloadBuffered >= preloadSegments) {
+              preloadStateEl.textContent = `Ready (${preloadSegments} buffered)`;
+            } else {
+              preloadStateEl.textContent = `Buffering ${preloadBuffered}/${preloadSegments}...`;
+            }
+          }
+          if (estimateSegments != null && resetsDone <= estimateSegments) {
+            const remaining = estimateSegments - resetsDone;
+            resetStateEl.textContent = remaining > 0
+              ? `${remaining} reset${remaining === 1 ? '' : 's'} pending`
+              : 'All resets done';
+          }
+        });
+
+        hls.on(Hls.Events.FRAG_LOADED, (_event, data) => {
+          if (data.frag.type !== 'main') return;
+
+          segmentCount++;
+          const level = data.frag.level;
+          const estimate = hls.bandwidthEstimate || hls.config.abrEwmaDefaultEstimate;
+
+          let noteHtml = '';
+          if (estimateSegments != null && segmentCount <= estimateSegments) {
+            noteHtml = '<span class="reset-tag">estimator reset after this</span>';
+          }
+
+          if (segmentCount <= 8) {
+            if (level < minLevel) minLevel = level;
+            minRenditionEl.textContent = levels[minLevel]
+              ? resolutionLabel(levels[minLevel])
+              : '--';
+          }
+
+          if (firstSegmentLevel === null) {
+            firstSegmentLevel = level;
+            const res = resolutionLabel(levels[level]);
+            firstRenditionEl.textContent = res;
+
+            const maxLevel = levels.length - 1;
+            const isTop = level === maxLevel;
+            const isNearTop = level >= maxLevel - 1;
+
+            if (isTop) {
+              verdictEl.className = 'verdict pass';
+              verdictEl.textContent = `First segment: ${res} (top rendition)`;
+            } else if (isNearTop) {
+              verdictEl.className = 'verdict pass';
+              verdictEl.textContent = `First segment: ${res} (near top)`;
+            } else {
+              verdictEl.className = 'verdict fail';
+              verdictEl.textContent = `First segment: ${res} (expected ${resolutionLabel(levels[maxLevel])})`;
+            }
+
+            renderRenditions(level, level);
+          } else {
+            renderRenditions(level, firstSegmentLevel);
+          }
+
+          if (segmentCount === 8 && levels[minLevel]) {
+            const maxLevel = levels.length - 1;
+            const minRes = resolutionLabel(levels[minLevel]);
+            const topRes = resolutionLabel(levels[maxLevel]);
+            if (minLevel >= maxLevel - 1) {
+              verdictEl.className = 'verdict pass';
+              verdictEl.textContent = `Segments 1-8: stayed at ${minRes} or above`;
+            } else {
+              verdictEl.className = 'verdict fail';
+              verdictEl.textContent = `Segments 1-8: dropped to ${minRes} (expected ${topRes})`;
+            }
+          }
+
+          addTimelineEntry(segmentCount, level, estimate, noteHtml);
+        });
+
+        return true;
+      }
+
+      window.startTest = function() {
+        const estimateKbps = estimateInput.value ? Number(estimateInput.value) : null;
+        const estimateSegments = segmentsInput.value ? Number(segmentsInput.value) : null;
+        const preloadSegments = preloadInput.value ? Number(preloadInput.value) : null;
+        saveToHash();
+        resetDashboard();
+        updateConfigDisplay(estimateKbps, estimateSegments, preloadSegments);
+
+        playerContainer.innerHTML = '';
+        const player = document.createElement('mux-player');
+        player.setAttribute('playback-id', PLAYBACK_ID);
+        player.setAttribute('stream-type', 'on-demand');
+        player.setAttribute('prefer-playback', 'mse');
+        player.setAttribute('preload', 'none');
+        player.setAttribute('muted', '');
+
+        if (estimateKbps != null) {
+          player.setAttribute('initial-bandwidth-estimate-kbps', String(estimateKbps));
+        }
+        if (estimateSegments != null) {
+          player.setAttribute('initial-estimate-segments', String(estimateSegments));
+        }
+        if (preloadSegments != null) {
+          player.setAttribute('min-preload-segments', String(preloadSegments));
+        }
+
+        playerContainer.appendChild(player);
+
+        let attempts = 0;
+        const poll = setInterval(() => {
+          attempts++;
+          if (attachHls(player, estimateSegments, preloadSegments) || attempts > 50) {
+            clearInterval(poll);
+            if (!hls) {
+              verdictEl.className = 'verdict fail';
+              verdictEl.textContent = 'Could not attach to HLS.js instance';
+            }
+          }
+        }, 100);
+      };
+
+      // Restore from URL hash and auto-start
+      loadFromHash();
+      startTest();
+    </script>
+  </body>
+</html>
