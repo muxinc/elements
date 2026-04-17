@@ -39,7 +39,7 @@ export const setupAutoplay = (
       mainSegmentsBuffered++;
       if (mainSegmentsBuffered >= minPreloadSegments && !preloadReady) {
         preloadReady = true;
-        if (pendingAutoplay) {
+        if (pendingAutoplay && !hasPlayed) {
           pendingAutoplay = false;
           handleAutoplay(mediaEl, autoplay);
         }
