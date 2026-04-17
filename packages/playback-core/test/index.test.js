@@ -3,6 +3,8 @@ import {
   toMuxVideoURL,
   initialize,
   teardown,
+  setupHls,
+  Hls,
   MediaError,
   getError,
   updateStreamInfoFromSrc,
@@ -382,6 +384,155 @@ describe('playback core', function () {
         'should use standard CapLevelController (no minMaxResolution property)'
       );
       assert.equal(config.capLevelToPlayerSize, false, 'should keep hls.js capLevelToPlayerSize as false');
+    });
+  });
+
+  describe('initial-bandwidth-estimate-kbps attribute', () => {
+    let hlsInstance;
+
+    afterEach(() => {
+      if (hlsInstance) {
+        hlsInstance.destroy();
+        hlsInstance = undefined;
+      }
+    });
+
+    it('should set abrEwmaDefaultEstimate from initialBandwidthEstimateKbps (converted to bps)', () => {
+      hlsInstance = setupHls(
+        { src: 'https://stream.mux.com/test123.m3u8', initialBandwidthEstimateKbps: 100_000 },
+        video
+      );
+
+      assert.equal(
+        hlsInstance.config.abrEwmaDefaultEstimate,
+        100_000_000,
+        'abrEwmaDefaultEstimate should be initialBandwidthEstimateKbps * 1000'
+      );
+    });
+
+    it('should use HLS.js default when initialBandwidthEstimateKbps is not set', () => {
+      hlsInstance = setupHls({ src: 'https://stream.mux.com/test123.m3u8' }, video);
+
+      assert.equal(
+        hlsInstance.config.abrEwmaDefaultEstimate,
+        500_000,
+        'abrEwmaDefaultEstimate should remain at HLS.js default (500kbps) when attribute is not set'
+      );
+    });
+
+    it('should allow _hlsConfig to override initialBandwidthEstimateKbps', () => {
+      hlsInstance = setupHls(
+        {
+          src: 'https://stream.mux.com/test123.m3u8',
+          initialBandwidthEstimateKbps: 100_000,
+          _hlsConfig: { abrEwmaDefaultEstimate: 1_000_000 },
+        },
+        video
+      );
+
+      assert.equal(
+        hlsInstance.config.abrEwmaDefaultEstimate,
+        1_000_000,
+        '_hlsConfig.abrEwmaDefaultEstimate should take precedence over attribute'
+      );
+    });
+  });
+
+  describe('initial-estimate-segments attribute', () => {
+    // Minimal frag stub that satisfies internal HLS.js handlers:
+    // - AbrController checks stats.aborted (aborted=true → bail early)
+    // - AudioStreamController accesses elementaryStreams.video
+    // - FragmentTracker checks this.timeRanges (null in test → bail early)
+    const mainFrag = { type: 'main', stats: { aborted: true }, elementaryStreams: {} };
+    const audioFrag = { type: 'audio', stats: { aborted: true }, elementaryStreams: {} };
+
+    it('should reset estimator after each of the first N-1 segments when initialEstimateSegments=N', () => {
+      const initialKbps = 10_000;
+      const core = initialize(
+        {
+          src: 'https://stream.mux.com/test123.m3u8',
+          initialBandwidthEstimateKbps: initialKbps,
+          initialEstimateSegments: 3,
+        },
+        video
+      );
+
+      const hls = core.engine;
+      const expectedEstimate = initialKbps * 1000;
+
+      // Spy on resetEstimator
+      const resetCalls = [];
+      const origReset = hls.abrController.resetEstimator.bind(hls.abrController);
+      hls.abrController.resetEstimator = (estimate) => {
+        resetCalls.push(estimate);
+        origReset(estimate);
+      };
+
+      // Simulate 4 main FRAG_BUFFERED events
+      for (let i = 0; i < 4; i++) {
+        hls.trigger(Hls.Events.FRAG_BUFFERED, { frag: mainFrag });
+      }
+
+      // With initialEstimateSegments=3, first 3 segments use initial estimate.
+      // That means resets after segments 1 and 2 (N-1 = 2 resets).
+      assert.equal(resetCalls.length, 2, 'should reset estimator N-1 times (2 resets for 3 segments)');
+      assert.equal(resetCalls[0], expectedEstimate, 'first reset should use initial estimate in bps');
+      assert.equal(resetCalls[1], expectedEstimate, 'second reset should use initial estimate in bps');
+
+      teardown(video, core);
+    });
+
+    it('should not reset estimator when initialEstimateSegments is not set', () => {
+      const core = initialize({ src: 'https://stream.mux.com/test123.m3u8' }, video);
+
+      const hls = core.engine;
+      const resetCalls = [];
+      const origReset = hls.abrController.resetEstimator.bind(hls.abrController);
+      hls.abrController.resetEstimator = (estimate) => {
+        resetCalls.push(estimate);
+        origReset(estimate);
+      };
+
+      // Simulate FRAG_BUFFERED events — no resets should happen
+      for (let i = 0; i < 3; i++) {
+        hls.trigger(Hls.Events.FRAG_BUFFERED, { frag: mainFrag });
+      }
+
+      assert.equal(resetCalls.length, 0, 'should not reset estimator when attribute is not set');
+
+      teardown(video, core);
+    });
+
+    it('should ignore non-main fragment types', () => {
+      const initialKbps = 10_000;
+      const core = initialize(
+        {
+          src: 'https://stream.mux.com/test123.m3u8',
+          initialBandwidthEstimateKbps: initialKbps,
+          initialEstimateSegments: 3,
+        },
+        video
+      );
+
+      const hls = core.engine;
+      const resetCalls = [];
+      const origReset = hls.abrController.resetEstimator.bind(hls.abrController);
+      hls.abrController.resetEstimator = (estimate) => {
+        resetCalls.push(estimate);
+        origReset(estimate);
+      };
+
+      // Fire audio fragments — should not count toward segment total
+      hls.trigger(Hls.Events.FRAG_BUFFERED, { frag: audioFrag });
+      hls.trigger(Hls.Events.FRAG_BUFFERED, { frag: audioFrag });
+
+      assert.equal(resetCalls.length, 0, 'audio fragments should not trigger resets');
+
+      // Now fire main fragments
+      hls.trigger(Hls.Events.FRAG_BUFFERED, { frag: mainFrag });
+      assert.equal(resetCalls.length, 1, 'first main fragment should trigger reset');
+
+      teardown(video, core);
     });
   });
 });

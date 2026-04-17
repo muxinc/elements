@@ -669,7 +669,11 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
   setupChapters(mediaEl);
-  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  const setAutoplay = setupAutoplay(
+    props as Pick<MuxMediaProps, 'autoplay' | 'minPreloadSegments'>,
+    mediaEl,
+    nextHlsInstance
+  );
 
   const newCore = {
     engine: nextHlsInstance,
@@ -759,6 +763,7 @@ export const setupHls = (
       | 'drmTypeCb'
       | 'maxAutoResolution'
       | 'capRenditionToPlayerSize'
+      | 'initialBandwidthEstimateKbps'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -771,6 +776,7 @@ export const setupHls = (
     preferCmcd,
     _hlsConfig = {},
     maxAutoResolution,
+    initialBandwidthEstimateKbps,
   } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
@@ -783,6 +789,7 @@ export const setupHls = (
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
       capLevelOnFPSDrop: true,
+      ...(initialBandwidthEstimateKbps != null ? { abrEwmaDefaultEstimate: initialBandwidthEstimateKbps * 1000 } : {}),
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const drmConfig = getDRMConfig(props);
@@ -1158,6 +1165,7 @@ export const loadMedia = (
       | 'debug'
       | 'useWebkitFairplay'
       | 'fallbackToWebkitFairplay'
+      | 'initialEstimateSegments'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1387,6 +1395,23 @@ export const loadMedia = (
         });
       }
     });
+
+    // TCP slow start poisons the first bandwidth measurements. When set,
+    // the first N segments use the initial estimate. We reset the EWMA
+    // estimator after each of the first N-1 segments so ABR doesn't
+    // downshift from poisoned measurements before TCP is warm.
+    const initialEstimateSegments = props.initialEstimateSegments;
+    if (initialEstimateSegments != null && initialEstimateSegments > 0) {
+      let mainSegmentsBuffered = 0;
+      hls.on(Hls.Events.FRAG_BUFFERED, (_e, { frag }) => {
+        if (frag.type !== 'main') return;
+        mainSegmentsBuffered++;
+        if (mainSegmentsBuffered < initialEstimateSegments) {
+          // abrController is private in HLS.js types but accessible at runtime
+          (hls as any).abrController.resetEstimator(hls.config.abrEwmaDefaultEstimate);
+        }
+      });
+    }
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
       const error = getErrorFromHlsErrorData(data, props);

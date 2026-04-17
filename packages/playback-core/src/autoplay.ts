@@ -21,10 +21,39 @@ export const setupAutoplay = (
   mediaEl: HTMLMediaElement,
   hls?: PlaybackEngine
 ) => {
-  const { autoplay: maybeAutoplay } = props;
+  const { autoplay: maybeAutoplay, minPreloadSegments } = props;
   let hasPlayed = false;
   let isLive = false;
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
+
+  // When minPreloadSegments is set and we have an HLS instance, defer
+  // autoplay until N main segments have buffered. This gives ABR real
+  // bandwidth data and builds buffer runway before playback starts.
+  let preloadReady = true;
+  let pendingAutoplay = false;
+  if (minPreloadSegments != null && minPreloadSegments > 0 && hls) {
+    preloadReady = false;
+    let mainSegmentsBuffered = 0;
+    hls.on(Hls.Events.FRAG_BUFFERED, (_e: any, { frag }: any) => {
+      if (frag.type !== 'main') return;
+      mainSegmentsBuffered++;
+      if (mainSegmentsBuffered >= minPreloadSegments && !preloadReady) {
+        preloadReady = true;
+        if (pendingAutoplay) {
+          pendingAutoplay = false;
+          handleAutoplay(mediaEl, autoplay);
+        }
+      }
+    });
+  }
+
+  const maybeHandleAutoplay = (el: HTMLMediaElement, ap: Autoplay) => {
+    if (preloadReady) {
+      handleAutoplay(el, ap);
+    } else {
+      pendingAutoplay = true;
+    }
+  };
 
   const updateHasPlayed = () => {
     // hasPlayed
@@ -52,7 +81,7 @@ export const setupAutoplay = (
     () => {
       hasPlayed = false;
       updateHasPlayed();
-      handleAutoplay(mediaEl, autoplay);
+      maybeHandleAutoplay(mediaEl, autoplay);
     },
     { once: true }
   );
@@ -71,7 +100,7 @@ export const setupAutoplay = (
           isLive = !Number.isFinite(mediaEl.duration);
         }
       }
-      handleAutoplay(mediaEl, autoplay);
+      maybeHandleAutoplay(mediaEl, autoplay);
     },
     { once: true }
   );
@@ -127,7 +156,7 @@ export const setupAutoplay = (
   const updateAutoplay = (newAutoplay?: Autoplay) => {
     if (!hasPlayed) {
       autoplay = isAutoplayValue(newAutoplay) ? newAutoplay : !!newAutoplay;
-      handleAutoplay(mediaEl, autoplay);
+      maybeHandleAutoplay(mediaEl, autoplay);
     }
   };
 
