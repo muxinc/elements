@@ -9,11 +9,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^4.3.0",
-    "@astrojs/vercel": "^8.2.1",
+    "@astrojs/react": "^5.0.3",
+    "@astrojs/vercel": "^10.0.4",
     "@mux/mux-player-astro": ">=3.5.3",
     "@mux/mux-uploader-astro": ">=1.2.0",
-    "astro": "^5.11.0",
+    "astro": "^6.1.8",
     "cta-modal": "^1.1.1",
     "water.css": "^2.1.1"
   }

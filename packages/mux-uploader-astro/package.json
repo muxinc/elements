@@ -24,12 +24,12 @@
     ".": "./src/index.ts"
   },
   "peerDependencies": {
-    "astro": "^4.0.0 || ^5.0.0"
+    "astro": "^4.0.0 || ^5.0.0 || ^6.0.0"
   },
   "dependencies": {
     "@mux/mux-uploader": "1.4.1"
   },
   "devDependencies": {
-    "astro": "^5.11.0"
+    "astro": "^6.1.8"
   }
 }
