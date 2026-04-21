@@ -696,6 +696,12 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   async addCuePoints<T = any>(cuePoints: CuePoint<T>[]) {
+    if (!this.nativeEl.currentSrc) {
+      console.warn(
+        'addCuePoints() was called before the media element has loaded. ' +
+          'Wait for the loadstart event before calling addCuePoints().'
+      );
+    }
     return addCuePoints(this.nativeEl, cuePoints);
   }
 
@@ -708,6 +714,12 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
   }
 
   async addChapters(chapters: Chapter[]) {
+    if (!this.nativeEl.currentSrc) {
+      console.warn(
+        'addChapters() was called before the media element has loaded. ' +
+          'Wait for the loadstart event before calling addChapters().'
+      );
+    }
     return addChapters(this.nativeEl, chapters);
   }
 
