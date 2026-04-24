@@ -47,6 +47,7 @@ export type MuxTemplateProps = Partial<MuxPlayerProps> & {
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
   maxAutoResolution?: MaxAutoResolutionValue;
+  minBandwidthSampleDurationMs?: number;
   renditionOrder?: RenditionOrderValue;
   extraSourceParams?: Record<string, any>;
   tokens: {

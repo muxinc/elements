@@ -110,6 +110,7 @@ MuxVideo.propTypes = {
   maxResolution: PropTypes.oneOf(['720p', '1080p', '1440p', '2160p']),
   metadata: PropTypes.any,
   minResolution: PropTypes.oneOf(['480p', '540p', '720p', '1080p', '1440p', '2160p']),
+  minBandwidthSampleDurationMs: PropTypes.number,
   playbackId: PropTypes.string,
   playbackToken: PropTypes.string,
   playerInitTime: PropTypes.number,

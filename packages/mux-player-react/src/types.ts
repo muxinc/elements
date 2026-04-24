@@ -90,6 +90,7 @@ export type MuxPlayerProps = {
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
   maxAutoResolution?: MaxAutoResolutionValue;
+  minBandwidthSampleDurationMs?: number;
   renditionOrder?: RenditionOrderValue;
   programStartTime?: number;
   programEndTime?: number;

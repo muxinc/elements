@@ -155,6 +155,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     maxResolution: el.maxResolution,
     minResolution: el.minResolution,
     maxAutoResolution: el.maxAutoResolution,
+    minBandwidthSampleDurationMs: el.minBandwidthSampleDurationMs,
     programStartTime: el.programStartTime,
     programEndTime: el.programEndTime,
     assetStartTime: el.assetStartTime,
@@ -1396,6 +1397,23 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       this.removeAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION);
     } else {
       this.setAttribute(MuxVideoAttributes.MAX_AUTO_RESOLUTION, val);
+    }
+  }
+
+  get minBandwidthSampleDurationMs(): number | undefined {
+    const val = this.getAttribute(MuxVideoAttributes.MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+    if (val == null) return undefined;
+    const num = +val;
+    return Number.isFinite(num) ? num : undefined;
+  }
+
+  set minBandwidthSampleDurationMs(val: number | undefined) {
+    if (val === this.minBandwidthSampleDurationMs) return;
+
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+    } else {
+      this.setAttribute(MuxVideoAttributes.MIN_BANDWIDTH_SAMPLE_DURATION_MS, `${+val}`);
     }
   }
 

@@ -185,6 +185,65 @@ describe('<mux-video>', () => {
     assert.equal(player.maxResolution, '720p');
   });
 
+  describe('min-bandwidth-sample-duration-ms', () => {
+    it('reflects the min-bandwidth-sample-duration-ms attribute as a number prop', async function () {
+      const player = await fixture(`<mux-video
+        min-bandwidth-sample-duration-ms="12"
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        prefer-playback="mse"
+      ></mux-video>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, 12);
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '12');
+    });
+
+    it('returns undefined when the attribute is unset', async function () {
+      const player = await fixture(`<mux-video
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+      ></mux-video>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, undefined);
+    });
+
+    it('removes the attribute when set to undefined or null', async function () {
+      const player = await fixture(`<mux-video
+        min-bandwidth-sample-duration-ms="5"
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+      ></mux-video>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, 5);
+      player.minBandwidthSampleDurationMs = undefined;
+      assert.isFalse(player.hasAttribute('min-bandwidth-sample-duration-ms'));
+      assert.equal(player.minBandwidthSampleDurationMs, undefined);
+
+      player.minBandwidthSampleDurationMs = 0;
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '0');
+      assert.equal(player.minBandwidthSampleDurationMs, 0);
+
+      player.minBandwidthSampleDurationMs = null;
+      assert.isFalse(player.hasAttribute('min-bandwidth-sample-duration-ms'));
+    });
+
+    it('propagates min-bandwidth-sample-duration-ms to the hls.js EWMA bandwidth estimator', async function () {
+      const player = await fixture(`<mux-video
+        min-bandwidth-sample-duration-ms="7"
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        prefer-playback="mse"
+      ></mux-video>`);
+
+      assert.equal(player._hls?.abrController.bwEstimator.minDelayMs_, 7);
+    });
+
+    it('uses the default 50ms floor when min-bandwidth-sample-duration-ms is unset', async function () {
+      const player = await fixture(`<mux-video
+        playback-id="23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I"
+        prefer-playback="mse"
+      ></mux-video>`);
+
+      assert.equal(player._hls?.abrController.bwEstimator.minDelayMs_, 50);
+    });
+  });
+
   it('maps arbitrary metadata-* attrs to the metadata prop and populates video_id if not provided', async function () {
     const playbackId = '23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I';
     const player = await fixture(`<mux-video

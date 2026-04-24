@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>min-bandwidth-sample-duration-ms Test</title>
+    <link rel="preconnect" href="https://stream.mux.com" crossorigin>
+    <link rel="preconnect" href="https://stream.mux.com">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./dist/mux-player.js"></script>
+    <style>
+      /* Override water.css centered, narrow body so we can use full viewport width. */
+      body {
+        max-width: none;
+        padding: 0 1rem 2rem;
+      }
+
+      mux-player {
+        display: block;
+        width: 100%;
+        background-color: #000;
+        aspect-ratio: 16 / 9;
+      }
+
+      .main-grid {
+        --split-left: 520px;
+        display: grid;
+        grid-template-columns: minmax(280px, var(--split-left)) 10px minmax(320px, 1fr);
+        align-items: start;
+        margin-top: 1rem;
+      }
+
+      .main-left {
+        position: sticky;
+        top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        min-width: 0;
+        padding-right: 0.75rem;
+      }
+
+      .main-right {
+        min-width: 0; /* allow grid children to shrink so table can overflow-x cleanly */
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding-left: 0.75rem;
+      }
+
+      .split-handle {
+        position: sticky;
+        top: 1rem;
+        align-self: stretch;
+        width: 10px;
+        cursor: col-resize;
+        background: transparent;
+        border-left: 1px solid rgba(0, 0, 0, 0.08);
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(100vh - 2rem);
+        user-select: none;
+        transition: background 0.15s;
+      }
+
+      .split-handle::before {
+        content: '';
+        width: 2px;
+        height: 32px;
+        border-radius: 2px;
+        background: rgba(0, 0, 0, 0.25);
+      }
+
+      .split-handle:hover,
+      .split-handle.dragging {
+        background: rgba(0, 123, 255, 0.08);
+      }
+
+      .split-handle:hover::before,
+      .split-handle.dragging::before {
+        background: #007bff;
+      }
+
+      /* While dragging, prevent text selection & switch the whole cursor globally. */
+      body.col-resizing {
+        cursor: col-resize;
+        user-select: none;
+      }
+      body.col-resizing * {
+        user-select: none !important;
+      }
+
+      @media (max-width: 1000px) {
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+        .main-left {
+          position: static;
+          padding-right: 0;
+        }
+        .main-right {
+          padding-left: 0;
+        }
+        .split-handle {
+          display: none;
+        }
+      }
+
+      .controls {
+        margin: 0;
+      }
+
+      .field {
+        display: grid;
+        grid-template-columns: auto auto;
+        column-gap: 0.75rem;
+        row-gap: 0.25rem;
+        justify-content: start;
+      }
+
+      .field label {
+        grid-column: 1;
+        font-size: 0.8rem;
+        font-weight: bold;
+        font-family: monospace;
+      }
+
+      .field input {
+        grid-column: 1;
+        width: 10em;
+        padding: 0.5rem;
+        font-size: 1rem;
+        font-family: monospace;
+      }
+
+      .field .hint {
+        grid-column: 1;
+        font-size: 0.75rem;
+        opacity: 0.6;
+      }
+
+      .field button {
+        grid-column: 2;
+        grid-row: 2;
+        padding: 0.5rem 1.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .active-config {
+        font-family: monospace;
+        font-size: 0.85rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+        margin: 0.5rem 0 1rem;
+        line-height: 1.6;
+        background: var(--background-alt, #f5f5f5);
+        white-space: pre-wrap;
+      }
+
+      .active-config .set {
+        font-weight: bold;
+        color: #155724;
+      }
+
+      .active-config .default {
+        opacity: 0.6;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.75rem;
+        margin: 0;
+      }
+
+      .stat {
+        padding: 0.75rem;
+        border-radius: 6px;
+        background: var(--background-alt, #f5f5f5);
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        margin-bottom: 0.25rem;
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: bold;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .fallback-warning {
+        font-size: 0.9rem;
+        font-weight: bold;
+        padding: 0.75rem;
+        border-radius: 6px;
+        background: #f8d7da;
+        color: #721c24;
+        margin: 0;
+      }
+      .fallback-warning:empty { display: none; }
+
+      .timeline {
+        margin: 0;
+        font-family: monospace;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        max-height: 60vh;
+        overflow: auto;
+        background: var(--background-alt, #f5f5f5);
+        padding: 0.75rem;
+        border-radius: 6px;
+      }
+
+      .timeline-entry { display: grid; grid-template-columns: 4em 4em 5em 6em 8em 7em 1fr; gap: 0.5rem; }
+      .timeline-entry.header { font-weight: bold; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 0.25rem; margin-bottom: 0.25rem; opacity: 0.7; }
+      .timeline-entry .clamped { color: #b45309; font-weight: bold; }
+      .timeline-entry .unclamped { opacity: 0.5; }
+
+      .renditions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin: 0.5rem 0;
+        min-height: 1.9rem; /* reserve one row of badges to avoid CLS when they populate */
+      }
+
+      .rendition-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        background: var(--background-alt, #eee);
+      }
+
+      .rendition-badge.active {
+        background: #007bff;
+        color: white;
+        font-weight: bold;
+      }
+
+      .rendition-badge.first-pick {
+        outline: 3px solid #28a745;
+      }
+
+      .rendition-badge.lowest-seen {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      .rendition-badge.lowest-seen.active {
+        background: #dc3545;
+        color: white;
+      }
+
+      .rendition-badge.capped {
+        opacity: 0.45;
+        text-decoration: line-through;
+        background:
+          repeating-linear-gradient(
+            -45deg,
+            rgba(0, 0, 0, 0.06) 0 6px,
+            transparent 6px 12px
+          ),
+          var(--background-alt, #eee);
+        color: inherit;
+      }
+      .rendition-badge.capped.active,
+      .rendition-badge.capped.lowest-seen {
+        /* If capped levels also have other states, keep the capped look dominant. */
+        background:
+          repeating-linear-gradient(
+            -45deg,
+            rgba(0, 0, 0, 0.06) 0 6px,
+            transparent 6px 12px
+          ),
+          var(--background-alt, #eee);
+        color: inherit;
+      }
+
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: monospace;
+        font-size: 0.85rem;
+      }
+      .toggle-row input[type="checkbox"] {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      .toggle-row .hint {
+        opacity: 0.6;
+        font-size: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="left-header">
+        <a class="mux-logo" href="https://www.mux.com/player" target="_blank">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/360826/233653989-11cd8603-c20f-4008-8bf7-dc15b743c52b.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+            <img alt="Mux Logo" src="https://user-images.githubusercontent.com/360826/233653583-50dda726-cbe7-4182-a113-059a91ae83e6.svg">
+          </picture>
+        </a>
+        <h1><a href="/">Elements</a></h1>
+      </div>
+      <div class="right-header">
+        <a class="github-logo" href="https://github.com/muxinc/elements" target="_blank">
+          <img width="32" height="32" src="./images/github-logo.svg" alt="Github logo">
+        </a>
+      </div>
+    </header>
+
+    <h2><code>min-bandwidth-sample-duration-ms</code> test</h2>
+    <p>
+      Clamps hls.js's EWMA bandwidth samples to a minimum duration (default <code>50</code>&nbsp;ms).
+      Try <code>5</code> / <code>0</code> / <code>200</code> to see the estimate and rendition pick change. Blank = default.
+    </p>
+
+    <div class="main-grid" id="mainGrid">
+      <div class="main-left">
+        <div id="playerContainer"></div>
+        <div class="controls">
+          <div class="field">
+            <label for="minDelayInput">min-bandwidth-sample-duration-ms</label>
+            <input type="number" id="minDelayInput" placeholder="(unset)" min="0" step="1">
+            <button onclick="startTest()">Start / Reload</button>
+            <span class="hint">ms. Default: 50</span>
+          </div>
+          <label class="toggle-row" style="margin-top: 0.5rem;">
+            <input type="checkbox" id="disableCapInput">
+            <span>Disable <code>CapLevelController</code></span>
+            <span class="hint">sets <code>capRenditionToPlayerSize = false</code>. Takes effect on Start.</span>
+          </label>
+        </div>
+        <div id="activeConfig" class="active-config"></div>
+      </div>
+
+      <div id="splitHandle" class="split-handle" role="separator" aria-orientation="vertical" tabindex="0" aria-label="Resize columns"></div>
+
+      <div class="main-right">
+        <div id="fallbackWarning" class="fallback-warning"></div>
+
+        <div class="dashboard">
+          <div class="stat">
+            <div class="stat-label">Configured <code>minDelayMs_</code></div>
+            <div class="stat-value" id="configuredFloor">--</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Current bandwidth estimate</div>
+            <div class="stat-value" id="currentEstimate">--</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">First segment rendition</div>
+            <div class="stat-value" id="firstRendition">--</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Current rendition</div>
+            <div class="stat-value" id="currentRendition">--</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Segments loaded</div>
+            <div class="stat-value" id="segmentCount">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Samples clamped by floor</div>
+            <div class="stat-value" id="clampedCount">0 / 0</div>
+          </div>
+        </div>
+
+        <h3 style="margin: 0.5rem 0 0.25rem;">Available renditions</h3>
+        <p class="hint" style="margin: 0 0 0.25rem;">
+          Blue = active,
+          green outline = first-segment pick,
+          <span style="color: #dc3545; font-weight: bold;">red</span> = lowest rendition ever played,
+          <span style="text-decoration: line-through; opacity: 0.55;">struck-through / hatched</span> = excluded by <code>CapLevelController</code>.
+        </p>
+        <div id="renditions" class="renditions"></div>
+
+        <h3 style="margin: 0.5rem 0 0.25rem;">Per-segment samples</h3>
+        <p class="hint" style="margin: 0;">
+          <span class="clamped">Orange</span>: this segment's real load time was below
+          the configured floor, so the EWMA estimator used the floor instead. The
+          bandwidth reported is computed from the clamped duration.
+        </p>
+        <div id="timeline" class="timeline">
+          <div class="timeline-entry header">
+            <span>seg #</span>
+            <span>res</span>
+            <span>bytes</span>
+            <span>real ms</span>
+            <span>effective ms</span>
+            <span>sample bps</span>
+            <span>EWMA est</span>
+          </div>
+          <div><em>No segments loaded yet.</em></div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <a href="./">Browse Elements</a>
+
+    <script type="module">
+      const PLAYBACK_ID = 'GwnXqdTJdRgCNETdQwf7JQoVxFj02Ovh7ceTTuE376aA';
+
+      // ---------- Draggable split between left (player) and right (results) columns ----------
+      const SPLIT_STORAGE_KEY = 'mbsdm-test:split-left-px';
+      const MIN_LEFT_PX = 280;
+      const MIN_RIGHT_PX = 320;
+      const mainGridEl = document.getElementById('mainGrid');
+      const splitHandleEl = document.getElementById('splitHandle');
+
+      function clampSplit(px) {
+        const gridRect = mainGridEl.getBoundingClientRect();
+        const handleWidth = splitHandleEl.getBoundingClientRect().width || 10;
+        const maxLeft = Math.max(MIN_LEFT_PX, gridRect.width - MIN_RIGHT_PX - handleWidth);
+        return Math.min(maxLeft, Math.max(MIN_LEFT_PX, px));
+      }
+
+      function applySplit(px) {
+        const clamped = clampSplit(px);
+        mainGridEl.style.setProperty('--split-left', `${clamped}px`);
+        return clamped;
+      }
+
+      // Restore persisted width
+      const savedSplit = Number(localStorage.getItem(SPLIT_STORAGE_KEY));
+      if (Number.isFinite(savedSplit) && savedSplit > 0) {
+        applySplit(savedSplit);
+      }
+
+      let dragging = false;
+      function startDrag(clientX, clientY) {
+        dragging = true;
+        splitHandleEl.classList.add('dragging');
+        document.body.classList.add('col-resizing');
+      }
+      function endDrag() {
+        if (!dragging) return;
+        dragging = false;
+        splitHandleEl.classList.remove('dragging');
+        document.body.classList.remove('col-resizing');
+        const current = parseFloat(getComputedStyle(mainGridEl).getPropertyValue('--split-left'));
+        if (Number.isFinite(current)) {
+          localStorage.setItem(SPLIT_STORAGE_KEY, String(current));
+        }
+      }
+      function moveDrag(clientX) {
+        if (!dragging) return;
+        const gridRect = mainGridEl.getBoundingClientRect();
+        applySplit(clientX - gridRect.left);
+      }
+
+      splitHandleEl.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startDrag(e.clientX, e.clientY);
+      });
+      window.addEventListener('mousemove', (e) => moveDrag(e.clientX));
+      window.addEventListener('mouseup', endDrag);
+
+      splitHandleEl.addEventListener('touchstart', (e) => {
+        if (!e.touches[0]) return;
+        startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      }, { passive: true });
+      window.addEventListener('touchmove', (e) => {
+        if (!e.touches[0]) return;
+        moveDrag(e.touches[0].clientX);
+      }, { passive: true });
+      window.addEventListener('touchend', endDrag);
+
+      // Keyboard resize: left/right arrows move in 24px steps, shift = 96px
+      splitHandleEl.addEventListener('keydown', (e) => {
+        const step = e.shiftKey ? 96 : 24;
+        const current = parseFloat(getComputedStyle(mainGridEl).getPropertyValue('--split-left'));
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const next = applySplit((Number.isFinite(current) ? current : MIN_LEFT_PX) - step);
+          localStorage.setItem(SPLIT_STORAGE_KEY, String(next));
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          const next = applySplit((Number.isFinite(current) ? current : MIN_LEFT_PX) + step);
+          localStorage.setItem(SPLIT_STORAGE_KEY, String(next));
+        }
+      });
+
+      // Re-clamp if the viewport resizes (e.g. devtools open / rotation)
+      window.addEventListener('resize', () => {
+        const current = parseFloat(getComputedStyle(mainGridEl).getPropertyValue('--split-left'));
+        if (Number.isFinite(current)) applySplit(current);
+      });
+
+      let segmentCount = 0;
+      let clampedCount = 0;
+      let firstSegmentLevel = null;
+      let lowestSeenLevel = null;
+      let currentLevel = -1;
+      let autoLevelCap = -1; // -1 = not capped
+      let capPollInterval = null;
+      let hls = null;
+      let levels = [];
+      let configuredFloor = 50;
+
+      const minDelayInput = document.getElementById('minDelayInput');
+      const disableCapInput = document.getElementById('disableCapInput');
+      const playerContainer = document.getElementById('playerContainer');
+      const fallbackWarningEl = document.getElementById('fallbackWarning');
+      const configuredFloorEl = document.getElementById('configuredFloor');
+      const currentEstimateEl = document.getElementById('currentEstimate');
+      const firstRenditionEl = document.getElementById('firstRendition');
+      const currentRenditionEl = document.getElementById('currentRendition');
+      const segmentCountEl = document.getElementById('segmentCount');
+      const clampedCountEl = document.getElementById('clampedCount');
+      const renditionsEl = document.getElementById('renditions');
+      const timelineEl = document.getElementById('timeline');
+      const activeConfigEl = document.getElementById('activeConfig');
+
+      function saveToHash() {
+        const params = new URLSearchParams();
+        if (minDelayInput.value !== '') params.set('minDelay', minDelayInput.value);
+        if (disableCapInput.checked) params.set('noCap', '1');
+        location.hash = params.toString();
+      }
+
+      function loadFromHash() {
+        const params = new URLSearchParams(location.hash.replace('#', ''));
+        if (params.has('minDelay')) minDelayInput.value = params.get('minDelay');
+        if (params.get('noCap') === '1') disableCapInput.checked = true;
+      }
+
+      function formatBps(bps) {
+        if (!Number.isFinite(bps)) return '--';
+        if (bps >= 1_000_000) return `${(bps / 1_000_000).toFixed(2)} Mbps`;
+        if (bps >= 1_000) return `${(bps / 1_000).toFixed(0)} kbps`;
+        return `${Math.round(bps)} bps`;
+      }
+
+      function formatBytes(bytes) {
+        if (bytes >= 1_000_000) return `${(bytes / 1_000_000).toFixed(2)} MB`;
+        if (bytes >= 1_000) return `${(bytes / 1_000).toFixed(0)} KB`;
+        return `${bytes} B`;
+      }
+
+      function resolutionLabel(level) {
+        if (!level) return '--';
+        return `${Math.min(level.width, level.height)}p`;
+      }
+
+      function renderRenditions() {
+        renditionsEl.innerHTML = '';
+        const capIndex = autoLevelCap; // -1 = not capped
+        levels.forEach((level, i) => {
+          const badge = document.createElement('span');
+          badge.className = 'rendition-badge';
+          if (i === currentLevel) badge.classList.add('active');
+          if (i === firstSegmentLevel) badge.classList.add('first-pick');
+          if (lowestSeenLevel != null && i === lowestSeenLevel) badge.classList.add('lowest-seen');
+          if (capIndex >= 0 && i > capIndex) {
+            badge.classList.add('capped');
+            badge.title = 'Excluded by CapLevelController (auto ABR cannot choose this level)';
+          }
+          badge.textContent = `${resolutionLabel(level)} (${formatBps(level.bitrate)})`;
+          renditionsEl.appendChild(badge);
+        });
+      }
+
+      function resetDashboard() {
+        segmentCount = 0;
+        clampedCount = 0;
+        firstSegmentLevel = null;
+        lowestSeenLevel = null;
+        currentLevel = -1;
+        autoLevelCap = -1;
+        if (capPollInterval) {
+          clearInterval(capPollInterval);
+          capPollInterval = null;
+        }
+        hls = null;
+        levels = [];
+        configuredFloorEl.textContent = '--';
+        currentEstimateEl.textContent = '--';
+        firstRenditionEl.textContent = '--';
+        currentRenditionEl.textContent = '--';
+        segmentCountEl.textContent = '0';
+        clampedCountEl.textContent = '0 / 0';
+        renditionsEl.innerHTML = '';
+        timelineEl.innerHTML = `
+          <div class="timeline-entry header">
+            <span>seg #</span>
+            <span>res</span>
+            <span>bytes</span>
+            <span>real ms</span>
+            <span>effective ms</span>
+            <span>sample bps</span>
+            <span>EWMA est</span>
+          </div>
+          <div><em>Waiting for first segment...</em></div>
+        `;
+        fallbackWarningEl.textContent = '';
+      }
+
+      function updateConfigDisplay(minDelayMs, capDisabled) {
+        const line1 = minDelayMs != null
+          ? `<span class="set">min-bandwidth-sample-duration-ms: ${minDelayMs}</span>  (EWMA estimator clamps samples to ≥ ${minDelayMs} ms)`
+          : `<span class="default">min-bandwidth-sample-duration-ms: (unset)</span>  using Mux default: 50 ms (upstream hls.js value)`;
+        const line2 = minDelayMs === 0
+          ? `  note: 0 disables the clamp entirely — sub-ms cache hits will produce enormous bandwidth samples`
+          : minDelayMs != null && minDelayMs < 5
+          ? `  note: values below ~5 ms approach timer resolution limits in modern browsers`
+          : '';
+        const capLine = capDisabled
+          ? `<span class="set">capRenditionToPlayerSize: false</span>  CapLevelController disabled (all renditions eligible)`
+          : `<span class="default">capRenditionToPlayerSize: (default)</span>  MinCapLevelController active (caps to player size with 720p floor)`;
+        activeConfigEl.innerHTML = [line1, line2, capLine].filter(Boolean).join('\n');
+      }
+
+      function addTimelineEntry({ segNum, level, bytes, realMs, effectiveMs, sampleBps, ewmaEst, clamped }) {
+        const noSegMsg = timelineEl.querySelector('em');
+        if (noSegMsg) noSegMsg.parentElement.remove();
+
+        const entry = document.createElement('div');
+        entry.className = 'timeline-entry';
+        const realMsTxt = clamped
+          ? `<span class="clamped">${realMs.toFixed(1)}</span>`
+          : realMs.toFixed(1);
+        const effectiveTxt = clamped
+          ? `<span class="clamped">${effectiveMs.toFixed(1)} (clamp)</span>`
+          : `<span class="unclamped">${effectiveMs.toFixed(1)}</span>`;
+        entry.innerHTML = `
+          <span>seg ${segNum}</span>
+          <span>${resolutionLabel(levels[level])}</span>
+          <span>${formatBytes(bytes)}</span>
+          <span>${realMsTxt}</span>
+          <span>${effectiveTxt}</span>
+          <span>${formatBps(sampleBps)}</span>
+          <span>${formatBps(ewmaEst)}</span>
+        `;
+        timelineEl.appendChild(entry);
+        timelineEl.scrollTop = timelineEl.scrollHeight;
+      }
+
+      function attachHls(player, minDelayMs) {
+        const muxVideo = player.media;
+        if (!muxVideo) return false;
+        hls = muxVideo._hls;
+        if (!hls) return false;
+
+        // Read the actual floor applied by playback-core's SaneAbrController.
+        const bwEstimator = hls.abrController?.bwEstimator;
+        if (bwEstimator) {
+          configuredFloor = bwEstimator.minDelayMs_;
+        } else {
+          configuredFloor = minDelayMs ?? 50;
+        }
+        configuredFloorEl.textContent = `${configuredFloor} ms`;
+
+        const Hls = hls.constructor;
+
+        // Keep autoLevelCap / levels in sync. hls.js re-computes the cap on player
+        // resize and other triggers, and exposes it as `hls.autoLevelCapping`
+        // (-1 means no cap). We poll because there's no single event that covers
+        // all the cases (size changes, level updates, etc.).
+        const refreshCap = () => {
+          const nextCap = hls.autoLevelCapping ?? -1;
+          const nextLevelsLen = hls.levels?.length ?? 0;
+          if (nextCap !== autoLevelCap || nextLevelsLen !== levels.length) {
+            autoLevelCap = nextCap;
+            if (nextLevelsLen !== levels.length) levels = hls.levels ?? [];
+            renderRenditions();
+          }
+        };
+        capPollInterval = setInterval(refreshCap, 250);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          levels = hls.levels;
+          autoLevelCap = hls.autoLevelCapping ?? -1;
+          renderRenditions();
+        });
+
+        hls.on(Hls.Events.LEVEL_SWITCHED, (_event, data) => {
+          currentLevel = data.level;
+          currentRenditionEl.textContent = resolutionLabel(levels[data.level]);
+          if (lowestSeenLevel === null || data.level < lowestSeenLevel) {
+            lowestSeenLevel = data.level;
+          }
+          refreshCap();
+          renderRenditions();
+        });
+
+        hls.on(Hls.Events.FRAG_LOADED, (_event, data) => {
+          if (data.frag.type !== 'main') return;
+          segmentCount++;
+          segmentCountEl.textContent = segmentCount;
+
+          const bytes = data.payload?.byteLength ?? data.frag.loaded ?? 0;
+          const stats = data.frag.stats || {};
+          const loading = stats.loading || {};
+          const realMs = Math.max(0, (loading.end ?? 0) - (loading.first ?? loading.start ?? 0));
+          const clamped = realMs < configuredFloor;
+          const effectiveMs = Math.max(realMs, configuredFloor);
+          const sampleBps = effectiveMs > 0 ? (8000 * bytes) / effectiveMs : 0;
+
+          if (clamped) {
+            clampedCount++;
+            clampedCountEl.textContent = `${clampedCount} / ${segmentCount}`;
+          } else {
+            clampedCountEl.textContent = `${clampedCount} / ${segmentCount}`;
+          }
+
+          // hls.js exposes the current EWMA estimate via bandwidthEstimate.
+          const ewmaEst = hls.bandwidthEstimate ?? hls.config.abrEwmaDefaultEstimate;
+          currentEstimateEl.textContent = formatBps(ewmaEst);
+
+          const level = data.frag.level;
+          currentLevel = level;
+          if (lowestSeenLevel === null || level < lowestSeenLevel) {
+            lowestSeenLevel = level;
+          }
+          if (firstSegmentLevel === null) {
+            firstSegmentLevel = level;
+            firstRenditionEl.textContent = resolutionLabel(levels[level]);
+            currentRenditionEl.textContent = resolutionLabel(levels[level]);
+          }
+          refreshCap();
+          renderRenditions();
+
+          addTimelineEntry({
+            segNum: segmentCount,
+            level,
+            bytes,
+            realMs,
+            effectiveMs,
+            sampleBps,
+            ewmaEst,
+            clamped,
+          });
+        });
+
+        return true;
+      }
+
+      window.startTest = function() {
+        const minDelayMs = minDelayInput.value !== '' ? Number(minDelayInput.value) : null;
+        const capDisabled = disableCapInput.checked;
+        saveToHash();
+        resetDashboard();
+        updateConfigDisplay(minDelayMs, capDisabled);
+
+        playerContainer.innerHTML = '';
+        const player = document.createElement('mux-player');
+        player.setAttribute('playback-id', PLAYBACK_ID);
+        player.setAttribute('stream-type', 'on-demand');
+        player.setAttribute('preload', 'none');
+        player.setAttribute('muted', '');
+
+        if (minDelayMs != null) {
+          player.setAttribute('min-bandwidth-sample-duration-ms', String(minDelayMs));
+        }
+
+        playerContainer.appendChild(player);
+
+        // capRenditionToPlayerSize=false can only be set via JS property (attribute path
+        // only toggles true/undefined). Must be set synchronously after appendChild so
+        // it's in place before the microtask-deferred `load()` creates the hls.js instance
+        // and reads the prop in getCapLevelControllerConfig().
+        if (capDisabled) {
+          try {
+            player.capRenditionToPlayerSize = false;
+          } catch (e) {
+            console.warn('Could not disable CapLevelController:', e);
+          }
+        }
+
+        let attempts = 0;
+        const poll = setInterval(() => {
+          attempts++;
+          if (attachHls(player, minDelayMs) || attempts > 50) {
+            clearInterval(poll);
+            if (!hls) {
+              fallbackWarningEl.textContent =
+                'Could not attach to an hls.js instance — this page relies on MSE playback.';
+            }
+          }
+        }, 100);
+      };
+
+      // Restore from URL hash and auto-start
+      loadFromHash();
+      startTest();
+    </script>
+  </body>
+</html>
