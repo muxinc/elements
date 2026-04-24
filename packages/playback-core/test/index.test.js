@@ -14,6 +14,11 @@ import {
   toPlaybackIdFromSrc,
   getCapLevelControllerConfig,
 } from '../src/index.ts';
+import SaneAbrController, {
+  createSaneAbrController,
+  DEFAULT_MIN_BANDWIDTH_SAMPLE_DURATION_MS,
+} from '../src/sane-abr-controller.ts';
+import Hls from '../src/hls.ts';
 
 describe('playback core', function () {
   let video;
@@ -382,6 +387,79 @@ describe('playback core', function () {
         'should use standard CapLevelController (no minMaxResolution property)'
       );
       assert.equal(config.capLevelToPlayerSize, false, 'should keep hls.js capLevelToPlayerSize as false');
+    });
+  });
+
+  describe('SaneAbrController / minBandwidthSampleDurationMs', () => {
+    // hls.js instantiates the AbrController internally; we need a real Hls instance to inspect
+    // the configured estimator floor without relying on internal construction order.
+    const getMinDelay = (AbrControllerClass) => {
+      const hls = new Hls({ abrController: AbrControllerClass });
+      try {
+        return hls.abrController.bwEstimator.minDelayMs_;
+      } finally {
+        hls.destroy();
+      }
+    };
+
+    it('defaults to DEFAULT_MIN_BANDWIDTH_SAMPLE_DURATION_MS (50) to match upstream hls.js', () => {
+      assert.equal(DEFAULT_MIN_BANDWIDTH_SAMPLE_DURATION_MS, 50);
+      assert.equal(getMinDelay(SaneAbrController), DEFAULT_MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+      assert.equal(getMinDelay(createSaneAbrController()), DEFAULT_MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+    });
+
+    it('honors the configured minDelayMs on the underlying bwEstimator', () => {
+      assert.equal(getMinDelay(createSaneAbrController(5)), 5);
+      assert.equal(getMinDelay(createSaneAbrController(0)), 0);
+      assert.equal(getMinDelay(createSaneAbrController(200)), 200);
+    });
+
+    it('re-applies minDelayMs after resetEstimator (estimator is replaced on reset)', () => {
+      const ControllerClass = createSaneAbrController(7);
+      const hls = new Hls({ abrController: ControllerClass });
+      try {
+        assert.equal(hls.abrController.bwEstimator.minDelayMs_, 7);
+        // resetEstimator swaps out `this.bwEstimator` for a fresh instance; our override should re-poke it.
+        hls.abrController.resetEstimator();
+        assert.equal(hls.abrController.bwEstimator.minDelayMs_, 7);
+      } finally {
+        hls.destroy();
+      }
+    });
+
+    it('threads minBandwidthSampleDurationMs through initialize() into the hls.js abrController', () => {
+      const core = initialize(
+        {
+          src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+          preferPlayback: 'mse',
+          minBandwidthSampleDurationMs: 12,
+        },
+        video
+      );
+      try {
+        assert.equal(
+          core.engine?.abrController.bwEstimator.minDelayMs_,
+          12,
+          'minBandwidthSampleDurationMs prop should be propagated to the EWMA estimator'
+        );
+      } finally {
+        teardown(video, core);
+      }
+    });
+
+    it('uses the default (50) when minBandwidthSampleDurationMs is omitted', () => {
+      const core = initialize(
+        {
+          src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+          preferPlayback: 'mse',
+        },
+        video
+      );
+      try {
+        assert.equal(core.engine?.abrController.bwEstimator.minDelayMs_, DEFAULT_MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+      } finally {
+        teardown(video, core);
+      }
     });
   });
 });

@@ -104,6 +104,42 @@ describe('<mux-audio>', () => {
     assert.equal(player.metadata.video_id, playbackId);
   });
 
+  describe('min-bandwidth-sample-duration-ms', () => {
+    it('reflects the min-bandwidth-sample-duration-ms attribute as a number prop', async function () {
+      const player = await fixture(`<mux-audio
+        min-bandwidth-sample-duration-ms="12"
+        src="https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8"
+      ></mux-audio>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, 12);
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '12');
+    });
+
+    it('returns undefined when the attribute is unset', async function () {
+      const player = await fixture(`<mux-audio
+        src="https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8"
+      ></mux-audio>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, undefined);
+    });
+
+    it('supports setting and clearing via the property', async function () {
+      const player = await fixture(`<mux-audio></mux-audio>`);
+
+      player.minBandwidthSampleDurationMs = 5;
+      assert.equal(player.minBandwidthSampleDurationMs, 5);
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '5');
+
+      player.minBandwidthSampleDurationMs = 0;
+      assert.equal(player.minBandwidthSampleDurationMs, 0);
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '0');
+
+      player.minBandwidthSampleDurationMs = undefined;
+      assert.equal(player.minBandwidthSampleDurationMs, undefined);
+      assert.isFalse(player.hasAttribute('min-bandwidth-sample-duration-ms'));
+    });
+  });
+
   // Test is failing for audio...
   it.skip('currentPdt and getStartDate work as expected', async function () {
     this.timeout(5000);

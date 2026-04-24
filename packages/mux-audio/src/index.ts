@@ -46,6 +46,7 @@ export const Attributes = {
   TYPE: 'type',
   STREAM_TYPE: 'stream-type',
   START_TIME: 'start-time',
+  MIN_BANDWIDTH_SAMPLE_DURATION_MS: 'min-bandwidth-sample-duration-ms',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -458,6 +459,23 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
 
   set _hlsConfig(val: Readonly<Partial<HlsConfig>> | undefined) {
     this.#_hlsConfig = val;
+  }
+
+  get minBandwidthSampleDurationMs(): number | undefined {
+    const val = this.getAttribute(Attributes.MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+    if (val == null) return undefined;
+    const num = +val;
+    return Number.isFinite(num) ? num : undefined;
+  }
+
+  set minBandwidthSampleDurationMs(val: number | undefined) {
+    if (val === this.minBandwidthSampleDurationMs) return;
+
+    if (val == null) {
+      this.removeAttribute(Attributes.MIN_BANDWIDTH_SAMPLE_DURATION_MS);
+    } else {
+      this.setAttribute(Attributes.MIN_BANDWIDTH_SAMPLE_DURATION_MS, `${+val}`);
+    }
   }
 
   async #requestLoad() {

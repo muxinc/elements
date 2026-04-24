@@ -38,6 +38,7 @@ import {
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
+import SaneAbrController, { createSaneAbrController } from './sane-abr-controller';
 import { setupWebkitNativeFairplayDRM } from './webkit-fairplay';
 import { setupEmeNativeFairplayDRM } from './eme-fairplay';
 
@@ -797,6 +798,7 @@ export const setupHls = (
       | 'drmTypeCb'
       | 'maxAutoResolution'
       | 'capRenditionToPlayerSize'
+      | 'minBandwidthSampleDurationMs'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -809,6 +811,7 @@ export const setupHls = (
     preferCmcd,
     _hlsConfig = {},
     maxAutoResolution,
+    minBandwidthSampleDurationMs,
   } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
@@ -821,6 +824,11 @@ export const setupHls = (
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
       capLevelOnFPSDrop: true,
+      testBandwidth: true,
+      abrController:
+        typeof minBandwidthSampleDurationMs === 'number'
+          ? createSaneAbrController(minBandwidthSampleDurationMs)
+          : SaneAbrController,
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const drmConfig = getDRMConfig(props);

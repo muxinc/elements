@@ -174,6 +174,14 @@ export type MuxMediaPropTypes = {
   _hlsConfig?: Partial<HlsConfig>;
   autoPlay?: Autoplay;
   autoplay?: Autoplay;
+  /**
+   * Minimum sample duration (in ms) for hls.js's EWMA bandwidth estimator.
+   * Overrides the `minDelayMs_` floor used by `SaneAbrController`. Lower
+   * values allow very short transfers (small fragments on fast connections)
+   * to contribute to the bandwidth estimate; higher values better defend
+   * against cache-hit / timer-resolution noise.
+   */
+  minBandwidthSampleDurationMs?: number;
   /** Based on `cap-rendition-to-player-size` attribute and `_hlsConfig.capLevelToPlayerSize` */
   capRenditionToPlayerSize?: boolean;
   beaconCollectionDomain: Options['beaconCollectionDomain'];

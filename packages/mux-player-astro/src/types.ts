@@ -32,6 +32,7 @@ export type MuxPlayerProps = {
   backwardSeekOffset?: number;
   maxResolution?: MaxResolutionValue;
   minResolution?: MinResolutionValue;
+  minBandwidthSampleDurationMs?: number;
   renditionOrder?: RenditionOrderValue;
   programStartTime?: number;
   programEndTime?: number;

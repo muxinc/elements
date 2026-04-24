@@ -592,6 +592,48 @@ describe('<mux-player>', () => {
     assert.equal(player.maxResolution, '720p');
   });
 
+  describe('min-bandwidth-sample-duration-ms', () => {
+    it('reflects the min-bandwidth-sample-duration-ms attribute as a number prop', async function () {
+      const player = await fixture(`<mux-player
+        min-bandwidth-sample-duration-ms="12"
+        stream-type="on-demand"
+        playback-id="r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA"
+      ></mux-player>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, 12);
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '12');
+    });
+
+    it('forwards min-bandwidth-sample-duration-ms to the inner mux-video element', async function () {
+      const player = await fixture(`<mux-player
+        min-bandwidth-sample-duration-ms="7"
+        stream-type="on-demand"
+        playback-id="r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA"
+      ></mux-player>`);
+
+      assert.equal(player.media?.getAttribute('min-bandwidth-sample-duration-ms'), '7');
+      assert.equal(player.media?.minBandwidthSampleDurationMs, 7);
+    });
+
+    it('removes the attribute when cleared via the property', async function () {
+      const player = await fixture(`<mux-player
+        min-bandwidth-sample-duration-ms="5"
+        stream-type="on-demand"
+        playback-id="r4rOE02cc95tbe3I00302nlrHfT023Q3IedFJW029w018KxZA"
+      ></mux-player>`);
+
+      assert.equal(player.minBandwidthSampleDurationMs, 5);
+
+      player.minBandwidthSampleDurationMs = undefined;
+      assert.isFalse(player.hasAttribute('min-bandwidth-sample-duration-ms'));
+      assert.equal(player.minBandwidthSampleDurationMs, undefined);
+
+      player.minBandwidthSampleDurationMs = 0;
+      assert.equal(player.getAttribute('min-bandwidth-sample-duration-ms'), '0');
+      assert.equal(player.minBandwidthSampleDurationMs, 0);
+    });
+  });
+
   it('should apply extra-playlist-params as arbitrary search params on src', async function () {
     const player = await fixture(`<mux-player
       stream-type="on-demand"
