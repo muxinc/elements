@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-astro@1.4.1...@mux/mux-uploader-astro@1.5.0) (2026-04-24)
+
+
+### Features
+
+* Include Astro v6 peer dependency ([#1316](https://github.com/muxinc/elements/issues/1316)) ([f9c62e9](https://github.com/muxinc/elements/commit/f9c62e944dc66f7adce400c23f52f7a90247591e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-uploader bumped from 1.4.1 to 1.5.0
+
 ## [1.4.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader-astro@1.4.0...@mux/mux-uploader-astro@1.4.1) (2025-12-04)
 
 
