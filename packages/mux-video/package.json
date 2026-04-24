@@ -126,7 +126,7 @@
   "dependencies": {
     "@mux/mux-data-google-ima": "^0.3.4",
     "@mux/playback-core": "0.34.0",
-    "castable-video": "~1.1.12",
+    "castable-video": "~1.1.13",
     "custom-media-element": "~1.4.6",
     "media-tracks": "~0.3.5"
   },
