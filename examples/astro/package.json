@@ -11,8 +11,8 @@
   "dependencies": {
     "@astrojs/react": "^5.0.3",
     "@astrojs/vercel": "^10.0.4",
-    "@mux/mux-player-astro": ">=3.5.3",
-    "@mux/mux-uploader-astro": ">=1.2.0",
+    "@mux/mux-player-astro": "*",
+    "@mux/mux-uploader-astro": "*",
     "astro": "^6.1.8",
     "cta-modal": "^1.1.1",
     "water.css": "^2.1.1"

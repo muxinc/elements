@@ -17,9 +17,9 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@mux/mux-player": ">=1.0.0-beta.0",
-    "@mux/mux-player-react": ">=1.0.0-beta.0",
-    "@mux/mux-video": ">=0.3.0",
+    "@mux/mux-player": "*",
+    "@mux/mux-player-react": "*",
+    "@mux/mux-video": "*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }

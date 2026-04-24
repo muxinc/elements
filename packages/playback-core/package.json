@@ -61,7 +61,7 @@
     "mux-embed": "^5.16.1"
   },
   "devDependencies": {
-    "@mux/esbuilder": "0.1.0",
+    "@mux/esbuilder": "*",
     "@open-wc/testing": "^4.0.0",
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "@typescript-eslint/parser": "^8.27.0",
