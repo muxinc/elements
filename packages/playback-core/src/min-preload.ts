@@ -43,7 +43,7 @@ export const setupMinPreload = (
   // would keep clamping playbackRate to 0 on the media element.
   addEventListenerWithTeardown(mediaEl, 'ratechange', onRateChange);
 
-  hls.on(Hls.Events.FRAG_BUFFERED, (_e: any, { frag }: any) => {
+  const onFragBuffered = (_e: any, { frag }: any) => {
     if (restored || frag.type !== 'main') return;
     mainSegmentsBuffered++;
     if (mainSegmentsBuffered >= minPreloadSegments) {
@@ -55,7 +55,26 @@ export const setupMinPreload = (
       mediaEl.removeEventListener('ratechange', onRateChange);
       mediaEl.playbackRate = userPlaybackRate;
     }
-  });
+  };
+  hls.on(Hls.Events.FRAG_BUFFERED, onFragBuffered);
+
+  // If teardown happens before the preload threshold is reached (e.g. source
+  // change, destroy), restore playbackRate so the media element isn't left
+  // pinned at 0 for any future reuse. The `ratechange` listener is already
+  // removed by addEventListenerWithTeardown, so this write won't be re-clamped.
+  // Also explicitly detach the FRAG_BUFFERED handler — `hls.destroy()` already
+  // tears down its listeners, but this guards against the case where the same
+  // hls instance outlives this preload setup.
+  mediaEl.addEventListener(
+    'teardown',
+    () => {
+      if (restored) return;
+      restored = true;
+      hls.off(Hls.Events.FRAG_BUFFERED, onFragBuffered);
+      mediaEl.playbackRate = userPlaybackRate;
+    },
+    { once: true }
+  );
 };
 
 // TCP slow start poisons the first bandwidth measurements. When set,
