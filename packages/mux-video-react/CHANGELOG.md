@@ -20,6 +20,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.0](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.30.7...@mux/mux-video-react@0.31.0) (2026-04-28)
+
+
+### Features
+
+* Add ABR startup quality attributes ([#1315](https://github.com/muxinc/elements/issues/1315)) ([3cdf0bc](https://github.com/muxinc/elements/commit/3cdf0bc7e21e3230b3ceec7a0ae9e2c6818cb4dd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.34.1 to 0.35.0
+
 ## [0.30.7](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.30.6...@mux/mux-video-react@0.30.7) (2026-04-24)
 
 

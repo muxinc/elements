@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.35.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.34.1...@mux/playback-core@0.35.0) (2026-04-28)
+
+
+### Features
+
+* Add ABR startup quality attributes ([#1315](https://github.com/muxinc/elements/issues/1315)) ([3cdf0bc](https://github.com/muxinc/elements/commit/3cdf0bc7e21e3230b3ceec7a0ae9e2c6818cb4dd))
+
 ## [0.34.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.34.0...@mux/playback-core@0.34.1) (2026-04-24)
 
 
