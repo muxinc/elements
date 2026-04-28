@@ -6,6 +6,7 @@ import { CapLevelController, ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
+import { setupMinPreload } from './min-preload';
 import { setupMediaTracks } from './media-tracks';
 import {
   setupTextTracks,
@@ -707,11 +708,8 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   loadMedia(props, mediaEl, nextHlsInstance);
   setupCuePoints(mediaEl);
   setupChapters(mediaEl);
-  const setAutoplay = setupAutoplay(
-    props as Pick<MuxMediaProps, 'autoplay' | 'minPreloadSegments'>,
-    mediaEl,
-    nextHlsInstance
-  );
+  const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  setupMinPreload(props as Pick<MuxMediaProps, 'minPreloadSegments'>, mediaEl, nextHlsInstance);
 
   const newCore = {
     engine: nextHlsInstance,

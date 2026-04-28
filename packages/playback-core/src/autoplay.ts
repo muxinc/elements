@@ -21,69 +21,10 @@ export const setupAutoplay = (
   mediaEl: HTMLMediaElement,
   hls?: PlaybackEngine
 ) => {
-  const { autoplay: maybeAutoplay, minPreloadSegments } = props;
+  const { autoplay: maybeAutoplay } = props;
   let hasPlayed = false;
   let isLive = false;
   let autoplay: Autoplay = isAutoplayValue(maybeAutoplay) ? maybeAutoplay : !!maybeAutoplay;
-
-  // When minPreloadSegments is set and we have an HLS instance, defer
-  // playback (autoplay or user-initiated) until N main segments have
-  // buffered. This gives ABR real bandwidth data and builds buffer
-  // runway before playback starts.
-  let preloadReady = true;
-  let pendingAutoplay = false;
-  let pendingUserPlay = false;
-  let selfPausing = false;
-  if (minPreloadSegments != null && minPreloadSegments > 0 && hls) {
-    preloadReady = false;
-    let mainSegmentsBuffered = 0;
-
-    const onPlay = () => {
-      if (preloadReady) return;
-      pendingUserPlay = true;
-      selfPausing = true;
-      mediaEl.pause();
-    };
-    const onPause = () => {
-      if (selfPausing) {
-        selfPausing = false;
-        return;
-      }
-      pendingUserPlay = false;
-    };
-    // Use addEventListenerWithTeardown so these are removed on `teardown`
-    // (e.g. source change). Otherwise, if the player is torn down before
-    // the preload threshold is reached, the leaked `onPlay` closure would
-    // capture `preloadReady = false` permanently and pause every future
-    // play attempt on this media element.
-    addEventListenerWithTeardown(mediaEl, 'play', onPlay);
-    addEventListenerWithTeardown(mediaEl, 'pause', onPause);
-
-    hls.on(Hls.Events.FRAG_BUFFERED, (_e: any, { frag }: any) => {
-      if (frag.type !== 'main') return;
-      mainSegmentsBuffered++;
-      if (mainSegmentsBuffered >= minPreloadSegments && !preloadReady) {
-        preloadReady = true;
-        mediaEl.removeEventListener('play', onPlay);
-        mediaEl.removeEventListener('pause', onPause);
-        if (pendingAutoplay && !hasPlayed) {
-          pendingAutoplay = false;
-          handleAutoplay(mediaEl, autoplay);
-        } else if (pendingUserPlay) {
-          pendingUserPlay = false;
-          mediaEl.play().catch(() => {});
-        }
-      }
-    });
-  }
-
-  const maybeHandleAutoplay = (el: HTMLMediaElement, ap: Autoplay) => {
-    if (preloadReady) {
-      handleAutoplay(el, ap);
-    } else if (ap) {
-      pendingAutoplay = true;
-    }
-  };
 
   const updateHasPlayed = () => {
     // hasPlayed
@@ -111,7 +52,7 @@ export const setupAutoplay = (
     () => {
       hasPlayed = false;
       updateHasPlayed();
-      maybeHandleAutoplay(mediaEl, autoplay);
+      handleAutoplay(mediaEl, autoplay);
     },
     { once: true }
   );
@@ -130,7 +71,7 @@ export const setupAutoplay = (
           isLive = !Number.isFinite(mediaEl.duration);
         }
       }
-      maybeHandleAutoplay(mediaEl, autoplay);
+      handleAutoplay(mediaEl, autoplay);
     },
     { once: true }
   );
@@ -186,7 +127,7 @@ export const setupAutoplay = (
   const updateAutoplay = (newAutoplay?: Autoplay) => {
     if (!hasPlayed) {
       autoplay = isAutoplayValue(newAutoplay) ? newAutoplay : !!newAutoplay;
-      maybeHandleAutoplay(mediaEl, autoplay);
+      handleAutoplay(mediaEl, autoplay);
     }
   };
 
