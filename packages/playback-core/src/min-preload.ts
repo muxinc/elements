@@ -20,25 +20,23 @@ export const setupMinPreload = (
   let mainSegmentsBuffered = 0;
   let restored = false;
   let userPlaybackRate = mediaEl.playbackRate || 1;
-  // Guards `ratechange` against our own internal writes so we only
-  // capture user-driven rate changes.
-  let internalRateUpdate = false;
 
-  const setRateInternal = (rate: number) => {
-    internalRateUpdate = true;
-    mediaEl.playbackRate = rate;
-    internalRateUpdate = false;
-  };
-
+  // While the listener is attached we only ever write rate=0 internally.
+  // `ratechange` is dispatched async (queued as a media element task per
+  // the HTML spec), so a synchronous "is this our own write?" flag would
+  // always be cleared by the time the event fires and cannot be used to
+  // distinguish internal vs. user-driven changes. Instead, any non-zero
+  // rate observed here must be user-driven: capture it and re-clamp to 0.
+  // The single non-zero internal write (restoration, below) happens only
+  // after the listener has been removed, preserving this invariant.
   const onRateChange = () => {
-    if (internalRateUpdate) return;
     if (mediaEl.playbackRate !== 0) {
       userPlaybackRate = mediaEl.playbackRate;
-      setRateInternal(0);
+      mediaEl.playbackRate = 0;
     }
   };
 
-  setRateInternal(0);
+  mediaEl.playbackRate = 0;
   // Use addEventListenerWithTeardown so the listener is removed on
   // `teardown` (e.g. source change). Otherwise, if the player is torn
   // down before the preload threshold is reached, the leaked listener
@@ -50,8 +48,12 @@ export const setupMinPreload = (
     mainSegmentsBuffered++;
     if (mainSegmentsBuffered >= minPreloadSegments) {
       restored = true;
+      // Remove the listener BEFORE restoring rate. The restoring write is
+      // the only non-zero internal write; if the listener were still
+      // attached, the resulting (async) `ratechange` would be misread as
+      // a user change and immediately re-clamp to 0.
       mediaEl.removeEventListener('ratechange', onRateChange);
-      setRateInternal(userPlaybackRate);
+      mediaEl.playbackRate = userPlaybackRate;
     }
   });
 };
