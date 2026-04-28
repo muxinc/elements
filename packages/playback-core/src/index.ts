@@ -6,7 +6,7 @@ import { CapLevelController, ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
-import { setupMinPreload } from './min-preload';
+import { setupMinPreload, setupInitialEstimate } from './min-preload';
 import { setupMediaTracks } from './media-tracks';
 import {
   setupTextTracks,
@@ -710,6 +710,7 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupChapters(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
   setupMinPreload(props as Pick<MuxMediaProps, 'minPreloadSegments'>, mediaEl, nextHlsInstance);
+  setupInitialEstimate(props as Pick<MuxMediaProps, 'initialEstimateSegments'>, mediaEl, nextHlsInstance);
 
   const newCore = {
     engine: nextHlsInstance,
@@ -1201,7 +1202,6 @@ export const loadMedia = (
       | 'debug'
       | 'useWebkitFairplay'
       | 'fallbackToWebkitFairplay'
-      | 'initialEstimateSegments'
     >
   >,
   mediaEl: HTMLMediaElement,
@@ -1431,23 +1431,6 @@ export const loadMedia = (
         });
       }
     });
-
-    // TCP slow start poisons the first bandwidth measurements. When set,
-    // the first N segments use the initial estimate. We reset the EWMA
-    // estimator after each of the first N-1 segments so ABR doesn't
-    // downshift from poisoned measurements before TCP is warm.
-    const initialEstimateSegments = props.initialEstimateSegments;
-    if (initialEstimateSegments != null && initialEstimateSegments > 0) {
-      let mainSegmentsBuffered = 0;
-      hls.on(Hls.Events.FRAG_BUFFERED, (_e, { frag }) => {
-        if (frag.type !== 'main') return;
-        mainSegmentsBuffered++;
-        if (mainSegmentsBuffered < initialEstimateSegments) {
-          // abrController is private in HLS.js types but accessible at runtime
-          (hls as any).abrController.resetEstimator(hls.config.abrEwmaDefaultEstimate);
-        }
-      });
-    }
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
       const error = getErrorFromHlsErrorData(data, props);

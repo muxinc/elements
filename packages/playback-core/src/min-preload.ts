@@ -55,3 +55,26 @@ export const setupMinPreload = (
     }
   });
 };
+
+// TCP slow start poisons the first bandwidth measurements. When set,
+// the first N segments use the initial estimate. We reset the EWMA
+// estimator after each of the first N-1 segments so ABR doesn't
+// downshift from poisoned measurements before TCP is warm.
+export const setupInitialEstimate = (
+  props: Partial<MuxMediaPropsInternal>,
+  _mediaEl: HTMLMediaElement,
+  hls?: PlaybackEngine
+) => {
+  const { initialEstimateSegments } = props;
+  if (initialEstimateSegments == null || initialEstimateSegments <= 0 || !hls) return;
+
+  let mainSegmentsBuffered = 0;
+  hls.on(Hls.Events.FRAG_BUFFERED, (_e: any, { frag }: any) => {
+    if (frag.type !== 'main') return;
+    mainSegmentsBuffered++;
+    if (mainSegmentsBuffered < initialEstimateSegments) {
+      // abrController is private in HLS.js types but accessible at runtime
+      (hls as any).abrController.resetEstimator(hls.config.abrEwmaDefaultEstimate);
+    }
+  });
+};
