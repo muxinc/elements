@@ -29,8 +29,8 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@mux/mux-audio": ">=0.3.0",
-		"@mux/mux-player": ">=1.0.0-beta.0",
-		"@mux/mux-video": ">=0.3.0"
+		"@mux/mux-audio": "*",
+		"@mux/mux-player": "*",
+		"@mux/mux-video": "*"
 	}
 }

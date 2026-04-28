@@ -1,6 +1,6 @@
 {
   "name": "@mux/mux-player-astro",
-  "version": "3.11.8",
+  "version": "3.12.0",
   "description": "An open source Mux player for Astro that Just Works™",
   "homepage": "https://mux.com/player",
   "repository": {
@@ -25,14 +25,14 @@
     "./ads": "./src/ads/index.ts"
   },
   "peerDependencies": {
-    "astro": "^4.0.0 || ^5.0.0"
+    "astro": "^4.0.0 || ^5.0.0 || ^6.0.0"
   },
   "dependencies": {
-    "@mux/mux-player": "3.11.8",
-    "@mux/playback-core": "0.34.0"
+    "@mux/mux-player": "3.12.0",
+    "@mux/playback-core": "0.34.1"
   },
   "devDependencies": {
-    "astro": "^5.11.0",
-    "vite": "^6.0.0"
+    "astro": "^6.1.8",
+    "vite": "^7.0.0"
   }
 }

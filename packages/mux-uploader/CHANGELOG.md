@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.4.1...@mux/mux-uploader@1.5.0) (2026-04-24)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-uploader:** Synchronize uploader versions
+
 ## [1.4.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.4.0...@mux/mux-uploader@1.4.1) (2025-12-04)
 
 

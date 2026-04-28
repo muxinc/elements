@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.11.8...@mux/mux-player-astro@3.12.0) (2026-04-24)
+
+
+### Features
+
+* Include Astro v6 peer dependency ([#1316](https://github.com/muxinc/elements/issues/1316)) ([f9c62e9](https://github.com/muxinc/elements/commit/f9c62e944dc66f7adce400c23f52f7a90247591e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.11.8 to 3.12.0
+    * @mux/playback-core bumped from 0.34.0 to 0.34.1
+
 ## [3.11.8](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.11.7...@mux/mux-player-astro@3.11.8) (2026-04-16)
 
 

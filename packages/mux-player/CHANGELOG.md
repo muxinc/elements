@@ -48,6 +48,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.8...@mux/mux-player@3.12.0) (2026-04-24)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 3 updates ([#1318](https://github.com/muxinc/elements/issues/1318)) ([f3dac22](https://github.com/muxinc/elements/commit/f3dac22aafc0d3639ad98f8d0bfd8e0d6768a738))
+* use * for workspace-sibling deps to unblock canary releases ([#1322](https://github.com/muxinc/elements/issues/1322)) ([197e044](https://github.com/muxinc/elements/commit/197e044bef18f785bb534356e511922e28caab11))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.6 to 0.30.7
+    * @mux/playback-core bumped from 0.34.0 to 0.34.1
+
 ## [3.11.8](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.7...@mux/mux-player@3.11.8) (2026-04-16)
 
 
