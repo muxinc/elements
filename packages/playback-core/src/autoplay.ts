@@ -51,8 +51,13 @@ export const setupAutoplay = (
       }
       pendingUserPlay = false;
     };
-    mediaEl.addEventListener('play', onPlay);
-    mediaEl.addEventListener('pause', onPause);
+    // Use addEventListenerWithTeardown so these are removed on `teardown`
+    // (e.g. source change). Otherwise, if the player is torn down before
+    // the preload threshold is reached, the leaked `onPlay` closure would
+    // capture `preloadReady = false` permanently and pause every future
+    // play attempt on this media element.
+    addEventListenerWithTeardown(mediaEl, 'play', onPlay);
+    addEventListenerWithTeardown(mediaEl, 'pause', onPause);
 
     hls.on(Hls.Events.FRAG_BUFFERED, (_e: any, { frag }: any) => {
       if (frag.type !== 'main') return;
