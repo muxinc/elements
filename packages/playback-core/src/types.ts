@@ -202,6 +202,9 @@ export type MuxMediaPropTypes = {
   assetEndTime: number;
   renditionOrder: RenditionOrderValue;
   startTime: Hls['config']['startPosition'];
+  initialBandwidthEstimateKbps: number;
+  initialEstimateSegments: number;
+  minPreloadSegments: number;
   streamType: ValueOf<StreamTypes>;
   targetLiveWindow: number;
   tokens: Tokens;

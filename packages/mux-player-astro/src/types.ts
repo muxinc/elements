@@ -86,6 +86,9 @@ export type MuxPlayerProps = {
   defaultStreamType?: ValueOf<StreamTypes>;
   targetLiveWindow?: number;
   startTime?: number;
+  initialBandwidthEstimateKbps?: number;
+  initialEstimateSegments?: number;
+  minPreloadSegments?: number;
   storyboardSrc?: string;
   preferCmcd?: ValueOf<CmcdTypes> | undefined;
 } & astroHTML.JSX.HTMLAttributes;

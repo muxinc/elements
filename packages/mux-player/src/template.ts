@@ -128,6 +128,11 @@ export const content = (props: MuxTemplateProps) => html`
       disable-cookies="${props.disableCookies ?? false}"
       prefer-playback="${props.preferPlayback ?? false}"
       start-time="${props.startTime != null ? props.startTime : false}"
+      initial-bandwidth-estimate-kbps="${props.initialBandwidthEstimateKbps != null
+        ? props.initialBandwidthEstimateKbps
+        : false}"
+      initial-estimate-segments="${props.initialEstimateSegments != null ? props.initialEstimateSegments : false}"
+      min-preload-segments="${props.minPreloadSegments != null ? props.minPreloadSegments : false}"
       beacon-collection-domain="${props.beaconCollectionDomain ?? false}"
       player-init-time="${props.playerInitTime ?? false}"
       player-software-name="${props.playerSoftwareName ?? false}"

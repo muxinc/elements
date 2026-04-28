@@ -84,6 +84,9 @@ export const Attributes = {
   TYPE: 'type',
   LOGO: 'logo',
   CAP_RENDITION_TO_PLAYER_SIZE: 'cap-rendition-to-player-size',
+  INITIAL_BANDWIDTH_ESTIMATE_KBPS: 'initial-bandwidth-estimate-kbps',
+  INITIAL_ESTIMATE_SEGMENTS: 'initial-estimate-segments',
+  MIN_PRELOAD_SEGMENTS: 'min-preload-segments',
 } as const;
 
 const AttributeNameValues = Object.values(Attributes);
@@ -369,6 +372,54 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       this.removeAttribute(Attributes.START_TIME);
     } else {
       this.setAttribute(Attributes.START_TIME, `${val}`);
+    }
+  }
+
+  get initialBandwidthEstimateKbps(): number | undefined {
+    const val = this.getAttribute(Attributes.INITIAL_BANDWIDTH_ESTIMATE_KBPS);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set initialBandwidthEstimateKbps(val: number | undefined) {
+    if (val === this.initialBandwidthEstimateKbps) return;
+    if (val == null) {
+      this.removeAttribute(Attributes.INITIAL_BANDWIDTH_ESTIMATE_KBPS);
+    } else {
+      this.setAttribute(Attributes.INITIAL_BANDWIDTH_ESTIMATE_KBPS, `${val}`);
+    }
+  }
+
+  get initialEstimateSegments(): number | undefined {
+    const val = this.getAttribute(Attributes.INITIAL_ESTIMATE_SEGMENTS);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set initialEstimateSegments(val: number | undefined) {
+    if (val === this.initialEstimateSegments) return;
+    if (val == null) {
+      this.removeAttribute(Attributes.INITIAL_ESTIMATE_SEGMENTS);
+    } else {
+      this.setAttribute(Attributes.INITIAL_ESTIMATE_SEGMENTS, `${val}`);
+    }
+  }
+
+  get minPreloadSegments(): number | undefined {
+    const val = this.getAttribute(Attributes.MIN_PRELOAD_SEGMENTS);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set minPreloadSegments(val: number | undefined) {
+    if (val === this.minPreloadSegments) return;
+    if (val == null) {
+      this.removeAttribute(Attributes.MIN_PRELOAD_SEGMENTS);
+    } else {
+      this.setAttribute(Attributes.MIN_PRELOAD_SEGMENTS, `${val}`);
     }
   }
 
