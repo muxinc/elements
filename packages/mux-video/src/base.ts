@@ -796,6 +796,14 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     if (this.#loadRequested) return;
     await (this.#loadRequested = Promise.resolve());
     this.#loadRequested = null;
+    // Defer load() until the element is connected to the document. A parent
+    // custom element (e.g. <mux-player>) propagates `metadata-*` attributes via
+    // its own connectedCallback, which fires before this element's
+    // connectedCallback in tree order. Without this guard, an `await` between
+    // setAttribute and appendChild lets load() — and thus the first Mux Data
+    // beacon — fire with empty metadata. The connectedCallback re-invokes
+    // #requestLoad() once we're connected.
+    if (!this.isConnected) return;
     this.load();
   }
 
