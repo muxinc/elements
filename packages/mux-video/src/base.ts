@@ -959,6 +959,10 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         break;
       case Attributes.DISABLE_TRACKING: {
         if (newValue == null || newValue !== oldValue) {
+          // Skip unload/reload when disconnected: #requestLoad() bails on !isConnected,
+          // so the .then() would fire without a corresponding load(). connectedCallback
+          // will trigger #requestLoad() with the updated tracking setting when connected.
+          if (!this.isConnected) break;
           const currentTime = this.currentTime;
           const paused = this.paused;
           this.unload();
