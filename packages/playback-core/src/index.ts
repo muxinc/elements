@@ -6,6 +6,7 @@ import { CapLevelController, ErrorData, HlsConfig } from 'hls.js';
 import { MediaError, MuxErrorCategory, MuxErrorCode, errorCategoryToTokenNameOrPrefix } from './errors';
 import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
+import { setupMinPreload, setupInitialEstimate } from './min-preload';
 import { setupMediaTracks } from './media-tracks';
 import {
   setupTextTracks,
@@ -708,6 +709,8 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   setupCuePoints(mediaEl);
   setupChapters(mediaEl);
   const setAutoplay = setupAutoplay(props as Pick<MuxMediaProps, 'autoplay'>, mediaEl, nextHlsInstance);
+  setupMinPreload(props as Pick<MuxMediaProps, 'minPreloadSegments'>, mediaEl, nextHlsInstance);
+  setupInitialEstimate(props as Pick<MuxMediaProps, 'initialEstimateSegments'>, mediaEl, nextHlsInstance);
 
   const newCore = {
     engine: nextHlsInstance,
@@ -797,6 +800,7 @@ export const setupHls = (
       | 'drmTypeCb'
       | 'maxAutoResolution'
       | 'capRenditionToPlayerSize'
+      | 'initialBandwidthEstimateKbps'
     >
   >,
   mediaEl: HTMLMediaElement
@@ -809,6 +813,7 @@ export const setupHls = (
     preferCmcd,
     _hlsConfig = {},
     maxAutoResolution,
+    initialBandwidthEstimateKbps,
   } = props;
   const type = getType(props);
   const hlsType = type === ExtensionMimeTypeMap.M3U8;
@@ -821,6 +826,7 @@ export const setupHls = (
       renderTextTracksNatively: false,
       liveDurationInfinity: true,
       capLevelOnFPSDrop: true,
+      ...(initialBandwidthEstimateKbps != null ? { abrEwmaDefaultEstimate: initialBandwidthEstimateKbps * 1000 } : {}),
     };
     const streamTypeConfig = getStreamTypeConfig(streamType);
     const drmConfig = getDRMConfig(props);
