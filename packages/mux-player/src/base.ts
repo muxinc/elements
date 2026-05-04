@@ -165,6 +165,9 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     playerSoftwareName: el.playerSoftwareName,
     playerSoftwareVersion: el.playerSoftwareVersion,
     startTime: el.startTime,
+    initialBandwidthEstimateKbps: el.initialBandwidthEstimateKbps,
+    initialEstimateSegments: el.initialEstimateSegments,
+    minPreloadSegments: el.minPreloadSegments,
     preferPlayback: el.preferPlayback,
     audio: el.audio,
     defaultStreamType: el.defaultStreamType,
@@ -1667,6 +1670,42 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
    */
   set startTime(val) {
     this.setAttribute(MuxVideoAttributes.START_TIME, `${val}`);
+  }
+
+  get initialBandwidthEstimateKbps() {
+    return toNumberOrUndefined(getVideoAttribute(this, MuxVideoAttributes.INITIAL_BANDWIDTH_ESTIMATE_KBPS));
+  }
+
+  set initialBandwidthEstimateKbps(val) {
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.INITIAL_BANDWIDTH_ESTIMATE_KBPS);
+    } else {
+      this.setAttribute(MuxVideoAttributes.INITIAL_BANDWIDTH_ESTIMATE_KBPS, `${val}`);
+    }
+  }
+
+  get initialEstimateSegments() {
+    return toNumberOrUndefined(getVideoAttribute(this, MuxVideoAttributes.INITIAL_ESTIMATE_SEGMENTS));
+  }
+
+  set initialEstimateSegments(val) {
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.INITIAL_ESTIMATE_SEGMENTS);
+    } else {
+      this.setAttribute(MuxVideoAttributes.INITIAL_ESTIMATE_SEGMENTS, `${val}`);
+    }
+  }
+
+  get minPreloadSegments() {
+    return toNumberOrUndefined(getVideoAttribute(this, MuxVideoAttributes.MIN_PRELOAD_SEGMENTS));
+  }
+
+  set minPreloadSegments(val) {
+    if (val == null) {
+      this.removeAttribute(MuxVideoAttributes.MIN_PRELOAD_SEGMENTS);
+    } else {
+      this.setAttribute(MuxVideoAttributes.MIN_PRELOAD_SEGMENTS, `${val}`);
+    }
   }
 
   get preferPlayback(): ValueOf<PlaybackTypes> | undefined {

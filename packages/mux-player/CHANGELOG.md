@@ -48,6 +48,52 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.12.0...@mux/mux-player@3.13.0) (2026-04-28)
+
+
+### Features
+
+* Add ABR startup quality attributes ([#1315](https://github.com/muxinc/elements/issues/1315)) ([3cdf0bc](https://github.com/muxinc/elements/commit/3cdf0bc7e21e3230b3ceec7a0ae9e2c6818cb4dd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.7 to 0.31.0
+    * @mux/playback-core bumped from 0.34.1 to 0.35.0
+
+## [3.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.8...@mux/mux-player@3.12.0) (2026-04-24)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 2 directories with 3 updates ([#1318](https://github.com/muxinc/elements/issues/1318)) ([f3dac22](https://github.com/muxinc/elements/commit/f3dac22aafc0d3639ad98f8d0bfd8e0d6768a738))
+* use * for workspace-sibling deps to unblock canary releases ([#1322](https://github.com/muxinc/elements/issues/1322)) ([197e044](https://github.com/muxinc/elements/commit/197e044bef18f785bb534356e511922e28caab11))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.6 to 0.30.7
+    * @mux/playback-core bumped from 0.34.0 to 0.34.1
+
+## [3.11.8](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.7...@mux/mux-player@3.11.8) (2026-04-16)
+
+
+### Bug Fixes
+
+* Address failing tests ([#1305](https://github.com/muxinc/elements/issues/1305)) ([d0a9ef1](https://github.com/muxinc/elements/commit/d0a9ef1fa06bcdde20b4fe8a7d9e4a2204d14b89))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.30.5 to 0.30.6
+    * @mux/playback-core bumped from 0.33.3 to 0.34.0
+
 ## [3.11.7](https://github.com/muxinc/elements/compare/@mux/mux-player@3.11.6...@mux/mux-player@3.11.7) (2026-03-25)
 
 

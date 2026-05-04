@@ -1,5 +1,50 @@
 # Changelog
 
+## [3.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.12.0...@mux/mux-player-astro@3.13.0) (2026-04-28)
+
+
+### Features
+
+* Add ABR startup quality attributes ([#1315](https://github.com/muxinc/elements/issues/1315)) ([3cdf0bc](https://github.com/muxinc/elements/commit/3cdf0bc7e21e3230b3ceec7a0ae9e2c6818cb4dd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.12.0 to 3.13.0
+    * @mux/playback-core bumped from 0.34.1 to 0.35.0
+
+## [3.12.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.11.8...@mux/mux-player-astro@3.12.0) (2026-04-24)
+
+
+### Features
+
+* Include Astro v6 peer dependency ([#1316](https://github.com/muxinc/elements/issues/1316)) ([f9c62e9](https://github.com/muxinc/elements/commit/f9c62e944dc66f7adce400c23f52f7a90247591e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.11.8 to 3.12.0
+    * @mux/playback-core bumped from 0.34.0 to 0.34.1
+
+## [3.11.8](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.11.7...@mux/mux-player-astro@3.11.8) (2026-04-16)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-astro:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.11.7 to 3.11.8
+    * @mux/playback-core bumped from 0.33.3 to 0.34.0
+
 ## [3.11.7](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.11.6...@mux/mux-player-astro@3.11.7) (2026-03-25)
 
 

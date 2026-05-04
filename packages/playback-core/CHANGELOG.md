@@ -40,6 +40,32 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.35.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.34.1...@mux/playback-core@0.35.0) (2026-04-28)
+
+
+### Features
+
+* Add ABR startup quality attributes ([#1315](https://github.com/muxinc/elements/issues/1315)) ([3cdf0bc](https://github.com/muxinc/elements/commit/3cdf0bc7e21e3230b3ceec7a0ae9e2c6818cb4dd))
+
+## [0.34.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.34.0...@mux/playback-core@0.34.1) (2026-04-24)
+
+
+### Bug Fixes
+
+* use * for workspace-sibling deps to unblock canary releases ([#1322](https://github.com/muxinc/elements/issues/1322)) ([197e044](https://github.com/muxinc/elements/commit/197e044bef18f785bb534356e511922e28caab11))
+
+## [0.34.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.33.3...@mux/playback-core@0.34.0) (2026-04-16)
+
+
+### Features
+
+* Support relative urls on multivariant playlists ([#1303](https://github.com/muxinc/elements/issues/1303)) ([f4586aa](https://github.com/muxinc/elements/commit/f4586aaa3ced600c68c35db815390dde9ef12043))
+
+
+### Bug Fixes
+
+* Address failing tests ([#1305](https://github.com/muxinc/elements/issues/1305)) ([d0a9ef1](https://github.com/muxinc/elements/commit/d0a9ef1fa06bcdde20b4fe8a7d9e4a2204d14b89))
+
 ## [0.33.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.33.2...@mux/playback-core@0.33.3) (2026-03-19)
 
 
