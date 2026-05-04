@@ -1702,7 +1702,7 @@ const getErrorFromHlsErrorData = (
       mediaError.muxCode = MuxErrorCode.ENCRYPTED_UPDATE_SERVER_CERT_FAILED;
     } else if (data.details === Hls.ErrorDetails.KEY_SYSTEM_STATUS_INTERNAL_ERROR) {
       const message = i18n(
-        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, updating your browser, or playing in another browser.'
       );
       mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, data.fatal);
       mediaError.errorCategory = MuxErrorCategory.DRM;
