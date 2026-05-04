@@ -11,8 +11,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // (require.resolve respects exports, so we can't use a subpath directly)
 const muxEmbedMain = require.resolve('mux-embed');
 let pkgRoot = dirname(muxEmbedMain);
-while (pkgRoot !== '/' && !existsSync(join(pkgRoot, 'package.json'))) {
-  pkgRoot = dirname(pkgRoot);
+while (!existsSync(join(pkgRoot, 'package.json'))) {
+  const parent = dirname(pkgRoot);
+  if (parent === pkgRoot) {
+    throw new Error(`Could not find mux-embed package.json starting from ${muxEmbedMain}`);
+  }
+  pkgRoot = parent;
 }
 
 const SOURCE = join(pkgRoot, 'dist/types/mux-embed.d.ts');
