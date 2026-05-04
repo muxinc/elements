@@ -3,7 +3,9 @@
 // Run `npm run vendor:types` to refresh.
 
 declare module 'mux-embed' {
-  type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R ? (...args: P) => R : never;
+  type OmitFirstArg<F> = F extends (x: any, ...args: infer P) => infer R
+    ? (...args: P) => R
+    : never;
 
   // NOTE: These are minimal definitions to add some type safety, avoid version conflicts, and avoid
   // pulling in optional peer dependencies for types. A more robust version should declare the minimal expected
@@ -825,7 +827,15 @@ declare module 'mux-embed' {
   };
 
   export type NetworkEvent = {
-    request_type?: 'manifest' | 'video' | 'audio' | 'video_init' | 'audio_init' | 'media' | 'subtitle' | 'encryption';
+    request_type?:
+      | 'manifest'
+      | 'video'
+      | 'audio'
+      | 'video_init'
+      | 'audio_init'
+      | 'media'
+      | 'subtitle'
+      | 'encryption';
     request_start?: number;
     request_hostname?: string;
     request_event_type?: string;
