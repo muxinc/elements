@@ -1,5 +1,5 @@
 /* eslint @typescript-eslint/triple-slash-reference: "off" */
-/// <reference types="mux-embed" preserve="true" />
+/// <reference path="./vendor/mux-embed.ts" preserve="true" />
 import type { Options, Mux } from 'mux-embed';
 import type { MediaError } from './errors';
 import type { HlsConfig } from 'hls.js';
