@@ -54,6 +54,7 @@ jobs:
           node-version: ${{steps.nvmrc.outputs.NODE_VERSION}}
           cache: npm
       - run: npm ci
+      - run: npm run verify:vendor -w @mux/playback-core
       - run: npm run lint
 
   test:

@@ -19,11 +19,20 @@ while (!existsSync(join(pkgRoot, 'package.json'))) {
   pkgRoot = parent;
 }
 
+const pkg = JSON.parse(await readFile(join(pkgRoot, 'package.json'), 'utf8'));
+if (pkg.name !== 'mux-embed') {
+  throw new Error(`Found package.json at ${pkgRoot}, but it is "${pkg.name}", not mux-embed`);
+}
+
 const SOURCE = join(pkgRoot, 'dist/types/mux-embed.d.ts');
 const DEST = resolve(__dirname, '../src/vendor/mux-embed.ts');
-const HEADER = `// AUTO-GENERATED — do not edit.\n// Source: mux-embed/dist/types/mux-embed.d.ts\n// Run \`npm run vendor:types\` to refresh.\n\n`;
+const HEADER = `// AUTO-GENERATED — do not edit.
+// Source: mux-embed@${pkg.version} / dist/types/mux-embed.d.ts
+// Run \`npm run vendor:types\` to refresh.
+
+`;
 
 const content = await readFile(SOURCE, 'utf8');
 await mkdir(dirname(DEST), { recursive: true });
 await writeFile(DEST, HEADER + content);
-console.log(`Vendored mux-embed types -> ${DEST}`);
+console.log(`Vendored mux-embed@${pkg.version} types -> ${DEST}`);
