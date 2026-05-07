@@ -1,5 +1,5 @@
 // AUTO-GENERATED — do not edit.
-// Source: mux-embed/dist/types/mux-embed.d.ts
+// Source: mux-embed@5.16.1 / dist/types/mux-embed.d.ts
 // Run `npm run vendor:types` to refresh.
 
 declare module 'mux-embed' {
