@@ -40,7 +40,7 @@
     "build:packages": "turbo run build --filter '!./examples/*'",
     "build": "turbo run build",
     "i18n": "turbo run i18n",
-    "prepare": "husky"
+    "prepare": "husky && npm run vendor:types -w @mux/playback-core"
   },
   "packageManager": "npm@11.2.0"
 }
