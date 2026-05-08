@@ -52,7 +52,6 @@
     "build:cjs": "esbuilder src/index.ts --sourcemap --format=cjs --out-extension:.js=.cjs.js --external:mux-embed --external:hls.js",
     "build:iife": "esbuilder src/index.ts --sourcemap --format=iife --outfile=./dist/playback-core.js",
     "vendor:types": "node ./scripts/vendor-mux-embed-types.mjs",
-    "verify:vendor": "node ./scripts/verify-vendor-drift.mjs",
     "prebuild:types": "npm run vendor:types && shx mkdir -p ./dist/types",
     "build:types": "tsc",
     "postbuild:types": "downlevel-dts ./dist/types ./dist/types-ts3.4 --to=3.4",

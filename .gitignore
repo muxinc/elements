@@ -130,6 +130,9 @@ dist
 # ignore polyfills copy
 packages/*/src/polyfills
 
+# Vendored mux-embed types — regenerated on install via root prepare hook
+packages/playback-core/src/vendor/mux-embed.ts
+
 .turbo
 examples/astro/.vercel/
 
