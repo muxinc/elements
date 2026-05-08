@@ -182,7 +182,7 @@ export const setupEmeNativeFairplayDRM = ({
         let mediaError;
         if (mediaKeyStatus === 'internal-error') {
           const message = i18n(
-            'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+            'The DRM Content Decryption Module system had an internal failure. Try reloading the page, updating your browser, or playing in another browser.'
           );
           mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
           mediaError.errorCategory = MuxErrorCategory.DRM;
