@@ -847,14 +847,6 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
     if (this.#loadRequested) return;
     await (this.#loadRequested = Promise.resolve());
     this.#loadRequested = null;
-    // Defer load() until the element is connected to the document. A parent
-    // custom element (e.g. <mux-player>) propagates `metadata-*` attributes via
-    // its own connectedCallback, which fires before this element's
-    // connectedCallback in tree order. Without this guard, an `await` between
-    // setAttribute and appendChild lets load() — and thus the first Mux Data
-    // beacon — fire with empty metadata. The connectedCallback re-invokes
-    // #requestLoad() once we're connected.
-    if (!this.isConnected) return;
     this.load();
   }
 
@@ -959,10 +951,6 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
         break;
       case Attributes.DISABLE_TRACKING: {
         if (newValue == null || newValue !== oldValue) {
-          // Skip unload/reload when disconnected: #requestLoad() bails on !isConnected,
-          // so the .then() would fire without a corresponding load(). connectedCallback
-          // will trigger #requestLoad() with the updated tracking setting when connected.
-          if (!this.isConnected) break;
           const currentTime = this.currentTime;
           const paused = this.paused;
           this.unload();

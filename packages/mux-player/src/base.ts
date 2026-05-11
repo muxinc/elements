@@ -422,6 +422,30 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
     this.media?.addEventListener('loadstart', this.#onLoadStart);
+
+    // Propagate any metadata-* attrs that were set before #init() ran (e.g. before
+    // the first attributeChangedCallback for playback-id created this.media).
+    if (this.media) {
+      this.media.metadata = getMetadataFromAttrs(this);
+    }
+  }
+
+  setAttribute(name: string, value: string): void {
+    super.setAttribute(name, value);
+    // metadata-* attrs are not in observedAttributes (open-ended set), so
+    // attributeChangedCallback never fires for them. Propagate synchronously here
+    // so that mux-video's load() microtask sees updated metadata even when
+    // appendChild is delayed by an async yield between setAttribute and append.
+    if (name.startsWith('metadata-') && this.media) {
+      this.media.metadata = getMetadataFromAttrs(this);
+    }
+  }
+
+  removeAttribute(name: string): void {
+    super.removeAttribute(name);
+    if (name.startsWith('metadata-') && this.media) {
+      this.media.metadata = getMetadataFromAttrs(this);
+    }
   }
 
   #setupCSSProperties() {
