@@ -141,7 +141,7 @@ export const setupWebkitNativeFairplayDRM = ({
       console.error(`Internal Webkit Key Session Error - sysCode: ${error.systemCode} code: ${error.code}`);
 
       const message = i18n(
-        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, upading your browser, or playing in another browser.'
+        'The DRM Content Decryption Module system had an internal failure. Try reloading the page, updating your browser, or playing in another browser.'
       );
       const mediaError = new MediaError(message, MediaError.MEDIA_ERR_ENCRYPTED, true);
       mediaError.errorCategory = MuxErrorCategory.DRM;

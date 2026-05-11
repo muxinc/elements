@@ -6,3 +6,4 @@ examples
 *.sublime-*
 *.vscode*
 *.md
+packages/playback-core/src/vendor
