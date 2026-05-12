@@ -50,6 +50,9 @@ const muxMediaErrorToDialogTitle = (mediaError: MediaError, translate = false) =
 };
 
 const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false) => {
+  if (mediaError.reload) {
+    return `Try again later or <a href="#" data-mux-reload style="color: #4a90e2;">click here to retry</a>`;
+  }
   if (mediaError.muxCode) {
     const category = capitalizeFirstLetter(mediaError.errorCategory ?? 'video');
     const tokenNamePrefix = errorCategoryToTokenNameOrPrefix(mediaError.errorCategory ?? MuxErrorCategory.VIDEO);
