@@ -31,6 +31,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.1](https://github.com/muxinc/elements/compare/@mux/mux-video@0.31.0...@mux/mux-video@0.31.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* Added a warning when tracks are being added before player init ([#1317](https://github.com/muxinc/elements/issues/1317)) ([095f04c](https://github.com/muxinc/elements/commit/095f04ca9a2f19001f6cec6ae5d4100e54ecd4a5))
+* resolve TypeScript errors with moduleResolution nodenext and skipLibCheck false ([#1313](https://github.com/muxinc/elements/issues/1313)) ([243cf1e](https://github.com/muxinc/elements/commit/243cf1e669b065b0bed3a5f94913d4c8e726723e))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.35.0 to 0.35.1
+
 ## [0.31.0](https://github.com/muxinc/elements/compare/@mux/mux-video@0.30.7...@mux/mux-video@0.31.0) (2026-04-28)
 
 

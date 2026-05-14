@@ -40,6 +40,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.35.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.0...@mux/playback-core@0.35.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* correct typo in DRM CDM error message ([#1328](https://github.com/muxinc/elements/issues/1328)) ([70dcbd3](https://github.com/muxinc/elements/commit/70dcbd31316aa410890483f97fbee0fbea6a1a7e))
+* remove inline onclick CSP violation in retry link ([#1332](https://github.com/muxinc/elements/issues/1332)) ([65d44fc](https://github.com/muxinc/elements/commit/65d44fcea631ff7d1bbc70782eeefefb36918d42))
+* resolve TypeScript errors with moduleResolution nodenext and skipLibCheck false ([#1313](https://github.com/muxinc/elements/issues/1313)) ([243cf1e](https://github.com/muxinc/elements/commit/243cf1e669b065b0bed3a5f94913d4c8e726723e))
+
 ## [0.35.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.34.1...@mux/playback-core@0.35.0) (2026-04-28)
 
 
