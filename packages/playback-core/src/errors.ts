@@ -81,6 +81,7 @@ export class MediaError extends Error {
   fatal: boolean;
   data?: any;
   streamType?: 'live' | 'on-demand' | 'unknown';
+  reload?: boolean;
 
   constructor(message?: Stringable, code: number = MediaError.MEDIA_ERR_CUSTOM, fatal?: boolean, context?: string) {
     super(message);
