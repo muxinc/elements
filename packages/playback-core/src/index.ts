@@ -1464,12 +1464,9 @@ export const loadMedia = (
         } else {
           state.retryCount = 0;
           // New error with the retry link
-          const retryLinkError = new MediaError(
-            'Try again later or <a href="#" onclick="window.location.reload(); return false;" style="color: #4a90e2;">click here to retry</a>',
-            error.code,
-            error.fatal
-          );
+          const retryLinkError = new MediaError('Network error, try reloading.', error.code, error.fatal);
           Object.assign(retryLinkError, error);
+          retryLinkError.reload = true;
           saveAndDispatchError(mediaEl, retryLinkError);
           return;
         }

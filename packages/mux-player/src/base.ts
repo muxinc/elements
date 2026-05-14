@@ -298,6 +298,13 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   #onStreamTypeChange = () => this.#render();
   #onLoadStart = () => this.#render();
   #onTrackCountChange = () => this.#render();
+  #onReloadClick = (event: MouseEvent) => {
+    const target = event.composedPath().find((el) => (el as Element)?.hasAttribute?.('data-mux-reload'));
+    if (target) {
+      event.preventDefault();
+      window.location.reload();
+    }
+  };
   #captionsMovementCleanup?: () => void;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
@@ -489,6 +496,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.media?.removeEventListener('streamtypechange', this.#onStreamTypeChange);
     this.media?.removeEventListener('loadstart', this.#onLoadStart);
     this.removeEventListener('error', this.#onError);
+    this.removeEventListener('click', this.#onReloadClick);
     if (this.media) {
       this.media.errorTranslator = undefined;
     }
@@ -540,6 +548,7 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     // Keep this event listener on mux-player instead of calling onError directly
     // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', this.#onError);
+    this.addEventListener('click', this.#onReloadClick);
 
     /** @TODO Push errorTranslator logic down to playback-core. Should be able to use MediaError message + context + code (muxCode?) (CJP) */
     if (this.media) {
