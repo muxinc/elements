@@ -48,6 +48,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.13.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.0...@mux/mux-player@3.13.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* defer load() until connected to prevent metadata race on first Mux Data beacon ([#1326](https://github.com/muxinc/elements/issues/1326)) ([1cca3ad](https://github.com/muxinc/elements/commit/1cca3ad431fa12ca08f2a707e1265ae2f1709928))
+* remove inline onclick CSP violation in retry link ([#1332](https://github.com/muxinc/elements/issues/1332)) ([65d44fc](https://github.com/muxinc/elements/commit/65d44fcea631ff7d1bbc70782eeefefb36918d42))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.31.0 to 0.31.1
+    * @mux/playback-core bumped from 0.35.0 to 0.35.1
+
 ## [3.13.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.12.0...@mux/mux-player@3.13.0) (2026-04-28)
 
 
