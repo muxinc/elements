@@ -90,8 +90,6 @@ jobs:
           SLACK_ICON: https://avatars.githubusercontent.com/muxinc?size=48
           SLACK_FOOTER: ''
 
-  # Canary prereleases run from this (the trusted-publisher) workflow rather than
-  # CI, because npm trusted publishing only trusts a single workflow per package.
   canary:
     # Only publish canaries from main, and never on the Release Please commit
     # (that path publishes the real release via `release` above).
@@ -117,7 +115,4 @@ jobs:
       - run: npm ci
       - run: npm run clean
       - run: npm run build:packages
-      # Auth is handled by npm trusted publishing (OIDC) via `id-token: write`.
-      # Do not add NODE_AUTH_TOKEN here — the long-lived NPM token is unused and
-      # flagged by security scanning.
       - run: npx --yes -w packages wet-run@1.2.5 release prerelease --prerelease canary --provenance --log-level verbose
