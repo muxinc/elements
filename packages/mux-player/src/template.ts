@@ -108,8 +108,6 @@ export const content = (props: MuxTemplateProps) => html`
     videotitle="${props.videoTitle ?? false}"
     proudlydisplaymuxbadge="${props.proudlyDisplayMuxBadge ?? false}"
     exportparts="${partsListStr}"
-    onclose="${props.onCloseErrorDialog}"
-    onfocusin="${props.onFocusInErrorDialog}"
   >
     <mux-video
       slot="media"
