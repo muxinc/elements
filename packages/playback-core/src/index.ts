@@ -1441,6 +1441,9 @@ export const loadMedia = (
     // non-fatal "Reconnecting..." state meanwhile, and treat `online` as a fast path.
     const MAX_NETWORK_RECOVERY_RETRIES = 6; // ~1s + 2s + 4s + 8s + 16s + 30s of retries
     let networkRecoveryTimer: ReturnType<typeof setTimeout> | undefined;
+    // Dedicated counter: `state.retryCount` is owned by the NETWORK_NOT_READY (412) handler,
+    // so reusing it would let the two backoff schedules collide.
+    let networkRecoveryRetries = 0;
 
     const clearNetworkRecoveryTimer = () => {
       if (networkRecoveryTimer != null) {
@@ -1466,14 +1469,10 @@ export const loadMedia = (
     };
 
     const scheduleNetworkRecovery = () => {
-      const state = muxMediaState.get(mediaEl);
-      if (!state) return;
-      const retryCount = state.retryCount ?? 0;
-
-      if (retryCount >= MAX_NETWORK_RECOVERY_RETRIES) {
+      if (networkRecoveryRetries >= MAX_NETWORK_RECOVERY_RETRIES) {
         // Give up automatic retries and surface a terminal error with a reload affordance.
         // Keep `networkError` set so a later `online` event can still recover the player.
-        state.retryCount = 0;
+        networkRecoveryRetries = 0;
         clearNetworkRecoveryTimer();
 
         const reloadError = new MediaError(i18n('Network error, try reloading.'), MediaError.MEDIA_ERR_NETWORK, true);
@@ -1484,10 +1483,10 @@ export const loadMedia = (
       }
 
       dispatchReconnecting();
-      const retryDelay = Math.min(1000 * 2 ** retryCount, 30000);
+      const retryDelay = Math.min(1000 * 2 ** networkRecoveryRetries, 30000);
       clearNetworkRecoveryTimer();
       networkRecoveryTimer = setTimeout(() => {
-        state.retryCount = retryCount + 1;
+        networkRecoveryRetries += 1;
         hls.startLoad();
       }, retryDelay);
     };
@@ -1497,7 +1496,7 @@ export const loadMedia = (
     const resumeAfterReconnect = () => {
       const state = muxMediaState.get(mediaEl);
       if (!state?.networkError) return;
-      state.retryCount = 0;
+      networkRecoveryRetries = 0;
       clearNetworkRecoveryTimer();
       hls.startLoad();
     };
@@ -1511,7 +1510,7 @@ export const loadMedia = (
       if (!state) return;
       if (!state.networkError && !isReconnectingError(state.error as MediaError)) return;
       state.networkError = false;
-      state.retryCount = 0;
+      networkRecoveryRetries = 0;
       clearNetworkRecoveryTimer();
       if (state.error) {
         state.error = null;
@@ -1577,16 +1576,14 @@ export const loadMedia = (
         const isConnectivityError =
           error.muxCode === MuxErrorCode.NETWORK_OFFLINE || !data.response || httpStatus >= 500;
 
-        if (isConnectivityError) {
+        // hls.js retries non-fatal errors internally, so only take over once it has given up
+        // (fatal). Arm recovery (incl. the `online` fast path via `networkError`) only then,
+        // so a reconnect can't call startLoad() while hls.js is still handling its own retries.
+        if (isConnectivityError && data.fatal) {
           const state = muxMediaState.get(mediaEl);
           if (state) state.networkError = true;
-
-          // hls.js retries non-fatal errors internally, so only take over once it has given
-          // up (fatal): attempt recovery instead of surfacing a terminal error and stalling.
-          if (data.fatal) {
-            scheduleNetworkRecovery();
-            return;
-          }
+          scheduleNetworkRecovery();
+          return;
         }
       }
 
@@ -1594,8 +1591,14 @@ export const loadMedia = (
     });
 
     hls.on(Hls.Events.MANIFEST_LOADED, () => {
+      // A successful (re)load means any interruption is over. Stop network recovery so a later
+      // `online` event doesn't needlessly restart loading.
+      networkRecoveryRetries = 0;
+      clearNetworkRecoveryTimer();
+
       // Clear error state and UI
       const state = muxMediaState.get(mediaEl);
+      if (state) state.networkError = false;
       if (state && state.error) {
         state.error = null;
         state.retryCount = 0;
