@@ -16,6 +16,7 @@ import {
   toPlaybackIdFromSrc,
   getCapLevelControllerConfig,
 } from '../src/index.ts';
+import { MuxErrorCode } from '../src/errors.ts';
 
 describe('playback core', function () {
   let video;
@@ -75,6 +76,88 @@ describe('playback core', function () {
       ? video.error.message
       : MediaError.defaultMessages[MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED];
     assert.equal(getError(video).message, expectedMessage);
+  });
+
+  it('recovers from a network interruption and surfaces a reconnecting state', async function () {
+    const core = initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+      },
+      video
+    );
+    const hls = core.engine;
+
+    let startLoadCount = 0;
+    const originalStartLoad = hls.startLoad.bind(hls);
+    hls.startLoad = (...args) => {
+      startLoadCount++;
+      return originalStartLoad(...args);
+    };
+
+    // Simulate hls.js giving up on a fatal connectivity error (connection dropped, buffer
+    // drained). No `response` => a connectivity failure rather than an HTTP error.
+    hls.trigger(Hls.Events.ERROR, {
+      type: Hls.ErrorTypes.NETWORK_ERROR,
+      details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
+      fatal: true,
+      error: new Error('offline'),
+    });
+
+    assert.equal(muxMediaState.get(video).networkError, true, 'network interruption is tracked');
+    assert.equal(
+      getError(video)?.muxCode,
+      MuxErrorCode.NETWORK_RECONNECTING,
+      'a non-fatal reconnecting state is surfaced'
+    );
+    assert.equal(getError(video)?.fatal, false, 'the reconnecting state is not a fatal error');
+
+    // Connectivity returns: the player should retry immediately rather than staying stuck.
+    startLoadCount = 0;
+    globalThis.dispatchEvent(new Event('online'));
+    assert.equal(startLoadCount, 1, 'startLoad is called on reconnect to resume playback');
+    assert.equal(muxMediaState.get(video).networkError, true, 'still recovering until a fragment loads');
+
+    // Playback resumes => recovery is complete and the reconnecting state clears.
+    video.dispatchEvent(new Event('playing'));
+    assert.equal(muxMediaState.get(video).networkError, false, 'interruption flag is cleared after recovery');
+    assert.equal(getError(video), null, 'reconnecting state is cleared after recovery');
+
+    // A subsequent, unrelated `online` event should not restart loading.
+    startLoadCount = 0;
+    globalThis.dispatchEvent(new Event('online'));
+    assert.equal(startLoadCount, 0, 'startLoad is not called again when there is no interruption');
+  });
+
+  it('does not retry non-recoverable network errors (e.g. 404)', async function () {
+    const core = initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+      },
+      video
+    );
+    const hls = core.engine;
+
+    let startLoadCount = 0;
+    const originalStartLoad = hls.startLoad.bind(hls);
+    hls.startLoad = (...args) => {
+      startLoadCount++;
+      return originalStartLoad(...args);
+    };
+
+    // A fatal HTTP 404 is not a connectivity blip; retrying won't help, so we should surface
+    // the terminal error rather than entering the reconnecting/retry loop.
+    hls.trigger(Hls.Events.ERROR, {
+      type: Hls.ErrorTypes.NETWORK_ERROR,
+      details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
+      fatal: true,
+      response: { code: 404, text: 'Not Found' },
+      error: new Error('not found'),
+    });
+
+    startLoadCount = 0;
+    globalThis.dispatchEvent(new Event('online'));
+    assert.notEqual(getError(video)?.muxCode, MuxErrorCode.NETWORK_RECONNECTING, 'does not enter reconnecting state');
+    assert.equal(startLoadCount, 0, 'does not retry on reconnect for a non-recoverable error');
   });
 
   it('setAutoplay("any")', async function () {

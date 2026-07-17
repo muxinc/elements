@@ -405,6 +405,7 @@ export const muxMediaState: WeakMap<
     seekable?: TimeRanges;
     liveEdgeStartOffset?: number;
     retryCount?: number;
+    networkError?: boolean;
     coreReference?: PlaybackCore;
   }
 > = new WeakMap();
@@ -1432,6 +1433,103 @@ export const loadMedia = (
       }
     });
 
+    // --- Network interruption recovery ---
+    // hls.js retries non-fatal network errors itself; once it gives up (fatal) it stops
+    // loading and won't resume - including on flaky networks where the browser never fires
+    // `offline`/`online` (navigator.onLine only reflects a network link, not whether requests
+    // succeed). We retry startLoad() with backoff to recover without a full reload, surface a
+    // non-fatal "Reconnecting..." state meanwhile, and treat `online` as a fast path.
+    const MAX_NETWORK_RECOVERY_RETRIES = 6; // ~1s + 2s + 4s + 8s + 16s + 30s of retries
+    let networkRecoveryTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const clearNetworkRecoveryTimer = () => {
+      if (networkRecoveryTimer != null) {
+        clearTimeout(networkRecoveryTimer);
+        networkRecoveryTimer = undefined;
+      }
+    };
+
+    const isReconnectingError = (err?: MediaError | null) => err?.muxCode === MuxErrorCode.NETWORK_RECONNECTING;
+
+    // Surface a non-fatal "Reconnecting..." state so the UI reflects recovery rather than
+    // silently spinning. Non-fatal so it isn't tracked as a Mux Data failure.
+    const dispatchReconnecting = () => {
+      const state = muxMediaState.get(mediaEl);
+
+      if (isReconnectingError(state?.error as MediaError)) return; // already reconnecting
+
+      const reconnectingError = new MediaError(i18n('Attempting to reconnect...'), MediaError.MEDIA_ERR_NETWORK, false);
+      reconnectingError.errorCategory = MuxErrorCategory.VIDEO;
+      reconnectingError.muxCode = MuxErrorCode.NETWORK_RECONNECTING;
+      if (state) state.error = reconnectingError as unknown as HTMLMediaElement['error'];
+      mediaEl.dispatchEvent(new CustomEvent('error', { detail: reconnectingError }));
+    };
+
+    const scheduleNetworkRecovery = () => {
+      const state = muxMediaState.get(mediaEl);
+      if (!state) return;
+      const retryCount = state.retryCount ?? 0;
+
+      if (retryCount >= MAX_NETWORK_RECOVERY_RETRIES) {
+        // Give up automatic retries and surface a terminal error with a reload affordance.
+        // Keep `networkError` set so a later `online` event can still recover the player.
+        state.retryCount = 0;
+        clearNetworkRecoveryTimer();
+
+        const reloadError = new MediaError(i18n('Network error, try reloading.'), MediaError.MEDIA_ERR_NETWORK, true);
+        reloadError.errorCategory = MuxErrorCategory.VIDEO;
+        reloadError.reload = true;
+        saveAndDispatchError(mediaEl, reloadError);
+        return;
+      }
+
+      dispatchReconnecting();
+      const retryDelay = Math.min(1000 * 2 ** retryCount, 30000);
+      clearNetworkRecoveryTimer();
+      networkRecoveryTimer = setTimeout(() => {
+        state.retryCount = retryCount + 1;
+        hls.startLoad();
+      }, retryDelay);
+    };
+
+    // Fast path: the browser reports it's back online, so retry immediately with a fresh
+    // backoff budget instead of waiting out the current delay.
+    const resumeAfterReconnect = () => {
+      const state = muxMediaState.get(mediaEl);
+      if (!state?.networkError) return;
+      state.retryCount = 0;
+      clearNetworkRecoveryTimer();
+      hls.startLoad();
+    };
+    globalThis.addEventListener?.('online', resumeAfterReconnect);
+
+    // A fragment loaded successfully (or playback resumed) -> the interruption is over. Clear
+    // the recovery state and the "Reconnecting..."/terminal error so the UI recovers alongside
+    // playback. FRAG_BUFFERED covers the paused case; `playing` covers resumed playback.
+    const onRecovered = () => {
+      const state = muxMediaState.get(mediaEl);
+      if (!state) return;
+      if (!state.networkError && !isReconnectingError(state.error as MediaError)) return;
+      state.networkError = false;
+      state.retryCount = 0;
+      clearNetworkRecoveryTimer();
+      if (state.error) {
+        state.error = null;
+        mediaEl.dispatchEvent(new Event('emptied'));
+      }
+    };
+    hls.on(Hls.Events.FRAG_BUFFERED, onRecovered);
+    addEventListenerWithTeardown(mediaEl, 'playing', onRecovered);
+
+    mediaEl.addEventListener(
+      'teardown',
+      () => {
+        globalThis.removeEventListener?.('online', resumeAfterReconnect);
+        clearNetworkRecoveryTimer();
+      },
+      { once: true }
+    );
+
     hls.on(Hls.Events.ERROR, (_event, data) => {
       const error = getErrorFromHlsErrorData(data, props);
 
@@ -1471,6 +1569,27 @@ export const loadMedia = (
           return;
         }
       }
+
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+        // Distinguish connectivity loss (recoverable by retrying) from HTTP errors like 4xx
+        // (auth, not-found) that won't recover on retry.
+        const httpStatus = data.response?.code ?? 0;
+        const isConnectivityError =
+          error.muxCode === MuxErrorCode.NETWORK_OFFLINE || !data.response || httpStatus >= 500;
+
+        if (isConnectivityError) {
+          const state = muxMediaState.get(mediaEl);
+          if (state) state.networkError = true;
+
+          // hls.js retries non-fatal errors internally, so only take over once it has given
+          // up (fatal): attempt recovery instead of surfacing a terminal error and stalling.
+          if (data.fatal) {
+            scheduleNetworkRecovery();
+            return;
+          }
+        }
+      }
+
       saveAndDispatchError(mediaEl, error);
     });
 

@@ -114,6 +114,19 @@ describe('errors', () => {
       );
     });
 
+    it('reconnecting error logs', function () {
+      const error = new MediaError(undefined, MediaError.MEDIA_ERR_NETWORK, false);
+      error.errorCategory = MuxErrorCategory.VIDEO;
+      error.muxCode = MuxErrorCode.NETWORK_RECONNECTING;
+      const { dialog } = getErrorLogs(error);
+      assert.equal(dialog.title, 'Reconnecting...', UNEXPECTED_DIALOG_TITLE);
+      assert.equal(
+        dialog.message,
+        'Your connection was interrupted. Attempting to resume playback...',
+        UNEXPECTED_DIALOG_MESSAGE
+      );
+    });
+
     describe('video', function () {
       it('412 response code message for MediaError.MEDIA_ERR_NETWORK', function () {
         const error = new MediaError(undefined, MediaError.MEDIA_ERR_NETWORK);
