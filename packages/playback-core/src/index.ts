@@ -1469,11 +1469,15 @@ export const loadMedia = (
     };
 
     const scheduleNetworkRecovery = () => {
+      // A retry is already pending. Let it fire (advancing the counter) instead of resetting
+      // the backoff on every repeated fatal error, which would stall progress toward the
+      // terminal reload state and keep the player "Reconnecting..." indefinitely.
+      if (networkRecoveryTimer != null) return;
+
       if (networkRecoveryRetries >= MAX_NETWORK_RECOVERY_RETRIES) {
         // Give up automatic retries and surface a terminal error with a reload affordance.
         // Keep `networkError` set so a later `online` event can still recover the player.
         networkRecoveryRetries = 0;
-        clearNetworkRecoveryTimer();
 
         const reloadError = new MediaError(i18n('Network error, try reloading.'), MediaError.MEDIA_ERR_NETWORK, true);
         reloadError.errorCategory = MuxErrorCategory.VIDEO;
@@ -1484,8 +1488,8 @@ export const loadMedia = (
 
       dispatchReconnecting();
       const retryDelay = Math.min(1000 * 2 ** networkRecoveryRetries, 30000);
-      clearNetworkRecoveryTimer();
       networkRecoveryTimer = setTimeout(() => {
+        networkRecoveryTimer = undefined;
         networkRecoveryRetries += 1;
         hls.startLoad();
       }, retryDelay);
