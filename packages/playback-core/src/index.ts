@@ -1571,10 +1571,12 @@ export const loadMedia = (
 
       if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
         // Distinguish connectivity loss (recoverable by retrying) from HTTP errors like 4xx
-        // (auth, not-found) that won't recover on retry.
+        // (auth, not-found) that won't recover on retry. A missing response or code 0 means
+        // the request failed before getting a real HTTP status (a connectivity failure); 5xx
+        // are transient server errors.
         const httpStatus = data.response?.code ?? 0;
         const isConnectivityError =
-          error.muxCode === MuxErrorCode.NETWORK_OFFLINE || !data.response || httpStatus >= 500;
+          error.muxCode === MuxErrorCode.NETWORK_OFFLINE || httpStatus === 0 || httpStatus >= 500;
 
         // hls.js retries non-fatal errors internally, so only take over once it has given up
         // (fatal). Arm recovery (incl. the `online` fast path via `networkError`) only then,
