@@ -160,6 +160,34 @@ describe('playback core', function () {
     assert.equal(startLoadCount, 0, 'does not retry on reconnect for a non-recoverable error');
   });
 
+  it('recovers from connectivity errors reported with HTTP status 0', async function () {
+    const core = initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+      },
+      video
+    );
+    const hls = core.engine;
+
+    // A request that fails before receiving a real HTTP status often surfaces as a loader
+    // response with code 0. That's a connectivity failure, so it should enter recovery rather
+    // than falling back to the terminal error.
+    hls.trigger(Hls.Events.ERROR, {
+      type: Hls.ErrorTypes.NETWORK_ERROR,
+      details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
+      fatal: true,
+      response: { code: 0, text: '' },
+      error: new Error('offline'),
+    });
+
+    assert.equal(
+      getError(video)?.muxCode,
+      MuxErrorCode.NETWORK_RECONNECTING,
+      'enters the reconnecting state for a status-0 response'
+    );
+    assert.equal(muxMediaState.get(video).networkError, true, 'arms recovery for a status-0 response');
+  });
+
   it('setAutoplay("any")', async function () {
     const core = initialize(
       {
