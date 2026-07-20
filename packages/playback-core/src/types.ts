@@ -229,6 +229,18 @@ export type MuxMediaPropsInternal = MuxMediaProps & {
   drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
 };
 
+// Per-media-element internal playback state, keyed off the underlying media element.
+export type MuxMediaState = WeakMap<
+  HTMLMediaElement,
+  Partial<MuxMediaProps> & {
+    seekable?: TimeRanges;
+    liveEdgeStartOffset?: number;
+    retryCount?: number;
+    networkError?: boolean;
+    coreReference?: PlaybackCore;
+  }
+>;
+
 // TODO: Make these more uniform, remove bubbles, discuss to remove detail.
 export type MuxMediaEventsMap = {
   cuepointchange: CustomEvent<{ composed: true; bubbles: true; detail: CuePoint }>;
