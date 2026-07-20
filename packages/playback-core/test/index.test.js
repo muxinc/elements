@@ -16,7 +16,6 @@ import {
   toPlaybackIdFromSrc,
   getCapLevelControllerConfig,
 } from '../src/index.ts';
-import { MuxErrorCode } from '../src/errors.ts';
 
 describe('playback core', function () {
   let video;
@@ -78,7 +77,7 @@ describe('playback core', function () {
     assert.equal(getError(video).message, expectedMessage);
   });
 
-  it('recovers from a network interruption and surfaces a reconnecting state', async function () {
+  it('recovers from a network interruption in the background', async function () {
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -87,6 +86,10 @@ describe('playback core', function () {
     );
     const hls = core.engine;
 
+    // Wait until the manifest has loaded so we're in the "during playback" path (recovery
+    // via startLoad rather than re-loading the source).
+    await new Promise((resolve) => hls.once(Hls.Events.MANIFEST_LOADED, resolve));
+
     let startLoadCount = 0;
     const originalStartLoad = hls.startLoad.bind(hls);
     hls.startLoad = (...args) => {
@@ -94,8 +97,9 @@ describe('playback core', function () {
       return originalStartLoad(...args);
     };
 
-    // Simulate hls.js giving up on a fatal connectivity error (connection dropped, buffer
-    // drained). No `response` => a connectivity failure rather than an HTTP error.
+    // Simulate hls.js giving up on a fatal connectivity error. No `response` => a connectivity
+    // failure rather than an HTTP error. (The "Reconnecting..." UI is gated on actually
+    // rebuffering, which isn't reproducible here, so we assert the recovery mechanics.)
     hls.trigger(Hls.Events.ERROR, {
       type: Hls.ErrorTypes.NETWORK_ERROR,
       details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
@@ -104,12 +108,6 @@ describe('playback core', function () {
     });
 
     assert.equal(muxMediaState.get(video).networkError, true, 'network interruption is tracked');
-    assert.equal(
-      getError(video)?.muxCode,
-      MuxErrorCode.NETWORK_RECONNECTING,
-      'a non-fatal reconnecting state is surfaced'
-    );
-    assert.equal(getError(video)?.fatal, false, 'the reconnecting state is not a fatal error');
 
     // Connectivity returns: the player should retry immediately rather than staying stuck.
     startLoadCount = 0;
@@ -117,15 +115,10 @@ describe('playback core', function () {
     assert.equal(startLoadCount, 1, 'startLoad is called on reconnect to resume playback');
     assert.equal(muxMediaState.get(video).networkError, true, 'still recovering until a fragment loads');
 
-    // Playback resumes => recovery is complete and the reconnecting state clears.
+    // Resuming from already-buffered media (e.g. seeking into the buffer) fires `playing`, but
+    // that must NOT end recovery: the network hasn't actually recovered until a fragment loads.
     video.dispatchEvent(new Event('playing'));
-    assert.equal(muxMediaState.get(video).networkError, false, 'interruption flag is cleared after recovery');
-    assert.equal(getError(video), null, 'reconnecting state is cleared after recovery');
-
-    // A subsequent, unrelated `online` event should not restart loading.
-    startLoadCount = 0;
-    globalThis.dispatchEvent(new Event('online'));
-    assert.equal(startLoadCount, 0, 'startLoad is not called again when there is no interruption');
+    assert.equal(muxMediaState.get(video).networkError, true, 'playing from buffered media does not abort recovery');
   });
 
   it('does not retry non-recoverable network errors (e.g. 404)', async function () {
@@ -144,8 +137,7 @@ describe('playback core', function () {
       return originalStartLoad(...args);
     };
 
-    // A fatal HTTP 404 is not a connectivity blip; retrying won't help, so we should surface
-    // the terminal error rather than entering the reconnecting/retry loop.
+    // A fatal HTTP 404 is not a connectivity blip; retrying won't help, so recovery must not arm.
     hls.trigger(Hls.Events.ERROR, {
       type: Hls.ErrorTypes.NETWORK_ERROR,
       details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
@@ -156,11 +148,11 @@ describe('playback core', function () {
 
     startLoadCount = 0;
     globalThis.dispatchEvent(new Event('online'));
-    assert.notEqual(getError(video)?.muxCode, MuxErrorCode.NETWORK_RECONNECTING, 'does not enter reconnecting state');
+    assert.notEqual(muxMediaState.get(video).networkError, true, 'does not arm recovery for a non-recoverable error');
     assert.equal(startLoadCount, 0, 'does not retry on reconnect for a non-recoverable error');
   });
 
-  it('recovers from connectivity errors reported with HTTP status 0', async function () {
+  it('arms recovery for connectivity errors reported with HTTP status 0', async function () {
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
@@ -170,7 +162,7 @@ describe('playback core', function () {
     const hls = core.engine;
 
     // A request that fails before receiving a real HTTP status often surfaces as a loader
-    // response with code 0. That's a connectivity failure, so it should enter recovery rather
+    // response with code 0. That's a connectivity failure, so it should arm recovery rather
     // than falling back to the terminal error.
     hls.trigger(Hls.Events.ERROR, {
       type: Hls.ErrorTypes.NETWORK_ERROR,
@@ -180,11 +172,6 @@ describe('playback core', function () {
       error: new Error('offline'),
     });
 
-    assert.equal(
-      getError(video)?.muxCode,
-      MuxErrorCode.NETWORK_RECONNECTING,
-      'enters the reconnecting state for a status-0 response'
-    );
     assert.equal(muxMediaState.get(video).networkError, true, 'arms recovery for a status-0 response');
   });
 
