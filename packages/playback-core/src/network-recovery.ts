@@ -35,10 +35,14 @@ export interface NetworkRecovery {
  * won't resume - including on flaky networks where the browser never fires `offline`/`online`
  * (navigator.onLine only reflects a network link, not whether requests succeed).
  *
- * When playback stalls during an outage we retry startLoad() with exponential backoff, up to
- * MAX_RETRIES, then surface a terminal error and stop (bounded - no infinite polling).
+ * When playback stalls during an outage we let hls.js run (and give up on) its own internal
+ * retries, and *after* it reports a fatal error we wait a backoff delay and call startLoad() to make
+ * it try again.
+ * Each fatal drives the next attempt, up to maxRetries, then we surface a terminal error and stop
+ * (bounded - no infinite polling).
  *
- * Exponential backoff per attempt, e.g. maxRetries=6 -> ~1s + 2s + 4s + 8s + 16s + 30s.
+ * Backoff before each attempt, e.g. maxRetries=6 -> ~1s + 2s + 4s + 8s + 16s + 30s (plus however
+ * long hls.js's own internal retries take in between).
  *
  * The retry loop and its "Reconnecting..." UI are tied to the stall (same condition as the loading
  * spinner): while there's still playable buffer, hls.js's own retry handles refilling and we stay
@@ -118,40 +122,42 @@ export const setupNetworkRecovery = ({
     saveAndDispatchError(mediaEl, reloadError);
   };
 
-  // Bounded, self-perpetuating backoff loop: retry until a fragment loads (onRecovered cancels
-  // it), MAX_RETRIES is hit (giveUp), or playback resumes / teardown.
-  const scheduleNextRetry = () => {
-    if (retryTimer != null) return;
+  // Schedule a SINGLE delayed retry (bounded by maxRetries).
+  // note: deliberately doesn't reschedule itself: the next attempt is driven by hls.js giving up again
+  // or by the buffer draining (`waiting`).
+  const scheduleRetry = () => {
+    if (retryTimer != null || isRetrying) return; // an attempt is already pending or in-flight
     if (retryCount >= maxRetries) {
       giveUp();
       return;
     }
+    isRetrying = true;
     const delay = Math.min(BASE_RETRY_DELAY_MS * 2 ** retryCount, MAX_RETRY_DELAY_MS);
     retryTimer = setTimeout(() => {
       retryTimer = undefined;
       retryCount += 1;
       retryNetworkLoad();
-      scheduleNextRetry();
     }, delay);
   };
 
-  // Start the bounded retry loop + reconnecting UI, but only once we're actually stalled with
-  // no playable buffer (and not already retrying / already terminal).
+  // Begin/continue recovery + the reconnecting UI, but only once we're actually stalled with no
+  // playable buffer (same condition as the loading spinner); while there's still buffer, hls.js
+  // refills it on its own. Note: retryCount is NOT reset here - it persists across an episode's
+  // fatal errors so the budget is honored, and is reset only on real recovery / online / stall end.
   const startRecoveryIfStalled = () => {
     const state = muxMediaState.get(mediaEl);
-    if (!state?.networkError || isFatalError || isRetrying) return;
+    if (!state?.networkError || isFatalError) return;
     if (!isRebuffering()) return;
-    isRetrying = true;
-    retryCount = 0;
     dispatchReconnectingError();
-    scheduleNextRetry();
+    scheduleRetry();
   };
 
-  // Called on a fatal connectivity error: mark the interruption; start recovery if we're
-  // already stalled (otherwise it starts when the buffer drains, via the `waiting` listener).
+  // Called on each fatal connectivity error (hls.js has exhausted its own internal retries). It's
+  // no longer mid-retry, so clear the in-flight flag and schedule the next attempt (if stalled).
   const enterRecovery = () => {
     const state = muxMediaState.get(mediaEl);
     if (state) state.networkError = true;
+    isRetrying = false;
     startRecoveryIfStalled();
   };
 
@@ -159,10 +165,10 @@ export const setupNetworkRecovery = ({
   const resumeAfterReconnect = () => {
     const state = muxMediaState.get(mediaEl);
     if (!state?.networkError) return;
-    isRetrying = false;
     retryCount = 0;
     isFatalError = false;
     clearRetryTimer();
+    isRetrying = true; // the immediate retry is now in-flight; a later fatal drives the next one
     retryNetworkLoad();
   };
   globalThis.addEventListener?.('online', resumeAfterReconnect);
