@@ -306,22 +306,24 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       window.location.reload();
     }
   };
+  // Bound programmatically (see #setUpErrors) instead of via inline on* template
+  // attributes, which are refused by a strict CSP (script-src without 'unsafe-inline').
+  #onCloseErrorDialog = (event: Event) => {
+    const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+    if (localName !== 'media-error-dialog') return;
+
+    this.#setState({ isDialogOpen: false });
+  };
+  #onFocusInErrorDialog = (event: Event) => {
+    const localName = (event.composedPath()[0] as HTMLElement)?.localName;
+    if (localName !== 'media-error-dialog') return;
+
+    const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
+    if (!isFocusedElementInPlayer) event.preventDefault();
+  };
   #captionsMovementCleanup?: () => void;
   #state: Partial<MuxTemplateProps> = {
     ...initialState,
-    onCloseErrorDialog: (event) => {
-      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
-      if (localName !== 'media-error-dialog') return;
-
-      this.#setState({ isDialogOpen: false });
-    },
-    onFocusInErrorDialog: (event) => {
-      const localName = (event.composedPath()[0] as HTMLElement)?.localName;
-      if (localName !== 'media-error-dialog') return;
-
-      const isFocusedElementInPlayer = containsComposedNode(this, document.activeElement);
-      if (!isFocusedElementInPlayer) event.preventDefault();
-    },
   };
 
   static get NAME() {
@@ -498,6 +500,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.media?.removeEventListener('loadstart', this.#onLoadStart);
     this.removeEventListener('error', this.#onError);
     this.removeEventListener('click', this.#onReloadClick);
+    this.mediaTheme?.removeEventListener('close', this.#onCloseErrorDialog);
+    this.mediaTheme?.removeEventListener('focusin', this.#onFocusInErrorDialog);
     if (this.media) {
       this.media.errorTranslator = undefined;
     }
@@ -550,6 +554,11 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     // from video.onerror. This allows us to simulate errors from the outside.
     this.addEventListener('error', this.#onError);
     this.addEventListener('click', this.#onReloadClick);
+
+    // Bind the error-dialog lifecycle handlers on <media-theme> here rather than
+    // as inline onclose/onfocusin template attributes, which a strict CSP refuses.
+    this.mediaTheme?.addEventListener('close', this.#onCloseErrorDialog);
+    this.mediaTheme?.addEventListener('focusin', this.#onFocusInErrorDialog);
 
     /** @TODO Push errorTranslator logic down to playback-core. Should be able to use MediaError message + context + code (muxCode?) (CJP) */
     if (this.media) {
