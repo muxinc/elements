@@ -61,6 +61,98 @@ describe('network recovery', function () {
     assert.equal(muxMediaState.get(video).networkError, true, 'playing from buffered media does not abort recovery');
   });
 
+  it('does not end recovery when only the manifest reloads (segments still failing)', async function () {
+    // manifest loads but fragment fails
+    const core = initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+        maxReconnectRetries: 6,
+      },
+      video
+    );
+    const hls = core.engine;
+
+    // Capture a real MANIFEST_LOADED payload so we can replay it later without tripping hls.js's
+    // internal handlers (they expect real levels/tracks data).
+    const manifestData = await new Promise((resolve) =>
+      hls.once(Hls.Events.MANIFEST_LOADED, (_event, data) => resolve(data))
+    );
+
+    let startLoadCount = 0;
+    const originalStartLoad = hls.startLoad.bind(hls);
+    hls.startLoad = (...args) => {
+      startLoadCount++;
+      return originalStartLoad(...args);
+    };
+
+    // hls.js gives up on a fatal connectivity error -> recovery is armed.
+    hls.trigger(Hls.Events.ERROR, {
+      type: Hls.ErrorTypes.NETWORK_ERROR,
+      details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
+      fatal: true,
+      error: new Error('offline'),
+    });
+    assert.equal(muxMediaState.get(video).networkError, true, 'recovery is armed after the fatal error');
+
+    // The manifest (re)loads, but fragments are still failing, so media hasn't actually resumed.
+    // A manifest load alone must NOT end recovery - only a buffered fragment (FRAG_BUFFERED) can.
+    hls.trigger(Hls.Events.MANIFEST_LOADED, manifestData);
+    assert.equal(
+      muxMediaState.get(video).networkError,
+      true,
+      'a manifest reload alone does not end recovery while segments still fail'
+    );
+
+    // Because recovery is still armed, a later `online` event must still trigger a retry rather
+    // than being skipped (which would leave hls.js idle after the stall).
+    startLoadCount = 0;
+    globalThis.dispatchEvent(new Event('online'));
+    assert.equal(startLoadCount, 1, 'online still retries after a mid-recovery manifest reload');
+  });
+
+  it('re-requests the source (loadSource) when the manifest never loaded', async function () {
+    const core = initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+        maxReconnectRetries: 6,
+      },
+      video
+    );
+    const hls = core.engine;
+
+    // Deliberately do NOT await MANIFEST_LOADED, and keep the rest synchronous so it can't fire:
+    // this is the "origin down at load" path where the manifest never loaded, so `startLoad()`
+    // can't re-fetch it and recovery must `loadSource()` instead. (The `startLoad` path, after the
+    // manifest has loaded, is covered by the "recovers ... in the background" test above.)
+    let loadSourceCount = 0;
+    let startLoadCount = 0;
+    const originalLoadSource = hls.loadSource.bind(hls);
+    hls.loadSource = (...args) => {
+      loadSourceCount++;
+      return originalLoadSource(...args);
+    };
+    const originalStartLoad = hls.startLoad.bind(hls);
+    hls.startLoad = (...args) => {
+      startLoadCount++;
+      return originalStartLoad(...args);
+    };
+
+    // Fatal connectivity error arms recovery (the detail is irrelevant to arming).
+    hls.trigger(Hls.Events.ERROR, {
+      type: Hls.ErrorTypes.NETWORK_ERROR,
+      details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
+      fatal: true,
+      error: new Error('offline'),
+    });
+    assert.equal(muxMediaState.get(video).networkError, true, 'recovery is armed');
+
+    // Retry (via the online fast path) must re-request the source, not startLoad, because the
+    // manifest has not loaded yet - this is exactly what `hasManifestLoaded` / onManifestLoaded gate.
+    globalThis.dispatchEvent(new Event('online'));
+    assert.equal(loadSourceCount, 1, 'uses loadSource while the manifest has not loaded');
+    assert.equal(startLoadCount, 0, 'does not startLoad before the manifest has loaded');
+  });
+
   it('does not retry non-recoverable network errors (e.g. 404)', async function () {
     const core = initialize(
       {

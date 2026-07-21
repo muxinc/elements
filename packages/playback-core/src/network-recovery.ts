@@ -21,7 +21,11 @@ export interface NetworkRecovery {
    * caller should stop processing it, i.e. not dispatch it as a fatal error).
    */
   handleHlsError: (data: ErrorData, error: MediaError) => boolean;
-  /** Call from the hls MANIFEST_LOADED handler after a successful (re)load. Works as a state reset */
+  /**
+   * Call from the hls MANIFEST_LOADED handler. Records that the manifest has loaded and stops any
+   * pending retry, but does NOT end recovery as fragments could still fail.
+   * Defers loading to engine.
+   */
   onManifestLoaded: () => void;
 }
 
@@ -233,15 +237,16 @@ export const setupNetworkRecovery = ({
   };
 
   const onManifestLoaded = () => {
-    // A successful (re)load means any interruption is over. Stop network recovery so a later
-    // `online` event doesn't needlessly restart loading.
+    // The manifest (re)loaded, so hls.js will resume loading the level + fragments on its own; stop
+    // our pending backoff retry so it doesn't fire a redundant startLoad against that fresh load,
+    // and pause the loop so a re-stall (or the next fatal) can re-arm it.
+    //
+    // A manifest load is NOT proof media is flowing again - fragments can still fail (partial
+    // origin/CDN recovery, or the origin-down-at-load path where loadSource succeeds but segments
+    // don't) - so we deliberately keep `networkError` armed here.
     hasManifestLoaded = true;
-    retryCount = 0;
     isRetrying = false;
-    isFatalError = false;
     clearRetryTimer();
-    const state = muxMediaState.get(mediaEl);
-    if (state) state.networkError = false;
   };
 
   return { handleHlsError, onManifestLoaded };
