@@ -1503,8 +1503,16 @@ export const loadMedia = (
       // `online` event doesn't needlessly restart loading. No-op when recovery is disabled.
       networkRecovery?.onManifestLoaded();
 
-      // Clear error state and UI
       const state = muxMediaState.get(mediaEl);
+
+      // While network recovery is armed it owns the error lifecycle: a bare manifest reload is not
+      // proof media is flowing (fragments can still fail), so recovery only clears its error on a
+      // real buffered fragment (FRAG_BUFFERED). Clearing here would prematurely drop the
+      // "Reconnecting..." (or terminal reload) UI while segments may still be failing.
+      if (state?.networkError) return;
+
+      // Otherwise, clear a non-recovery error + its UI (e.g. the 412 "not ready" retry) now that
+      // the (re)load has succeeded.
       if (state && state.error) {
         state.error = null;
         state.retryCount = 0;

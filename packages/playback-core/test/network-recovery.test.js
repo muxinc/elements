@@ -95,6 +95,12 @@ describe('network recovery', function () {
     });
     assert.equal(muxMediaState.get(video).networkError, true, 'recovery is armed after the fatal error');
 
+    // Simulate the "Reconnecting..." error state being surfaced (the rebuffering-gated UI can't be
+    // reproduced deterministically here, so set it directly). It must survive a bare manifest reload.
+    const reconnectingError = new MediaError('Attempting to reconnect...', MediaError.MEDIA_ERR_NETWORK, false);
+    reconnectingError.muxCode = MuxErrorCode.NETWORK_RECONNECTING;
+    muxMediaState.get(video).error = reconnectingError;
+
     // The manifest (re)loads, but fragments are still failing, so media hasn't actually resumed.
     // A manifest load alone must NOT end recovery - only a buffered fragment (FRAG_BUFFERED) can.
     hls.trigger(Hls.Events.MANIFEST_LOADED, manifestData);
@@ -102,6 +108,13 @@ describe('network recovery', function () {
       muxMediaState.get(video).networkError,
       true,
       'a manifest reload alone does not end recovery while segments still fail'
+    );
+    // The MANIFEST_LOADED handler must NOT clear the reconnecting error while recovery is armed -
+    // that would drop the "Reconnecting..." (or terminal reload) UI mid-outage.
+    assert.equal(
+      muxMediaState.get(video).error,
+      reconnectingError,
+      'the reconnecting error state is preserved across a manifest reload'
     );
 
     // Because recovery is still armed, a later `online` event must still trigger a retry rather
