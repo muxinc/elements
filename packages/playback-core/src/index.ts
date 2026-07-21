@@ -1199,6 +1199,7 @@ export const loadMedia = (
       | 'tokens'
       | 'customDomain'
       | 'disablePseudoEnded'
+      | 'maxReconnectRetries'
       | 'debug'
       | 'useWebkitFairplay'
       | 'fallbackToWebkitFairplay'
@@ -1433,9 +1434,22 @@ export const loadMedia = (
     });
 
     // Recover from network interruptions.
+    //
+    // Opt-in via `maxReconnectRetries`
     // See ./network-recovery for the mechanics.
-    // Returns {handleHlsError, onManifestLoaded}
-    const networkRecovery = setupNetworkRecovery({ hls, mediaEl, src, muxMediaState, saveAndDispatchError });
+    // Returns {handleHlsError, onManifestLoaded}.
+    const maxReconnectRetries = props.maxReconnectRetries ?? 0;
+    const networkRecovery =
+      maxReconnectRetries > 0
+        ? setupNetworkRecovery({
+            hls,
+            mediaEl,
+            src,
+            muxMediaState,
+            saveAndDispatchError,
+            maxRetries: maxReconnectRetries,
+          })
+        : undefined;
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
       const error = getErrorFromHlsErrorData(data, props);
@@ -1478,15 +1492,16 @@ export const loadMedia = (
       }
 
       // Hand connectivity errors to network recovery; if it takes over (returns true), stop processing.
-      if (networkRecovery.handleHlsError(data, error)) return;
+      // When recovery is disabled, `networkRecovery` is undefined and this falls through to dispatch.
+      if (networkRecovery?.handleHlsError(data, error)) return;
 
       saveAndDispatchError(mediaEl, error);
     });
 
     hls.on(Hls.Events.MANIFEST_LOADED, () => {
       // A successful (re)load means any interruption is over. Stop network recovery so a later
-      // `online` event doesn't needlessly restart loading.
-      networkRecovery.onManifestLoaded();
+      // `online` event doesn't needlessly restart loading. No-op when recovery is disabled.
+      networkRecovery?.onManifestLoaded();
 
       // Clear error state and UI
       const state = muxMediaState.get(mediaEl);

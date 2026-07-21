@@ -182,6 +182,13 @@ export type MuxMediaPropTypes = {
   disableCookies: Options['disableCookies'];
   disableTracking: boolean;
   disablePseudoEnded: boolean;
+  /**
+   * Max reconnect attempts per stall episode before surfacing a terminal error and stopping.
+   * Distinct from hls.js's own per-request `maxNumRetry`.
+   *
+   * Default: 0
+   */
+  maxReconnectRetries: number;
   drmToken?: string;
   playbackToken?: string;
   envKey: MetaData['env_key'];

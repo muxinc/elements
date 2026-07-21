@@ -191,6 +191,7 @@ function getProps(el: MuxPlayerElement, state?: any): MuxTemplateProps {
     proudlyDisplayMuxBadge: el.hasAttribute(PlayerAttributes.PROUDLY_DISPLAY_MUX_BADGE),
     castReceiver: el.castReceiver,
     disablePseudoEnded: el.hasAttribute(PlayerAttributes.DISABLE_PSEUDO_ENDED),
+    maxReconnectRetries: el.maxReconnectRetries,
     capRenditionToPlayerSize: el.capRenditionToPlayerSize,
     ...state,
     // NOTE: since the attribute value is used as the "source of truth" for the property getter,
@@ -825,6 +826,12 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
         if (newValue == null || newValue !== oldValue) {
           // Presence-based: attribute present = true, absent = undefined
           this.capRenditionToPlayerSize = newValue != null ? true : undefined;
+        }
+        break;
+      }
+      case MuxVideoAttributes.MAX_RECONNECT_RETRIES: {
+        if (newValue == null || newValue !== oldValue) {
+          this.maxReconnectRetries = Number(newValue);
         }
         break;
       }
@@ -2004,6 +2011,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
       return;
     }
     this.media.capRenditionToPlayerSize = val;
+  }
+
+  get maxReconnectRetries(): number | undefined {
+    return this.media?.maxReconnectRetries;
+  }
+
+  set maxReconnectRetries(val: number | undefined) {
+    if (!this.media) {
+      logger.error('underlying media element missing when trying to set maxReconnectRetries');
+      return;
+    }
+    this.media.maxReconnectRetries = val;
   }
 }
 

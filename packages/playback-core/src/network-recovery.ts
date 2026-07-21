@@ -11,6 +11,8 @@ export interface NetworkRecoveryConfig {
   src: string | undefined;
   muxMediaState: MuxMediaState;
   saveAndDispatchError: (mediaEl: HTMLMediaElement, error: MediaError) => void;
+  /** Max reconnect attempts per stall episode before surfacing a terminal error and stopping. */
+  maxRetries: number;
 }
 
 export interface NetworkRecovery {
@@ -32,6 +34,8 @@ export interface NetworkRecovery {
  * When playback stalls during an outage we retry startLoad() with exponential backoff, up to
  * MAX_RETRIES, then surface a terminal error and stop (bounded - no infinite polling).
  *
+ * Exponential backoff per attempt, e.g. maxRetries=6 -> ~1s + 2s + 4s + 8s + 16s + 30s.
+ *
  * The retry loop and its "Reconnecting..." UI are tied to the stall (same condition as the loading
  * spinner): while there's still playable buffer, hls.js's own retry handles refilling and we stay
  * silent.
@@ -44,11 +48,10 @@ export const setupNetworkRecovery = ({
   src,
   muxMediaState,
   saveAndDispatchError,
+  maxRetries,
 }: NetworkRecoveryConfig): NetworkRecovery => {
-  const MAX_RETRIES = 6; // ~1s + 2s + 4s + 8s + 16s + 30s of backoff
   const BASE_RETRY_DELAY_MS = 1000;
   const MAX_RETRY_DELAY_MS = 30000;
-  const HAVE_FUTURE_DATA = 3;
 
   let retryTimer: ReturnType<typeof setTimeout> | undefined;
   let retryCount = 0;
@@ -71,7 +74,7 @@ export const setupNetworkRecovery = ({
   // The playhead has no buffered media to continue with and we're trying to play - i.e. the
   // same condition under which the rebuffering spinner shows. Only then do we retry + surface
   // the "Reconnecting..." state; if there's still playable buffer, hls.js handles refilling.
-  const isRebuffering = () => !mediaEl.paused && mediaEl.readyState < HAVE_FUTURE_DATA;
+  const isRebuffering = () => !mediaEl.paused && mediaEl.readyState < HTMLMediaElement.HAVE_FUTURE_DATA;
 
   // Surface a non-fatal "Reconnecting..." state so the UI reflects recovery rather than
   // silently spinning. Non-fatal so it isn't tracked as a Mux Data failure.
@@ -115,7 +118,7 @@ export const setupNetworkRecovery = ({
   // it), MAX_RETRIES is hit (giveUp), or playback resumes / teardown.
   const scheduleNextRetry = () => {
     if (retryTimer != null) return;
-    if (retryCount >= MAX_RETRIES) {
+    if (retryCount >= maxRetries) {
       giveUp();
       return;
     }

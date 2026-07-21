@@ -20,6 +20,7 @@ describe('network recovery', function () {
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+        maxReconnectRetries: 6,
       },
       video
     );
@@ -64,6 +65,7 @@ describe('network recovery', function () {
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+        maxReconnectRetries: 6,
       },
       video
     );
@@ -95,6 +97,7 @@ describe('network recovery', function () {
     const core = initialize(
       {
         src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+        maxReconnectRetries: 6,
       },
       video
     );
@@ -112,5 +115,40 @@ describe('network recovery', function () {
     });
 
     assert.equal(muxMediaState.get(video).networkError, true, 'arms recovery for a status-0 response');
+  });
+
+  it('does not arm recovery when disabled (opt-in default off)', async function () {
+    // No `maxReconnectRetries` => the feature is off and behavior matches pre-recovery: the fatal
+    // connectivity error is dispatched immediately and no recovery is armed.
+    const core = initialize(
+      {
+        src: 'https://stream.mux.com/23s11nz72DsoN657h4314PjKKjsF2JG33eBQQt6B95I.m3u8',
+      },
+      video
+    );
+    const hls = core.engine;
+
+    let startLoadCount = 0;
+    const originalStartLoad = hls.startLoad.bind(hls);
+    hls.startLoad = (...args) => {
+      startLoadCount++;
+      return originalStartLoad(...args);
+    };
+
+    const errored = new Promise((resolve) => video.addEventListener('error', resolve, { once: true }));
+    hls.trigger(Hls.Events.ERROR, {
+      type: Hls.ErrorTypes.NETWORK_ERROR,
+      details: Hls.ErrorDetails.FRAG_LOAD_ERROR,
+      fatal: true,
+      error: new Error('offline'),
+    });
+    await errored;
+
+    assert.notEqual(muxMediaState.get(video).networkError, true, 'recovery is not armed when disabled');
+
+    // An `online` event must not trigger a retry when recovery is off.
+    startLoadCount = 0;
+    globalThis.dispatchEvent(new Event('online'));
+    assert.equal(startLoadCount, 0, 'no retry on reconnect when recovery is disabled');
   });
 });
