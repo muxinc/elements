@@ -48,6 +48,23 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.13.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.1...@mux/mux-player@3.13.2) (2026-07-22)
+
+
+### Bug Fixes
+
+* Add Network interruption recovery ([#1344](https://github.com/muxinc/elements/issues/1344)) ([d86d4e1](https://github.com/muxinc/elements/commit/d86d4e1360719927ebac1d632afb1cbb13f19dd5))
+* moved filter drop shadow to parent class ([#1337](https://github.com/muxinc/elements/issues/1337)) ([063f77a](https://github.com/muxinc/elements/commit/063f77a02805bdd94be99a8574d7be733961680e))
+* replace inline event handlers with addEventListener to comply wi… ([#1342](https://github.com/muxinc/elements/issues/1342)) ([6442ae9](https://github.com/muxinc/elements/commit/6442ae96c5f711d1e2a297c5c18acd9fdc17dc4c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.31.1 to 0.31.2
+    * @mux/playback-core bumped from 0.35.1 to 0.35.2
+
 ## [3.13.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.0...@mux/mux-player@3.13.1) (2026-05-14)
 
 

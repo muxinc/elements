@@ -15,6 +15,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.16.2](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.16.1...@mux/mux-audio@0.16.2) (2026-07-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.35.1 to 0.35.2
+
 ## [0.16.1](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.16.0...@mux/mux-audio@0.16.1) (2026-05-14)
 
 
