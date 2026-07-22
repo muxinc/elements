@@ -182,6 +182,13 @@ export type MuxMediaPropTypes = {
   disableCookies: Options['disableCookies'];
   disableTracking: boolean;
   disablePseudoEnded: boolean;
+  /**
+   * Max reconnect attempts per stall episode before surfacing a terminal error and stopping.
+   * Distinct from hls.js's own per-request `maxNumRetry`.
+   *
+   * Default: 0
+   */
+  maxReconnectRetries: number;
   drmToken?: string;
   playbackToken?: string;
   envKey: MetaData['env_key'];
@@ -228,6 +235,18 @@ export type MuxMediaPropsInternal = MuxMediaProps & {
   muxDataKeepSession?: boolean;
   drmTypeCb?: (drmType: Metadata['view_drm_type']) => void;
 };
+
+// Per-media-element internal playback state, keyed off the underlying media element.
+export type MuxMediaState = WeakMap<
+  HTMLMediaElement,
+  Partial<MuxMediaProps> & {
+    seekable?: TimeRanges;
+    liveEdgeStartOffset?: number;
+    retryCount?: number;
+    networkError?: boolean;
+    coreReference?: PlaybackCore;
+  }
+>;
 
 // TODO: Make these more uniform, remove bubbles, discuss to remove detail.
 export type MuxMediaEventsMap = {

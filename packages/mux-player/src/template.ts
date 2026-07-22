@@ -144,6 +144,7 @@ export const content = (props: MuxTemplateProps) => html`
       playback-token="${props.tokens?.playback ?? false}"
       exportparts="video"
       disable-pseudo-ended="${props.disablePseudoEnded ?? false}"
+      max-reconnect-retries="${props.maxReconnectRetries ?? false}"
       max-auto-resolution="${props.maxAutoResolution ?? false}"
       cap-rendition-to-player-size="${props.capRenditionToPlayerSize ?? false}"
     >

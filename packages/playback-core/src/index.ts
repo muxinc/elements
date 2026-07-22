@@ -1,4 +1,11 @@
-import type { ValueOf, PlaybackCore, MuxMediaProps, MuxMediaPropsInternal, MuxMediaPropTypes } from './types';
+import type {
+  ValueOf,
+  PlaybackCore,
+  MuxMediaProps,
+  MuxMediaPropsInternal,
+  MuxMediaPropTypes,
+  MuxMediaState,
+} from './types';
 import mux, { ErrorEvent } from 'mux-embed';
 import Hls from './hls';
 import type { HlsInterface } from './hls';
@@ -41,6 +48,7 @@ import { getErrorFromResponse, MuxJWTAud } from './request-errors';
 import MinCapLevelController from './min-cap-level-controller';
 import { setupWebkitNativeFairplayDRM } from './webkit-fairplay';
 import { setupEmeNativeFairplayDRM } from './eme-fairplay';
+import { setupNetworkRecovery } from './network-recovery';
 
 export {
   mux,
@@ -399,15 +407,7 @@ const isSafari = (mediaEl: Pick<HTMLMediaElement, 'canPlayType'>) =>
   /^((?!chrome|android).)*safari/i.test(userAgentStr) && !!mediaEl.canPlayType('application/vnd.apple.mpegurl');
 
 // NOTE: Exporting for testing
-export const muxMediaState: WeakMap<
-  HTMLMediaElement,
-  Partial<MuxMediaProps> & {
-    seekable?: TimeRanges;
-    liveEdgeStartOffset?: number;
-    retryCount?: number;
-    coreReference?: PlaybackCore;
-  }
-> = new WeakMap();
+export const muxMediaState: MuxMediaState = new WeakMap();
 
 const MUX_VIDEO_DOMAIN = 'mux.com';
 const MSE_SUPPORTED = Hls.isSupported?.();
@@ -1199,6 +1199,7 @@ export const loadMedia = (
       | 'tokens'
       | 'customDomain'
       | 'disablePseudoEnded'
+      | 'maxReconnectRetries'
       | 'debug'
       | 'useWebkitFairplay'
       | 'fallbackToWebkitFairplay'
@@ -1432,6 +1433,24 @@ export const loadMedia = (
       }
     });
 
+    // Recover from network interruptions.
+    //
+    // Opt-in via `maxReconnectRetries`
+    // See ./network-recovery for the mechanics.
+    // Returns {handleHlsError, onManifestLoaded}.
+    const maxReconnectRetries = props.maxReconnectRetries ?? 0;
+    const networkRecovery =
+      maxReconnectRetries > 0
+        ? setupNetworkRecovery({
+            hls,
+            mediaEl,
+            src,
+            muxMediaState,
+            saveAndDispatchError,
+            maxRetries: maxReconnectRetries,
+          })
+        : undefined;
+
     hls.on(Hls.Events.ERROR, (_event, data) => {
       const error = getErrorFromHlsErrorData(data, props);
 
@@ -1471,12 +1490,29 @@ export const loadMedia = (
           return;
         }
       }
+
+      // Hand connectivity errors to network recovery; if it takes over (returns true), stop processing.
+      // When recovery is disabled, `networkRecovery` is undefined and this falls through to dispatch.
+      if (networkRecovery?.handleHlsError(data, error)) return;
+
       saveAndDispatchError(mediaEl, error);
     });
 
     hls.on(Hls.Events.MANIFEST_LOADED, () => {
-      // Clear error state and UI
+      // A successful (re)load means any interruption is over. Stop network recovery so a later
+      // `online` event doesn't needlessly restart loading. No-op when recovery is disabled.
+      networkRecovery?.onManifestLoaded();
+
       const state = muxMediaState.get(mediaEl);
+
+      // While network recovery is armed it owns the error lifecycle: a bare manifest reload is not
+      // proof media is flowing (fragments can still fail), so recovery only clears its error on a
+      // real buffered fragment (FRAG_BUFFERED). Clearing here would prematurely drop the
+      // "Reconnecting..." (or terminal reload) UI while segments may still be failing.
+      if (state?.networkError) return;
+
+      // Otherwise, clear a non-recovery error + its UI (e.g. the 412 "not ready" retry) now that
+      // the (re)load has succeeded.
       if (state && state.error) {
         state.error = null;
         state.retryCount = 0;

@@ -12,6 +12,9 @@ const muxMediaErrorToDialogTitle = (mediaError: MediaError, translate = false) =
     if (mediaError.muxCode === MuxErrorCode.NETWORK_OFFLINE) {
       return i18n(`Your device appears to be offline`, translate);
     }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_RECONNECTING) {
+      return i18n(`Reconnecting...`, translate);
+    }
     if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_EXPIRED) {
       return i18n(`{category} URL has expired`, translate).format({
         category,
@@ -58,6 +61,9 @@ const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false)
     const tokenNamePrefix = errorCategoryToTokenNameOrPrefix(mediaError.errorCategory ?? MuxErrorCategory.VIDEO);
     if (mediaError.muxCode === MuxErrorCode.NETWORK_OFFLINE) {
       return i18n(`Check your internet connection and try reloading this video.`, translate);
+    }
+    if (mediaError.muxCode === MuxErrorCode.NETWORK_RECONNECTING) {
+      return i18n(`Your connection was interrupted. Attempting to resume playback...`, translate);
     }
     if (mediaError.muxCode === MuxErrorCode.NETWORK_TOKEN_EXPIRED) {
       return i18n(`The video’s secured {tokenNamePrefix}-token has expired.`, translate).format({

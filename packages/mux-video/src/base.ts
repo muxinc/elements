@@ -59,6 +59,7 @@ export const Attributes = {
   DISABLE_TRACKING: 'disable-tracking',
   DISABLE_COOKIES: 'disable-cookies',
   DISABLE_PSEUDO_ENDED: 'disable-pseudo-ended',
+  MAX_RECONNECT_RETRIES: 'max-reconnect-retries',
   DRM_TOKEN: 'drm-token',
   PLAYBACK_TOKEN: 'playback-token',
   ENV_KEY: 'env-key',
@@ -354,6 +355,24 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       this.setAttribute(Attributes.DISABLE_PSEUDO_ENDED, '');
     } else {
       this.removeAttribute(Attributes.DISABLE_PSEUDO_ENDED);
+    }
+  }
+
+  get maxReconnectRetries(): number | undefined {
+    const val = this.getAttribute(Attributes.MAX_RECONNECT_RETRIES);
+    if (val == null) return undefined;
+    const num = +val;
+    return !Number.isNaN(num) ? num : undefined;
+  }
+
+  set maxReconnectRetries(val: number | undefined) {
+    // dont' cause an infinite loop
+    if (val === this.maxReconnectRetries) return;
+
+    if (val == null) {
+      this.removeAttribute(Attributes.MAX_RECONNECT_RETRIES);
+    } else {
+      this.setAttribute(Attributes.MAX_RECONNECT_RETRIES, `${val}`);
     }
   }
 

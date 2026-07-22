@@ -31,6 +31,10 @@
   "Error": "Error",
   "Your device appears to be offline": "Your device appears to be offline",
   "Check your internet connection and try reloading this video.": "Check your internet connection and try reloading this video.",
+  "Reconnecting...": "Reconnecting...",
+  "Attempting to reconnect...": "Attempting to reconnect...",
+  "Your connection was interrupted. Attempting to resume playback...": "Your connection was interrupted. Attempting to resume playback...",
+  "Network error, try reloading.": "Network error, try reloading.",
   "Invalid stream-type value supplied: `{streamType}`. Please provide stream-type as either: `on-demand` or `live`": "Invalid stream-type value supplied: `{streamType}`. Please provide stream-type as either: `on-demand` or `live`",
   "The URL or playback-id was invalid. You may have used an invalid value as a playback-id.": "The URL or playback-id was invalid. You may have used an invalid value as a playback-id.",
   "Read more: ": "Read more: "
