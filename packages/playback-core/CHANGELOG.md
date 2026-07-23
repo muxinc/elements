@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.35.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.1...@mux/playback-core@0.35.2) (2026-07-22)
+
+
+### Bug Fixes
+
+* Add Network interruption recovery ([#1344](https://github.com/muxinc/elements/issues/1344)) ([d86d4e1](https://github.com/muxinc/elements/commit/d86d4e1360719927ebac1d632afb1cbb13f19dd5))
+
 ## [0.35.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.0...@mux/playback-core@0.35.1) (2026-05-14)
 
 
