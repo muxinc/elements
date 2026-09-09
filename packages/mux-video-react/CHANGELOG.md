@@ -20,6 +20,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.3](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.31.2...@mux/mux-video-react@0.31.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* add missing types for new maxReconnectAttempts ([#1348](https://github.com/muxinc/elements/issues/1348)) ([306be0c](https://github.com/muxinc/elements/commit/306be0c77fccc5090eaf718010461d97cefa42dd))
+* make disableCookies reactive ([#1349](https://github.com/muxinc/elements/issues/1349)) ([cff2c35](https://github.com/muxinc/elements/commit/cff2c352bf84b7cff0752ddd70bf1c31f90002a3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.35.2 to 0.35.3
+
 ## [0.31.2](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.31.1...@mux/mux-video-react@0.31.2) (2026-07-23)
 
 

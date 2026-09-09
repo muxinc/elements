@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.13.3](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.13.2...@mux/mux-player-astro@3.13.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* add missing types for new maxReconnectAttempts ([#1348](https://github.com/muxinc/elements/issues/1348)) ([306be0c](https://github.com/muxinc/elements/commit/306be0c77fccc5090eaf718010461d97cefa42dd))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.13.2 to 3.13.3
+    * @mux/playback-core bumped from 0.35.2 to 0.35.3
+
 ## [3.13.2](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.13.1...@mux/mux-player-astro@3.13.2) (2026-07-23)
 
 
