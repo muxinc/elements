@@ -20,6 +20,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.16.3](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.16.2...@mux/mux-audio-react@0.16.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* make disableCookies reactive ([#1349](https://github.com/muxinc/elements/issues/1349)) ([cff2c35](https://github.com/muxinc/elements/commit/cff2c352bf84b7cff0752ddd70bf1c31f90002a3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.35.2 to 0.35.3
+
 ## [0.16.2](https://github.com/muxinc/elements/compare/@mux/mux-audio-react@0.16.1...@mux/mux-audio-react@0.16.2) (2026-07-23)
 
 
