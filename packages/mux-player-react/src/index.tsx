@@ -80,6 +80,7 @@ const usePlayer = (
   useObjectPropEffect('playbackId', playbackId, ref);
   useObjectPropEffect('playbackRates', playbackRates, ref);
   useObjectPropEffect('metadata', metadata, ref);
+  useObjectPropEffect('disableCookies', props.disableCookies ?? false, ref);
   useObjectPropEffect('extraSourceParams', extraSourceParams, ref);
   useObjectPropEffect('_hlsConfig', _hlsConfig, ref);
   useObjectPropEffect('themeProps', themeProps, ref);

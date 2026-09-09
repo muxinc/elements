@@ -1,5 +1,6 @@
 import { globalThis } from './polyfills';
 import {
+  applyDisableCookies,
   initialize,
   teardown,
   generatePlayerInitTime,
@@ -584,6 +585,14 @@ class MuxAudioElement extends CustomAudioElement implements Partial<MuxMediaProp
         }
         if (!!this._hls) {
           this._hls.config.debug = debug;
+        }
+        break;
+      }
+      case Attributes.DISABLE_COOKIES: {
+        if (newValue == null || newValue !== oldValue) {
+          // mux-embed latches the value when the monitor is created and has no setter for it, so
+          // Mux Data has to be re-attached to pick up a change. That doesn't reload the media.
+          applyDisableCookies(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
         }
         break;
       }

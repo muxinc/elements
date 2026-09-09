@@ -245,6 +245,8 @@ export type MuxMediaState = WeakMap<
     retryCount?: number;
     networkError?: boolean;
     coreReference?: PlaybackCore;
+    /** The `disableCookies` value the current Mux Data monitor was created with. */
+    muxDataDisableCookies?: boolean;
   }
 >;
 
