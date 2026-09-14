@@ -82,13 +82,16 @@ describe('<mux-player>', () => {
   });
 
   it('playbackId is forwarded to the media element', async function () {
+    // Setting up a real player can take a while on a loaded CI browser.
+    this.timeout(10000);
+
     const player = await fixture(`<mux-player
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
       stream-type="on-demand"
       muted
     ></mux-player>`);
 
-    await aTimeout(100);
+    await waitUntil(() => player.media, 'media element should be available', { timeout: 5000 });
 
     assert.equal(player.playbackId, 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe');
   });
@@ -532,6 +535,11 @@ describe('<mux-player>', () => {
   });
 
   it("signing tokens generate correct asset URL's", async function () {
+    // The storyboard <track> only appears once the media reports a currentSrc, so this waits on a
+    // real load. waitUntil()'s 1s default is not enough for that on a loaded CI browser.
+    this.timeout(15000);
+    const wait = { timeout: 10000 };
+
     // tokens expire in 10 years
     const player = await fixture(`<mux-player
       stream-type="on-demand"
@@ -544,23 +552,27 @@ describe('<mux-player>', () => {
     const muxVideo = player.media;
     const mediaPosterImage = player.mediaTheme.querySelector('media-poster-image');
 
-    await waitUntil(() => !!muxVideo.getAttribute('src'), '<mux-video> src never set');
+    await waitUntil(() => !!muxVideo.getAttribute('src'), '<mux-video> src never set', wait);
     assert.equal(
       muxVideo.getAttribute('src'),
       'https://stream.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY.m3u8?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE2MjgsImF1ZCI6InYiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.OUegJAmrlvD9BhzUhogrup_mYRBYNG2ocqmJZK2lKPLFmP1jLKi99Lj_9ZQqIXgmoYeXo2jKr3WFMO8nbGwtZFKU2_szq1EWlj4mBgdWXfAP5amC92qkm87nIuNFM2WVANGlBksmj8uOmYNIuPh1Ctti1qiJEYkf-JthWFFpaR_2TlQJ7g0bmRPzk3nOPDtqZnJBfTVm3n4Kp7Cr27a_VBA6zpoW6DwjJ6_uPkm6TAxXjw7VWNd3YVLs7S_jgs8q3t9DPpAN57q94syVQtEUkRh4tlDX-gdIrJDi9nFB1fIBh45pD01PvrAWzZXKKE9YSW7dnktqSUy81kcu2F_gXA'
     );
 
-    await waitUntil(() => !!mediaPosterImage.getAttribute('src'), '<media-poster-image> src never set');
+    await waitUntil(() => !!mediaPosterImage.getAttribute('src'), '<media-poster-image> src never set', wait);
     assert.equal(
       mediaPosterImage.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/thumbnail.webp?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3MzYsImF1ZCI6InQiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.gDe_efqmRB5E3e4ag6in8MfMK-Vn3c_3B4M-BiWw6lg2aaf2BOTv7ltxhn2cvg4G0iFi-esRjhDlHbMRTxwTGavsx8TRLFtJ8vyBzToaFQbQMrn9OZztq_XrCEwqkD8bUAVtdOT1YB606OZyy6XO-CxdMRrKMUsM-cGrfv0TxvzJjThJBY4SzFv_whtYRxqAypZojROU7IiTbqcsk_cSrRMjB7WyAOAvyPNKnr6RkVEuMJtlCtaf_e4DIJHebZUZb3JmVTG4jIWrD1QkN7uLUwCPPRvGhXwhet9JaJPyC5lmkcb9YmH-15V6GOpwSg7sDMGC3YS4aIb_RtVkan0t-w'
     );
 
     let storyboardTrack;
-    await waitUntil(() => {
-      storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
-      return storyboardTrack && !!storyboardTrack.getAttribute('src');
-    }, 'storyboard <track> src never set');
+    await waitUntil(
+      () => {
+        storyboardTrack = muxVideo.shadowRoot.querySelector("track[label='thumbnails']");
+        return storyboardTrack && !!storyboardTrack.getAttribute('src');
+      },
+      'storyboard <track> src never set',
+      wait
+    );
     assert.equal(
       storyboardTrack.getAttribute('src'),
       'https://image.mux.com/bos2bPV3qbFgpVPaQ900Xd5UcdM6WXTmz02WZSz01nJ00tY/storyboard.vtt?token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik96VU90ek1nUWhPbkk2MDJ6SlFQbU52THR4MDBnSjJqTlBxN0tTTzAxQlozelEifQ.eyJleHAiOjE5NjE2MDE3NzcsImF1ZCI6InMiLCJzdWIiOiJib3MyYlBWM3FiRmdwVlBhUTkwMFhkNVVjZE02V1hUbXowMldaU3owMW5KMDB0WSJ9.aVd0dsOJUVeQko3BWd9YEhL41Eytf_ZfaBeNzHSSUqU_gREa_jJEVTlRfuiE4g71cKJLSiVTKP7f-F7Txh6DlL8E2SkonfIPB2H0f_3DQxYLso2E8qI4zuJkyxKORbQFLAEB_vSE-2lMbrHXfdpQhv6SrVyu6di9ku0LpFpoyz-_7fVJICr8nhlsqOGt66AYcaa99TXoZ582FWzBaePmWw-WWKYsLvtNjLS9UoxbdVaBRwNylohvhh-i1Y9dNilyNooJ7O8Cj4GuMjeh1pCj0BOrGagxrWrswm3HjUVNUqFq5JCWnJCxgjjwiV4RLZg_4z7gkBXyX7H2-i1dKA3Cpw&format=webp'
@@ -1236,5 +1248,144 @@ describe('<mux-player> seek to live behaviors', function () {
         'should use standard CapLevelController (no minMaxResolution property)'
       );
     });
+  });
+});
+
+describe('<mux-player> disable-cookies', function () {
+  // These load real media, and every wait below is on a condition rather than a delay, so give the
+  // slowest CI browser room instead of racing mocha's 2s default.
+  this.timeout(15000);
+
+  const PLAYBACK_ID = 'DS00Spx1CV902MCtPj5WknGlR102V5HFkDe';
+  const VIEWER_ID = 'test-viewer-id';
+
+  const readMuxDataCookie = () => document.cookie.split('; ').find((c) => c.startsWith('muxData')) ?? null;
+
+  const plantMuxDataCookie = () => {
+    document.cookie = `muxData==undefined&mux_viewer_id=${VIEWER_ID}&msn=0.5&sid=s&sst=1&sex=9999999999999;path=/;max-age=3600`;
+  };
+
+  const forgetMuxDataCookie = () => {
+    document.cookie = `muxData=;expires=${new Date(0).toUTCString()};path=/`;
+  };
+
+  /**
+   * Stand-in for mux-embed that records the options each monitor was created with, so a re-attached
+   * monitor can be told from a re-used one without sending beacons.
+   */
+  const createMuxDataSDKSpy = () => {
+    const monitors = [];
+    return {
+      monitors,
+      monitor(mediaEl, options) {
+        const record = { options, destroyed: false };
+        monitors.push(record);
+        mediaEl.mux = {
+          deleted: false,
+          emit() {},
+          addHLSJS() {},
+          removeHLSJS() {},
+          destroy() {
+            record.destroyed = true;
+            this.deleted = true;
+          },
+        };
+      },
+    };
+  };
+
+  // waitUntil() defaults to a 1s timeout, which a loaded CI browser can blow through.
+  const WAIT = { timeout: 5000 };
+
+  const waitForMonitors = (muxDataSDK, count, message) =>
+    waitUntil(() => muxDataSDK.monitors.length >= count, message, WAIT);
+
+  const waitForNoMuxDataCookie = (message) => waitUntil(() => readMuxDataCookie() === null, message, WAIT);
+
+  /** Gives whatever a change kicked off time to surface, before asserting that nothing else did. */
+  const settle = () => aTimeout(50);
+
+  /** Loads a player with the Mux Data SDK spied on from the very first monitor. */
+  const fixtureWithSpy = async (attrs = '') => {
+    const player = await fixture(`<mux-player muted prefer-playback="mse" ${attrs}></mux-player>`);
+    await waitUntil(() => player.media, 'media element should be available', WAIT);
+    const muxDataSDK = createMuxDataSDKSpy();
+    player.media.muxDataSDK = muxDataSDK;
+
+    // The first load fires its own emptied/loadstart, and on a slow browser those can land well
+    // after the monitor does, so wait for them rather than for a fixed delay: a test watching for a
+    // reload would otherwise pick up the initial load.
+    let loadStarted = false;
+    player.media.addEventListener('loadstart', () => (loadStarted = true), { once: true });
+
+    // Setting the playback id is what triggers the first load, and with it the first monitor.
+    player.playbackId = PLAYBACK_ID;
+
+    await waitForMonitors(muxDataSDK, 1, 'Mux Data should monitor the first load');
+    await waitUntil(() => loadStarted, 'the first load should have started', WAIT);
+    return { player, muxDataSDK };
+  };
+
+  afterEach(() => {
+    forgetMuxDataCookie();
+  });
+
+  it('re-attaches Mux Data when disableCookies is turned on', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy();
+    assert.equal(muxDataSDK.monitors.length, 1, 'monitored once on load');
+    assert.notOk(muxDataSDK.monitors[0].options.disableCookies, 'cookies enabled to begin with');
+
+    player.disableCookies = true;
+    await waitForMonitors(muxDataSDK, 2, 'monitor should be re-created');
+
+    assert.isTrue(muxDataSDK.monitors[1].options.disableCookies, 'the new monitor has cookies disabled');
+  });
+
+  it('re-attaches Mux Data when disableCookies is turned off', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy('disable-cookies');
+    assert.isTrue(muxDataSDK.monitors[0].options.disableCookies, 'cookies disabled to begin with');
+
+    player.disableCookies = false;
+    await waitForMonitors(muxDataSDK, 2, 'monitor should be re-created');
+
+    assert.notOk(muxDataSDK.monitors[1].options.disableCookies, 'the new monitor has cookies enabled');
+  });
+
+  it('does not reload the media when disableCookies changes', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy();
+
+    const mediaEvents = [];
+    ['emptied', 'loadstart', 'abort'].forEach((type) => {
+      player.media.addEventListener(type, () => mediaEvents.push(type));
+    });
+
+    player.disableCookies = true;
+    // Anchored on the re-attach, so this can't pass just because the change hasn't landed yet.
+    await waitForMonitors(muxDataSDK, 2, 'Mux Data should be re-attached');
+    await settle();
+
+    assert.deepEqual(mediaEvents, [], 'the media element was left alone');
+  });
+
+  it('clears the muxData cookie when cookies are disabled at runtime', async () => {
+    const { player } = await fixtureWithSpy();
+    plantMuxDataCookie();
+
+    player.disableCookies = true;
+
+    await waitForNoMuxDataCookie('the cookie should be cleared');
+  });
+
+  it('keeps an existing muxData cookie when it initializes with disable-cookies', async () => {
+    // A server-rendered page can't read consent, so it always emits the cookie-less state. Clearing
+    // there would drop a returning viewer's mux_viewer_id before consent can be granted.
+    plantMuxDataCookie();
+
+    const { muxDataSDK } = await fixtureWithSpy('disable-cookies');
+    await settle();
+
+    assert.include(readMuxDataCookie(), VIEWER_ID, 'the cookie was left alone');
+    assert.equal(muxDataSDK.monitors.length, 1, 'no re-attach was needed');
+    assert.isTrue(muxDataSDK.monitors[0].options.disableCookies, 'and cookies are disabled');
   });
 });

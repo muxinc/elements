@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   allMediaTypes,
+  applyDisableCookies,
   initialize,
   teardown,
   MuxMediaProps,
@@ -54,22 +55,22 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
     setSrc(toMuxVideoURL(props) ?? outerSrc);
   }, [outerSrc, playbackId]);
 
-  useEffect(() => {
-    const propsWithState = {
-      // NOTE: Applying playerInitTime first as a simple way of overriding it if/when folks update
-      // the value via props after initial load (e.g. when swapping src)
-      playerInitTime,
-      ...props,
-      src,
-      playerSoftwareName,
-      playerSoftwareVersion,
-      autoplay: autoPlay,
-    };
+  const getPropsWithState = () => ({
+    // NOTE: Applying playerInitTime first as a simple way of overriding it if/when folks update
+    // the value via props after initial load (e.g. when swapping src)
+    playerInitTime,
+    ...props,
+    src,
+    playerSoftwareName,
+    playerSoftwareVersion,
+    autoplay: autoPlay,
+  });
 
+  useEffect(() => {
     // mediaEl required caching here so the ref was not null in the unmount callback.
     let mediaEl = mediaElRef.current;
     if (mediaEl) {
-      playbackCoreRef.current = initialize(propsWithState, mediaEl, playbackCoreRef.current);
+      playbackCoreRef.current = initialize(getPropsWithState(), mediaEl, playbackCoreRef.current);
     }
 
     return () => {
@@ -78,6 +79,12 @@ const MuxVideo = React.forwardRef<HTMLVideoElement | undefined, Partial<Props>>(
       playbackCoreRef.current = undefined;
     };
   }, [src]);
+
+  // mux-embed latches `disableCookies` when the monitor is created and offers no setter, so Mux Data
+  // has to be re-attached to pick up a change. Unlike a src change, that leaves the media alone.
+  useEffect(() => {
+    applyDisableCookies(getPropsWithState(), mediaElRef.current, playbackCoreRef.current);
+  }, [props.disableCookies]);
 
   useEffect(() => {
     playbackCoreRef.current?.setAutoplay(autoPlay);
@@ -124,6 +131,7 @@ MuxVideo.propTypes = {
   initialBandwidthEstimateKbps: PropTypes.number,
   initialEstimateSegments: PropTypes.number,
   minPreloadSegments: PropTypes.number,
+  maxReconnectRetries: PropTypes.number,
   streamType: PropTypes.oneOf(Object.values(StreamTypes)),
   targetLiveWindow: PropTypes.number,
   tokens: PropTypes.object,

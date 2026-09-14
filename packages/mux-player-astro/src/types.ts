@@ -89,6 +89,7 @@ export type MuxPlayerProps = {
   initialBandwidthEstimateKbps?: number;
   initialEstimateSegments?: number;
   minPreloadSegments?: number;
+  maxReconnectRetries?: number;
   storyboardSrc?: string;
   preferCmcd?: ValueOf<CmcdTypes> | undefined;
 } & astroHTML.JSX.HTMLAttributes;

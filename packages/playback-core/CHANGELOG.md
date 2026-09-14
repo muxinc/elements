@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.35.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.2...@mux/playback-core@0.35.3) (2026-09-09)
+
+
+### Bug Fixes
+
+* make disableCookies reactive ([#1349](https://github.com/muxinc/elements/issues/1349)) ([cff2c35](https://github.com/muxinc/elements/commit/cff2c352bf84b7cff0752ddd70bf1c31f90002a3))
+
 ## [0.35.2](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.1...@mux/playback-core@0.35.2) (2026-07-23)
 
 

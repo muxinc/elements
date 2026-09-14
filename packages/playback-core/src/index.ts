@@ -726,6 +726,100 @@ export const initialize = (props: Partial<MuxMediaPropsInternal>, mediaEl: HTMLM
   return newCore;
 };
 
+/**
+ * Expires any `muxData` cookie mux-embed has written for this origin.
+ *
+ * `muxData` is expired unconditionally, not only when it is currently there: with several players on
+ * the page every monitor teardown flushes a final beacon that rewrites the cookie, so a write can
+ * land between reading `document.cookie` and expiring what was read.
+ */
+export const clearMuxDataCookies = () => {
+  const expires = new Date(0).toUTCString();
+  const names = new Set(['muxData']);
+
+  document.cookie.split(';').forEach((c) => {
+    const name = c.split('=')[0].trim();
+    if (name.startsWith('muxData')) names.add(name);
+  });
+
+  names.forEach((name) => {
+    document.cookie = `${name}=;expires=${expires};path=/`;
+  });
+};
+
+const pendingMuxDataInit = new WeakMap<HTMLMediaElement, Promise<void>>();
+
+/**
+ * Re-attaches the Mux Data monitor to an already loaded media element, leaving the media (and the
+ * hls.js instance, if any) alone. mux-embed latches options like `disableCookies` when the monitor
+ * is created and provides no setter for them, so re-creating it is the only way to apply a change.
+ * Ends the in-flight view and starts a new one.
+ */
+export const reinitMuxData = (
+  props: Partial<MuxMediaPropsInternal>,
+  mediaEl?: HTMLMediaElement | null,
+  core?: PlaybackCore
+) => {
+  if (!mediaEl) return;
+
+  if (mediaEl.mux) {
+    // destroy() flushes a final `viewend` and then detaches its own hls.js listeners.
+    if (!mediaEl.mux.deleted) mediaEl.mux.destroy();
+    // Drop mux-embed's `deleted: true` tombstone, otherwise the next monitor() warns.
+    delete mediaEl.mux;
+  }
+
+  // Monitor on a microtask, so a burst of changes in the same tick yields a single monitor.
+  if (pendingMuxDataInit.has(mediaEl)) return;
+
+  pendingMuxDataInit.set(
+    mediaEl,
+    Promise.resolve().then(() => {
+      pendingMuxDataInit.delete(mediaEl);
+
+      const state = muxMediaState.get(mediaEl);
+      // Bail if the media was torn down, or something else re-monitored it, while we waited.
+      if (!state || (mediaEl.mux && !mediaEl.mux.deleted)) return;
+
+      // hls.js outlives the monitor and is where rendition, request and bandwidth data come from.
+      const hls = (state.coreReference ?? core)?.engine;
+      setupMux(props, mediaEl, hls as HlsInterface | undefined);
+    })
+  );
+};
+
+/**
+ * Applies the current `disableCookies` value to Mux Data, if it differs from the one the running
+ * monitor was created with, and clears the cookie when turning it on.
+ *
+ * Only an actual change is acted on. At initialization "disabled" can just mean "consent isn't known
+ * yet" — a server-rendered page can't read consent, so it always emits the cookie-less state — and
+ * clearing there would drop a returning viewer's mux_viewer_id right before consent is granted.
+ */
+export const applyDisableCookies = (
+  props: Partial<MuxMediaPropsInternal>,
+  mediaEl?: HTMLMediaElement | null,
+  core?: PlaybackCore
+) => {
+  if (!mediaEl) return;
+
+  const disabled = !!props.disableCookies;
+  const state = muxMediaState.get(mediaEl);
+  // Nothing set up yet (so the value will be read when it is), or Mux Data already has this value.
+  if (!state || state.muxDataDisableCookies === disabled) return;
+
+  reinitMuxData(props, mediaEl, core);
+
+  if (disabled) {
+    // Clear on a microtask, so that with several players on the page every monitor has flushed its
+    // final beacon (which rewrites the cookie under the old value, synchronously) before any of the
+    // clears run. Re-read the value too: a change reverted within the same tick shouldn't clear.
+    Promise.resolve().then(() => {
+      if (props.disableCookies) clearMuxDataCookies();
+    });
+  }
+};
+
 export const teardown = (
   mediaEl?: HTMLMediaElement | null,
   core?: PlaybackCore,
@@ -1132,6 +1226,11 @@ export const setupMux = (
 ) => {
   const { envKey: env_key, disableTracking, muxDataSDK = mux, muxDataSDKOptions = {} } = props;
   const inferredEnv = isMuxVideoSrc(props);
+
+  // Remember what Mux Data is being set up with, so a later change can be told apart from the same
+  // value being re-applied. See applyDisableCookies().
+  const mediaState = muxMediaState.get(mediaEl);
+  if (mediaState) mediaState.muxDataDisableCookies = !!props.disableCookies;
 
   if (!disableTracking && (env_key || inferredEnv)) {
     const {

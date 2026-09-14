@@ -129,6 +129,7 @@ const DEFAULT_INITIAL_STATE: Partial<MuxPlayerProps> = Object.freeze({
   proudlyDisplayMuxBadge: undefined,
   disablePseudoEnded: undefined,
   capRenditionToPlayerSize: undefined,
+  maxReconnectRetries: undefined,
 });
 
 const SMALL_BREAKPOINT = 700;
@@ -285,6 +286,7 @@ function MuxPlayerPage({ location }: Props) {
           // }}
           maxAutoResolution="720p"
           capRenditionToPlayerSize={state.capRenditionToPlayerSize}
+          maxReconnectRetries={state.maxReconnectRetries}
           title={state.title}
           videoTitle={state.videoTitle}
           startTime={state.startTime}
@@ -661,6 +663,14 @@ function MuxPlayerPage({ location }: Props) {
             value={state.capRenditionToPlayerSize}
             name="capRenditionToPlayerSize"
             onChange={genericOnChange}
+          />
+          <NumberRenderer
+            value={state.maxReconnectRetries}
+            name="maxReconnectRetries"
+            label="maxReconnectRetries (0/unset = off; e.g. 6 to enable network recovery)"
+            onChange={genericOnChange}
+            min={0}
+            step={1}
           />
         </div>
       </main>

@@ -1,4 +1,4 @@
-import { fixture, assert, aTimeout } from '@open-wc/testing';
+import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
 import MuxAudioElement, { AudioEvents } from '../src/index.ts';
 
 describe('<mux-audio>', () => {
@@ -162,5 +162,156 @@ describe('<mux-audio>', () => {
       player.setAttribute('custom-domain', 'example.com');
       assert.equal(player.src, src, 'src survives a custom-domain change');
     });
+  });
+});
+
+describe('<mux-audio> disable-cookies', function () {
+  // These load real media, and every wait below is on a condition rather than a delay, so give the
+  // slowest CI browser room instead of racing mocha's 2s default.
+  this.timeout(15000);
+
+  const PLAYBACK_ID = 'vDpm5ygrRJgfIEPNIc02IJR4Trf3z00AiP';
+  const VIEWER_ID = 'test-viewer-id';
+
+  const readMuxDataCookie = () => document.cookie.split('; ').find((c) => c.startsWith('muxData')) ?? null;
+
+  const plantMuxDataCookie = () => {
+    document.cookie = `muxData==undefined&mux_viewer_id=${VIEWER_ID}&msn=0.5&sid=s&sst=1&sex=9999999999999;path=/;max-age=3600`;
+  };
+
+  const forgetMuxDataCookie = () => {
+    document.cookie = `muxData=;expires=${new Date(0).toUTCString()};path=/`;
+  };
+
+  /**
+   * Stand-in for mux-embed that records the options each monitor was created with, so a re-attached
+   * monitor can be told from a re-used one without sending beacons.
+   */
+  const createMuxDataSDKSpy = () => {
+    const monitors = [];
+    return {
+      monitors,
+      monitor(mediaEl, options) {
+        const record = { options, destroyed: false };
+        monitors.push(record);
+        mediaEl.mux = {
+          deleted: false,
+          emit() {},
+          addHLSJS() {},
+          removeHLSJS() {},
+          destroy() {
+            record.destroyed = true;
+            this.deleted = true;
+          },
+        };
+      },
+    };
+  };
+
+  // waitUntil() defaults to a 1s timeout, which a loaded CI browser can blow through.
+  const WAIT = { timeout: 5000 };
+
+  const waitForMonitors = (muxDataSDK, count, message) =>
+    waitUntil(() => muxDataSDK.monitors.length >= count, message, WAIT);
+
+  const waitForNoMuxDataCookie = (message) => waitUntil(() => readMuxDataCookie() === null, message, WAIT);
+
+  /** Gives whatever a change kicked off time to surface, before asserting that nothing else did. */
+  const settle = () => aTimeout(50);
+
+  /** Loads a player with the Mux Data SDK spied on from the very first monitor. */
+  const fixtureWithSpy = async (attrs = '') => {
+    const player = await fixture(`<mux-audio muted ${attrs}></mux-audio>`);
+    const muxDataSDK = createMuxDataSDKSpy();
+    player.muxDataSDK = muxDataSDK;
+
+    // The first load fires its own emptied/loadstart, and on a slow browser those can land well
+    // after the monitor does, so wait for them rather than for a fixed delay: a test watching for a
+    // reload would otherwise pick up the initial load.
+    let loadStarted = false;
+    player.addEventListener('loadstart', () => (loadStarted = true), { once: true });
+
+    // Setting the playback id is what triggers the first load, and with it the first monitor.
+    player.playbackId = PLAYBACK_ID;
+
+    await waitForMonitors(muxDataSDK, 1, 'Mux Data should monitor the first load');
+    await waitUntil(() => loadStarted, 'the first load should have started', WAIT);
+    return { player, muxDataSDK };
+  };
+
+  afterEach(() => {
+    forgetMuxDataCookie();
+  });
+
+  it('re-attaches Mux Data when disable-cookies is turned on', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy();
+    assert.equal(muxDataSDK.monitors.length, 1, 'monitored once on load');
+    assert.notOk(muxDataSDK.monitors[0].options.disableCookies, 'cookies enabled to begin with');
+
+    player.disableCookies = true;
+    await waitForMonitors(muxDataSDK, 2, 'monitor should be re-created');
+
+    assert.isTrue(muxDataSDK.monitors[0].destroyed, 'the previous monitor was destroyed');
+    assert.isTrue(muxDataSDK.monitors[1].options.disableCookies, 'the new monitor has cookies disabled');
+  });
+
+  it('re-attaches Mux Data when disable-cookies is turned off', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy('disable-cookies');
+    assert.isTrue(muxDataSDK.monitors[0].options.disableCookies, 'cookies disabled to begin with');
+
+    player.disableCookies = false;
+    await waitForMonitors(muxDataSDK, 2, 'monitor should be re-created');
+
+    assert.notOk(muxDataSDK.monitors[1].options.disableCookies, 'the new monitor has cookies enabled');
+  });
+
+  it('does not re-attach Mux Data when the same value is re-applied', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy();
+
+    player.setAttribute('disable-cookies', '');
+    await waitForMonitors(muxDataSDK, 2, 'the change should be applied');
+
+    // attributeChangedCallback fires even when the value is identical.
+    player.setAttribute('disable-cookies', '');
+    await settle();
+    assert.equal(muxDataSDK.monitors.length, 2, 'no monitor for a redundant re-apply');
+  });
+
+  it('does not reload the media when disable-cookies changes', async () => {
+    const { player, muxDataSDK } = await fixtureWithSpy();
+
+    const mediaEvents = [];
+    ['emptied', 'loadstart', 'abort'].forEach((type) => {
+      player.addEventListener(type, () => mediaEvents.push(type));
+    });
+
+    player.disableCookies = true;
+    // Anchored on the re-attach, so this can't pass just because the change hasn't landed yet.
+    await waitForMonitors(muxDataSDK, 2, 'Mux Data should be re-attached');
+    await settle();
+
+    assert.deepEqual(mediaEvents, [], 'the media element was left alone');
+  });
+
+  it('clears the muxData cookie when cookies are disabled at runtime', async () => {
+    const { player } = await fixtureWithSpy();
+    plantMuxDataCookie();
+
+    player.disableCookies = true;
+
+    await waitForNoMuxDataCookie('the cookie should be cleared');
+  });
+
+  it('keeps an existing muxData cookie when it initializes with disable-cookies', async () => {
+    // A server-rendered page can't read consent, so it always emits the cookie-less state. Clearing
+    // there would drop a returning viewer's mux_viewer_id before consent can be granted.
+    plantMuxDataCookie();
+
+    const { muxDataSDK } = await fixtureWithSpy('disable-cookies');
+    await settle();
+
+    assert.include(readMuxDataCookie(), VIEWER_ID, 'the cookie was left alone');
+    assert.equal(muxDataSDK.monitors.length, 1, 'no re-attach was needed');
+    assert.isTrue(muxDataSDK.monitors[0].options.disableCookies, 'and cookies are disabled');
   });
 });

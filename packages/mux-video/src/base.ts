@@ -1,4 +1,5 @@
 import {
+  applyDisableCookies,
   initialize,
   teardown,
   generatePlayerInitTime,
@@ -1000,16 +1001,10 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
       }
       case Attributes.DISABLE_COOKIES: {
         if (newValue == null || newValue !== oldValue) {
-          const disabled = this.disableCookies;
-          if (disabled) {
-            document.cookie.split(';').forEach((c) => {
-              if (c.trim().startsWith('muxData')) {
-                document.cookie = c
-                  .replace(/^ +/, '')
-                  .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-              }
-            });
-          }
+          // mux-embed latches the value when the monitor is created and has no setter for it, so
+          // Mux Data has to be re-attached to pick up a change. Unlike disable-tracking, that
+          // doesn't reload the media.
+          applyDisableCookies(this as Partial<MuxMediaProps>, this.nativeEl, this.#core);
         }
         break;
       }
