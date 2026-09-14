@@ -72,7 +72,7 @@ jobs:
       - name: Install playwright browsers
         run: npx playwright install --with-deps
       # Retry the test command up to 3 times with a timeout of 10 minutes
-      - uses: nick-fields/retry@v3
+      - uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 6
