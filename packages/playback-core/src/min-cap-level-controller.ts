@@ -1,10 +1,16 @@
 import Hls from './hls';
+import type { HlsConfig } from 'hls.js';
 import type { HlsInterface } from './hls';
 import type { Level } from 'hls.js';
 import type { MaxAutoResolutionValue } from './types';
 
 // The hls.js commonJS module doesn't export CapLevelController, so get it from the default config.
-const CapLevelController = Hls.DefaultConfig.capLevelController;
+const CapLevelController = Hls.DefaultConfig.capLevelController as NonNullable<HlsConfig['capLevelController']>;
+// Note: As of hls.js 1.7 Hls.DefaultConfig.capLevelController could technically be undefined;
+//  this should never be the case but it has a setter so we are defensive.
+if (!CapLevelController) {
+  throw new Error('hls.js DefaultConfig.capLevelController is unavailable');
+}
 
 /**
  * Resolution pricing tiers based on total pixels (width * height)
