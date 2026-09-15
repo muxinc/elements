@@ -9,7 +9,7 @@ const CapLevelController = Hls.DefaultConfig.capLevelController as NonNullable<H
 // Note: As of hls.js 1.7 Hls.DefaultConfig.capLevelController could technically be undefined;
 //  this should never be the case but it has a setter so we are defensive.
 if (!CapLevelController) {
-  throw new Error('hls.js DefaultConfig.capLevelController is unavailable');
+  console.error('MinCapLevelController - hls.js DefaultConfig.capLevelController is unavailable');
 }
 
 /**
