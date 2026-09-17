@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.13.4](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.3...@mux/mux-player@3.13.4) (2026-09-15)
+
+
+### Bug Fixes
+
+* bumped hls.js version ([#1357](https://github.com/muxinc/elements/issues/1357)) ([6a7528a](https://github.com/muxinc/elements/commit/6a7528ae74454d53f15c02443a372a7b9384ca44))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.31.3 to 0.31.4
+    * @mux/playback-core bumped from 0.35.3 to 0.35.4
+
 ## [3.13.3](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.2...@mux/mux-player@3.13.3) (2026-09-09)
 
 
