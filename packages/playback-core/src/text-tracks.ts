@@ -337,12 +337,42 @@ const vttCueToChapter = (cue: VTTCue) => ({
   value: cue.text,
 });
 
+const sessionDataChapterCues = new WeakSet<TextTrackCue>();
+
+function removeSessionDataChapterCues(track: TextTrack) {
+  Array.from(track.cues ?? [])
+    .filter((cue) => sessionDataChapterCues.has(cue))
+    .forEach((cue) => track.removeCue(cue));
+}
+
 export async function addChapters(
   mediaEl: HTMLMediaElement,
   chapters: Chapter[],
   chaptersConfig: Config = DefaultChaptersConfig
 ) {
+  const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (track && chapters.length) removeSessionDataChapterCues(track);
   return addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
+}
+
+/**
+ * Replaces the chapters that came from the stream's session data. Chapters added through
+ * `addChapters()` always win: they are never merged with these, and adding them removes these.
+ */
+export async function setSessionDataChapters(
+  mediaEl: HTMLMediaElement,
+  chapters: Chapter[],
+  chaptersConfig: Config = DefaultChaptersConfig
+) {
+  const existingTrack = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (existingTrack) {
+    if (Array.from(existingTrack.cues ?? []).some((cue) => !sessionDataChapterCues.has(cue))) return existingTrack;
+    removeSessionDataChapterCues(existingTrack);
+  }
+
+  const track = await addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
+  Array.from(track.cues ?? []).forEach((cue) => sessionDataChapterCues.add(cue));
+  return track;
 }
 
 export function getChapters(
