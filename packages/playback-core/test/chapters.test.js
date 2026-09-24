@@ -318,26 +318,81 @@ describe('chapters', () => {
       );
     });
 
-    it('hls.js playback: applies chapters and metadata on MANIFEST_PARSED', async () => {
+    it('native playback: resolves a relative chapters URI against the multivariant response URL after a redirect', async () => {
+      const multivariant = [
+        '#EXTM3U',
+        '#EXT-X-SESSION-DATA:DATA-ID="com.apple.hls.chapters",URI="chapters.json"',
+        '#EXT-X-STREAM-INF:BANDWIDTH=1',
+        'media.m3u8',
+      ].join('\n');
+      const media = ['#EXTM3U', '#EXT-X-PLAYLIST-TYPE:VOD', '#EXT-X-TARGETDURATION:4', '#EXT-X-ENDLIST'].join('\n');
+      const redirectedUrl = 'https://cdn.example.com/redirected/main.m3u8';
+      const fetchCalls = [];
+      window.fetch = async (url) => {
+        fetchCalls.push(String(url));
+        if (String(url).endsWith('chapters.json')) return jsonResponse(chaptersDocument);
+        if (String(url).endsWith('media.m3u8'))
+          return { ok: true, status: 200, url: String(url), text: async () => media };
+        // The multivariant request redirects, so its response URL differs from the requested src.
+        return { ok: true, status: 200, url: redirectedUrl, text: async () => multivariant };
+      };
+
+      await updateStreamInfoFromSrc('https://stream.example.com/main.m3u8', mediaEl, 'application/vnd.apple.mpegurl');
+      await waitUntil(() => getChapters(mediaEl).length === 2);
+
+      assert.deepEqual(
+        fetchCalls.filter((url) => url.endsWith('chapters.json')),
+        ['https://cdn.example.com/redirected/chapters.json']
+      );
+    });
+
+    it('hls.js playback: applies chapters and metadata on MANIFEST_LOADED', async () => {
       window.fetch = async () => jsonResponse(chaptersDocument);
       let metadataEvents = 0;
       mediaEl.addEventListener('muxmetadata', () => metadataEvents++);
       hls = setupHls({ src: 'https://stream.example.com/main.m3u8', preferPlayback: 'mse' }, mediaEl);
 
-      hls.trigger(Hls.Events.MANIFEST_PARSED, {
+      hls.trigger(Hls.Events.MANIFEST_LOADED, {
         levels: [],
         audioTracks: [],
-        subtitleTracks: [],
-        firstLevel: 0,
+        url: 'https://stream.example.com/main.m3u8',
         stats: {},
-        audio: false,
-        video: true,
-        altAudio: false,
+        networkDetails: null,
         sessionData: { 'com.apple.hls.chapters': { 'DATA-ID': 'com.apple.hls.chapters', URI: CHAPTERS_URL } },
+        sessionKeys: null,
+        contentSteering: null,
+        startTimeOffset: null,
+        variableList: null,
       });
       await waitUntil(() => getChapters(mediaEl).length === 2);
 
       assert.equal(metadataEvents, 1);
+    });
+
+    it('hls.js playback: resolves a relative chapters URI against the manifest response URL after a redirect', async () => {
+      const fetchCalls = [];
+      window.fetch = async (url) => {
+        fetchCalls.push(String(url));
+        return jsonResponse(chaptersDocument);
+      };
+      hls = setupHls({ src: 'https://stream.example.com/main.m3u8', preferPlayback: 'mse' }, mediaEl);
+
+      hls.trigger(Hls.Events.MANIFEST_LOADED, {
+        levels: [],
+        audioTracks: [],
+        // The manifest request redirected, so the response URL differs from the requested src.
+        url: 'https://cdn.example.com/redirected/main.m3u8',
+        stats: {},
+        networkDetails: null,
+        sessionData: { 'com.apple.hls.chapters': { 'DATA-ID': 'com.apple.hls.chapters', URI: 'chapters.json' } },
+        sessionKeys: null,
+        contentSteering: null,
+        startTimeOffset: null,
+        variableList: null,
+      });
+      await waitUntil(() => getChapters(mediaEl).length === 2);
+
+      assert.deepEqual(fetchCalls, ['https://cdn.example.com/redirected/chapters.json']);
     });
   });
 });

@@ -213,6 +213,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       targetLiveWindow: Number.NaN,
       liveEdgeStartOffset: undefined,
       sessionData: undefined,
+      playlistUrl: undefined,
     };
   }
 
@@ -230,6 +231,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
     return {
       ...getMultivariantPlaylistSessionData(multivariantPlaylist),
       ...getStreamInfoFromPlaylist(mediaPlaylist),
+      playlistUrl: multivariantPlaylistResponse.url,
     };
   }
 
@@ -240,6 +242,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
     targetLiveWindow: undefined,
     liveEdgeStartOffset: undefined,
     sessionData: undefined,
+    playlistUrl: undefined,
   };
 };
 
@@ -248,12 +251,10 @@ export const updateStreamInfoFromSrc = async (
   mediaEl: HTMLMediaElement,
   type: MediaTypes | '' = getType({ src })
 ) => {
-  const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData } = await getStreamInfoFromSrcAndType(
-    src,
-    type
-  );
+  const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData, playlistUrl } =
+    await getStreamInfoFromSrcAndType(src, type);
 
-  const chaptersUrl = toChaptersSessionDataUrl(sessionData?.['com.apple.hls.chapters'], src);
+  const chaptersUrl = toChaptersSessionDataUrl(sessionData?.['com.apple.hls.chapters'], playlistUrl ?? src);
   if (chaptersUrl) {
     fetchAndApplyChaptersSessionData(chaptersUrl, mediaEl);
   }
@@ -1006,8 +1007,9 @@ export const setupHls = (
       }
     }
 
-    hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
-      const chaptersUrl = toChaptersSessionDataUrl(data.sessionData?.['com.apple.hls.chapters'], hls.url ?? '');
+    hls.on(Hls.Events.MANIFEST_LOADED, async function (_event, data) {
+      // data.url is the manifest response URL, which considers redirects.
+      const chaptersUrl = toChaptersSessionDataUrl(data.sessionData?.['com.apple.hls.chapters'], data.url);
       if (chaptersUrl) {
         fetchAndApplyChaptersSessionData(chaptersUrl, mediaEl);
       }
