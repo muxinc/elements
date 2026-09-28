@@ -288,23 +288,29 @@ export const toChaptersSessionDataUrl = (
   }
 };
 
-const fetchJsonUntilTeardown = async (url: string, mediaEl: HTMLMediaElement) => {
+const untilTeardown = async <T>(mediaEl: HTMLMediaElement, task: (signal: AbortSignal) => Promise<T>) => {
   const controller = new AbortController();
   const abort = () => controller.abort();
   mediaEl.addEventListener('teardown', abort, { once: true });
 
   try {
-    const resp = await fetch(url, { signal: controller.signal });
+    return await task(controller.signal);
+  } finally {
+    mediaEl.removeEventListener('teardown', abort);
+  }
+};
+
+const fetchJson = async (url: string, signal: AbortSignal) => {
+  try {
+    const resp = await fetch(url, { signal });
     if (!resp.ok) {
       throw new Error(`Failed to fetch ${url}: ${resp.status} ${resp.statusText}`);
     }
     const json: unknown = await resp.json();
-    return controller.signal.aborted ? undefined : json;
+    return signal.aborted ? undefined : json;
   } catch (error) {
-    if (!controller.signal.aborted) console.error(error);
+    if (!signal.aborted) console.error(error);
     return undefined;
-  } finally {
-    mediaEl.removeEventListener('teardown', abort);
   }
 };
 
@@ -324,18 +330,20 @@ const dispatchMuxMetadata = (json: any, mediaEl: HTMLMediaElement) => {
   mediaEl.dispatchEvent(eventUpdateMetadata);
 };
 
-export const fetchAndDispatchMuxMetadata = async (metadataUrl: string, mediaEl: HTMLMediaElement) => {
-  const json = await fetchJsonUntilTeardown(metadataUrl, mediaEl);
-  if (json === undefined) return;
-  dispatchMuxMetadata(json, mediaEl);
-};
+export const fetchAndDispatchMuxMetadata = (metadataUrl: string, mediaEl: HTMLMediaElement) =>
+  untilTeardown(mediaEl, async (signal) => {
+    const json = await fetchJson(metadataUrl, signal);
+    if (json === undefined) return;
+    dispatchMuxMetadata(json, mediaEl);
+  });
 
-export const fetchAndApplyChaptersSessionData = async (chaptersUrl: string, mediaEl: HTMLMediaElement) => {
-  const json = await fetchJsonUntilTeardown(chaptersUrl, mediaEl);
-  if (json === undefined) return;
-  dispatchMuxMetadata(json, mediaEl);
-  await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json));
-};
+export const fetchAndApplyChaptersSessionData = (chaptersUrl: string, mediaEl: HTMLMediaElement) =>
+  untilTeardown(mediaEl, async (signal) => {
+    const json = await fetchJson(chaptersUrl, signal);
+    if (json === undefined) return;
+    dispatchMuxMetadata(json, mediaEl);
+    await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json), signal);
+  });
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
   const playlistType: HlsPlaylistTypes = levelDetails.type as HlsPlaylistTypes;

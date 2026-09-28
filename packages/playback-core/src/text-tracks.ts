@@ -184,22 +184,43 @@ export function getTextTrack(mediaEl: HTMLMediaElement, label: string, kind: Tex
   })?.track;
 }
 
+const pendingTrackSetups = new WeakMap<TextTrack, Promise<void>>();
+
+async function getOrCreateTextTrack(mediaEl: HTMLMediaElement, label: string, kind: TextTrackKind) {
+  const existingTrack = getTextTrack(mediaEl, label, kind);
+  if (existingTrack) {
+    const pendingSetup = pendingTrackSetups.get(existingTrack);
+    if (pendingSetup) await pendingSetup;
+    return existingTrack;
+  }
+
+  const track = addTextTrack(mediaEl, kind, label);
+  track.mode = 'hidden';
+  // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
+  const setup = new Promise<void>((resolve) => setTimeout(resolve, 0));
+  pendingTrackSetups.set(track, setup);
+  await setup;
+  pendingTrackSetups.delete(track);
+  return track;
+}
+
 export async function addCuesToTextTrack<T = any>(
   mediaEl: HTMLMediaElement,
   cues: CuePoint<T>[] | Chapter[],
   label: string,
   kind: TextTrackKind
 ) {
-  // If the track has already been created/added, use it.
-  let track = getTextTrack(mediaEl, label, kind);
-  if (!track) {
-    // Otherwise, create a new one
-    track = addTextTrack(mediaEl, kind, label);
-    track.mode = 'hidden';
-    // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
-    await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
-  }
+  const track = await getOrCreateTextTrack(mediaEl, label, kind);
+  addCuesToTrack(mediaEl, track, cues, kind);
+  return track;
+}
 
+function addCuesToTrack<T = any>(
+  mediaEl: HTMLMediaElement,
+  track: TextTrack,
+  cues: CuePoint<T>[] | Chapter[],
+  kind: TextTrackKind
+) {
   if (track.mode !== 'hidden') {
     track.mode = 'hidden';
   }
@@ -253,8 +274,6 @@ export async function addCuesToTextTrack<T = any>(
       composed: true,
     })
   );
-
-  return track;
 }
 
 // Cuepoints
@@ -359,9 +378,10 @@ export async function addChapters(
   chapters: Chapter[],
   chaptersConfig: Config = DefaultChaptersConfig
 ) {
-  const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
-  if (track && chapters.length) removeSessionDataChapterCues(track);
-  return addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
+  const track = await getOrCreateTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (chapters.length) removeSessionDataChapterCues(track);
+  addCuesToTrack(mediaEl, track, chapters, 'chapters');
+  return track;
 }
 
 /**
@@ -371,15 +391,15 @@ export async function addChapters(
 export async function setSessionDataChapters(
   mediaEl: HTMLMediaElement,
   chapters: Chapter[],
+  signal?: AbortSignal,
   chaptersConfig: Config = DefaultChaptersConfig
 ) {
-  const existingTrack = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
-  if (existingTrack) {
-    if (Array.from(existingTrack.cues ?? []).some((cue) => !sessionDataChapterCues.has(cue))) return existingTrack;
-    removeSessionDataChapterCues(existingTrack);
-  }
+  const track = await getOrCreateTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (signal?.aborted) return track;
+  if (Array.from(track.cues ?? []).some((cue) => !sessionDataChapterCues.has(cue))) return track;
 
-  const track = await addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
+  removeSessionDataChapterCues(track);
+  addCuesToTrack(mediaEl, track, chapters, 'chapters');
   Array.from(track.cues ?? []).forEach((cue) => sessionDataChapterCues.add(cue));
   return track;
 }

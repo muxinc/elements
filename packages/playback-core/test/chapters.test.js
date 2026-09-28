@@ -223,6 +223,18 @@ describe('chapters', () => {
       assert.deepEqual(getChapters(mediaEl), []);
     });
 
+    it('applies no chapters when a teardown happens after the document resolved', async () => {
+      mockFetch(async () => jsonResponse(chaptersDocument));
+      const observer = new MutationObserver(() => mediaEl.dispatchEvent(new Event('teardown')));
+      observer.observe(mediaEl, { childList: true });
+
+      await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+      observer.disconnect();
+
+      assert.isOk(getTextTrack(mediaEl, 'chapters', 'chapters'));
+      assert.deepEqual(getChapters(mediaEl), []);
+    });
+
     it('keeps chapters added through addChapters() and skips the stream chapters', async () => {
       await addChapters(mediaEl, [
         { startTime: 0, endTime: 50, value: 'User A' },
@@ -238,6 +250,19 @@ describe('chapters', () => {
         ['User A', 'User B']
       );
       assert.equal(chapters[0].endTime, 50);
+    });
+
+    it('skips the stream chapters when addChapters() runs while their track is being created', async () => {
+      mockFetch(async () => jsonResponse(chaptersDocument));
+      const observer = new MutationObserver(() =>
+        addChapters(mediaEl, [{ startTime: 0, endTime: 50, value: 'User A' }])
+      );
+      observer.observe(mediaEl, { childList: true });
+
+      await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+      observer.disconnect();
+
+      assert.deepEqual(getChapters(mediaEl), [{ startTime: 0, endTime: 50, value: 'User A' }]);
     });
 
     it('replaces the stream chapters with chapters added later through addChapters()', async () => {
