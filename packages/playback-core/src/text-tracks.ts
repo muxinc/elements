@@ -117,12 +117,15 @@ export function setupTextTracks(
         if (track.kind) selector += `[kind="${track.kind}"]`;
         if (track.label) selector += `[label="${track.label}"]`;
         const trackEl = mediaEl.querySelector(selector);
-        // Force a reload of the cues if they've been removed
-        const src = trackEl?.getAttribute('src') ?? '';
-        trackEl?.removeAttribute('src');
-        setTimeout(() => {
-          trackEl?.setAttribute('src', src);
-        }, 0);
+        const src = trackEl?.getAttribute('src');
+        // Force a reload of the cues if they've been removed. Resetting src empties the cue list, so a
+        // srcless track, whose cues come from addCue(), must be left alone.
+        if (trackEl && src) {
+          trackEl.removeAttribute('src');
+          setTimeout(() => {
+            trackEl.setAttribute('src', src);
+          }, 0);
+        }
       }
       // Force hidden mode if it's not hidden
       if (track.mode !== 'hidden') {

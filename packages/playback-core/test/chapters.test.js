@@ -1,9 +1,10 @@
-import { assert, fixture, oneEvent, waitUntil } from '@open-wc/testing';
+import { aTimeout, assert, fixture, oneEvent, waitUntil } from '@open-wc/testing';
 import { parseAppleJsonChapters } from '../src/chapters.ts';
 import {
   addChapters,
   getActiveChapter,
   getChapters,
+  getTextTrack,
   setSessionDataChapters,
   setupChapters,
 } from '../src/text-tracks.ts';
@@ -11,6 +12,7 @@ import {
   Hls,
   fetchAndApplyChaptersSessionData,
   getMetadata,
+  initialize,
   muxMediaState,
   setupHls,
   toChaptersSessionDataUrl,
@@ -29,6 +31,19 @@ const chaptersDocument = [
 ];
 
 const jsonResponse = (json) => ({ ok: true, status: 200, json: async () => json });
+
+const manifestLoadedData = ({ url, chaptersUri }) => ({
+  levels: [],
+  audioTracks: [],
+  url,
+  stats: {},
+  networkDetails: null,
+  sessionData: { 'com.apple.hls.chapters': { 'DATA-ID': 'com.apple.hls.chapters', URI: chaptersUri } },
+  sessionKeys: null,
+  contentSteering: null,
+  startTimeOffset: null,
+  variableList: null,
+});
 
 describe('chapters', () => {
   describe('parseAppleJsonChapters()', () => {
@@ -415,18 +430,10 @@ describe('chapters', () => {
       mediaEl.addEventListener('muxmetadata', () => metadataEvents++);
       hls = setupHls({ src: 'https://stream.example.com/main.m3u8', preferPlayback: 'mse' }, mediaEl);
 
-      hls.trigger(Hls.Events.MANIFEST_LOADED, {
-        levels: [],
-        audioTracks: [],
-        url: 'https://stream.example.com/main.m3u8',
-        stats: {},
-        networkDetails: null,
-        sessionData: { 'com.apple.hls.chapters': { 'DATA-ID': 'com.apple.hls.chapters', URI: CHAPTERS_URL } },
-        sessionKeys: null,
-        contentSteering: null,
-        startTimeOffset: null,
-        variableList: null,
-      });
+      hls.trigger(
+        Hls.Events.MANIFEST_LOADED,
+        manifestLoadedData({ url: 'https://stream.example.com/main.m3u8', chaptersUri: CHAPTERS_URL })
+      );
       await waitUntil(() => getChapters(mediaEl).length === 2);
 
       assert.equal(metadataEvents, 1);
@@ -440,22 +447,39 @@ describe('chapters', () => {
       };
       hls = setupHls({ src: 'https://stream.example.com/main.m3u8', preferPlayback: 'mse' }, mediaEl);
 
-      hls.trigger(Hls.Events.MANIFEST_LOADED, {
-        levels: [],
-        audioTracks: [],
-        // The manifest request redirected, so the response URL differs from the requested src.
-        url: 'https://cdn.example.com/redirected/main.m3u8',
-        stats: {},
-        networkDetails: null,
-        sessionData: { 'com.apple.hls.chapters': { 'DATA-ID': 'com.apple.hls.chapters', URI: 'chapters.json' } },
-        sessionKeys: null,
-        contentSteering: null,
-        startTimeOffset: null,
-        variableList: null,
-      });
+      // The manifest request redirected, so the response URL differs from the requested src.
+      hls.trigger(
+        Hls.Events.MANIFEST_LOADED,
+        manifestLoadedData({ url: 'https://cdn.example.com/redirected/main.m3u8', chaptersUri: 'chapters.json' })
+      );
       await waitUntil(() => getChapters(mediaEl).length === 2);
 
       assert.deepEqual(fetchCalls, ['https://cdn.example.com/redirected/chapters.json']);
+    });
+
+    it('hls.js playback through initialize(): keeps the chapters when the document resolves right away', async () => {
+      window.fetch = async () => jsonResponse(chaptersDocument);
+      const core = initialize(
+        {
+          src: 'https://stream.example.com/main.m3u8',
+          preferPlayback: 'mse',
+          preload: 'none',
+          disableTracking: true,
+        },
+        mediaEl
+      );
+      hls = core.engine;
+      await waitUntil(() => getTextTrack(mediaEl, 'chapters', 'chapters'));
+
+      hls.trigger(
+        Hls.Events.MANIFEST_LOADED,
+        manifestLoadedData({ url: 'https://stream.example.com/main.m3u8', chaptersUri: CHAPTERS_URL })
+      );
+      await waitUntil(() => getChapters(mediaEl).length === 2);
+      await aTimeout(50);
+
+      assert.equal(getChapters(mediaEl).length, 2);
+      assert.isFalse(mediaEl.querySelector('track[label="chapters"]').hasAttribute('src'));
     });
   });
 });
