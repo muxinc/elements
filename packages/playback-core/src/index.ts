@@ -44,6 +44,7 @@ import {
   isRelativeUrl,
   getFirstMediaPlaylistUrl,
   toAbsoluteUrl,
+  getPreferredLanguages,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
@@ -341,7 +342,7 @@ export const fetchAndApplyChaptersSessionData = (chaptersUrl: string, mediaEl: H
     const json = await fetchJson(chaptersUrl, signal);
     if (json === undefined) return;
     dispatchMuxMetadata(json, mediaEl);
-    await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json), signal);
+    await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json, getPreferredLanguages(mediaEl)), signal);
   });
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {

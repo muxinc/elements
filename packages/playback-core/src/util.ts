@@ -14,6 +14,23 @@ type addEventListenerWithTeardown = <
   target?: T | HTMLMediaElement
 ) => void;
 
+// Light DOM ancestors, <html> included, are skipped on purpose: only the element and its shadow hosts count.
+const getOwnLanguage = (el: Element) => {
+  let node: Element | undefined = el;
+  while (node) {
+    // An empty lang means the language is unknown, it does not defer to the shadow hosts.
+    if (node.hasAttribute('lang')) return node.getAttribute('lang') || undefined;
+    const root = node.getRootNode();
+    node = root instanceof ShadowRoot ? root.host : undefined;
+  }
+  return undefined;
+};
+
+export const getPreferredLanguages = (el: Element) => {
+  const navigatorLanguages = globalThis.navigator?.languages ?? [globalThis.navigator?.language];
+  return [...navigatorLanguages, getOwnLanguage(el)].filter((language): language is string => !!language);
+};
+
 // Adds an event listener to a media element that will be removed when an 'teardown' event is dispatched.
 // Using this instead of 'emptied' as that can fire on initial load based on prior state of the media element
 // Will be fired as a result of (directly or indirectly) invoking playback-core's `teardown()` function.

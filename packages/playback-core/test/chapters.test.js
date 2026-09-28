@@ -70,7 +70,7 @@ describe('chapters', () => {
       assert.equal(parseAppleJsonChapters(json)[0].endTime, 5);
     });
 
-    it('prefers the language-neutral ("und") title when present', () => {
+    it('prefers the language-neutral ("und") title when no title matches a preferred language', () => {
       const json = [
         {
           'start-time': 0,
@@ -96,6 +96,64 @@ describe('chapters', () => {
       ];
 
       assert.equal(parseAppleJsonChapters(json)[0].value, 'Introducción');
+    });
+
+    describe('with preferred languages', () => {
+      const titled = (...titles) => [
+        { 'start-time': 0, titles: titles.map(([language, title]) => ({ language, title })) },
+      ];
+      const titleFor = (json, preferredLanguages) => parseAppleJsonChapters(json, preferredLanguages)[0].value;
+
+      it('prefers a title in a preferred language over the language-neutral one', () => {
+        assert.equal(titleFor(titled(['und', 'Intro'], ['es', 'Introducción']), ['es']), 'Introducción');
+      });
+
+      it('matches the full language tag before the primary subtag', () => {
+        const json = titled(['pt-PT', 'Introdução (PT)'], ['pt-BR', 'Introdução (BR)']);
+
+        assert.equal(titleFor(json, ['pt-BR']), 'Introdução (BR)');
+      });
+
+      it('falls back to the primary subtag in either direction', () => {
+        assert.equal(titleFor(titled(['en', 'Intro'], ['es', 'Introducción']), ['es-419']), 'Introducción');
+        assert.equal(titleFor(titled(['es', 'Introducción'], ['en-GB', 'Intro']), ['en-US']), 'Intro');
+      });
+
+      it('follows the order of the preferred languages', () => {
+        const json = titled(['en', 'Intro'], ['es', 'Introducción'], ['fr', 'Introduction']);
+
+        assert.equal(titleFor(json, ['de', 'fr', 'es']), 'Introduction');
+        assert.equal(titleFor(json, ['es-MX', 'fr']), 'Introducción');
+      });
+
+      it('matches language tags case-insensitively', () => {
+        assert.equal(titleFor(titled(['en', 'Intro'], ['pt-br', 'Introdução']), ['pt-BR']), 'Introdução');
+      });
+
+      it('falls back to the language-neutral title, then the first one, when nothing matches', () => {
+        assert.equal(titleFor(titled(['es', 'Introducción'], ['und', 'Intro']), ['de']), 'Intro');
+        assert.equal(titleFor(titled(['es', 'Introducción'], ['en', 'Intro']), ['de']), 'Introducción');
+      });
+
+      it('skips empty titles', () => {
+        assert.equal(titleFor(titled(['es', ''], ['und', 'Intro']), ['es']), 'Intro');
+      });
+
+      it('keeps titles without a language', () => {
+        assert.equal(titleFor([{ 'start-time': 0, titles: [{ title: 'Intro' }] }], ['es']), 'Intro');
+        assert.equal(titleFor([{ 'start-time': 0, titles: [{ language: null, title: 'Intro' }] }], []), 'Intro');
+        assert.equal(
+          titleFor(
+            [{ 'start-time': 0, titles: [{ title: 'Intro' }, { language: 'es', title: 'Introducción' }] }],
+            ['es']
+          ),
+          'Introducción'
+        );
+      });
+
+      it('matches the language-neutral title case-insensitively', () => {
+        assert.equal(titleFor(titled(['es', 'Introducción'], ['UND', 'Intro']), ['de']), 'Intro');
+      });
     });
 
     it('yields no chapters for the untitled document Mux serves for assets without metadata', () => {
@@ -272,6 +330,90 @@ describe('chapters', () => {
       await addChapters(mediaEl, [{ startTime: 5, endTime: 20, value: 'User A' }]);
 
       assert.deepEqual(getChapters(mediaEl), [{ startTime: 5, endTime: 20, value: 'User A' }]);
+    });
+
+    describe('title language', () => {
+      const multilingualDocument = [
+        {
+          'start-time': 0,
+          titles: [
+            { language: 'en', title: 'Intro' },
+            { language: 'es', title: 'Introducción' },
+          ],
+        },
+      ];
+      let navigatorLanguages;
+
+      beforeEach(() => {
+        navigatorLanguages = undefined;
+        Object.defineProperty(navigator, 'languages', {
+          configurable: true,
+          get: () =>
+            navigatorLanguages ?? Object.getOwnPropertyDescriptor(Navigator.prototype, 'languages').get.call(navigator),
+        });
+        mockFetch(async () => jsonResponse(multilingualDocument));
+      });
+
+      afterEach(() => {
+        delete navigator.languages;
+      });
+
+      it('prefers the browser languages over the lang of the player', async () => {
+        navigatorLanguages = ['es-AR', 'en'];
+        mediaEl = await fixture(`<video lang="en"></video>`);
+
+        await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+
+        assert.equal(getChapters(mediaEl)[0].value, 'Introducción');
+      });
+
+      it('uses the lang of the media element when no browser language matches', async () => {
+        navigatorLanguages = ['de'];
+        mediaEl = await fixture(`<video lang="es"></video>`);
+
+        await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+
+        assert.equal(getChapters(mediaEl)[0].value, 'Introducción');
+      });
+
+      it('uses the lang of a shadow host, as for a player that renders its media in shadow DOM', async () => {
+        navigatorLanguages = ['de'];
+        const host = await fixture(`<div lang="es"></div>`);
+        host.attachShadow({ mode: 'open' }).innerHTML = '<video></video>';
+        mediaEl = host.shadowRoot.querySelector('video');
+
+        await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+
+        assert.equal(getChapters(mediaEl)[0].value, 'Introducción');
+      });
+
+      it('treats an empty lang as unknown instead of deferring to the shadow hosts', async () => {
+        navigatorLanguages = ['de'];
+        const host = await fixture(`<div lang="es"></div>`);
+        host.attachShadow({ mode: 'open' }).innerHTML = '<video lang=""></video>';
+        mediaEl = host.shadowRoot.querySelector('video');
+
+        await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+
+        assert.equal(getChapters(mediaEl)[0].value, 'Intro');
+      });
+
+      it('ignores a lang inherited from light DOM ancestors or the document', async () => {
+        navigatorLanguages = ['de'];
+        const container = await fixture(`<div lang="es"><video></video></div>`);
+        mediaEl = container.querySelector('video');
+        const documentLang = document.documentElement.getAttribute('lang');
+        document.documentElement.setAttribute('lang', 'es');
+
+        try {
+          await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
+        } finally {
+          if (documentLang === null) document.documentElement.removeAttribute('lang');
+          else document.documentElement.setAttribute('lang', documentLang);
+        }
+
+        assert.equal(getChapters(mediaEl)[0].value, 'Intro');
+      });
     });
 
     it('adds no chapters for an untitled document but still applies its metadata', async () => {
