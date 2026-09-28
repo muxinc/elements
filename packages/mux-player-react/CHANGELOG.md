@@ -33,6 +33,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.13.4](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.13.3...@mux/mux-player-react@3.13.4) (2026-09-15)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-player-react:** Synchronize player versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.13.3 to 3.13.4
+    * @mux/playback-core bumped from 0.35.3 to 0.35.4
+
 ## [3.13.3](https://github.com/muxinc/elements/compare/@mux/mux-player-react@3.13.2...@mux/mux-player-react@3.13.3) (2026-09-09)
 
 

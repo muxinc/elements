@@ -443,8 +443,13 @@ describe('playback core', function () {
     // - AbrController checks stats.aborted (aborted=true → bail early)
     // - AudioStreamController accesses elementaryStreams.video
     // - FragmentTracker checks this.timeRanges (null in test → bail early)
-    const mainFrag = { type: 'main', stats: { aborted: true }, elementaryStreams: {} };
-    const audioFrag = { type: 'audio', stats: { aborted: true }, elementaryStreams: {} };
+    // - StreamController compares against this.fragCurrent (null in test) via
+    //   fragmentsAreEqual, which only optional-chains the first `sn` comparison.
+    //   Without `sn`, `undefined === undefined` passes and the next line derefs
+    //   null. The throw aborts the emit, so listeners registered after HLS.js's
+    //   own controllers (ours) never run.
+    const mainFrag = { type: 'main', sn: 0, stats: { aborted: true }, elementaryStreams: {} };
+    const audioFrag = { type: 'audio', sn: 0, stats: { aborted: true }, elementaryStreams: {} };
 
     it('should reset estimator after each of the first N-1 segments when initialEstimateSegments=N', () => {
       const initialKbps = 10_000;
