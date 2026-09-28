@@ -249,7 +249,7 @@ function addCuesToTrack<T = any>(
         const cueAfter = track?.cues?.[cueAfterIndex];
         const endTime = cueAfter
           ? cueAfter.startTime
-          : Number.isFinite(mediaEl.duration)
+          : Number.isFinite(mediaEl.duration) && mediaEl.duration > 0
             ? mediaEl.duration
             : OPEN_CUE_END_TIME;
 
@@ -356,11 +356,17 @@ export async function setupCuePoints(mediaEl: HTMLMediaElement, cuePointsConfig:
 const DEFAULT_CHAPTERS_TRACK_LABEL = 'chapters';
 export const DefaultChaptersConfig: Config = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
 
-const vttCueToChapter = (cue: VTTCue, mediaEl: HTMLMediaElement): Chapter => {
-  const endTime = Number.isFinite(mediaEl.duration) ? Math.min(cue.endTime, mediaEl.duration) : cue.endTime;
+const vttCueToChapter = (cue: VTTCue, mediaEl: HTMLMediaElement): Required<Chapter> => {
+  const { duration } = mediaEl;
+  const hasDuration = Number.isFinite(duration) && duration > 0;
+  const endTime = hasDuration
+    ? Math.min(cue.endTime, duration)
+    : cue.endTime >= OPEN_CUE_END_TIME
+      ? Infinity
+      : cue.endTime;
   return {
     startTime: cue.startTime,
-    ...(endTime < OPEN_CUE_END_TIME ? { endTime } : {}),
+    endTime,
     value: cue.text,
   };
 };

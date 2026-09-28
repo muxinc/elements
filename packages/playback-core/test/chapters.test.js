@@ -475,12 +475,32 @@ describe('chapters', () => {
       mediaEl = undefined;
     });
 
-    it('has no endTime while the media duration is unknown', async () => {
+    it('ends at Infinity while the media duration is unknown', async () => {
       await setSessionDataChapters(mediaEl, openChapters);
 
       assert.deepEqual(getChapters(mediaEl), [
         { startTime: 0, endTime: 1, value: 'Intro' },
-        { startTime: 1, value: 'Rest' },
+        { startTime: 1, endTime: Infinity, value: 'Rest' },
+      ]);
+    });
+
+    it('ends at Infinity while the media duration is zero', async () => {
+      Object.defineProperty(mediaEl, 'duration', { get: () => 0, configurable: true });
+      await setSessionDataChapters(mediaEl, openChapters);
+
+      assert.deepEqual(getChapters(mediaEl), [
+        { startTime: 0, endTime: 1, value: 'Intro' },
+        { startTime: 1, endTime: Infinity, value: 'Rest' },
+      ]);
+    });
+
+    it('ends at Infinity for an unbounded media duration', async () => {
+      Object.defineProperty(mediaEl, 'duration', { get: () => Infinity, configurable: true });
+      await setSessionDataChapters(mediaEl, openChapters);
+
+      assert.deepEqual(getChapters(mediaEl), [
+        { startTime: 0, endTime: 1, value: 'Intro' },
+        { startTime: 1, endTime: Infinity, value: 'Rest' },
       ]);
     });
 
