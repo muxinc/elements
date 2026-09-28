@@ -449,6 +449,32 @@ describe('chapters', () => {
       );
     });
 
+    it('native playback: resolves relative URIs against src when the multivariant response URL is empty', async () => {
+      const multivariant = [
+        '#EXTM3U',
+        '#EXT-X-SESSION-DATA:DATA-ID="com.apple.hls.chapters",URI="chapters.json"',
+        '#EXT-X-STREAM-INF:BANDWIDTH=1',
+        'media.m3u8',
+      ].join('\n');
+      const media = ['#EXTM3U', '#EXT-X-PLAYLIST-TYPE:VOD', '#EXT-X-TARGETDURATION:4', '#EXT-X-ENDLIST'].join('\n');
+      const fetchCalls = [];
+      window.fetch = async (url) => {
+        fetchCalls.push(String(url));
+        if (String(url).endsWith('chapters.json')) return jsonResponse(chaptersDocument);
+        const body = String(url).endsWith('media.m3u8') ? media : multivariant;
+        return { ok: true, status: 200, url: '', text: async () => body };
+      };
+
+      await updateStreamInfoFromSrc('https://stream.example.com/main.m3u8', mediaEl, 'application/vnd.apple.mpegurl');
+      await waitUntil(() => getChapters(mediaEl).length === 2);
+
+      assert.include(fetchCalls, 'https://stream.example.com/media.m3u8');
+      assert.deepEqual(
+        fetchCalls.filter((url) => url.endsWith('chapters.json')),
+        ['https://stream.example.com/chapters.json']
+      );
+    });
+
     it('hls.js playback: applies chapters and metadata on MANIFEST_LOADED', async () => {
       window.fetch = async () => jsonResponse(chaptersDocument);
       let metadataEvents = 0;

@@ -223,15 +223,14 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
       return Promise.reject(multivariantPlaylistResponse);
     }
     const multivariantPlaylist = await multivariantPlaylistResponse.text();
-    // Note: We use response.url instead of src because it considers redirects.
-    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(
-      multivariantPlaylist,
-      multivariantPlaylistResponse.url
-    );
+    // Note: We use response.url instead of src because it considers redirects. It is empty for
+    // synthetic responses.
+    const playlistUrl = multivariantPlaylistResponse.url || src;
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist, playlistUrl);
     return {
       ...getMultivariantPlaylistSessionData(multivariantPlaylist),
       ...getStreamInfoFromPlaylist(mediaPlaylist),
-      playlistUrl: multivariantPlaylistResponse.url,
+      playlistUrl,
     };
   }
 
