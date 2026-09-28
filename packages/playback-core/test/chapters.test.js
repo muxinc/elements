@@ -1,6 +1,12 @@
-import { assert, fixture, waitUntil } from '@open-wc/testing';
+import { assert, fixture, oneEvent, waitUntil } from '@open-wc/testing';
 import { parseAppleJsonChapters } from '../src/chapters.ts';
-import { addChapters, getChapters } from '../src/text-tracks.ts';
+import {
+  addChapters,
+  getActiveChapter,
+  getChapters,
+  setSessionDataChapters,
+  setupChapters,
+} from '../src/text-tracks.ts';
 import {
   Hls,
   fetchAndApplyChaptersSessionData,
@@ -267,6 +273,63 @@ describe('chapters', () => {
         assert.equal(metadataEvents, 0);
         assert.deepEqual(getChapters(mediaEl), []);
       });
+    });
+  });
+
+  describe('open last chapter', () => {
+    const MP4_SRC = 'https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4';
+    const openChapters = [
+      { startTime: 0, endTime: 1, value: 'Intro' },
+      { startTime: 1, value: 'Rest' },
+    ];
+    let mediaEl;
+
+    beforeEach(async () => {
+      mediaEl = await fixture(`<video preload="auto" crossorigin muted></video>`);
+    });
+
+    afterEach(() => {
+      mediaEl.remove();
+      mediaEl = undefined;
+    });
+
+    it('has no endTime while the media duration is unknown', async () => {
+      await setSessionDataChapters(mediaEl, openChapters);
+
+      assert.deepEqual(getChapters(mediaEl), [
+        { startTime: 0, endTime: 1, value: 'Intro' },
+        { startTime: 1, value: 'Rest' },
+      ]);
+    });
+
+    it('ends at the media duration once it is known', async () => {
+      await setSessionDataChapters(mediaEl, openChapters);
+      mediaEl.src = MP4_SRC;
+      await oneEvent(mediaEl, 'loadedmetadata');
+
+      assert.isTrue(Number.isFinite(mediaEl.duration));
+      assert.equal(getChapters(mediaEl)[1].endTime, mediaEl.duration);
+    });
+
+    it('ends at the media duration as the active chapter and in the chapterchange detail', async () => {
+      await setSessionDataChapters(mediaEl, openChapters);
+      const chaptersReady = setupChapters(mediaEl);
+      mediaEl.src = MP4_SRC;
+      await chaptersReady;
+      if (mediaEl.readyState < HTMLMediaElement.HAVE_METADATA) await oneEvent(mediaEl, 'loadedmetadata');
+
+      const chapterChange = new Promise((resolve) => {
+        mediaEl.addEventListener('chapterchange', function onChange({ detail }) {
+          if (detail.value !== 'Rest') return;
+          mediaEl.removeEventListener('chapterchange', onChange);
+          resolve(detail);
+        });
+      });
+      mediaEl.currentTime = 1.5;
+      const detail = await chapterChange;
+
+      assert.deepEqual(detail, { startTime: 1, endTime: mediaEl.duration, value: 'Rest' });
+      assert.deepEqual(getActiveChapter(mediaEl), detail);
     });
   });
 

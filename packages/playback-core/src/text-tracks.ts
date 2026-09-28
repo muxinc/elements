@@ -4,6 +4,9 @@ import { addEventListenerWithTeardown } from './util';
 
 type Config = { label: string };
 
+// `Infinity` is the spec'd end for an open cue, but engines reject it in `VTTCue`.
+const OPEN_CUE_END_TIME = Number.MAX_SAFE_INTEGER;
+
 // Shared utils
 
 // Extracts the start time from a cuepoint, considering legacy "time" prop
@@ -224,7 +227,7 @@ export async function addCuesToTextTrack<T = any>(
           ? cueAfter.startTime
           : Number.isFinite(mediaEl.duration)
             ? mediaEl.duration
-            : Number.MAX_SAFE_INTEGER;
+            : OPEN_CUE_END_TIME;
 
         // Adjust the endTime of the already added previous cue,
         // if present, so it does not overlap with the newly added cue.
@@ -331,11 +334,14 @@ export async function setupCuePoints(mediaEl: HTMLMediaElement, cuePointsConfig:
 const DEFAULT_CHAPTERS_TRACK_LABEL = 'chapters';
 export const DefaultChaptersConfig: Config = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
 
-const vttCueToChapter = (cue: VTTCue) => ({
-  startTime: cue.startTime,
-  endTime: cue.endTime,
-  value: cue.text,
-});
+const vttCueToChapter = (cue: VTTCue, mediaEl: HTMLMediaElement): Chapter => {
+  const endTime = Number.isFinite(mediaEl.duration) ? Math.min(cue.endTime, mediaEl.duration) : cue.endTime;
+  return {
+    startTime: cue.startTime,
+    ...(endTime < OPEN_CUE_END_TIME ? { endTime } : {}),
+    value: cue.text,
+  };
+};
 
 const sessionDataChapterCues = new WeakSet<TextTrackCue>();
 
@@ -381,7 +387,7 @@ export function getChapters(
 ) {
   const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.cues?.length) return [];
-  return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue));
+  return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue, mediaEl));
 }
 
 export function getActiveChapter(
@@ -390,7 +396,7 @@ export function getActiveChapter(
 ) {
   const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.activeCues?.length) return undefined;
-  if (track.activeCues.length === 1) return vttCueToChapter(track.activeCues[0] as VTTCue);
+  if (track.activeCues.length === 1) return vttCueToChapter(track.activeCues[0] as VTTCue, mediaEl);
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
   // accounts for those cases (CJP)
@@ -399,9 +405,9 @@ export function getActiveChapter(
     return startTime <= currentTime && endTime > currentTime;
   }) as VTTCue | undefined;
   if (!actualActiveCue) {
-    return vttCueToChapter(track.activeCues[0] as VTTCue);
+    return vttCueToChapter(track.activeCues[0] as VTTCue, mediaEl);
   }
-  return vttCueToChapter(actualActiveCue);
+  return vttCueToChapter(actualActiveCue, mediaEl);
 }
 
 export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: Config = DefaultChaptersConfig) {
