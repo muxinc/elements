@@ -235,7 +235,7 @@ function addCuesToTrack<T = any>(
       const value = cuePoint.value;
       const startTime = cuePointStart(cuePoint);
 
-      if ('endTime' in cuePoint && cuePoint.endTime != undefined) {
+      if ('endTime' in cuePoint && cuePoint.endTime != undefined && Number.isFinite(cuePoint.endTime)) {
         track?.addCue(
           new VTTCue(
             startTime,

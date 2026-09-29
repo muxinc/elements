@@ -504,6 +504,41 @@ describe('chapters', () => {
       ]);
     });
 
+    it('round-trips through addChapters() while the media duration is unknown', async () => {
+      await setSessionDataChapters(mediaEl, openChapters);
+
+      await addChapters(mediaEl, getChapters(mediaEl));
+
+      assert.deepEqual(getChapters(mediaEl), [
+        { startTime: 0, endTime: 1, value: 'Intro' },
+        { startTime: 1, endTime: Infinity, value: 'Rest' },
+      ]);
+    });
+
+    it('round-trips through addChapters() for an unbounded media duration', async () => {
+      Object.defineProperty(mediaEl, 'duration', { get: () => Infinity, configurable: true });
+      await setSessionDataChapters(mediaEl, openChapters);
+
+      await addChapters(mediaEl, getChapters(mediaEl));
+
+      assert.deepEqual(getChapters(mediaEl), [
+        { startTime: 0, endTime: 1, value: 'Intro' },
+        { startTime: 1, endTime: Infinity, value: 'Rest' },
+      ]);
+    });
+
+    it('treats a non-finite endTime passed to addChapters() as missing', async () => {
+      await addChapters(mediaEl, [
+        { startTime: 0, endTime: NaN, value: 'A' },
+        { startTime: 5, endTime: Infinity, value: 'B' },
+      ]);
+
+      assert.deepEqual(getChapters(mediaEl), [
+        { startTime: 0, endTime: 5, value: 'A' },
+        { startTime: 5, endTime: Infinity, value: 'B' },
+      ]);
+    });
+
     it('ends at the media duration once it is known', async () => {
       await setSessionDataChapters(mediaEl, openChapters);
       mediaEl.src = MP4_SRC;
