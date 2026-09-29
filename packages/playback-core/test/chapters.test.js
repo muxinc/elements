@@ -358,18 +358,18 @@ describe('chapters', () => {
         delete navigator.languages;
       });
 
-      it('prefers the browser languages over the lang of the player', async () => {
+      it('prefers the lang of the player over the browser languages', async () => {
         navigatorLanguages = ['es-AR', 'en'];
         mediaEl = await fixture(`<video lang="en"></video>`);
 
         await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
 
-        assert.equal(getChapters(mediaEl)[0].value, 'Introducción');
+        assert.equal(getChapters(mediaEl)[0].value, 'Intro');
       });
 
-      it('uses the lang of the media element when no browser language matches', async () => {
-        navigatorLanguages = ['de'];
-        mediaEl = await fixture(`<video lang="es"></video>`);
+      it('falls back to the browser languages when no title matches the lang of the player', async () => {
+        navigatorLanguages = ['es-AR'];
+        mediaEl = await fixture(`<video lang="de"></video>`);
 
         await fetchAndApplyChaptersSessionData(CHAPTERS_URL, mediaEl);
 
@@ -377,7 +377,7 @@ describe('chapters', () => {
       });
 
       it('uses the lang of a shadow host, as for a player that renders its media in shadow DOM', async () => {
-        navigatorLanguages = ['de'];
+        navigatorLanguages = ['en'];
         const host = await fixture(`<div lang="es"></div>`);
         host.attachShadow({ mode: 'open' }).innerHTML = '<video></video>';
         mediaEl = host.shadowRoot.querySelector('video');

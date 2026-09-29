@@ -28,7 +28,7 @@ const getOwnLanguage = (el: Element) => {
 
 export const getPreferredLanguages = (el: Element) => {
   const navigatorLanguages = globalThis.navigator?.languages ?? [globalThis.navigator?.language];
-  return [...navigatorLanguages, getOwnLanguage(el)].filter((language): language is string => !!language);
+  return [getOwnLanguage(el), ...navigatorLanguages].filter((language): language is string => !!language);
 };
 
 // Adds an event listener to a media element that will be removed when an 'teardown' event is dispatched.
