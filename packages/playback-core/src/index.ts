@@ -112,7 +112,8 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
  */
 export const getMediaPlaylistFromMultivariantPlaylist = (
   multivariantPlaylist: string,
-  masterPlaylistUrl?: string | URL
+  masterPlaylistUrl?: string | URL,
+  signal?: AbortSignal
 ) => {
   const mediaPlaylistUrl = getFirstMediaPlaylistUrl(multivariantPlaylist);
 
@@ -131,7 +132,7 @@ export const getMediaPlaylistFromMultivariantPlaylist = (
     return Promise.reject(e);
   }
 
-  return fetch(fetchUrl).then((resp) => {
+  return fetch(fetchUrl, { signal }).then((resp) => {
     if (resp.status !== 200) {
       return Promise.reject(resp);
     }
@@ -207,7 +208,7 @@ export const getStreamInfoFromPlaylist = (playlist: string) => {
   };
 };
 
-export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes | '') => {
+export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes | '', signal?: AbortSignal) => {
   if (type === ExtensionMimeTypeMap.MP4) {
     return {
       streamType: StreamTypes.ON_DEMAND,
@@ -219,7 +220,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
   }
 
   if (type === ExtensionMimeTypeMap.M3U8) {
-    const multivariantPlaylistResponse = await fetch(src);
+    const multivariantPlaylistResponse = await fetch(src, { signal });
     if (!multivariantPlaylistResponse.ok) {
       return Promise.reject(multivariantPlaylistResponse);
     }
@@ -227,7 +228,7 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
     // Note: We use response.url instead of src because it considers redirects. It is empty for
     // synthetic responses.
     const playlistUrl = multivariantPlaylistResponse.url || src;
-    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist, playlistUrl);
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist, playlistUrl, signal);
     return {
       ...getMultivariantPlaylistSessionData(multivariantPlaylist),
       ...getStreamInfoFromPlaylist(mediaPlaylist),
@@ -249,14 +250,16 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
 export const updateStreamInfoFromSrc = async (
   src: string,
   mediaEl: HTMLMediaElement,
-  type: MediaTypes | '' = getType({ src })
+  type: MediaTypes | '' = getType({ src }),
+  signal: AbortSignal = toTeardownSignal(mediaEl)
 ) => {
   const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData, playlistUrl } =
-    await getStreamInfoFromSrcAndType(src, type);
+    await getStreamInfoFromSrcAndType(src, type, signal);
+  if (signal.aborted) return;
 
   const chaptersUrl = toChaptersSessionDataUrl(sessionData?.['com.apple.hls.chapters'], playlistUrl ?? src);
   if (chaptersUrl) {
-    fetchAndApplyChaptersSessionData(chaptersUrl, mediaEl);
+    fetchAndApplyChaptersSessionData(chaptersUrl, mediaEl, signal);
   }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
@@ -288,16 +291,10 @@ export const toChaptersSessionDataUrl = (
   }
 };
 
-const untilTeardown = async <T>(mediaEl: HTMLMediaElement, task: (signal: AbortSignal) => Promise<T>) => {
+const toTeardownSignal = (mediaEl: HTMLMediaElement) => {
   const controller = new AbortController();
-  const abort = () => controller.abort();
-  mediaEl.addEventListener('teardown', abort, { once: true });
-
-  try {
-    return await task(controller.signal);
-  } finally {
-    mediaEl.removeEventListener('teardown', abort);
-  }
+  mediaEl.addEventListener('teardown', () => controller.abort(), { once: true });
+  return controller.signal;
 };
 
 const fetchJson = async (url: string, signal: AbortSignal) => {
@@ -330,20 +327,26 @@ const dispatchMuxMetadata = (json: any, mediaEl: HTMLMediaElement) => {
   mediaEl.dispatchEvent(eventUpdateMetadata);
 };
 
-export const fetchAndDispatchMuxMetadata = (metadataUrl: string, mediaEl: HTMLMediaElement) =>
-  untilTeardown(mediaEl, async (signal) => {
-    const json = await fetchJson(metadataUrl, signal);
-    if (json === undefined) return;
-    dispatchMuxMetadata(json, mediaEl);
-  });
+export const fetchAndDispatchMuxMetadata = async (
+  metadataUrl: string,
+  mediaEl: HTMLMediaElement,
+  signal: AbortSignal = toTeardownSignal(mediaEl)
+) => {
+  const json = await fetchJson(metadataUrl, signal);
+  if (json === undefined) return;
+  dispatchMuxMetadata(json, mediaEl);
+};
 
-export const fetchAndApplyChaptersSessionData = (chaptersUrl: string, mediaEl: HTMLMediaElement) =>
-  untilTeardown(mediaEl, async (signal) => {
-    const json = await fetchJson(chaptersUrl, signal);
-    if (json === undefined) return;
-    dispatchMuxMetadata(json, mediaEl);
-    await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json, getPreferredLanguages(mediaEl)), signal);
-  });
+export const fetchAndApplyChaptersSessionData = async (
+  chaptersUrl: string,
+  mediaEl: HTMLMediaElement,
+  signal: AbortSignal = toTeardownSignal(mediaEl)
+) => {
+  const json = await fetchJson(chaptersUrl, signal);
+  if (json === undefined) return;
+  dispatchMuxMetadata(json, mediaEl);
+  await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json, getPreferredLanguages(mediaEl)), signal);
+};
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
   const playlistType: HlsPlaylistTypes = levelDetails.type as HlsPlaylistTypes;
@@ -1465,8 +1468,11 @@ export const loadMedia = (
       };
 
       const setupNativeStreamInfo = async () => {
-        return updateStreamInfoFromSrc(src, mediaEl, type)
-          .then(setupSeekableChangePoll)
+        const signal = toTeardownSignal(mediaEl);
+        return updateStreamInfoFromSrc(src, mediaEl, type, signal)
+          .then(() => {
+            if (!signal.aborted) setupSeekableChangePoll();
+          })
           .catch((errOrResp: Response | Error) => {
             if (errOrResp instanceof Response) {
               const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);

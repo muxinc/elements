@@ -555,6 +555,83 @@ describe('chapters', () => {
       mediaEl = undefined;
     });
 
+    describe('native playback: source torn down before its stream info is applied', () => {
+      const multivariant = [
+        '#EXTM3U',
+        '#EXT-X-SESSION-DATA:DATA-ID="com.apple.hls.chapters",URI="chapters.json"',
+        '#EXT-X-STREAM-INF:BANDWIDTH=1',
+        'media.m3u8',
+      ].join('\n');
+      const media = ['#EXTM3U', '#EXT-X-PLAYLIST-TYPE:EVENT', '#EXT-X-TARGETDURATION:4'].join('\n');
+      const deferred = () => {
+        let resolve;
+        const promise = new Promise((r) => (resolve = r));
+        return { promise, resolve };
+      };
+      let requests;
+      let streamTypeChanges;
+
+      const mockFetch = (pendingUrlSuffix, gate) => {
+        const throwIfAborted = (signal) => {
+          if (signal?.aborted) throw new DOMException('The operation was aborted.', 'AbortError');
+        };
+        window.fetch = async (url, init) => {
+          throwIfAborted(init?.signal);
+          requests.push({ url: String(url), signal: init?.signal });
+          if (String(url).endsWith(pendingUrlSuffix)) await gate.promise;
+          throwIfAborted(init?.signal);
+          if (String(url).endsWith('chapters.json')) return jsonResponse(chaptersDocument);
+          const body = String(url).endsWith('media.m3u8') ? media : multivariant;
+          return { ok: true, status: 200, url: String(url), text: async () => body };
+        };
+      };
+
+      beforeEach(() => {
+        requests = [];
+        streamTypeChanges = 0;
+        mediaEl.addEventListener('streamtypechange', () => streamTypeChanges++);
+      });
+
+      it('applies nothing when torn down while the multivariant playlist loads', async () => {
+        const gate = deferred();
+        mockFetch('main.m3u8', gate);
+
+        const pending = updateStreamInfoFromSrc(
+          'https://stream.example.com/main.m3u8',
+          mediaEl,
+          'application/vnd.apple.mpegurl'
+        );
+        await waitUntil(() => requests.length === 1);
+        mediaEl.dispatchEvent(new Event('teardown'));
+        gate.resolve();
+        await pending.catch(() => {});
+        await aTimeout(50);
+
+        assert.isTrue(requests[0].signal.aborted);
+        assert.deepEqual(
+          requests.map(({ url }) => url),
+          ['https://stream.example.com/main.m3u8']
+        );
+        assert.equal(streamTypeChanges, 0);
+        assert.notProperty(muxMediaState.get(mediaEl), 'liveEdgeStartOffset');
+        assert.deepEqual(getChapters(mediaEl), []);
+      });
+
+      it('applies no chapters when torn down while the chapters document loads', async () => {
+        const gate = deferred();
+        mockFetch('chapters.json', gate);
+
+        await updateStreamInfoFromSrc('https://stream.example.com/main.m3u8', mediaEl, 'application/vnd.apple.mpegurl');
+        await waitUntil(() => requests.some(({ url }) => url.endsWith('chapters.json')));
+        mediaEl.dispatchEvent(new Event('teardown'));
+        gate.resolve();
+        await aTimeout(50);
+
+        assert.isTrue(requests.find(({ url }) => url.endsWith('chapters.json')).signal.aborted);
+        assert.deepEqual(getChapters(mediaEl), []);
+      });
+    });
+
     it('native playback: applies chapters and metadata from the multivariant playlist session data', async () => {
       const multivariant = [
         '#EXTM3U',
