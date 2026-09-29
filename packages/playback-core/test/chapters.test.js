@@ -114,6 +114,13 @@ describe('chapters', () => {
         assert.equal(titleFor(json, ['pt-BR']), 'Introdução (BR)');
       });
 
+      it('prefers the bare primary tag over a sibling region', () => {
+        const json = titled(['en-GB', 'Intro (GB)'], ['en', 'Intro']);
+
+        assert.equal(titleFor(json, ['en-US']), 'Intro');
+        assert.equal(titleFor(json, ['en-GB']), 'Intro (GB)');
+      });
+
       it('falls back to the primary subtag in either direction', () => {
         assert.equal(titleFor(titled(['en', 'Intro'], ['es', 'Introducción']), ['es-419']), 'Introducción');
         assert.equal(titleFor(titled(['es', 'Introducción'], ['en-GB', 'Intro']), ['en-US']), 'Intro');

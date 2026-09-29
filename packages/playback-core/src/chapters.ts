@@ -18,11 +18,13 @@ const toLanguageTag = ({ language }: AppleJsonChapterTitle) =>
 
 function findTitleInLanguage(titles: AppleJsonChapterTitle[], languageTag: string) {
   const tag = languageTag.toLowerCase();
+  const primary = primarySubtag(tag);
   return (
     titles.find((title) => toLanguageTag(title) === tag) ??
+    titles.find((title) => toLanguageTag(title) === primary) ??
     titles.find((title) => {
       const titleTag = toLanguageTag(title);
-      return titleTag !== undefined && primarySubtag(titleTag) === primarySubtag(tag);
+      return titleTag !== undefined && primarySubtag(titleTag) === primary;
     })
   );
 }
