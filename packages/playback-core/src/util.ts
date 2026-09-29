@@ -119,7 +119,7 @@ export const isRelativeUrl = (url: string): boolean => {
  * @returns The URL string, or `undefined` if no `#EXT-X-STREAM-INF` entry is found.
  */
 export const getFirstMediaPlaylistUrl = (multivariantPlaylist: string): string | undefined => {
-  return multivariantPlaylist.split('\n').find((_line, idx, lines) => {
+  return multivariantPlaylist.split(/\r?\n/).find((_line, idx, lines) => {
     return idx > 0 && lines[idx - 1].startsWith('#EXT-X-STREAM-INF');
   });
 };
