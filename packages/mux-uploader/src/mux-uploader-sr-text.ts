@@ -24,6 +24,7 @@ template.innerHTML = `
 class MuxUploaderSrTextElement extends globalThis.HTMLElement {
   srOnlyText: HTMLElement | null | undefined;
   #uploaderEl: HTMLElement | null | undefined;
+  #abortController: AbortController | undefined;
 
   constructor() {
     super();
@@ -35,22 +36,26 @@ class MuxUploaderSrTextElement extends globalThis.HTMLElement {
 
   connectedCallback() {
     this.#uploaderEl = getMuxUploaderEl(this);
+    this.#abortController = new AbortController();
 
     if (this.#uploaderEl) {
-      this.#uploaderEl.addEventListener('success', this.updateText.bind(this));
+      const opts = { signal: this.#abortController.signal };
+      this.#uploaderEl.addEventListener('success', this.updateText.bind(this), opts);
 
-      this.#uploaderEl.addEventListener('localechange', () => {
-        if (this.srOnlyText?.textContent) {
-          this.updateText();
-        }
-      });
+      this.#uploaderEl.addEventListener(
+        'localechange',
+        () => {
+          if (this.srOnlyText?.textContent) {
+            this.updateText();
+          }
+        },
+        opts
+      );
     }
   }
 
   disconnectedCallback() {
-    if (this.#uploaderEl) {
-      this.#uploaderEl.removeEventListener('success', this.updateText.bind(this));
-    }
+    this.#abortController?.abort();
   }
 
   updateText() {

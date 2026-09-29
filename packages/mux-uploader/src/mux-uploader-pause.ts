@@ -62,39 +62,55 @@ class MuxUploaderPauseElement extends globalThis.HTMLElement {
     if (this.#uploaderEl) {
       const opts = { signal: this.#abortController.signal };
       this.#uploaderEl.addEventListener('uploadstart', () => this.toggleAttribute('upload-in-progress', true), opts);
-      this.#uploaderEl.addEventListener('uploaderror', () => {
-        this.toggleAttribute('upload-error', true);
-        this.toggleAttribute('upload-complete', false);
-        this.toggleAttribute('upload-in-progress', false);
-      });
-      this.#uploaderEl.addEventListener('success', () => {
-        this.toggleAttribute('upload-complete', true);
-        this.toggleAttribute('upload-error', false);
-        this.toggleAttribute('upload-in-progress', false);
-      });
-      this.#uploaderEl.addEventListener('reset', () => {
-        this.toggleAttribute('upload-error', false);
-        this.toggleAttribute('upload-in-progress', false);
-        this.toggleAttribute('upload-complete', false);
-      });
+      this.#uploaderEl.addEventListener(
+        'uploaderror',
+        () => {
+          this.toggleAttribute('upload-error', true);
+          this.toggleAttribute('upload-complete', false);
+          this.toggleAttribute('upload-in-progress', false);
+        },
+        opts
+      );
+      this.#uploaderEl.addEventListener(
+        'success',
+        () => {
+          this.toggleAttribute('upload-complete', true);
+          this.toggleAttribute('upload-error', false);
+          this.toggleAttribute('upload-in-progress', false);
+        },
+        opts
+      );
+      this.#uploaderEl.addEventListener(
+        'reset',
+        () => {
+          this.toggleAttribute('upload-error', false);
+          this.toggleAttribute('upload-in-progress', false);
+          this.toggleAttribute('upload-complete', false);
+        },
+        opts
+      );
       /** @TODO Implement a more robust "pausedState" in mux-uploader (plausibly in upchunk) to account for "pausing" (CJP) */
-      this.#uploaderEl.addEventListener('pausedchange', () => {
-        this.pauseButton.disabled = false;
-        if (!this.#uploaderEl) return;
-        const nextPausedState = this.#uploaderEl.paused ?? false;
-        this.updateText();
-        if (nextPausedState) {
-          this.pauseButton.disabled = true;
-          this.#uploaderEl.addEventListener(
-            'chunksuccess',
-            () => {
-              this.updateText();
-              this.pauseButton.disabled = false;
-            },
-            { once: true }
-          );
-        }
-      });
+      this.#uploaderEl.addEventListener(
+        'pausedchange',
+        () => {
+          this.pauseButton.disabled = false;
+          if (!this.#uploaderEl) return;
+          const nextPausedState = this.#uploaderEl.paused ?? false;
+          this.updateText();
+          if (nextPausedState) {
+            this.pauseButton.disabled = true;
+            this.#uploaderEl.addEventListener(
+              'chunksuccess',
+              () => {
+                this.updateText();
+                this.pauseButton.disabled = false;
+              },
+              { once: true, signal: this.#abortController?.signal }
+            );
+          }
+        },
+        opts
+      );
 
       this.pauseButton.addEventListener('click', this.triggerPause, opts);
 
