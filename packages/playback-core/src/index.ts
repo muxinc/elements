@@ -165,7 +165,7 @@ export function parseTagAttributes(str: string) {
 }
 
 export const getStreamInfoFromPlaylist = (playlist: string) => {
-  const playlistLines = playlist.split('\n');
+  const playlistLines = playlist.split(/\r?\n/);
   const typeLine = playlistLines.find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
   const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
   const streamType = toStreamTypeFromPlaylistType(playlistType);
