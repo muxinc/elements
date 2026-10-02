@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-astro@1.5.0...@mux/mux-uploader-astro@1.6.0) (2026-10-02)
+
+
+### Features
+
+* **mux-player-astro, mux-uploader-astro:** support astro v7 ([#1361](https://github.com/muxinc/elements/issues/1361)) ([9002d41](https://github.com/muxinc/elements/commit/9002d41d291b73b7805796e8e048d8d8bc6b4e95))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-uploader bumped from 1.5.0 to 1.6.0
+
 ## [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-astro@1.4.1...@mux/mux-uploader-astro@1.5.0) (2026-04-24)
 
 

@@ -31,6 +31,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.5](https://github.com/muxinc/elements/compare/@mux/mux-video@0.31.4...@mux/mux-video@0.31.5) (2026-10-02)
+
+
+### Bug Fixes
+
+* bump @mux/mux-data-google-ima from 0.3.4 to 0.3.17 ([#1324](https://github.com/muxinc/elements/issues/1324)) ([5c96dac](https://github.com/muxinc/elements/commit/5c96dacfd74471fdeff8bf60dd2c13199458e1b5))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1336](https://github.com/muxinc/elements/issues/1336)) ([9176ea2](https://github.com/muxinc/elements/commit/9176ea2d6f46fd87fb13ecf40cf57df1077432d9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.35.4 to 0.36.0
+
 ## [0.31.4](https://github.com/muxinc/elements/compare/@mux/mux-video@0.31.3...@mux/mux-video@0.31.4) (2026-09-15)
 
 
