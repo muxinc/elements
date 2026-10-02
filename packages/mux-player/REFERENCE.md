@@ -266,7 +266,7 @@ mux-player {
    * Controls how the media is sized and positioned inside of the <video> element
    * Supports everything the standard CSS properties support
    */
-  --media-object-size: cover;
+  --media-object-fit: cover;
   --media-object-position: center;
 }
 ```
