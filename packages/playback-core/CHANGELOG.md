@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.35.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.3...@mux/playback-core@0.35.4) (2026-09-15)
+
+
+### Bug Fixes
+
+* bumped hls.js version ([#1357](https://github.com/muxinc/elements/issues/1357)) ([6a7528a](https://github.com/muxinc/elements/commit/6a7528ae74454d53f15c02443a372a7b9384ca44))
+
 ## [0.35.3](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.2...@mux/playback-core@0.35.3) (2026-09-09)
 
 

@@ -4,6 +4,9 @@ import { addEventListenerWithTeardown } from './util';
 
 type Config = { label: string };
 
+// `Infinity` is the spec'd end for an open cue, but engines reject it in `VTTCue`.
+const OPEN_CUE_END_TIME = Number.MAX_SAFE_INTEGER;
+
 // Shared utils
 
 // Extracts the start time from a cuepoint, considering legacy "time" prop
@@ -114,12 +117,15 @@ export function setupTextTracks(
         if (track.kind) selector += `[kind="${track.kind}"]`;
         if (track.label) selector += `[label="${track.label}"]`;
         const trackEl = mediaEl.querySelector(selector);
-        // Force a reload of the cues if they've been removed
-        const src = trackEl?.getAttribute('src') ?? '';
-        trackEl?.removeAttribute('src');
-        setTimeout(() => {
-          trackEl?.setAttribute('src', src);
-        }, 0);
+        const src = trackEl?.getAttribute('src');
+        // Force a reload of the cues if they've been removed. Resetting src empties the cue list, so a
+        // srcless track, whose cues come from addCue(), must be left alone.
+        if (trackEl && src) {
+          trackEl.removeAttribute('src');
+          setTimeout(() => {
+            trackEl.setAttribute('src', src);
+          }, 0);
+        }
       }
       // Force hidden mode if it's not hidden
       if (track.mode !== 'hidden') {
@@ -178,22 +184,43 @@ export function getTextTrack(mediaEl: HTMLMediaElement, label: string, kind: Tex
   })?.track;
 }
 
+const pendingTrackSetups = new WeakMap<TextTrack, Promise<void>>();
+
+async function getOrCreateTextTrack(mediaEl: HTMLMediaElement, label: string, kind: TextTrackKind) {
+  const existingTrack = getTextTrack(mediaEl, label, kind);
+  if (existingTrack) {
+    const pendingSetup = pendingTrackSetups.get(existingTrack);
+    if (pendingSetup) await pendingSetup;
+    return existingTrack;
+  }
+
+  const track = addTextTrack(mediaEl, kind, label);
+  track.mode = 'hidden';
+  // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
+  const setup = new Promise<void>((resolve) => setTimeout(resolve, 0));
+  pendingTrackSetups.set(track, setup);
+  await setup;
+  pendingTrackSetups.delete(track);
+  return track;
+}
+
 export async function addCuesToTextTrack<T = any>(
   mediaEl: HTMLMediaElement,
   cues: CuePoint<T>[] | Chapter[],
   label: string,
   kind: TextTrackKind
 ) {
-  // If the track has already been created/added, use it.
-  let track = getTextTrack(mediaEl, label, kind);
-  if (!track) {
-    // Otherwise, create a new one
-    track = addTextTrack(mediaEl, kind, label);
-    track.mode = 'hidden';
-    // Wait a tick before providing a newly created track. Otherwise e.g. cues disappear when using track.addCue().
-    await new Promise((resolve) => setTimeout(() => resolve(undefined), 0));
-  }
+  const track = await getOrCreateTextTrack(mediaEl, label, kind);
+  addCuesToTrack(mediaEl, track, cues, kind);
+  return track;
+}
 
+function addCuesToTrack<T = any>(
+  mediaEl: HTMLMediaElement,
+  track: TextTrack,
+  cues: CuePoint<T>[] | Chapter[],
+  kind: TextTrackKind
+) {
   if (track.mode !== 'hidden') {
     track.mode = 'hidden';
   }
@@ -208,7 +235,7 @@ export async function addCuesToTextTrack<T = any>(
       const value = cuePoint.value;
       const startTime = cuePointStart(cuePoint);
 
-      if ('endTime' in cuePoint && cuePoint.endTime != undefined) {
+      if ('endTime' in cuePoint && cuePoint.endTime != undefined && Number.isFinite(cuePoint.endTime)) {
         track?.addCue(
           new VTTCue(
             startTime,
@@ -222,9 +249,9 @@ export async function addCuesToTextTrack<T = any>(
         const cueAfter = track?.cues?.[cueAfterIndex];
         const endTime = cueAfter
           ? cueAfter.startTime
-          : Number.isFinite(mediaEl.duration)
+          : Number.isFinite(mediaEl.duration) && mediaEl.duration > 0
             ? mediaEl.duration
-            : Number.MAX_SAFE_INTEGER;
+            : OPEN_CUE_END_TIME;
 
         // Adjust the endTime of the already added previous cue,
         // if present, so it does not overlap with the newly added cue.
@@ -247,8 +274,6 @@ export async function addCuesToTextTrack<T = any>(
       composed: true,
     })
   );
-
-  return track;
 }
 
 // Cuepoints
@@ -331,18 +356,58 @@ export async function setupCuePoints(mediaEl: HTMLMediaElement, cuePointsConfig:
 const DEFAULT_CHAPTERS_TRACK_LABEL = 'chapters';
 export const DefaultChaptersConfig: Config = Object.freeze({ label: DEFAULT_CHAPTERS_TRACK_LABEL });
 
-const vttCueToChapter = (cue: VTTCue) => ({
-  startTime: cue.startTime,
-  endTime: cue.endTime,
-  value: cue.text,
-});
+const vttCueToChapter = (cue: VTTCue, mediaEl: HTMLMediaElement): Required<Chapter> => {
+  const { duration } = mediaEl;
+  const hasDuration = Number.isFinite(duration) && duration > 0;
+  const endTime = hasDuration
+    ? Math.min(cue.endTime, duration)
+    : cue.endTime >= OPEN_CUE_END_TIME
+      ? Infinity
+      : cue.endTime;
+  return {
+    startTime: cue.startTime,
+    endTime,
+    value: cue.text,
+  };
+};
+
+const sessionDataChapterCues = new WeakSet<TextTrackCue>();
+
+function removeSessionDataChapterCues(track: TextTrack) {
+  Array.from(track.cues ?? [])
+    .filter((cue) => sessionDataChapterCues.has(cue))
+    .forEach((cue) => track.removeCue(cue));
+}
 
 export async function addChapters(
   mediaEl: HTMLMediaElement,
   chapters: Chapter[],
   chaptersConfig: Config = DefaultChaptersConfig
 ) {
-  return addCuesToTextTrack(mediaEl, chapters, chaptersConfig.label, 'chapters');
+  const track = await getOrCreateTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (chapters.length) removeSessionDataChapterCues(track);
+  addCuesToTrack(mediaEl, track, chapters, 'chapters');
+  return track;
+}
+
+/**
+ * Replaces the chapters that came from the stream's session data. Chapters added through
+ * `addChapters()` always win: they are never merged with these, and adding them removes these.
+ */
+export async function setSessionDataChapters(
+  mediaEl: HTMLMediaElement,
+  chapters: Chapter[],
+  signal?: AbortSignal,
+  chaptersConfig: Config = DefaultChaptersConfig
+) {
+  const track = await getOrCreateTextTrack(mediaEl, chaptersConfig.label, 'chapters');
+  if (signal?.aborted) return track;
+  if (Array.from(track.cues ?? []).some((cue) => !sessionDataChapterCues.has(cue))) return track;
+
+  removeSessionDataChapterCues(track);
+  addCuesToTrack(mediaEl, track, chapters, 'chapters');
+  Array.from(track.cues ?? []).forEach((cue) => sessionDataChapterCues.add(cue));
+  return track;
 }
 
 export function getChapters(
@@ -351,7 +416,7 @@ export function getChapters(
 ) {
   const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.cues?.length) return [];
-  return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue));
+  return Array.from(track.cues, (cue) => vttCueToChapter(cue as VTTCue, mediaEl));
 }
 
 export function getActiveChapter(
@@ -360,7 +425,7 @@ export function getActiveChapter(
 ) {
   const track = getTextTrack(mediaEl, chaptersConfig.label, 'chapters');
   if (!track?.activeCues?.length) return undefined;
-  if (track.activeCues.length === 1) return vttCueToChapter(track.activeCues[0] as VTTCue);
+  if (track.activeCues.length === 1) return vttCueToChapter(track.activeCues[0] as VTTCue, mediaEl);
   // NOTE: There is a bug in Chromium where there may be "lingering activeCues" even
   // after the playhead is no longer within their [startTime, endTime) bounds. This
   // accounts for those cases (CJP)
@@ -369,9 +434,9 @@ export function getActiveChapter(
     return startTime <= currentTime && endTime > currentTime;
   }) as VTTCue | undefined;
   if (!actualActiveCue) {
-    return vttCueToChapter(track.activeCues[0] as VTTCue);
+    return vttCueToChapter(track.activeCues[0] as VTTCue, mediaEl);
   }
-  return vttCueToChapter(actualActiveCue);
+  return vttCueToChapter(actualActiveCue, mediaEl);
 }
 
 export async function setupChapters(mediaEl: HTMLMediaElement, chaptersConfig: Config = DefaultChaptersConfig) {

@@ -15,6 +15,7 @@ import { setupAutoplay } from './autoplay';
 import { setupPreload } from './preload';
 import { setupMinPreload, setupInitialEstimate } from './min-preload';
 import { setupMediaTracks } from './media-tracks';
+import { parseAppleJsonChapters } from './chapters';
 import {
   setupTextTracks,
   addTextTrack,
@@ -28,6 +29,7 @@ import {
   getChapters,
   getActiveChapter,
   setupChapters,
+  setSessionDataChapters,
 } from './text-tracks';
 import { getStartDate, getCurrentPdt } from './pdt';
 import {
@@ -42,6 +44,7 @@ import {
   isRelativeUrl,
   getFirstMediaPlaylistUrl,
   toAbsoluteUrl,
+  getPreferredLanguages,
 } from './util';
 import { StreamTypes, PlaybackTypes, ExtensionMimeTypeMap, CmcdTypes, HlsPlaylistTypes, MediaTypes } from './types';
 import { getErrorFromResponse, MuxJWTAud } from './request-errors';
@@ -109,7 +112,8 @@ export const toDRMTypeFromKeySystem = (keySystem: string): DRMTypeValue | undefi
  */
 export const getMediaPlaylistFromMultivariantPlaylist = (
   multivariantPlaylist: string,
-  masterPlaylistUrl?: string | URL
+  masterPlaylistUrl?: string | URL,
+  signal?: AbortSignal
 ) => {
   const mediaPlaylistUrl = getFirstMediaPlaylistUrl(multivariantPlaylist);
 
@@ -128,7 +132,7 @@ export const getMediaPlaylistFromMultivariantPlaylist = (
     return Promise.reject(e);
   }
 
-  return fetch(fetchUrl).then((resp) => {
+  return fetch(fetchUrl, { signal }).then((resp) => {
     if (resp.status !== 200) {
       return Promise.reject(resp);
     }
@@ -204,30 +208,31 @@ export const getStreamInfoFromPlaylist = (playlist: string) => {
   };
 };
 
-export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes | '') => {
+export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes | '', signal?: AbortSignal) => {
   if (type === ExtensionMimeTypeMap.MP4) {
     return {
       streamType: StreamTypes.ON_DEMAND,
       targetLiveWindow: Number.NaN,
       liveEdgeStartOffset: undefined,
       sessionData: undefined,
+      playlistUrl: undefined,
     };
   }
 
   if (type === ExtensionMimeTypeMap.M3U8) {
-    const multivariantPlaylistResponse = await fetch(src);
+    const multivariantPlaylistResponse = await fetch(src, { signal });
     if (!multivariantPlaylistResponse.ok) {
       return Promise.reject(multivariantPlaylistResponse);
     }
     const multivariantPlaylist = await multivariantPlaylistResponse.text();
-    // Note: We use response.url instead of src because it considers redirects.
-    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(
-      multivariantPlaylist,
-      multivariantPlaylistResponse.url
-    );
+    // Note: We use response.url instead of src because it considers redirects. It is empty for
+    // synthetic responses.
+    const playlistUrl = multivariantPlaylistResponse.url || src;
+    const mediaPlaylist = await getMediaPlaylistFromMultivariantPlaylist(multivariantPlaylist, playlistUrl, signal);
     return {
       ...getMultivariantPlaylistSessionData(multivariantPlaylist),
       ...getStreamInfoFromPlaylist(mediaPlaylist),
+      playlistUrl,
     };
   }
 
@@ -238,26 +243,23 @@ export const getStreamInfoFromSrcAndType = async (src: string, type?: MediaTypes
     targetLiveWindow: undefined,
     liveEdgeStartOffset: undefined,
     sessionData: undefined,
+    playlistUrl: undefined,
   };
 };
 
 export const updateStreamInfoFromSrc = async (
   src: string,
   mediaEl: HTMLMediaElement,
-  type: MediaTypes | '' = getType({ src })
+  type: MediaTypes | '' = getType({ src }),
+  signal: AbortSignal = toTeardownSignal(mediaEl)
 ) => {
-  const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData } = await getStreamInfoFromSrcAndType(
-    src,
-    type
-  );
+  const { streamType, targetLiveWindow, liveEdgeStartOffset, sessionData, playlistUrl } =
+    await getStreamInfoFromSrcAndType(src, type, signal);
+  if (signal.aborted) return;
 
-  const metadata = sessionData?.['com.apple.hls.chapters' as keyof typeof sessionData];
-  if (metadata?.URI || metadata?.VALUE.toLocaleLowerCase().startsWith('http')) {
-    // NOTE: data identified by DATA-ID 'com.apple.hls.chapters' is expected to provide its value
-    // via a remote JSON source identified by the URI attribute. Providing VALUE as a fallback.
-    // For more, see:
-    // https://developer.apple.com/documentation/http-live-streaming/providing-javascript-object-notation-json-chapters#Specify-a-main-playlist
-    fetchAndDispatchMuxMetadata(metadata.URI ?? metadata.VALUE, mediaEl);
+  const chaptersUrl = toChaptersSessionDataUrl(sessionData?.['com.apple.hls.chapters'], playlistUrl ?? src);
+  if (chaptersUrl) {
+    fetchAndApplyChaptersSessionData(chaptersUrl, mediaEl, signal);
   }
 
   (muxMediaState.get(mediaEl) ?? {}).liveEdgeStartOffset = liveEdgeStartOffset;
@@ -269,31 +271,81 @@ export const updateStreamInfoFromSrc = async (
   mediaEl.dispatchEvent(new CustomEvent('streamtypechange', { composed: true, bubbles: true }));
 };
 
-export const fetchAndDispatchMuxMetadata = async (metadataUrl: string, mediaEl: HTMLMediaElement) => {
+// NOTE: data identified by DATA-ID 'com.apple.hls.chapters' is expected to provide its value
+// via a remote JSON source identified by the URI attribute. Providing VALUE as a fallback.
+// For more, see:
+// https://developer.apple.com/documentation/http-live-streaming/providing-javascript-object-notation-json-chapters#Specify-a-main-playlist
+export const toChaptersSessionDataUrl = (
+  sessionDataEntry: Record<string, string | undefined> | undefined,
+  playlistUrl: string
+) => {
+  const url =
+    sessionDataEntry?.URI ||
+    (sessionDataEntry?.VALUE?.toLocaleLowerCase().startsWith('http') ? sessionDataEntry.VALUE : undefined);
+  if (!url) return undefined;
+
   try {
-    const resp = await fetch(metadataUrl);
-    if (!resp.ok) {
-      throw new Error(`Failed to fetch Mux metadata: ${resp.status} ${resp.statusText}`);
-    }
-
-    const json = await resp.json();
-    const metadata: Record<string, string> = {};
-
-    if (!json?.[0]?.metadata) return;
-
-    for (const item of json[0].metadata) {
-      if (item.key && item.value) {
-        metadata[item.key] = item.value;
-      }
-    }
-
-    (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
-
-    const eventUpdateMetadata = new CustomEvent('muxmetadata');
-    mediaEl.dispatchEvent(eventUpdateMetadata);
-  } catch (error) {
-    console.error(error);
+    return toAbsoluteUrl(url, playlistUrl).toString();
+  } catch {
+    return undefined;
   }
+};
+
+const toTeardownSignal = (mediaEl: HTMLMediaElement) => {
+  const controller = new AbortController();
+  mediaEl.addEventListener('teardown', () => controller.abort(), { once: true });
+  return controller.signal;
+};
+
+const fetchJson = async (url: string, signal: AbortSignal) => {
+  try {
+    const resp = await fetch(url, { signal });
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch ${url}: ${resp.status} ${resp.statusText}`);
+    }
+    const json: unknown = await resp.json();
+    return signal.aborted ? undefined : json;
+  } catch (error) {
+    if (!signal.aborted) console.error(error);
+    return undefined;
+  }
+};
+
+const dispatchMuxMetadata = (json: any, mediaEl: HTMLMediaElement) => {
+  if (!Array.isArray(json?.[0]?.metadata)) return;
+
+  const metadata: Record<string, string> = {};
+  for (const item of json[0].metadata) {
+    if (item?.key && item?.value) {
+      metadata[item.key] = item.value;
+    }
+  }
+
+  (muxMediaState.get(mediaEl) ?? {}).metadata = metadata;
+
+  const eventUpdateMetadata = new CustomEvent('muxmetadata');
+  mediaEl.dispatchEvent(eventUpdateMetadata);
+};
+
+export const fetchAndDispatchMuxMetadata = async (
+  metadataUrl: string,
+  mediaEl: HTMLMediaElement,
+  signal: AbortSignal = toTeardownSignal(mediaEl)
+) => {
+  const json = await fetchJson(metadataUrl, signal);
+  if (json === undefined) return;
+  dispatchMuxMetadata(json, mediaEl);
+};
+
+export const fetchAndApplyChaptersSessionData = async (
+  chaptersUrl: string,
+  mediaEl: HTMLMediaElement,
+  signal: AbortSignal = toTeardownSignal(mediaEl)
+) => {
+  const json = await fetchJson(chaptersUrl, signal);
+  if (json === undefined) return;
+  dispatchMuxMetadata(json, mediaEl);
+  await setSessionDataChapters(mediaEl, parseAppleJsonChapters(json, getPreferredLanguages(mediaEl)), signal);
 };
 
 export const getStreamInfoFromHlsjsLevelDetails = (levelDetails: any) => {
@@ -966,10 +1018,11 @@ export const setupHls = (
       }
     }
 
-    hls.on(Hls.Events.MANIFEST_PARSED, async function (_event, data) {
-      const chapters = data.sessionData?.['com.apple.hls.chapters'];
-      if (chapters?.URI || chapters?.VALUE.toLocaleLowerCase().startsWith('http')) {
-        fetchAndDispatchMuxMetadata(chapters?.URI ?? chapters?.VALUE, mediaEl);
+    hls.on(Hls.Events.MANIFEST_LOADED, async function (_event, data) {
+      // data.url is the manifest response URL, which considers redirects.
+      const chaptersUrl = toChaptersSessionDataUrl(data.sessionData?.['com.apple.hls.chapters'], data.url);
+      if (chaptersUrl) {
+        fetchAndApplyChaptersSessionData(chaptersUrl, mediaEl);
       }
     });
 
@@ -1415,8 +1468,11 @@ export const loadMedia = (
       };
 
       const setupNativeStreamInfo = async () => {
-        return updateStreamInfoFromSrc(src, mediaEl, type)
-          .then(setupSeekableChangePoll)
+        const signal = toTeardownSignal(mediaEl);
+        return updateStreamInfoFromSrc(src, mediaEl, type, signal)
+          .then(() => {
+            if (!signal.aborted) setupSeekableChangePoll();
+          })
           .catch((errOrResp: Response | Error) => {
             if (errOrResp instanceof Response) {
               const mediaError = getErrorFromResponse(errOrResp, MuxErrorCategory.VIDEO, props);
