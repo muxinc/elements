@@ -48,6 +48,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.4...@mux/mux-player@3.14.0) (2026-10-02)
+
+
+### Bug Fixes
+
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1336](https://github.com/muxinc/elements/issues/1336)) ([9176ea2](https://github.com/muxinc/elements/commit/9176ea2d6f46fd87fb13ecf40cf57df1077432d9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.31.4 to 0.31.5
+    * @mux/playback-core bumped from 0.35.4 to 0.36.0
+
 ## [3.13.4](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.3...@mux/mux-player@3.13.4) (2026-09-15)
 
 

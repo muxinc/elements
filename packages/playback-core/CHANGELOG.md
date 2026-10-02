@@ -40,6 +40,18 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.36.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.4...@mux/playback-core@0.36.0) (2026-10-02)
+
+
+### Features
+
+* **playback-core:** Support apple JSON chapters from com.apple.hls.chapters session data ([#1360](https://github.com/muxinc/elements/issues/1360)) ([d1de13a](https://github.com/muxinc/elements/commit/d1de13a3391fda217059bbb04f17e25772686a97))
+
+
+### Bug Fixes
+
+* bump mux-embed from 5.16.1 to 5.18.1 ([#1323](https://github.com/muxinc/elements/issues/1323)) ([a440f55](https://github.com/muxinc/elements/commit/a440f55ce2bb63146a050a05a2cc462ce8e42f8f))
+
 ## [0.35.4](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.3...@mux/playback-core@0.35.4) (2026-09-15)
 
 

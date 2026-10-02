@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.5.0...@mux/mux-uploader-react@1.6.0) (2026-10-02)
+
+
+### Miscellaneous Chores
+
+* **@mux/mux-uploader-react:** Synchronize uploader versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-uploader bumped from 1.5.0 to 1.6.0
+
 ## [1.5.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader-react@1.4.1...@mux/mux-uploader-react@1.5.0) (2026-04-24)
 
 
