@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.13.4...@mux/mux-player-astro@3.14.0) (2026-10-02)
+
+
+### Features
+
+* **mux-player-astro, mux-uploader-astro:** support astro v7 ([#1361](https://github.com/muxinc/elements/issues/1361)) ([9002d41](https://github.com/muxinc/elements/commit/9002d41d291b73b7805796e8e048d8d8bc6b4e95))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-player bumped from 3.13.4 to 3.14.0
+    * @mux/playback-core bumped from 0.35.4 to 0.36.0
+
 ## [3.13.4](https://github.com/muxinc/elements/compare/@mux/mux-player-astro@3.13.3...@mux/mux-player-astro@3.13.4) (2026-09-15)
 
 
