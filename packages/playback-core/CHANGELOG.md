@@ -40,6 +40,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.36.1](https://github.com/muxinc/elements/compare/@mux/playback-core@0.36.0...@mux/playback-core@0.36.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* bump mux-embed to prevent intermittent crashes under certain conditions ([#1369](https://github.com/muxinc/elements/issues/1369)) ([d678cd8](https://github.com/muxinc/elements/commit/d678cd8872969292388c911680dc258fe223c96b))
+
 ## [0.36.0](https://github.com/muxinc/elements/compare/@mux/playback-core@0.35.4...@mux/playback-core@0.36.0) (2026-10-02)
 
 

@@ -20,6 +20,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.6](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.31.5...@mux/mux-video-react@0.31.6) (2026-10-08)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.36.0 to 0.36.1
+
 ## [0.31.5](https://github.com/muxinc/elements/compare/@mux/mux-video-react@0.31.4...@mux/mux-video-react@0.31.5) (2026-10-02)
 
 
