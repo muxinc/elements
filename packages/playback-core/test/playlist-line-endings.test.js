@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { getMultivariantPlaylistSessionData } from '../src/index.ts';
+import { getMultivariantPlaylistSessionData, getStreamInfoFromPlaylist } from '../src/index.ts';
 import { getFirstMediaPlaylistUrl } from '../src/util.ts';
 
 const lines = [
@@ -35,5 +35,14 @@ describe('multivariant playlist line endings', () => {
 
   it('gets the first media playlist URL from a playlist with CRLF line endings', () => {
     assert.equal(getFirstMediaPlaylistUrl(lines.join('\r\n') + '\r\n'), 'https://example.com/media.m3u8');
+  });
+
+  it('reads the stream type from a media playlist with CRLF line endings', () => {
+    const mediaLines = ['#EXTM3U', '#EXT-X-PLAYLIST-TYPE:VOD', '#EXT-X-TARGETDURATION:6', '#EXT-X-ENDLIST'];
+    assert.deepEqual(
+      getStreamInfoFromPlaylist(mediaLines.join('\r\n') + '\r\n'),
+      getStreamInfoFromPlaylist(mediaLines.join('\n'))
+    );
+    assert.equal(getStreamInfoFromPlaylist(mediaLines.join('\r\n')).streamType, 'on-demand');
   });
 });
