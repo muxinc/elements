@@ -177,7 +177,8 @@ export class AttributeTokenList implements Iterable<string> {
 
   remove(...tokens: string[]) {
     tokens.forEach((t) => {
-      this.#tokens.splice(this.#tokens.indexOf(t), 1);
+      const index = this.#tokens.indexOf(t);
+      if (index >= 0) this.#tokens.splice(index, 1);
     });
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
