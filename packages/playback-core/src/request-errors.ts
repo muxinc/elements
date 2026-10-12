@@ -111,10 +111,17 @@ export const getErrorFromResponse = (
         const message = i18n(`The video’s secured {tokenNamePrefix}-token has expired.`, translate).format({
           tokenNamePrefix,
         });
-        const context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
-          expiredDate: new Intl.DateTimeFormat('en', dateOptions).format((jwtObj.exp ?? 0) * 1000),
-          currentDate: new Intl.DateTimeFormat('en', dateOptions).format(requestTime),
-        });
+        const currentDate = new Intl.DateTimeFormat('en', dateOptions).format(requestTime);
+        // NOTE: A token with no exp is treated as expired, but there's no meaningful date to report. (SP)
+        const context = jwtObj.exp
+          ? i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
+              expiredDate: new Intl.DateTimeFormat('en', dateOptions).format(jwtObj.exp * 1000),
+              currentDate,
+            })
+          : i18n(`The {tokenNamePrefix}-token has no exp value. Current time: {currentDate}.`, translate).format({
+              tokenNamePrefix,
+              currentDate,
+            });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);
         mediaError.errorCategory = category;
         mediaError.muxCode = MuxErrorCode.NETWORK_TOKEN_EXPIRED;
