@@ -112,7 +112,7 @@ export const getErrorFromResponse = (
           tokenNamePrefix,
         });
         const context = i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
-          expiredDate: new Intl.DateTimeFormat('en', dateOptions).format(jwtObj.exp ?? 0 * 1000),
+          expiredDate: new Intl.DateTimeFormat('en', dateOptions).format((jwtObj.exp ?? 0) * 1000),
           currentDate: new Intl.DateTimeFormat('en', dateOptions).format(requestTime),
         });
         const mediaError = new MediaError(message, mediaErrorCode, true, context);

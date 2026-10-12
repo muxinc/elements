@@ -120,6 +120,9 @@ describe('errors', () => {
         assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_TOKEN_EXPIRED);
         assert.equal(mediaError.message, 'The video’s secured playback-token has expired.');
         assert.include(mediaError.context, 'Expired at:');
+        // exp is in seconds; make sure it's converted to ms (not rendered as a 1970 date)
+        assert.include(mediaError.context, '2022');
+        assert.notInclude(mediaError.context, '1970');
       });
 
       it('403 response code message w/ playback id mismatch for MediaError.MEDIA_ERR_NETWORK', function () {
@@ -272,6 +275,8 @@ describe('errors', () => {
         assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_TOKEN_EXPIRED);
         assert.equal(mediaError.message, 'The video’s secured drm-token has expired.');
         assert.include(mediaError.context, 'Expired at:');
+        assert.include(mediaError.context, '2024');
+        assert.notInclude(mediaError.context, '1970');
       });
 
       it('403 response code message w/ playback id mismatch for MediaError.MEDIA_ERR_NETWORK', function () {
