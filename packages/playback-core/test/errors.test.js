@@ -120,6 +120,24 @@ describe('errors', () => {
         assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_TOKEN_EXPIRED);
         assert.equal(mediaError.message, 'The video’s secured playback-token has expired.');
         assert.include(mediaError.context, 'Expired at:');
+        // exp is in seconds; make sure it's converted to ms (not rendered as a 1970 date)
+        assert.include(mediaError.context, '2022');
+        assert.notInclude(mediaError.context, '1970');
+      });
+
+      it('403 response code message w/ token missing exp for MediaError.MEDIA_ERR_NETWORK', function () {
+        const playbackId = 'bzeU5fRA47S01KDzrObYiiZvzj00j5E00dCVbt3oRzmfF00';
+        // NOTE: payload is { aud: 'v', sub: playbackId } (no exp)
+        const playbackToken =
+          'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJ2Iiwic3ViIjoiYnplVTVmUkE0N1MwMUtEenJPYllpaVp2emowMGo1RTAwZENWYnQzb1J6bWZGMDAifQ.sig';
+        const mediaError = getErrorFromResponse({ status: 403, url: 'https://any.com' }, MuxErrorCategory.VIDEO, {
+          playbackId,
+          playbackToken,
+        });
+
+        assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_TOKEN_EXPIRED);
+        assert.include(mediaError.context, 'The playback-token has no exp value.');
+        assert.notInclude(mediaError.context, 'Expired at:');
       });
 
       it('403 response code message w/ playback id mismatch for MediaError.MEDIA_ERR_NETWORK', function () {
@@ -272,6 +290,8 @@ describe('errors', () => {
         assert.equal(mediaError.muxCode, MuxErrorCode.NETWORK_TOKEN_EXPIRED);
         assert.equal(mediaError.message, 'The video’s secured drm-token has expired.');
         assert.include(mediaError.context, 'Expired at:');
+        assert.include(mediaError.context, '2024');
+        assert.notInclude(mediaError.context, '1970');
       });
 
       it('403 response code message w/ playback id mismatch for MediaError.MEDIA_ERR_NETWORK', function () {
