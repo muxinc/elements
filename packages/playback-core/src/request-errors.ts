@@ -112,7 +112,6 @@ export const getErrorFromResponse = (
           tokenNamePrefix,
         });
         const currentDate = new Intl.DateTimeFormat('en', dateOptions).format(requestTime);
-        // NOTE: A token with no exp is treated as expired, but there's no meaningful date to report. (SP)
         const context = jwtObj.exp
           ? i18n(`Expired at: {expiredDate}. Current time: {currentDate}.`, translate).format({
               expiredDate: new Intl.DateTimeFormat('en', dateOptions).format(jwtObj.exp * 1000),
