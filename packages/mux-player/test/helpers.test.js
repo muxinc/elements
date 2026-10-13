@@ -191,6 +191,39 @@ describe('helpers', () => {
       assert.deepEqual(list, [], 'Assert that "token-1" and "token-2" was removed.');
     });
 
+    it('Remove ignores a token that is not in the list', function () {
+      let list = new AttributeTokenList();
+
+      list.add('token-1');
+      list.add('token-2');
+
+      list.remove('token-3');
+      list = [...list];
+
+      assert.deepEqual(list, ['token-1', 'token-2'], 'Assert that no existing token was removed.');
+    });
+
+    it('Remove keeps the attribute in sync when the token is not in the list', function () {
+      const el = document.createElement('div');
+      const list = new AttributeTokenList(el, 'hotkeys');
+
+      list.add('token-1', 'token-2');
+      list.remove('token-3');
+
+      assert.equal(el.getAttribute('hotkeys'), 'token-1 token-2');
+    });
+
+    it('Toggle force = false ignores a token that is not in the list', function () {
+      let list = new AttributeTokenList();
+
+      list.add('token-1', 'token-2');
+
+      assert.equal(list.toggle('token-3', false), false, 'Assert that toggle returns false.');
+      list = [...list];
+
+      assert.deepEqual(list, ['token-1', 'token-2'], 'Assert that no existing token was removed.');
+    });
+
     it('Toggle addition of token', function () {
       let list = new AttributeTokenList();
 
