@@ -53,6 +53,15 @@ import type { IMuxVideoBaseElement } from './types.js';
 
 export * from './types.js';
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export const Attributes = {
   BEACON_COLLECTION_DOMAIN: 'beacon-collection-domain',
   CUSTOM_DOMAIN: 'custom-domain',
@@ -138,7 +147,7 @@ export class MuxVideoBaseElement extends CustomVideoElement implements IMuxVideo
 
   static getLogoHTML(logoValue: string | null) {
     if (!logoValue || logoValue === 'false') return '';
-    return logoValue === 'default' ? muxLogo : `<img part="logo" src="${logoValue}" />`;
+    return logoValue === 'default' ? muxLogo : `<img part="logo" src="${escapeHtml(logoValue)}" />`;
   }
 
   static getTemplateHTML(attrs: Record<string, string> = {}) {
