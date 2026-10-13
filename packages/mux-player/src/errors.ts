@@ -54,7 +54,8 @@ const muxMediaErrorToDialogTitle = (mediaError: MediaError, translate = false) =
 
 const muxMediaErrorToDialogMessage = (mediaError: MediaError, translate = false) => {
   if (mediaError.reload) {
-    return `Try again later or <a href="#" data-mux-reload style="color: #4a90e2;">click here to retry</a>`;
+    // formatErrorMessage in base.ts renders the retry link from the reload flag. Markup here would be escaped and shown as text.
+    return '';
   }
   if (mediaError.muxCode) {
     const category = capitalizeFirstLetter(mediaError.errorCategory ?? 'video');
@@ -129,6 +130,7 @@ export const muxMediaErrorToDialog = (mediaError: MediaError, translate = false)
   return {
     title,
     message,
+    reload: !!mediaError.reload,
   };
 };
 

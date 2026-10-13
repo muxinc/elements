@@ -74,6 +74,7 @@ export type DialogOptions = {
   message?: string;
   linkText?: string;
   linkUrl?: string;
+  reload?: boolean;
 };
 
 export type DevlogOptions = {
