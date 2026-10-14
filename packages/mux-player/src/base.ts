@@ -41,7 +41,7 @@ import {
 import { template } from './template';
 import { render } from './html';
 import { muxMediaErrorToDialog, muxMediaErrorToDevlog } from './errors';
-import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase } from './utils';
+import { toNumberOrUndefined, containsComposedNode, camelCase, kebabCase, escapeHtml } from './utils';
 import * as logger from './logger';
 import type { MuxTemplateProps, ErrorEvent, IMuxPlayerElement } from './types';
 import './themes/gerwig';
@@ -206,20 +206,26 @@ const baseFormatErrorMessage = MediaErrorDialog.formatErrorMessage;
 MediaErrorDialog.formatErrorMessage = (error: { code: number; message: string }) => {
   if (error instanceof MediaError) {
     const dialog = muxMediaErrorToDialog(error, false);
+    if (dialog?.reload) {
+      return `
+      ${dialog?.title ? `<h3>${escapeHtml(dialog.title)}</h3>` : ''}
+      <p>Try again later or <a href="#" data-mux-reload style="color: #4a90e2;">click here to retry</a></p>
+    `;
+    }
     return `
-      ${dialog?.title ? `<h3>${dialog.title}</h3>` : ''}
+      ${dialog?.title ? `<h3>${escapeHtml(dialog.title)}</h3>` : ''}
       ${
         dialog?.message || dialog?.linkUrl
           ? `<p>
-        ${dialog?.message}
+        ${escapeHtml(dialog?.message ?? '')}
         ${
           dialog?.linkUrl
             ? `<a
-              href="${dialog.linkUrl}"
+              href="${escapeHtml(dialog.linkUrl)}"
               target="_blank"
               rel="external noopener"
-              aria-label="${dialog.linkText ?? ''} ${i18n(`(opens in a new window)`)}"
-              >${dialog.linkText ?? dialog.linkUrl}</a
+              aria-label="${escapeHtml(dialog.linkText ?? '')} ${i18n(`(opens in a new window)`)}"
+              >${escapeHtml(dialog.linkText ?? dialog.linkUrl)}</a
             >`
             : ''
         }
