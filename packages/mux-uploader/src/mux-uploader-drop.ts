@@ -131,7 +131,7 @@ class MuxUploaderDropElement extends globalThis.HTMLElement {
 
   attributeChangedCallback(attributeName: string, oldValue: string | null, newValue: string | null) {
     if (attributeName === Attributes.OVERLAY_TEXT && oldValue !== newValue) {
-      this.#overlayTextEl.innerHTML = newValue ?? '';
+      this.#overlayTextEl.textContent = newValue ?? '';
     } else if (attributeName === 'active') {
       if (this.hasAttribute('overlay') && newValue != null) {
         this._currentDragTarget = this;
