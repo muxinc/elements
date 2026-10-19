@@ -298,6 +298,18 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
   #themeAttributeObserver?: MutationObserver;
   #onStreamTypeChange = () => this.#render();
   #onLoadStart = () => this.#render();
+  #onTimeUpdate = () => {
+    const liveEdgeStart = this.liveEdgeStart;
+    if (
+      this.media?.streamType === StreamTypes.LIVE &&
+      this.playbackRate > 1 &&
+      liveEdgeStart != null &&
+      this.currentTime >= liveEdgeStart
+    ) {
+      // Playing faster than real time at the live edge exhausts the available media.
+      this.playbackRate = 1;
+    }
+  };
   #onTrackCountChange = () => this.#render();
   #onReloadClick = (event: MouseEvent) => {
     const target = event.composedPath().find((el) => (el as Element)?.hasAttribute?.('data-mux-reload'));
@@ -432,6 +444,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
 
     // NOTE: Make sure we re-render when <source> tags are appended so hasSrc is updated.
     this.media?.addEventListener('loadstart', this.#onLoadStart);
+    this.media?.addEventListener('timeupdate', this.#onTimeUpdate);
+    this.media?.addEventListener('ratechange', this.#onTimeUpdate);
 
     // Propagate any metadata-* attrs that were set before #init() ran (e.g. before
     // the first attributeChangedCallback for playback-id created this.media).
@@ -498,6 +512,8 @@ class MuxPlayerElement extends VideoApiElement implements IMuxPlayerElement {
     this.#themeAttributeObserver?.disconnect();
     this.media?.removeEventListener('streamtypechange', this.#onStreamTypeChange);
     this.media?.removeEventListener('loadstart', this.#onLoadStart);
+    this.media?.removeEventListener('timeupdate', this.#onTimeUpdate);
+    this.media?.removeEventListener('ratechange', this.#onTimeUpdate);
     this.removeEventListener('error', this.#onError);
     this.removeEventListener('click', this.#onReloadClick);
     this.mediaTheme?.removeEventListener('close', this.#onCloseErrorDialog);
