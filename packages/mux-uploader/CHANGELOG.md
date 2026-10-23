@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.1](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.6.0...@mux/mux-uploader@1.6.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* harden attribute and message handling in mux-video, mux-uploader and mux-player ([#1374](https://github.com/muxinc/elements/issues/1374)) ([a0871d6](https://github.com/muxinc/elements/commit/a0871d6c3e01cd74b6921f3e40caba30a2f8ad73))
+
 ## [1.6.0](https://github.com/muxinc/elements/compare/@mux/mux-uploader@1.5.0...@mux/mux-uploader@1.6.0) (2026-10-02)
 
 
