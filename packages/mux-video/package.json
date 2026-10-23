@@ -127,8 +127,8 @@
     "@mux/mux-data-google-ima": "^0.3.17",
     "@mux/playback-core": "0.36.0",
     "@types/google_interactive_media_ads_types": "^3.697.0",
-    "castable-video": "~1.1.16",
-    "custom-media-element": "~1.4.6",
+    "castable-video": "~1.1.17",
+    "custom-media-element": "~1.4.7",
     "media-tracks": "~0.3.5"
   },
   "devDependencies": {
