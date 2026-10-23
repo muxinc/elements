@@ -15,6 +15,20 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.16.6](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.16.5...@mux/mux-audio@0.16.6) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** bump custom-media-element, castable-video and media-chrome ([#1379](https://github.com/muxinc/elements/issues/1379)) ([1aaa023](https://github.com/muxinc/elements/commit/1aaa0239e862d9fede12d496fa97d8714ba981fc))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.36.0 to 0.36.1
+
 ## [0.16.5](https://github.com/muxinc/elements/compare/@mux/mux-audio@0.16.4...@mux/mux-audio@0.16.5) (2026-10-02)
 
 

@@ -48,6 +48,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.14.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.14.0...@mux/mux-player@3.14.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** bump custom-media-element, castable-video and media-chrome ([#1379](https://github.com/muxinc/elements/issues/1379)) ([1aaa023](https://github.com/muxinc/elements/commit/1aaa0239e862d9fede12d496fa97d8714ba981fc))
+* harden attribute and message handling in mux-video, mux-uploader and mux-player ([#1374](https://github.com/muxinc/elements/issues/1374)) ([a0871d6](https://github.com/muxinc/elements/commit/a0871d6c3e01cd74b6921f3e40caba30a2f8ad73))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/mux-video bumped from 0.31.5 to 0.31.6
+    * @mux/playback-core bumped from 0.36.0 to 0.36.1
+
 ## [3.14.0](https://github.com/muxinc/elements/compare/@mux/mux-player@3.13.4...@mux/mux-player@3.14.0) (2026-10-02)
 
 
