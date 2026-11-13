@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "hls.js": "~1.7.0",
-    "mux-embed": "^5.18.2"
+    "mux-embed": "^5.19.0"
   },
   "devDependencies": {
     "@mux/esbuilder": "*",
