@@ -5,6 +5,8 @@
     <a href="https://www.npmjs.com/package/@mux/mux-player-react"><img src="https://img.shields.io/npm/l/@mux/mux-player-react.svg?sanitize=true" alt="License"></a>
 </p>
 
+> **Mux Player for web is in maintenance mode.** It stays available and supported in maintenance mode. For new projects, use [Video.js](https://videojs.org) with Mux. To move an existing project, see the [migration guide](https://videojs.org/docs/framework/html/guides/migrate-from-mux-player/).
+
 # New release: 3.0
 
 Mux Player recently released 3.0. The most visible change in this is new tooltips that are enabled by default, as well as [other fixes and changes](https://docs.mux.com/guides/player-releases-web#300).
