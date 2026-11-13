@@ -5,6 +5,8 @@
     <a href="https://www.npmjs.com/package/@mux/mux-player-astro"><img src="https://img.shields.io/npm/l/@mux/mux-player-astro.svg?sanitize=true" alt="License"></a>
 </p>
 
+> **Mux Player for web is in maintenance mode.** It stays available and supported in maintenance mode. For new projects, use [Video.js](https://videojs.org) with Mux. To move an existing project, see the [migration guide](https://videojs.org/docs/framework/html/guides/migrate-from-mux-player/).
+
 # Introduction
 
 `<MuxPlayer />` is a Mux-flavored Astro video player component, built on top of our [mux-player web component](../mux-player) and [Media Chrome](https://media-chrome.org).

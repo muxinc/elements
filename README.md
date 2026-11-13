@@ -12,6 +12,8 @@
   </p>
 </p>
 
+> **Mux Player for web is in maintenance mode.** It stays available and supported in maintenance mode. For new projects, use [Video.js](https://videojs.org) with Mux. To move an existing project, see the [migration guide](https://videojs.org/docs/framework/html/guides/migrate-from-mux-player/).
+
 ## Elements
 
 Elements are written to make it easy to work in a variety of web frameworks. If we don't (yet) have a framework-specific "flavor" of an element, we always provide a pure [Web Component](https://developer.mozilla.org/en-US/docs/Web/Web_Components) version that work with HTML and can be used by most modern web frameworks and web application environments.
