@@ -1,5 +1,6 @@
 import { fixture, assert } from '@open-wc/testing';
 import { MediaError } from '../src/index.ts';
+import { MediaErrorDialog } from 'media-chrome';
 import { getErrorLogs } from '../src/errors.ts';
 import { MuxErrorCategory, MuxErrorCode } from '@mux/playback-core';
 
@@ -287,6 +288,30 @@ describe('errors', () => {
           UNEXPECTED_DIALOG_MESSAGE
         );
       });
+    });
+  });
+
+  describe('dialog message rendering', () => {
+    it('keeps a media error message as inert text', () => {
+      const error = new MediaError(
+        'x</p><img src=x onerror="globalThis.__dialogBreakout = true">',
+        MediaError.MEDIA_ERR_DECODE
+      );
+      error.fatal = true;
+
+      const html = MediaErrorDialog.formatErrorMessage(error);
+      assert.notInclude(html, '<img src=x', 'the message markup is escaped, not emitted as a tag');
+      assert.include(html, '&lt;img', 'the message markup is present only as escaped text');
+    });
+
+    it('still renders the retry link for reloadable errors', () => {
+      const error = new MediaError('boom', MediaError.MEDIA_ERR_NETWORK);
+      error.fatal = true;
+      error.reload = true;
+
+      const html = MediaErrorDialog.formatErrorMessage(error);
+      assert.include(html, 'data-mux-reload', 'the retry anchor is preserved');
+      assert.include(html, 'click here to retry', 'the retry text is preserved');
     });
   });
 });

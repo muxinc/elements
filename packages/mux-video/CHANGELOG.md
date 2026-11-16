@@ -31,6 +31,36 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [0.31.6](https://github.com/muxinc/elements/compare/@mux/mux-video@0.31.5...@mux/mux-video@0.31.6) (2026-10-23)
+
+
+### Bug Fixes
+
+* **deps:** bump custom-media-element, castable-video and media-chrome ([#1379](https://github.com/muxinc/elements/issues/1379)) ([1aaa023](https://github.com/muxinc/elements/commit/1aaa0239e862d9fede12d496fa97d8714ba981fc))
+* harden attribute and message handling in mux-video, mux-uploader and mux-player ([#1374](https://github.com/muxinc/elements/issues/1374)) ([a0871d6](https://github.com/muxinc/elements/commit/a0871d6c3e01cd74b6921f3e40caba30a2f8ad73))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.36.0 to 0.36.1
+
+## [0.31.5](https://github.com/muxinc/elements/compare/@mux/mux-video@0.31.4...@mux/mux-video@0.31.5) (2026-10-02)
+
+
+### Bug Fixes
+
+* bump @mux/mux-data-google-ima from 0.3.4 to 0.3.17 ([#1324](https://github.com/muxinc/elements/issues/1324)) ([5c96dac](https://github.com/muxinc/elements/commit/5c96dacfd74471fdeff8bf60dd2c13199458e1b5))
+* bump the prod-dependencies group across 1 directory with 2 updates ([#1336](https://github.com/muxinc/elements/issues/1336)) ([9176ea2](https://github.com/muxinc/elements/commit/9176ea2d6f46fd87fb13ecf40cf57df1077432d9))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @mux/playback-core bumped from 0.35.4 to 0.36.0
+
 ## [0.31.4](https://github.com/muxinc/elements/compare/@mux/mux-video@0.31.3...@mux/mux-video@0.31.4) (2026-09-15)
 
 
