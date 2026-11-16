@@ -48,6 +48,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## [3.14.2](https://github.com/muxinc/elements/compare/@mux/mux-player@3.14.1...@mux/mux-player@3.14.2) (2026-11-16)
+
+
+### Bug Fixes
+
+* **mux-player:** don't remove the last token when removing a token that isn't in AttributeTokenList ([#1364](https://github.com/muxinc/elements/issues/1364)) ([97c8a86](https://github.com/muxinc/elements/commit/97c8a863b19baf07a6993ed6de1940c7f84b930a))
+
 ## [3.14.1](https://github.com/muxinc/elements/compare/@mux/mux-player@3.14.0...@mux/mux-player@3.14.1) (2026-10-23)
 
 
