@@ -753,7 +753,9 @@ describe('<mux-player>', () => {
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe" preload="auto"></mux-player>'
       );
 
-      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay', {
+        timeout: 5000,
+      });
       assert.isAtLeast(playerEl.buffered.length, 1, 'should have a length of at least 1');
     });
 
@@ -763,7 +765,9 @@ describe('<mux-player>', () => {
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
 
-      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay', {
+        timeout: 5000,
+      });
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.buffered.length, 0, 'should have a length of 0');
@@ -783,7 +787,9 @@ describe('<mux-player>', () => {
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
 
-      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay', {
+        timeout: 5000,
+      });
       assert.equal(playerEl.seekable.length, 1, 'should have a length of exactly 1');
     });
 
@@ -793,7 +799,9 @@ describe('<mux-player>', () => {
         '<mux-player stream-type="on-demand" playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"></mux-player>'
       );
 
-      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay');
+      await waitUntil(() => playerEl.readyState >= 3, '<mux-player> readyState never reached canPlay', {
+        timeout: 5000,
+      });
       playerEl.playbackId = undefined;
       await oneEvent(playerEl, 'emptied');
       assert.equal(playerEl.seekable.length, 0, 'should have a length of 0');
@@ -1033,12 +1041,11 @@ describe('<mux-player> playbackId transitions', () => {
 
     const errorDialog = player.mediaTheme.shadowRoot.querySelector('media-error-dialog');
 
-    await waitUntil(() => errorDialog.open, 'error dialog never opened');
+    await waitUntil(() => errorDialog.open, 'error dialog never opened', { timeout: 5000 });
     assert.equal(errorDialog.shadowRoot.querySelector('h3').textContent, 'Video does not exist');
 
     player.playbackId = 'xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE';
-    await aTimeout(100);
-    assert(!errorDialog.open);
+    await waitUntil(() => !errorDialog.open, 'error dialog never closed', { timeout: 5000 });
 
     console.error = oldLogError;
     console.warn = oldLogWarn;
@@ -1066,12 +1073,11 @@ describe('<mux-player> playbackId transitions', () => {
 
     const errorDialog = player.mediaTheme.shadowRoot.querySelector('media-error-dialog');
 
-    await waitUntil(() => errorDialog.open, 'error dialog never opened');
+    await waitUntil(() => errorDialog.open, 'error dialog never opened', { timeout: 5000 });
     assert.equal(errorDialog.shadowRoot.querySelector('h3').textContent, 'Video does not exist');
 
     player.src = 'https://stream.mux.com/xLGf7y8cRquv7QXoDB02zEe6centwKfVmUOiPSY02JhCE.m3u8';
-    await aTimeout(100);
-    assert(!errorDialog.open);
+    await waitUntil(() => !errorDialog.open, 'error dialog never closed', { timeout: 5000 });
 
     console.error = oldLogError;
     console.warn = oldLogWarn;

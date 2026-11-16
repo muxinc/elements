@@ -55,6 +55,20 @@ describe('<mux-uploader-status>', () => {
     assert.equal(status.statusMessage.innerHTML, detail.message, 'status message matches');
   });
 
+  it('shows an upload error message as inert text', async function () {
+    delete globalThis.__statusBreakout;
+    const uploader = await fixture(`<mux-uploader endpoint="https://my-authenticated-url/storage"></mux-uploader>`);
+    const status = uploader.shadowRoot.querySelector('mux-uploader-status');
+
+    const payload = `<img src=x onerror="globalThis.__statusBreakout = true">`;
+    uploader.dispatchEvent(new CustomEvent('uploaderror', { detail: { message: payload } }));
+    await aTimeout(0);
+
+    assert.isNull(status.statusMessage.querySelector('img'), 'no markup is injected');
+    assert.equal(status.statusMessage.textContent, payload, 'the message is shown as text');
+    assert.isUndefined(globalThis.__statusBreakout, 'no injected handler ran');
+  });
+
   it('clears an error on retry click', async function () {
     const uploader = await fixture(`<mux-uploader></mux-uploader>`);
     const status = uploader.shadowRoot.querySelector('mux-uploader-status');

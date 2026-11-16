@@ -1,6 +1,6 @@
 {
   "name": "@mux/playback-core",
-  "version": "0.35.4",
+  "version": "0.36.1",
   "description": "Core library for media playback in the browser shared by mux elements",
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.mjs",
@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "hls.js": "~1.7.0",
-    "mux-embed": "^5.16.1"
+    "mux-embed": "^5.18.2"
   },
   "devDependencies": {
     "@mux/esbuilder": "*",

@@ -13,6 +13,20 @@ describe('<mux-uploader>', () => {
     assert.equal(indicator.getAttribute('type'), 'bar', 'default progress type is reflected');
   });
 
+  it('keeps the type attribute inside the progress element without injecting markup', async function () {
+    delete globalThis.__typeBreakout;
+    const payload = `bar"><img src=x onerror="globalThis.__typeBreakout = true">`;
+    const uploader = await fixture(`<mux-uploader
+      endpoint="https://my-authenticated-url/storage?your-url-params"
+    ></mux-uploader>`);
+
+    uploader.setAttribute('type', payload);
+    await aTimeout(0);
+
+    assert.isNull(uploader.shadowRoot.querySelector('img'), 'no img was injected into the layout');
+    assert.isUndefined(globalThis.__typeBreakout, 'no injected handler ran');
+  });
+
   it('updates percentage progress', async function () {
     let file = new File(['foo'], 'foo.mp4', {
       type: 'video/mp4',

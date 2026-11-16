@@ -918,4 +918,35 @@ describe('<mux-video> disable-cookies', function () {
     assert.equal(player.chapters.length, 2, 'chapters survived');
     assert.isTrue(Array.from(player.textTracks).includes(chaptersTrack), 'and so did their text track');
   });
+
+  describe('logo rendering', () => {
+    const breakout = `x" onerror="globalThis.__logoBreakout = true`;
+
+    it('keeps a custom logo value inside the img src on first render', async () => {
+      delete globalThis.__logoBreakout;
+      const player = await fixture(`<mux-video logo="${breakout.replace(/"/g, '&quot;')}"></mux-video>`);
+      await aTimeout(0);
+
+      const slot = player.shadowRoot.querySelector('slot[name="logo"]');
+      const injected = slot.querySelectorAll('*');
+      assert.equal(injected.length, 1, 'only the logo img is present, nothing broke out');
+      assert.equal(injected[0].localName, 'img');
+      assert.equal(injected[0].getAttribute('src'), breakout, 'the raw value lives in the src attribute');
+      assert.isUndefined(globalThis.__logoBreakout, 'no injected handler ran');
+    });
+
+    it('keeps a custom logo value inside the img src when the attribute changes', async () => {
+      delete globalThis.__logoBreakout;
+      const player = await fixture(`<mux-video></mux-video>`);
+      player.setAttribute('logo', breakout);
+      await aTimeout(0);
+
+      const slot = player.shadowRoot.querySelector('slot[name="logo"]');
+      const injected = slot.querySelectorAll('*');
+      assert.equal(injected.length, 1, 'only the logo img is present, nothing broke out');
+      assert.equal(injected[0].localName, 'img');
+      assert.equal(injected[0].getAttribute('src'), breakout, 'the raw value lives in the src attribute');
+      assert.isUndefined(globalThis.__logoBreakout, 'no injected handler ran');
+    });
+  });
 });

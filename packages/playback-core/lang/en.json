@@ -19,6 +19,7 @@
   "{category} URL has expired": "{category} URL has expired",
   "The video’s secured {tokenNamePrefix}-token has expired.": "The video’s secured {tokenNamePrefix}-token has expired.",
   "Expired at: {expiredDate}. Current time: {currentDate}.": "Expired at: {expiredDate}. Current time: {currentDate}.",
+  "The {tokenNamePrefix}-token has no exp value. Current time: {currentDate}.": "The {tokenNamePrefix}-token has no exp value. Current time: {currentDate}.",
   "{category} URL is formatted incorrectly": "{category} URL is formatted incorrectly",
   "The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.": "The video’s playback ID does not match the one encoded in the {tokenNamePrefix}-token.",
   "Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}": "Specified playback ID: {playbackId} and the playback ID encoded in the {tokenNamePrefix}-token: {tokenPlaybackId}",

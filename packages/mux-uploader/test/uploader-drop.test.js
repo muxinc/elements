@@ -124,4 +124,24 @@ describe('<mux-uploader-drop>', () => {
       assert.equal(separatorText.textContent, 'ou', 'matches French translation');
     });
   });
+
+  describe('overlay-text', () => {
+    it('renders the overlay text as inert text', async function () {
+      delete globalThis.__overlayBreakout;
+      const uploader = await fixture(`
+        <mux-uploader-drop mux-uploader="my-uploader" overlay>
+          <mux-uploader id="my-uploader" endpoint="https://my-authenticated-url/storage?your-url-params"></mux-uploader>
+        </mux-uploader-drop>
+      `);
+
+      const payload = `<img src=x onerror="globalThis.__overlayBreakout = true">`;
+      uploader.setAttribute('overlay-text', payload);
+      await new Promise((r) => setTimeout(r, 0));
+
+      const label = uploader.shadowRoot.getElementById('overlay-label');
+      assert.equal(label.querySelectorAll('*').length, 0, 'no child elements are injected');
+      assert.equal(label.textContent, payload, 'the raw value is shown as text');
+      assert.isUndefined(globalThis.__overlayBreakout, 'no injected handler ran');
+    });
+  });
 });

@@ -13,10 +13,19 @@ function conditionalRender(flag: boolean | undefined, component: string): string
   return flag ? '' : component;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const attributeRender = (name: string, value: any): string => {
   if (value == null || value === false) return '';
   const valueStr = value === true ? '' : `${value}`;
-  return `${name}="${valueStr}"`;
+  return `${name}="${escapeHtml(valueStr)}"`;
 };
 
 export default function blockLayout(contextElement: MuxUploaderElement): DocumentFragment {
