@@ -142,7 +142,7 @@ export const getMediaPlaylistFromMultivariantPlaylist = (
 
 export const getMultivariantPlaylistSessionData = (playlist: string) => {
   // See https://datatracker.ietf.org/doc/html/draft-pantos-hls-rfc8216bis-12#section-4.4.6.4
-  const sessionDataLines = playlist.split('\n').filter((line) => line.startsWith('#EXT-X-SESSION-DATA'));
+  const sessionDataLines = playlist.split(/\r?\n/).filter((line) => line.startsWith('#EXT-X-SESSION-DATA'));
   if (!sessionDataLines.length) return {};
 
   const sessionData: Record<string, Record<string, string>> = {};
@@ -169,7 +169,7 @@ export function parseTagAttributes(str: string) {
 }
 
 export const getStreamInfoFromPlaylist = (playlist: string) => {
-  const playlistLines = playlist.split('\n');
+  const playlistLines = playlist.split(/\r?\n/);
   const typeLine = playlistLines.find((line) => line.startsWith('#EXT-X-PLAYLIST-TYPE')) ?? '';
   const playlistType = typeLine.split(':')[1]?.trim() as HlsPlaylistTypes;
   const streamType = toStreamTypeFromPlaylistType(playlistType);
