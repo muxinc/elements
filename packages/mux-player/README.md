@@ -41,6 +41,23 @@ yarn add @mux/mux-player
 ></mux-player>
 ```
 
+# Catch up on a live stream
+
+Live streams with DVR (`target-live-window` greater than zero) include the playback speed menu.
+Viewers can speed up playback after pausing or seeking back, and playback returns to 1x when it reaches `liveEdgeStart`.
+Use `playbackrates` to customize the available speeds, just as for on-demand playback:
+
+```html
+<mux-player
+  playback-id="YOUR_LIVE_PLAYBACK_ID"
+  stream-type="live"
+  target-live-window="Infinity"
+  playbackrates="1 1.2 1.5 1.7 2 2.2 2.5 2.7 3"
+></mux-player>
+```
+
+The menu follows the default theme's existing responsive visibility rules for video and audio.
+
 # Docs
 
 Docs and guides live on [docs.mux.com](https://docs.mux.com/guides/video/mux-player?utm_source=github-mux-player).

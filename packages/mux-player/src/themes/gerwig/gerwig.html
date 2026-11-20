@@ -1088,8 +1088,9 @@
           <template if="targetlivewindow > 0">{{>SeekBackwardButton}} {{>SeekForwardButton}}</template>
           {{>MuteButton}} {{>VolumeRange}}
           <div class="spacer"></div>
-          {{>RenditionMenu}} {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}}
-          {{>FullscreenButton}}
+          {{>RenditionMenu}}
+          <template if="targetlivewindow > 0">{{>PlaybackRateMenu}}</template>
+          {{>AudioTrackMenu}} {{>CaptionsMenu}} {{>AirplayButton}} {{>CastButton}} {{>PipButton}} {{>FullscreenButton}}
         </media-control-bar>
       </template>
     </template>
@@ -1122,6 +1123,9 @@
           </template>
           <template if="targetlivewindow > 0"> {{>TimeDisplay}} {{>TimeRange}} </template>
           <template if="!targetlivewindow"><div class="spacer"></div></template>
+          <template if="breakpointsm">
+            <template if="targetlivewindow > 0">{{>PlaybackRateMenu}}</template>
+          </template>
           {{>AirplayButton}} {{>CastButton}}
         </media-control-bar>
       </template>
