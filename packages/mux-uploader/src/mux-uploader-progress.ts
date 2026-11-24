@@ -121,9 +121,9 @@ class MuxUploaderProgressElement extends globalThis.HTMLElement {
       const opts = { signal: this.#abortController.signal };
 
       this.#uploaderEl.addEventListener('uploadstart', this.onUploadStart, opts);
-      this.#uploaderEl.addEventListener('reset', this.onReset);
-      this.#uploaderEl.addEventListener('progress', this.onProgress);
-      this.#uploaderEl.addEventListener('success', this.onSuccess);
+      this.#uploaderEl.addEventListener('reset', this.onReset, opts);
+      this.#uploaderEl.addEventListener('progress', this.onProgress, opts);
+      this.#uploaderEl.addEventListener('success', this.onSuccess, opts);
       this.toggleAttribute('upload-in-progress', this.#uploaderEl.hasAttribute('upload-in-progress'));
       this.toggleAttribute('upload-complete', this.#uploaderEl.hasAttribute('upload-complete'));
     }
