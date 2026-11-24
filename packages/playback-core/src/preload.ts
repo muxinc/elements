@@ -26,6 +26,25 @@ export const setupPreload = (
   const originalLength = hls.config.maxBufferLength;
   const originalSize = hls.config.maxBufferSize;
 
+  // Minimal buffer limits applied for preload="metadata".
+  const METADATA_BUFFER_LENGTH = 1;
+  const METADATA_BUFFER_SIZE = 1;
+  let hasAppliedMetadataLimits = false;
+
+  // Only undo the limits this module applied. If the config was changed
+  // after hls.js was created (e.g. via `player._hls.config`), keep those values.
+  const restoreBufferLimits = () => {
+    if (!hasAppliedMetadataLimits) return;
+    hasAppliedMetadataLimits = false;
+
+    if (hls.config.maxBufferLength === METADATA_BUFFER_LENGTH) {
+      hls.config.maxBufferLength = originalLength;
+    }
+    if (hls.config.maxBufferSize === METADATA_BUFFER_SIZE) {
+      hls.config.maxBufferSize = originalSize;
+    }
+  };
+
   const updateHlsPreload = (val?: HTMLMediaElement['preload']) => {
     // even if it doesn't have an effect on a <video> w/ MSE
     // still update the `preload` attribute.
@@ -35,11 +54,11 @@ export const setupPreload = (
     if (hasPlayFired || newPreload === 'none') return;
     if (newPreload === 'metadata') {
       // load the least amount of data possible
-      hls.config.maxBufferLength = 1;
-      hls.config.maxBufferSize = 1;
+      hls.config.maxBufferLength = METADATA_BUFFER_LENGTH;
+      hls.config.maxBufferSize = METADATA_BUFFER_SIZE;
+      hasAppliedMetadataLimits = true;
     } else {
-      hls.config.maxBufferLength = originalLength;
-      hls.config.maxBufferSize = originalSize;
+      restoreBufferLimits();
     }
 
     safeLoadSource();
@@ -59,8 +78,7 @@ export const setupPreload = (
       hasPlayFired = true;
 
       // once a user has played, allow for it to load data as normal
-      hls.config.maxBufferLength = originalLength;
-      hls.config.maxBufferSize = originalSize;
+      restoreBufferLimits();
 
       // load the source on first play if needed
       safeLoadSource();
